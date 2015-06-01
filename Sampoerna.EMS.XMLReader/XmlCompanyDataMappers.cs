@@ -28,15 +28,15 @@ namespace Sampoerna.EMS.XMLReader
         }
 
         
-        public List<T1001_H> Items
+        public List<T1001> Items
         {
             get
             {
                 var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<T1001_H>();
+                var items = new List<T1001>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T1001_H();
+                    var item = new T1001();
                     item.BUKRS = xElement.Element("BUKRS").Value;
                     item.BUKRSTXT = xElement.Element("BUKRSTXT").Value;
                     item.CREATED_DATE = DateTime.Now;
@@ -51,9 +51,9 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-        private bool IsDataChanges(T1001_H item)
+        private bool IsDataChanges(T1001 item)
         {
-            var repo = _uow.GetGenericRepository<T1001_H>();
+            var repo = _uow.GetGenericRepository<T1001>();
             var data = repo.Get(x => x.BUKRS.Equals(item.BUKRS, StringComparison.InvariantCultureIgnoreCase))
                 .OrderBy(x=>x.CREATED_DATE).LastOrDefault();
             if (data == null)
@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.XMLReader
 
         public void InsertToDatabase()
         {
-            var repo = _uow.GetGenericRepository<T1001_H>();
+            var repo = _uow.GetGenericRepository<T1001>();
 
             try
             {

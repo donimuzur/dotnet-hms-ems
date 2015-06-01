@@ -9,6 +9,6 @@ namespace Sampoerna.EMS.Contract
 {
     public interface ICompanyBLL
     {
-       List<T1001_H> GetMasterData();
+       List<T1001> GetMasterData();
     }
 }

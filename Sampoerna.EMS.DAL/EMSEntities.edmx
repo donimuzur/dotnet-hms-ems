@@ -13,18 +13,110 @@
           <Property Name="name" Type="nvarchar" MaxLength="50" />
           <Property Name="address" Type="nvarchar(max)" />
         </EntityType>
-        <EntityType Name="T1001_H">
+        <EntityType Name="T1001">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="COMPANY_ID" />
           </Key>
-          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="COMPANY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUKRSTXT" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
+        <EntityType Name="T1001K">
+          <Key>
+            <PropertyRef Name="AREA_ID" />
+          </Key>
+          <Property Name="AREA_ID" Type="bigint" Nullable="false" />
+          <Property Name="BWKEY" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="COMPANY_ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="T1001W">
+          <Key>
+            <PropertyRef Name="PLANT_ID" />
+          </Key>
+          <Property Name="PLANT_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" />
+          <Property Name="NAME1" Type="nvarchar" MaxLength="50" />
+          <Property Name="ORT01" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ZAIDM_EX_POA">
+          <Key>
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="POA_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="POA_CODE" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="POA_ID_CARD" Type="nvarchar" MaxLength="22" />
+          <Property Name="POA_ADDRESS" Type="nvarchar" MaxLength="100" />
+          <Property Name="POA_PHONE" Type="nvarchar" MaxLength="15" />
+          <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ZAIDM_POA_MAP">
+          <Key>
+            <PropertyRef Name="POA_MAP_ID" />
+          </Key>
+          <Property Name="POA_MAP_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="PLANT_ID" Type="bigint" Nullable="false" />
+          <Property Name="POA_ID" Type="bigint" />
+          <Property Name="CREATED_DATE" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_T1001K_T1001">
+          <End Role="T1001" Type="Self.T1001" Multiplicity="1" />
+          <End Role="T1001K" Type="Self.T1001K" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001">
+              <PropertyRef Name="COMPANY_ID" />
+            </Principal>
+            <Dependent Role="T1001K">
+              <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_POA_MAP_EX_POA">
+          <End Role="T1001W" Type="Self.T1001W" Multiplicity="1" />
+          <End Role="ZAIDM_POA_MAP" Type="Self.ZAIDM_POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_POA_MAP">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
+          <End Role="ZAIDM_EX_POA" Type="Self.ZAIDM_EX_POA" Multiplicity="0..1" />
+          <End Role="ZAIDM_POA_MAP" Type="Self.ZAIDM_POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_POA_MAP">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="EMSModelStoreContainer">
           <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="T1001_H" EntityType="Self.T1001_H" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T1001" EntityType="Self.T1001" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T1001K" EntityType="Self.T1001K" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T1001W" EntityType="Self.T1001W" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZAIDM_EX_POA" EntityType="Self.ZAIDM_EX_POA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZAIDM_POA_MAP" EntityType="Self.ZAIDM_POA_MAP" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_T1001K_T1001" Association="Self.FK_T1001K_T1001">
+            <End Role="T1001" EntitySet="T1001" />
+            <End Role="T1001K" EntitySet="T1001K" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_POA_MAP_EX_POA" Association="Self.FK_ZAIDM_POA_MAP_EX_POA">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="Self.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
+            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -32,7 +124,23 @@
       <Schema Namespace="EMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="EMSEntities" annotation:LazyLoadingEnabled="true" >
           <EntitySet Name="Employees" EntityType="EMSModel.Employee" />
-          <EntitySet Name="T1001_H" EntityType="EMSModel.T1001_H" />
+          <EntitySet Name="T1001" EntityType="EMSModel.T1001" />
+          <EntitySet Name="T1001K" EntityType="EMSModel.T1001K" />
+          <EntitySet Name="T1001W" EntityType="EMSModel.T1001W" />
+          <EntitySet Name="ZAIDM_EX_POA" EntityType="EMSModel.ZAIDM_EX_POA" />
+          <EntitySet Name="ZAIDM_POA_MAP" EntityType="EMSModel.ZAIDM_POA_MAP" />
+          <AssociationSet Name="FK_T1001K_T1001" Association="EMSModel.FK_T1001K_T1001">
+            <End Role="T1001" EntitySet="T1001" />
+            <End Role="T1001K" EntitySet="T1001K" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_POA_MAP_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
+            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Employee">
           <Key>
@@ -42,15 +150,97 @@
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="T1001_H">
+        <EntityType Name="T1001">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="COMPANY_ID" />
           </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="BUKRSTXT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="T1001K" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001" ToRole="T1001K" />
         </EntityType>
+        <EntityType Name="T1001K">
+          <Key>
+            <PropertyRef Name="AREA_ID" />
+          </Key>
+          <Property Name="AREA_ID" Type="Int64" Nullable="false" />
+          <Property Name="BWKEY" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001K" ToRole="T1001" />
+        </EntityType>
+        <EntityType Name="T1001W">
+          <Key>
+            <PropertyRef Name="PLANT_ID" />
+          </Key>
+          <Property Name="PLANT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="NAME1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ORT01" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="T1001W" ToRole="ZAIDM_POA_MAP" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ZAIDM_EX_POA">
+          <Key>
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="POA_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_CODE" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ADDRESS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_EX_POA" ToRole="ZAIDM_POA_MAP" />
+        </EntityType>
+        <EntityType Name="ZAIDM_POA_MAP">
+          <Key>
+            <PropertyRef Name="POA_MAP_ID" />
+          </Key>
+          <Property Name="POA_MAP_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="Int64" Nullable="false" />
+          <Property Name="POA_ID" Type="Int64" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="ZAIDM_POA_MAP" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_POA_MAP" ToRole="ZAIDM_EX_POA" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK_T1001K_T1001">
+          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="1" />
+          <End Type="EMSModel.T1001K" Role="T1001K" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001">
+              <PropertyRef Name="COMPANY_ID" />
+            </Principal>
+            <Dependent Role="T1001K">
+              <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_POA_MAP_EX_POA">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_POA_MAP" Role="ZAIDM_POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_POA_MAP">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
+          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_POA_MAP" Role="ZAIDM_POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_POA_MAP">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -66,13 +256,57 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="T1001_H">
-            <EntityTypeMapping TypeName="EMSModel.T1001_H">
-              <MappingFragment StoreEntitySet="T1001_H">
+          <EntitySetMapping Name="T1001">
+            <EntityTypeMapping TypeName="EMSModel.T1001">
+              <MappingFragment StoreEntitySet="T1001">
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="BUKRSTXT" ColumnName="BUKRSTXT" />
                 <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T1001K">
+            <EntityTypeMapping TypeName="EMSModel.T1001K">
+              <MappingFragment StoreEntitySet="T1001K">
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="BWKEY" ColumnName="BWKEY" />
+                <ScalarProperty Name="AREA_ID" ColumnName="AREA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T1001W">
+            <EntityTypeMapping TypeName="EMSModel.T1001W">
+              <MappingFragment StoreEntitySet="T1001W">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="ORT01" ColumnName="ORT01" />
+                <ScalarProperty Name="NAME1" ColumnName="NAME1" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_POA">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_POA">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_POA">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="POA_PRINTED_NAME" ColumnName="POA_PRINTED_NAME" />
+                <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
+                <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
+                <ScalarProperty Name="POA_ID_CARD" ColumnName="POA_ID_CARD" />
+                <ScalarProperty Name="POA_CODE" ColumnName="POA_CODE" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_POA_MAP">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_POA_MAP">
+              <MappingFragment StoreEntitySet="ZAIDM_POA_MAP">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -90,7 +324,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
