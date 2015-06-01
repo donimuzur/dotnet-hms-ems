@@ -119,7 +119,6 @@ aspnet_client
 UpdateApp.config
 /_backup
 aspnet_client
-/Sampoerna.EMS.Website/Web.config
 /Sampoerna.EMS.Website/Web.*.config
 /Release
 **/log*.txt
