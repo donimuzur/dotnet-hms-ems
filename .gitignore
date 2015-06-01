@@ -123,7 +123,5 @@ aspnet_client
 /Sampoerna.EMS.Website/Web.*.config
 /Release
 **/log*.txt
-/FieldiqApp/Web.config
-/FieldiqApp/Web.*.config
-/FieldiqApp/Files/Data
+
 
