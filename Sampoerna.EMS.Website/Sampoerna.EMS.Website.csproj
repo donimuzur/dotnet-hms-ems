@@ -230,6 +230,7 @@
     <Content Include="EMSDataSet.xss">
       <DependentUpon>EMSDataSet.xsd</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -315,7 +316,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\EmployeeData.rdlc" />
+    <Content Include="Reports\EmployeeData.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
