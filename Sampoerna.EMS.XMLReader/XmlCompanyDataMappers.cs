@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
@@ -14,7 +9,7 @@ namespace Sampoerna.EMS.XMLReader
 {
     public class XmlCompanyDataMapper : IXmlDataReader 
     {
-        private XElement _xmData = null;
+        //private XElement _xmData = null;
         private XmlDataMapper _xmlMapper = null;
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -78,7 +73,7 @@ namespace Sampoerna.EMS.XMLReader
 
                 }
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 _uow.RevertChanges();
             } 
