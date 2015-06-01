@@ -50,9 +50,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Voxteneo.WebComponents.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\fieldiq\dotnet-hms-fieldiq\HMS.FieldIQ.BLL\bin\Debug\Voxteneo.WebComponents.Logger.dll</HintPath>
+    <Reference Include="Voxteneo.WebComponents.Logger">
+      <HintPath>..\packages\ILogger.1.3.0\lib\Voxteneo.WebComponents.Logger.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
