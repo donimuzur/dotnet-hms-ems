@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.Core;
+using Microsoft.Reporting.WebForms;
+
 namespace Sampoerna.EMS.Website.Controllers
 {
     
@@ -26,6 +25,23 @@ namespace Sampoerna.EMS.Website.Controllers
             //_employeeBll.Add(emp);
             //var data = _companyBll.GetMasterData();
             return View();
+        }
+
+        public ActionResult ShowReportDataEmployee()
+        {
+            var datasource = _employeeBll.GetAll();
+            var dataSourceDataTable = DataTableHelper.ConvertToDataTable(datasource.ToArray(), new EMSDataSet.EmployeeDataTable());
+            
+            Session[Constans.SessionKey.ReportPath] = "Reports/EmployeeData.rdlc";
+
+            //set ReportDataSource
+            List<ReportDataSource> reportDataSources = new List<ReportDataSource>();
+            reportDataSources.Add(new ReportDataSource("ds_employee", dataSourceDataTable));
+
+            Session[Constans.SessionKey.ReportDataSources] = reportDataSources;
+
+            return RedirectToAction("ShowReport", "AspxReportViewer");
+
         }
 
         public ActionResult About()

@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sampoerna.EMS.Core
+﻿namespace Sampoerna.EMS.Core
 {
     public class Constans
     {
+        /// <summary>
+        /// list of SessionKey constanta
+        /// </summary>
+        public class SessionKey
+        {
+            /// <summary>
+            /// Report Path, ex : "Reports/Employee.rdlc"
+            /// </summary>
+            public const string ReportPath = "sk_reportpath";
+            /// <summary>
+            /// List of ReportDataSources
+            /// </summary>
+            public const string ReportDataSources = "sk_reportdatasources";
+        }
+
     }
 }
