@@ -225,11 +225,18 @@
       </ConnectionProperties>
       <rd:DataSourceID>8535bad1-3791-48b6-8717-f3302470a210</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="SampoernaEMSReporting">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>ccf6b903-b29c-497a-a7b1-5dff167f54ab</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="ds_employee">
       <Query>
-        <DataSourceName>EMSDataSet</DataSourceName>
+        <DataSourceName>SampoernaEMSReporting</DataSourceName>
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
@@ -247,12 +254,10 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>EMSDataSet</rd:DataSetName>
-        <rd:SchemaPath>D:\repo\net_hms_ems\Sampoerna.EMS.Website\EMSDataSet.xsd</rd:SchemaPath>
-        <rd:TableName>Employee</rd:TableName>
-        <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
-        <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>EmployeeTableAdapter</rd:TableAdapterName>
+        <rd:DataSetName>Sampoerna.EMS.Reporting</rd:DataSetName>
+        <rd:TableName>EmployeeDataTable</rd:TableName>
+        <rd:ObjectDataSourceSelectMethod>Clone</rd:ObjectDataSourceSelectMethod>
+        <rd:ObjectDataSourceType>Sampoerna.EMS.Reporting.EMSData+EmployeeDataTable, Sampoerna.EMS.Reporting, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>

@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Microsoft.Reporting.WebForms;
+using Sampoerna.EMS.Reporting;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -29,8 +30,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult ShowReportDataEmployee()
         {
+
             var datasource = _employeeBll.GetAll();
-            var dataSourceDataTable = DataTableHelper.ConvertToDataTable(datasource.ToArray(), new EMSDataSet.EmployeeDataTable());
+            var dataSourceDataTable = DataTableHelper.ConvertToDataTable(datasource.ToArray(), new EMSData.EmployeeDataTable());
             
             Session[Constans.SessionKey.ReportPath] = "Reports/EmployeeData.rdlc";
 
