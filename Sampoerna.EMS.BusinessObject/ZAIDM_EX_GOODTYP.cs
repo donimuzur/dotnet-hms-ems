@@ -12,13 +12,10 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class T1001K
+    public partial class ZAIDM_EX_GOODTYP
     {
-        public long AREA_ID { get; set; }
-        public string BWKEY { get; set; }
-        public long COMPANY_ID { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-    
-        public virtual T1001 T1001 { get; set; }
+        public long GOODTYPE_ID { get; set; }
+        public Nullable<int> EXC_GOOD_TYP { get; set; }
+        public string EXT_TYP_DESC { get; set; }
     }
 }

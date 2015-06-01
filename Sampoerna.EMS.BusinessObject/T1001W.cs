@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string WERKS { get; set; }
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
     }

@@ -10,12 +10,12 @@ namespace Sampoerna.EMS.Website.Controllers
     
     public class HomeController : Controller
     {
-        private IEmployeeBLL _employeeBll;
         private ICompanyBLL _companyBll;
-        public HomeController(IEmployeeBLL employeeBll, ICompanyBLL companyBll)
+        private IWorkflowBLL _workflowBll;
+        public HomeController(ICompanyBLL companyBll, IWorkflowBLL workflowBll)
         {
-            _employeeBll = employeeBll;
             _companyBll = companyBll;
+            _workflowBll = workflowBll;
         }
 
         public ActionResult Index()
@@ -25,7 +25,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //emp.address = "alamat palsu";
             //_employeeBll.Add(emp);
             //var data = _companyBll.GetMasterData();
-            return View();
+           var userTreeList = _workflowBll.GetUserTree();
+           return View();
         }
 
         public ActionResult About()

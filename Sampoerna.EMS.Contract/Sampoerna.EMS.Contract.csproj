@@ -40,9 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICompanyBLL.cs" />
-    <Compile Include="IEmployeeBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IXmlDataReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

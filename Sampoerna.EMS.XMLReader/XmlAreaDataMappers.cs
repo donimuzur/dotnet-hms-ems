@@ -12,36 +12,43 @@ using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
 {
-    public class XmlCompanyDataMapper : IXmlDataReader 
+    public class XmlAreaDataMapper : IXmlDataReader 
     {
         private XElement _xmData = null;
         private XmlDataMapper _xmlMapper = null;
         private ILogger _logger;
         private IUnitOfWork _uow;
 
-        public XmlCompanyDataMapper()
+        public XmlAreaDataMapper()
         {
             _logger = new NullLogger();
             _uow = new SqlUnitOfWork(_logger);
-            _xmlMapper = new XmlDataMapper("T1001");
+            _xmlMapper = new XmlDataMapper("T1001K");
            
         }
 
         
-        public List<T1001> Items
+        public List<T1001K> Items
         {
             get
             {
                 var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<T1001>();
+                var items = new List<T1001K>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T1001();
-                    item.BUKRS = xElement.Element("BUKRS").Value;
-                    item.BUKRSTXT = xElement.Element("BUTXT").Value;
+                    var item = new T1001K();
+                    item.BWKEY = xElement.Element("BWKEY").Value;
+                    var companyCode  = xElement.Element("BUKRS").Value;
+                    var companyById =
+                        _uow.GetGenericRepository<T1001>()
+                            .Get(p => p.BUKRS == companyCode)
+                            .OrderByDescending(p => p.CREATED_DATE)
+                            .FirstOrDefault();
+
                     item.CREATED_DATE = DateTime.Now;
-                    if (IsDataChanges(item))
+                    if (companyById != null)
                     {
+                        item.COMPANY_ID = companyById.COMPANY_ID;
                         items.Add(item);
                     }
                    
@@ -51,24 +58,10 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-        private bool IsDataChanges(T1001 item)
-        {
-            var repo = _uow.GetGenericRepository<T1001>();
-            var data = repo.Get(x => x.BUKRS.Equals(item.BUKRS, StringComparison.InvariantCultureIgnoreCase))
-                .OrderBy(x=>x.CREATED_DATE).LastOrDefault();
-            if (data == null)
-                return true;
-            if (!item.BUKRSTXT.Equals(data.BUKRSTXT))
-            {
-                return true;
-            }
-           
-            return false;
-        }
 
         public void InsertToDatabase()
         {
-            var repo = _uow.GetGenericRepository<T1001>();
+            var repo = _uow.GetGenericRepository<T1001K>();
 
             try
             {

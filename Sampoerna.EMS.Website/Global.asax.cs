@@ -30,9 +30,8 @@ namespace Sampoerna.EMS.Website
 
             container.Register<IUnitOfWork, SqlUnitOfWork>(webLifestyle);
             container.Register<ILogger, NLogLogger>();
-            container.Register<IEmployeeBLL, EmployeeBLL>();
             container.Register<ICompanyBLL, CompanyBLL>();
-           
+            container.Register<IWorkflowBLL, WorkflowBLL>();
             container.Verify();
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
 

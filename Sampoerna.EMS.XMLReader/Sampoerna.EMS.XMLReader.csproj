@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlAreaDataMappers.cs" />
     <Compile Include="XmlDataMapper.cs" />
     <Compile Include="XmlCompanyDataMappers.cs" />
   </ItemGroup>
