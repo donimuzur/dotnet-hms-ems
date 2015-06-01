@@ -26,6 +26,10 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public virtual DbSet<Employee> Employees { get; set; }
-        public virtual DbSet<T1001_H> T1001_H { get; set; }
+        public virtual DbSet<T1001> T1001 { get; set; }
+        public virtual DbSet<T1001K> T1001K { get; set; }
+        public virtual DbSet<T1001W> T1001W { get; set; }
+        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
+        public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
     }
 }

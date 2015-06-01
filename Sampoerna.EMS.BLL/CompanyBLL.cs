@@ -22,9 +22,9 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
         }
 
-        public List<T1001_H> GetMasterData()
+        public List<T1001> GetMasterData()
         {
-            var repoCompany = _uow.GetGenericRepository<T1001_H>();
+            var repoCompany = _uow.GetGenericRepository<T1001>();
             var queryData = (from aa in repoCompany.GetQuery() join b in
                 (from a in repoCompany.GetQuery()
                     group a by new {a.BUKRS}

@@ -6,7 +6,14 @@
     <edmx:Diagrams>
       <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" >
         <EntityTypeShape EntityType="EMSModel.Employee" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EMSModel.T1001_H" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="EMSModel.T1001" Width="1.5" PointX="5.375" PointY="4.875" />
+        <EntityTypeShape EntityType="EMSModel.T1001K" Width="1.5" PointX="7.625" PointY="5" />
+        <EntityTypeShape EntityType="EMSModel.T1001W" Width="1.5" PointX="3.375" PointY="1" />
+        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_POA" Width="1.5" PointX="3.375" PointY="5.375" />
+        <EntityTypeShape EntityType="EMSModel.ZAIDM_POA_MAP" Width="1.5" PointX="5.625" PointY="0.875" />
+        <AssociationConnector Association="EMSModel.FK_T1001K_T1001" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
