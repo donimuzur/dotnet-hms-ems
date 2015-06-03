@@ -479,6 +479,10 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj">
+      <Project>{3cddfd06-1254-4bd5-82ed-283f26c38eea}</Project>
+      <Name>Sampoerna.EMS.AutoMapperExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.BLL\Sampoerna.EMS.BLL.csproj">
       <Project>{810db88f-fbfd-4af7-89bc-4612f101d5b9}</Project>
       <Name>Sampoerna.EMS.BLL</Name>
