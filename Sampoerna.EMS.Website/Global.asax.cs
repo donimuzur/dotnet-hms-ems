@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.Website
         private static Container _container;
         public static TService GetInstance<TService>()
         where TService : class
+     
         {
             return _container.GetInstance<TService>();
         }
@@ -24,11 +25,12 @@ namespace Sampoerna.EMS.Website
         {
 
             //initialize mappers
-            Sampoerna.EMS.Website.SampoernaEMSMapper.Initialize();
+            SampoernaEMSMapper.Initialize();
             //BLL.BLLMapper.Initialize();
 
             // 1. Create a new Simple Injector container
             var container = new Container();
+
             // register unit of work / context by request
             // http://simpleinjector.codeplex.com/wikipage?title=ObjectLifestyleManagement#PerThread
             var webLifestyle = new WebRequestLifestyle();
@@ -56,7 +58,7 @@ namespace Sampoerna.EMS.Website
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-
+            Bootstrap();
 
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
 
