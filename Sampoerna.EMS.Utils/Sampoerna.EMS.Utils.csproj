@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="DataTableHelper.cs" />
     <Compile Include="EnumHelper.cs" />
+    <Compile Include="OrderByHelper.cs" />
     <Compile Include="PredicateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
