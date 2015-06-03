@@ -1,41 +1,66 @@
-﻿@model Sampoerna.EMS.Website.Models.CompanyViewModel
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.CompanyViewModel>
 
 @{
     ViewBag.Title = "Index";
+
 }
 @section scripts
 {
     <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.js"></script>
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="../../Scripts/colReorderWithResize.js"></script>
+    @*<script type="text/javascript" src="../../Scripts/colReorderWithResize.js"></script>*@
 
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#mydata').DataTable(
                 {
                     "sDom": "Rlfrtip"
                 });
         });
     </script>
-<h2>Index</h2>
+}
+<h2>View Data Company</h2>
+    <table id="mydata" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product type</th>
+                <th>Product Price</th>
+                <th>Product Details</th>
+           
+            </tr>
+        </thead>
 
-@using (Html.BeginForm())
+        <tfoot>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Type</th>
+                <th>Product Price</th>
+                <th>Product Details</th>
+              
+            </tr>
+        </tfoot>
+
+        <tbody>
+
+@foreach (var item in Model)
 {
-    @Html.AntiForgeryToken()
-     <div class="form-horizontal">
-        <h4>Movie</h4>
-        <hr />
-        @Html.ValidationSummary(true)
-        
-         <div class="form-group">
-             @Html.LabelFor(model => model.COMPANY_ID, new { @class = "control-label col-md-2" })
-             <div class="col-md-10">
-                 @Html.EditorFor(model => model.)
-                 @Html.ValidationMessageFor(model => model.Title)
-             </div>
-         </div>
-    }
+    <tr>
+    <td>
+    @Html.DisplayFor(modelItem => item.CompanyId)
+    </td>
+    <td>
+    @Html.DisplayFor(modelItem => item.DocumentBukrs)
+    </td>
+    <td>
+    @Html.DisplayFor(modelItem => item.DocumentBukrstxt)
+    </td>
+    <td>
+    @Html.DisplayFor(modelItem => item.CreatedDate)
+    </td>
 
-
-
+    </tr>
+}
+        </tbody>
+</table>

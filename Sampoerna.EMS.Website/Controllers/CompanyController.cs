@@ -3,16 +3,16 @@ using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Models;
 
-namespace Sampoerna.EMS.Website.Controllers.Company
+namespace Sampoerna.EMS.Website.Controllers
 {
     public class CompanyController : Controller
     {
 
         private ICompanyBLL _companyBLL;
         
-        public CompanyController(ICompanyBLL companyBLL)
+        public CompanyController(ICompanyBLL companyBll)
         {
-            _companyBLL = companyBLL;
+            _companyBLL = companyBll;
         }
 
         //
