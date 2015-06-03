@@ -53,6 +53,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="T1001.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
