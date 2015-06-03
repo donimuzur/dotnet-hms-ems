@@ -67,7 +67,7 @@
     <Compile Include="USER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserTree.cs" />
+    <Compile Include="Business\UserTree.cs" />
     <Compile Include="ZAIDM_EX_GOODTYP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
