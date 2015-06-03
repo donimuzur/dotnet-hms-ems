@@ -65,6 +65,10 @@
       <Project>{7f4a15c1-8f58-49ea-ba04-0d7ea572954b}</Project>
       <Name>Sampoerna.EMS.Contract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
