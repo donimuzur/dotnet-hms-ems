@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 
-namespace Sampoerna.EMS.Core
+namespace Sampoerna.EMS.AutoMapperExtensions
 {
     public static class AutoMapperExtensions
     {

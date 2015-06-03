@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Sampoerna.EMS.Contract;
@@ -39,7 +35,7 @@ namespace Sampoerna.EMS.Website
 
             container.Register<IUnitOfWork, SqlUnitOfWork>(webLifestyle);
             container.Register<ILogger, NLogLogger>();
-            container.Register<IEmployeeBLL, EmployeeBLL>();
+            
             container.Register<ICompanyBLL, CompanyBLL>();
 
 

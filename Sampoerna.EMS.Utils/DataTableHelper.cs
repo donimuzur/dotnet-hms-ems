@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace Sampoerna.EMS.Core
+namespace Sampoerna.EMS.Utils
 {
     public class DataTableHelper
     {
