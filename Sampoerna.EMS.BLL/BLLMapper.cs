@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.BusinessObject.Business;
 
-namespace Sampoerna.EMS.Website
+namespace Sampoerna.EMS.BLL
 {
-    public class EMSWebsiteMapper
+    public class BLLMapper
     {
         public static void Initialize()
         {
             //AutoMapper
-            Mapper.CreateMap<USER, UserViewModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting();
         }
     }
 }
