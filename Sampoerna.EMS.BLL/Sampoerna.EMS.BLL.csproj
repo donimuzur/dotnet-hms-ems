@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
   </ItemGroup>
   <ItemGroup>
