@@ -17,12 +17,21 @@ namespace Sampoerna.EMS.Website
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        protected void Application_Start()
+        private static Container _container;
+        public static TService GetInstance<TService>()
+        where TService : class
         {
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            return _container.GetInstance<TService>();
+        }
+
+        private static void Bootstrap()
+        {
+
+            //initialize mappers
+            Sampoerna.EMS.Website.SampoernaEMSMapper.Initialize();
+            //BLL.BLLMapper.Initialize();
+
+            // 1. Create a new Simple Injector container
             var container = new Container();
             // register unit of work / context by request
             // http://simpleinjector.codeplex.com/wikipage?title=ObjectLifestyleManagement#PerThread
@@ -30,10 +39,30 @@ namespace Sampoerna.EMS.Website
 
             container.Register<IUnitOfWork, SqlUnitOfWork>(webLifestyle);
             container.Register<ILogger, NLogLogger>();
+            container.Register<IEmployeeBLL, EmployeeBLL>();
             container.Register<ICompanyBLL, CompanyBLL>();
-            container.Register<IWorkflowBLL, WorkflowBLL>();
+
+
+
+            // 3. Optionally verify the container's configuration.
             container.Verify();
-            DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
+
+            // 4. Store the container for use by Page classes.
+            _container = container;
+
+        }
+
+
+        protected void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+
+
+            DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
 
         }
     }
