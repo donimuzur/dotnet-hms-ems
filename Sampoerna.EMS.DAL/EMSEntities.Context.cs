@@ -25,11 +25,13 @@ namespace Sampoerna.EMS.BusinessObject
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<T1001> T1001 { get; set; }
         public virtual DbSet<T1001K> T1001K { get; set; }
         public virtual DbSet<T1001W> T1001W { get; set; }
         public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
         public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
+        public virtual DbSet<USER> USER { get; set; }
+        public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
+        public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
     }
 }

@@ -12,13 +12,20 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class T1001K
+    public partial class USER
     {
-        public long AREA_ID { get; set; }
-        public string BWKEY { get; set; }
-        public long COMPANY_ID { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
+        public USER()
+        {
+            this.ZAIDM_EX_POA = new HashSet<ZAIDM_EX_POA>();
+        }
     
-        public virtual T1001 T1001 { get; set; }
+        public int USER_ID { get; set; }
+        public string USERNAME { get; set; }
+        public Nullable<int> MANAGER_ID { get; set; }
+        public string FIRST_NAME { get; set; }
+        public string LAST_NAME { get; set; }
+        public Nullable<bool> IS_ACTIVE { get; set; }
+    
+        public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
     }
 }

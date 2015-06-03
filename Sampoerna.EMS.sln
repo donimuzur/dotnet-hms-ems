@@ -21,7 +21,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Website", "Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.XMLReader", "Sampoerna.EMS.XMLReader\Sampoerna.EMS.XMLReader.csproj", "{5370F240-5512-461A-9956-351009512C94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Reporting", "Sampoerna.EMS.Reporting\Sampoerna.EMS.Reporting.csproj", "{539186E5-978B-4CC5-97A5-90351E2C17D3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ED0A63DC-7697-4F13-B19E-61A0BEA43A7C}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

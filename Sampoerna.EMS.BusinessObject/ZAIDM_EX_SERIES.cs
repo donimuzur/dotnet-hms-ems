@@ -12,10 +12,10 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class Employee
+    public partial class ZAIDM_EX_SERIES
     {
-        public long id { get; set; }
-        public string name { get; set; }
-        public string address { get; set; }
+        public long SERIES_ID { get; set; }
+        public Nullable<int> SERIES_CODE { get; set; }
+        public string SERIES_VALUE { get; set; }
     }
 }

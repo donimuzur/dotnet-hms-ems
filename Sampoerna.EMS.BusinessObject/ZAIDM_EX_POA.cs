@@ -26,7 +26,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string POA_PHONE { get; set; }
         public string POA_PRINTED_NAME { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<int> USER_ID { get; set; }
     
         public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
+        public virtual USER USER { get; set; }
     }
 }
