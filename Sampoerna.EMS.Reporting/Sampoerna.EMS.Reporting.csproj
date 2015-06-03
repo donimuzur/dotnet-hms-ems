@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B4021A69-2836-401B-8E06-92E8A6008219}</ProjectGuid>
+    <ProjectGuid>{539186E5-978B-4CC5-97A5-90351E2C17D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sampoerna.EMS.Core</RootNamespace>
-    <AssemblyName>Sampoerna.EMS.Core</AssemblyName>
+    <RootNamespace>Sampoerna.EMS.Reporting</RootNamespace>
+    <AssemblyName>Sampoerna.EMS.Reporting</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,9 +39,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constans.cs" />
-    <Compile Include="DataTableHelper.cs" />
+    <Compile Include="EMSData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMSData.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EMSData.xsc">
+      <DependentUpon>EMSData.xsd</DependentUpon>
+    </None>
+    <None Include="EMSData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>EMSData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EMSData.xss">
+      <DependentUpon>EMSData.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.DAL
         public SqlGenericRepository(EMSEntities context, ILogger logger)
         {
            _context = context;
+            _logger = logger;
            _dbSet = context.Set<TEntity>();
         }
 
