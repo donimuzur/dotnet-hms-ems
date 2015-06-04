@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Sampoerna.EMS.Contract;
@@ -17,13 +13,24 @@ namespace Sampoerna.EMS.Website
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        protected void Application_Start()
+
+        private static Container _container;
+        public static TService GetInstance<TService>()
+        where TService : class
         {
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            return _container.GetInstance<TService>();
+        }
+
+        private static void Bootstrap()
+        {
+
+            //initialize mappers
+            EMSWebsiteMapper.Initialize();
+            //BLL.BLLMapper.Initialize();
+
+            // 1. Create a new Simple Injector container
             var container = new Container();
+
             // register unit of work / context by request
             // http://simpleinjector.codeplex.com/wikipage?title=ObjectLifestyleManagement#PerThread
             var webLifestyle = new WebRequestLifestyle();
@@ -32,7 +39,26 @@ namespace Sampoerna.EMS.Website
             container.Register<ILogger, NLogLogger>();
             container.Register<ICompanyBLL, CompanyBLL>();
             container.Register<IWorkflowBLL, WorkflowBLL>();
+
+
+            // 3. Optionally verify the container's configuration.
             container.Verify();
+
+            // 4. Store the container for use by Page classes.
+            _container = container;
+
+        }
+
+        protected void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            var container = new Container();
+            
+            Bootstrap();
+            
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
 
         }

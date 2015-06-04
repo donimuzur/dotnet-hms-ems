@@ -63,6 +63,7 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EX_GOODS_DECS.cs">
+    <Compile Include="Inputs\UserInput.cs" />
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="FILE_UPLOAD.cs">
@@ -108,7 +109,7 @@
     <Compile Include="USER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserTree.cs" />
+    <Compile Include="Business\UserTree.cs" />
     <Compile Include="USER_GROUP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
