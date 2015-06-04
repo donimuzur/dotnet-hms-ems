@@ -69,7 +69,6 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="HEADER_FOOTER.cs">
-    <Compile Include="EX_GOODS_DECS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Inputs\UserInput.cs" />
