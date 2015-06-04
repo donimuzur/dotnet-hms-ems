@@ -15,6 +15,7 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class FILE_UPLOAD
     {
         public long FILE_ID { get; set; }
+        public Nullable<long> FORM_ID { get; set; }
         public string FORM_NAME { get; set; }
         public string FILE_NAME { get; set; }
         public Nullable<System.DateTime> UPLOAD_DATE { get; set; }

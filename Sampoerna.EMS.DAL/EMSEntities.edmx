@@ -14,6 +14,27 @@
           <Property Name="NAME1" Type="nvarchar" MaxLength="35" />
           <Property Name="NAME2" Type="nvarchar" MaxLength="35" />
         </EntityType>
+        <EntityType Name="CHANGES_HISTORY">
+          <Key>
+            <PropertyRef Name="CHANGES_HISTORY_ID" />
+          </Key>
+          <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FORM_ID" Type="bigint" />
+          <Property Name="FORM_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
+          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="50" />
+          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="MODIFIED_BY" Type="int" />
+        </EntityType>
+        <EntityType Name="CITY">
+          <Key>
+            <PropertyRef Name="CITY_ID" />
+          </Key>
+          <Property Name="CITY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="10" />
+          <Property Name="CITY_NAME" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="CK5">
           <Key>
             <PropertyRef Name="CK5_ID" />
@@ -47,21 +68,27 @@
           <Property Name="GI_QUANTITY_ACC" Type="numeric" Precision="18" Scale="0" />
           <Property Name="GR_QUANTITY_ACC" Type="numeric" Precision="18" Scale="0" />
         </EntityType>
-        <EntityType Name="EX_GOODS_DECS">
-          <Key>
-            <PropertyRef Name="EX_GOODS_DECS_ID" />
-          </Key>
-          <Property Name="EX_GOODS_DECS_ID" Type="int" Nullable="false" />
-          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
-        </EntityType>
         <EntityType Name="FILE_UPLOAD">
           <Key>
             <PropertyRef Name="FILE_ID" />
           </Key>
           <Property Name="FILE_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FORM_ID" Type="bigint" />
           <Property Name="FORM_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="FILE_NAME" Type="nvarchar" MaxLength="100" />
           <Property Name="UPLOAD_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="HEADER_FOOTER">
+          <Key>
+            <PropertyRef Name="HEADER_FOOTER_ID" />
+          </Key>
+          <Property Name="HEADER_FOOTER_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FORM_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMPANY_ID" Type="bigint" />
+          <Property Name="HEADER_IMAGE_PATH" Type="nvarchar" MaxLength="150" />
+          <Property Name="HEADER_CONTENT" Type="nvarchar(max)" />
+          <Property Name="FOOTER_CONTENT" Type="nvarchar(max)" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -70,6 +97,17 @@
           <Property Name="MENGETAHUI_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MENGETAHUI_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="MENGETAHUI_DESC" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="NPPBKC_PLANT">
+          <Key>
+            <PropertyRef Name="NPPBKC_PLANT_ID" />
+          </Key>
+          <Property Name="NPPBKC_PLANT_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NPPBKC_ID" Type="bigint" />
+          <Property Name="PLANT_ID" Type="bigint" />
+          <Property Name="SKEPTIS" Type="nvarchar" MaxLength="50" />
+          <Property Name="EX_GOODS_TYPE_ID" Type="int" />
+          <Property Name="CONVERSION" Type="numeric" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
@@ -97,8 +135,9 @@
           <Property Name="PERIOD_FROM" Type="datetime" />
           <Property Name="PERIOD_TO" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="bigint" />
+          <Property Name="POA_ID" Type="bigint" />
+          <Property Name="GOODTYPE_ID" Type="int" />
           <Property Name="SUPPLIER_PORT_ID" Type="int" />
-          <Property Name="EX_GOODS_DECS_ID" Type="int" />
           <Property Name="STATUS" Type="int" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="int" />
@@ -109,6 +148,13 @@
           </Key>
           <Property Name="PROTYPE_ID" Type="int" Nullable="false" />
           <Property Name="PROTYPE_NAME" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="REGION_OFFICE_ID">
+          <Key>
+            <PropertyRef Name="REGION_OFFICE_ID" />
+          </Key>
+          <Property Name="REGION_OFFICE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="REGION_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="STATUS">
           <Key>
@@ -152,17 +198,6 @@
           <Property Name="ORT01" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
-        <EntityType Name="TABLE_HISTORY">
-          <Key>
-            <PropertyRef Name="TABLE_HISTORY_ID" />
-          </Key>
-          <Property Name="TABLE_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
-          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="50" />
-          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="50" />
-          <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="int" />
-        </EntityType>
         <EntityType Name="UOM">
           <Key>
             <PropertyRef Name="UOM_ID" />
@@ -188,6 +223,7 @@
           </Key>
           <Property Name="GROUP_ID" Type="int" Nullable="false" />
           <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="ROLE_NAME" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -205,7 +241,9 @@
           <Property Name="SERIES_ID" Type="bigint" Nullable="false" />
           <Property Name="MARKET_ID" Type="bigint" Nullable="false" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
-          <Property Name="GOODTYP_ID" Type="bigint" Nullable="false" />
+          <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="25" />
+          <Property Name="PRINTING_PRICE" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="GOODTYP_ID" Type="int" Nullable="false" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -214,7 +252,7 @@
           <Key>
             <PropertyRef Name="GOODTYPE_ID" />
           </Key>
-          <Property Name="GOODTYPE_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GOODTYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EXC_GOOD_TYP" Type="int" />
           <Property Name="EXT_TYP_DESC" Type="nvarchar" MaxLength="65" />
         </EntityType>
@@ -225,7 +263,7 @@
           <Property Name="KPPBC_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="KPPBC_NUMBER" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="3" Nullable="false" />
-          <Property Name="MENGETAHUI" Type="nvarchar" MaxLength="70" />
+          <Property Name="MENGETAHUI_ID" Type="int" />
           <Property Name="CK1_KEP_HEADER" Type="nvarchar" MaxLength="70" />
           <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="70" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -248,10 +286,11 @@
           <Property Name="NPPBKC_NO" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="ADDR1" Type="nvarchar" MaxLength="50" />
           <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
-          <Property Name="CITY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CITY_ID" Type="bigint" />
           <Property Name="KPPBC_ID" Type="bigint" />
-          <Property Name="REGION" Type="varchar" MaxLength="20" />
+          <Property Name="REGION_OFFICE_ID" Type="int" />
           <Property Name="VENDOR_ID" Type="bigint" />
+          <Property Name="TEXT_TO" Type="nvarchar" MaxLength="50" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -306,6 +345,18 @@
           <Property Name="POA_ID" Type="bigint" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
+        <Association Name="FK_CHANGES_HISTORY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Role="CK5" Type="Self.CK5" Multiplicity="0..1" />
           <End Role="CK5_MATERIAL" Type="Self.CK5_MATERIAL" Multiplicity="*" />
@@ -402,6 +453,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_HEADER_FOOTER_T1001">
+          <End Role="T1001" Type="Self.T1001" Multiplicity="0..1" />
+          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001">
+              <PropertyRef Name="COMPANY_ID" />
+            </Principal>
+            <Dependent Role="HEADER_FOOTER">
+              <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPPBKC_PLANT_T1001W">
+          <End Role="T1001W" Type="Self.T1001W" Multiplicity="0..1" />
+          <End Role="NPPBKC_PLANT" Type="Self.NPPBKC_PLANT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="NPPBKC_PLANT">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Role="NPPBKC_PLANT" Type="Self.NPPBKC_PLANT" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="NPPBKC_PLANT">
+              <PropertyRef Name="NPPBKC_PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC">
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Role="NPPBKC_PLANT" Type="Self.NPPBKC_PLANT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="NPPBKC_PLANT">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PAGE_MAP_PAGE">
           <End Role="PAGE" Type="Self.PAGE" Multiplicity="0..1" />
           <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
@@ -426,18 +525,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PBCK1_EX_GOODS_DECS">
-          <End Role="EX_GOODS_DECS" Type="Self.EX_GOODS_DECS" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EX_GOODS_DECS">
-              <PropertyRef Name="EX_GOODS_DECS_ID" />
-            </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="EX_GOODS_DECS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PBCK1_PBCK1">
           <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="0..1" />
           <End Role="PBCK11" Type="Self.PBCK1" Multiplicity="*" />
@@ -447,6 +534,18 @@
             </Principal>
             <Dependent Role="PBCK11">
               <PropertyRef Name="PBCK1_REF" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_PBCK11">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="GOODTYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -486,6 +585,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK1_ZAIDM_EX_POA">
+          <End Role="ZAIDM_EX_POA" Type="Self.ZAIDM_EX_POA" Multiplicity="0..1" />
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_T1001K_T1001">
           <End Role="T1001" Type="Self.T1001" Multiplicity="1" />
           <End Role="T1001K" Type="Self.T1001K" Multiplicity="*" />
@@ -495,18 +606,6 @@
             </Principal>
             <Dependent Role="T1001K">
               <PropertyRef Name="COMPANY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TABLE_HISTORY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="TABLE_HISTORY" Type="Self.TABLE_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="TABLE_HISTORY">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -543,18 +642,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND">
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="1" />
-          <End Role="ZAIDM_EX_BRAND1" Type="Self.ZAIDM_EX_BRAND" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="BRAND_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND1">
-              <PropertyRef Name="BRAND_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -618,6 +705,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_KPPBC_MENGETAHUI">
+          <End Role="MENGETAHUI" Type="Self.MENGETAHUI" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MENGETAHUI">
+              <PropertyRef Name="MENGETAHUI_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="MENGETAHUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_KPPBC_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="*" />
@@ -639,6 +738,30 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="VENDOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_CITY">
+          <End Role="CITY" Type="Self.CITY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CITY">
+              <PropertyRef Name="CITY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="CITY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID">
+          <End Role="REGION_OFFICE_ID" Type="Self.REGION_OFFICE_ID" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REGION_OFFICE_ID">
+              <PropertyRef Name="REGION_OFFICE_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="REGION_OFFICE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -692,21 +815,24 @@
         </Association>
         <EntityContainer Name="EMSModelStoreContainer">
           <EntitySet Name="1LFA1" EntityType="Self.1LFA1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CITY" EntityType="Self.CITY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_MATERIAL" EntityType="Self.CK5_MATERIAL" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EX_GOODS_DECS" EntityType="Self.EX_GOODS_DECS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MENGETAHUI" EntityType="Self.MENGETAHUI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NPPBKC_PLANT" EntityType="Self.NPPBKC_PLANT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAGE" EntityType="Self.PAGE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAGE_MAP" EntityType="Self.PAGE_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1" EntityType="Self.PBCK1" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROCESS_TYPE" EntityType="Self.PROCESS_TYPE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="REGION_OFFICE_ID" EntityType="Self.REGION_OFFICE_ID" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATUS" EntityType="Self.STATUS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="Self.SUPPLIER_PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T1001" EntityType="Self.T1001" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T1001K" EntityType="Self.T1001K" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T1001W" EntityType="Self.T1001W" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TABLE_HISTORY" EntityType="Self.TABLE_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UOM" EntityType="Self.UOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USER" EntityType="Self.USER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USER_GROUP" EntityType="Self.USER_GROUP" Schema="dbo" store:Type="Tables" />
@@ -720,6 +846,10 @@
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_POA_MAP" EntityType="Self.ZAIDM_POA_MAP" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+          </AssociationSet>
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="Self.FK_CK5_MATERIAL_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
@@ -752,6 +882,22 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
+          <AssociationSet Name="FK_HEADER_FOOTER_T1001" Association="Self.FK_HEADER_FOOTER_T1001">
+            <End Role="T1001" EntitySet="T1001" />
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPPBKC_PLANT_T1001W" Association="Self.FK_NPPBKC_PLANT_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="NPPBKC_PLANT" EntitySet="NPPBKC_PLANT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP" Association="Self.FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="NPPBKC_PLANT" EntitySet="NPPBKC_PLANT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC" Association="Self.FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="NPPBKC_PLANT" EntitySet="NPPBKC_PLANT" />
+          </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="Self.FK_PAGE_MAP_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
@@ -760,13 +906,13 @@
             <End Role="USER_GROUP" EntitySet="USER_GROUP" />
             <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_EX_GOODS_DECS" Association="Self.FK_PBCK1_EX_GOODS_DECS">
-            <End Role="EX_GOODS_DECS" EntitySet="EX_GOODS_DECS" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PBCK1" Association="Self.FK_PBCK1_PBCK1">
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="PBCK11" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_PBCK11" Association="Self.FK_PBCK1_PBCK11">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_SUPPLIER_PORT" Association="Self.FK_PBCK1_SUPPLIER_PORT">
             <End Role="SUPPLIER_PORT" EntitySet="SUPPLIER_PORT" />
@@ -780,13 +926,13 @@
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_ZAIDM_EX_POA" Association="Self.FK_PBCK1_ZAIDM_EX_POA">
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
           <AssociationSet Name="FK_T1001K_T1001" Association="Self.FK_T1001K_T1001">
             <End Role="T1001" EntitySet="T1001" />
             <End Role="T1001K" EntitySet="T1001K" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TABLE_HISTORY_USER" Association="Self.FK_TABLE_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="TABLE_HISTORY" EntitySet="TABLE_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_USER_USER" Association="Self.FK_USER_USER">
             <End Role="USER" EntitySet="USER" />
@@ -799,10 +945,6 @@
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T1001W" Association="Self.FK_ZAIDM_EX_BRAND_T1001W">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-            <End Role="ZAIDM_EX_BRAND1" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
@@ -824,12 +966,24 @@
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_KPPBC_MENGETAHUI" Association="Self.FK_ZAIDM_EX_KPPBC_MENGETAHUI">
+            <End Role="MENGETAHUI" EntitySet="MENGETAHUI" />
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_KPPBC_USER" Association="Self.FK_ZAIDM_EX_KPPBC_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_1LFA1" Association="Self.FK_ZAIDM_EX_NPPBKC_1LFA1">
             <End Role="1LFA1" EntitySet="1LFA1" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_CITY" Association="Self.FK_ZAIDM_EX_NPPBKC_CITY">
+            <End Role="CITY" EntitySet="CITY" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID" Association="Self.FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID">
+            <End Role="REGION_OFFICE_ID" EntitySet="REGION_OFFICE_ID" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="Self.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
@@ -854,53 +1008,48 @@
     <edmx:ConceptualModels>
       <Schema Namespace="EMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="EMSEntities" annotation:LazyLoadingEnabled="true" >
-          <EntitySet Name="T1001" EntityType="EMSModel.T1001" />
-          <EntitySet Name="T1001K" EntityType="EMSModel.T1001K" />
-          <EntitySet Name="T1001W" EntityType="EMSModel.T1001W" />
-          <EntitySet Name="ZAIDM_EX_POA" EntityType="EMSModel.ZAIDM_EX_POA" />
-          <EntitySet Name="ZAIDM_POA_MAP" EntityType="EMSModel.ZAIDM_POA_MAP" />
-          <AssociationSet Name="FK_T1001K_T1001" Association="EMSModel.FK_T1001K_T1001">
-            <End Role="T1001" EntitySet="T1001" />
-            <End Role="T1001K" EntitySet="T1001K" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_POA_MAP_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA">
-            <End Role="T1001W" EntitySet="T1001W" />
-            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
-            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
-            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
-          </AssociationSet>
-          <EntitySet Name="USER" EntityType="EMSModel.USER" />
-          <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
-          <EntitySet Name="ZAIDM_EX_SERIES" EntityType="EMSModel.ZAIDM_EX_SERIES" />
-          <AssociationSet Name="FK_ZAIDM_EX_POA_USER" Association="EMSModel.FK_ZAIDM_EX_POA_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
-          </AssociationSet>
           <EntitySet Name="C1LFA1" EntityType="EMSModel.C1LFA1" />
+          <EntitySet Name="CHANGES_HISTORY" EntityType="EMSModel.CHANGES_HISTORY" />
+          <EntitySet Name="CITY" EntityType="EMSModel.CITY" />
           <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
           <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
-          <EntitySet Name="EX_GOODS_DECS" EntityType="EMSModel.EX_GOODS_DECS" />
           <EntitySet Name="FILE_UPLOAD" EntityType="EMSModel.FILE_UPLOAD" />
+          <EntitySet Name="HEADER_FOOTER" EntityType="EMSModel.HEADER_FOOTER" />
           <EntitySet Name="MENGETAHUI" EntityType="EMSModel.MENGETAHUI" />
+          <EntitySet Name="NPPBKC_PLANT" EntityType="EMSModel.NPPBKC_PLANT" />
           <EntitySet Name="PAGE" EntityType="EMSModel.PAGE" />
           <EntitySet Name="PAGE_MAP" EntityType="EMSModel.PAGE_MAP" />
           <EntitySet Name="PBCK1" EntityType="EMSModel.PBCK1" />
           <EntitySet Name="PROCESS_TYPE" EntityType="EMSModel.PROCESS_TYPE" />
+          <EntitySet Name="REGION_OFFICE_ID" EntityType="EMSModel.REGION_OFFICE_ID" />
           <EntitySet Name="STATUS" EntityType="EMSModel.STATUS" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="EMSModel.SUPPLIER_PORT" />
-          <EntitySet Name="TABLE_HISTORY" EntityType="EMSModel.TABLE_HISTORY" />
+          <EntitySet Name="T1001" EntityType="EMSModel.T1001" />
+          <EntitySet Name="T1001K" EntityType="EMSModel.T1001K" />
+          <EntitySet Name="T1001W" EntityType="EMSModel.T1001W" />
           <EntitySet Name="UOM" EntityType="EMSModel.UOM" />
+          <EntitySet Name="USER" EntityType="EMSModel.USER" />
           <EntitySet Name="USER_GROUP" EntityType="EMSModel.USER_GROUP" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
+          <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="EMSModel.ZAIDM_EX_KPPBC" />
           <EntitySet Name="ZAIDM_EX_MARKET" EntityType="EMSModel.ZAIDM_EX_MARKET" />
           <EntitySet Name="ZAIDM_EX_NPPBKC" EntityType="EMSModel.ZAIDM_EX_NPPBKC" />
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="EMSModel.ZAIDM_EX_PCODE" />
+          <EntitySet Name="ZAIDM_EX_POA" EntityType="EMSModel.ZAIDM_EX_POA" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="EMSModel.ZAIDM_EX_PRODTYP" />
+          <EntitySet Name="ZAIDM_EX_SERIES" EntityType="EMSModel.ZAIDM_EX_SERIES" />
+          <EntitySet Name="ZAIDM_POA_MAP" EntityType="EMSModel.ZAIDM_POA_MAP" />
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_1LFA1" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA1">
             <End Role="C1LFA1" EntitySet="C1LFA1" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="EMSModel.FK_CHANGES_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_CITY" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_CITY">
+            <End Role="CITY" EntitySet="CITY" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="EMSModel.FK_CK5_MATERIAL_CK5">
@@ -935,9 +1084,25 @@
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
             <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_EX_GOODS_DECS" Association="EMSModel.FK_PBCK1_EX_GOODS_DECS">
-            <End Role="EX_GOODS_DECS" EntitySet="EX_GOODS_DECS" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+          <AssociationSet Name="FK_HEADER_FOOTER_T1001" Association="EMSModel.FK_HEADER_FOOTER_T1001">
+            <End Role="T1001" EntitySet="T1001" />
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_KPPBC_MENGETAHUI" Association="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI">
+            <End Role="MENGETAHUI" EntitySet="MENGETAHUI" />
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPPBKC_PLANT_T1001W" Association="EMSModel.FK_NPPBKC_PLANT_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="NPPBKC_PLANT" EntitySet="NPPBKC_PLANT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="NPPBKC_PLANT" EntitySet="NPPBKC_PLANT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="NPPBKC_PLANT" EntitySet="NPPBKC_PLANT" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="EMSModel.FK_PAGE_MAP_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
@@ -951,6 +1116,10 @@
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="PBCK11" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_PBCK11" Association="EMSModel.FK_PBCK1_PBCK11">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_SUPPLIER_PORT" Association="EMSModel.FK_PBCK1_SUPPLIER_PORT">
             <End Role="SUPPLIER_PORT" EntitySet="SUPPLIER_PORT" />
             <End Role="PBCK1" EntitySet="PBCK1" />
@@ -963,13 +1132,25 @@
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_ZAIDM_EX_POA" Association="EMSModel.FK_PBCK1_ZAIDM_EX_POA">
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID">
+            <End Role="REGION_OFFICE_ID" EntitySet="REGION_OFFICE_ID" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_T1001K_T1001" Association="EMSModel.FK_T1001K_T1001">
+            <End Role="T1001" EntitySet="T1001" />
+            <End Role="T1001K" EntitySet="T1001K" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T1001W" Association="EMSModel.FK_ZAIDM_EX_BRAND_T1001W">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
-          <AssociationSet Name="FK_TABLE_HISTORY_USER" Association="EMSModel.FK_TABLE_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="TABLE_HISTORY" EntitySet="TABLE_HISTORY" />
+          <AssociationSet Name="FK_ZAIDM_POA_MAP_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_USER_USER" Association="EMSModel.FK_USER_USER">
             <End Role="USER" EntitySet="USER" />
@@ -983,9 +1164,9 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-            <End Role="ZAIDM_EX_BRAND1" EntitySet="ZAIDM_EX_BRAND" />
+          <AssociationSet Name="FK_ZAIDM_EX_POA_USER" Association="EMSModel.FK_ZAIDM_EX_POA_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
@@ -1011,154 +1192,11 @@
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
+            <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="T1001">
-          <Key>
-            <PropertyRef Name="COMPANY_ID" />
-          </Key>
-          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="BUKRSTXT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="T1001K" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001" ToRole="T1001K" />
-        </EntityType>
-        <EntityType Name="T1001K">
-          <Key>
-            <PropertyRef Name="AREA_ID" />
-          </Key>
-          <Property Name="AREA_ID" Type="Int64" Nullable="false" />
-          <Property Name="BWKEY" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001K" ToRole="T1001" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="T1001W">
-          <Key>
-            <PropertyRef Name="PLANT_ID" />
-          </Key>
-          <Property Name="PLANT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="NAME1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ORT01" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="T1001W" ToRole="ZAIDM_POA_MAP" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_T1001W" FromRole="T1001W" ToRole="CK5" />
-          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_T1001W1" FromRole="T1001W" ToRole="CK5" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_BRAND" />
-        </EntityType>
-        <EntityType Name="ZAIDM_EX_POA">
-          <Key>
-            <PropertyRef Name="POA_ID" />
-          </Key>
-          <Property Name="POA_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="POA_CODE" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ADDRESS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="POA_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_EX_POA" ToRole="ZAIDM_POA_MAP" />
-          <Property Name="USER_ID" Type="Int32" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="ZAIDM_EX_POA" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="ZAIDM_POA_MAP">
-          <Key>
-            <PropertyRef Name="POA_MAP_ID" />
-          </Key>
-          <Property Name="POA_MAP_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="Int64" Nullable="false" />
-          <Property Name="POA_ID" Type="Int64" />
-          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="ZAIDM_POA_MAP" ToRole="T1001W" />
-          <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_POA_MAP" ToRole="ZAIDM_EX_POA" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-        </EntityType>
-        <Association Name="FK_T1001K_T1001">
-          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="1" />
-          <End Type="EMSModel.T1001K" Role="T1001K" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001">
-              <PropertyRef Name="COMPANY_ID" />
-            </Principal>
-            <Dependent Role="T1001K">
-              <PropertyRef Name="COMPANY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_POA_MAP_EX_POA">
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_POA_MAP" Role="ZAIDM_POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001W">
-              <PropertyRef Name="PLANT_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_POA_MAP">
-              <PropertyRef Name="PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
-          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_POA_MAP" Role="ZAIDM_POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_POA">
-              <PropertyRef Name="POA_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_POA_MAP">
-              <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="USER">
-          <Key>
-            <PropertyRef Name="USER_ID" />
-          </Key>
-          <Property Name="USER_ID" Type="Int32" Nullable="false" />
-          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MANAGER_ID" Type="Int32" />
-          <Property Name="FIRST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="LAST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
-          <Property Name="IS_ACTIVE" Type="Boolean" />
-          <Property Name="USER_GROUP_ID" Type="Int32" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_USER" FromRole="USER" ToRole="CK5" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_USER" FromRole="USER" ToRole="PBCK1" />
-          <NavigationProperty Name="TABLE_HISTORY" Relationship="EMSModel.FK_TABLE_HISTORY_USER" FromRole="USER" ToRole="TABLE_HISTORY" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_USER_USER" FromRole="USER" ToRole="USER1" />
-          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_USER_USER" FromRole="USER1" ToRole="USER" />
-          <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
-          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
-        </EntityType>
-        <EntityType Name="ZAIDM_EX_GOODTYP">
-          <Key>
-            <PropertyRef Name="GOODTYPE_ID" />
-          </Key>
-          <Property Name="GOODTYPE_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EXC_GOOD_TYP" Type="Int32" />
-          <Property Name="EXT_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
-        </EntityType>
-        <EntityType Name="ZAIDM_EX_SERIES">
-          <Key>
-            <PropertyRef Name="SERIES_ID" />
-          </Key>
-          <Property Name="SERIES_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SERIES_CODE" Type="Int32" />
-          <Property Name="SERIES_VALUE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_BRAND" />
-        </EntityType>
-        <Association Name="FK_ZAIDM_EX_POA_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_POA">
-              <PropertyRef Name="USER_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="C1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -1168,6 +1206,29 @@
           <Property Name="NAME1" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="NAME2" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA1" FromRole="C1LFA1" ToRole="ZAIDM_EX_NPPBKC" />
+        </EntityType>
+        <EntityType Name="CHANGES_HISTORY">
+          <Key>
+            <PropertyRef Name="CHANGES_HISTORY_ID" />
+          </Key>
+          <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_ID" Type="Int64" />
+          <Property Name="FORM_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="Int32" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="CITY">
+          <Key>
+            <PropertyRef Name="CITY_ID" />
+          </Key>
+          <Property Name="CITY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CITY_ALIAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CITY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_CITY" FromRole="CITY" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="CK5">
           <Key>
@@ -1211,22 +1272,28 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_MATERIAL_UOM" FromRole="CK5_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_BRAND" FromRole="CK5_MATERIAL" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
-        <EntityType Name="EX_GOODS_DECS">
-          <Key>
-            <PropertyRef Name="EX_GOODS_DECS_ID" />
-          </Key>
-          <Property Name="EX_GOODS_DECS_ID" Type="Int32" Nullable="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_EX_GOODS_DECS" FromRole="EX_GOODS_DECS" ToRole="PBCK1" />
-        </EntityType>
         <EntityType Name="FILE_UPLOAD">
           <Key>
             <PropertyRef Name="FILE_ID" />
           </Key>
           <Property Name="FILE_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_ID" Type="Int64" />
           <Property Name="FORM_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="FILE_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UPLOAD_DATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="HEADER_FOOTER">
+          <Key>
+            <PropertyRef Name="HEADER_FOOTER_ID" />
+          </Key>
+          <Property Name="HEADER_FOOTER_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_ID" Type="Int64" />
+          <Property Name="HEADER_IMAGE_PATH" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="HEADER_CONTENT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FOOTER_CONTENT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_HEADER_FOOTER_T1001" FromRole="HEADER_FOOTER" ToRole="T1001" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -1235,6 +1302,21 @@
           <Property Name="MENGETAHUI_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MENGETAHUI_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="MENGETAHUI_DESC" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI" FromRole="MENGETAHUI" ToRole="ZAIDM_EX_KPPBC" />
+        </EntityType>
+        <EntityType Name="NPPBKC_PLANT">
+          <Key>
+            <PropertyRef Name="NPPBKC_PLANT_ID" />
+          </Key>
+          <Property Name="NPPBKC_PLANT_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NPPBKC_ID" Type="Int64" />
+          <Property Name="PLANT_ID" Type="Int64" />
+          <Property Name="SKEPTIS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EX_GOODS_TYPE_ID" Type="Int32" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_NPPBKC_PLANT_T1001W" FromRole="NPPBKC_PLANT" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP" FromRole="NPPBKC_PLANT" ToRole="ZAIDM_EX_GOODTYP" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC" FromRole="NPPBKC_PLANT" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
@@ -1265,17 +1347,19 @@
           <Property Name="PERIOD_FROM" Type="DateTime" Precision="3" />
           <Property Name="PERIOD_TO" Type="DateTime" Precision="3" />
           <Property Name="NPPBKC_ID" Type="Int64" />
+          <Property Name="POA_ID" Type="Int64" />
+          <Property Name="GOODTYPE_ID" Type="Int32" />
           <Property Name="SUPPLIER_PORT_ID" Type="Int32" />
-          <Property Name="EX_GOODS_DECS_ID" Type="Int32" />
           <Property Name="STATUS" Type="Int32" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" />
-          <NavigationProperty Name="EX_GOODS_DECS" Relationship="EMSModel.FK_PBCK1_EX_GOODS_DECS" FromRole="PBCK1" ToRole="EX_GOODS_DECS" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_PBCK1" FromRole="PBCK1" ToRole="PBCK11" />
           <NavigationProperty Name="PBCK12" Relationship="EMSModel.FK_PBCK1_PBCK1" FromRole="PBCK11" ToRole="PBCK1" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PBCK1_PBCK11" FromRole="PBCK1" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="SUPPLIER_PORT" Relationship="EMSModel.FK_PBCK1_SUPPLIER_PORT" FromRole="PBCK1" ToRole="SUPPLIER_PORT" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_NPPBKC" FromRole="PBCK1" ToRole="ZAIDM_EX_NPPBKC" />
+          <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_POA" FromRole="PBCK1" ToRole="ZAIDM_EX_POA" />
         </EntityType>
         <EntityType Name="PROCESS_TYPE">
           <Key>
@@ -1284,6 +1368,14 @@
           <Property Name="PROTYPE_ID" Type="Int32" Nullable="false" />
           <Property Name="PROTYPE_NAME" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_PROCESS_TYPE" FromRole="PROCESS_TYPE" ToRole="CK5" />
+        </EntityType>
+        <EntityType Name="REGION_OFFICE_ID">
+          <Key>
+            <PropertyRef Name="REGION_OFFICE_ID1" />
+          </Key>
+          <Property Name="REGION_OFFICE_ID1" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="REGION_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID" FromRole="REGION_OFFICE_ID" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="STATUS">
           <Key>
@@ -1301,17 +1393,41 @@
           <Property Name="PORT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_SUPPLIER_PORT" FromRole="SUPPLIER_PORT" ToRole="PBCK1" />
         </EntityType>
-        <EntityType Name="TABLE_HISTORY">
+        <EntityType Name="T1001">
           <Key>
-            <PropertyRef Name="TABLE_HISTORY_ID" />
+            <PropertyRef Name="COMPANY_ID" />
           </Key>
-          <Property Name="TABLE_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="OLD_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NEW_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="Int32" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_TABLE_HISTORY_USER" FromRole="TABLE_HISTORY" ToRole="USER" />
+          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="BUKRSTXT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_T1001" FromRole="T1001" ToRole="HEADER_FOOTER" />
+          <NavigationProperty Name="T1001K" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001" ToRole="T1001K" />
+        </EntityType>
+        <EntityType Name="T1001K">
+          <Key>
+            <PropertyRef Name="AREA_ID" />
+          </Key>
+          <Property Name="AREA_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BWKEY" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001K" ToRole="T1001" />
+        </EntityType>
+        <EntityType Name="T1001W">
+          <Key>
+            <PropertyRef Name="PLANT_ID" />
+          </Key>
+          <Property Name="PLANT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="NAME1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ORT01" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_T1001W" FromRole="T1001W" ToRole="CK5" />
+          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_T1001W1" FromRole="T1001W" ToRole="CK5" />
+          <NavigationProperty Name="NPPBKC_PLANT" Relationship="EMSModel.FK_NPPBKC_PLANT_T1001W" FromRole="T1001W" ToRole="NPPBKC_PLANT" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="T1001W" ToRole="ZAIDM_POA_MAP" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -1321,12 +1437,33 @@
           <Property Name="UOM_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_UOM" FromRole="UOM" ToRole="CK5_MATERIAL" />
         </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="USER_ID" Type="Int32" Nullable="false" />
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MANAGER_ID" Type="Int32" />
+          <Property Name="FIRST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="LAST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <Property Name="USER_GROUP_ID" Type="Int32" />
+          <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_USER" FromRole="USER" ToRole="CK5" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_USER" FromRole="USER" ToRole="PBCK1" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_USER_USER" FromRole="USER" ToRole="USER1" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_USER_USER" FromRole="USER1" ToRole="USER" />
+          <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
+          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
+          <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
+        </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
             <PropertyRef Name="GROUP_ID" />
           </Key>
           <Property Name="GROUP_ID" Type="Int32" Nullable="false" />
           <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ROLE_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_USER_GROUP" FromRole="USER_GROUP" ToRole="PAGE_MAP" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER_GROUP" ToRole="USER" />
         </EntityType>
@@ -1346,19 +1483,30 @@
           <Property Name="SERIES_ID" Type="Int64" Nullable="false" />
           <Property Name="MARKET_ID" Type="Int64" Nullable="false" />
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
-          <Property Name="GOODTYP_ID" Type="Int64" Nullable="false" />
+          <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="PRINTING_PRICE" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="GOODTYP_ID" Type="Int32" Nullable="false" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="CK5_MATERIAL" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="ZAIDM_EX_BRAND" ToRole="T1001W" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_BRAND1" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND2" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND1" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MARKET" />
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
+        </EntityType>
+        <EntityType Name="ZAIDM_EX_GOODTYP">
+          <Key>
+            <PropertyRef Name="GOODTYPE_ID" />
+          </Key>
+          <Property Name="GOODTYPE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EXC_GOOD_TYP" Type="Int32" />
+          <Property Name="EXT_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NPPBKC_PLANT" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="NPPBKC_PLANT" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_PBCK11" FromRole="ZAIDM_EX_GOODTYP" ToRole="PBCK1" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -1367,11 +1515,12 @@
           <Property Name="KPPBC_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="KPPBC_NUMBER" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="KPPBC_TYPE" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="MENGETAHUI" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
+          <Property Name="MENGETAHUI_ID" Type="Int32" />
           <Property Name="CK1_KEP_HEADER" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="CK1_KEP_FOOTER" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="MENGETAHUI" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI" FromRole="ZAIDM_EX_KPPBC" ToRole="MENGETAHUI" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="ZAIDM_EX_KPPBC" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_KPPBC" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
@@ -1393,15 +1542,19 @@
           <Property Name="NPPBKC_NO" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="ADDR1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ADDR2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CITY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CITY_ID" Type="Int64" />
           <Property Name="KPPBC_ID" Type="Int64" />
-          <Property Name="REGION" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="REGION_OFFICE_ID" Type="Int32" />
           <Property Name="VENDOR_ID" Type="Int64" />
+          <Property Name="TEXT_TO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="C1LFA1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA1" FromRole="ZAIDM_EX_NPPBKC" ToRole="C1LFA1" />
+          <NavigationProperty Name="CITY" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_CITY" FromRole="ZAIDM_EX_NPPBKC" ToRole="CITY" />
+          <NavigationProperty Name="NPPBKC_PLANT" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="NPPBKC_PLANT" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="PBCK1" />
+          <NavigationProperty Name="REGION_OFFICE_ID1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID" FromRole="ZAIDM_EX_NPPBKC" ToRole="REGION_OFFICE_ID" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
@@ -1414,6 +1567,22 @@
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_PCODE" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
+        <EntityType Name="ZAIDM_EX_POA">
+          <Key>
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="POA_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_CODE" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ADDRESS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="USER_ID" Type="Int32" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_POA" FromRole="ZAIDM_EX_POA" ToRole="PBCK1" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="ZAIDM_EX_POA" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_EX_POA" ToRole="ZAIDM_POA_MAP" />
+        </EntityType>
         <EntityType Name="ZAIDM_EX_PRODTYP">
           <Key>
             <PropertyRef Name="PRODUCT_ID" />
@@ -1425,6 +1594,27 @@
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_PRODTYP" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
+        <EntityType Name="ZAIDM_EX_SERIES">
+          <Key>
+            <PropertyRef Name="SERIES_ID" />
+          </Key>
+          <Property Name="SERIES_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SERIES_CODE" Type="Int32" />
+          <Property Name="SERIES_VALUE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_BRAND" />
+        </EntityType>
+        <EntityType Name="ZAIDM_POA_MAP">
+          <Key>
+            <PropertyRef Name="POA_MAP_ID" />
+          </Key>
+          <Property Name="POA_MAP_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="Int64" Nullable="false" />
+          <Property Name="POA_ID" Type="Int64" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="ZAIDM_POA_MAP" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_POA_MAP" ToRole="ZAIDM_EX_POA" />
+        </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_1LFA1">
           <End Type="EMSModel.C1LFA1" Role="C1LFA1" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
@@ -1434,6 +1624,30 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="VENDOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHANGES_HISTORY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_CITY">
+          <End Type="EMSModel.CITY" Role="CITY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CITY">
+              <PropertyRef Name="CITY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="CITY_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1533,15 +1747,63 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PBCK1_EX_GOODS_DECS">
-          <End Type="EMSModel.EX_GOODS_DECS" Role="EX_GOODS_DECS" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+        <Association Name="FK_HEADER_FOOTER_T1001">
+          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="0..1" />
+          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="EX_GOODS_DECS">
-              <PropertyRef Name="EX_GOODS_DECS_ID" />
+            <Principal Role="T1001">
+              <PropertyRef Name="COMPANY_ID" />
             </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="EX_GOODS_DECS_ID" />
+            <Dependent Role="HEADER_FOOTER">
+              <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_KPPBC_MENGETAHUI">
+          <End Type="EMSModel.MENGETAHUI" Role="MENGETAHUI" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MENGETAHUI">
+              <PropertyRef Name="MENGETAHUI_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="MENGETAHUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPPBKC_PLANT_T1001W">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
+          <End Type="EMSModel.NPPBKC_PLANT" Role="NPPBKC_PLANT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="NPPBKC_PLANT">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.NPPBKC_PLANT" Role="NPPBKC_PLANT" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="NPPBKC_PLANT">
+              <PropertyRef Name="NPPBKC_PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC">
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Type="EMSModel.NPPBKC_PLANT" Role="NPPBKC_PLANT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="NPPBKC_PLANT">
+              <PropertyRef Name="NPPBKC_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1581,6 +1843,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK1_PBCK11">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK1_SUPPLIER_PORT">
           <End Type="EMSModel.SUPPLIER_PORT" Role="SUPPLIER_PORT" Multiplicity="0..1" />
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
@@ -1617,6 +1891,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK1_ZAIDM_EX_POA">
+          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_REGION_OFFICE_ID">
+          <End Type="EMSModel.REGION_OFFICE_ID" Role="REGION_OFFICE_ID" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REGION_OFFICE_ID">
+              <PropertyRef Name="REGION_OFFICE_ID1" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="REGION_OFFICE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_T1001K_T1001">
+          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="1" />
+          <End Type="EMSModel.T1001K" Role="T1001K" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001">
+              <PropertyRef Name="COMPANY_ID" />
+            </Principal>
+            <Dependent Role="T1001K">
+              <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_T1001W">
           <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1629,15 +1939,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TABLE_HISTORY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.TABLE_HISTORY" Role="TABLE_HISTORY" Multiplicity="*" />
+        <Association Name="FK_ZAIDM_POA_MAP_EX_POA">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_POA_MAP" Role="ZAIDM_POA_MAP" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
             </Principal>
-            <Dependent Role="TABLE_HISTORY">
-              <PropertyRef Name="MODIFIED_BY" />
+            <Dependent Role="ZAIDM_POA_MAP">
+              <PropertyRef Name="PLANT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1677,15 +1987,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_BRAND">
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND1" Multiplicity="0..1" />
+        <Association Name="FK_ZAIDM_EX_POA_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="BRAND_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
             </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND1">
-              <PropertyRef Name="BRAND_ID" />
+            <Dependent Role="ZAIDM_EX_POA">
+              <PropertyRef Name="USER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1761,99 +2071,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <Association Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
+          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_POA_MAP" Role="ZAIDM_POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_POA_MAP">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="EMSModelStoreContainer" CdmEntityContainer="EMSEntities" >
-          <EntitySetMapping Name="T1001">
-            <EntityTypeMapping TypeName="EMSModel.T1001">
-              <MappingFragment StoreEntitySet="T1001">
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="BUKRSTXT" ColumnName="BUKRSTXT" />
-                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
-                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="T1001K">
-            <EntityTypeMapping TypeName="EMSModel.T1001K">
-              <MappingFragment StoreEntitySet="T1001K">
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
-                <ScalarProperty Name="BWKEY" ColumnName="BWKEY" />
-                <ScalarProperty Name="AREA_ID" ColumnName="AREA_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="T1001W">
-            <EntityTypeMapping TypeName="EMSModel.T1001W">
-              <MappingFragment StoreEntitySet="T1001W">
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="ORT01" ColumnName="ORT01" />
-                <ScalarProperty Name="NAME1" ColumnName="NAME1" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_EX_POA">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_POA">
-              <MappingFragment StoreEntitySet="ZAIDM_EX_POA">
-                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="POA_PRINTED_NAME" ColumnName="POA_PRINTED_NAME" />
-                <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
-                <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
-                <ScalarProperty Name="POA_ID_CARD" ColumnName="POA_ID_CARD" />
-                <ScalarProperty Name="POA_CODE" ColumnName="POA_CODE" />
-                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_POA_MAP">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_POA_MAP">
-              <MappingFragment StoreEntitySet="ZAIDM_POA_MAP">
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
-                <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="USER">
-            <EntityTypeMapping TypeName="EMSModel.USER">
-              <MappingFragment StoreEntitySet="USER">
-                <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
-                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
-                <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
-                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
-                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_EX_GOODTYP">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_GOODTYP">
-              <MappingFragment StoreEntitySet="ZAIDM_EX_GOODTYP">
-                <ScalarProperty Name="EXT_TYP_DESC" ColumnName="EXT_TYP_DESC" />
-                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
-                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_EX_SERIES">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_SERIES">
-              <MappingFragment StoreEntitySet="ZAIDM_EX_SERIES">
-                <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
-                <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
-                <ScalarProperty Name="SERIES_ID" ColumnName="SERIES_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="C1LFA1">
             <EntityTypeMapping TypeName="EMSModel.C1LFA1">
               <MappingFragment StoreEntitySet="1LFA1">
@@ -1861,6 +2096,29 @@
                 <ScalarProperty Name="NAME1" ColumnName="NAME1" />
                 <ScalarProperty Name="LIFNR" ColumnName="LIFNR" />
                 <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CHANGES_HISTORY">
+            <EntityTypeMapping TypeName="EMSModel.CHANGES_HISTORY">
+              <MappingFragment StoreEntitySet="CHANGES_HISTORY">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="NEW_VALUE" ColumnName="NEW_VALUE" />
+                <ScalarProperty Name="OLD_VALUE" ColumnName="OLD_VALUE" />
+                <ScalarProperty Name="FIELD_NAME" ColumnName="FIELD_NAME" />
+                <ScalarProperty Name="FORM_NAME" ColumnName="FORM_NAME" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+                <ScalarProperty Name="CHANGES_HISTORY_ID" ColumnName="CHANGES_HISTORY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CITY">
+            <EntityTypeMapping TypeName="EMSModel.CITY">
+              <MappingFragment StoreEntitySet="CITY">
+                <ScalarProperty Name="CITY_NAME" ColumnName="CITY_NAME" />
+                <ScalarProperty Name="CITY_ALIAS" ColumnName="CITY_ALIAS" />
+                <ScalarProperty Name="CITY_ID" ColumnName="CITY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1899,21 +2157,27 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EX_GOODS_DECS">
-            <EntityTypeMapping TypeName="EMSModel.EX_GOODS_DECS">
-              <MappingFragment StoreEntitySet="EX_GOODS_DECS">
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="EX_GOODS_DECS_ID" ColumnName="EX_GOODS_DECS_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FILE_UPLOAD">
             <EntityTypeMapping TypeName="EMSModel.FILE_UPLOAD">
               <MappingFragment StoreEntitySet="FILE_UPLOAD">
                 <ScalarProperty Name="UPLOAD_DATE" ColumnName="UPLOAD_DATE" />
                 <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
                 <ScalarProperty Name="FORM_NAME" ColumnName="FORM_NAME" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
                 <ScalarProperty Name="FILE_ID" ColumnName="FILE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HEADER_FOOTER">
+            <EntityTypeMapping TypeName="EMSModel.HEADER_FOOTER">
+              <MappingFragment StoreEntitySet="HEADER_FOOTER">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="FOOTER_CONTENT" ColumnName="FOOTER_CONTENT" />
+                <ScalarProperty Name="HEADER_CONTENT" ColumnName="HEADER_CONTENT" />
+                <ScalarProperty Name="HEADER_IMAGE_PATH" ColumnName="HEADER_IMAGE_PATH" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="FORM_NAME" ColumnName="FORM_NAME" />
+                <ScalarProperty Name="HEADER_FOOTER_ID" ColumnName="HEADER_FOOTER_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1923,6 +2187,18 @@
                 <ScalarProperty Name="MENGETAHUI_DESC" ColumnName="MENGETAHUI_DESC" />
                 <ScalarProperty Name="MENGETAHUI_CODE" ColumnName="MENGETAHUI_CODE" />
                 <ScalarProperty Name="MENGETAHUI_ID" ColumnName="MENGETAHUI_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NPPBKC_PLANT">
+            <EntityTypeMapping TypeName="EMSModel.NPPBKC_PLANT">
+              <MappingFragment StoreEntitySet="NPPBKC_PLANT">
+                <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
+                <ScalarProperty Name="EX_GOODS_TYPE_ID" ColumnName="EX_GOODS_TYPE_ID" />
+                <ScalarProperty Name="SKEPTIS" ColumnName="SKEPTIS" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="NPPBKC_PLANT_ID" ColumnName="NPPBKC_PLANT_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1950,8 +2226,9 @@
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="EX_GOODS_DECS_ID" ColumnName="EX_GOODS_DECS_ID" />
                 <ScalarProperty Name="SUPPLIER_PORT_ID" ColumnName="SUPPLIER_PORT_ID" />
+                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="PERIOD_TO" ColumnName="PERIOD_TO" />
                 <ScalarProperty Name="PERIOD_FROM" ColumnName="PERIOD_FROM" />
@@ -1966,6 +2243,14 @@
               <MappingFragment StoreEntitySet="PROCESS_TYPE">
                 <ScalarProperty Name="PROTYPE_NAME" ColumnName="PROTYPE_NAME" />
                 <ScalarProperty Name="PROTYPE_ID" ColumnName="PROTYPE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="REGION_OFFICE_ID">
+            <EntityTypeMapping TypeName="EMSModel.REGION_OFFICE_ID">
+              <MappingFragment StoreEntitySet="REGION_OFFICE_ID">
+                <ScalarProperty Name="REGION_NAME" ColumnName="REGION_NAME" />
+                <ScalarProperty Name="REGION_OFFICE_ID1" ColumnName="REGION_OFFICE_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1985,15 +2270,34 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TABLE_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.TABLE_HISTORY">
-              <MappingFragment StoreEntitySet="TABLE_HISTORY">
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="NEW_VALUE" ColumnName="NEW_VALUE" />
-                <ScalarProperty Name="OLD_VALUE" ColumnName="OLD_VALUE" />
-                <ScalarProperty Name="FIELD_NAME" ColumnName="FIELD_NAME" />
-                <ScalarProperty Name="TABLE_HISTORY_ID" ColumnName="TABLE_HISTORY_ID" />
+          <EntitySetMapping Name="T1001">
+            <EntityTypeMapping TypeName="EMSModel.T1001">
+              <MappingFragment StoreEntitySet="T1001">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="BUKRSTXT" ColumnName="BUKRSTXT" />
+                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T1001K">
+            <EntityTypeMapping TypeName="EMSModel.T1001K">
+              <MappingFragment StoreEntitySet="T1001K">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="BWKEY" ColumnName="BWKEY" />
+                <ScalarProperty Name="AREA_ID" ColumnName="AREA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T1001W">
+            <EntityTypeMapping TypeName="EMSModel.T1001W">
+              <MappingFragment StoreEntitySet="T1001W">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="ORT01" ColumnName="ORT01" />
+                <ScalarProperty Name="NAME1" ColumnName="NAME1" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2005,9 +2309,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="USER">
+            <EntityTypeMapping TypeName="EMSModel.USER">
+              <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="USER_GROUP">
             <EntityTypeMapping TypeName="EMSModel.USER_GROUP">
               <MappingFragment StoreEntitySet="USER_GROUP">
+                <ScalarProperty Name="ROLE_NAME" ColumnName="ROLE_NAME" />
                 <ScalarProperty Name="GROUP_NAME" ColumnName="GROUP_NAME" />
                 <ScalarProperty Name="GROUP_ID" ColumnName="GROUP_ID" />
               </MappingFragment>
@@ -2020,6 +2338,8 @@
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
                 <ScalarProperty Name="GOODTYP_ID" ColumnName="GOODTYP_ID" />
+                <ScalarProperty Name="PRINTING_PRICE" ColumnName="PRINTING_PRICE" />
+                <ScalarProperty Name="CUT_FILLER_CODE" ColumnName="CUT_FILLER_CODE" />
                 <ScalarProperty Name="COLOUR" ColumnName="COLOUR" />
                 <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
                 <ScalarProperty Name="SERIES_ID" ColumnName="SERIES_ID" />
@@ -2035,6 +2355,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_GOODTYP">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_GOODTYP">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_GOODTYP">
+                <ScalarProperty Name="EXT_TYP_DESC" ColumnName="EXT_TYP_DESC" />
+                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_KPPBC">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_KPPBC">
               <MappingFragment StoreEntitySet="ZAIDM_EX_KPPBC">
@@ -2042,7 +2371,7 @@
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="CK1_KEP_FOOTER" ColumnName="CK1_KEP_FOOTER" />
                 <ScalarProperty Name="CK1_KEP_HEADER" ColumnName="CK1_KEP_HEADER" />
-                <ScalarProperty Name="MENGETAHUI" ColumnName="MENGETAHUI" />
+                <ScalarProperty Name="MENGETAHUI_ID" ColumnName="MENGETAHUI_ID" />
                 <ScalarProperty Name="KPPBC_TYPE" ColumnName="KPPBC_TYPE" />
                 <ScalarProperty Name="KPPBC_NUMBER" ColumnName="KPPBC_NUMBER" />
                 <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
@@ -2065,10 +2394,11 @@
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
+                <ScalarProperty Name="TEXT_TO" ColumnName="TEXT_TO" />
                 <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
-                <ScalarProperty Name="REGION" ColumnName="REGION" />
+                <ScalarProperty Name="REGION_OFFICE_ID" ColumnName="REGION_OFFICE_ID" />
                 <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
-                <ScalarProperty Name="CITY" ColumnName="CITY" />
+                <ScalarProperty Name="CITY_ID" ColumnName="CITY_ID" />
                 <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
                 <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
                 <ScalarProperty Name="NPPBKC_NO" ColumnName="NPPBKC_NO" />
@@ -2086,6 +2416,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_POA">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_POA">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_POA">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="POA_PRINTED_NAME" ColumnName="POA_PRINTED_NAME" />
+                <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
+                <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
+                <ScalarProperty Name="POA_ID_CARD" ColumnName="POA_ID_CARD" />
+                <ScalarProperty Name="POA_CODE" ColumnName="POA_CODE" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_PRODTYP">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_PRODTYP">
               <MappingFragment StoreEntitySet="ZAIDM_EX_PRODTYP">
@@ -2094,6 +2438,26 @@
                 <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
                 <ScalarProperty Name="PRODUCT_CODE" ColumnName="PRODUCT_CODE" />
                 <ScalarProperty Name="PRODUCT_ID" ColumnName="PRODUCT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_SERIES">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_SERIES">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_SERIES">
+                <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
+                <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
+                <ScalarProperty Name="SERIES_ID" ColumnName="SERIES_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_POA_MAP">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_POA_MAP">
+              <MappingFragment StoreEntitySet="ZAIDM_POA_MAP">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

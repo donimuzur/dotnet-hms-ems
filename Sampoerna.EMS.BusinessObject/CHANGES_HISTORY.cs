@@ -12,16 +12,17 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class EX_GOODS_DECS
+    public partial class CHANGES_HISTORY
     {
-        public EX_GOODS_DECS()
-        {
-            this.PBCK1 = new HashSet<PBCK1>();
-        }
+        public long CHANGES_HISTORY_ID { get; set; }
+        public Nullable<long> FORM_ID { get; set; }
+        public string FORM_NAME { get; set; }
+        public string FIELD_NAME { get; set; }
+        public string OLD_VALUE { get; set; }
+        public string NEW_VALUE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<int> MODIFIED_BY { get; set; }
     
-        public int EX_GOODS_DECS_ID { get; set; }
-        public string NAME { get; set; }
-    
-        public virtual ICollection<PBCK1> PBCK1 { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

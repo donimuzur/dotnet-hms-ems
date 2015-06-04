@@ -22,12 +22,13 @@ namespace Sampoerna.EMS.BusinessObject
         public long KPPBC_ID { get; set; }
         public string KPPBC_NUMBER { get; set; }
         public string KPPBC_TYPE { get; set; }
-        public string MENGETAHUI { get; set; }
+        public Nullable<int> MENGETAHUI_ID { get; set; }
         public string CK1_KEP_HEADER { get; set; }
         public string CK1_KEP_FOOTER { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public int MODIFIED_BY { get; set; }
     
+        public virtual MENGETAHUI MENGETAHUI { get; set; }
         public virtual USER USER { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
