@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject;
 
-namespace Sampoerna.EMS.BusinessObject.Business
+namespace Sampoerna.EMS.Website.Models
 {
-    public class UserTree
+    public class UserViewModel
     {
-        public UserTree()
+        public UserViewModel()
         {
             this.Employees = new List<USER>();
             this.Manager = new USER();
             this.USER_GROUP = new USER_GROUP();
         }
-
         public int USER_ID { get; set; }
         public string USERNAME { get; set; }
         public int? MANAGER_ID { get; set; }
@@ -21,7 +21,5 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public List<USER> Employees { get; set; }
         public USER Manager { get; set; }
         public USER_GROUP USER_GROUP { get; set; }
-        
     }
-
 }
