@@ -33,5 +33,26 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
+        public virtual DbSet<C1LFA1> C1LFA1 { get; set; }
+        public virtual DbSet<CK5> CK5 { get; set; }
+        public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
+        public virtual DbSet<EX_GOODS_DECS> EX_GOODS_DECS { get; set; }
+        public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
+        public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
+        public virtual DbSet<PAGE> PAGE { get; set; }
+        public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
+        public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<PROCESS_TYPE> PROCESS_TYPE { get; set; }
+        public virtual DbSet<STATUS> STATUS { get; set; }
+        public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
+        public virtual DbSet<TABLE_HISTORY> TABLE_HISTORY { get; set; }
+        public virtual DbSet<UOM> UOM { get; set; }
+        public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
+        public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
+        public virtual DbSet<ZAIDM_EX_MARKET> ZAIDM_EX_MARKET { get; set; }
+        public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
+        public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
+        public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
     }
 }
