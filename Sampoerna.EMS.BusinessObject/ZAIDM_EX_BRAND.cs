@@ -31,15 +31,15 @@ namespace Sampoerna.EMS.BusinessObject
         public long SERIES_ID { get; set; }
         public long MARKET_ID { get; set; }
         public string COLOUR { get; set; }
-        public long GOODTYP_ID { get; set; }
+        public string CUT_FILLER_CODE { get; set; }
+        public Nullable<decimal> PRINTING_PRICE { get; set; }
+        public int GOODTYP_ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual T1001W T1001W { get; set; }
-        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND1 { get; set; }
-        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND2 { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
         public virtual ZAIDM_EX_PCODE ZAIDM_EX_PCODE { get; set; }

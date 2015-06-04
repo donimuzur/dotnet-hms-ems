@@ -12,20 +12,16 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class T1001
+    public partial class REGION_OFFICE_ID
     {
-        public T1001()
+        public REGION_OFFICE_ID()
         {
-            this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
-            this.T1001K = new HashSet<T1001K>();
+            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
         }
     
-        public long COMPANY_ID { get; set; }
-        public string BUKRS { get; set; }
-        public string BUKRSTXT { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public int REGION_OFFICE_ID1 { get; set; }
+        public string REGION_NAME { get; set; }
     
-        public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
-        public virtual ICollection<T1001K> T1001K { get; set; }
+        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }

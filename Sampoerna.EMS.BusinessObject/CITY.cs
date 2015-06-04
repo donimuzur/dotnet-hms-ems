@@ -12,15 +12,17 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class TABLE_HISTORY
+    public partial class CITY
     {
-        public long TABLE_HISTORY_ID { get; set; }
-        public string FIELD_NAME { get; set; }
-        public string OLD_VALUE { get; set; }
-        public string NEW_VALUE { get; set; }
-        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public Nullable<int> MODIFIED_BY { get; set; }
+        public CITY()
+        {
+            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
+        }
     
-        public virtual USER USER { get; set; }
+        public long CITY_ID { get; set; }
+        public string CITY_ALIAS { get; set; }
+        public string CITY_NAME { get; set; }
+    
+        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }

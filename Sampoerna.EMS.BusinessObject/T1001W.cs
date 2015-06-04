@@ -16,10 +16,11 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public T1001W()
         {
-            this.ZAIDM_POA_MAP = new HashSet<ZAIDM_POA_MAP>();
             this.CK5 = new HashSet<CK5>();
             this.CK51 = new HashSet<CK5>();
+            this.NPPBKC_PLANT = new HashSet<NPPBKC_PLANT>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
+            this.ZAIDM_POA_MAP = new HashSet<ZAIDM_POA_MAP>();
         }
     
         public long PLANT_ID { get; set; }
@@ -28,9 +29,10 @@ namespace Sampoerna.EMS.BusinessObject
         public string ORT01 { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
-        public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<CK5> CK51 { get; set; }
+        public virtual ICollection<NPPBKC_PLANT> NPPBKC_PLANT { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
     }
 }

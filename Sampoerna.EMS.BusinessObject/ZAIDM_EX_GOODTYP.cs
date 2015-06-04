@@ -16,13 +16,16 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_GOODTYP()
         {
+            this.PBCK1 = new HashSet<PBCK1>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
         }
     
-        public long GOODTYPE_ID { get; set; }
+        public int GOODTYPE_ID { get; set; }
         public Nullable<int> EXC_GOOD_TYP { get; set; }
         public string EXT_TYP_DESC { get; set; }
     
+        public virtual NPPBKC_PLANT NPPBKC_PLANT { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
 }
