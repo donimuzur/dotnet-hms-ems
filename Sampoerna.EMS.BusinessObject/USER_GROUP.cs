@@ -12,17 +12,18 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_GOODTYP
+    public partial class USER_GROUP
     {
-        public ZAIDM_EX_GOODTYP()
+        public USER_GROUP()
         {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
+            this.PAGE_MAP = new HashSet<PAGE_MAP>();
+            this.USER = new HashSet<USER>();
         }
     
-        public long GOODTYPE_ID { get; set; }
-        public Nullable<int> EXC_GOOD_TYP { get; set; }
-        public string EXT_TYP_DESC { get; set; }
+        public int GROUP_ID { get; set; }
+        public string GROUP_NAME { get; set; }
     
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
+        public virtual ICollection<USER> USER { get; set; }
     }
 }

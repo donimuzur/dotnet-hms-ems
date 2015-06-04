@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.BusinessObject;
 using Voxteneo.WebComponents.Logger;
@@ -13,6 +8,7 @@ namespace Sampoerna.EMS.BLL
 {
     public class CompanyBLL : ICompanyBLL
     {
+        private IGenericRepository<T1001> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
 
@@ -20,24 +16,56 @@ namespace Sampoerna.EMS.BLL
         {
             _logger = logger;
             _uow = uow;
+            _repository = _uow.GetGenericRepository<T1001>();
         }
 
         public List<T1001> GetMasterData()
         {
-            var repoCompany = _uow.GetGenericRepository<T1001>();
-            var queryData = (from aa in repoCompany.GetQuery() join b in
-                (from a in repoCompany.GetQuery()
-                    group a by new {a.BUKRS}
-                    into g
-                    select new
-                    {
-                        BUKRS = g.Key.BUKRS,
-                        MAXDATE = g.Max(x => x.CREATED_DATE)
-                    }) on aa.BUKRS equals  b.BUKRS
-                                 where aa.CREATED_DATE == b.MAXDATE
-                 select aa);
+           
+
+            var queryData = (from aa in _repository.GetQuery()
+                join b in
+                    (from a in _repository.GetQuery()
+                        group a by new {a.BUKRS}
+                        into g
+                        
+                        select new
+                       
+                        {
+                            BUKRS = g.Key.BUKRS,
+                            MAXDATE = g.Max(x => x.CREATED_DATE)
+                        }) on aa.BUKRS equals b.BUKRS
+                where aa.CREATED_DATE == b.MAXDATE
+                select aa);
+
             
+            
+            
+
             return queryData.ToList();
         }
+
+        //Save
+        public void Save(T1001 saveCompany)
+        {
+            var repo = _uow.GetGenericRepository<T1001>();
+            repo.Insert(saveCompany);
+            _uow.SaveChanges();
+        }
+
+        //Get by ID
+        public T1001 GetCompanyById(long id)
+        {
+            return _repository.GetByID(id);
+        }
+
+        //Update
+        public void Update(T1001 updateToCompany)
+        {
+            var repo = _uow.GetGenericRepository<T1001>();
+            repo.Update(updateToCompany);
+            _uow.SaveChanges();
+        }
+
     }
 }
