@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
+    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,9 +62,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="EX_GOODS_DECS.cs">
     <Compile Include="Inputs\UserInput.cs" />
-      <DependentUpon>EMSEntities.tt</DependentUpon>
+     <Compile Include="EX_GOODS_DECS.cs">
+
+        <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="FILE_UPLOAD.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
