@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -63,49 +64,32 @@ namespace Sampoerna.EMS.BLL
             {
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<USER>(input.SortOrderColumn)) as IOrderedQueryable<USER>;
             }
-            
-            return _repository.Get(queryFilter, orderBy, string.Empty).ToList();
+
+            var rc = _repository.Get(queryFilter, orderBy, string.Empty);
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            return rc.ToList();
 
         }
 
         public List<UserTree> GetUserTree()
         {
+            var users = _repository.Get(null, null, includeTables);
+            if(users == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var users = _repository.Get().ToList();
-            var usersTree = new List<UserTree>();
-
-            foreach (var user in users)
-            {
-                var tree = Mapper.Map<UserTree>(user);
-
-                if (tree.MANAGER_ID.HasValue)
-                {
-                    tree.Manager = _repository.Get(p => p.USER_ID == tree.MANAGER_ID).FirstOrDefault();
-                }
-
-                tree.Employees = _repository.Get(p => p.MANAGER_ID != null).Where(x => x.MANAGER_ID.Equals(tree.USER_ID)).ToList();
-                usersTree.Add(tree);
-
-            }
-            return usersTree;
+            return Mapper.Map<List<UserTree>>(users);
         }
 
         public UserTree GetUserTreeByUserID(int userID)
         {
-            var user = _repository.GetByID(userID);
-            
-            if (user == null)
-                return null;
-
-            var tree = Mapper.Map<UserTree>(user);
-
-            if (tree.MANAGER_ID.HasValue)
-            {
-                tree.Manager = _repository.Get(p => p.USER_ID == user.MANAGER_ID).FirstOrDefault();
-            }
-
-            tree.Employees = _repository.Get(p => p.MANAGER_ID != null).Where(x => x.MANAGER_ID.Equals(tree.USER_ID)).ToList();
-            return tree;
+            var user = _repository.Get(c => c.USER_ID == userID, null, includeTables).FirstOrDefault();
+            if(user == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            return Mapper.Map<UserTree>(user);
         }
 
     }

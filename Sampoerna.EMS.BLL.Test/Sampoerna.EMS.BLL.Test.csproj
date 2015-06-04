@@ -73,10 +73,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="FakeStuffs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserBLLTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.BLL\Sampoerna.EMS.BLL.csproj">
+      <Project>{810db88f-fbfd-4af7-89bc-4612f101d5b9}</Project>
+      <Name>Sampoerna.EMS.BLL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
       <Project>{3c89fdd1-a506-4047-89e3-40708cf6b2c5}</Project>
       <Name>Sampoerna.EMS.BusinessObject</Name>
