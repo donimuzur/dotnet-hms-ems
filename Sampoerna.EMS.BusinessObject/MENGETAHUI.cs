@@ -12,17 +12,10 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_GOODTYP
+    public partial class MENGETAHUI
     {
-        public ZAIDM_EX_GOODTYP()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-        }
-    
-        public long GOODTYPE_ID { get; set; }
-        public Nullable<int> EXC_GOOD_TYP { get; set; }
-        public string EXT_TYP_DESC { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public int MENGETAHUI_ID { get; set; }
+        public string MENGETAHUI_CODE { get; set; }
+        public string MENGETAHUI_DESC { get; set; }
     }
 }

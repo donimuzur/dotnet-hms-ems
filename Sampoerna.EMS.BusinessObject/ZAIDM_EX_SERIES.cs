@@ -14,8 +14,15 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class ZAIDM_EX_SERIES
     {
+        public ZAIDM_EX_SERIES()
+        {
+            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
+        }
+    
         public long SERIES_ID { get; set; }
         public Nullable<int> SERIES_CODE { get; set; }
         public string SERIES_VALUE { get; set; }
+    
+        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
 }

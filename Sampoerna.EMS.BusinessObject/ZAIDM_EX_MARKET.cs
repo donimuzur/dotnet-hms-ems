@@ -12,25 +12,18 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class T1001W
+    public partial class ZAIDM_EX_MARKET
     {
-        public T1001W()
+        public ZAIDM_EX_MARKET()
         {
-            this.ZAIDM_POA_MAP = new HashSet<ZAIDM_POA_MAP>();
-            this.CK5 = new HashSet<CK5>();
-            this.CK51 = new HashSet<CK5>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
         }
     
-        public long PLANT_ID { get; set; }
-        public string WERKS { get; set; }
-        public string NAME1 { get; set; }
-        public string ORT01 { get; set; }
+        public long MARKET_ID { get; set; }
+        public Nullable<int> MARKET_CODE { get; set; }
+        public string MARKET_DESC { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
-        public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
-        public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual ICollection<CK5> CK51 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
 }
