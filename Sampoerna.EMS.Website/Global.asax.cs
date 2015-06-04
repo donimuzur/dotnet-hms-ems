@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.Website
 
             //initialize mappers
             EMSWebsiteMapper.Initialize();
-            //BLL.BLLMapper.Initialize();
+            BLLMapper.Initialize();
 
             // 1. Create a new Simple Injector container
             var container = new Container();
@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website
             container.Register<ILogger, NLogLogger>();
             container.Register<ICompanyBLL, CompanyBLL>();
             container.Register<IWorkflowBLL, WorkflowBLL>();
-
+            container.Register<IUserBLL, UserBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -55,11 +55,10 @@ namespace Sampoerna.EMS.Website
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            var container = new Container();
             
             Bootstrap();
             
-            DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
+            DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
 
         }
     }

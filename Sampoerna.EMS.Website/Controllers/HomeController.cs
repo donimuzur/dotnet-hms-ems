@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //emp.address = "alamat palsu";
             //_employeeBll.Add(emp);
             //var data = _companyBll.GetMasterData();
-           var userTreeList = _workflowBll.GetUserTree();
+           //var userTreeList = _workflowBll.GetUserTree();
            return View();
         }
 
