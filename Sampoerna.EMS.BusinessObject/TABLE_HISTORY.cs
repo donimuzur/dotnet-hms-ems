@@ -12,17 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_GOODTYP
+    public partial class TABLE_HISTORY
     {
-        public ZAIDM_EX_GOODTYP()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-        }
+        public long TABLE_HISTORY_ID { get; set; }
+        public string FIELD_NAME { get; set; }
+        public string OLD_VALUE { get; set; }
+        public string NEW_VALUE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<int> MODIFIED_BY { get; set; }
     
-        public long GOODTYPE_ID { get; set; }
-        public Nullable<int> EXC_GOOD_TYP { get; set; }
-        public string EXT_TYP_DESC { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

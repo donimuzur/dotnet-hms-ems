@@ -12,17 +12,11 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_GOODTYP
+    public partial class FILE_UPLOAD
     {
-        public ZAIDM_EX_GOODTYP()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-        }
-    
-        public long GOODTYPE_ID { get; set; }
-        public Nullable<int> EXC_GOOD_TYP { get; set; }
-        public string EXT_TYP_DESC { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public long FILE_ID { get; set; }
+        public string FORM_NAME { get; set; }
+        public string FILE_NAME { get; set; }
+        public Nullable<System.DateTime> UPLOAD_DATE { get; set; }
     }
 }
