@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_POA()
         {
+            this.PBCK1 = new HashSet<PBCK1>();
             this.ZAIDM_POA_MAP = new HashSet<ZAIDM_POA_MAP>();
         }
     
@@ -25,10 +26,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string POA_ADDRESS { get; set; }
         public string POA_PHONE { get; set; }
         public string POA_PRINTED_NAME { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<int> USER_ID { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
-        public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual USER USER { get; set; }
+        public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
     }
 }

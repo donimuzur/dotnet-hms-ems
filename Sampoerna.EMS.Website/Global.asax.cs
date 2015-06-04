@@ -13,6 +13,7 @@ namespace Sampoerna.EMS.Website
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+
         private static Container _container;
         public static TService GetInstance<TService>()
         where TService : class
@@ -25,8 +26,8 @@ namespace Sampoerna.EMS.Website
         {
 
             //initialize mappers
-            SampoernaEMSMapper.Initialize();
-            //BLL.BLLMapper.Initialize();
+            EMSWebsiteMapper.Initialize();
+            BLLMapper.Initialize();
 
             // 1. Create a new Simple Injector container
             var container = new Container();
@@ -40,7 +41,7 @@ namespace Sampoerna.EMS.Website
             
             container.Register<ICompanyBLL, CompanyBLL>();
 
-
+            container.Register<IUserBLL, UserBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -57,6 +58,7 @@ namespace Sampoerna.EMS.Website
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            var container = new Container();
 
             Bootstrap();
 

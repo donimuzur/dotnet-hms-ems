@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.UserViewModel>    
+
+@section styles 
+    {
+        <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
+    }
+
+@section scripts
+    {
+        <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" language="javascript" class="init">
+            $(document).ready(function () {
+                $('#mydata').DataTable(
+                    {
+                        "sDom": "Rlfrtip"
+                    });
+            });
+        </script>
+    }
+    
+    @{
+        ViewBag.Title = "Data User";
+    }
+
+    <h2>@ViewBag.Title</h2>
+
+    <table id="mydata" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tfoot>
+            <tr>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Action</th>
+            </tr>
+        </tfoot>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.USERNAME)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FIRST_NAME)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LAST_NAME)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detail", "Detail", new { id = item.USER_ID })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

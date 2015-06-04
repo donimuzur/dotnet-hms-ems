@@ -25,17 +25,19 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> PERIOD_FROM { get; set; }
         public Nullable<System.DateTime> PERIOD_TO { get; set; }
         public Nullable<long> NPPBKC_ID { get; set; }
+        public Nullable<long> POA_ID { get; set; }
+        public Nullable<int> GOODTYPE_ID { get; set; }
         public Nullable<int> SUPPLIER_PORT_ID { get; set; }
-        public Nullable<int> EX_GOODS_DECS_ID { get; set; }
         public Nullable<int> STATUS { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<int> MODIFIED_BY { get; set; }
     
-        public virtual EX_GOODS_DECS EX_GOODS_DECS { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual SUPPLIER_PORT SUPPLIER_PORT { get; set; }
         public virtual USER USER { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
+        public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
     }
 }

@@ -14,8 +14,15 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class MENGETAHUI
     {
+        public MENGETAHUI()
+        {
+            this.ZAIDM_EX_KPPBC = new HashSet<ZAIDM_EX_KPPBC>();
+        }
+    
         public int MENGETAHUI_ID { get; set; }
         public string MENGETAHUI_CODE { get; set; }
         public string MENGETAHUI_DESC { get; set; }
+    
+        public virtual ICollection<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
     }
 }

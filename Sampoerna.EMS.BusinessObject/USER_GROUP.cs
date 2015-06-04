@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
     
         public int GROUP_ID { get; set; }
         public string GROUP_NAME { get; set; }
+        public string ROLE_NAME { get; set; }
     
         public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual ICollection<USER> USER { get; set; }
