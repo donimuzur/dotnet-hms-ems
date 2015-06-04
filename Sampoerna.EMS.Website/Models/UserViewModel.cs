@@ -1,14 +1,25 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models
 {
     public class UserViewModel
     {
+        public UserViewModel()
+        {
+            this.Employees = new List<USER>();
+            this.Manager = new USER();
+            this.USER_GROUP = new USER_GROUP();
+        }
         public int USER_ID { get; set; }
         public string USERNAME { get; set; }
-        public Nullable<int> MANAGER_ID { get; set; }
+        public int? MANAGER_ID { get; set; }
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
-        public Nullable<bool> IS_ACTIVE { get; set; }
+        public bool? IS_ACTIVE { get; set; }
+        public int? USER_GROUP_ID { get; set; }
+        public List<USER> Employees { get; set; }
+        public USER Manager { get; set; }
+        public USER_GROUP USER_GROUP { get; set; }
     }
 }

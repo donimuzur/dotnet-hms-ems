@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
+        private string includeTables = "USER, USER_GROUP";
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
