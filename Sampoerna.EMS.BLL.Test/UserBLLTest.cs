@@ -123,26 +123,6 @@ namespace Sampoerna.EMS.BLL.Test
             }
             
         }
-
-        //[TestMethod]
-        //public void GetUserTreeByUserID_WhenDataFound_CheckID()
-        //{
-        //    //arrange
-        //    var input = 1;
-        //    var user = new USER()
-        //    {
-        //        USER_ID = input
-        //    };
-
-        //    _repository.Get().Returns(FakeStuffs.GetGenericUserStubs().AsQueryable());
-
-        //    //act
-        //    var result = _bll.GetUserTreeByUserID(input);
-
-        //    //assert
-        //    Assert.AreEqual(user.USER_ID, result.USER_ID);
-
-        //}
-
+        
     }
 }

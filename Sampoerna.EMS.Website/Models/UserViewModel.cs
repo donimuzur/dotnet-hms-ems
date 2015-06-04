@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Website.Models
         public int? MANAGER_ID { get; set; }
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
-        public bool? IS_ACTIVE { get; set; }
+        public bool IS_ACTIVE { get; set; }
         public int? USER_GROUP_ID { get; set; }
         public List<USER> Employees { get; set; }
         public USER Manager { get; set; }
