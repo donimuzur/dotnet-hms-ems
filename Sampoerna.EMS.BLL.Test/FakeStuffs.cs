@@ -25,6 +25,27 @@ namespace Sampoerna.EMS.BLL.Test
             return users;
         }
 
+        public static IEnumerable<USER> GetGenericJoinedUserStubs()
+        {
+            var users = GetGenericUserStubs().AsQueryable();
+            var userGroups = GetUserGroupStubs().AsQueryable();
+            var query = from u in users
+                        select new USER()
+                        {
+                            USER_ID = u.USER_ID,
+                            USERNAME = u.USERNAME,
+                            FIRST_NAME = u.FIRST_NAME,
+                            IS_ACTIVE = u.IS_ACTIVE,
+                            LAST_NAME = u.LAST_NAME,
+                            MANAGER_ID = u.MANAGER_ID,
+                            USER2 = u.MANAGER_ID.HasValue ? (users.FirstOrDefault(s => s.USER_ID == u.MANAGER_ID.Value)) : null,
+                            USER1 = users.Where(s => s.MANAGER_ID.HasValue && s.MANAGER_ID.Value == u.USER_ID).ToList(),
+                            USER_GROUP = userGroups.FirstOrDefault(s => s.GROUP_ID == u.USER_GROUP_ID),
+                            USER_GROUP_ID = u.USER_GROUP_ID
+                        };
+            return query.ToList();
+        }
+
         public static IEnumerable<UserTree> GetGenericUserTreeStubs()
         {
             var users = GetGenericUserStubs().AsQueryable();

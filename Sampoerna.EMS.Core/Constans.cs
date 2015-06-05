@@ -15,6 +15,10 @@
             /// List of ReportDataSources
             /// </summary>
             public const string ReportDataSources = "sk_reportdatasources";
+            /// <summary>
+            /// Current User session key
+            /// </summary>
+            public const string CurrentUser = "sk_current_user";
         }
 
     }

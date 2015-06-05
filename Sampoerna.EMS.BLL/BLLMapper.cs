@@ -13,6 +13,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
                 .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
+            Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting();
+
         }
     }
 }
