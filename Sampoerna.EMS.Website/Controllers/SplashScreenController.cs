@@ -8,7 +8,8 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /SplashScreen/
         public ActionResult Index()
         {
-            return View();
+            var model = CurrentUser;
+            return View(model);
         }
 	}
 }

@@ -2,6 +2,7 @@
 using System.Web.Optimization;
 using System.Web.Routing;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Website.Code;
 using Voxteneo.WebCompoments.NLogLogger;
 using Voxteneo.WebComponents.Logger;
 using SimpleInjector;
@@ -40,6 +41,7 @@ namespace Sampoerna.EMS.Website
             container.Register<ICompanyBLL, CompanyBLL>();
             container.Register<IWorkflowBLL, WorkflowBLL>();
             container.Register<IUserBLL, UserBLL>();
+            container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();

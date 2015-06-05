@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
+using Sampoerna.EMS.BusinessObject.Business;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
 
     public class BaseController : Controller
     {
-        
         protected ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -48,6 +49,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 ControllerContext.HttpContext.Response.Cookies.Add(cookie);
             }
         }
+        
+        public Login CurrentUser
+        {
+            get
+            {
+                return (Login)Session["CurrentUser"];
+            }
+            set
+            {
+                Session["CurrentUser"] = value;
+            }
+        }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
@@ -71,5 +84,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+
+            var descriptor = filterContext.ActionDescriptor;
+            var actionName = descriptor.ActionName;
+            var controllerName = descriptor.ControllerDescriptor.ControllerName;
+
+            if (controllerName == "Login" && actionName == "Index") return;
+
+            if (CurrentUser == null)
+            {
+                //RedirectToAction("Index", "Login");
+                filterContext.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+            }
+        }
     }
 }

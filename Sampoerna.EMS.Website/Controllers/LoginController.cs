@@ -7,9 +7,11 @@ namespace Sampoerna.EMS.Website.Controllers
     public class LoginController : BaseController
     {
         private IUserBLL _bll;
-        public LoginController(IUserBLL bll)
+
+        public LoginController( IUserBLL bll)
         {
             _bll = bll;
+
         }
 
         //
@@ -25,14 +27,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var loginResult = _bll.GetLogin(model.Username);
 
-            if (loginResult == null)
+            if (loginResult != null)
             {
-                ViewBag.Error = "Email or Password incorrect";
-                return PartialView("Index");    
+                CurrentUser = loginResult;
+                return RedirectToAction("Index", "SplashScreen");
             }
 
-            return RedirectToAction("Index", "SplashScreen");
-            
+            ViewBag.Error = "Username incorrect";
+            return PartialView("Index");
+
         }
 	}
 }
