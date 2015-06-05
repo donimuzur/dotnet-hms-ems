@@ -8,7 +8,7 @@ using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private IUserBLL _bll;
         public UserController(IUserBLL bll)
@@ -22,7 +22,18 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = new UserInput();
             List<USER> users = _bll.GetUsers(input);
-            return View(Mapper.Map<List<UserViewModel>>(users));
+            var userViewModels = Mapper.Map<List<UserViewModel>>(users);
+            return View(userViewModels);
+        }
+
+        public ActionResult ViewDetail(int? id)
+        {
+            if (!id.HasValue)
+                return RedirectToAction("Index");
+
+            var user = _bll.GetUserTreeByUserID(id.Value);
+            var userModel = Mapper.Map<UserViewModel>(user);
+            return View(userModel);
         }
 	}
 }

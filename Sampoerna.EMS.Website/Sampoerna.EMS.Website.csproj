@@ -200,11 +200,15 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Code\FormsAuthenticationService.cs" />
+    <Compile Include="Code\IFormsAuthenticationService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\SplashScreenController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
@@ -213,6 +217,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -220,6 +225,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AspnetWebForms\GenericReportViewer.aspx" />
+    <Content Include="Content\assets\img\favicon.ico" />
+    <Content Include="Content\assets\img\fieldiq-login.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
@@ -476,10 +483,12 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\ViewDetail.cshtml" />
+    <Content Include="Views\SplashScreen\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
