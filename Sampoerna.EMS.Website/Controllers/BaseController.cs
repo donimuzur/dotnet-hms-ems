@@ -54,11 +54,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             get
             {
-                return (Login)Session["CurrentUser"];
+                return (Login)Session[Core.Constans.SessionKey.CurrentUser];
             }
             set
             {
-                Session["CurrentUser"] = value;
+                Session[Core.Constans.SessionKey.CurrentUser] = value;
             }
         }
 
