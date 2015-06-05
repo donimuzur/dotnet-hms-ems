@@ -15,7 +15,7 @@
     <AssemblyName>Sampoerna.EMS.Website</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -546,7 +546,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:57497/</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
