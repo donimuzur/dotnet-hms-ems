@@ -2,7 +2,7 @@
 
 namespace Sampoerna.EMS.Website.Models
 {
-    public class LoginModel
+    public class LoginModel : BaseModel
     {
         [Required]
         [Display(Name = "Username Login")]

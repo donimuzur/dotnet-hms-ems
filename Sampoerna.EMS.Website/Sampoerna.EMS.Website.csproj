@@ -202,15 +202,18 @@
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\SplashScreenController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -243,7 +246,6 @@
     <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\Readme.md" />
     <Content Include="Scripts\DataTables-1.10.7\media\images\Sorting icons.psd" />
     <Content Include="Scripts\DataTables-1.10.7\Readme.md" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\css\dataTables.autoFill.css" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\css\dataTables.autoFill.min.css" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\columns.html" />
@@ -429,8 +431,10 @@
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -454,7 +458,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -477,6 +480,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ViewDetail.cshtml" />
+    <Content Include="Views\SplashScreen\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

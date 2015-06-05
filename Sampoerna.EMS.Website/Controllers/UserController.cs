@@ -8,7 +8,7 @@ using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private IUserBLL _bll;
         public UserController(IUserBLL bll)

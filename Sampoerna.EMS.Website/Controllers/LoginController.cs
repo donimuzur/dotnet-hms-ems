@@ -4,7 +4,7 @@ using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : BaseController
     {
         private IUserBLL _bll;
         public LoginController(IUserBLL bll)

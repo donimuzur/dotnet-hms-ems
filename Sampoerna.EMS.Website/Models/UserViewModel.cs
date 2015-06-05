@@ -3,7 +3,7 @@ using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models
 {
-    public class UserViewModel
+    public class UserViewModel : BaseModel
     {
         public UserViewModel()
         {
