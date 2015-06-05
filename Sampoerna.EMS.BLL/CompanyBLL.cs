@@ -21,9 +21,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<T1001> GetMasterData()
         {
-           
-
-            var queryData = (from aa in _repository.GetQuery()
+           var queryData = (from aa in _repository.GetQuery()
                 join b in
                     (from a in _repository.GetQuery()
                         group a by new {a.BUKRS}
@@ -37,35 +35,9 @@ namespace Sampoerna.EMS.BLL
                         }) on aa.BUKRS equals b.BUKRS
                 where aa.CREATED_DATE == b.MAXDATE
                 select aa);
-
-            
-            
-            
-
             return queryData.ToList();
         }
 
-        //Save
-        public void Save(T1001 saveCompany)
-        {
-            var repo = _uow.GetGenericRepository<T1001>();
-            repo.Insert(saveCompany);
-            _uow.SaveChanges();
-        }
-
-        //Get by ID
-        public T1001 GetCompanyById(long id)
-        {
-            return _repository.GetByID(id);
-        }
-
-        //Update
-        public void Update(T1001 updateToCompany)
-        {
-            var repo = _uow.GetGenericRepository<T1001>();
-            repo.Update(updateToCompany);
-            _uow.SaveChanges();
-        }
-
+       
     }
 }

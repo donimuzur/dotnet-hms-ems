@@ -28,42 +28,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                   
         }
 
-        //
-        //GET : /Edit
-        public ActionResult Edit(long id)
-        {
-            var company = _companyBLL.GetCompanyById(id);
-            if (company == null)
-            {
-                return HttpNotFound();
-            }
-
-            var model = AutoMapper.Mapper.Map<CompanyViewModel>(company);
-
-            return View(model);
-        }
-
-        //
-        //POST : /Edit
-        [HttpPost]
-        public ActionResult Edit(CompanyViewModel companyModel)
-        {
-            if (!ModelState.IsValid)
-                return View();
-
-            try
-            {
-                var company = AutoMapper.Mapper.Map<T1001>(companyModel);
-
-                _companyBLL.Save(company);
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
+        
     }
 }

@@ -7,11 +7,5 @@ namespace Sampoerna.EMS.Contract
     {
        List<T1001> GetMasterData();
 
-       void Save(T1001 saveCompany);
-
-       void Update(T1001 updateToCompany);
-
-       T1001 GetCompanyById(long id);
- 
     }
 }
