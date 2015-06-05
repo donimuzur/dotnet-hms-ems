@@ -13,5 +13,7 @@ namespace Sampoerna.EMS.Contract
 
         List<UserTree> GetUserTree();
 
+        Login GetLogin(string userName);
+
     }
 }

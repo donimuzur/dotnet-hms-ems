@@ -93,5 +93,10 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<UserTree>(user);
         }
 
+        public Login GetLogin(string userName)
+        {
+            return Mapper.Map<Login>(_repository.Get(c => c.USERNAME == userName, null, includeTables).FirstOrDefault());
+        }
+
     }
 }
