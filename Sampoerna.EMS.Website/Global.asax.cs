@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.Website
         private static Container _container;
         public static TService GetInstance<TService>()
         where TService : class
+     
         {
             return _container.GetInstance<TService>();
         }
@@ -51,15 +52,16 @@ namespace Sampoerna.EMS.Website
 
         }
 
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            
+           
             Bootstrap();
-            
+
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
 
         }
