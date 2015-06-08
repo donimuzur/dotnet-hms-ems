@@ -16,8 +16,10 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public long FILE_ID { get; set; }
         public Nullable<long> FORM_ID { get; set; }
-        public string FORM_NAME { get; set; }
+        public int FORM_TYPE_ID { get; set; }
         public string FILE_NAME { get; set; }
         public Nullable<System.DateTime> UPLOAD_DATE { get; set; }
+    
+        public virtual FORM_TYPE FORM_TYPE { get; set; }
     }
 }

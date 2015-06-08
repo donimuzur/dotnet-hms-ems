@@ -12,20 +12,16 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_PCODE
+    public partial class EX_STATUS
     {
-        public ZAIDM_EX_PCODE()
+        public EX_STATUS()
         {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.CK5 = new HashSet<CK5>();
         }
     
-        public long PER_ID { get; set; }
-        public Nullable<int> PER_CODE { get; set; }
-        public string PER_DESC { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public int EX_STATUS_ID { get; set; }
+        public string EX_STATUS_NAME { get; set; }
     
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }
