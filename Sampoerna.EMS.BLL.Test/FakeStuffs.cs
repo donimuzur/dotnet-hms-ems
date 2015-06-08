@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -74,6 +75,17 @@ namespace Sampoerna.EMS.BLL.Test
             rc.Add(new USER_GROUP() { GROUP_ID = 2, GROUP_NAME = "Supervisor" });
             rc.Add(new USER_GROUP() { GROUP_ID = 3, GROUP_NAME = "Plan" });
             rc.Add(new USER_GROUP() { GROUP_ID = 4, GROUP_NAME = "Operator" });
+            return rc;
+        }
+
+        public static IEnumerable<T1001> GetCompany()
+        {
+
+            var rc = new List<T1001>();
+            rc.Add(new T1001() { COMPANY_ID = 10, BUKRS = "101", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:11.317")});
+            rc.Add(new T1001() { COMPANY_ID = 11, BUKRS = "102", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:12.980")});
+            rc.Add(new T1001() { COMPANY_ID = 12, BUKRS = "103", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:56.660")});
+            rc.Add(new T1001() { COMPANY_ID = 13, BUKRS = "104", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:58.143")});
             return rc;
         }
 

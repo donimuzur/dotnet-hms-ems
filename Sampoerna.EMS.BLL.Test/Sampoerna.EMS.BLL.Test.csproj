@@ -73,6 +73,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CompanyBLLTest.cs" />
     <Compile Include="FakeStuffs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserBLLTest.cs" />
