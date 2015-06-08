@@ -1,0 +1,154 @@
+.navbar{
+	background: $white;
+	border:none;
+	@include border-radius(0);
+	margin-bottom:0;	
+	z-index: 98;
+	.navbar-header{
+		width: 230px;
+		height: 60px;	
+		background: $dark;
+		z-index: 999;
+  		position: relative;
+  		@include transition(all, 0.3s, ease );
+		@media screen and (max-width:767px){
+			float:left;
+		}
+		.navbar-brand{
+			height: 60px;
+			padding: 20px 24px;
+			width: 100%;
+			img{
+				float:left;
+			}
+			.logo-small{
+				display: none;
+			}
+			@media screen and (max-width:767px){
+				height:10px;
+				img{
+					display:none;
+				}
+			}
+		}
+		.navbar-toggle{
+			margin-top: 18px;
+		}
+	}
+	.navbar-collapse{
+		@include box-shadow($mediumGrey, 0, 0, 4px);
+		border: none;
+	}
+	.nav{			
+			margin-left: 40px;
+			@media screen and (max-width:1180px){
+				margin-left: 28px;
+			}  
+			@media screen and (max-width:767px){
+				margin-left: 90px;
+			}
+			li{
+				&.user-container{
+					border-left: 1px solid $regularGrey;
+					@media screen and (max-width:1004px){
+						border:none;
+					}
+					.location{
+						padding-left: 30px;
+						padding-right: 30px;
+						@media screen and (max-width:1180px){
+							padding-left: 15px;
+							padding-right: 15px;
+						}						
+						@media screen and (max-width:768px){
+							padding-left:0;
+						}
+					}
+				}
+				a{
+					padding: 16px 0;
+					line-height: 22px;
+					max-height: 60px;
+					color: $colorFontBlack;
+					&:hover{
+						color:$colorFontBlack;
+					}
+					@media screen and (max-width:768px){
+						font-size:12px;
+					}
+					&.title{
+						cursor: default;
+						font-size: 16px;
+						strong{
+							@media screen and (max-width:768px){
+								display:none;
+							}
+						}
+						.potrait{
+							display:none;
+							@media screen and (max-width:768px){
+								display:block;
+								float: left;
+							}
+						}
+						&:hover{
+							color:$colorFontBlack;
+						}
+						label{
+							background: $whiteGrey;
+							@include border-radius(20px);
+							border:2px solid $regularGrey;
+							padding:6px 20px;
+							margin-left: 15px;
+							color: $colorFontBlack;
+							margin-top: -6px;
+							font-weight: normal;
+							font-family: $openSansSemi;
+						}
+					}
+					img{
+						float: left;
+						margin-right: 10px;
+						margin-top: 2px;
+					}
+					strong{
+						font-family: $openSansSemi;
+						font-weight: normal;
+					}
+					&.user{
+						padding:19px 30px;
+						@media screen and (max-width:1180px){
+							padding:20px;
+						}
+						@media screen and (max-width:768px){
+							padding-left:0;
+						}
+						img{
+							@include border-radius(60px);
+							width: 32px;
+							height: 32px;
+							border: 3px solid $lightGrey;
+							margin-top: -6px;
+							margin-right: 15px;
+						}
+						i.fa{
+							font-size: 18px;
+							color: $regularGrey;
+							margin-left: 20px;
+						}
+					}
+					&.location{
+						padding-top: 22px;
+						i.fa{
+							font-size: 25px;
+							margin-right: 10px;
+							color: $veryLightDark;
+							position: relative;
+							bottom: -3px;
+						}
+					}
+
+				}
+			}
+		}
+}
