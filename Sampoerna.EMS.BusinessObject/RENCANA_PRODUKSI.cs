@@ -12,19 +12,16 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_SERIES
+    public partial class RENCANA_PRODUKSI
     {
-        public ZAIDM_EX_SERIES()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
-        }
+        public long RENCANA_PROD_ID { get; set; }
+        public Nullable<long> PBCK1_ID { get; set; }
+        public int PRODTYP_ID { get; set; }
+        public Nullable<decimal> CONVERTED_OUTPUT { get; set; }
+        public Nullable<int> CONVERTED_UOM { get; set; }
     
-        public long SERIES_ID { get; set; }
-        public Nullable<int> SERIES_CODE { get; set; }
-        public string SERIES_VALUE { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
+        public virtual UOM UOM { get; set; }
+        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
     }
 }

@@ -18,7 +18,11 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.CHANGES_HISTORY = new HashSet<CHANGES_HISTORY>();
             this.CK5 = new HashSet<CK5>();
+            this.CK51 = new HashSet<CK5>();
             this.PBCK1 = new HashSet<PBCK1>();
+            this.PBCK3_7 = new HashSet<PBCK3_7>();
+            this.PBCK3_71 = new HashSet<PBCK3_7>();
+            this.PBCK3_72 = new HashSet<PBCK3_7>();
             this.USER1 = new HashSet<USER>();
             this.ZAIDM_EX_KPPBC = new HashSet<ZAIDM_EX_KPPBC>();
             this.ZAIDM_EX_POA = new HashSet<ZAIDM_EX_POA>();
@@ -31,10 +35,15 @@ namespace Sampoerna.EMS.BusinessObject
         public string LAST_NAME { get; set; }
         public Nullable<bool> IS_ACTIVE { get; set; }
         public Nullable<int> USER_GROUP_ID { get; set; }
+        public string EMAIL { get; set; }
     
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual ICollection<CK5> CK51 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
+        public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
+        public virtual ICollection<PBCK3_7> PBCK3_71 { get; set; }
+        public virtual ICollection<PBCK3_7> PBCK3_72 { get; set; }
         public virtual ICollection<USER> USER1 { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER_GROUP USER_GROUP { get; set; }

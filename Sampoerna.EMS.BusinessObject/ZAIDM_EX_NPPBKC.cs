@@ -16,8 +16,11 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_NPPBKC()
         {
+            this.CK4C = new HashSet<CK4C>();
             this.NPPBKC_PLANT = new HashSet<NPPBKC_PLANT>();
             this.PBCK1 = new HashSet<PBCK1>();
+            this.PBCK3_7 = new HashSet<PBCK3_7>();
+            this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
         }
     
         public long NPPBKC_ID { get; set; }
@@ -27,6 +30,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<long> CITY_ID { get; set; }
         public Nullable<long> KPPBC_ID { get; set; }
         public Nullable<int> REGION_OFFICE_ID { get; set; }
+        public Nullable<long> COMPANY_ID { get; set; }
         public Nullable<long> VENDOR_ID { get; set; }
         public string TEXT_TO { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
@@ -35,9 +39,11 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual C1LFA1 C1LFA1 { get; set; }
         public virtual CITY CITY { get; set; }
+        public virtual ICollection<CK4C> CK4C { get; set; }
         public virtual ICollection<NPPBKC_PLANT> NPPBKC_PLANT { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
-        public virtual REGION_OFFICE_ID REGION_OFFICE_ID1 { get; set; }
-        public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
+        public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
+        public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
+        public virtual T1001 T1001 { get; set; }
     }
 }
