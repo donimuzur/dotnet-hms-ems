@@ -1,0 +1,150 @@
+﻿@model Sampoerna.EMS.Website.Models.UserViewModel
+
+@section styles {
+    <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
+}
+
+@section scripts {
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $('#employeeTable').DataTable(
+                {
+                    "sDom": "Rlfrtip"
+                });
+        });
+    </script>
+
+}
+
+@{
+    ViewBag.Title = "View Detail User";
+}
+
+<fieldset>
+    <legend>@ViewBag.Title</legend>
+    @{
+        if (Model.Manager != null)
+        {
+
+            <div id="data_manager">
+                <h2>Data Manager</h2>
+                <div class="display-label">
+                    Username
+                </div>
+
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Manager.USERNAME)
+                </div>
+
+                <div class="display-label">
+                    First Name
+                </div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Manager.FIRST_NAME)
+                </div>
+
+                <div class="display-label">
+                    Last Name
+                </div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Manager.LAST_NAME)
+                </div>
+
+            </div>
+
+        }
+    }
+
+    <h2>Informasi User</h2>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.USERNAME)
+    </div>
+
+    <div class="display-field">
+        @Html.DisplayFor(model => model.USERNAME)
+    </div>
+
+    <div class="display-label">
+        First Name
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FIRST_NAME)
+    </div>
+
+    <div class="display-label">
+        Last Name
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LAST_NAME)
+    </div>
+    
+    <div class="display-label">
+        User Group
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.USER_GROUP.GROUP_NAME)
+    </div>
+
+    <div class="display-label">
+        Is Active
+    </div>
+    <div class="display-field">
+        @Html.CheckBoxFor(model => model.IS_ACTIVE, htmlAttributes: new { @disabled = "true" })
+    </div>
+
+    @{
+        if (Model.Employees.Count > 0)
+        {
+            <div id="data_employee">
+                <h2>Data Employee</h2>
+                <table id="employeeTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Employees)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.USERNAME)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FIRST_NAME)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LAST_NAME)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Detail", "ViewDetail", new { id = item.USER_ID })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+
+</fieldset>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

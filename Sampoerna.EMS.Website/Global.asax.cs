@@ -2,6 +2,7 @@
 using System.Web.Optimization;
 using System.Web.Routing;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Website.Code;
 using Voxteneo.WebCompoments.NLogLogger;
 using Voxteneo.WebComponents.Logger;
 using SimpleInjector;
@@ -17,6 +18,7 @@ namespace Sampoerna.EMS.Website
         private static Container _container;
         public static TService GetInstance<TService>()
         where TService : class
+     
         {
             return _container.GetInstance<TService>();
         }
@@ -40,6 +42,7 @@ namespace Sampoerna.EMS.Website
             container.Register<ICompanyBLL, CompanyBLL>();
             container.Register<IWorkflowBLL, WorkflowBLL>();
             container.Register<IUserBLL, UserBLL>();
+            container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -49,15 +52,16 @@ namespace Sampoerna.EMS.Website
 
         }
 
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            
+           
             Bootstrap();
-            
+
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
 
         }
