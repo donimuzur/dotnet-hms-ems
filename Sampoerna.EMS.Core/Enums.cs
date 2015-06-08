@@ -2,6 +2,12 @@
 {
     public class Enums
     {
-        
+        public enum MenuList
+        {
+            MasterData,
+            ExcisableGoodMovement,
+            Settings,
+            ExcisableGoodClaimable
+        }
     }
 }
