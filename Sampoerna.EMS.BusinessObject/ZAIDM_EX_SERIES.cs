@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BusinessObject
         public long SERIES_ID { get; set; }
         public Nullable<int> SERIES_CODE { get; set; }
         public string SERIES_VALUE { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }

@@ -487,12 +487,13 @@
           <Property Name="IS_ACTIVE" Type="bit" />
           <Property Name="USER_GROUP_ID" Type="int" />
           <Property Name="EMAIL" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
             <PropertyRef Name="GROUP_ID" />
           </Key>
-          <Property Name="GROUP_ID" Type="int" Nullable="false" />
+          <Property Name="GROUP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="ROLE_NAME" Type="nvarchar" MaxLength="30" />
         </EntityType>
@@ -641,6 +642,7 @@
           <Property Name="SERIES_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SERIES_CODE" Type="int" />
           <Property Name="SERIES_VALUE" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_POA_MAP">
           <Key>
@@ -3401,6 +3403,7 @@
           <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -3606,6 +3609,7 @@
           <Property Name="SERIES_VALUE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_MATERIAL" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ZAIDM_POA_MAP">
           <Key>
@@ -5340,6 +5344,7 @@
           <EntitySetMapping Name="USER">
             <EntityTypeMapping TypeName="EMSModel.USER">
               <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
                 <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
                 <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
@@ -5511,6 +5516,7 @@
           <EntitySetMapping Name="ZAIDM_EX_SERIES">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_SERIES">
               <MappingFragment StoreEntitySet="ZAIDM_EX_SERIES">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
                 <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
                 <ScalarProperty Name="SERIES_ID" ColumnName="SERIES_ID" />

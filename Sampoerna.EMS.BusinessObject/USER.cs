@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_ACTIVE { get; set; }
         public Nullable<int> USER_GROUP_ID { get; set; }
         public string EMAIL { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
