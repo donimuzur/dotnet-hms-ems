@@ -544,12 +544,12 @@
           </Key>
           <Property Name="KPPBC_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="KPPBC_NUMBER" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="3" Nullable="false" />
+          <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="MENGETAHUI_ID" Type="int" />
           <Property Name="CK1_KEP_HEADER" Type="nvarchar" MaxLength="70" />
           <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="70" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="int" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="int" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -1699,7 +1699,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_KPPBC_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
@@ -2553,6 +2553,10 @@
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_PAGE_PAGE" Association="EMSModel.FK_PAGE_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="PAGE1" EntitySet="PAGE" />
+          </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_USER_GROUP" Association="EMSModel.FK_PAGE_MAP_USER_GROUP">
             <End Role="USER_GROUP" EntitySet="USER_GROUP" />
             <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
@@ -2768,10 +2772,6 @@
           <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PAGE_PAGE" Association="EMSModel.FK_PAGE_PAGE">
-            <End Role="PAGE" EntitySet="PAGE" />
-            <End Role="PAGE1" EntitySet="PAGE" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="C1LFA1">
@@ -3073,9 +3073,9 @@
           <Property Name="PAGE_ID" Type="Int32" Nullable="false" />
           <Property Name="PAGE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PAGE_URL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_PAGE" FromRole="PAGE" ToRole="PAGE_MAP" />
           <Property Name="MENU_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PARENT_PAGE_ID" Type="Int32" />
+          <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_PAGE" FromRole="PAGE" ToRole="PAGE_MAP" />
           <NavigationProperty Name="PAGE1" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE" ToRole="PAGE1" />
           <NavigationProperty Name="PAGE2" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE1" ToRole="PAGE" />
         </EntityType>
@@ -3391,6 +3391,7 @@
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <Property Name="USER_GROUP_ID" Type="Int32" />
           <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_USER" FromRole="USER" ToRole="CK5" />
           <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_USER1" FromRole="USER" ToRole="CK5" />
@@ -3403,13 +3404,12 @@
           <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
             <PropertyRef Name="GROUP_ID" />
           </Key>
-          <Property Name="GROUP_ID" Type="Int32" Nullable="false" />
+          <Property Name="GROUP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ROLE_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_USER_GROUP" FromRole="USER_GROUP" ToRole="PAGE_MAP" />
@@ -3478,12 +3478,12 @@
           </Key>
           <Property Name="KPPBC_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="KPPBC_NUMBER" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="KPPBC_TYPE" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="KPPBC_TYPE" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="MENGETAHUI_ID" Type="Int32" />
           <Property Name="CK1_KEP_HEADER" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="CK1_KEP_FOOTER" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="Int32" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="Int32" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="ZAIDM_EX_KPPBC" ToRole="CK5" />
           <NavigationProperty Name="MENGETAHUI" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI" FromRole="ZAIDM_EX_KPPBC" ToRole="MENGETAHUI" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="ZAIDM_EX_KPPBC" ToRole="USER" />
@@ -3492,7 +3492,7 @@
           <Key>
             <PropertyRef Name="MARKET_ID" />
           </Key>
-          <Property Name="MARKET_ID" Type="Int64" Nullable="false" />
+          <Property Name="MARKET_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MARKET_CODE" Type="Int32" />
           <Property Name="MARKET_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
@@ -3607,9 +3607,9 @@
           <Property Name="SERIES_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SERIES_CODE" Type="Int32" />
           <Property Name="SERIES_VALUE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_MATERIAL" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ZAIDM_POA_MAP">
           <Key>
@@ -4163,6 +4163,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PAGE_PAGE">
+          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="0..1" />
+          <End Type="EMSModel.PAGE" Role="PAGE1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="PAGE1">
+              <PropertyRef Name="PARENT_PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PAGE_MAP_USER_GROUP">
           <End Type="EMSModel.USER_GROUP" Role="USER_GROUP" Multiplicity="0..1" />
           <End Type="EMSModel.PAGE_MAP" Role="PAGE_MAP" Multiplicity="*" />
@@ -4656,7 +4668,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_KPPBC_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
@@ -4808,18 +4820,6 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PAGE_PAGE">
-          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="0..1" />
-          <End Type="EMSModel.PAGE" Role="PAGE1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PAGE">
-              <PropertyRef Name="PAGE_ID" />
-            </Principal>
-            <Dependent Role="PAGE1">
-              <PropertyRef Name="PARENT_PAGE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
