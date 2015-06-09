@@ -251,6 +251,8 @@
           <Property Name="PAGE_ID" Type="int" Nullable="false" />
           <Property Name="PAGE_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="PAGE_URL" Type="nvarchar" MaxLength="100" />
+          <Property Name="MENU_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="PARENT_PAGE_ID" Type="int" />
         </EntityType>
         <EntityType Name="PAGE_MAP">
           <Key>
@@ -1067,6 +1069,18 @@
             </Principal>
             <Dependent Role="PAGE_MAP">
               <PropertyRef Name="USER_GROUP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAGE_PAGE">
+          <End Role="PAGE" Type="Self.PAGE" Multiplicity="0..1" />
+          <End Role="PAGE1" Type="Self.PAGE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="PAGE1">
+              <PropertyRef Name="PARENT_PAGE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2035,6 +2049,10 @@
             <End Role="USER_GROUP" EntitySet="USER_GROUP" />
             <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_PAGE_PAGE" Association="Self.FK_PAGE_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="PAGE1" EntitySet="PAGE" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_GOODTYP" Association="Self.FK_PBCK1_GOODTYP">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="PBCK1" EntitySet="PBCK1" />
@@ -2749,6 +2767,10 @@
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_PAGE_PAGE" Association="EMSModel.FK_PAGE_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="PAGE1" EntitySet="PAGE" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C1LFA1">
           <Key>
@@ -3050,6 +3072,10 @@
           <Property Name="PAGE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PAGE_URL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_PAGE" FromRole="PAGE" ToRole="PAGE_MAP" />
+          <Property Name="MENU_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PARENT_PAGE_ID" Type="Int32" />
+          <NavigationProperty Name="PAGE1" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE" ToRole="PAGE1" />
+          <NavigationProperty Name="PAGE2" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE1" ToRole="PAGE" />
         </EntityType>
         <EntityType Name="PAGE_MAP">
           <Key>
@@ -4781,6 +4807,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PAGE_PAGE">
+          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="0..1" />
+          <End Type="EMSModel.PAGE" Role="PAGE1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="PAGE1">
+              <PropertyRef Name="PARENT_PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5051,6 +5089,8 @@
           <EntitySetMapping Name="PAGE">
             <EntityTypeMapping TypeName="EMSModel.PAGE">
               <MappingFragment StoreEntitySet="PAGE">
+                <ScalarProperty Name="PARENT_PAGE_ID" ColumnName="PARENT_PAGE_ID" />
+                <ScalarProperty Name="MENU_NAME" ColumnName="MENU_NAME" />
                 <ScalarProperty Name="PAGE_URL" ColumnName="PAGE_URL" />
                 <ScalarProperty Name="PAGE_NAME" ColumnName="PAGE_NAME" />
                 <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
