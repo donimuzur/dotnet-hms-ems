@@ -209,8 +209,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\PBCKController.cs" />
-    <Compile Include="Controllers\SplashScreenController.cs" />
+    <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
@@ -223,7 +222,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\PBCKViewModel.cs" />
+    <Compile Include="Models\PBCK1ViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -538,9 +537,8 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ViewDetail.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
-    <Content Include="Views\SplashScreen\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\PBCK\Index.cshtml" />
+    <Content Include="Views\PBCK1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

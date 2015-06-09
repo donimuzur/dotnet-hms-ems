@@ -1,6 +1,6 @@
 ﻿namespace Sampoerna.EMS.Website.Models 
 {
-    public class PBCKViewModel : BaseModel
+    public class PBCK1ViewModel : BaseModel
     {
     }
 }

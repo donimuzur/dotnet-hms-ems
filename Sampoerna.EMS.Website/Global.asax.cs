@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IWorkflowBLL, WorkflowBLL>();
             container.Register<IUserBLL, UserBLL>();
             container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
+            container.Register<IPageBLL, PageBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -51,8 +52,7 @@ namespace Sampoerna.EMS.Website
             _container = container;
 
         }
-
-
+        
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
