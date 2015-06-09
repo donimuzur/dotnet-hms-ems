@@ -13,25 +13,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Load the site CSS after Boostrap's to override -->
-    @*@Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")*@
+    @Styles.Render("~/Content/css")
     
-    <!-- Load the site CSS after Boostrap's to override -->
-    <link href="~/Content/css/main.min.css" rel="stylesheet" media="screen" />
-
-    <link href="~/Content/css/vendors/yamm.css" rel="stylesheet" />
-    <link href="~/Content/css/vendors/font-awesome.min.css" rel="stylesheet" />
-
     <!-- Load jQuery -->
-    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    @Scripts.Render("~/bundles/jquery")
     <!-- Load Modernizr.js -->
-    <script src="~/Scripts/modernizr.min.js"></script>
+    @Scripts.Render("~/bundles/modernizrmin")
     <!-- Load Bootstrap JavaScript -->
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/Scripts/js/vendors/bootstrap-datepicker.min.js"></script>
+    @Scripts.Render("~/bundles/bootstrap")
     <!-- Load Fixed Header table JavaScript -->
-    <script src="~/Scripts/js/vendors/jquery.fixedheadertable.min.js"></script>
-    <script src="~/Scripts/js/scripts.min.js"></script>
+    @Scripts.Render("~/bundles/fixedheadertable")
 
 </head>
 <body>
@@ -136,8 +127,7 @@
         </div>
     </footer>
 
-    @*@Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")*@
+    @Scripts.Render("~/bundles/customjs")
     @RenderSection("styles", required: false)
     @RenderSection("scripts", required: false)
     
