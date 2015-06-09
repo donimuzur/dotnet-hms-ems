@@ -4,7 +4,7 @@ using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    public class PBCKController : BaseController
+    public class PBCKController : Controller
     {
         //
         // GET: /PBCK/

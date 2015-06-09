@@ -26,11 +26,11 @@
     <!-- Load Modernizr.js -->
     <script src="~/Scripts/modernizr.min.js"></script>
     <!-- Load Bootstrap JavaScript -->
-    <script src="~/Scripts/js/vendors/bootsrap/bootstrap.min.js"></script>
-    <script src="~/Scripts/js/vendors/bootsrap/bootstrap-datepicker.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/vendors/bootstrap-datepicker.min.js"></script>
     <!-- Load Fixed Header table JavaScript -->
-    <script src="~/Scripts/jquery.fixedheadertable.min.js"></script>
-    <script src="~/Scripts/scripts.min.js"></script>
+    <script src="~/Scripts/js/vendors/jquery.fixedheadertable.min.js"></script>
+    <script src="~/Scripts/js/scripts.min.js"></script>
 
 </head>
 <body>
@@ -43,7 +43,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="~">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
                 <img src="~/Content/assets/images/logo.png" alt="">
                 <img class="logo-small" src="~/Content/assets/images/favicon.png" alt="">
             </a>
@@ -135,8 +135,8 @@
         </div>
     </footer>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")*@
     @RenderSection("styles", required: false)
     @RenderSection("scripts", required: false)
     

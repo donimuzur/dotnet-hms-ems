@@ -229,10 +229,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AspnetWebForms\GenericReportViewer.aspx" />
-    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.svg" />
-    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.svg" />
-    <Content Include="Content\assets\fonts\montserrat-bold-webfont.svg" />
-    <Content Include="Content\assets\fonts\montserrat-regular-webfont.svg" />
     <Content Include="Content\assets\images\chart.png" />
     <Content Include="Content\assets\images\favicon.png" />
     <Content Include="Content\assets\images\icon-claimable-white.png" />
@@ -258,34 +254,9 @@
     <Content Include="Content\fonts\montserrat-bold-webfont.svg" />
     <Content Include="Content\fonts\montserrat-regular-webfont.svg" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.ttf" />
-    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.woff" />
-    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.eot" />
-    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.ttf" />
-    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.woff" />
-    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.woff2" />
-    <Content Include="Content\assets\fonts\FontAwesome\FontAwesome.otf" />
-    <Content Include="Content\assets\fonts\montserrat-bold-webfont.eot" />
-    <Content Include="Content\assets\fonts\montserrat-bold-webfont.ttf" />
-    <Content Include="Content\assets\fonts\montserrat-bold-webfont.woff" />
-    <Content Include="Content\assets\fonts\montserrat-bold-webfont.woff2" />
-    <Content Include="Content\assets\fonts\montserrat-regular-webfont.eot" />
-    <Content Include="Content\assets\fonts\montserrat-regular-webfont.ttf" />
-    <Content Include="Content\assets\fonts\montserrat-regular-webfont.woff" />
-    <Content Include="Content\assets\fonts\montserrat-regular-webfont.woff2" />
-    <Content Include="Content\assets\fonts\opensans-regular-webfont.eot" />
-    <Content Include="Content\assets\fonts\opensans-regular-webfont.ttf" />
-    <Content Include="Content\assets\fonts\opensans-regular-webfont.woff" />
-    <Content Include="Content\assets\fonts\opensans-regular-webfont.woff2" />
-    <Content Include="Content\assets\fonts\opensans-semibold-webfont.eot" />
-    <Content Include="Content\assets\fonts\opensans-semibold-webfont.ttf" />
-    <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff" />
-    <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
     <Content Include="Content\css\main.min.css.map" />
     <Content Include="Content\fonts\bootstrap\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\bootstrap\glyphicons-halflings-regular.ttf" />
@@ -522,12 +493,11 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\scripts.min.js" />
-    <Content Include="Scripts\js\vendors\bootsrap\bootstrap-datepicker.min.js" />
-    <Content Include="Scripts\js\vendors\bootsrap\bootstrap.min.js" />
-    <Content Include="Scripts\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\js\scripts.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\modernizr.min.js" />
-    <Content Include="Scripts\_scripts.js" />
+    <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -576,9 +546,6 @@
     <Folder Include="Views\AspxReportViewer\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>
