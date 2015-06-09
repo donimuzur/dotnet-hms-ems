@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
+    <Compile Include="IPageBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
