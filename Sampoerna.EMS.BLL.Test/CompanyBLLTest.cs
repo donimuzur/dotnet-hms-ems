@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BLL.Test
         private IGenericRepository<T1001> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private ICompanyBLL _bll;
+        private ICompanyBLL _companyBll;
 
         [TestInitialize]
         public void SetUp()
@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BLL.Test
             _logger = Substitute.For<ILogger>();
             _uow = Substitute.For<IUnitOfWork>();
             _repository = _uow.GetGenericRepository<T1001>();
-            _bll = new CompanyBLL(_uow, _logger);
+            _companyBll = new CompanyBLL(_uow, _logger);
 
         }
 
@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.BLL.Test
             _logger = null;
             _uow = null;
             _repository = null;
-            _bll = null;
+            _companyBll = null;
         }
         [TestMethod]
         public void GetMasterData()
@@ -43,10 +43,10 @@ namespace Sampoerna.EMS.BLL.Test
             _repository.GetQuery().ReturnsForAnyArgs(companyData as IQueryable<T1001>);
            
            //act
-            var results = _bll.GetMasterData().AsQueryable();
+            var results = _companyBll.GetMasterData();
 
            //assert
-           //Assert.AreEqual(companyData.Count(), results.Count);
+           Assert.AreEqual(companyData.Count(), results.Count);
 
 
         }
