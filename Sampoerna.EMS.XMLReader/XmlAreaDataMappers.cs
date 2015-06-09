@@ -14,15 +14,10 @@ namespace Sampoerna.EMS.XMLReader
 {
     public class XmlAreaDataMapper : IXmlDataReader 
     {
-        private XElement _xmData = null;
         private XmlDataMapper _xmlMapper = null;
-        private ILogger _logger;
-        private IUnitOfWork _uow;
-
+       
         public XmlAreaDataMapper()
         {
-            _logger = new NullLogger();
-            _uow = new SqlUnitOfWork(_logger);
             _xmlMapper = new XmlDataMapper("T1001K");
            
         }
@@ -40,16 +35,33 @@ namespace Sampoerna.EMS.XMLReader
                     item.BWKEY = xElement.Element("BWKEY").Value;
                     var companyCode  = xElement.Element("BUKRS").Value;
                     var companyById =
-                        _uow.GetGenericRepository<T1001>()
+                        _xmlMapper.uow.GetGenericRepository<T1001>()
                             .Get(p => p.BUKRS == companyCode)
                             .OrderByDescending(p => p.CREATED_DATE)
                             .FirstOrDefault();
 
                     item.CREATED_DATE = DateTime.Now;
                     if (companyById != null)
+                            item.COMPANY_ID = companyById.COMPANY_ID;
+                       
+                    var areaDateXml = DateTime.MinValue;
+                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out areaDateXml);
+                    var exisitingArea = _xmlMapper.uow.GetGenericRepository<T1001K>()
+                           .Get(p => p.BWKEY == item.BWKEY)
+                           .OrderByDescending(p => p.CREATED_DATE)
+                           .FirstOrDefault();
+
+                    if (exisitingArea != null)
                     {
-                        item.COMPANY_ID = companyById.COMPANY_ID;
-                        items.Add(item);
+                        if (areaDateXml > exisitingArea.CREATED_DATE)
+                        {
+                             items.Add(item);
+                        }
+                        else
+                        {
+                            continue;
+
+                        }
                     }
                    
                 }
@@ -61,22 +73,7 @@ namespace Sampoerna.EMS.XMLReader
 
         public void InsertToDatabase()
         {
-            var repo = _uow.GetGenericRepository<T1001K>();
-
-            try
-            {
-                foreach (var item in Items)
-                {
-                    repo.Insert(item);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                _uow.RevertChanges();
-            } 
-            _uow.SaveChanges();
-       
+           _xmlMapper.InsertToDatabase<T1001K>(Items);
         }
 
 

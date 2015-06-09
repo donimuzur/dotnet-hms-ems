@@ -552,7 +552,7 @@
           <Key>
             <PropertyRef Name="MARKET_ID" />
           </Key>
-          <Property Name="MARKET_ID" Type="bigint" Nullable="false" />
+          <Property Name="MARKET_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MARKET_CODE" Type="int" />
           <Property Name="MARKET_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" />
