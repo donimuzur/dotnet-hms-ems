@@ -12,16 +12,14 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_BRAND
+    public partial class ZAIDM_EX_MATERIAL
     {
-        public ZAIDM_EX_BRAND()
+        public ZAIDM_EX_MATERIAL()
         {
-            this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
-            this.PBCK3_7_ITEM = new HashSet<PBCK3_7_ITEM>();
-            this.PBCK4_ITEM = new HashSet<PBCK4_ITEM>();
+            this.CK5_MATERIAL = new HashSet<CK5_MATERIAL>();
         }
     
-        public long BRAND_ID { get; set; }
+        public long MATERIAL_ID { get; set; }
         public string STICKER_CODE { get; set; }
         public long PLANT_ID { get; set; }
         public string FA_CODE { get; set; }
@@ -41,9 +39,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> END_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
     
-        public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
-        public virtual ICollection<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
-        public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
+        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }

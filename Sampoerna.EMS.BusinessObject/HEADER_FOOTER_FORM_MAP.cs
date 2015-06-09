@@ -12,18 +12,11 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class CHANGES_HISTORY
+    public partial class HEADER_FOOTER_FORM_MAP
     {
-        public long CHANGES_HISTORY_ID { get; set; }
-        public Nullable<long> FORM_ID { get; set; }
+        public int HEADER_FOOTER_FORM_MAP_ID { get; set; }
         public Nullable<int> FORM_TYPE_ID { get; set; }
-        public string FIELD_NAME { get; set; }
-        public string OLD_VALUE { get; set; }
-        public string NEW_VALUE { get; set; }
-        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public Nullable<int> MODIFIED_BY { get; set; }
-    
-        public virtual FORM_TYPE FORM_TYPE { get; set; }
-        public virtual USER USER { get; set; }
+        public Nullable<bool> IS_HEADER_SET { get; set; }
+        public Nullable<bool> IS_FOOTER_SET { get; set; }
     }
 }

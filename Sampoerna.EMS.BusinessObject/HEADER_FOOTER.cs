@@ -18,7 +18,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string FORM_NAME { get; set; }
         public Nullable<long> COMPANY_ID { get; set; }
         public string HEADER_IMAGE_PATH { get; set; }
-        public string HEADER_CONTENT { get; set; }
         public string FOOTER_CONTENT { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     

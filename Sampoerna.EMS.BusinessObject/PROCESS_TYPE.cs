@@ -14,14 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class PROCESS_TYPE
     {
-        public PROCESS_TYPE()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
-    
         public int PROTYPE_ID { get; set; }
         public string PROTYPE_NAME { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }

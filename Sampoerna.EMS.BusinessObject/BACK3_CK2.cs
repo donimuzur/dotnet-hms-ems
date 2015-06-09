@@ -12,24 +12,24 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class STATUS
+    public partial class BACK3_CK2
     {
-        public STATUS()
+        public BACK3_CK2()
         {
-            this.CK5 = new HashSet<CK5>();
-            this.PBCK3_7 = new HashSet<PBCK3_7>();
-            this.PBCK3_71 = new HashSet<PBCK3_7>();
             this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
-            this.PBCK4 = new HashSet<PBCK4>();
+            this.PBCK3_7 = new HashSet<PBCK3_7>();
         }
     
-        public int STATUS_ID { get; set; }
-        public string STATUS_NAME { get; set; }
+        public long BACK3_CK2_ID { get; set; }
+        public string BACK3_NUMBER { get; set; }
+        public string CK2_NUMBER { get; set; }
+        public Nullable<System.DateTime> BACK3_DATE { get; set; }
+        public Nullable<System.DateTime> CK2_DATE { get; set; }
+        public Nullable<decimal> CK2_VALUE { get; set; }
+        public Nullable<long> STATUS_GOV_ID { get; set; }
     
-        public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
-        public virtual ICollection<PBCK3_7> PBCK3_71 { get; set; }
+        public virtual STATUS_GOV STATUS_GOV { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
-        public virtual ICollection<PBCK4> PBCK4 { get; set; }
+        public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
     }
 }

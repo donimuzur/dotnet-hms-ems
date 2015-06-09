@@ -14,14 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class REGION_OFFICE_ID
     {
-        public REGION_OFFICE_ID()
-        {
-            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
-        }
-    
         public int REGION_OFFICE_ID1 { get; set; }
         public string REGION_NAME { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }
