@@ -4,6 +4,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -11,7 +12,7 @@ namespace Sampoerna.EMS.Website.Controllers
     public class UserController : BaseController
     {
         private IUserBLL _bll;
-        public UserController(IUserBLL bll)
+        public UserController(IUserBLL bll, IPageBLL pageBLL) : base(pageBLL, Enums.MenuList.USER)
         {
             _bll = bll;
         }

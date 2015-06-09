@@ -3,13 +3,25 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
 
     public class BaseController : Controller
     {
+
+        private IPageBLL _pageBLL;
+        private Enums.MenuList _menuID;
+
+        public BaseController(IPageBLL pageBll, Enums.MenuList menuID)
+        {
+            _pageBLL = pageBll;
+            _menuID = menuID;
+        }
         protected ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -59,6 +71,14 @@ namespace Sampoerna.EMS.Website.Controllers
             set
             {
                 Session[Core.Constans.SessionKey.CurrentUser] = value;
+            }
+        }
+
+        protected PAGE PageInfo
+        {
+            get
+            {
+                return _pageBLL.GetPageByID((int) _menuID);
             }
         }
 
