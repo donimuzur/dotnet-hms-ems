@@ -2,6 +2,9 @@
 {
     public class Constans
     {
+
+        public const string InList = "In List";
+        public static readonly string MenuActiveDashboard = "Dashboard";
         /// <summary>
         /// list of SessionKey constanta
         /// </summary>

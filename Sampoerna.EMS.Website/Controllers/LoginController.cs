@@ -30,7 +30,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (loginResult != null)
             {
                 CurrentUser = loginResult;
-                return RedirectToAction("Index", "SplashScreen");
+                
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.Error = "Username incorrect";
