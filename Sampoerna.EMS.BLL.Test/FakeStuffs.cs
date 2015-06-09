@@ -81,12 +81,14 @@ namespace Sampoerna.EMS.BLL.Test
         public static IEnumerable<T1001> GetCompany()
         {
 
-            var rc = new List<T1001>();
-            rc.Add(new T1001() { COMPANY_ID = 10, BUKRS = "101", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:11.317")});
-            rc.Add(new T1001() { COMPANY_ID = 11, BUKRS = "102", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:12.980")});
-            rc.Add(new T1001() { COMPANY_ID = 12, BUKRS = "103", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:56.660")});
-            rc.Add(new T1001() { COMPANY_ID = 13, BUKRS = "104", BUKRSTXT  = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:58.143")});
-            return rc;
+            var compannyDummy = new List<T1001>();
+            compannyDummy.Add(new T1001() { COMPANY_ID = 10, BUKRS = "101", BUKRSTXT = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:11.317") });
+            compannyDummy.Add(new T1001() { COMPANY_ID = 11, BUKRS = "102", BUKRSTXT = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:12.980") });
+            compannyDummy.Add(new T1001() { COMPANY_ID = 12, BUKRS = "103", BUKRSTXT = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:56.660") });
+            compannyDummy.Add(new T1001() { COMPANY_ID = 13, BUKRS = "104", BUKRSTXT = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-05-29 10:55:58.143") });
+            compannyDummy.Add(new T1001() { COMPANY_ID = 14, BUKRS = "102", BUKRSTXT = "ABSC", CREATED_DATE = Convert.ToDateTime("2015-06-29 10:55:58.143") });
+
+            return compannyDummy;
         }
 
     }

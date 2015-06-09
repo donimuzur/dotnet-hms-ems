@@ -5,7 +5,7 @@ using NSubstitute;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
-
+using Sampoerna.EMS.Contract;
 namespace Sampoerna.EMS.BLL.Test
 {
     [TestClass]
@@ -21,7 +21,11 @@ namespace Sampoerna.EMS.BLL.Test
         {
             _logger = Substitute.For<ILogger>();
             _uow = Substitute.For<IUnitOfWork>();
-            _repository = _uow.GetGenericRepository<T1001>();
+            _repository = Substitute.For<IGenericRepository<T1001>>();
+            var companyData = FakeStuffs.GetCompany();
+            _uow.GetGenericRepository<T1001>().ReturnsForAnyArgs(_repository);
+            _repository.GetQuery().ReturnsForAnyArgs(companyData.AsQueryable());
+          
             _companyBll = new CompanyBLL(_uow, _logger);
 
         }
@@ -38,15 +42,12 @@ namespace Sampoerna.EMS.BLL.Test
         public void GetMasterData()
         {
             //arrange
-            var companyData = FakeStuffs.GetCompany();
-            _repository.Get().ReturnsForAnyArgs(companyData);
-            _repository.GetQuery().ReturnsForAnyArgs(companyData as IQueryable<T1001>);
            
            //act
             var results = _companyBll.GetMasterData();
-
+            var companyCode102 = results.Where(x => x.BUKRS == "102");
            //assert
-           Assert.AreEqual(companyData.Count(), results.Count);
+            Assert.AreEqual(1, companyCode102.Count());
 
 
         }
