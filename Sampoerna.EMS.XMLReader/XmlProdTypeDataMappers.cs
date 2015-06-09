@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
                     item.CREATED_DATE = DateTime.Now;
                     var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out dateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
                     var existingProdType = GetProdType(item.PRODUCT_CODE);
                     if (existingProdType != null)
                     {

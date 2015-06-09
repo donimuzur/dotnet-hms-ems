@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
                     item.CREATED_DATE = DateTime.Now;
                     var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out dateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
                     var existingSeries = GetSeries(item.SERIES_CODE);
                     if (existingSeries != null)
                     {

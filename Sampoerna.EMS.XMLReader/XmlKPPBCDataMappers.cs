@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.MODIFIED_DATE = DateTime.Now;
                     //item.MODIFIED_BY = 100;
                     var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out dateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
                     var existingKppbc = GetKPPBC(item.KPPBC_NUMBER);
                     if (existingKppbc != null)
                     {

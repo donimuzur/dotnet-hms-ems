@@ -45,7 +45,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.COMPANY_ID = companyById.COMPANY_ID;
                        
                     var areaDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out areaDateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out areaDateXml);
                     var exisitingArea = _xmlMapper.uow.GetGenericRepository<T1001K>()
                            .Get(p => p.BWKEY == item.BWKEY)
                            .OrderByDescending(p => p.CREATED_DATE)

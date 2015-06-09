@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.ORT01 = xElement.Element("ORT01").Value;
                     item.CREATED_DATE = DateTime.Now;
                     var plantDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out plantDateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out plantDateXml);
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {

@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.XMLReader
                             .OrderByDescending(p => p.CREATED_DATE)
                             .FirstOrDefault();
                     var marketDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out marketDateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out marketDateXml);
                     item.MARKET_CODE = marketCodeXml;
                     item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;

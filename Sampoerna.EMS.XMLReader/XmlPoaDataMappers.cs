@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.XMLReader
 
                     var exisitingPoa = GetExPoa(poaCodeXml);
                     var podDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("CHANGES_DATE").Value, out podDateXml);
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out podDateXml);
                     item.POA_CODE = poaCodeXml;
                     item.POA_ID_CARD = xElement.Element("POA_ID_CARD").Value;
                     item.POA_PRINTED_NAME = xElement.Element("POA_PRINTED_NAME").Value;
