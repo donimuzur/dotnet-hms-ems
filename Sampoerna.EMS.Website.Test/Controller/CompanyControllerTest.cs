@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
-using System.Web.WebPages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Website;
 using Sampoerna.EMS.Website.Controllers;
-using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Test.Controller;
 using Voxteneo.WebComponents.Logger;
-using Sampoerna.EMS.Contract;
 
-namespace Sampoerna.EMS.BLL.Test
+namespace Sampoerna.EMS.Website.Test
 {
     [TestClass]
     public class CompanyBLLTest
@@ -31,7 +27,7 @@ namespace Sampoerna.EMS.BLL.Test
             _logger = Substitute.For<ILogger>();
             _uow = Substitute.For<IUnitOfWork>();
             _repository = Substitute.For<IGenericRepository<T1001>>();
-            var companyData = FakeStuffs.GetCompany();
+            var companyData = FakeStuffWeb.GetCompany();
             _uow.GetGenericRepository<T1001>().ReturnsForAnyArgs(_repository);
             _repository.GetQuery().ReturnsForAnyArgs(companyData.AsQueryable());
 
@@ -49,35 +45,30 @@ namespace Sampoerna.EMS.BLL.Test
         }
 
         [TestMethod]
-        public void IsCorrectRowResult()
+        public void IsReturnCorrectView()
         {
+            var controller = new CompanyController(_companyBll);
+            var result = controller.Index() as ViewResult;
 
-            //act
-            var results = _companyBll.GetMasterData();
-            var companyCode102 = results.Where(x => x.BUKRS == "102");
-            //assert
-            Assert.AreEqual(1, companyCode102.Count());
-
+            Assert.AreEqual("Index", result.ViewName);
         }
 
         [TestMethod]
-        public void IsCorrectDate()
+        public void IsReturnCorrectViewAction()
         {
+            CompanyController controller = new CompanyController(_companyBll);
+            ActionResult result = controller.Index();
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
 
-            //act
-            var results = _companyBll.GetMasterData();
-            var companyCode102 = results.Where(x => x.BUKRS == "102");
+            //var controller = new CompanyController(_companyBll);
+            //var result = (RedirectToRouteResult)controller.Index();
+            //Assert.AreEqual("Index", SubstituteExtensions.Returns(result.RouteValues));
 
-            DateTime? value = new DateTime();
-            foreach (var data in companyCode102)
-            {
-                value = data.CREATED_DATE;
-            }
-            //assert
-            Assert.AreEqual(Convert.ToDateTime("2015-06-29 10:55:58.143"), value);
-
+            //CompanyController controller = new CompanyController(_companyBll);
+            //ActionResult result = controller.Index();
+            //Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            //RedirectToRouteResult routeResult = result as RedirectToRouteResult;
+            //Assert.AreEqual(routeResult.RouteValues, "Index");
         }
-
-      
     }
 }

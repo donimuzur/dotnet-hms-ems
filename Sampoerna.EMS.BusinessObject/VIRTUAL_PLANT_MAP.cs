@@ -12,19 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_SERIES
+    public partial class VIRTUAL_PLANT_MAP
     {
-        public ZAIDM_EX_SERIES()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
-        }
+        public long VIRTUAL_PLANT_MAP_ID { get; set; }
+        public Nullable<long> COMPANY_ID { get; set; }
+        public Nullable<long> IMPORT_PLANT_ID { get; set; }
+        public long EXPORT_PLANT_ID { get; set; }
     
-        public long SERIES_ID { get; set; }
-        public Nullable<int> SERIES_CODE { get; set; }
-        public string SERIES_VALUE { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual T1001 T1001 { get; set; }
+        public virtual T1001W T1001W { get; set; }
+        public virtual T1001W T1001W1 { get; set; }
     }
 }

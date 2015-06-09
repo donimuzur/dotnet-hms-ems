@@ -14,7 +14,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             _companyBLL = companyBll;
         }
-
+            
+       
         //
         // GET: /Company/
         public ActionResult Index()
@@ -26,6 +27,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                   
         }
 
-        
+
     }
 }
