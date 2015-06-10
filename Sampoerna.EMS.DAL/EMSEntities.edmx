@@ -1127,6 +1127,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK1_STATUS">
+          <End Role="STATUS" Type="Self.STATUS" Multiplicity="0..1" />
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STATUS">
+              <PropertyRef Name="STATUS_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="STATUS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK1_STATUS_GOV">
           <End Role="STATUS_GOV" Type="Self.STATUS_GOV" Multiplicity="0..1" />
           <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
@@ -2084,6 +2096,10 @@
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="PBCK11" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_STATUS" Association="Self.FK_PBCK1_STATUS">
+            <End Role="STATUS" EntitySet="STATUS" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_STATUS_GOV" Association="Self.FK_PBCK1_STATUS_GOV">
             <End Role="STATUS_GOV" EntitySet="STATUS_GOV" />
             <End Role="PBCK1" EntitySet="PBCK1" />
@@ -2798,6 +2814,10 @@
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_STATUS" Association="EMSModel.FK_PBCK1_STATUS">
+            <End Role="STATUS" EntitySet="STATUS" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C1LFA1">
           <Key>
@@ -3160,6 +3180,7 @@
           <NavigationProperty Name="REALISASI_PEMASUKAN" Relationship="EMSModel.FK_REALISASI_PEMASUKAN_PBCK1" FromRole="PBCK1" ToRole="REALISASI_PEMASUKAN" />
           <NavigationProperty Name="RENCANA_PRODUKSI" Relationship="EMSModel.FK_RENCANA_PRODUKSI_PBCK1" FromRole="PBCK1" ToRole="RENCANA_PRODUKSI" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" FromRole="PBCK1" ToRole="ZAIDM_EX_GOODTYP" />
+          <NavigationProperty Name="STATUS1" Relationship="EMSModel.FK_PBCK1_STATUS" FromRole="PBCK1" ToRole="STATUS" />
         </EntityType>
         <EntityType Name="PBCK3_7">
           <Key>
@@ -3328,6 +3349,7 @@
           <NavigationProperty Name="PBCK3_71" Relationship="EMSModel.FK_PBCK3_7_STATUS_PBCK7" FromRole="STATUS" ToRole="PBCK3_7" />
           <NavigationProperty Name="PBCK3_CK5" Relationship="EMSModel.FK_PBCK3_CK5_STATUS" FromRole="STATUS" ToRole="PBCK3_CK5" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_STATUS" FromRole="STATUS" ToRole="PBCK4" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_STATUS" FromRole="STATUS" ToRole="PBCK1" />
         </EntityType>
         <EntityType Name="STATUS_GOV">
           <Key>
@@ -4864,6 +4886,18 @@
             </Principal>
             <Dependent Role="PBCK1">
               <PropertyRef Name="GOODTYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_STATUS">
+          <End Type="EMSModel.STATUS" Role="STATUS" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STATUS">
+              <PropertyRef Name="STATUS_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="STATUS" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
