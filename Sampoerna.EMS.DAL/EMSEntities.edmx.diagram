@@ -48,7 +48,7 @@
         <EntityTypeShape EntityType="EMSModel.T1001W" Width="1.5" PointX="0.75" PointY="27.25" />
         <EntityTypeShape EntityType="EMSModel.UOM" Width="1.5" PointX="9" PointY="15.875" />
         <EntityTypeShape EntityType="EMSModel.USER" Width="1.5" PointX="0.75" PointY="15" />
-        <EntityTypeShape EntityType="EMSModel.USER_GROUP" Width="1.5" PointX="1.5" PointY="4.5" />
+        <EntityTypeShape EntityType="EMSModel.USER_GROUP" Width="2" PointX="1.5" PointY="4.5" />
         <EntityTypeShape EntityType="EMSModel.VIRTUAL_PLANT_MAP" Width="1.5" PointX="6" PointY="20.125" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_BRAND" Width="1.5" PointX="3" PointY="26.125" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_GOODTYP" Width="1.5" PointX="0.75" PointY="33" />
@@ -162,6 +162,7 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_STATUS" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
