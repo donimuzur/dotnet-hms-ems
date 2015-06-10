@@ -7,10 +7,13 @@ namespace Sampoerna.EMS.Website.Controllers
 {
     public class PBCK1Controller : BaseController
     {
-        public PBCK1Controller(IPageBLL pageBLL) : base(pageBLL, Enums.MenuList.PBCK1)
+        private IPBCK1BLL _pbck1Bll;
+
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll) : base(pageBLL, Enums.MenuList.PBCK1)
         {
-            
+            _pbck1Bll = pbckBll;
         }
+
         //
         // GET: /PBCK/
         public ActionResult Index()

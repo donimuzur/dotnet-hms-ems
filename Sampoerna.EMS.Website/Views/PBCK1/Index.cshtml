@@ -1,6 +1,211 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "PBCK 1";
 }
 
-
-Ini Index untuk PBCK-1
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="#"><button class="btn btn-blue">NEW</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <form class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">NPPBKC ID</label>
+                                <div class="col-md-8">
+                                    <select class="form-control">
+                                        <option>0703.1.3.204</option>
+                                        <option>0703.1.3.205</option>
+                                        <option>0703.1.3.206</option>
+                                        <option>0703.1.3.207</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Type</label>
+                                <div class="col-md-8">
+                                    <select class="form-control">
+                                        <option>New</option>
+                                        <option>Additional</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Year</label>
+                                <div class="col-md-8">
+                                    <select class="form-control">
+                                        <option>2015</option>
+                                        <option>2014</option>
+                                        <option>2013</option>
+                                        <option>2012</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control">
+                                            <option>001 - POA 1</option>
+                                            <option>002 - POA 2</option>
+                                            <option>003 - POA 3</option>
+                                            <option>004 - POA 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control">
+                                            <option>001 - Creator 1</option>
+                                            <option>002 - Creator 2</option>
+                                            <option>003 - Creator 3</option>
+                                            <option>004 - Creator 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-blue full">FILTER</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <table class="table table-bordered table-striped js-options-table fix-header">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>No</th>
+                            <th>Type</th>
+                            <th>Year</th>
+                            <th>NPPBKC ID</th>
+                            <th>No</th>
+                            <th>Proposed Ammount</th>
+                            <th>Last Update</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>1</td>
+                            <td>New</td>
+                            <td>2015</td>
+                            <td>0712.1.3.0234</td>
+                            <td>256/HMS-E/LMG/XIII/2015</td>
+                            <td>2.000.000</td>
+                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
+                            <td class="last">Draft</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>2</td>
+                            <td>New</td>
+                            <td>2015</td>
+                            <td>0712.1.3.0234</td>
+                            <td>256/HMS-E/LMG/XIII/2015</td>
+                            <td>2.000.000</td>
+                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
+                            <td>Draft</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>3</td>
+                            <td>New</td>
+                            <td>2015</td>
+                            <td>0712.1.3.0234</td>
+                            <td>256/HMS-E/LMG/XIII/2015</td>
+                            <td>2.000.000</td>
+                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
+                            <td>Draft</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>4</td>
+                            <td>New</td>
+                            <td>2015</td>
+                            <td>0712.1.3.0234</td>
+                            <td>256/HMS-E/LMG/XIII/2015</td>
+                            <td>2.000.000</td>
+                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
+                            <td>Draft</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>5</td>
+                            <td>New</td>
+                            <td>2015</td>
+                            <td>0712.1.3.0234</td>
+                            <td>256/HMS-E/LMG/XIII/2015</td>
+                            <td>2.000.000</td>
+                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
+                            <td>Draft</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>6</td>
+                            <td>New</td>
+                            <td>2015</td>
+                            <td>0712.1.3.0234</td>
+                            <td>256/HMS-E/LMG/XIII/2015</td>
+                            <td>2.000.000</td>
+                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
+                            <td>Draft</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul class="pagination">
+                    <li><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
+                    <li><a href="#"><i class="fa fa-angle-left"></i></a></li>
+                    <li><a href="#">1</a></li>
+                    <li class="active"><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                    <li><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
+                </ul>
+                <div class="goto">
+                    <span>Go to Page</span> <input type="text" class="form-control" placeholder="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
