@@ -56,6 +56,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public string CK5_NUMBER { get; set; }
     
         public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }

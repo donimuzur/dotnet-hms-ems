@@ -19,8 +19,21 @@ namespace Sampoerna.EMS.XMLReader
         {
             var timer = new Stopwatch();
             timer.Start();
-            IXmlDataReader xmlData = new XmlAreaDataMapper();
-            xmlData.InsertToDatabase();
+            //IXmlDataReader xmlData = new XmlAreaDataMapper();
+            //IXmlDataReader xmlData = new XmlPoaDataMapper();
+            //IXmlDataReader xmlData = new XmlMarketDataMapper();
+             //IXmlDataReader xmlData = new XmlPlantDataMapper();
+            //IXmlDataReader xmlData = new XmlPoaMapDataMapper();
+            // IXmlDataReader xmlData = new XmlUserDataMapper();
+            // IXmlDataReader xmlData = new XmlSeriesDataMapper();
+             //IXmlDataReader xmlData = new XmlProdTypeDataMapper();
+             //IXmlDataReader xmlData = new XmlKPPBCDataMapper();
+             //IXmlDataReader xmlData = new XmlPCodeDataMapper();
+             //IXmlDataReader xmlData = new XmlGoodsTypeDataMapper();
+             //IXmlDataReader xmlData = new XmlMaterialDataMapper();
+            //xmlData.InsertToDatabase();
+             IXmlDataWriter xmlWriter = new XmlCK5DataWriter();
+             xmlWriter.CreateXML();
             timer.Stop();
             Console.WriteLine(timer.ElapsedMilliseconds);
             Console.ReadLine();

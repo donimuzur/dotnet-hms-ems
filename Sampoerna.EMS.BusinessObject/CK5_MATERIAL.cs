@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> EXCISE_VALUE { get; set; }
         public Nullable<decimal> USD_VALUE { get; set; }
         public string NOTE { get; set; }
+        public Nullable<int> LINE_ITEM { get; set; }
     
         public virtual CK5 CK5 { get; set; }
         public virtual UOM UOM { get; set; }

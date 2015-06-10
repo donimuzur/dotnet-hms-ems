@@ -99,6 +99,9 @@
     <Compile Include="EX_STATUS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="FILE_UPLOAD.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="FORM_TYPE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -110,9 +113,6 @@
     </Compile>
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\UserInput.cs" />
-    <Compile Include="FILE_UPLOAD.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="MENGETAHUI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -152,6 +152,7 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Business\UserTree.cs" />
     <Compile Include="REALISASI_PEMASUKAN.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -188,7 +189,6 @@
     <Compile Include="USER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Business\UserTree.cs" />
     <Compile Include="USER_GROUP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

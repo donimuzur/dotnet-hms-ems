@@ -9,15 +9,10 @@ namespace Sampoerna.EMS.XMLReader
 {
     public class XmlCompanyDataMapper : IXmlDataReader 
     {
-        //private XElement _xmData = null;
         private XmlDataMapper _xmlMapper = null;
-        private ILogger _logger;
-        private IUnitOfWork _uow;
-
+      
         public XmlCompanyDataMapper()
         {
-            _logger = new NullLogger();
-            _uow = new SqlUnitOfWork(_logger);
             _xmlMapper = new XmlDataMapper("T1001");
            
         }
@@ -35,7 +30,26 @@ namespace Sampoerna.EMS.XMLReader
                     item.BUKRS = xElement.Element("BUKRS").Value;
                     item.BUKRSTXT = xElement.Element("BUTXT").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    if (IsDataChanges(item))
+                    var companyDateXml = DateTime.MinValue;
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out companyDateXml);
+                    var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T1001>()
+                           .Get(p => p.BUKRS == item.BUKRS)
+                           .OrderByDescending(p => p.CREATED_DATE)
+                           .FirstOrDefault();
+
+                    if (exisitingCompany != null)
+                    {
+                        if (companyDateXml > exisitingCompany.CREATED_DATE)
+                        {
+                            items.Add(item);
+                        }
+                        else
+                        {
+                            continue;
+
+                        }
+                    }
+                    else
                     {
                         items.Add(item);
                     }
@@ -46,39 +60,10 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-        private bool IsDataChanges(T1001 item)
-        {
-            var repo = _uow.GetGenericRepository<T1001>();
-            var data = repo.Get(x => x.BUKRS.Equals(item.BUKRS, StringComparison.InvariantCultureIgnoreCase))
-                .OrderBy(x=>x.CREATED_DATE).LastOrDefault();
-            if (data == null)
-                return true;
-            if (!item.BUKRSTXT.Equals(data.BUKRSTXT))
-            {
-                return true;
-            }
-           
-            return false;
-        }
-
+      
         public void InsertToDatabase()
         {
-            var repo = _uow.GetGenericRepository<T1001>();
-
-            try
-            {
-                foreach (var item in Items)
-                {
-                    repo.Insert(item);
-
-                }
-            }
-            catch //(Exception ex)
-            {
-                _uow.RevertChanges();
-            } 
-            _uow.SaveChanges();
-       
+          _xmlMapper.InsertToDatabase<T1001>(Items);
         }
 
 
