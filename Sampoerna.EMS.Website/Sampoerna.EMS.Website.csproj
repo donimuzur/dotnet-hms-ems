@@ -537,6 +537,8 @@
     <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\PBCK1\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

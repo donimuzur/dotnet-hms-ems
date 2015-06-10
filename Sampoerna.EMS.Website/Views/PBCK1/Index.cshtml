@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
+
+@{
     ViewBag.Title = "PBCK 1";
 }
 
@@ -105,90 +107,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                        @{
+                            int rownum = 1;
+                        }
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                    <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>@rownum</td>
+                                <td>@Html.DisplayFor(model => item.GOODTYPE.EXT_TYP_DESC)</td>
+                                <td>
+                                    @if (item.PERIOD_FROM != null)
+                                    {
+                                        @Html.DisplayFor(model => item.PERIOD_FROM.Value.Year)
+                                    }
                             </td>
-                            <td>1</td>
-                            <td>New</td>
-                            <td>2015</td>
-                            <td>0712.1.3.0234</td>
-                            <td>256/HMS-E/LMG/XIII/2015</td>
-                            <td>2.000.000</td>
-                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
-                            <td class="last">Draft</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            <td>
+                                @Html.DisplayFor(model => item.NPPBKC_ID)
                             </td>
-                            <td>2</td>
-                            <td>New</td>
-                            <td>2015</td>
-                            <td>0712.1.3.0234</td>
-                            <td>256/HMS-E/LMG/XIII/2015</td>
-                            <td>2.000.000</td>
-                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
-                            <td>Draft</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            <td>
+                                @if (item.NPPBKC != null)
+                                {
+                                    @Html.DisplayFor(model => item.NPPBKC.NPPBKC_NO)
+                                }
                             </td>
-                            <td>3</td>
-                            <td>New</td>
-                            <td>2015</td>
-                            <td>0712.1.3.0234</td>
-                            <td>256/HMS-E/LMG/XIII/2015</td>
-                            <td>2.000.000</td>
-                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
-                            <td>Draft</td>
+                            <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
+                                <td>
+                                    @if (item.APPROVED_USER != null) {
+                                        @item.APPROVED_USER.USERNAME<br />@Html.DisplayFor(model => item.APPROVED_DATE)
+                                    }
+                                </td>
+                            <td>@Html.DisplayFor(model => item.STATUS)</td>
                         </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td>4</td>
-                            <td>New</td>
-                            <td>2015</td>
-                            <td>0712.1.3.0234</td>
-                            <td>256/HMS-E/LMG/XIII/2015</td>
-                            <td>2.000.000</td>
-                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
-                            <td>Draft</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td>5</td>
-                            <td>New</td>
-                            <td>2015</td>
-                            <td>0712.1.3.0234</td>
-                            <td>256/HMS-E/LMG/XIII/2015</td>
-                            <td>2.000.000</td>
-                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
-                            <td>Draft</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td>6</td>
-                            <td>New</td>
-                            <td>2015</td>
-                            <td>0712.1.3.0234</td>
-                            <td>256/HMS-E/LMG/XIII/2015</td>
-                            <td>2.000.000</td>
-                            <td>Dekky Mugia<br /> 20 Mei 2014 - 09.00</td>
-                            <td>Draft</td>
-                        </tr>
+                                rownum++;
+                        }
                     </tbody>
                 </table>
                 <ul class="pagination">

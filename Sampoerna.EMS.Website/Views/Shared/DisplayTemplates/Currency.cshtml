@@ -1,0 +1,14 @@
+﻿@model decimal?
+
+@{
+    if (Model.HasValue)
+    {
+        IFormatProvider formatProvider = System.Threading.Thread.CurrentThread.CurrentCulture;
+        <span>@Model.Value.ToString("C", formatProvider)</span>
+    }
+    else
+    {
+        <span> - </span>
+    }
+
+}
