@@ -14,7 +14,7 @@
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Load the site CSS after Boostrap's to override -->
     @Styles.Render("~/Content/css")
-    
+
     <!-- Load jQuery -->
     @Scripts.Render("~/bundles/jquery")
     <!-- Load Modernizr.js -->
@@ -26,7 +26,7 @@
 
 </head>
 <body>
-    
+
     <header class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -61,7 +61,7 @@
             </ul>
         </div>
     </header>
-    
+
     <div class="excise-site">
         <div class="side-menu">
             <div class="side-main">
@@ -73,23 +73,28 @@
                     switch (Model.MainMenu)
                     {
                         case Enums.MenuList.ExcisableGoodMovement:
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
-                            <a href="#" class="list-group-item active list-parent">
-                                <i class="fa fa-clipboard"></i>
-                                <span>Document List</span>
-                                <i class="down fa fa-caret-down"></i>
-                            </a>
-                            <ul class="child list">
-                                <li><a class="active" href="list.html"><i class="fa fa-angle-right"></i> Open Document List</a></li>
-                                <li><a href="list-completed.html"><i class="fa fa-angle-right"></i> Completed Document</a></li>
-                            </ul>
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-signal"></i>
-                                <span>Report</span>
-                            </a>
+                            <div class="collapse-menu active open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a class="active" href="list.html"><i class="fa fa-angle-right"></i> Open Document List</a></li>
+                                    <li><a href="list-completed.html"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a href="report-summary.html"><i class="fa fa-angle-right"></i> Summary</a></li>
+                                    <li><a href="report-monitoring.html"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>
+                                </ul>
+                            </div>
                             <div class="other">
                                 <a href="#" class="list-group-item">
                                     <i class="fa fa-th"></i>
@@ -116,21 +121,21 @@
         <div class="content">
             @RenderBody()
         </div>
-    </div>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    
+        </div>
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
 
-    @Scripts.Render("~/bundles/customjs")
-    @RenderSection("styles", required: false)
-    @RenderSection("scripts", required: false)
-    
+        @Scripts.Render("~/bundles/customjs")
+        @RenderSection("styles", required: false)
+        @RenderSection("scripts", required: false)
 
-</body>
+
+    </body>
 </html>

@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.Website.Helpers
         
         public static string UserName(this HtmlHelper htmlHelper)
         {
-            var user = (Login)HttpContext.Current.Session["CurrentUser"];
+            var user = (Login)HttpContext.Current.Session[Core.Constans.SessionKey.CurrentUser];
             return user != null ? user.USERNAME : "";
         }
 
