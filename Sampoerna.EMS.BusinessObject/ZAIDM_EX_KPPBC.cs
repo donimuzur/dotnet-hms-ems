@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CK1_KEP_HEADER { get; set; }
         public string CK1_KEP_FOOTER { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public int MODIFIED_BY { get; set; }
+        public Nullable<int> MODIFIED_BY { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MENGETAHUI MENGETAHUI { get; set; }
