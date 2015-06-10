@@ -61,5 +61,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
         public virtual ICollection<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
         public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
     }
 }

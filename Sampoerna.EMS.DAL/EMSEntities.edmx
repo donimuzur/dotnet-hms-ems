@@ -1091,7 +1091,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PBCK1_GOODTYP">
+        <Association Name="FK_PBCK1_LACK1_MONTH_FROM">
           <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
           <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1172,6 +1172,18 @@
             </Principal>
             <Dependent Role="PBCK1">
               <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="GOODTYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2060,7 +2072,7 @@
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE1" EntitySet="PAGE" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_GOODTYP" Association="Self.FK_PBCK1_GOODTYP">
+          <AssociationSet Name="FK_PBCK1_LACK1_MONTH_FROM" Association="Self.FK_PBCK1_LACK1_MONTH_FROM">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
@@ -2086,6 +2098,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_USER" Association="Self.FK_PBCK1_USER">
             <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_ZAIDM_EX_GOODTYP" Association="Self.FK_PBCK1_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_ZAIDM_EX_NPPBKC" Association="Self.FK_PBCK1_ZAIDM_EX_NPPBKC">
@@ -2778,6 +2794,10 @@
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C1LFA1">
           <Key>
@@ -3139,6 +3159,7 @@
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_POA" FromRole="PBCK1" ToRole="ZAIDM_EX_POA" />
           <NavigationProperty Name="REALISASI_PEMASUKAN" Relationship="EMSModel.FK_REALISASI_PEMASUKAN_PBCK1" FromRole="PBCK1" ToRole="REALISASI_PEMASUKAN" />
           <NavigationProperty Name="RENCANA_PRODUKSI" Relationship="EMSModel.FK_RENCANA_PRODUKSI_PBCK1" FromRole="PBCK1" ToRole="RENCANA_PRODUKSI" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" FromRole="PBCK1" ToRole="ZAIDM_EX_GOODTYP" />
         </EntityType>
         <EntityType Name="PBCK3_7">
           <Key>
@@ -3480,6 +3501,7 @@
           <NavigationProperty Name="NPPBKC_PLANT" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="NPPBKC_PLANT" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PBCK1" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -4830,6 +4852,18 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="GOODTYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
