@@ -90,6 +90,7 @@
             <PropertyRef Name="CK5_ID" />
           </Key>
           <Property Name="CK5_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CK5_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="CK5_TYPE" Type="int" />
           <Property Name="KPPBC_CITY" Type="bigint" />
           <Property Name="SUMBISSION_NUMBER" Type="nvarchar" MaxLength="30" />
@@ -134,6 +135,7 @@
           <Property Name="CK5_MATERIAL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
+          <Property Name="LINE_ITEM" Type="int" />
           <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
           <Property Name="UOM_ID" Type="int" />
           <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
@@ -511,6 +513,7 @@
             <PropertyRef Name="BRAND_ID" />
           </Key>
           <Property Name="BRAND_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="STICKER_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
           <Property Name="PLANT_ID" Type="bigint" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
@@ -566,6 +569,7 @@
             <PropertyRef Name="MATERIAL_ID" />
           </Key>
           <Property Name="MATERIAL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="STICKER_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
           <Property Name="PLANT_ID" Type="bigint" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
@@ -2928,6 +2932,7 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_USER1" FromRole="CK5" ToRole="USER" />
+          <Property Name="CK5_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
@@ -2949,6 +2954,7 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_MATERIAL_UOM" FromRole="CK5_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_CK5_MATERIAL_UOM1" FromRole="CK5_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" FromRole="CK5_MATERIAL" ToRole="ZAIDM_EX_MATERIAL" />
+          <Property Name="LINE_ITEM" Type="Int32" />
         </EntityType>
         <EntityType Name="CK5_TYPE">
           <Key>
@@ -3460,6 +3466,7 @@
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
+          <Property Name="STICKER_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -3531,6 +3538,7 @@
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_SERIES" />
+          <Property Name="STICKER_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -4922,6 +4930,7 @@
           <EntitySetMapping Name="CK5">
             <EntityTypeMapping TypeName="EMSModel.CK5">
               <MappingFragment StoreEntitySet="CK5">
+                <ScalarProperty Name="CK5_NUMBER" ColumnName="CK5_NUMBER" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
                 <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
@@ -4965,6 +4974,7 @@
           <EntitySetMapping Name="CK5_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.CK5_MATERIAL">
               <MappingFragment StoreEntitySet="CK5_MATERIAL">
+                <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
                 <ScalarProperty Name="NOTE" ColumnName="NOTE" />
                 <ScalarProperty Name="USD_VALUE" ColumnName="USD_VALUE" />
                 <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
@@ -5380,6 +5390,7 @@
           <EntitySetMapping Name="ZAIDM_EX_BRAND">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_BRAND">
               <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
+                <ScalarProperty Name="STICKER_ID" ColumnName="STICKER_ID" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
@@ -5439,6 +5450,7 @@
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+                <ScalarProperty Name="STICKER_ID" ColumnName="STICKER_ID" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />

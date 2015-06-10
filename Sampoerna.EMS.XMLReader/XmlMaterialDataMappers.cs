@@ -75,7 +75,7 @@ namespace Sampoerna.EMS.XMLReader
                    
                     var dateXml = DateTime.MinValue;
                     DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
-                    var existingMaterial = GetMaterial(item.STICKER_CODE);
+                    var existingMaterial = GetMaterial(item.STICKER_CODE,item.PLANT_ID, item.FA_CODE);
                     if (existingMaterial != null)
                     {
                         if (dateXml > existingMaterial.CREATED_DATE)
@@ -105,10 +105,10 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
        
         }
-        public ZAIDM_EX_MATERIAL GetMaterial(string stickerCode)
+        public ZAIDM_EX_MATERIAL GetMaterial(string stickerCode, long?plant_id, string fa_code)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL>()
-                          .Get(p => p.STICKER_CODE == stickerCode)
+                          .Get(p => p.STICKER_CODE == stickerCode && p.PLANT_ID == plant_id && p.FA_CODE== fa_code)
                           .OrderByDescending(p => p.CREATED_DATE)
                           .FirstOrDefault();
             return existingData;

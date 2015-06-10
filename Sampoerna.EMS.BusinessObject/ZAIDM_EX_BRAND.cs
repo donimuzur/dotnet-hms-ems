@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
+        public string STICKER_ID { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual ICollection<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
