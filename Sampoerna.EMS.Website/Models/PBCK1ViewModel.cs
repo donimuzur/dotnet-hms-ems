@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.Website.Models
         public long? STATUS_GOV_ID { get; set; }
         public decimal? QTY_APPROVED { get; set; }
         public DateTime? DECREE_DATE { get; set; }
+
         [UIHint("FormatDateTime")]
         public DateTime? CREATED_DATE { get; set; }
         public int? CREATED_BY { get; set; }
@@ -46,6 +47,8 @@ namespace Sampoerna.EMS.Website.Models
         public ZAIDM_EX_GOODTYP GOODTYPE { get; set; }
 
         public USER APPROVED_USER { get; set; }
+
+        public string STATUS_NAME { get; set; }
 
         public ZAIDM_EX_NPPBKC NPPBKC { get; set; }
 

@@ -1,5 +1,24 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
 
+@section styles
+    {
+    <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
+}
+
+@section scripts {
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            $('#pbckTable').DataTable(
+                {
+                    "sDom": "Rlfrtip"
+                });
+        });
+    </script>
+
+}
+
 @{
     ViewBag.Title = "PBCK 1";
 }
@@ -91,8 +110,8 @@
                     </div>
                 </form>
             </div>
-            <div class="table-container">
-                <table class="table table-bordered table-striped js-options-table fix-header">
+            <div id="contenttable" class="table-container">
+                <table id="pbckTable">
                     <thead>
                         <tr>
                             <th>Action</th>
@@ -124,42 +143,29 @@
                                     {
                                         @Html.DisplayFor(model => item.PERIOD_FROM.Value.Year)
                                     }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.NPPBKC_ID)
-                            </td>
-                            <td>
-                                @if (item.NPPBKC != null)
-                                {
-                                    @Html.DisplayFor(model => item.NPPBKC.NPPBKC_NO)
-                                }
-                            </td>
-                            <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
+                                </td>
                                 <td>
-                                    @if (item.APPROVED_USER != null) {
+                                    @Html.DisplayFor(model => item.NPPBKC_ID)
+                                </td>
+                                <td>
+                                    @if (item.NPPBKC != null)
+                                    {
+                                        @Html.DisplayFor(model => item.NPPBKC.NPPBKC_NO)
+                                    }
+                                </td>
+                                <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
+                                <td>
+                                    @if (item.APPROVED_USER != null)
+                                    {
                                         @item.APPROVED_USER.USERNAME<br />@Html.DisplayFor(model => item.APPROVED_DATE)
                                     }
                                 </td>
-                            <td>@Html.DisplayFor(model => item.STATUS)</td>
-                        </tr>
-                                rownum++;
+                                <td class="last">@Html.DisplayFor(model => item.STATUS_NAME)</td>
+                            </tr>
+                                    rownum++;
                         }
                     </tbody>
                 </table>
-                <ul class="pagination">
-                    <li><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
-                    <li><a href="#"><i class="fa fa-angle-left"></i></a></li>
-                    <li><a href="#">1</a></li>
-                    <li class="active"><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                    <li><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
-                </ul>
-                <div class="goto">
-                    <span>Go to Page</span> <input type="text" class="form-control" placeholder="">
-                </div>
             </div>
         </div>
     </div>
