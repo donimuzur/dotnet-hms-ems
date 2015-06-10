@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string BRAND_CE { get; set; }
         public string SKEP_NP { get; set; }
         public System.DateTime SKEP_DATE { get; set; }
-        public int PRODUCT_ID { get; set; }
+        public Nullable<int> PRODUCT_ID { get; set; }
         public long SERIES_ID { get; set; }
         public long MARKET_ID { get; set; }
         public string COLOUR { get; set; }

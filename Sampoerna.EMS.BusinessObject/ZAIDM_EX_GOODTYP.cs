@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BusinessObject
         public int GOODTYPE_ID { get; set; }
         public Nullable<int> EXC_GOOD_TYP { get; set; }
         public string EXT_TYP_DESC { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual NPPBKC_PLANT NPPBKC_PLANT { get; set; }

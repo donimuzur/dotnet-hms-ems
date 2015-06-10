@@ -518,7 +518,7 @@
           <Property Name="BRAND_CE" Type="nvarchar" MaxLength="60" Nullable="false" />
           <Property Name="SKEP_NP" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="SKEP_DATE" Type="datetime" Nullable="false" />
-          <Property Name="PRODUCT_ID" Type="int" Nullable="false" />
+          <Property Name="PRODUCT_ID" Type="int" />
           <Property Name="SERIES_ID" Type="bigint" Nullable="false" />
           <Property Name="MARKET_ID" Type="bigint" Nullable="false" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
@@ -537,6 +537,7 @@
           <Property Name="GOODTYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EXC_GOOD_TYP" Type="int" />
           <Property Name="EXT_TYP_DESC" Type="nvarchar" MaxLength="65" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -579,7 +580,7 @@
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="25" />
           <Property Name="PRINTING_PRICE" Type="numeric" Precision="18" Scale="0" />
           <Property Name="HJE_IDR" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="GOODTYP_ID" Type="int" Nullable="false" />
+          <Property Name="GOODTYP_ID" Type="int" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -1663,7 +1664,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
-          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
+          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_PRODTYP">
@@ -1723,7 +1724,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
@@ -3439,7 +3440,7 @@
           <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
           <Property Name="SKEP_NP" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="SKEP_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="PRODUCT_ID" Type="Int32" Nullable="false" />
+          <Property Name="PRODUCT_ID" Type="Int32" />
           <Property Name="SERIES_ID" Type="Int64" Nullable="false" />
           <Property Name="MARKET_ID" Type="Int64" Nullable="false" />
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
@@ -3467,6 +3468,7 @@
           <Property Name="GOODTYPE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="EXC_GOOD_TYP" Type="Int32" />
           <Property Name="EXT_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="CK5" />
           <NavigationProperty Name="NPPBKC_PLANT" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="NPPBKC_PLANT" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
@@ -3518,7 +3520,7 @@
           <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="PRINTING_PRICE" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="GOODTYP_ID" Type="Int32" Nullable="false" />
+          <Property Name="GOODTYP_ID" Type="Int32" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -4728,7 +4730,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
-          <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_PRODTYP">
@@ -4752,7 +4754,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
@@ -5403,6 +5405,7 @@
           <EntitySetMapping Name="ZAIDM_EX_GOODTYP">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_GOODTYP">
               <MappingFragment StoreEntitySet="ZAIDM_EX_GOODTYP">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="EXT_TYP_DESC" ColumnName="EXT_TYP_DESC" />
                 <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
                 <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />

@@ -32,18 +32,13 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_MARKET();
-                    var marketCodeXml = Convert.ToInt32(xElement.Element("MARKET_CODE").Value);
-
-                    var exisitingMarket = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MARKET>()
-                            .Get(p => p.MARKET_CODE == marketCodeXml)
-                            .OrderByDescending(p => p.CREATED_DATE)
-                            .FirstOrDefault();
-                    var marketDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out marketDateXml);
-                    item.MARKET_CODE = marketCodeXml;
+                    item.MARKET_CODE = Convert.ToInt32(xElement.Element("MARKET_CODE").Value);
                     item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    if (exisitingMarket != null)
+                    var exisitingMarket = GetMarket(item.MARKET_CODE);
+                    var marketDateXml = DateTime.MinValue;
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out marketDateXml);
+                     if (exisitingMarket != null)
                     {
                         if (marketDateXml > exisitingMarket.CREATED_DATE)
                         {
@@ -73,7 +68,14 @@ namespace Sampoerna.EMS.XMLReader
        
         }
 
-
+        public ZAIDM_EX_MARKET GetMarket(int? MarketCode)
+        {
+            var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MARKET>()
+                          .Get(p => p.MARKET_CODE == MarketCode)
+                          .OrderByDescending(p => p.CREATED_DATE)
+                          .FirstOrDefault();
+            return exisitingPlant;
+        }
 
 
 

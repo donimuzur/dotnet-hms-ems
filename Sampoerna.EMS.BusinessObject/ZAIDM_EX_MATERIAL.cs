@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CUT_FILLER_CODE { get; set; }
         public Nullable<decimal> PRINTING_PRICE { get; set; }
         public Nullable<decimal> HJE_IDR { get; set; }
-        public int GOODTYP_ID { get; set; }
+        public Nullable<int> GOODTYP_ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
