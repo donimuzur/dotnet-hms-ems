@@ -45,6 +45,15 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(GetPBCKData(searchInput));
         }
 
-
+        public ActionResult Create()
+        {
+            var model = new PBCK1ItemViewModel
+            {
+                MainMenu = Enums.MenuList.ExcisableGoodMovement,
+                CurrentMenu = PageInfo,
+                Detail = null
+            };
+            return View(model);
+        }
     }
 }

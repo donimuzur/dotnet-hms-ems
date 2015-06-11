@@ -540,6 +540,8 @@
     <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDateTime.cshtml" />
+    <Content Include="Views\PBCK1\Create.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,3 +1,2 @@
 ﻿@model decimal?
-@(Model.HasValue ? string.Format("{0:f0}", Model) : string.Empty)
-  
+@(Model.HasValue ? Model.Value.ToString("##,###") : string.Empty)

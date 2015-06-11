@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.Website.Models
         public DateTime? PLAN_PROD_FROM { get; set; }
         public DateTime? PLAN_PROD_TO { get; set; }
 
-        [UIHint("FormatDecimal")]
+        [UIHint("FormatQty")]
         public decimal? REQUEST_QTY { get; set; }
         public int? REQUEST_QTY_UOM { get; set; }
         public int? LACK1_FROM_MONTH_ID { get; set; }
