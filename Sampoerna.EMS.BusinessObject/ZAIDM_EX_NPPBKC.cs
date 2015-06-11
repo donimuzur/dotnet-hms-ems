@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string NPPBKC_NO { get; set; }
         public string ADDR1 { get; set; }
         public string ADDR2 { get; set; }
-        public Nullable<long> CITY_ID { get; set; }
+        public string CITY { get; set; }
         public Nullable<long> KPPBC_ID { get; set; }
         public Nullable<int> REGION_OFFICE_ID { get; set; }
         public Nullable<long> COMPANY_ID { get; set; }
@@ -38,7 +38,6 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime CREATED_DATE { get; set; }
     
         public virtual C1LFA1 C1LFA1 { get; set; }
-        public virtual CITY CITY { get; set; }
         public virtual ICollection<CK4C> CK4C { get; set; }
         public virtual ICollection<NPPBKC_PLANT> NPPBKC_PLANT { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }

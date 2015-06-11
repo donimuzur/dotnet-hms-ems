@@ -34,10 +34,13 @@ namespace Sampoerna.EMS.BusinessObject
         public long SERIES_ID { get; set; }
         public long MARKET_ID { get; set; }
         public string COLOUR { get; set; }
+        public Nullable<int> COUNTRY_ID { get; set; }
         public string CUT_FILLER_CODE { get; set; }
         public Nullable<decimal> PRINTING_PRICE { get; set; }
+        public Nullable<int> HJE_CURR { get; set; }
         public Nullable<decimal> HJE_IDR { get; set; }
         public Nullable<decimal> TARIFF { get; set; }
+        public Nullable<int> TARIFF_CURR { get; set; }
         public int GOODTYP_ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
@@ -45,6 +48,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_ACTIVE { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
+        public virtual COUNTRY COUNTRY { get; set; }
+        public virtual CURRENCY CURRENCY { get; set; }
+        public virtual CURRENCY CURRENCY1 { get; set; }
         public virtual ICollection<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
         public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
