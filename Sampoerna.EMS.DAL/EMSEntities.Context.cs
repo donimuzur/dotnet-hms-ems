@@ -30,6 +30,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<BACK3_CK2> BACK3_CK2 { get; set; }
         public virtual DbSet<CARRIAGE_METHOD> CARRIAGE_METHOD { get; set; }
         public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
+        public virtual DbSet<CK2> CK2 { get; set; }
+        public virtual DbSet<CK3> CK3 { get; set; }
         public virtual DbSet<CK4C> CK4C { get; set; }
         public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
