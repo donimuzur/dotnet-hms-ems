@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> LACK1_TO_MONTH { get; set; }
         public Nullable<int> LACK1_TO_YEAR { get; set; }
         public Nullable<int> STATUS { get; set; }
-        public Nullable<long> STATUS_GOV { get; set; }
+        public Nullable<int> STATUS_GOV { get; set; }
         public Nullable<decimal> QTY_APPROVED { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
