@@ -1,4 +1,6 @@
-﻿namespace Sampoerna.EMS.Core
+﻿using System.ComponentModel;
+
+namespace Sampoerna.EMS.Core
 {
     public class Enums
     {
@@ -20,6 +22,14 @@
             USER = 15,
             LOGIN = 16,
             COMPANY = 17
+        }
+
+        public enum PBCK1Type
+        {
+            [Description("New")]
+            New,
+            [Description("Additional")]
+            Additional
         }
     }
 }

@@ -48,6 +48,8 @@
     <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
+    <Compile Include="IZaidmExPOABLL.cs" />
+    <Compile Include="IZaidmPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

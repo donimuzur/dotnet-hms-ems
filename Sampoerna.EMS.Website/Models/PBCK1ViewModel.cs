@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models 
 {
     public class PBCK1ViewModel : BaseModel
     {
         public List<PBCK1Item> Details { get; set; }
+        
+        public PBCK1SearchInputModel SearchInput { get; set; }
+        
     }
 
     public class PBCK1Item
@@ -62,11 +67,21 @@ namespace Sampoerna.EMS.Website.Models
     public class PBCK1ItemViewModel : BaseModel
     {
         public PBCK1Item Detail { get; set; }
+
+        public Enums.PBCK1Type PBCK1Types { get; set; }
     }
 
     public class PBCK1SearchInputModel
     {
-        
+        public PBCK1SearchInputModel()
+        {
+            NPPBKCIDList = new SelectList(new List<ZAIDM_EX_NPPBKC>());
+        }
+        public SelectList NPPBKCIDList { get; set; }
+        public SelectList POAList { get; set; }
+        public SelectList PBCK1Type { get; set; }
+        public SelectList CreatorList { get; set; }
+        public SelectList YearList { get; set; }
     }
 
 }

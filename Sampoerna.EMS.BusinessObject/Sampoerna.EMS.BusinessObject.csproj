@@ -119,6 +119,8 @@
     </Compile>
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\UserInput.cs" />
+    <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
+    <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
     <Compile Include="MENGETAHUI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
