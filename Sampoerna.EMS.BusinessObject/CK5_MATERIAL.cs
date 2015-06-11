@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject
         public long CK5_MATERIAL_ID { get; set; }
         public Nullable<long> CK5_ID { get; set; }
         public Nullable<long> MATERIAL_ID { get; set; }
+        public Nullable<int> LINE_ITEM { get; set; }
         public Nullable<decimal> QTY { get; set; }
         public Nullable<int> UOM_ID { get; set; }
         public Nullable<decimal> CONVERTED_QTY { get; set; }
@@ -26,7 +27,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> EXCISE_VALUE { get; set; }
         public Nullable<decimal> USD_VALUE { get; set; }
         public string NOTE { get; set; }
-        public Nullable<int> LINE_ITEM { get; set; }
     
         public virtual CK5 CK5 { get; set; }
         public virtual UOM UOM { get; set; }

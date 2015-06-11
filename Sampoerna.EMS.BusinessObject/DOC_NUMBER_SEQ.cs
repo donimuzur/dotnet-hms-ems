@@ -12,16 +12,13 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class CK5_TYPE
+    public partial class DOC_NUMBER_SEQ
     {
-        public CK5_TYPE()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
+        public long DOC_NUMBER_SEQ1 { get; set; }
+        public long DOC_NUMBER_SEQ_LAST { get; set; }
+        public Nullable<int> MONTH { get; set; }
+        public Nullable<int> YEAR { get; set; }
     
-        public int CK5_TYPE_ID { get; set; }
-        public string CK5_TYPE_NAME { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual MONTH MONTH1 { get; set; }
     }
 }

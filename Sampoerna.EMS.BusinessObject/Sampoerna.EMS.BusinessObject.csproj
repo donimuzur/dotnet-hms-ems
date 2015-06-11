@@ -79,13 +79,13 @@
     <Compile Include="CK5_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="CK5_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="COUNTRY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="DOCUMENT_TYPE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EMSEntities.cs">
@@ -139,13 +139,13 @@
     <Compile Include="PBCK3_CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PBCK3_CK5_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="PBCK4.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PBCK4_ITEM.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PROCESS_TYPE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public long PBCK4_ID { get; set; }
         public string NUMBER { get; set; }
         public Nullable<long> PLANT_ID { get; set; }
+        public string NO_PENGAWAS { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public Nullable<long> BACK1_ID { get; set; }
         public Nullable<int> STATUS_ID { get; set; }
