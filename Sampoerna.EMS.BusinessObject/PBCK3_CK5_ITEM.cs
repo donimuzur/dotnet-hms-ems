@@ -12,9 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class PROCESS_TYPE
+    public partial class PBCK3_CK5_ITEM
     {
-        public int PROTYPE_ID { get; set; }
-        public string PROTYPE_NAME { get; set; }
+        public long PBCK3_CK5_ITEM_ID { get; set; }
+        public long PBCK3_CK5_ID { get; set; }
+        public long BRAND_ID { get; set; }
+        public decimal REQUEST_QTY { get; set; }
+        public decimal APPROVED_QTY { get; set; }
+    
+        public virtual PBCK3_CK5 PBCK3_CK5 { get; set; }
+        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }
     }
 }

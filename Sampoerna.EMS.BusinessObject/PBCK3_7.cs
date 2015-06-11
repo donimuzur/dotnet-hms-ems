@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public long PBCK3_7_ID { get; set; }
+        public string PBCK7_TYPE { get; set; }
         public string PBCK7_NUMBER { get; set; }
         public string PBCK3_NUMBER { get; set; }
         public Nullable<int> DOCUMENT_TYPE_ID { get; set; }

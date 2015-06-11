@@ -17,8 +17,11 @@ namespace Sampoerna.EMS.BusinessObject
         public long PBCK4_ITEM_ID { get; set; }
         public Nullable<long> PBCK4_ID { get; set; }
         public Nullable<long> BRAND_ID { get; set; }
+        public Nullable<decimal> REQUEST_QTY { get; set; }
+        public Nullable<decimal> APPROVED_QTY { get; set; }
         public string CK1_NO { get; set; }
         public Nullable<System.DateTime> CK1_DATE { get; set; }
+        public string NOTE { get; set; }
     
         public virtual PBCK4 PBCK4 { get; set; }
         public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }

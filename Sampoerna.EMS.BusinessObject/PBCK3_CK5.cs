@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class PBCK3_CK5
     {
+        public PBCK3_CK5()
+        {
+            this.PBCK3_CK5_ITEM = new HashSet<PBCK3_CK5_ITEM>();
+        }
+    
         public long PBCK3_CK5_ID { get; set; }
         public Nullable<long> CK5_MARKET_RETURN_ID { get; set; }
         public int DOCUMENT_TYPE_ID { get; set; }
@@ -32,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual BACK3_CK2 BACK3_CK2 { get; set; }
         public virtual DOCUMENT_TYPE DOCUMENT_TYPE { get; set; }
+        public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
         public virtual STATUS STATUS { get; set; }
         public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
