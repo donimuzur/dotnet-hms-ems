@@ -18,16 +18,18 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.BACK1 = new HashSet<BACK1>();
             this.BACK3_CK2 = new HashSet<BACK3_CK2>();
+            this.CK2 = new HashSet<CK2>();
+            this.CK3 = new HashSet<CK3>();
             this.PBCK1 = new HashSet<PBCK1>();
-            this.PBCK4 = new HashSet<PBCK4>();
         }
     
-        public long STATUS_GOV_ID { get; set; }
+        public int STATUS_GOV_ID { get; set; }
         public string STATUS_GOV_NAME { get; set; }
     
         public virtual ICollection<BACK1> BACK1 { get; set; }
         public virtual ICollection<BACK3_CK2> BACK3_CK2 { get; set; }
+        public virtual ICollection<CK2> CK2 { get; set; }
+        public virtual ICollection<CK3> CK3 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
-        public virtual ICollection<PBCK4> PBCK4 { get; set; }
     }
 }

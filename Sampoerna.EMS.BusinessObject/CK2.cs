@@ -12,17 +12,21 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class CITY
+    public partial class CK2
     {
-        public CITY()
+        public CK2()
         {
-            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
+            this.PBCK3_7 = new HashSet<PBCK3_7>();
+            this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
         }
     
-        public long CITY_ID { get; set; }
-        public string CITY_ALIAS { get; set; }
-        public string CITY_NAME { get; set; }
+        public long CK2_ID { get; set; }
+        public string CK2_NUMBER { get; set; }
+        public Nullable<System.DateTime> CK2_DATE { get; set; }
+        public Nullable<int> STATUS_GOV { get; set; }
     
-        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
+        public virtual STATUS_GOV STATUS_GOV1 { get; set; }
+        public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
+        public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
     }
 }
