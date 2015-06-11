@@ -55,14 +55,6 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="int" />
         </EntityType>
-        <EntityType Name="CITY">
-          <Key>
-            <PropertyRef Name="CITY_ID" />
-          </Key>
-          <Property Name="CITY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="10" />
-          <Property Name="CITY_NAME" Type="nvarchar" MaxLength="50" />
-        </EntityType>
         <EntityType Name="CK4C">
           <Key>
             <PropertyRef Name="CK4C_ID" />
@@ -153,6 +145,13 @@
           <Property Name="COUNTRY_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
           <Property Name="COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="CURRENCY">
+          <Key>
+            <PropertyRef Name="CURRENCY_ID" />
+          </Key>
+          <Property Name="CURRENCY_ID" Type="int" Nullable="false" />
+          <Property Name="CURRENCY_CODE" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -531,10 +530,13 @@
           <Property Name="SERIES_ID" Type="bigint" Nullable="false" />
           <Property Name="MARKET_ID" Type="bigint" Nullable="false" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
+          <Property Name="COUNTRY_ID" Type="int" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="25" />
           <Property Name="PRINTING_PRICE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="HJE_CURR" Type="int" />
           <Property Name="HJE_IDR" Type="numeric" Precision="18" Scale="2" />
           <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="int" />
           <Property Name="GOODTYP_ID" Type="int" Nullable="false" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
@@ -589,9 +591,13 @@
           <Property Name="SERIES_ID" Type="bigint" Nullable="false" />
           <Property Name="MARKET_ID" Type="bigint" Nullable="false" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
+          <Property Name="COUNTRY_ID" Type="int" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="25" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="PRINTING_PRICE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="HJE_IDR" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="HJE_CURR" Type="int" />
+          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="int" />
           <Property Name="GOODTYP_ID" Type="int" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
@@ -605,7 +611,7 @@
           <Property Name="NPPBKC_NO" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="ADDR1" Type="nvarchar" MaxLength="50" />
           <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
-          <Property Name="CITY_ID" Type="bigint" />
+          <Property Name="CITY" Type="nvarchar" MaxLength="50" />
           <Property Name="KPPBC_ID" Type="bigint" />
           <Property Name="REGION_OFFICE_ID" Type="int" />
           <Property Name="COMPANY_ID" Type="bigint" />
@@ -1675,6 +1681,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_COUNTRY">
+          <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CURRENCY">
+          <End Role="CURRENCY" Type="Self.CURRENCY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="HJE_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CURRENCY1">
+          <End Role="CURRENCY" Type="Self.CURRENCY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="TARIFF_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_T1001W">
           <End Role="T1001W" Type="Self.T1001W" Multiplicity="1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1771,6 +1813,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_COUNTRY">
+          <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CURRENCY">
+          <End Role="CURRENCY" Type="Self.CURRENCY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="HJE_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CURRENCY1">
+          <End Role="CURRENCY" Type="Self.CURRENCY" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="TARIFF_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T1001W">
           <End Role="T1001W" Type="Self.T1001W" Multiplicity="1" />
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
@@ -1804,6 +1882,18 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_MATERIAL">
               <PropertyRef Name="MARKET_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL">
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Role="ZAIDM_EX_MATERIAL1" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="MATERIAL_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL1">
+              <PropertyRef Name="MATERIAL_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1852,18 +1942,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="VENDOR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_NPPBKC_CITY">
-          <End Role="CITY" Type="Self.CITY" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CITY">
-              <PropertyRef Name="CITY_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_NPPBKC">
-              <PropertyRef Name="CITY_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1921,12 +1999,12 @@
           <EntitySet Name="BACK3_CK2" EntityType="Self.BACK3_CK2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CARRIAGE_METHOD" EntityType="Self.CARRIAGE_METHOD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CITY" EntityType="Self.CITY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK4C" EntityType="Self.CK4C" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK4C_ITEM" EntityType="Self.CK4C_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_MATERIAL" EntityType="Self.CK5_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="COUNTRY" EntityType="Self.COUNTRY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CURRENCY" EntityType="Self.CURRENCY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOCUMENT_TYPE" EntityType="Self.DOCUMENT_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_SETTLEMENT" EntityType="Self.EX_SETTLEMENT" Schema="dbo" store:Type="Tables" />
@@ -2308,6 +2386,18 @@
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_COUNTRY" Association="Self.FK_ZAIDM_EX_BRAND_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CURRENCY" Association="Self.FK_ZAIDM_EX_BRAND_CURRENCY">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CURRENCY1" Association="Self.FK_ZAIDM_EX_BRAND_CURRENCY1">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T1001W" Association="Self.FK_ZAIDM_EX_BRAND_T1001W">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
@@ -2340,6 +2430,18 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_COUNTRY" Association="Self.FK_ZAIDM_EX_MATERIAL_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CURRENCY" Association="Self.FK_ZAIDM_EX_MATERIAL_CURRENCY">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CURRENCY1" Association="Self.FK_ZAIDM_EX_MATERIAL_CURRENCY1">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T1001W" Association="Self.FK_ZAIDM_EX_MATERIAL_T1001W">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -2351,6 +2453,10 @@
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MARKET" Association="Self.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MARKET">
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL" Association="Self.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="ZAIDM_EX_MATERIAL1" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE" Association="Self.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE">
             <End Role="ZAIDM_EX_PCODE" EntitySet="ZAIDM_EX_PCODE" />
@@ -2366,10 +2472,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_1LFA11" Association="Self.FK_ZAIDM_EX_NPPBKC_1LFA11">
             <End Role="1LFA1" EntitySet="1LFA1" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_CITY" Association="Self.FK_ZAIDM_EX_NPPBKC_CITY">
-            <End Role="CITY" EntitySet="CITY" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T1001" Association="Self.FK_ZAIDM_EX_NPPBKC_T1001">
@@ -2399,12 +2501,12 @@
           <EntitySet Name="BACK3_CK2" EntityType="EMSModel.BACK3_CK2" />
           <EntitySet Name="CARRIAGE_METHOD" EntityType="EMSModel.CARRIAGE_METHOD" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="EMSModel.CHANGES_HISTORY" />
-          <EntitySet Name="CITY" EntityType="EMSModel.CITY" />
           <EntitySet Name="CK4C" EntityType="EMSModel.CK4C" />
           <EntitySet Name="CK4C_ITEM" EntityType="EMSModel.CK4C_ITEM" />
           <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
           <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
           <EntitySet Name="COUNTRY" EntityType="EMSModel.COUNTRY" />
+          <EntitySet Name="CURRENCY" EntityType="EMSModel.CURRENCY" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="EMSModel.DOC_NUMBER_SEQ" />
           <EntitySet Name="DOCUMENT_TYPE" EntityType="EMSModel.DOCUMENT_TYPE" />
           <EntitySet Name="EX_SETTLEMENT" EntityType="EMSModel.EX_SETTLEMENT" />
@@ -2485,10 +2587,6 @@
           <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="EMSModel.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_CITY" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_CITY">
-            <End Role="CITY" EntitySet="CITY" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_CK4C_ITEM_CK4C" Association="EMSModel.FK_CK4C_ITEM_CK4C">
             <End Role="CK4C" EntitySet="CK4C" />
@@ -2577,6 +2675,30 @@
           <AssociationSet Name="FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL">
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
             <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_COUNTRY" Association="EMSModel.FK_ZAIDM_EX_BRAND_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_COUNTRY" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CURRENCY" Association="EMSModel.FK_ZAIDM_EX_BRAND_CURRENCY">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CURRENCY1" Association="EMSModel.FK_ZAIDM_EX_BRAND_CURRENCY1">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CURRENCY" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CURRENCY">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CURRENCY1" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CURRENCY1">
+            <End Role="CURRENCY" EntitySet="CURRENCY" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
@@ -2850,6 +2972,10 @@
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="ZAIDM_EX_MATERIAL1" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE">
             <End Role="ZAIDM_EX_PCODE" EntitySet="ZAIDM_EX_PCODE" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -2925,15 +3051,6 @@
           <Property Name="MODIFIED_BY" Type="Int32" />
           <NavigationProperty Name="FORM_TYPE" Relationship="EMSModel.FK_CHANGES_HISTORY_FORM_TYPE" FromRole="CHANGES_HISTORY" ToRole="FORM_TYPE" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="CITY">
-          <Key>
-            <PropertyRef Name="CITY_ID" />
-          </Key>
-          <Property Name="CITY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CITY_ALIAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CITY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_CITY" FromRole="CITY" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="CK4C">
           <Key>
@@ -3051,6 +3168,19 @@
           <Property Name="COUNTRY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_COUNTRY" FromRole="COUNTRY" ToRole="CK5" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_COUNTRY" FromRole="COUNTRY" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_COUNTRY" FromRole="COUNTRY" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <EntityType Name="CURRENCY">
+          <Key>
+            <PropertyRef Name="CURRENCY_ID" />
+          </Key>
+          <Property Name="CURRENCY_ID" Type="Int32" Nullable="false" />
+          <Property Name="CURRENCY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CURRENCY" FromRole="CURRENCY" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CURRENCY1" FromRole="CURRENCY" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CURRENCY" FromRole="CURRENCY" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CURRENCY1" FromRole="CURRENCY" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -3551,16 +3681,22 @@
           <Property Name="SERIES_ID" Type="Int64" Nullable="false" />
           <Property Name="MARKET_ID" Type="Int64" Nullable="false" />
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
+          <Property Name="COUNTRY_ID" Type="Int32" />
           <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="PRINTING_PRICE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="HJE_CURR" Type="Int32" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="Int32" />
           <Property Name="GOODTYP_ID" Type="Int32" Nullable="false" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="CK4C_ITEM" />
+          <NavigationProperty Name="COUNTRY" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_COUNTRY" FromRole="ZAIDM_EX_BRAND" ToRole="COUNTRY" />
+          <NavigationProperty Name="CURRENCY" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CURRENCY" FromRole="ZAIDM_EX_BRAND" ToRole="CURRENCY" />
+          <NavigationProperty Name="CURRENCY1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CURRENCY1" FromRole="ZAIDM_EX_BRAND" ToRole="CURRENCY" />
           <NavigationProperty Name="PBCK3_7_ITEM" Relationship="EMSModel.FK_PBCK7_ITEM_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="PBCK3_7_ITEM" />
           <NavigationProperty Name="PBCK3_CK5_ITEM" Relationship="EMSModel.FK_PBCK3_CK5_ITEM_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="PBCK3_CK5_ITEM" />
           <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="PBCK4_ITEM" />
@@ -3629,17 +3765,26 @@
           <Property Name="SERIES_ID" Type="Int64" Nullable="false" />
           <Property Name="MARKET_ID" Type="Int64" Nullable="false" />
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
+          <Property Name="COUNTRY_ID" Type="Int32" />
           <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="PRINTING_PRICE" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="HJE_IDR" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="PRINTING_PRICE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="HJE_IDR" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="HJE_CURR" Type="Int32" />
+          <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="Int32" />
           <Property Name="GOODTYP_ID" Type="Int32" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="CK5_MATERIAL" />
+          <NavigationProperty Name="COUNTRY" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_COUNTRY" FromRole="ZAIDM_EX_MATERIAL" ToRole="COUNTRY" />
+          <NavigationProperty Name="CURRENCY" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CURRENCY" FromRole="ZAIDM_EX_MATERIAL" ToRole="CURRENCY" />
+          <NavigationProperty Name="CURRENCY1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CURRENCY1" FromRole="ZAIDM_EX_MATERIAL" ToRole="CURRENCY" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T1001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T1001W" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_MARKET" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_MATERIAL1" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL2" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL1" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_SERIES" />
@@ -3652,7 +3797,7 @@
           <Property Name="NPPBKC_NO" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="ADDR1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ADDR2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CITY_ID" Type="Int64" />
+          <Property Name="CITY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="KPPBC_ID" Type="Int64" />
           <Property Name="REGION_OFFICE_ID" Type="Int32" />
           <Property Name="COMPANY_ID" Type="Int64" />
@@ -3662,7 +3807,6 @@
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="C1LFA1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA11" FromRole="ZAIDM_EX_NPPBKC" ToRole="C1LFA1" />
-          <NavigationProperty Name="CITY" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_CITY" FromRole="ZAIDM_EX_NPPBKC" ToRole="CITY" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="CK4C" />
           <NavigationProperty Name="NPPBKC_PLANT" Relationship="EMSModel.FK_NPPBKC_PLANT_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="NPPBKC_PLANT" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="PBCK1" />
@@ -3842,18 +3986,6 @@
             </Principal>
             <Dependent Role="CHANGES_HISTORY">
               <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_NPPBKC_CITY">
-          <End Type="EMSModel.CITY" Role="CITY" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CITY">
-              <PropertyRef Name="CITY_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_NPPBKC">
-              <PropertyRef Name="CITY_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4118,6 +4250,78 @@
             </Principal>
             <Dependent Role="CK5_MATERIAL">
               <PropertyRef Name="MATERIAL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_COUNTRY">
+          <End Type="EMSModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_COUNTRY">
+          <End Type="EMSModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CURRENCY">
+          <End Type="EMSModel.CURRENCY" Role="CURRENCY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="HJE_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CURRENCY1">
+          <End Type="EMSModel.CURRENCY" Role="CURRENCY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="TARIFF_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CURRENCY">
+          <End Type="EMSModel.CURRENCY" Role="CURRENCY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="HJE_CURR" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CURRENCY1">
+          <End Type="EMSModel.CURRENCY" Role="CURRENCY" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CURRENCY">
+              <PropertyRef Name="CURRENCY_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="TARIFF_CURR" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4937,6 +5141,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_MATERIAL">
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="MATERIAL_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL1">
+              <PropertyRef Name="MATERIAL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PCODE">
           <End Type="EMSModel.ZAIDM_EX_PCODE" Role="ZAIDM_EX_PCODE" Multiplicity="1" />
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
@@ -5046,15 +5262,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CITY">
-            <EntityTypeMapping TypeName="EMSModel.CITY">
-              <MappingFragment StoreEntitySet="CITY">
-                <ScalarProperty Name="CITY_NAME" ColumnName="CITY_NAME" />
-                <ScalarProperty Name="CITY_ALIAS" ColumnName="CITY_ALIAS" />
-                <ScalarProperty Name="CITY_ID" ColumnName="CITY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CK4C">
             <EntityTypeMapping TypeName="EMSModel.CK4C">
               <MappingFragment StoreEntitySet="CK4C">
@@ -5148,6 +5355,14 @@
                 <ScalarProperty Name="COUNTRY_NAME" ColumnName="COUNTRY_NAME" />
                 <ScalarProperty Name="COUNTRY_CODE" ColumnName="COUNTRY_CODE" />
                 <ScalarProperty Name="COUNTRY_ID" ColumnName="COUNTRY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CURRENCY">
+            <EntityTypeMapping TypeName="EMSModel.CURRENCY">
+              <MappingFragment StoreEntitySet="CURRENCY">
+                <ScalarProperty Name="CURRENCY_CODE" ColumnName="CURRENCY_CODE" />
+                <ScalarProperty Name="CURRENCY_ID" ColumnName="CURRENCY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5554,10 +5769,13 @@
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
                 <ScalarProperty Name="GOODTYP_ID" ColumnName="GOODTYP_ID" />
+                <ScalarProperty Name="TARIFF_CURR" ColumnName="TARIFF_CURR" />
                 <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
                 <ScalarProperty Name="HJE_IDR" ColumnName="HJE_IDR" />
+                <ScalarProperty Name="HJE_CURR" ColumnName="HJE_CURR" />
                 <ScalarProperty Name="PRINTING_PRICE" ColumnName="PRINTING_PRICE" />
                 <ScalarProperty Name="CUT_FILLER_CODE" ColumnName="CUT_FILLER_CODE" />
+                <ScalarProperty Name="COUNTRY_ID" ColumnName="COUNTRY_ID" />
                 <ScalarProperty Name="COLOUR" ColumnName="COLOUR" />
                 <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
                 <ScalarProperty Name="SERIES_ID" ColumnName="SERIES_ID" />
@@ -5614,9 +5832,13 @@
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
                 <ScalarProperty Name="GOODTYP_ID" ColumnName="GOODTYP_ID" />
+                <ScalarProperty Name="TARIFF_CURR" ColumnName="TARIFF_CURR" />
+                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+                <ScalarProperty Name="HJE_CURR" ColumnName="HJE_CURR" />
                 <ScalarProperty Name="HJE_IDR" ColumnName="HJE_IDR" />
                 <ScalarProperty Name="PRINTING_PRICE" ColumnName="PRINTING_PRICE" />
                 <ScalarProperty Name="CUT_FILLER_CODE" ColumnName="CUT_FILLER_CODE" />
+                <ScalarProperty Name="COUNTRY_ID" ColumnName="COUNTRY_ID" />
                 <ScalarProperty Name="COLOUR" ColumnName="COLOUR" />
                 <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
                 <ScalarProperty Name="SERIES_ID" ColumnName="SERIES_ID" />
@@ -5644,7 +5866,7 @@
                 <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
                 <ScalarProperty Name="REGION_OFFICE_ID" ColumnName="REGION_OFFICE_ID" />
                 <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
-                <ScalarProperty Name="CITY_ID" ColumnName="CITY_ID" />
+                <ScalarProperty Name="CITY" ColumnName="CITY" />
                 <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
                 <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
                 <ScalarProperty Name="NPPBKC_NO" ColumnName="NPPBKC_NO" />

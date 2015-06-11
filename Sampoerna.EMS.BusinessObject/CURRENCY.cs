@@ -12,21 +12,22 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class COUNTRY
+    public partial class CURRENCY
     {
-        public COUNTRY()
+        public CURRENCY()
         {
-            this.CK5 = new HashSet<CK5>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
+            this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.ZAIDM_EX_MATERIAL1 = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
-        public int COUNTRY_ID { get; set; }
-        public string COUNTRY_CODE { get; set; }
-        public string COUNTRY_NAME { get; set; }
+        public int CURRENCY_ID { get; set; }
+        public string CURRENCY_CODE { get; set; }
     
-        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL1 { get; set; }
     }
 }
