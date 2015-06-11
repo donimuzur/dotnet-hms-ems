@@ -15,14 +15,10 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class PBCK3_7_ITEM
     {
         public long PBCK3_7_ITEM_ID { get; set; }
-        public Nullable<long> PBCK3_7_ID { get; set; }
-        public Nullable<long> BRAND_ID { get; set; }
-        public Nullable<decimal> PACK_QTY { get; set; }
-        public Nullable<decimal> APPROVED_QTY { get; set; }
-        public Nullable<decimal> HJE { get; set; }
-        public Nullable<decimal> TARIF { get; set; }
-        public int FISCAL_YEAR { get; set; }
-        public Nullable<decimal> EXCISE_VALUE { get; set; }
+        public long PBCK3_7_ID { get; set; }
+        public long BRAND_ID { get; set; }
+        public decimal PACK_QTY { get; set; }
+        public decimal APPROVED_QTY { get; set; }
     
         public virtual PBCK3_7 PBCK3_7 { get; set; }
         public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }

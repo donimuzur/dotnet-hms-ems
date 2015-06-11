@@ -12,7 +12,14 @@
         $(document).ready(function () {
             $('#pbckTable').DataTable(
                 {
-                    "sDom": "Rlfrtip"
+                    "sDom": "Rlfrtip",
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "language": {
+                        "lengthMenu": "Display _MENU_ records per page",
+                        "zeroRecords": "No records found",
+                        "info": "Showing page _PAGE_ of _PAGES_",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
                 });
         });
     </script>

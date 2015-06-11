@@ -63,4 +63,10 @@ namespace Sampoerna.EMS.Website.Models
     {
         public PBCK1Item Detail { get; set; }
     }
+
+    public class PBCK1SearchInputModel
+    {
+        
+    }
+
 }

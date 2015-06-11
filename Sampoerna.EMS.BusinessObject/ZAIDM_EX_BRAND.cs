@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
             this.PBCK3_7_ITEM = new HashSet<PBCK3_7_ITEM>();
+            this.PBCK3_CK5_ITEM = new HashSet<PBCK3_CK5_ITEM>();
             this.PBCK4_ITEM = new HashSet<PBCK4_ITEM>();
         }
     
@@ -36,14 +37,16 @@ namespace Sampoerna.EMS.BusinessObject
         public string CUT_FILLER_CODE { get; set; }
         public Nullable<decimal> PRINTING_PRICE { get; set; }
         public Nullable<decimal> HJE_IDR { get; set; }
+        public Nullable<decimal> TARIFF { get; set; }
         public int GOODTYP_ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
-        public string STICKER_ID { get; set; }
+        public Nullable<bool> IS_ACTIVE { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual ICollection<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
+        public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
