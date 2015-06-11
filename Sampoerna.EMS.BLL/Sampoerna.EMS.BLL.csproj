@@ -63,9 +63,12 @@
     <Compile Include="BLLMapper.cs" />
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="PageBLL.cs" />
+    <Compile Include="PBCK1BLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
+    <Compile Include="ZaidmExPOABLL.cs" />
+    <Compile Include="ZaidmPOAMapBLL.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj">

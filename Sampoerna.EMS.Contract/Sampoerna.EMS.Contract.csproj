@@ -42,11 +42,14 @@
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
     <Compile Include="IPageBLL.cs" />
+    <Compile Include="IPBCK1BLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
+    <Compile Include="IZaidmExPOABLL.cs" />
+    <Compile Include="IZaidmPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
