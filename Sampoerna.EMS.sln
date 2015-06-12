@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.BLL", "Sampoerna.EMS.BLL\Sampoerna.EMS.BLL.csproj", "{810DB88F-FBFD-4AF7-89BC-4612F101D5B9}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Utils", "Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj", "{506150A8-FD10-433E-8184-5A5FF03D53FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.AutoMapperExtensions", "Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj", "{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.HMS.Scheduler", "Sampoerna.HMS.Scheduler\Sampoerna.HMS.Scheduler.csproj", "{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
