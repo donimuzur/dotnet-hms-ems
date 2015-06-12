@@ -19,7 +19,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK4C = new HashSet<CK4C>();
             this.CK5 = new HashSet<CK5>();
             this.CK51 = new HashSet<CK5>();
-            this.NPPBKC_PLANT = new HashSet<NPPBKC_PLANT>();
             this.PBCK3_7 = new HashSet<PBCK3_7>();
             this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
             this.PBCK4 = new HashSet<PBCK4>();
@@ -34,15 +33,22 @@ namespace Sampoerna.EMS.BusinessObject
         public string WERKS { get; set; }
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
+        public string CITY { get; set; }
+        public string ADDRESS { get; set; }
+        public string SKEPTIS { get; set; }
+        public Nullable<long> NPPBCK_ID { get; set; }
+        public Nullable<bool> IS_MAIN_PLANT { get; set; }
+        public Nullable<int> RECEIVED_MATERIAL_TYPE_ID { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<CK4C> CK4C { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<CK5> CK51 { get; set; }
-        public virtual ICollection<NPPBKC_PLANT> NPPBKC_PLANT { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
