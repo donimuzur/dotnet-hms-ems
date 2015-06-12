@@ -73,6 +73,7 @@
     <Compile Include="UserBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
+    <Compile Include="ZaidmExNPPBKCBLL.cs" />
     <Compile Include="ZaidmExPOABLL.cs" />
     <Compile Include="ZaidmExPOAMapBLL.cs" />
     <Compile Include="ZaidmExProdTypeBLL.cs" />

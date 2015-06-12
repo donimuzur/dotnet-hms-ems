@@ -1,4 +1,6 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
+﻿@using System.ServiceModel.Channels
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
 
 @section styles
     {
@@ -50,12 +52,7 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>0703.1.3.204</option>
-                                        <option>0703.1.3.205</option>
-                                        <option>0703.1.3.206</option>
-                                        <option>0703.1.3.207</option>
-                                    </select>
+                                    @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -63,10 +60,7 @@
                             <div class="row">
                                 <label class="col-md-4">Type</label>
                                 <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>New</option>
-                                        <option>Additional</option>
-                                    </select>
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.PBCK1Type, Model.SearchInput.PBCK1Types, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -111,7 +105,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <button class="btn btn-blue full">FILTER</button>
+                                <button class="btn btn-blue full" onclick="location.href='@Html.Action("Index", "PBCK1", Model.SearchInput)'">FILTER</button>
                             </div>
                         </div>
                     </div>

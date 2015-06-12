@@ -71,15 +71,27 @@ namespace Sampoerna.EMS.Website.Models
         public Enums.PBCK1Type PBCK1Types { get; set; }
     }
 
-    public class PBCK1SearchInputModel
+    public class PBCK1SearchInputModel 
     {
         public PBCK1SearchInputModel()
         {
             NPPBKCIDList = new SelectList(new List<ZAIDM_EX_NPPBKC>());
         }
+
+        public string NPBCKID { get; set; }
+        public int? POA { get; set; }
+        public int? GoodType_ID { get; set; }
+        public string PBCK1Type { get; set; }
+        public int? Creator { get; set; }
+        public int? Year { get; set; }
+        /// <summary>
+        /// optional if want to sorting from query
+        /// </summary>
+        public string SortOrderColumn { get; set; }
+
         public SelectList NPPBKCIDList { get; set; }
         public SelectList POAList { get; set; }
-        public SelectList PBCK1Type { get; set; }
+        public Core.Enums.PBCK1Type PBCK1Types { get; set; }
         public SelectList CreatorList { get; set; }
         public SelectList YearList { get; set; }
     }

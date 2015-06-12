@@ -7,8 +7,8 @@ namespace Sampoerna.EMS.Core
         public enum MenuList
         {
             MasterData = 2,
-            ExcisableGoodMovement = 3,
-            ExcisableGoodClaimable = 4,
+            ExcisableGoodsMovement = 3,
+            ExcisableGoodsClaimable = 4,
             Settings = 5,
             PBCK1 = 6,
             CK5 = 7,

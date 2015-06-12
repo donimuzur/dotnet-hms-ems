@@ -2,6 +2,7 @@
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website
@@ -47,6 +48,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.STATUS_NAME, opt => opt.MapFrom(src => src.STATUS1 != null ? src.STATUS1.STATUS_NAME : string.Empty))
                 ;
 
+            Mapper.CreateMap<PBCK1SearchInputModel, PBCK1Input>().IgnoreAllNonExisting();
 
         }
     }
