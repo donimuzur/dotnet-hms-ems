@@ -43,13 +43,20 @@
     <Compile Include="IGenericRepository.cs" />
     <Compile Include="IPageBLL.cs" />
     <Compile Include="IPBCK1BLL.cs" />
+    <Compile Include="IPlantBLL.cs" />
+    <Compile Include="IStatusBLL.cs" />
+    <Compile Include="IStatusGovBLL.cs" />
+    <Compile Include="ISupplierPortBLL.cs" />
+    <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
+    <Compile Include="IZaidmExGoodTypeBLL.cs" />
     <Compile Include="IZaidmExPOABLL.cs" />
-    <Compile Include="IZaidmPOAMapBLL.cs" />
+    <Compile Include="IZaidmExProdTypeBLL.cs" />
+    <Compile Include="IZaidmExPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

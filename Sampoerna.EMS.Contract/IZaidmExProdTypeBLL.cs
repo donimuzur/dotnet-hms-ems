@@ -3,8 +3,10 @@ using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Contract
 {
-    public interface IZaidmPOAMapBLL
+    public interface IZaidmExProdTypeBLL
     {
-        List<ZAIDM_EX_POA> GetPOAByNPPBKCID(string NPPBKCID);
+        ZAIDM_EX_PRODTYP GetById(int id);
+
+        List<ZAIDM_EX_PRODTYP> GetAll();
     }
 }
