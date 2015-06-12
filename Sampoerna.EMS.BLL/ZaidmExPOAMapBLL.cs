@@ -10,7 +10,7 @@ using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
 {
-    public class ZaidmExPOAMapBLL : IZaidmPOAMapBLL
+    public class ZaidmExPOAMapBLL : IZaidmExPOAMapBLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;

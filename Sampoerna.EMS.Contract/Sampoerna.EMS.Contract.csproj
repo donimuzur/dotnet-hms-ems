@@ -56,7 +56,7 @@
     <Compile Include="IZaidmExGoodTypeBLL.cs" />
     <Compile Include="IZaidmExPOABLL.cs" />
     <Compile Include="IZaidmExProdTypeBLL.cs" />
-    <Compile Include="IZaidmPOAMapBLL.cs" />
+    <Compile Include="IZaidmExPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
