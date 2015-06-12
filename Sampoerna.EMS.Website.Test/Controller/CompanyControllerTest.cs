@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.Website.Test
         private ILogger _logger;
         private IUnitOfWork _uow;
         private ICompanyBLL _companyBll;
+        private IPageBLL _pageBll;
 
         [TestInitialize]
         public void SetUp()
@@ -30,9 +31,10 @@ namespace Sampoerna.EMS.Website.Test
             var companyData = FakeStuffWeb.GetCompany();
             _uow.GetGenericRepository<T1001>().ReturnsForAnyArgs(_repository);
             _repository.GetQuery().ReturnsForAnyArgs(companyData.AsQueryable());
+           
 
             _companyBll = new CompanyBLL(_uow, _logger);
-
+            _pageBll = Substitute.For<IPageBLL>();
         }
 
         [TestCleanup]
@@ -42,12 +44,13 @@ namespace Sampoerna.EMS.Website.Test
             _uow = null;
             _repository = null;
             _companyBll = null;
+            _pageBll = null;
         }
 
         [TestMethod]
         public void IsReturnCorrectView()
         {
-            var controller = new CompanyController(_companyBll);
+            var controller = new CompanyController(_companyBll, _pageBll);
             var result = controller.Index() as ViewResult;
 
             Assert.AreEqual("Index", result.ViewName);
@@ -56,7 +59,7 @@ namespace Sampoerna.EMS.Website.Test
         [TestMethod]
         public void IsReturnCorrectViewAction()
         {
-            CompanyController controller = new CompanyController(_companyBll);
+            CompanyController controller = new CompanyController(_companyBll, _pageBll);
             ActionResult result = controller.Index();
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 

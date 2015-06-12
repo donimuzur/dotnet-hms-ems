@@ -20,8 +20,9 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // GET: /Company/
         public ActionResult Index()
-        {       
-            var company = _companyBLL.GetMasterData().Select(AutoMapper.Mapper.Map<CompanyViewModel>).ToList();
+        {
+            var company = new CompanyViewModel();
+            company.Details = _companyBLL.GetMasterData().Select(AutoMapper.Mapper.Map<CompanyDetail>).ToList();
            
                              
             return View("Index",company);
