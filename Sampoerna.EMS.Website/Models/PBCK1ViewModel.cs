@@ -9,6 +9,11 @@ namespace Sampoerna.EMS.Website.Models
 {
     public class PBCK1ViewModel : BaseModel
     {
+        public PBCK1ViewModel()
+        {
+            Details = new List<PBCK1Item>();
+            SearchInput = new PBCK1SearchInputModel();
+        }
         public List<PBCK1Item> Details { get; set; }
         
         public PBCK1SearchInputModel SearchInput { get; set; }
@@ -76,6 +81,9 @@ namespace Sampoerna.EMS.Website.Models
         public PBCK1SearchInputModel()
         {
             NPPBKCIDList = new SelectList(new List<ZAIDM_EX_NPPBKC>());
+            POAList = new SelectList(new List<ZAIDM_EX_POA>());
+            CreatorList = new SelectList(new List<USER>());
+            YearList = new SelectList(new List<SelectListItem>());
         }
 
         public string NPBCKID { get; set; }
@@ -91,7 +99,7 @@ namespace Sampoerna.EMS.Website.Models
 
         public SelectList NPPBKCIDList { get; set; }
         public SelectList POAList { get; set; }
-        public Core.Enums.PBCK1Type PBCK1Types { get; set; }
+        public Enums.PBCK1Type PBCK1Types { get; set; }
         public SelectList CreatorList { get; set; }
         public SelectList YearList { get; set; }
     }

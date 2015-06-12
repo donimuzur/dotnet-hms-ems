@@ -45,6 +45,9 @@ namespace Sampoerna.EMS.Website
             container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
             container.Register<IPageBLL, PageBLL>();
             container.Register<IPBCK1BLL, PBCK1BLL>();
+            container.Register<IZaidmExPOABLL, ZaidmExPOABLL>();
+            container.Register<IZaidmExPOAMapBLL, ZaidmExPOAMapBLL>();
+            container.Register<IZaidmExNPPBKCBLL, ZaidmExNPPBKCBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
