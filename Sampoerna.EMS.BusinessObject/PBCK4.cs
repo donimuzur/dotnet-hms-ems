@@ -22,6 +22,8 @@ namespace Sampoerna.EMS.BusinessObject
         public long PBCK4_ID { get; set; }
         public string NUMBER { get; set; }
         public Nullable<long> PLANT_ID { get; set; }
+        public Nullable<long> NPPBKC_ID { get; set; }
+        public string NO_PENGAWAS { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public Nullable<long> BACK1_ID { get; set; }
         public Nullable<int> STATUS_ID { get; set; }
@@ -34,6 +36,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
         public virtual STATUS STATUS { get; set; }
-        public virtual STATUS_GOV STATUS_GOV { get; set; }
+        public virtual T1001W T1001W { get; set; }
+        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
     }
 }

@@ -14,8 +14,13 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class PBCK3_CK5
     {
+        public PBCK3_CK5()
+        {
+            this.PBCK3_CK5_ITEM = new HashSet<PBCK3_CK5_ITEM>();
+        }
+    
         public long PBCK3_CK5_ID { get; set; }
-        public Nullable<long> CK5_MARKET_RETURN_ID { get; set; }
+        public Nullable<long> CK5_ID { get; set; }
         public int DOCUMENT_TYPE_ID { get; set; }
         public Nullable<long> NPPBKC_ID { get; set; }
         public Nullable<long> PLANT_ID { get; set; }
@@ -23,15 +28,18 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> EXEC_DATE_FROM { get; set; }
         public System.DateTime EXEC_DATE_TO { get; set; }
         public Nullable<System.DateTime> REPORTING_DATE { get; set; }
-        public Nullable<long> BACK3_CK2_ID { get; set; }
+        public Nullable<long> CK3_ID { get; set; }
+        public Nullable<long> CK2_ID { get; set; }
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<int> STATUS_PBCK3 { get; set; }
     
-        public virtual BACK3_CK2 BACK3_CK2 { get; set; }
+        public virtual CK2 CK2 { get; set; }
+        public virtual CK3 CK3 { get; set; }
         public virtual DOCUMENT_TYPE DOCUMENT_TYPE { get; set; }
+        public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
         public virtual STATUS STATUS { get; set; }
         public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }

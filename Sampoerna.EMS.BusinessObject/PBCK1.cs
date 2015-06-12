@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BusinessObject
         public long PBCK1_ID { get; set; }
         public string NUMBER { get; set; }
         public Nullable<long> PBCK1_REF { get; set; }
+        public string PBCK1_TYPE { get; set; }
         public Nullable<System.DateTime> PERIOD_FROM { get; set; }
         public Nullable<System.DateTime> PERIOD_TO { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
@@ -41,7 +42,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> LACK1_TO_MONTH { get; set; }
         public Nullable<int> LACK1_TO_YEAR { get; set; }
         public Nullable<int> STATUS { get; set; }
-        public Nullable<long> STATUS_GOV { get; set; }
+        public Nullable<int> STATUS_GOV { get; set; }
         public Nullable<decimal> QTY_APPROVED { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
@@ -53,10 +54,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual MONTH MONTH1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
+        public virtual STATUS STATUS1 { get; set; }
         public virtual STATUS_GOV STATUS_GOV1 { get; set; }
         public virtual SUPPLIER_PORT SUPPLIER_PORT { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
         public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
         public virtual ICollection<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }

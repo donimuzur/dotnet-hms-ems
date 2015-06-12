@@ -1,46 +1,152 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    Layout = null;
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-    <p>
-        @Html.ActionLink("Show Report", "ShowReportDataEmployee")
-    </p>
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EMS - Excise Management System</title>
+    <link rel="shortcut icon" href="../../Content/assets/images/favicon.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <!-- Load the site CSS after Boostrap's to override -->
+    @Styles.Render("~/Content/css")
+    <!-- Load jQuery -->
+    @Scripts.Render("~/bundles/jquery")
+    <!-- Load Modernizr.js -->
+    @Scripts.Render("~/bundles/modernizrmin")
+    <!-- Load Bootstrap JavaScript -->
+    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Load Fixed Header table JavaScript -->
+    @Scripts.Render("~/bundles/fixedheadertable")
+</head>
+<body class="main-page">
+    <div class="excise-site main-menu">
+        <div class="main-header">
+            <div class="main-logo">
+                <img src="~/Content/assets/images/logo-large.png" alt="">
+            </div>
+            <h3>Excise Management System</h3>
+        </div>
+        <div class="main-menu-content">
+            <div class="excise-menu" data-toggle="modal" data-target=".menu-movement">
+                <h3>Excisable Goods Movement</h3>
+                <p>
+                    - Goods Quota (PBCK-1)<br>
+                    - Goods Movement (CK-5)<br>
+                    - Goods Usage Report (LACK-1)<br>
+                    - Goods Transfer Report (LACK-2)<br>
+                    - Production Report (CK-4C)
+                </p>
+                <div class="icon"></div>
+            </div>
+            <div class="excise-menu last" data-toggle="modal" data-target=".menu-claimable">
+                <h3>Excisable Goods Claimable</h3>
+                <p>
+                    - Stamp Damage and Return (PBCK-4)<br>
+                    - Refund from Production (PBCK-7)<br>
+                    - Refund from Market (PBCK-3)<br>
+                    - CK-5 Market Return
+                </p>
+                <div class="icon"></div>
+            </div>
+            <div class="excise-menu small">
+                <h3>Master Data</h3>
+                <div class="icon"></div>
+            </div>
+            <div class="excise-menu small last">
+                <h3>Setting</h3>
+                <div class="icon"></div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="modal fade main-menu-child menu-movement" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Excisable Goods Claimable</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-15">
+                            <a href="@Url.Action("Index","PBCK1")" class="child-menu">
+                                PBCK-1
+                            </a>
+                        </div>
+                        <div class="col-md-15">
+                            <a href="#" class="child-menu">
+                                CK-5
+                            </a>
+                        </div>
+                        <div class="col-md-15">
+                            <a href="#" class="child-menu">
+                                LACK-1
+                            </a>
+                        </div>
+                        <div class="col-md-15">
+                            <a href="#" class="child-menu">
+                                LACK-2
+                            </a>
+                        </div>
+                        <div class="col-md-15">
+                            <a href="#" class="child-menu">
+                                CK-4C
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="modal fade main-menu-child menu-claimable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Excisable Goods Movement</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="#" class="child-menu">
+                                PBCK-4
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="child-menu">
+                                PBCK-7
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="child-menu">
+                                PBCK-3
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="child-menu">
+                                CK-5
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div onclick="myOpen()">Fullscreen</div>
-    <div onclick="myOpen2()">Close</div>
-</div>
-<script type="text/javascript">
- 
-    function myOpen() {
-        window.open("http://localhost:57497/", null, "fullscreen=yes");
-    }
-    function myOpen2() {
-        window.close();
-    }
-  
-</script>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    © 2015 Excise Management System. PT HM Sampoerna, Tbk
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Load custom.js -->
+    @Scripts.Render("~/bundles/customjs")
+</body>
+</html>

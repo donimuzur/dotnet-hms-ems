@@ -32,7 +32,21 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
             .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.DocumentBukrs))
             .ForMember(dest => dest.BUKRSTXT, opt => opt.MapFrom(src => src.DocumentBukrstxt))
-            .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate)); 
+            .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate));
+
+            Mapper.CreateMap<PBCK1, PBCK1Item>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.APPROVED_USER, opt => opt.MapFrom(src => src.USER))
+                .ForMember(dest => dest.LACK1_FROM_MONTH_ID, opt => opt.MapFrom(src => src.LACK1_FROM_MONTH))
+                .ForMember(dest => dest.LACK1_TO_MONTH_ID, opt => opt.MapFrom(src => src.LACK1_TO_MONTH))
+                .ForMember(dest => dest.LACK1_FROM_MONTH, opt => opt.MapFrom(src => src.MONTH))
+                .ForMember(dest => dest.LACK1_TO_MONTH, opt => opt.MapFrom(src => src.MONTH1))
+                .ForMember(dest => dest.GOODTYPE, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP))
+                .ForMember(dest => dest.STATUS_GOV_ID, opt => opt.MapFrom(src => src.STATUS_GOV))
+                .ForMember(dest => dest.STATUS_GOV, opt => opt.MapFrom(src => src.STATUS_GOV1))
+                .ForMember(dest => dest.NPPBKC, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC))
+                .ForMember(dest => dest.STATUS_NAME, opt => opt.MapFrom(src => src.STATUS1 != null ? src.STATUS1.STATUS_NAME : string.Empty))
+                ;
+
 
         }
     }

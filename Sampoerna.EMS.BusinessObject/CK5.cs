@@ -20,7 +20,8 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public long CK5_ID { get; set; }
-        public Nullable<int> CK5_TYPE { get; set; }
+        public string CK5_NUMBER { get; set; }
+        public string CK5_TYPE { get; set; }
         public Nullable<long> KPPBC_CITY { get; set; }
         public string SUMBISSION_NUMBER { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
@@ -60,7 +61,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
-        public virtual CK5_TYPE CK5_TYPE1 { get; set; }
         public virtual EX_SETTLEMENT EX_SETTLEMENT { get; set; }
         public virtual EX_STATUS EX_STATUS { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }

@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace Sampoerna.EMS.Website
 {
@@ -8,8 +7,12 @@ namespace Sampoerna.EMS.Website
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+            
+            bundles.Add(new Bundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
+                         "~/Scripts/jquery-ui-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -19,13 +22,30 @@ namespace Sampoerna.EMS.Website
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/modernizrmin").Include(
+                        "~/Scripts/modernizr.min.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/bootstrap.min.js",
+                      "~/Scripts/js/vendors/bootstrap-datepicker.min.js"
+                      ));
+
+            bundles.Add(new ScriptBundle("~/bundles/customjs").Include(
+                      "~/Scripts/js/scripts.min.js"
+                      ));
+
+            bundles.Add(new ScriptBundle("~/bundles/fixedheadertable").Include(
+                      "~/Scripts/js/vendors/jquery.fixedheadertable.min.js"
+                      ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/css/main.min.css",
+                      "~/Content/css/vendors/yamm.css",
+                      "~/Content/css/vendors/font-awesome.min.css"
+                      ));
+
+            
+
         }
     }
 }

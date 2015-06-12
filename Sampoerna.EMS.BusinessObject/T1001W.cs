@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.NPPBKC_PLANT = new HashSet<NPPBKC_PLANT>();
             this.PBCK3_7 = new HashSet<PBCK3_7>();
             this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
+            this.PBCK4 = new HashSet<PBCK4>();
             this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.VIRTUAL_PLANT_MAP1 = new HashSet<VIRTUAL_PLANT_MAP>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
@@ -41,6 +42,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<NPPBKC_PLANT> NPPBKC_PLANT { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
+        public virtual ICollection<PBCK4> PBCK4 { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }

@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject
         public STATUS()
         {
             this.CK5 = new HashSet<CK5>();
+            this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK3_7 = new HashSet<PBCK3_7>();
             this.PBCK3_71 = new HashSet<PBCK3_7>();
             this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
@@ -27,6 +28,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string STATUS_NAME { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_71 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
