@@ -54,6 +54,7 @@
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
     <Compile Include="IZaidmExGoodTypeBLL.cs" />
+    <Compile Include="IZaidmExNPPBKCBLL.cs" />
     <Compile Include="IZaidmExPOABLL.cs" />
     <Compile Include="IZaidmExProdTypeBLL.cs" />
     <Compile Include="IZaidmExPOAMapBLL.cs" />
