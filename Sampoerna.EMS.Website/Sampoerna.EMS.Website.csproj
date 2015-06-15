@@ -48,7 +48,14 @@
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\ReportViewerCommon.11.0.0.0\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\MicosoftReportViewerWebForms_v11.1.0.1\lib\Microsoft.ReportViewer.WebForms.DLL</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -212,6 +219,7 @@
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -225,6 +233,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PBCK1ViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -543,6 +552,7 @@
     <Content Include="Views\Shared\DisplayTemplates\FormatDateTime.cshtml" />
     <Content Include="Views\PBCK1\Create.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

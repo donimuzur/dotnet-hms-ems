@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
+    <Compile Include="IMasterDataBLL.cs" />
     <Compile Include="IPageBLL.cs" />
     <Compile Include="IPBCK1BLL.cs" />
     <Compile Include="IPlantBLL.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserBLL.cs" />
+    <Compile Include="IVirtualMappingPlantBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
