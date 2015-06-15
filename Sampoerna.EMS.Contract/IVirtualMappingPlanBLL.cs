@@ -6,7 +6,7 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IVirtualMappingPlanBLL
     {
-        List<VIRTUAL_PLANT_MAP> GetAll();
+        List<SaveVirtualMappingPlantOutput> GetAll();
 
         SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap);
        

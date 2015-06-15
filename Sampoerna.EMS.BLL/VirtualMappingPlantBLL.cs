@@ -17,17 +17,50 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<VIRTUAL_PLANT_MAP> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private IGenericRepository<T1001> _repositoryT1001; 
 
         public VirtualMappingPlantBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<VIRTUAL_PLANT_MAP>();
+            _repositoryT1001 = _uow.GetGenericRepository<T1001>();
+
         }
 
-        public List<VIRTUAL_PLANT_MAP> GetAll()
+        public List<SaveVirtualMappingPlantOutput> GetAll()
         {
-            return _repository.Get().ToList();
+            var repoVirtualPlantMap = _repository.Get().ToList();
+            var repoT1001 = _repositoryT1001.Get().ToList();
+
+            //var repoPlantMapTest = _repository.GetQuery();
+            //var repoT1001Test = _repositoryT1001.GetQuery();
+
+            var result = repoVirtualPlantMap.Join(repoT1001,
+                virtualMap => virtualMap.COMPANY_ID,
+                T1001 => T1001.COMPANY_ID,
+                (virtualMap, T1001) => new SaveVirtualMappingPlantOutput
+                {
+                    Company = T1001.BUKRSTXT,
+                    ImportVitualPlant = virtualMap.IMPORT_PLANT_ID,
+                    ExportVirtualPlant = virtualMap.EXPORT_PLANT_ID
+                }).ToList();
+
+            //var test = from p in _repository.GetQuery()
+            //           join k in _repositoryT1001.GetQuery()
+            //        on p.COMPANY_ID equals k.COMPANY_ID
+            //    select new
+            //    {
+            //        company = k.BUKRSTXT,
+            //        export = p.EXPORT_PLANT_ID,
+            //        import = p.IMPORT_PLANT_ID
+            //    };
+
+
+            return result;
+
+
+            //return _repository.Get().ToList();
         }
 
 

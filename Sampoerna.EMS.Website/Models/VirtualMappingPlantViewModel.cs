@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Website.Models
 {
@@ -10,16 +12,24 @@ namespace Sampoerna.EMS.Website.Models
     {
         public VirtualMappingPlantViewModel()
         {
-            Details = new List<VirtualMappingPlantDetail>();
+            Details = new List<SaveVirtualMappingPlantOutput>();
         }
 
-        public List<VirtualMappingPlantDetail> Details { get; set; }
+        public List<SaveVirtualMappingPlantOutput> Details { get; set; }
+
+        public SelectList CompanyList { set; get; }
+
+        public SelectList ImportList { set; get; }
+
+        public SelectList ExportList { set; get; }
     }
 
     public class VirtualMappingPlantDetail
         {
             public long VirtualPlantMapId { get; set; }
             public Nullable<long> CompanyId { get; set; }
+
+            public string CompanyName { get; set; }
             public Nullable<long> ImportPlantId { get; set; }
             public long ExportPlantId { get; set; }
 

@@ -21,8 +21,8 @@ namespace Sampoerna.EMS.Core
             CK5MRETURN = 14,
             USER = 15,
             LOGIN = 16,
-            COMPANY = 17,
-            VitualMappingPlant = 18
+            COMPANY = 17
+            
         }
 
         public enum PBCK1Type
