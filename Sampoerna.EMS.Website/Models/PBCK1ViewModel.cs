@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 
@@ -12,11 +11,11 @@ namespace Sampoerna.EMS.Website.Models
         public PBCK1ViewModel()
         {
             Details = new List<PBCK1Item>();
-            SearchInput = new PBCK1SearchInputModel();
+            SearchInput = new PBCK1FilterViewModel();
         }
         public List<PBCK1Item> Details { get; set; }
-        
-        public PBCK1SearchInputModel SearchInput { get; set; }
+
+        public PBCK1FilterViewModel SearchInput { get; set; }
         
     }
 
@@ -75,33 +74,5 @@ namespace Sampoerna.EMS.Website.Models
 
         public Enums.PBCK1Type PBCK1Types { get; set; }
     }
-
-    public class PBCK1SearchInputModel 
-    {
-        public PBCK1SearchInputModel()
-        {
-            NPPBKCIDList = new SelectList(new List<ZAIDM_EX_NPPBKC>());
-            POAList = new SelectList(new List<ZAIDM_EX_POA>());
-            CreatorList = new SelectList(new List<USER>());
-            YearList = new SelectList(new List<SelectListItem>());
-        }
-
-        public string NPBCKID { get; set; }
-        public int? POA { get; set; }
-        public int? GoodType_ID { get; set; }
-        public string PBCK1Type { get; set; }
-        public int? Creator { get; set; }
-        public int? Year { get; set; }
-        /// <summary>
-        /// optional if want to sorting from query
-        /// </summary>
-        public string SortOrderColumn { get; set; }
-
-        public SelectList NPPBKCIDList { get; set; }
-        public SelectList POAList { get; set; }
-        public Enums.PBCK1Type PBCK1Types { get; set; }
-        public SelectList CreatorList { get; set; }
-        public SelectList YearList { get; set; }
-    }
-
+    
 }

@@ -1,0 +1,9 @@
+﻿
+@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
+
+<div id="divPoaList" class="row">
+  <label class="col-md-4">POA</label>
+  <div class="col-md-8">
+    @Html.DropDownListFor(model => model.SearchInput.POA, Model.SearchInput.POAList, "Select", new { @class = "form-control" })
+  </div>
+</div>

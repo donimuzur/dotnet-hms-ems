@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -40,8 +41,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.NPPBKC, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC))
                 .ForMember(dest => dest.STATUS_NAME, opt => opt.MapFrom(src => src.STATUS1 != null ? src.STATUS1.STATUS_NAME : string.Empty))
                 ;
-            
-            Mapper.CreateMap<PBCK1SearchInputModel, PBCK1Input>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK1FilterViewModel, PBCK1Input>().IgnoreAllNonExisting();
+
             //Virtual Mapping Plant
             Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetail>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.VirtualPlantMapId, opt => opt.MapFrom(src => src.VIRTUAL_PLANT_MAP_ID))
@@ -55,6 +57,17 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.ImportPlantId, opt => opt.MapFrom(src => src.ImportVitualPlant))
                .ForMember(dest => dest.ExportPlantId, opt => opt.MapFrom(src => src.ExportVirtualPlant));
 
+            Mapper.CreateMap<ZAIDM_EX_POA, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.POA_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.POA_CODE));
+
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.NPPBKC_NO))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NPPBKC_NO));
+
+            Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
         }
     }
 }

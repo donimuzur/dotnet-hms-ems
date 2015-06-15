@@ -24,16 +24,5 @@ namespace Sampoerna.EMS.Website.Controllers
             return View();
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetPOAByNppbkcId(string nppbkcId)
-        {
-            if (string.IsNullOrEmpty(nppbkcId))
-            {
-                throw new ArgumentNullException("nppbkcId");
-            }
-            var result = _poaMapBll.GetPOAByNPPBKCID(nppbkcId);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
 	}
 }

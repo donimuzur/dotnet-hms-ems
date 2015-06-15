@@ -1,29 +1,12 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
 
 @section styles
 {
     <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
 }
 
-@section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            $('#pbckTable').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    "language": {
-                        "lengthMenu": "Display _MENU_ records per page",
-                        "zeroRecords": "No records found",
-                        "info": "Showing page _PAGE_ of _PAGES_",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
-        });
-    </script>
-}
+
 
 @{
     ViewBag.Title = "PBCK 1";
@@ -52,12 +35,7 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>0703.1.3.204</option>
-                                        <option>0703.1.3.205</option>
-                                        <option>0703.1.3.206</option>
-                                        <option>0703.1.3.207</option>
-                                    </select>
+                                    @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, "Select", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -69,7 +47,6 @@
                                         <option>New</option>
                                         <option>Additional</option>
                                     </select>
-
                                 </div>
                             </div>
                         </div>
@@ -77,40 +54,19 @@
                             <div class="row">
                                 <label class="col-md-4">Year</label>
                                 <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>2015</option>
-                                        <option>2014</option>
-                                        <option>2013</option>
-                                        <option>2012</option>
-                                    </select>
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
                         <div class="last-form">
                             <div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">POA</label>
-                                    <div class="col-md-8">
-                                        <select class="form-control">
-                                            <option>001 - Creator 1</option>
-                                            <option>002 - Creator 2</option>
-                                            <option>003 - Creator 3</option>
-                                            <option>004 - Creator 4</option>
-                                        </select>
-
-                                    </div>
-                                </div>
+                                @Html.Partial("POAListPartial", Model)
                             </div>
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        <select class="form-control">
-                                            <option>001 - Creator 1</option>
-                                            <option>002 - Creator 2</option>
-                                            <option>003 - Creator 3</option>
-                                            <option>004 - Creator 4</option>
-                                        </select>
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "Select", new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +130,7 @@
                                 </td>
                                 <td class="last">@Html.DisplayFor(model => item.STATUS_NAME)</td>
                             </tr>
-                                    rownum++;
+                            rownum++;
                         }
                     </tbody>
                 </table>
@@ -182,3 +138,48 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+  <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            $('#pbckTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "language": {
+                        "lengthMenu": "Display _MENU_ records per page",
+                        "zeroRecords": "No records found",
+                        "info": "Showing page _PAGE_ of _PAGES_",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+        });
+        
+        $("#SearchInput_NPBCKID").change(function () {
+          if ($("#SearchInput_NPBCKID").length) {
+            var nbck = $(this).find("option:selected").val();
+            if (nbck == "") nbck = "0";
+            //alert(product);
+            ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck }, "#divPoaList");
+          }
+          
+        });
+        
+        function ajaxSelectNppbck(url, formData, target) {
+          $(target).html("");
+          if (formData.nppbkcId) {
+            $.ajax({
+              type: 'POST',
+              url: url,
+              data: formData,
+              success: function (data) {
+                $(target).replaceWith(data);
+                  }
+            });
+          }
+        }
+
+    </script>
+}

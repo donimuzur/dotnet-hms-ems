@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using AutoMapper;
-using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
-using System;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -14,60 +13,86 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IZaidmExPOAMapBLL _poaMapBll;
+        private IUserBLL _userBll;
 
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExNPPBKCBLL nppbkcbll) : base(pageBLL, Enums.MenuList.PBCK1)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExNPPBKCBLL nppbkcbll,
+            IZaidmExPOAMapBLL poaMapBll, IUserBLL userBll)
+            : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
             _nppbkcbll = nppbkcbll;
+            _poaMapBll = poaMapBll;
+            _userBll = userBll;
         }
 
-        private PBCK1ViewModel GetPBCKData(PBCK1Input input = null)
+        private SelectList GetNPPBKC()
         {
-            if (input == null)
+            var nppbkcList = _nppbkcbll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
+        {
+            if (filter == null)
             {
-                input = new PBCK1Input();
+                //Get All
+                return Mapper.Map<List<PBCK1Item>>(_pbck1Bll.GetPBCK1ByParam(new PBCK1Input()));
             }
-            var model = new PBCK1ViewModel
-            {
-                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
-                CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<PBCK1Item>>(_pbck1Bll.GetPBCK1ByParam(input)),
-                SearchInput = new PBCK1SearchInputModel()
-            };
-            return model;
+            //getbyparams
+            var input = Mapper.Map<PBCK1Input>(filter);
+            return Mapper.Map<List<PBCK1Item>>(_pbck1Bll.GetPBCK1ByParam(input));
         }
 
-        private List<ZAIDM_EX_NPPBKC> GetNPPBKC()
+        private SelectList GetPoaByNppbkcId(string nppbkcId)
         {
-            return _nppbkcbll.GetAll();
+            var poaList = _poaMapBll.GetPOAByNPPBKCID(nppbkcId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(poaList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        private SelectList GetCreatorList()
+        {
+            var users = _userBll.GetUsers(new UserInput());
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        private SelectList GetYearList()
+        {
+            int currentYear = DateTime.Now.Year;
+            var selectItemSource = new List<SelectItemModel>();
+            for (var i = 0; i < 5; i++)
+            {
+                selectItemSource.Add(new SelectItemModel()
+                {
+                    ValueField = (currentYear - i),
+                    TextField = (currentYear - i).ToString()
+                });
+            }
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
         //
         // GET: /PBCK/
         public ActionResult Index()
         {
-            var model = GetPBCKData();
-            //set filter
-
-            return View(model);
+            return IndexInitial(new PBCK1ViewModel()
+            {
+                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
+                CurrentMenu = PageInfo
+            });
         }
 
-        
-
-        [HttpPost]
-        public ActionResult Filter(PBCK1SearchInputModel searchInput)
+        public ActionResult IndexInitial(PBCK1ViewModel model)
         {
-            var input = Mapper.Map<PBCK1Input>(searchInput);
-            var model = GetPBCKData(input);
-            try
-            {
-
-            }
-            catch
-            {
-                model = GetPBCKData();
-            }
-            return View(model);
+            model.SearchInput.YearList = GetYearList();
+            model.SearchInput.NPPBKCIDList = GetNPPBKC();
+            model.SearchInput.CreatorList = GetCreatorList();
+            model.SearchInput.POAList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
+            model.Details = GetPBCKItems();
+            return View("Index", model);
         }
 
         public ActionResult Create()
@@ -79,6 +104,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 Detail = null
             };
             return View(model);
+        }
+
+        public ActionResult PoaListPartial(string nppbkcId)
+        {
+            var listPoa = GetPoaByNppbkcId(nppbkcId);
+            var model = new PBCK1ViewModel { SearchInput = { POAList = listPoa } };
+            return PartialView("PoaListPartial", model);
         }
 
     }

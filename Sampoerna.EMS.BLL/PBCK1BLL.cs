@@ -35,6 +35,11 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.NUMBER.Contains(input.NPBCKID));
             }
 
+            if (!string.IsNullOrEmpty(input.Pbck1Type))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK1_TYPE.ToLower().Contains(input.Pbck1Type.ToLower()));
+            }
+
             if (input.POA.HasValue)
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY.HasValue && c.APPROVED_BY.Value == input.POA.Value);
