@@ -51,11 +51,12 @@
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserBLL.cs" />
-    <Compile Include="IVirtualMappingPlanBLL.cs" />
+    <Compile Include="IVirtualMappingPlantBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
     <Compile Include="IZaidmExGoodTypeBLL.cs" />
+    <Compile Include="IZaidmExNPPBKCBLL.cs" />
     <Compile Include="IZaidmExPOABLL.cs" />
     <Compile Include="IZaidmExProdTypeBLL.cs" />
     <Compile Include="IZaidmExPOAMapBLL.cs" />
