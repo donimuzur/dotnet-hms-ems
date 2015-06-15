@@ -213,6 +213,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -226,6 +227,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PBCK1ViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -544,6 +546,7 @@
     <Content Include="Views\Shared\DisplayTemplates\FormatDateTime.cshtml" />
     <Content Include="Views\PBCK1\Create.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

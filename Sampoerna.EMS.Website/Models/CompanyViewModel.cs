@@ -9,18 +9,28 @@ using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models
 {
-    public class CompanyViewModel 
+    public class CompanyViewModel : BaseModel
     {
+
+        public CompanyViewModel()
+        {
+            Details = new List<CompanyDetail>();
+        }
+
+        public List<CompanyDetail> Details { get; set; } 
         
+    }
+
+    public class CompanyDetail
+    {
         public long CompanyId { get; set; }
 
         public string DocumentBukrs { get; set; }
 
         public string DocumentBukrstxt { get; set; }
-        
-       public Nullable<System.DateTime> CreatedDate { get; set; }
+
+        public Nullable<System.DateTime> CreatedDate { get; set; }
 
         public virtual ICollection<T1001K> T1001K { get; set; }
-       
     }
 }
