@@ -210,6 +210,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
+    <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
@@ -546,6 +547,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\POA\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
