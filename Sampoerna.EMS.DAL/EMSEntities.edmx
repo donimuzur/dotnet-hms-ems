@@ -78,7 +78,7 @@
           <Key>
             <PropertyRef Name="CK4C_ID" />
           </Key>
-          <Property Name="CK4C_ID" Type="bigint" Nullable="false" />
+          <Property Name="CK4C_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CK4C_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="COMPANY_ID" Type="bigint" />
           <Property Name="REPORT_ON" Type="datetime" />
