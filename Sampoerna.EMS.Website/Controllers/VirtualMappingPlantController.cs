@@ -13,10 +13,10 @@ namespace Sampoerna.EMS.Website.Controllers
     public class VirtualMappingPlantController : BaseController
     {
 
-        private IVirtualMappingPlanBLL _virtualMappingPlanBll;
+        private IVirtualMappingPlantBLL _virtualMappingPlanBll;
         private IMasterDataBLL _masterDataBll;
 
-        public VirtualMappingPlantController(IVirtualMappingPlanBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IPageBLL pageBLL)
+        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;

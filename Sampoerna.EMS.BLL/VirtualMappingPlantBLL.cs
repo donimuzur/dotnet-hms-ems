@@ -12,7 +12,7 @@ using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
 {
-    public class VirtualMappingPlantBLL : IVirtualMappingPlanBLL
+    public class VirtualMappingPlantBLL : IVirtualMappingPlantBLL
     {
         private IGenericRepository<VIRTUAL_PLANT_MAP> _repository;
         private ILogger _logger;

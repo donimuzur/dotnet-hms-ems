@@ -4,7 +4,7 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
-    public interface IVirtualMappingPlanBLL
+    public interface IVirtualMappingPlantBLL
     {
         List<SaveVirtualMappingPlantOutput> GetAll();
 
