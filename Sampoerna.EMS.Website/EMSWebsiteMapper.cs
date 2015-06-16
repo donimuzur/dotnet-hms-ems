@@ -2,6 +2,7 @@
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website
@@ -18,21 +19,39 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<UserTree, UserViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE.HasValue && src.IS_ACTIVE.Value))
                 ;
-
-
+            
             //Company
-            Mapper.CreateMap<T1001, CompanyViewModel>().IgnoreAllNonExisting()
+            Mapper.CreateMap<T1001, CompanyDetail>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
             .ForMember(dest => dest.DocumentBukrs, opt => opt.MapFrom(src => src.BUKRS))
             .ForMember(dest => dest.DocumentBukrstxt, opt => opt.MapFrom(src => src.BUKRSTXT))
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE)); 
 
-            //Company
-            Mapper.CreateMap<CompanyViewModel, T1001>().IgnoreAllNonExisting()
-            .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
-            .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.DocumentBukrs))
-            .ForMember(dest => dest.BUKRSTXT, opt => opt.MapFrom(src => src.DocumentBukrstxt))
-            .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate)); 
+            Mapper.CreateMap<PBCK1, PBCK1Item>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.APPROVED_USER, opt => opt.MapFrom(src => src.USER))
+                .ForMember(dest => dest.LACK1_FROM_MONTH_ID, opt => opt.MapFrom(src => src.LACK1_FROM_MONTH))
+                .ForMember(dest => dest.LACK1_TO_MONTH_ID, opt => opt.MapFrom(src => src.LACK1_TO_MONTH))
+                .ForMember(dest => dest.LACK1_FROM_MONTH, opt => opt.MapFrom(src => src.MONTH))
+                .ForMember(dest => dest.LACK1_TO_MONTH, opt => opt.MapFrom(src => src.MONTH1))
+                .ForMember(dest => dest.GOODTYPE, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP))
+                .ForMember(dest => dest.STATUS_GOV_ID, opt => opt.MapFrom(src => src.STATUS_GOV))
+                .ForMember(dest => dest.STATUS_GOV, opt => opt.MapFrom(src => src.STATUS_GOV1))
+                .ForMember(dest => dest.NPPBKC, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC))
+                .ForMember(dest => dest.STATUS_NAME, opt => opt.MapFrom(src => src.STATUS1 != null ? src.STATUS1.STATUS_NAME : string.Empty))
+                ;
+            
+            //Virtual Mapping Plant
+            Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.VirtualPlantMapId, opt => opt.MapFrom(src => src.VIRTUAL_PLANT_MAP_ID))
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
+                .ForMember(dest => dest.ImportPlantId, opt => opt.MapFrom(src => src.IMPORT_PLANT_ID))
+                .ForMember(dest => dest.ExportPlantId, opt => opt.MapFrom(src => src.EXPORT_PLANT_ID));
+
+            Mapper.CreateMap<SaveVirtualMappingPlantOutput, VirtualMappingPlantDetail>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.VirtualPlantMapId, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company))
+               .ForMember(dest => dest.ImportPlantId, opt => opt.MapFrom(src => src.ImportVitualPlant))
+               .ForMember(dest => dest.ExportPlantId, opt => opt.MapFrom(src => src.ExportVirtualPlant));
 
         }
     }
