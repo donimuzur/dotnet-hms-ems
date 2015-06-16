@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using Sampoerna.EMS.BusinessObject;
@@ -25,7 +26,7 @@ namespace Sampoerna.EMS.BLL.Test
             _uow = Substitute.For<IUnitOfWork>();
             _repository = _uow.GetGenericRepository<USER>();
             _bll = new UserBLL(_uow, _logger);
-            BLLMapper.Initialize();
+            BLLMapper.Initialize();                                                                                                                                                                                                                                                                                 
         }
 
         [TestCleanup]
@@ -37,7 +38,7 @@ namespace Sampoerna.EMS.BLL.Test
             _bll = null;
         }
         
-        [TestMethod, ExpectedException(typeof(BLLException))]
+        [TestMethod, ExpectedException(typeof(BLLException))]   
         public void GetUsers_WhenDataNotFound_ThrowExceptions()
         {
             //arrange

@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -8,7 +9,7 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IUserBLL _bll;
 
-        public LoginController( IUserBLL bll)
+        public LoginController( IUserBLL bll, IPageBLL pageBll) : base(pageBll, Enums.MenuList.USER)
         {
             _bll = bll;
 
@@ -30,7 +31,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (loginResult != null)
             {
                 CurrentUser = loginResult;
-                return RedirectToAction("Index", "SplashScreen");
+                
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.Error = "Username incorrect";

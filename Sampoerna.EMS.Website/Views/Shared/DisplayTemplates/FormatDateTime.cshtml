@@ -1,0 +1,3 @@
+﻿@model DateTime?
+@(Model.HasValue ? string.Format("{0:dd-mmm-yyyy}", Model.Value) : string.Empty)
+  

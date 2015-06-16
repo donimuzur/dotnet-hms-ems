@@ -64,7 +64,10 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="CITY.cs">
+    <Compile Include="CK2.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CK3.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="CK4C.cs">
@@ -79,13 +82,16 @@
     <Compile Include="CK5_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="CK5_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="COUNTRY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CURRENCY.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="DOCUMENT_TYPE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EMSEntities.cs">
@@ -99,6 +105,9 @@
     <Compile Include="EX_STATUS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="FILE_UPLOAD.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="FORM_TYPE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -108,19 +117,20 @@
     <Compile Include="HEADER_FOOTER_FORM_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\UserInput.cs" />
-    <Compile Include="FILE_UPLOAD.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
+    <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
+    <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
     <Compile Include="MENGETAHUI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="MONTH.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="NPPBKC_PLANT.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Outputs\BLLBaseOutput.cs" />
+    <Compile Include="Outputs\PBCK1Outputs.cs" />
+    <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
     <Compile Include="PAGE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -139,16 +149,17 @@
     <Compile Include="PBCK3_CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PBCK3_CK5_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="PBCK4.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PBCK4_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="PROCESS_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Business\UserTree.cs" />
     <Compile Include="REALISASI_PEMASUKAN.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -185,11 +196,13 @@
     <Compile Include="USER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Business\UserTree.cs" />
     <Compile Include="USER_GROUP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WORKFLOW_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">

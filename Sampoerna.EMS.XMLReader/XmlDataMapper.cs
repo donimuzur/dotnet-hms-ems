@@ -6,18 +6,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Configuration;
+using Voxteneo.WebComponents.Logger;
+using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.DAL;
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
     {
-        private const string RootPath = @"D:/XML_EMS/";
+        private const string RootPath = @"E:/XML_EMS/";
         public XElement _xmlData = null;
         private string _xmlName = null;
-        public XmlDataMapper(string xmlName)
+        public ILogger logger;
+        public IUnitOfWork uow;
+
+        public XmlDataMapper(string xmlName)  
         {
             _xmlName = xmlName;
             _xmlData = ReadXMLFile();
-
+            logger = new NullLogger();
+            uow = new SqlUnitOfWork(logger);
+          
         }
 
 
@@ -40,5 +48,25 @@ namespace Sampoerna.EMS.XMLReader
 
             return _xmlData.Elements(elementName);
         }
+        public void InsertToDatabase<T>(List<T> items) where  T : class 
+        {
+            var repo = uow.GetGenericRepository<T>();
+
+            try
+            {
+                foreach (var item in items)
+                {
+                    repo.Insert(item);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                uow.RevertChanges();
+            }
+            uow.SaveChanges();
+
+        }
+
     }
 }

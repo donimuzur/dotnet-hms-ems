@@ -1,45 +1,195 @@
-﻿<!DOCTYPE html>
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.BaseModel
+
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>EMS - Excise Management System</title>
+    <link rel="shortcut icon" href="../../Content/assets/images/favicon.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <!-- Load the site CSS after Boostrap's to override -->
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Load jQuery -->
+    @Scripts.Render("~/bundles/jquery")
+    <!-- Load Modernizr.js -->
+    @Scripts.Render("~/bundles/modernizrmin")
+    <!-- Load Bootstrap JavaScript -->
+    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Load Fixed Header table JavaScript -->
+    @Scripts.Render("~/bundles/fixedheadertable")
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+    <header class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                <img src="~/Content/assets/images/logo.png" alt="">
+                <img class="logo-small" src="~/Content/assets/images/favicon.png" alt="">
+            </a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="#" class="title">
+                    <strong>Excise Management System</strong>
+                    <strong class="potrait">EMS</strong>
+                    <label>
+                        @Html.DisplayFor(model => model.CurrentMenu.MENU_NAME)
+                    </label>
+                </a>
+            </li>
+        </ul>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="user-container">
+                    <a href="#" class="user">
+                        Welcome, <strong>@Html.UserName()</strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="excise-site">
+        <div class="side-menu">
+            <div class="side-main">
+                <h5>Main</h5>
+                <i class="fa fa-caret-left"></i>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+            <div class="list-group">
+                @{
+                    switch (Model.MainMenu)
+                    {
+                        case Enums.MenuList.ExcisableGoodsMovement:
+                            <div class="collapse-menu active open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a class="active" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
+                                    <li><a href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a href="#"><i class="fa fa-angle-right"></i> Summary</a></li>
+                                    <li><a href="#"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>
+                                </ul>
+                            </div>
+                            <div class="other">
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-th"></i>
+                                    <span>Other Modules</span>
+                                </a>
+                                <ul class="child other-menu">
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                </ul>
+                            </div>
+                            break;
+
+                        case Enums.MenuList.MasterData:
+                        <div class="collapse-menu active open">
+                            <a href="#" class="list-group-item list-parent">
+                                <i class="fa fa-clipboard"></i>
+                                <span>Master Data</span>
+                                <i class="down fa fa-caret-down"></i>
+                            </a>
+                            <ul class="child list">
+                                <li>
+                                    <a class="active" href="#1.0-poa-list.html">
+                                        <i class="fa fa-angle-right"></i>
+                                        POA
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#1.1-nppbkc-list.html">
+                                        <i class="fa fa-angle-right"></i>
+                                        NPPBKC
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#1.2-nppbkc-plant-list.html">
+                                        <i class="fa fa-angle-right"></i>
+                                        NPPBKC Plant
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#1.3-header-footer-list.html">
+                                        <i class="fa fa-angle-right"></i>
+                                        Header Footer
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#1.4-brand-registration-list.html">
+                                        <i class="fa fa-angle-right"></i>
+                                        Brand Registration
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "VirtualMappingPlant")">
+                                       <i class="fa fa-angle-right"></i>
+                                        Maping Virtual Plant
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="1.6-excisable-goods-type-group.html">
+                                        <i class="fa fa-angle-right"></i>
+                                        Excisable Goods<br />
+                                        Type Group
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                            break;
+                    }
+                }
             </div>
+
+        </div>
+        <div class="content">
+            @RenderBody()
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/customjs")
     @RenderSection("styles", required: false)
     @RenderSection("scripts", required: false)
+
+
 </body>
 </html>

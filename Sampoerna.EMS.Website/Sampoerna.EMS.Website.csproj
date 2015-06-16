@@ -48,7 +48,14 @@
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\ReportViewerCommon.11.0.0.0\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\MicosoftReportViewerWebForms_v11.1.0.1\lib\Microsoft.ReportViewer.WebForms.DLL</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -209,34 +216,83 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\SplashScreenController.cs" />
+    <Compile Include="Controllers\PBCK1Controller.cs" />
+    <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HtmlHelperExtention.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PBCK1CreateViewModel.cs" />
+    <Compile Include="Models\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1ViewModel.cs" />
+    <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AspnetWebForms\GenericReportViewer.aspx" />
-    <Content Include="Content\assets\img\favicon.ico" />
-    <Content Include="Content\assets\img\fieldiq-login.png" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.svg" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.svg" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.svg" />
+    <Content Include="Content\assets\images\chart.png" />
+    <Content Include="Content\assets\images\favicon.png" />
+    <Content Include="Content\assets\images\icon-claimable-white.png" />
+    <Content Include="Content\assets\images\icon-claimable.png" />
+    <Content Include="Content\assets\images\icon-master-white.png" />
+    <Content Include="Content\assets\images\icon-master.png" />
+    <Content Include="Content\assets\images\icon-movement-white.png" />
+    <Content Include="Content\assets\images\icon-movement.png" />
+    <Content Include="Content\assets\images\icon-setting-white.png" />
+    <Content Include="Content\assets\images\icon-setting.png" />
+    <Content Include="Content\assets\images\icon-user.png" />
+    <Content Include="Content\assets\images\logo-large.png" />
+    <Content Include="Content\assets\images\logo.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\main.min.css" />
+    <Content Include="Content\css\vendors\font-awesome.min.css" />
+    <Content Include="Content\css\vendors\yamm.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.eot" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.ttf" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.woff" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.woff2" />
+    <Content Include="Content\assets\fonts\FontAwesome\FontAwesome.otf" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.eot" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.ttf" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.woff" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.woff2" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.eot" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.ttf" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.woff" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.woff2" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.eot" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.ttf" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.woff" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.woff2" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.eot" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.ttf" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
+    <Content Include="Content\css\main.min.css.map" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\colReorderWithResize.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
@@ -448,6 +504,11 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\scripts.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\modernizr.min.js" />
+    <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -463,8 +524,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -489,17 +548,22 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ViewDetail.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
-    <Content Include="Views\SplashScreen\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\PBCK1\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDateTime.cshtml" />
+    <Content Include="Views\PBCK1\Create.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
+    <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\POA\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>
@@ -527,6 +591,10 @@
     <ProjectReference Include="..\Sampoerna.EMS.DAL\Sampoerna.EMS.DAL.csproj">
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
+      <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
+      <Name>Sampoerna.EMS.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

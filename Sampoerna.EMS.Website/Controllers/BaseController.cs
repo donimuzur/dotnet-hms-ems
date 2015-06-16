@@ -3,13 +3,25 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
 
     public class BaseController : Controller
     {
+
+        private IPageBLL _pageBLL;
+        private Enums.MenuList _menuID;
+
+        public BaseController(IPageBLL pageBll, Enums.MenuList menuID)
+        {
+            _pageBLL = pageBll;
+            _menuID = menuID;
+        }
         protected ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -62,6 +74,14 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        protected PAGE PageInfo
+        {
+            get
+            {
+                return _pageBLL.GetPageByID((int) _menuID);
+            }
+        }
+
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             var viewResult = filterContext.Result as ViewResult;
@@ -97,8 +117,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (CurrentUser == null)
             {
                 //RedirectToAction("Index", "Login");
-                filterContext.Result = new RedirectToRouteResult(
-                    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+                //filterContext.Result = new RedirectToRouteResult(
+                //    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+
+                CurrentUser = new Login() { USERNAME = "Guest", USER_ID = 0, USER_GROUP_ID = 1, FIRST_NAME = "Guest", LAST_NAME = "User"};
+
             }
         }
     }

@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public long PBCK3_7_ID { get; set; }
+        public string PBCK7_TYPE { get; set; }
         public string PBCK7_NUMBER { get; set; }
         public string PBCK3_NUMBER { get; set; }
         public Nullable<int> DOCUMENT_TYPE_ID { get; set; }
@@ -30,7 +31,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> EXEC_DATE_TO { get; set; }
         public Nullable<System.DateTime> REPORTING_DATE { get; set; }
         public Nullable<long> BACK1_ID { get; set; }
-        public Nullable<long> BACK3_CK2_ID { get; set; }
+        public Nullable<long> CK3_ID { get; set; }
+        public Nullable<long> CK2_ID { get; set; }
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
@@ -38,7 +40,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> STATUS_PBCK7 { get; set; }
         public Nullable<int> STATUS_PBCK3 { get; set; }
     
-        public virtual BACK3_CK2 BACK3_CK2 { get; set; }
+        public virtual CK2 CK2 { get; set; }
+        public virtual CK3 CK3 { get; set; }
         public virtual DOCUMENT_TYPE DOCUMENT_TYPE { get; set; }
         public virtual STATUS STATUS { get; set; }
         public virtual STATUS STATUS1 { get; set; }
