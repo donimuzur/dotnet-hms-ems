@@ -12,17 +12,10 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class REQUEST_TYPE
+    public partial class PARAMATER
     {
-        public REQUEST_TYPE()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
-    
-        public int REQUEST_TYPE_ID { get; set; }
-        public string REQUEST_TYPE_NAME { get; set; }
-        public Nullable<int> REQUEST_TYPE_PARENT { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public int PARAMETER_ID { get; set; }
+        public Nullable<int> PARAMETER_CODE { get; set; }
+        public string PARAMETER_NAME { get; set; }
     }
 }
