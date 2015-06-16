@@ -549,9 +549,9 @@
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
-            <PropertyRef Name="VIRTUAL_PLAN_MAP_ID" />
+            <PropertyRef Name="VIRTUAL_PLANT_MAP_ID" />
           </Key>
-          <Property Name="VIRTUAL_PLAN_MAP_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VIRTUAL_PLANT_MAP_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="COMPANY_ID" Type="bigint" />
           <Property Name="IMPORT_PLANT_ID" Type="bigint" />
           <Property Name="EXPORT_PLANT_ID" Type="bigint" Nullable="false" />
@@ -2777,7 +2777,6 @@
           <EntitySet Name="UOM" EntityType="EMSModel.UOM" />
           <EntitySet Name="USER" EntityType="EMSModel.USER" />
           <EntitySet Name="USER_GROUP" EntityType="EMSModel.USER_GROUP" />
-          <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="EMSModel.VIRTUAL_PLANT_MAP" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
@@ -3170,10 +3169,6 @@
             <End Role="T1001" EntitySet="T1001" />
             <End Role="T1001K" EntitySet="T1001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001">
-            <End Role="T1001" EntitySet="T1001" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T1001" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_T1001">
             <End Role="T1001" EntitySet="T1001" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
@@ -3185,14 +3180,6 @@
           <AssociationSet Name="FK_T1001W_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="T1001W" EntitySet="T1001W" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001W" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W">
-            <End Role="T1001W" EntitySet="T1001W" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001W1" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1">
-            <End Role="T1001W" EntitySet="T1001W" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T1001W" Association="EMSModel.FK_ZAIDM_EX_BRAND_T1001W">
             <End Role="T1001W" EntitySet="T1001W" />
@@ -3273,6 +3260,19 @@
           <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
+          <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="EMSModel.VIRTUAL_PLANT_MAP" />
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001">
+            <End Role="T1001" EntitySet="T1001" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001W" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001W1" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="C1LFA1">
@@ -3904,8 +3904,8 @@
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_T1001" FromRole="T1001" ToRole="CK4C" />
           <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_T1001" FromRole="T1001" ToRole="HEADER_FOOTER" />
           <NavigationProperty Name="T1001K" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001" ToRole="T1001K" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" FromRole="T1001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T1001" FromRole="T1001" ToRole="ZAIDM_EX_NPPBKC" />
+          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" FromRole="T1001" ToRole="VIRTUAL_PLANT_MAP" />
         </EntityType>
         <EntityType Name="T1001K">
           <Key>
@@ -3940,11 +3940,11 @@
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_T1001W" FromRole="T1001W" ToRole="PBCK4" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="T1001W" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC" FromRole="T1001W" ToRole="ZAIDM_EX_NPPBKC" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W" FromRole="T1001W" ToRole="VIRTUAL_PLANT_MAP" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1" FromRole="T1001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="T1001W" ToRole="ZAIDM_POA_MAP" />
+          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W" FromRole="T1001W" ToRole="VIRTUAL_PLANT_MAP" />
+          <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1" FromRole="T1001W" ToRole="VIRTUAL_PLANT_MAP" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -3994,18 +3994,6 @@
           <Property Name="ROLE_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_USER_GROUP" FromRole="USER_GROUP" ToRole="PAGE_MAP" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER_GROUP" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="VIRTUAL_PLANT_MAP">
-          <Key>
-            <PropertyRef Name="VIRTUAL_PLAN_MAP_ID" />
-          </Key>
-          <Property Name="VIRTUAL_PLAN_MAP_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="COMPANY_ID" Type="Int64" />
-          <Property Name="IMPORT_PLANT_ID" Type="Int64" />
-          <Property Name="EXPORT_PLANT_ID" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001" />
-          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001W" />
-          <NavigationProperty Name="T1001W1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001W" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
@@ -5377,18 +5365,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_VIRTUAL_PLANT_MAP_T1001">
-          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="0..1" />
-          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001">
-              <PropertyRef Name="COMPANY_ID" />
-            </Principal>
-            <Dependent Role="VIRTUAL_PLANT_MAP">
-              <PropertyRef Name="COMPANY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_T1001">
           <End Type="EMSModel.T1001" Role="T1001" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
@@ -5422,30 +5398,6 @@
             </Principal>
             <Dependent Role="T1001W">
               <PropertyRef Name="NPPBCK_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_VIRTUAL_PLANT_MAP_T1001W">
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
-          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001W">
-              <PropertyRef Name="PLANT_ID" />
-            </Principal>
-            <Dependent Role="VIRTUAL_PLANT_MAP">
-              <PropertyRef Name="IMPORT_PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_VIRTUAL_PLANT_MAP_T1001W1">
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
-          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001W">
-              <PropertyRef Name="PLANT_ID" />
-            </Principal>
-            <Dependent Role="VIRTUAL_PLANT_MAP">
-              <PropertyRef Name="EXPORT_PLANT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5686,6 +5638,54 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="VIRTUAL_PLANT_MAP">
+          <Key>
+            <PropertyRef Name="VIRTUAL_PLANT_MAP_ID" />
+          </Key>
+          <Property Name="VIRTUAL_PLANT_MAP_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="COMPANY_ID" Type="Int64" />
+          <Property Name="IMPORT_PLANT_ID" Type="Int64" />
+          <Property Name="EXPORT_PLANT_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001W" />
+          <NavigationProperty Name="T1001W1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001W" />
+        </EntityType>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_T1001">
+          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="0..1" />
+          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001">
+              <PropertyRef Name="COMPANY_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_T1001W">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
+          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="IMPORT_PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_T1001W1">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
+          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="EXPORT_PLANT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6285,16 +6285,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="VIRTUAL_PLANT_MAP">
-            <EntityTypeMapping TypeName="EMSModel.VIRTUAL_PLANT_MAP">
-              <MappingFragment StoreEntitySet="VIRTUAL_PLANT_MAP">
-                <ScalarProperty Name="EXPORT_PLANT_ID" ColumnName="EXPORT_PLANT_ID" />
-                <ScalarProperty Name="IMPORT_PLANT_ID" ColumnName="IMPORT_PLANT_ID" />
-                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
-                <ScalarProperty Name="VIRTUAL_PLAN_MAP_ID" ColumnName="VIRTUAL_PLAN_MAP_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="WORKFLOW_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
               <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
@@ -6473,6 +6463,16 @@
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIRTUAL_PLANT_MAP">
+            <EntityTypeMapping TypeName="EMSModel.VIRTUAL_PLANT_MAP">
+              <MappingFragment StoreEntitySet="VIRTUAL_PLANT_MAP">
+                <ScalarProperty Name="EXPORT_PLANT_ID" ColumnName="EXPORT_PLANT_ID" />
+                <ScalarProperty Name="IMPORT_PLANT_ID" ColumnName="IMPORT_PLANT_ID" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="VIRTUAL_PLANT_MAP_ID" ColumnName="VIRTUAL_PLANT_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<long> COMPANY_ID { get; set; }
         public Nullable<long> IMPORT_PLANT_ID { get; set; }
         public long EXPORT_PLANT_ID { get; set; }
+        public long VIRTUAL_PLANT_MAP_ID { get; set; }
     
         public virtual T1001 T1001 { get; set; }
         public virtual T1001W T1001W { get; set; }
