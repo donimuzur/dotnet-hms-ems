@@ -50,7 +50,10 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<MONTH> MONTH { get; set; }
         public virtual DbSet<PAGE> PAGE { get; set; }
         public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
+        public virtual DbSet<PARAMATER> PARAMATER { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual DbSet<PBCK3_7> PBCK3_7 { get; set; }
         public virtual DbSet<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
         public virtual DbSet<PBCK3_CK5> PBCK3_CK5 { get; set; }
@@ -71,6 +74,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
+        public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
@@ -82,6 +86,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
-        public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
     }
 }

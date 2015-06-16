@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class VIRTUAL_PLANT_MAP
     {
-        public long VIRTUAL_PLANT_MAP_ID { get; set; }
+        public long VIRTUAL_PLAN_MAP_ID { get; set; }
         public Nullable<long> COMPANY_ID { get; set; }
         public Nullable<long> IMPORT_PLANT_ID { get; set; }
         public long EXPORT_PLANT_ID { get; set; }

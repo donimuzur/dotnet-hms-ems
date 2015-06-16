@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUMBISSION_NUMBER { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
-        public int EX_SETTLEMENT_ID { get; set; }
+        public Nullable<int> EX_SETTLEMENT_ID { get; set; }
         public Nullable<int> EX_STATUS_ID { get; set; }
         public Nullable<int> REQUEST_TYPE_ID { get; set; }
         public string STO_SENDER_NUMBER { get; set; }
@@ -36,8 +36,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<long> DEST_PLANT_ID { get; set; }
         public string INVOICE_NUMBER { get; set; }
         public Nullable<System.DateTime> INVOICE_DATE { get; set; }
-        public string PBCK1_DECREE_NUMBER { get; set; }
-        public Nullable<System.DateTime> PBCK1_DECREE_DATE { get; set; }
+        public Nullable<long> PBCK1_DECREE_ID { get; set; }
         public Nullable<int> CARRIAGE_METHOD_ID { get; set; }
         public Nullable<decimal> GRAND_TOTAL_EX { get; set; }
         public Nullable<int> PACKAGE_UOM_ID { get; set; }
@@ -51,7 +50,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string SEALING_NOTIF_NUMBER { get; set; }
         public string UNSEALING_NOTIF_NUMBER { get; set; }
         public Nullable<System.DateTime> SEALING_NOTIF_DATE { get; set; }
-        public System.DateTime UNSEALING_NOTIF_DATE { get; set; }
+        public Nullable<System.DateTime> UNSEALING_NOTIF_DATE { get; set; }
         public Nullable<int> STATUS_ID { get; set; }
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
@@ -65,6 +64,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual EX_STATUS EX_STATUS { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
         public virtual REQUEST_TYPE REQUEST_TYPE { get; set; }
         public virtual STATUS STATUS { get; set; }
         public virtual T1001W T1001W { get; set; }
