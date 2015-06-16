@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     public class BrandRegistrationOutput : BLLBaseOutput
     {
         //ZAIDM_EX_BRAND
-        public long BrandId { get; set; }
+        public long BrandIdZaidmExBrand { get; set; }
         public string StickerCode { get; set; }
         public long SplantId { get; set; }
         public string FaCode { get; set; }

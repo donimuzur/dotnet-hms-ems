@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public class ZaidmExPOAOutput
+    public class ZaidmExPOAOutput : BLLBaseOutput
     {
         //ZaidmExPOA
         public int  PoaId { get; set; }
@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string PoaPhone { get; set; }
         public string PoaPrintedName { get; set; }
         public string Title { get; set; }
-        public int? UserIdZaidmExPOA { get; set; }
+        public int? UserIdZaidmExPoa { get; set; }
         public DateTime? CreatedDate { get; set; }
       
 
@@ -30,6 +30,6 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public int? UserGruopId { get; set; }
         public string Email { get; set; }
         public DateTime? CreateDateTime { get; set; }
-
+                
     }
 }
