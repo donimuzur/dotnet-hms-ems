@@ -562,9 +562,11 @@
           </Key>
           <Property Name="WORKFLOW_HISTORY_ID" Type="bigint" Nullable="false" />
           <Property Name="FORM_TYPE" Type="int" />
+          <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="15" />
           <Property Name="ACTION" Type="nvarchar" MaxLength="15" />
           <Property Name="ACTION_BY" Type="int" />
           <Property Name="ACTION_DATE" Type="datetime" />
+          <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -4006,6 +4008,8 @@
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="FORM_TYPE1" Relationship="EMSModel.FK_WORKFLOW_HISTORY_FORM_TYPE" FromRole="WORKFLOW_HISTORY" ToRole="FORM_TYPE" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -6288,6 +6292,8 @@
           <EntitySetMapping Name="WORKFLOW_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
               <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
                 <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
                 <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
                 <ScalarProperty Name="ACTION" ColumnName="ACTION" />
