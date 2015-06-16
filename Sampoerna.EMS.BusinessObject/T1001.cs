@@ -19,8 +19,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK4C = new HashSet<CK4C>();
             this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
             this.T1001K = new HashSet<T1001K>();
-            this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
+            this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
         }
     
         public long COMPANY_ID { get; set; }
@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK4C> CK4C { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual ICollection<T1001K> T1001K { get; set; }
-        public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
+        public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
     }
 }

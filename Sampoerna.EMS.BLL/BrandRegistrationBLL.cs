@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     _uow.SaveChanges();
                     output.Success = true;
-                    output.bran = brandRegistrasionExBrand.BRAND_ID;
+                    output.BrandIdZaidmExBrand = brandRegistrasionExBrand.BRAND_ID;
                 }
                 catch (Exception exception)
                 {

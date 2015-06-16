@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.CHANGES_HISTORY = new HashSet<CHANGES_HISTORY>();
             this.FILE_UPLOAD = new HashSet<FILE_UPLOAD>();
+            this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
         }
     
         public int FORM_TYPE_ID { get; set; }
@@ -25,5 +26,6 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual ICollection<FILE_UPLOAD> FILE_UPLOAD { get; set; }
+        public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
     }
 }

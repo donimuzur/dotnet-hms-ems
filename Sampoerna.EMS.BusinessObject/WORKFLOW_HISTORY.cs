@@ -12,17 +12,17 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class REQUEST_TYPE
+    public partial class WORKFLOW_HISTORY
     {
-        public REQUEST_TYPE()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
+        public long WORKFLOW_HISTORY_ID { get; set; }
+        public Nullable<int> FORM_TYPE { get; set; }
+        public string ACTION { get; set; }
+        public Nullable<int> ACTION_BY { get; set; }
+        public Nullable<System.DateTime> ACTION_DATE { get; set; }
+        public string FORM_NUMBER { get; set; }
+        public string COMMENT { get; set; }
     
-        public int REQUEST_TYPE_ID { get; set; }
-        public string REQUEST_TYPE_NAME { get; set; }
-        public Nullable<int> REQUEST_TYPE_PARENT { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual FORM_TYPE FORM_TYPE1 { get; set; }
+        public virtual USER USER { get; set; }
     }
 }
