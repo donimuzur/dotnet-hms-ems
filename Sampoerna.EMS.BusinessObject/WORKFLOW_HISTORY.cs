@@ -19,6 +19,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string ACTION { get; set; }
         public Nullable<int> ACTION_BY { get; set; }
         public Nullable<System.DateTime> ACTION_DATE { get; set; }
+        public string FORM_NUMBER { get; set; }
+        public string COMMENT { get; set; }
     
         public virtual FORM_TYPE FORM_TYPE1 { get; set; }
         public virtual USER USER { get; set; }

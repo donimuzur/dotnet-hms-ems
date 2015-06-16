@@ -16,7 +16,11 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK1()
         {
+            this.CK5 = new HashSet<CK5>();
             this.PBCK11 = new HashSet<PBCK1>();
+            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
+            this.PBCK1_PROD_CONVERTER1 = new HashSet<PBCK1_PROD_CONVERTER>();
+            this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.REALISASI_PEMASUKAN = new HashSet<REALISASI_PEMASUKAN>();
             this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
         }
@@ -30,6 +34,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public Nullable<long> NPPBKC_ID { get; set; }
         public Nullable<int> GOODTYPE_ID { get; set; }
+        public string SUPPLIER_PLANT { get; set; }
         public Nullable<int> SUPPLIER_PORT_ID { get; set; }
         public string SUPPLIER_ADDRESS { get; set; }
         public string SUPPLIER_PHONE { get; set; }
@@ -49,12 +54,15 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
-        public string SUPPLIER_PLANT { get; set; }
     
+        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
+        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER1 { get; set; }
+        public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual STATUS STATUS1 { get; set; }
         public virtual STATUS_GOV STATUS_GOV1 { get; set; }
         public virtual SUPPLIER_PORT SUPPLIER_PORT { get; set; }

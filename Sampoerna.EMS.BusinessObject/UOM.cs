@@ -18,9 +18,8 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
             this.CK5 = new HashSet<CK5>();
-            this.CK5_MATERIAL = new HashSet<CK5_MATERIAL>();
-            this.CK5_MATERIAL1 = new HashSet<CK5_MATERIAL>();
             this.PBCK1 = new HashSet<PBCK1>();
+            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
         }
     
@@ -29,9 +28,8 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
-        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL1 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
+        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
     }
 }
