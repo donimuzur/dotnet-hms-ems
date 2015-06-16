@@ -65,6 +65,7 @@
     <Compile Include="MasterDataBLL.cs" />
     <Compile Include="PageBLL.cs" />
     <Compile Include="PBCK1BLL.cs" />
+    <Compile Include="CK4C_BLL.cs" />
     <Compile Include="PlantBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusBLL.cs" />

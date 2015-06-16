@@ -66,7 +66,14 @@ namespace Sampoerna.EMS.XMLReader
           _xmlMapper.InsertToDatabase<T1001>(Items);
         }
 
-
+        public T1001 GetCompany(string CompanyCode)
+        {
+            var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T1001>()
+                          .Get(p => p.BUKRS == CompanyCode)
+                          .OrderByDescending(p => p.CREATED_DATE)
+                          .FirstOrDefault();
+            return exisitingCompany;
+        }
 
 
 

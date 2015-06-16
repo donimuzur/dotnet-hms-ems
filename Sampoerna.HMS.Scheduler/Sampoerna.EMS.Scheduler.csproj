@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5370F240-5512-461A-9956-351009512C94}</ProjectGuid>
+    <ProjectGuid>{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sampoerna.EMS.XMLReader</RootNamespace>
-    <AssemblyName>Sampoerna.EMS.XMLReader</AssemblyName>
+    <RootNamespace>Sampoerna.HMS.Scheduler</RootNamespace>
+    <AssemblyName>Sampoerna.HMS.Scheduler</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,67 +32,72 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="Common.Logging.Core">
+      <HintPath>..\packages\Common.Logging.Core.2.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.NLog">
+      <HintPath>..\packages\Common.Logging.NLog.2.0.0\lib\2.0\Common.Logging.NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.2.4\lib\net40\Quartz.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\packages\SimpleInjector.2.7.0\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Diagnostics">
+      <HintPath>..\packages\SimpleInjector.2.7.0\lib\net45\SimpleInjector.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Extensions.LifetimeScoping">
+      <HintPath>..\packages\SimpleInjector.Extensions.LifetimeScoping.2.6.1\lib\net40-client\SimpleInjector.Extensions.LifetimeScoping.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Voxteneo.WebComponents.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Voxteneo.WebCompoments.NLogLogger">
+      <HintPath>..\packages\NLogLogger.1.3.0\lib\Voxteneo.WebCompoments.NLogLogger.dll</HintPath>
+    </Reference>
+    <Reference Include="Voxteneo.WebComponents.Logger">
       <HintPath>..\packages\ILogger.1.3.0\lib\Voxteneo.WebComponents.Logger.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jobs\ReadXmlFile.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XmlBrandDataMappers.cs" />
-    <Compile Include="XmlCK5DataWriter.cs" />
-    <Compile Include="XmlPCodeDataMappers .cs" />
-    <Compile Include="XmlMaterialDataMappers.cs" />
-    <Compile Include="XmlGoodsTypeDataMappers.cs" />
-    <Compile Include="XmlNPPBCKDataMappers.cs" />
-    <Compile Include="XmlProdTypeDataMappers.cs" />
-    <Compile Include="XmlKPPBCDataMappers.cs" />
-    <Compile Include="XmlSeriesDataMappers.cs" />
-    <Compile Include="XmlPlantDataMappers.cs" />
-    <Compile Include="XmlMarketDataMappers.cs" />
-    <Compile Include="XmlUserDataMappers.cs" />
-    <Compile Include="XmlPoaDataMappers.cs" />
-    <Compile Include="XmlPoaMapDataMappers.cs" />
-    <Compile Include="XmlAreaDataMappers.cs" />
-    <Compile Include="XmlDataMapper.cs" />
-    <Compile Include="XmlCompanyDataMappers.cs" />
+    <Compile Include="QuartzScheduler.cs" />
+    <Compile Include="SimpleInjectorJobFactory.cs" />
+    <Compile Include="svcEMS.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="svcEMS.Designer.cs">
+      <DependentUpon>svcEMS.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="quartzjobs.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sampoerna.EMS.BLL\Sampoerna.EMS.BLL.csproj">
-      <Project>{810db88f-fbfd-4af7-89bc-4612f101d5b9}</Project>
-      <Name>Sampoerna.EMS.BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
-      <Project>{3c89fdd1-a506-4047-89e3-40708cf6b2c5}</Project>
-      <Name>Sampoerna.EMS.BusinessObject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sampoerna.EMS.Contract\Sampoerna.EMS.Contract.csproj">
-      <Project>{7f4a15c1-8f58-49ea-ba04-0d7ea572954b}</Project>
-      <Name>Sampoerna.EMS.Contract</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sampoerna.EMS.DAL\Sampoerna.EMS.DAL.csproj">
-      <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
-      <Name>Sampoerna.EMS.DAL</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

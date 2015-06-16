@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
     {
-        private const string RootPath = @"D:/XML_EMS/";
+        private const string RootPath = @"E:/XML_EMS/";
         public XElement _xmlData = null;
         private string _xmlName = null;
         public ILogger logger;

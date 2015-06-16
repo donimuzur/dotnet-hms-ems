@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<long> COMPANY_ID { get; set; }
         public string HEADER_IMAGE_PATH { get; set; }
         public string FOOTER_CONTENT { get; set; }
+        public Nullable<bool> IS_ACTIVE { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual T1001 T1001 { get; set; }
