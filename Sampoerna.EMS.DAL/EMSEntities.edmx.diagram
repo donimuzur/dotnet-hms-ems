@@ -176,6 +176,9 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="17" PointY="20.625" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_FORM_TYPE" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
