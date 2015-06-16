@@ -12,17 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class NPPBKC_PLANT
+    public partial class WORKFLOW_HISTORY
     {
-        public int NPPBKC_PLANT_ID { get; set; }
-        public Nullable<long> NPPBKC_ID { get; set; }
-        public Nullable<long> PLANT_ID { get; set; }
-        public string SKEPTIS { get; set; }
-        public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
-        public Nullable<decimal> CONVERSION { get; set; }
+        public long WORKFLOW_HISTORY_ID { get; set; }
+        public Nullable<int> FORM_TYPE { get; set; }
+        public string ACTION { get; set; }
+        public Nullable<int> ACTION_BY { get; set; }
+        public Nullable<System.DateTime> ACTION_DATE { get; set; }
     
-        public virtual T1001W T1001W { get; set; }
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
-        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
+        public virtual FORM_TYPE FORM_TYPE1 { get; set; }
+        public virtual USER USER { get; set; }
     }
 }
