@@ -62,9 +62,12 @@
               <div class="col-md-4">
                 <div class="row">
                   <label class="col-md-4">POA</label>
-                  @*@Html.DropDownListFor(model => model.SearchInput.POA, Model.SearchInput.POAList, "Select", new { @class = "form-control" })*@
-                  @Html.Partial("POAListPartial", Model)
-                </div>
+                    <div id="divPoaList" class="col-md-8">
+                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
+                            <option value="">No Data</option>
+                        </select>
+                    </div>
+                    </div>
               </div>
               <div class="col-md-4">
                 <div class="row">
@@ -144,47 +147,57 @@
 </div>
 
 @section scripts {
-  <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" language="javascript" class="init">
-    $(document).ready(function () {
-      $('#pbckTable').DataTable(
-          {
-            "sDom": "Rlfrtip",
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "language": {
-              "lengthMenu": "Display _MENU_ records per page",
-              "zeroRecords": "No records found",
-              "info": "Showing page _PAGE_ of _PAGES_",
-              "infoFiltered": "(filtered from _MAX_ total records)"
-            }
-          });
-    });
-
-    $("#SearchInput_NPBCKID").change(function () {
-      if ($("#SearchInput_NPBCKID").length) {
-        var nbck = $(this).find("option:selected").val();
-        if (nbck == "") nbck = "0";
-        //alert(product);
-        ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck }, "#divPoaList");
-      }
-
-    });
-
-    function ajaxSelectNppbck(url, formData, target) {
-      $(target).html("");
-      //$("#SearchInput_POA option").remove();
-      if (formData.nppbkcId) {
-        $.ajax({
-          type: 'POST',
-          url: url,
-          data: formData,
-          success: function (data) {
-            $(target).replaceWith(data);
-          }
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
+            $('#pbckTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "language": {
+                        "lengthMenu": "Display _MENU_ records per page",
+                        "zeroRecords": "No records found",
+                        "info": "Showing page _PAGE_ of _PAGES_",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
         });
-      }
-    }
 
-  </script>
+        $("#SearchInput_NPBCKID").change(function() {
+            if ($("#SearchInput_NPBCKID").length) {
+                var nbck = $(this).find("option:selected").val();
+                $('#SearchInput_POA option').remove();
+                console.log(nbck);
+                if (nbck == '') {
+                    $('#SearchInput_POA').append('<option value="">No Data</option>');
+                } else {
+
+                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+                }
+            }
+
+        });
+
+        function ajaxSelectNppbck(url, formData) {
+           if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.SearchInput.POAList;
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+
+                            }
+
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
 }
