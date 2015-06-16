@@ -557,6 +557,7 @@
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
     <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
+    <Content Include="Views\PBCK1\Pbck1TablePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

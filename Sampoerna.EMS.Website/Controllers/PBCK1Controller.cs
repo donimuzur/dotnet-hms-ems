@@ -115,5 +115,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+        [HttpPost]
+        public ActionResult Filter(PBCK1ViewModel model)
+        {
+            model.Details = GetPBCKItems(model.SearchInput);
+            return PartialView("PoaListPartial", model);
+        }
+
     }
 }
