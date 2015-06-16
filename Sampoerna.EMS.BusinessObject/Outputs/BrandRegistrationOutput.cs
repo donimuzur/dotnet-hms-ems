@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public class BrandRegistrationOutput
+    public class BrandRegistrationOutput : BLLBaseOutput
     {
         //ZAIDM_EX_BRAND
         public long BrandId { get; set; }

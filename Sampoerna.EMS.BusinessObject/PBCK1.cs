@@ -49,6 +49,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public string SUPPLIER_PLANT { get; set; }
     
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
