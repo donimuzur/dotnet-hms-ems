@@ -106,11 +106,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        public ActionResult PoaListPartial(string nppbkcId)
+        [HttpPost]
+        public PartialViewResult PoaListPartial(string nppbkcId)
         {
             var listPoa = GetPoaByNppbkcId(nppbkcId);
             var model = new PBCK1ViewModel { SearchInput = { POAList = listPoa } };
             return PartialView("PoaListPartial", model);
+            //return Json(model);
         }
 
     }
