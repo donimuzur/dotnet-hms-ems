@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.Website
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute("GetPOAByNppbkcId",
+                            "poa/getpoabynppbkcid/",
+                            new { controller = "Address", action = "GetPOAByNppbkcId" },
+                            new[] { "Sampoerna.EMS.Website.Controllers" });
         }
     }
 }

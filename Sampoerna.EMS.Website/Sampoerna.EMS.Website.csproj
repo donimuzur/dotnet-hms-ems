@@ -217,6 +217,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
+    <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
@@ -230,7 +231,10 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PBCK1CreateViewModel.cs" />
+    <Compile Include="Models\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1ViewModel.cs" />
+    <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -552,10 +556,12 @@
     <Content Include="Views\PBCK1\Create.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
+    <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\POA\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -585,6 +591,10 @@
     <ProjectReference Include="..\Sampoerna.EMS.DAL\Sampoerna.EMS.DAL.csproj">
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
+      <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
+      <Name>Sampoerna.EMS.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
