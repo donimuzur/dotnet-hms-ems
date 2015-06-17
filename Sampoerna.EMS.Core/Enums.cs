@@ -34,5 +34,11 @@ namespace Sampoerna.EMS.Core
             [Description("Additional")]
             Additional
         }
+
+        public enum CK5Type
+        {
+            Domestic,
+            Intercompany
+        }
     }
 }

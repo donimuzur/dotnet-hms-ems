@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICK4C_BLL.cs" />
+    <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
     <Compile Include="IMasterDataBLL.cs" />
