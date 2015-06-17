@@ -7,6 +7,8 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Impl.Matchers;
 using Quartz.Spi;
+using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.DAL;
 using SimpleInjector;
 using Voxteneo.WebCompoments.NLogLogger;
 using Voxteneo.WebComponents.Logger;
@@ -25,6 +27,9 @@ namespace Sampoerna.HMS.Scheduler
            
             container.Register<ILogger, NLogLogger>();
             container.Register<ILoggerFactory, NLogLoggerFactory>();
+            container.RegisterLifetimeScope<IUnitOfWork, SqlUnitOfWork>();
+
+             
             container.EnableLifetimeScoping();
             container.Verify();
 
@@ -57,13 +62,14 @@ namespace Sampoerna.HMS.Scheduler
                 IScheduler scheduler = _quartzContainer.GetInstance<IScheduler>();
                 scheduler.Start();
 
-                logger.Debug("Starting scheduler, job listed : ");
+                logger.Info("Starting scheduler, job listed : ");
                 IList<string> jobGroups = scheduler.GetJobGroupNames();
-                logger.Debug("groups: " + string.Join(" - ", jobGroups.ToArray()));
+                logger.Info("groups: " + string.Join(" - ", jobGroups.ToArray()));
                 IList<string> triggerGroups = scheduler.GetTriggerGroupNames();
 
                 foreach (string group in jobGroups)
                 {
+                    
                     var groupMatcher = GroupMatcher<JobKey>.GroupContains(group);
                     var jobKeys = scheduler.GetJobKeys(groupMatcher);
                     foreach (var jobKey in jobKeys)
@@ -72,23 +78,23 @@ namespace Sampoerna.HMS.Scheduler
                         var triggers = scheduler.GetTriggersOfJob(jobKey);
                         foreach (ITrigger trigger in triggers)
                         {
-                            logger.Debug("group: " + group);
-                            logger.Debug("jobkey name: " + jobKey.Name);
-                            logger.Debug("detail description: " + detail.Description);
-                            logger.Debug("trigger key name: " + trigger.Key.Name);
-                            logger.Debug("trigger key group: " + trigger.Key.Group);
-                            logger.Debug("trigger type name: " + trigger.GetType().Name);
-                            logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
+                            logger.Info("group: " + group);
+                            logger.Info("jobkey name: " + jobKey.Name);
+                            logger.Info("detail description: " + detail.Description);
+                            logger.Info("trigger key name: " + trigger.Key.Name);
+                            logger.Info("trigger key group: " + trigger.Key.Group);
+                            logger.Info("trigger type name: " + trigger.GetType().Name);
+                            logger.Info("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
                             DateTimeOffset? nextFireTime = trigger.GetNextFireTimeUtc();
                             if (nextFireTime.HasValue)
                             {
-                                logger.Debug("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
+                                logger.Info("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
                             }
 
                             DateTimeOffset? previousFireTime = trigger.GetPreviousFireTimeUtc();
                             if (previousFireTime.HasValue)
                             {
-                                logger.Debug("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
+                                logger.Info("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
                             }
                         }
                     }
@@ -98,7 +104,7 @@ namespace Sampoerna.HMS.Scheduler
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                logger.Error("first" +ex);
             }
         }
         public static void StopJobs()

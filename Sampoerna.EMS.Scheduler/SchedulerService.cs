@@ -26,7 +26,7 @@ namespace Sampoerna.HMS.Scheduler
             }
             catch (Exception ex)
             {
-                LogErr(ex.Message);
+                LogErr("On Start : " + ex.Message);
             }
             
         }
@@ -39,7 +39,7 @@ namespace Sampoerna.HMS.Scheduler
             }
             catch (Exception ex)
             {
-                LogErr(ex.Message);
+                LogErr("On Stop " + ex.Message);
             }
         }
         private void LogErr(string sMessage)
@@ -52,7 +52,7 @@ namespace Sampoerna.HMS.Scheduler
                     new System.IO.StreamWriter(AppDomain.CurrentDomain.BaseDirectory +
                                                @"logs\FieldIQ-log.txt"))
             {
-                file.WriteLine("Test...." + sMessage);
+                file.WriteLine(sMessage);
             }
         }
     }

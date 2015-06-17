@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Quartz;
 using SimpleInjector;
 using Voxteneo.WebComponents.Logger;
-
+using Sampoerna.EMS.XMLReader;
+using Sampoerna.EMS.Contract;
 namespace Sampoerna.HMS.Scheduler.Jobs
 {
     [DisallowConcurrentExecution]
@@ -22,20 +23,28 @@ namespace Sampoerna.HMS.Scheduler.Jobs
         {
             using (_container.BeginLifetimeScope())
             {
-                //_CreateSQLiteService = _container.GetInstance<IGenerateSQLiteService>();
-
-                //var generate = _CreateSQLiteService.GetGenerateFlag();
-                //if (!generate.Generate) return;
+                
                 
                 var loggerFactory = _container.GetInstance<ILoggerFactory>();
-                ILogger logger = loggerFactory.GetLogger("Sampoerna.EMS.Scheduler.Jobs.ReadXmlFile");
+                ILogger logger = loggerFactory.GetLogger("Scheduler");
 
                 try
                 {
-                    logger.Info("Reading XML start");
-                    //_CreateSQLiteService.CreateSQLite();
-                    
-                    logger.Info("Reading XML ended");
+                    logger.Info("Reading XML Material start on " + DateTime.Now);
+                    //IXmlDataReader xmlData = new XmlAreaDataMapper();
+                    //IXmlDataReader xmlData = new XmlPoaDataMapper();
+                    //IXmlDataReader xmlData = new XmlMarketDataMapper();
+                    //IXmlDataReader xmlData = new XmlPlantDataMapper();
+                    //IXmlDataReader xmlData = new XmlPoaMapDataMapper();
+                    // IXmlDataReader xmlData = new XmlUserDataMapper();
+                    // IXmlDataReader xmlData = new XmlSeriesDataMapper();
+                    //IXmlDataReader xmlData = new XmlProdTypeDataMapper();
+                    //IXmlDataReader xmlData = new XmlKPPBCDataMapper();
+                    //IXmlDataReader xmlData = new XmlPCodeDataMapper();
+                    //IXmlDataReader xmlData = new XmlGoodsTypeDataMapper();
+                    IXmlDataReader xmlData = new XmlMaterialDataMapper();
+                    xmlData.InsertToDatabase();
+                    logger.Info("Reading XML Material ended On " + DateTime.Now);
                 }
                 catch (Exception ex)
                 {
