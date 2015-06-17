@@ -12,17 +12,17 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class REQUEST_TYPE
+    public partial class PBCK1_PROD_PLAN
     {
-        public REQUEST_TYPE()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
+        public long PBCK1_PROD_PLAN_ID { get; set; }
+        public Nullable<long> PBCK1_ID { get; set; }
+        public Nullable<int> PROD_TYPE_ID { get; set; }
+        public Nullable<decimal> AMOUNT { get; set; }
+        public string BKC_REQUIRED { get; set; }
+        public Nullable<int> MONTH { get; set; }
     
-        public int REQUEST_TYPE_ID { get; set; }
-        public string REQUEST_TYPE_NAME { get; set; }
-        public Nullable<int> REQUEST_TYPE_PARENT { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual MONTH MONTH1 { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
+        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
     }
 }

@@ -7,8 +7,8 @@ namespace Sampoerna.EMS.Core
         public enum MenuList
         {
             MasterData = 2,
-            ExcisableGoodMovement = 3,
-            ExcisableGoodClaimable = 4,
+            ExcisableGoodsMovement = 3,
+            ExcisableGoodsClaimable = 4,
             Settings = 5,
             PBCK1 = 6,
             CK5 = 7,
@@ -21,12 +21,14 @@ namespace Sampoerna.EMS.Core
             CK5MRETURN = 14,
             USER = 15,
             LOGIN = 16,
-            COMPANY = 17
-            
+            COMPANY = 17,
+            POA = 18
         }
 
         public enum PBCK1Type
         {
+            [Description("")]
+            All,
             [Description("New")]
             New,
             [Description("Additional")]

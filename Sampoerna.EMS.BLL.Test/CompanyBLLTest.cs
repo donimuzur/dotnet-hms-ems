@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.WebPages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website;
-using Sampoerna.EMS.Website.Controllers;
-using Sampoerna.EMS.Website.Models;
 using Voxteneo.WebComponents.Logger;
-using Sampoerna.EMS.Contract;
 
 namespace Sampoerna.EMS.BLL.Test
 {
