@@ -210,6 +210,7 @@
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Code\FormsAuthenticationService.cs" />
+    <Compile Include="Code\GlobalFunctions.cs" />
     <Compile Include="Code\IFormsAuthenticationService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />

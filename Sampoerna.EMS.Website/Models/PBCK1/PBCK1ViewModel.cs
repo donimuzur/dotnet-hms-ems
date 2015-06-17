@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public long PBCK1_ID { get; set; }
         public string NUMBER { get; set; }
         public long? PBCK1_REF { get; set; }
+        public string PBCK1_TYPE { get; set; }
         public DateTime? PERIOD_FROM { get; set; }
         public DateTime? PERIOD_TO { get; set; }
         public DateTime? REPORTED_ON { get; set; }

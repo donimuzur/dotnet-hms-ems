@@ -31,8 +31,8 @@
             {
                 HttpMethod = "POST",
                 InsertionMode = InsertionMode.Replace,
-                UpdateTargetId = "pbckTable",
-                OnSuccess = "ReloadDataTables"
+                UpdateTargetId = "contenttable",
+                OnComplete = "ReloadDataTables"
             }))
             {
                 <div class="white-wrapper">
@@ -104,17 +104,15 @@
     <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         function setupDataTables() {
-            // Setup - add a text input to each footer cell
-            $('#pbckTable .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
-                    var title = $('#example thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                }
-            });
 
             // DataTable
-            var table = $('#pbckTable').DataTable(
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#pbckTable')) {
+                table = $('#pbckTable').DataTable();
+                table.destroy();
+            }
+            
+            table = $('#pbckTable').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -123,8 +121,16 @@
                         "info": "Showing page _PAGE_ of _PAGES_",
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
+                });
+            
+            // Setup - add a text input to each footer cell
+            $('#pbckTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 1) {
+                    var title = $('#pbckTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
                 }
-            );
+            });
 
             // Apply the search
             table.columns().eq(0).each(function (colIdx) {
@@ -139,21 +145,19 @@
             $("#pbckTable_filter").hide();
         }
 
-        function setupNPPBKCID() {
-            $("#SearchInput_NPBCKID").change(function () {
-                if ($("#SearchInput_NPBCKID").length) {
-                    var nbck = $(this).find("option:selected").val();
-                    $('#SearchInput_POA option').remove();
-                    console.log(nbck);
-                    if (nbck == '') {
-                        $('#SearchInput_POA').append('<option value="">No Data</option>');
-                    } else {
-                        ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
-                    }
+        $("#SearchInput_NPBCKID").change(function () {
+            if ($("#SearchInput_NPBCKID").length) {
+                var nbck = $(this).find("option:selected").val();
+                $('#SearchInput_POA option').remove();
+                console.log(nbck);
+                if (nbck == '') {
+                    $('#SearchInput_POA').append('<option value="">No Data</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
                 }
+            }
 
-            });
-        }
+        });
 
         $(document).ready(function () {
             setupDataTables();
@@ -183,7 +187,6 @@
 
         function ReloadDataTables() {
             setupDataTables();
-            setupNPPBKCID();
         }
 
     </script>
