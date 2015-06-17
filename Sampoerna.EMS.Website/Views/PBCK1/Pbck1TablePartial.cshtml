@@ -1,0 +1,75 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ViewModel
+
+@if (Model.Details != null) {
+    
+}
+
+<table id="pbckTable">
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>No</th>
+      <th>Type</th>
+      <th>Year</th>
+      <th>NPPBKC ID</th>
+      <th>No</th>
+      <th>Proposed Ammount</th>
+      <th>Last Update</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <thead class="filters">
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @{
+      int rownum = 1;
+    }
+    @foreach (var item in Model.Details)
+    {
+      <tr>
+        <td class="action">
+          <a href="#"><i class="fa fa-eye"></i></a>
+          <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+        </td>
+        <td>@rownum</td>
+        <td>@Html.DisplayFor(model => item.PBCK1_TYPE)</td>
+        <td>
+          @if (item.PERIOD_FROM != null)
+          {
+            @Html.DisplayFor(model => item.PERIOD_FROM.Value.Year)
+          }
+        </td>
+        <td>
+          @Html.DisplayFor(model => item.NPPBKC_ID)
+        </td>
+        <td>
+          @if (item.NPPBKC != null)
+          {
+            @Html.DisplayFor(model => item.NPPBKC.NPPBKC_NO)
+          }
+        </td>
+        <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
+        <td>
+          @if (item.APPROVED_USER != null)
+          {
+            @item.APPROVED_USER.USERNAME<br />@Html.DisplayFor(model => item.APPROVED_DATE)
+          }
+        </td>
+        <td class="last">@Html.DisplayFor(model => item.STATUS_NAME)</td>
+      </tr>
+          rownum++;
+    }
+  </tbody>
+</table>
+
