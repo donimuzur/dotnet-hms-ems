@@ -233,9 +233,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\PBCK1CreateViewModel.cs" />
-    <Compile Include="Models\PBCK1FilterViewModel.cs" />
-    <Compile Include="Models\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1CreateViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
