@@ -566,6 +566,8 @@
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
     <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
     <Content Include="Views\PBCK1\Pbck1TablePartial.cshtml" />
+    <Content Include="Views\PBCK1\Edit.cshtml" />
+    <Content Include="Views\PBCK1\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -26,73 +26,71 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            @using (Ajax.BeginForm("Filter", "PBCK1",
-            new AjaxOptions
-            {
-                HttpMethod = "POST",
-                InsertionMode = InsertionMode.Replace,
-                UpdateTargetId = "contenttable",
-                OnComplete = "ReloadDataTables"
-            }))
-            {
-                <div class="white-wrapper">
-                    <form class="form-excise" role="form">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">NPPBKC ID</label>
-                                    <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, "Select", new { @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">Type</label>
-                                    <div class="col-md-8">
-                                        @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.PBCK1Types, null, new { @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">Year</label>
-                                    <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, new { @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="last-form">
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <label class="col-md-4">POA</label>
-                                        <div id="divPoaList" class="col-md-8">
-                                            <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
-                                                <option value="">No Data</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <label class="col-md-4">Creator</label>
-                                        <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "Select", new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-
-                                    <input type="submit" class="btn btn-blue full" value="FILTER" />
-
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("Filter", "PBCK1",
+                new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "contenttable",
+                    OnComplete = "ReloadDataTables"
+                }, new { @class = "form-excise", role = "form" }))
+                {
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">NPPBKC ID</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, "All", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Type</label>
+                                <div class="col-md-8">
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.PBCK1Types, null, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Year</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div id="divPoaList" class="col-md-8">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                                <input type="submit" class="btn btn-blue full" value="FILTER" />
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div id="contenttable" class="table-container">
+                    @Html.Partial("Pbck1TablePartial")
                 </div>
-            }
-            <div id="contenttable" class="table-container">
-                @Html.Partial("Pbck1TablePartial")
             </div>
         </div>
     </div>
@@ -111,10 +109,11 @@
                 table = $('#pbckTable').DataTable();
                 table.destroy();
             }
-            
+
             table = $('#pbckTable').DataTable(
                 {
                     "sDom": "Rlfrtip",
+                    "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "No records found",
@@ -122,13 +121,13 @@
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
-            
+
             // Setup - add a text input to each footer cell
             $('#pbckTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0 && idx != 1) {
                     var title = $('#pbckTable thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                    $(this).html('<input type="text" placeholder="Search" />');
                 }
             });
 
@@ -151,7 +150,7 @@
                 $('#SearchInput_POA option').remove();
                 console.log(nbck);
                 if (nbck == '') {
-                    $('#SearchInput_POA').append('<option value="">No Data</option>');
+                    $('#SearchInput_POA').append('<option value="">All</option>');
                 } else {
                     ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
                 }
@@ -163,8 +162,6 @@
             setupDataTables();
         });
 
-        //setupNPPBKCID();
-
         function ajaxSelectNppbck(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
@@ -174,11 +171,10 @@
                     success: function (data) {
                         var list = data.SearchInput.POAList;
                         if (list.length > 0) {
+                            $('#SearchInput_POA').append('<option value="">All</option>');
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
-
                             }
-
                         }
                     }
                 });
