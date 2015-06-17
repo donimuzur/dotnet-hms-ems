@@ -6,6 +6,10 @@ using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.GOODSTYPE;
+using Sampoerna.EMS.Website.Models.NPPBKC;
+using Sampoerna.EMS.Website.Models.POA;
+using Sampoerna.EMS.Website.Models.GOODSTYPE;
 
 namespace Sampoerna.EMS.Website
 {
@@ -21,13 +25,13 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<UserTree, UserViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE.HasValue && src.IS_ACTIVE.Value))
                 ;
-            
+
             //Company
             Mapper.CreateMap<T1001, CompanyDetail>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
             .ForMember(dest => dest.DocumentBukrs, opt => opt.MapFrom(src => src.BUKRS))
             .ForMember(dest => dest.DocumentBukrstxt, opt => opt.MapFrom(src => src.BUKRSTXT))
-            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE)); 
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE));
 
             Mapper.CreateMap<PBCK1, PBCK1Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.APPROVED_USER, opt => opt.MapFrom(src => src.USER))
@@ -68,6 +72,32 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
+
+            //POA
+            Mapper.CreateMap<ZAIDM_EX_POA, POAViewModelDetails>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.PoaIdCard, opt => opt.MapFrom(src => src.POA_ID_CARD))
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.USER_ID))
+               .ForMember(dest => dest.PoaPrintedName, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
+               .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
+               .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
+               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
+
+            #region NPPBKC
+
+            Mapper.CreateMap<ZaidmExNPPBKCOutput, DetailNppbck>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region GoodsTypeGroup
+
+            Mapper.CreateMap<ZAIDM_EX_GOODTYP, DetailsGoodsTypGroup>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.GoodsTypeId, opt => opt.MapFrom(src => src.GOODTYPE_ID))
+                .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
+                .ForMember(dest => dest.ExtTypDescending, opt => opt.MapFrom(src => src.EXT_TYP_DESC))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE));
+
+            #endregion
+
         }
     }
 }

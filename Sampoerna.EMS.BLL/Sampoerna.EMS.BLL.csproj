@@ -63,6 +63,7 @@
     <Compile Include="BLLMapper.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
+    <Compile Include="ExcisableGoodsTypeGroupBLL.cs" />
     <Compile Include="MasterDataBLL.cs" />
     <Compile Include="PageBLL.cs" />
     <Compile Include="PBCK1BLL.cs" />

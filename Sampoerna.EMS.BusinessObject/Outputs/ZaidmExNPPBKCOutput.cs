@@ -11,13 +11,13 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
      public  class ZaidmExNPPBKCOutput : BLLBaseOutput
     {
         //ZaidmExNPPBKC
-        public long NppckId { get; set; }
+        public long NppbckId { get; set; }
         public string NppckNo { get; set; }
         public string Addr1 { get; set; }
         public string Addr2 { get; set; }
         public string City { get; set; }
         public long? KppbcId { get; set; }
-        public int?  RegionOfficeId { get; set; }
+        public string  RegionOfficeIdNppbkc { get; set; }
         public long? CompanyIdZaidmExNPPBKC { get; set; }
         public long? VendorIdZaidmExNPPBKC { get; set; }
         public string TextTo { get; set; }
@@ -38,7 +38,10 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 
         public string Name1  { get; set; }
         public string Name2 { get; set; }
-         
+
+        //Region_Office_ID
+        public int RegionOfficeId { get; set; }
+        public string RegionName { get; set; }
 
     }
 }

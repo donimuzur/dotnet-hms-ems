@@ -22,7 +22,8 @@ namespace Sampoerna.EMS.Core
             USER = 15,
             LOGIN = 16,
             COMPANY = 17,
-            POA = 18
+            POA = 18,
+            NPPBKC = 19
         }
 
         public enum PBCK1Type
