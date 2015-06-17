@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.PBCK1;
 
 namespace Sampoerna.EMS.Website
 {

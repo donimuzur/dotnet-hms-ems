@@ -233,9 +233,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\PBCK1CreateViewModel.cs" />
-    <Compile Include="Models\PBCK1FilterViewModel.cs" />
-    <Compile Include="Models\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1CreateViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
@@ -505,6 +505,8 @@
     <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -562,6 +564,7 @@
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
     <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
+    <Content Include="Views\PBCK1\Pbck1TablePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

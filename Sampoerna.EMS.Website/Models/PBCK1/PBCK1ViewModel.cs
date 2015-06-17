@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.Website.Models 
+namespace Sampoerna.EMS.Website.Models.PBCK1 
 {
     public class PBCK1ViewModel : BaseModel
     {

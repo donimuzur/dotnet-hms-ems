@@ -1,191 +1,173 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.PBCK1ViewModel
+@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ViewModel
 
 @section styles
 {
-  <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="~/Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
 }
 
-
-
 @{
-  ViewBag.Title = "PBCK 1";
+    ViewBag.Title = "PBCK 1";
 }
 
 <div class="container-wrap title-page">
-  <div class="row">
-    <div class="col-sm-12">
-      <h3>@ViewBag.Title</h3>
-      <div class="action-button new">
-        <a href="@Url.Action("Create", "PBCK1")">
-          <button class="btn btn-blue">NEW</button>
-        </a>
-      </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "PBCK1")">
+                    <button class="btn btn-blue">NEW</button>
+                </a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="container-wrap">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="white-wrapper">
-        <form class="form-excise" role="form">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="row">
-                <label class="col-md-4">NPPBKC ID</label>
-                <div class="col-md-8">
-                  @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, "Select", new { @class = "form-control" })
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="row">
-                <label class="col-md-4">Type</label>
-                <div class="col-md-8">
-                  <select class="form-control">
-                    <option>New</option>
-                    <option>Additional</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="row">
-                <label class="col-md-4">Year</label>
-                <div class="col-md-8">
-                  @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, new { @class = "form-control" })
-                </div>
-              </div>
-            </div>
-            <div class="last-form">
-              <div class="col-md-4">
-                <div class="row">
-                  <label class="col-md-4">POA</label>
-                    <div id="divPoaList" class="col-md-8">
-                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
-                            <option value="">No Data</option>
-                        </select>
-                    </div>
-                    </div>
-              </div>
-              <div class="col-md-4">
-                <div class="row">
-                  <label class="col-md-4">Creator</label>
-                  <div class="col-md-8">
-                    @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "Select", new { @class = "form-control" })
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                @*onclick="location.href='@Html.Action("Index", "PBCK1", Model.SearchInput)'"*@
-                <button class="btn btn-blue full" onclick="">FILTER</button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div id="contenttable" class="table-container">
-        <table id="pbckTable">
-          <thead>
-            <tr>
-              <th>Action</th>
-              <th>No</th>
-              <th>Type</th>
-              <th>Year</th>
-              <th>NPPBKC ID</th>
-              <th>No</th>
-              <th>Proposed Ammount</th>
-              <th>Last Update</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            @{
-              int rownum = 1;
-            }
-            @foreach (var item in Model.Details)
+    <div class="row">
+        <div class="col-sm-12">
+            @using (Ajax.BeginForm("Filter", "PBCK1",
+            new AjaxOptions
             {
-              <tr>
-                <td class="action">
-                  <a href="#"><i class="fa fa-eye"></i></a>
-                  <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                </td>
-                <td>@rownum</td>
-                <td>@Html.DisplayFor(model => item.GOODTYPE.EXT_TYP_DESC)</td>
-                <td>
-                  @if (item.PERIOD_FROM != null)
-                  {
-                    @Html.DisplayFor(model => item.PERIOD_FROM.Value.Year)
-                  }
-                </td>
-                <td>
-                  @Html.DisplayFor(model => item.NPPBKC_ID)
-                </td>
-                <td>
-                  @if (item.NPPBKC != null)
-                  {
-                    @Html.DisplayFor(model => item.NPPBKC.NPPBKC_NO)
-                  }
-                </td>
-                <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
-                <td>
-                  @if (item.APPROVED_USER != null)
-                  {
-                    @item.APPROVED_USER.USERNAME<br />@Html.DisplayFor(model => item.APPROVED_DATE)
-                  }
-                </td>
-                <td class="last">@Html.DisplayFor(model => item.STATUS_NAME)</td>
-              </tr>
-                  rownum++;
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "pbckTable",
+                OnSuccess = "ReloadDataTables"
+            }))
+            {
+                <div class="white-wrapper">
+                    <form class="form-excise" role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC ID</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, "Select", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Type</label>
+                                    <div class="col-md-8">
+                                        @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.PBCK1Types, null, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Year</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="last-form">
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <label class="col-md-4">POA</label>
+                                        <div id="divPoaList" class="col-md-8">
+                                            <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
+                                                <option value="">No Data</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <label class="col-md-4">Creator</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <input type="submit" class="btn btn-blue full" value="FILTER" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             }
-          </tbody>
-        </table>
-      </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("Pbck1TablePartial")
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function() {
-            $('#pbckTable').DataTable(
+        function setupDataTables() {
+            // Setup - add a text input to each footer cell
+            $('#pbckTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 1) {
+                    var title = $('#example thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                }
+            });
+
+            // DataTable
+            var table = $('#pbckTable').DataTable(
                 {
                     "sDom": "Rlfrtip",
-                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "No records found",
                         "info": "Showing page _PAGE_ of _PAGES_",
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
-                });
-        });
-
-        $("#SearchInput_NPBCKID").change(function() {
-            if ($("#SearchInput_NPBCKID").length) {
-                var nbck = $(this).find("option:selected").val();
-                $('#SearchInput_POA option').remove();
-                console.log(nbck);
-                if (nbck == '') {
-                    $('#SearchInput_POA').append('<option value="">No Data</option>');
-                } else {
-
-                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
                 }
-            }
+            );
 
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+            $("#pbckTable_filter").hide();
+        }
+
+        function setupNPPBKCID() {
+            $("#SearchInput_NPBCKID").change(function () {
+                if ($("#SearchInput_NPBCKID").length) {
+                    var nbck = $(this).find("option:selected").val();
+                    $('#SearchInput_POA option').remove();
+                    console.log(nbck);
+                    if (nbck == '') {
+                        $('#SearchInput_POA').append('<option value="">No Data</option>');
+                    } else {
+                        ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+                    }
+                }
+
+            });
+        }
+
+        $(document).ready(function () {
+            setupDataTables();
         });
+
+        //setupNPPBKCID();
 
         function ajaxSelectNppbck(url, formData) {
-           if (formData.nppbkcId) {
+            if (formData.nppbkcId) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var list = data.SearchInput.POAList;
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
@@ -197,6 +179,11 @@
                     }
                 });
             }
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+            setupNPPBKCID();
         }
 
     </script>

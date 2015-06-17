@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.PBCK1;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -113,6 +114,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new PBCK1ViewModel { SearchInput = { POAList = listPoa } };
             //return PartialView("PoaListPartial", model);
             return Json(model);
+        }
+
+        [HttpPost]
+        public PartialViewResult Filter(PBCK1ViewModel model)
+        {
+            model.Details = GetPBCKItems(model.SearchInput);
+            return PartialView("Pbck1TablePartial", model);
         }
 
     }
