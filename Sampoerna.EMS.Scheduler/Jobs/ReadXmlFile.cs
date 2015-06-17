@@ -28,7 +28,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 //if (!generate.Generate) return;
                 
                 var loggerFactory = _container.GetInstance<ILoggerFactory>();
-                ILogger logger = loggerFactory.GetLogger("Scheduler.ReadXmlFile");
+                ILogger logger = loggerFactory.GetLogger("Sampoerna.EMS.Scheduler.Jobs.ReadXmlFile");
 
                 try
                 {

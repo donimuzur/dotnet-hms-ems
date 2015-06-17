@@ -43,7 +43,7 @@ namespace Sampoerna.HMS.Scheduler
             }
             );
             _quartzContainer.Verify();
-            //BLLMapper.Initialize();
+            
         }
         public static void StartJobs()
         {
@@ -55,7 +55,6 @@ namespace Sampoerna.HMS.Scheduler
             {
                 //Ask the scheduler factory for a scheduler
                 IScheduler scheduler = _quartzContainer.GetInstance<IScheduler>();
-
                 scheduler.Start();
 
                 logger.Debug("Starting scheduler, job listed : ");
@@ -94,6 +93,8 @@ namespace Sampoerna.HMS.Scheduler
                         }
                     }
                 }
+                
+              
             }
             catch (Exception ex)
             {

@@ -43,6 +43,9 @@
     <Reference Include="Common.Logging.NLog">
       <HintPath>..\packages\Common.Logging.NLog.2.0.0\lib\2.0\Common.Logging.NLog.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Quartz">
       <HintPath>..\packages\Quartz.2.2.4\lib\net40\Quartz.dll</HintPath>
     </Reference>
@@ -83,13 +86,13 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuartzScheduler.cs" />
-    <Compile Include="SimpleInjectorJobFactory.cs" />
-    <Compile Include="svcEMS.cs">
+    <Compile Include="SchedulerService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="svcEMS.Designer.cs">
-      <DependentUpon>svcEMS.cs</DependentUpon>
+    <Compile Include="SchedulerService.Designer.cs">
+      <DependentUpon>SchedulerService.cs</DependentUpon>
     </Compile>
+    <Compile Include="SimpleInjectorJobFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
