@@ -34,17 +34,18 @@ namespace Sampoerna.EMS.BLL
             var repoPlant = _repositoryPlantT001W.GetQuery();
             var repoSeries = _repositorySeries.GetQuery();
 
-            var result = from b in _repository.GetQuery()
-                       join p in _repositoryPlantT001W.GetQuery() on b.PLANT_ID equals p.PLANT_ID
-                       join s in _repositorySeries.GetQuery() on b.SERIES_ID equals s.SERIES_ID
-                       select new
-                       {
-                           plant = p.NAME1,
-                           series = s.SERIES_VALUE
-                       };
+            var result = (from b in _repository.GetQuery()
+                join p in _repositoryPlantT001W.GetQuery() on b.PLANT_ID equals p.PLANT_ID
+                join s in _repositorySeries.GetQuery() on b.SERIES_ID equals s.SERIES_ID
+                select new
+                {
+                    plant = p.NAME1,
+                    series = s.SERIES_VALUE
+
+                }).ToList();
 
 
-            return result;
+            return (List<BrandRegistrationOutput>)repoBrand;
         }
 
         public BrandRegistrationOutput save(BusinessObject.ZAIDM_EX_BRAND brandRegistrasionExBrand)

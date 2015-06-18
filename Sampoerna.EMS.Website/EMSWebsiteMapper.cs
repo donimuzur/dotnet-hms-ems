@@ -106,7 +106,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
-                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY));

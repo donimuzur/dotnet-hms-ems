@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
     public class DetailPlantT1001W
         {
             public long PlantId { get; set; }
-            public string Werks { get; set; }
+            public string PlantDescription { get; set; }
             public bool IsMainPlant { get; set; }
             public string Address { get; set; }
             public string City { get; set; }
