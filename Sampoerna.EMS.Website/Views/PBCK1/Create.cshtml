@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1ItemViewModel
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ItemViewModel
 @{
     ViewBag.Title = "Create";
 }
@@ -777,49 +777,50 @@
         </div>
     </div>
 </div>
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script type="text/javascript">
 
-<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-<script src="~/Scripts/jquery.form.min.js"></script>
-<script src="~/Scripts/UploadExcel.js"></script>
-<script type="text/javascript">
-    
-    $(document).ready(function () {
-        $('#prod-conv-save').click(function() {
-           GetTableData($('#prod-conv-table'));
-        });
-        $('#prod-plan-save').click(function () {
-            GetTableData($('#prod-plan-table'));
-        });
-        
-        $('#ProdConvSubmitBtn').click(function () {
-            var fileName = $('[name="ProdConvExcelfile"]').val().trim();
-            var pos = fileName.lastIndexOf('.');
-            var extension = (pos <= 0) ? '' : fileName.substring(pos);
-            if (extension != '.xlsx') {
-                alert('Please browse a correct excel file to upload');
-                return false;
-            }
-            $('#FormProdConv').ajaxSubmit(function (data) {
-                $('#ProdConvContent').html("");
-                $('#ProdConvContent').html(data);
-
+        $(document).ready(function() {
+            $('#prod-conv-save').click(function() {
+                GetTableData($('#prod-conv-table'));
             });
-            return false;
-        });
-        $('#ProdPlanSubmitBtn').click(function () {
-            var fileName = $('[name="ProdPlanExcelfile"]').val().trim();
-            var pos = fileName.lastIndexOf('.');
-            var extension = (pos <= 0) ? '' : fileName.substring(pos);
-            if (extension != '.xlsx') {
-                alert('Please browse a correct excel file to upload');
-                return false;
-            }
-            $('#FormProdPlan').ajaxSubmit(function (data) {
-                $('#ProdPlanContent').html("");
-                $('#ProdPlanContent').html(data);
-
+            $('#prod-plan-save').click(function() {
+                GetTableData($('#prod-plan-table'));
             });
-            return false;
+
+            $('#ProdConvSubmitBtn').click(function() {
+                var fileName = $('[name="ProdConvExcelfile"]').val().trim();
+                var pos = fileName.lastIndexOf('.');
+                var extension = (pos <= 0) ? '' : fileName.substring(pos);
+                if (extension != '.xlsx') {
+                    alert('Please browse a correct excel file to upload');
+                    return false;
+                }
+                $('#FormProdConv').ajaxSubmit(function(data) {
+                    $('#ProdConvContent').html("");
+                    $('#ProdConvContent').html(data);
+
+                });
+                return false;
+            });
+            $('#ProdPlanSubmitBtn').click(function() {
+                var fileName = $('[name="ProdPlanExcelfile"]').val().trim();
+                var pos = fileName.lastIndexOf('.');
+                var extension = (pos <= 0) ? '' : fileName.substring(pos);
+                if (extension != '.xlsx') {
+                    alert('Please browse a correct excel file to upload');
+                    return false;
+                }
+                $('#FormProdPlan').ajaxSubmit(function(data) {
+                    $('#ProdPlanContent').html("");
+                    $('#ProdPlanContent').html(data);
+
+                });
+                return false;
+            });
         });
-    });
-</script>
+    </script>
+}

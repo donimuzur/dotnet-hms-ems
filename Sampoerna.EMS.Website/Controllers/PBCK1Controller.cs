@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
@@ -10,8 +11,9 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
-using Sampoerna.EMS.Website.Utility;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Utility;
+
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -20,13 +22,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IMonth _monthBll;
-            IZaidmExPOAMapBLL poaMapBll, IUserBLL userBll, IZaidmExProdTypeBLL prodTypeBll, IMonth monthBll)
+          
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonth monthBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
-            _pbck1Bll = pbckBll;
-            _prodTypeBll = prodTypeBll;
-            _monthBll = monthBll;
-        }
+                _pbck1Bll = pbckBll;
+                _prodTypeBll = prodTypeBll;
+                _monthBll = monthBll;
+          }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
         {
