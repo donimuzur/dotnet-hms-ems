@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -114,6 +116,13 @@ namespace Sampoerna.EMS.Website.Controllers
             //return PartialView("PoaListPartial", model);
             return Json(model);
         }
+        [HttpPost]
+        public PartialViewResult UploadFile(HttpPostedFileBase ProdConvExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(ProdConvExcelFile);
+            Session[Constans.SessionKey.ExcelUploadProdConvPbck1] = data;
 
+            return PartialView("_ProdConvList", data);
+        }
     }
 }

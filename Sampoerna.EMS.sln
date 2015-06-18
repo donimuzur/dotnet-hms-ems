@@ -32,8 +32,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Utils", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.AutoMapperExtensions", "Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj", "{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Scheduler", "Sampoerna.HMS.Scheduler\Sampoerna.EMS.Scheduler.csproj", "{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}"
-EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Sampoerna.EMS.Scheduler.Installer", "Sampoerna.EMS.Scheduler.Installer\Sampoerna.EMS.Scheduler.Installer.wixproj", "{79BC4D70-6EF4-427A-BCEA-6C48B04B30D4}"
 EndProject
 Global
@@ -156,16 +154,6 @@ Global
 		{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}.Release|x86.ActiveCfg = Release|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}.Release|x86.ActiveCfg = Release|Any CPU
 		{79BC4D70-6EF4-427A-BCEA-6C48B04B30D4}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{79BC4D70-6EF4-427A-BCEA-6C48B04B30D4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{79BC4D70-6EF4-427A-BCEA-6C48B04B30D4}.Debug|Mixed Platforms.Build.0 = Debug|x86

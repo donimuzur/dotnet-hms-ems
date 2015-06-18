@@ -1,0 +1,28 @@
+﻿@model Sampoerna.EMS.Website.Utility.ExcelData
+
+    <table class="table table-bordered table-striped js-options-table">
+        <thead>
+            <tr>
+                <th>Product Type Alias</th>
+                <th>Product Type</th>
+                <th>Converted Output</th>
+                @*<th>Converted Uom</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var row in Model.DataRows)
+                {
+                    <tr>
+                        @foreach (var r in row)
+                        {
+                            <td>@r</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+
