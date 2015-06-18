@@ -44,7 +44,10 @@ namespace Sampoerna.EMS.Website
                       "~/Content/css/vendors/font-awesome.min.css"
                       ));
 
-            
+            bundles.Add(new StyleBundle("~/Content/jqueryui/autocomplete/css").Include(
+                        "~/Content/themes/base/core.css",
+                        "~/Content/themes/base/autocomplete.css")
+                        );
 
         }
     }
