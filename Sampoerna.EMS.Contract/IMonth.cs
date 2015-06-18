@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject;
 
-namespace Sampoerna.HMS.Scheduler
+namespace Sampoerna.EMS.Contract
 {
-    class Program
+    public interface IMonth
     {
-        static void Main(string[] args)
-        {
-        }
+        MONTH GetMonth(int id);
     }
 }

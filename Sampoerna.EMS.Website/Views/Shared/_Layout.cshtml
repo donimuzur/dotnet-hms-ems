@@ -14,15 +14,9 @@
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Load the site CSS after Boostrap's to override -->
     @Styles.Render("~/Content/css")
-
-    <!-- Load jQuery -->
-    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/jqueryui/autocomplete/css")
     <!-- Load Modernizr.js -->
     @Scripts.Render("~/bundles/modernizrmin")
-    <!-- Load Bootstrap JavaScript -->
-    @Scripts.Render("~/bundles/bootstrap")
-    <!-- Load Fixed Header table JavaScript -->
-    @Scripts.Render("~/bundles/fixedheadertable")
 
 </head>
 <body>
@@ -240,7 +234,14 @@
             </div>
         </div>
     </footer>
+    <!-- Load jQuery -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
 
+    <!-- Load Bootstrap JavaScript -->
+    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Load Fixed Header table JavaScript -->
+    @Scripts.Render("~/bundles/fixedheadertable")
     @Scripts.Render("~/bundles/customjs")
     @RenderSection("styles", required: false)
     @RenderSection("scripts", required: false)

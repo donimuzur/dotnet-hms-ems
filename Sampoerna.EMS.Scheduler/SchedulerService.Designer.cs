@@ -1,6 +1,6 @@
 ﻿namespace Sampoerna.HMS.Scheduler
 {
-    partial class svcEMS
+    partial class SchedulerService
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.ServiceName = "svcEMS";
+            this.ServiceName = "SchedulerService";
         }
 
         #endregion

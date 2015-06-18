@@ -7,32 +7,28 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
-using Voxteneo.WebCompoments.NLogLogger;
 
 namespace Sampoerna.HMS.Scheduler
 {
-    partial class svcEMS : ServiceBase
+    partial class SchedulerService : ServiceBase
     {
-        public svcEMS()
+        public SchedulerService()
         {
             InitializeComponent();
-        }
-
-        public void OnDebug()
-        {
-            OnStart(null);
         }
 
         protected override void OnStart(string[] args)
         {
             try
             {
+               
                 QuartzScheduler.StartJobs();
             }
             catch (Exception ex)
             {
-                LogErr(ex.ToString());
+                LogErr("On Start : " + ex.Message);
             }
+            
         }
 
         protected override void OnStop()
@@ -43,11 +39,9 @@ namespace Sampoerna.HMS.Scheduler
             }
             catch (Exception ex)
             {
-                var logger = new NLogLoggerFactory().GetLogger("EMS Scheduler Service");
-                logger.Error(ex);
+                LogErr("On Stop " + ex.Message);
             }
         }
-
         private void LogErr(string sMessage)
         {
             if (!System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "logs"))
@@ -56,7 +50,7 @@ namespace Sampoerna.HMS.Scheduler
             using (
                 System.IO.StreamWriter file =
                     new System.IO.StreamWriter(AppDomain.CurrentDomain.BaseDirectory +
-                                               @"logs\EMS-log.txt"))
+                                               @"logs\FieldIQ-log.txt"))
             {
                 file.WriteLine(sMessage);
             }

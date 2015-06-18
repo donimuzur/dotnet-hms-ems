@@ -44,6 +44,7 @@
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
     <Compile Include="IMasterDataBLL.cs" />
+    <Compile Include="IMonth.cs" />
     <Compile Include="IPageBLL.cs" />
     <Compile Include="IPBCK1BLL.cs" />
     <Compile Include="IPlantBLL.cs" />
