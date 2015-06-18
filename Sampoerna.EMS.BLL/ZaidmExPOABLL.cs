@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.BLL
             var result = repoZaidmExPOA.Join(repoUser,
                 poa => poa.USER_ID,
                 USER => USER.USER_ID,
-                (poa, USER) => new ZaidmExPOAOutput
+                (poa, USER) => new ZaidmExPOAOutput 
                 {
                     PoaIdCard = poa.POA_ID_CARD,
                     UserName = USER.USERNAME,

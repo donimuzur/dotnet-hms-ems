@@ -17,6 +17,8 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_BRAND> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private IGenericRepository<T1001W> _repositoryPlantT001W;
+        private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
       
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
@@ -28,7 +30,21 @@ namespace Sampoerna.EMS.BLL
         }
         public List<BrandRegistrationOutput> GetAll()
         {
-            throw new NotImplementedException();
+            var repoBrand = _repository.GetQuery();
+            var repoPlant = _repositoryPlantT001W.GetQuery();
+            var repoSeries = _repositorySeries.GetQuery();
+
+            var result = from b in _repository.GetQuery()
+                       join p in _repositoryPlantT001W.GetQuery() on b.PLANT_ID equals p.PLANT_ID
+                       join s in _repositorySeries.GetQuery() on b.SERIES_ID equals s.SERIES_ID
+                       select new
+                       {
+                           plant = p.NAME1,
+                           series = s.SERIES_VALUE
+                       };
+
+
+            return result;
         }
 
         public BrandRegistrationOutput save(BusinessObject.ZAIDM_EX_BRAND brandRegistrasionExBrand)
