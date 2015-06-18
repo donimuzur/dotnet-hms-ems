@@ -103,5 +103,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck1Table", model);
         }
 
+        public ActionResult CreateInitial(PBCK1ItemViewModel model)
+        {
+            return View(model);
+        }
+
     }
 }
