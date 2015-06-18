@@ -1,0 +1,41 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ItemViewModel
+<div role="tabpanel" class="tab-pane" id="messages">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <form id="FormProdPlan" action="@Url.Action("UploadFilePlan", "PBCK1")" enctype="multipart/form-data" method="post">
+
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Upload Excel File
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="file" class="form-control" name="ProdPlanExcelfile">
+                                @*<span class=" input-group-addon file-input btn btn-primary btn-file">
+                                    Browse <input type="file" multiple>
+                                </span>*@
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <button id="ProdPlanSubmitBtn" class="btn btn-grey generate">Generate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+</div>
+    <div class="table-container" id="ProdPlanContent">
+        @Html.Partial("_ProdPlanList", Model)
+    </div>
+    <div>
+        <button class="button" id="prod-plan-save">Save</button>
+    </div>
+</div>
+

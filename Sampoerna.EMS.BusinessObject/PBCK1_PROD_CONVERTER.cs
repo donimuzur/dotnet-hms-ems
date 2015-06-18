@@ -21,7 +21,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> CONVERTER_UOM_ID { get; set; }
     
         public virtual PBCK1 PBCK1 { get; set; }
-        public virtual PBCK1 PBCK11 { get; set; }
         public virtual UOM UOM { get; set; }
     }
 }

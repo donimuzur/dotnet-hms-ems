@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.Website.Models
+namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class PBCK1FilterViewModel
     {
@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.Website.Models
             Year = null;
         }
         public string NPBCKID { get; set; }
-        public int? POA { get; set; }
+        public string POA { get; set; }
         public string Pbck1Type { get; set; }
         public int? Creator { get; set; }
         public int? Year { get; set; }

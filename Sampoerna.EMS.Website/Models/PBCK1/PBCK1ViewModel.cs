@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.Website.Models 
+namespace Sampoerna.EMS.Website.Models.PBCK1 
 {
     public class PBCK1ViewModel : BaseModel
     {
@@ -21,9 +21,12 @@ namespace Sampoerna.EMS.Website.Models
 
     public class PBCK1Item
     {
+        
+
         public long PBCK1_ID { get; set; }
         public string NUMBER { get; set; }
         public long? PBCK1_REF { get; set; }
+        public string PBCK1_TYPE { get; set; }
         public DateTime? PERIOD_FROM { get; set; }
         public DateTime? PERIOD_TO { get; set; }
         public DateTime? REPORTED_ON { get; set; }
@@ -47,6 +50,7 @@ namespace Sampoerna.EMS.Website.Models
         public decimal? QTY_APPROVED { get; set; }
         public DateTime? DECREE_DATE { get; set; }
 
+       
         [UIHint("FormatDateTime")]
         public DateTime? CREATED_DATE { get; set; }
         public int? CREATED_BY { get; set; }
@@ -70,9 +74,36 @@ namespace Sampoerna.EMS.Website.Models
 
     public class PBCK1ItemViewModel : BaseModel
     {
+        public PBCK1ItemViewModel()
+        {
+            ProductConversions = new List<PBCK1ProdConvModel>();
+            ProductPlans = new List<PBCK1ProdPlanModel>();
+        }
         public PBCK1Item Detail { get; set; }
 
         public Enums.PBCK1Type PBCK1Types { get; set; }
+
+        public List<PBCK1ProdConvModel> ProductConversions { get; set; }
+        public List<PBCK1ProdPlanModel> ProductPlans { get; set; }
+
     }
-    
+
+    public class PBCK1ProdConvModel
+    {
+        public int? ProductCode { get; set; }
+        public string ProductTypeAlias { get; set; }
+        public string ProductType { get; set; }
+        public decimal? ConverterOutput { get; set; }
+        public string ConverterUom { get; set; }
+    }
+    public class PBCK1ProdPlanModel
+    {
+        public int MonthId { get; set; }
+        public string MonthName { get; set; }
+        public int? ProductCode { get; set; }
+        public string ProductTypeAlias { get; set; }
+        public string ProductType { get; set; }
+        public decimal? Amount { get; set; }
+        public string BKCRequires { get; set; }
+    }
 }
