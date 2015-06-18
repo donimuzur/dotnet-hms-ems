@@ -26,12 +26,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE.HasValue && src.IS_ACTIVE.Value))
                 ;
 
-            //Company
+            #region Company
             Mapper.CreateMap<T1001, CompanyDetail>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
             .ForMember(dest => dest.DocumentBukrs, opt => opt.MapFrom(src => src.BUKRS))
             .ForMember(dest => dest.DocumentBukrstxt, opt => opt.MapFrom(src => src.BUKRSTXT))
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE));
+#endregion 
 
             Mapper.CreateMap<PBCK1, PBCK1Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.APPROVED_USER, opt => opt.MapFrom(src => src.USER))
@@ -73,7 +74,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
 
-            //POA
+            #region POA
             Mapper.CreateMap<ZAIDM_EX_POA, POAViewModelDetails>().IgnoreAllNonExisting()
                .ForMember(dest => dest.PoaIdCard, opt => opt.MapFrom(src => src.POA_ID_CARD))
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.USER_ID))
@@ -81,6 +82,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
                .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
+            #endregion
 
             #region NPPBKC
 
