@@ -100,7 +100,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult Filter(PBCK1ViewModel model)
         {
             model.Details = GetPBCKItems(model.SearchInput);
-            return PartialView("Pbck1TablePartial", model);
+            return PartialView("_Pbck1Table", model);
         }
 
     }
