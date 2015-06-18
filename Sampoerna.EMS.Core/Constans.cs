@@ -24,6 +24,8 @@
             public const string CurrentUser = "sk_current_user";
 
             public const string MainMenu = "sk_main_menu";
+
+            public const string ExcelUploadProdConvPbck1 = "ExcelUploadProdConvertedPbck1";
         }
 
     }

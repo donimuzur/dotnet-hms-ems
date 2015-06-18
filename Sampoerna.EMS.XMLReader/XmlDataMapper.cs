@@ -9,18 +9,20 @@ using System.Configuration;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
+using System.Configuration;
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
     {
-        private const string RootPath = @"E:/XML_EMS/";
+        private string RootPath= ConfigurationManager.AppSettings["XmlFolderPath"];
         public XElement _xmlData = null;
         private string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
 
-        public XmlDataMapper(string xmlName)  
+        public XmlDataMapper(string xmlName)
         {
+             
             _xmlName = xmlName;
             _xmlData = ReadXMLFile();
             logger = new NullLogger();

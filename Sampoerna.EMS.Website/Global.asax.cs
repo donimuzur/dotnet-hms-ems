@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.Website
             container.Register<IVirtualMappingPlantBLL, VirtualMappingPlantBLL>();
             container.Register<IMasterDataBLL, MasterDataBLL>();
             container.Register<IZaidmExNPPBKCBLL, ZaidmExNPPBKCBLL>();
+            container.Register<IZaidmExProdTypeBLL, ZaidmExProdTypeBLL>();
+            container.Register<IMonth, MonthBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
