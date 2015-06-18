@@ -70,6 +70,16 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
+
+            Mapper.CreateMap<SUPPLIER_PORT, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID + "-" + src.PORT_NAME))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
+                ;
+
+            Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.NAME1))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID));
+
         }
     }
 }

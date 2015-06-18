@@ -234,8 +234,11 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\PBCK1\PBCK1CreateViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1Item.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
@@ -609,6 +612,10 @@
     <Content Include="Views\PBCK1\Details.cshtml" />
     <Content Include="Views\PBCK1\_ProdPlanUpload.cshtml" />
     <Content Include="Views\PBCK1\_ProdPlanList.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1Table.cshtml" />
+    <Content Include="Views\PBCK1\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK1\_PrintOut.cshtml" />
+    <Content Include="Views\PBCK1\_ChangeLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

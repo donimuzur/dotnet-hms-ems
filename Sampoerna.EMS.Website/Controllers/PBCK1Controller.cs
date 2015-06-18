@@ -4,7 +4,6 @@ using System.Web;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
-using Sampoerna.EMS.BLL;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -21,9 +20,9 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
-        private IMonth _monthBll;
+        private IMonthBLL _monthBll;
           
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonth monthBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
                 _pbck1Bll = pbckBll;
@@ -82,7 +81,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = Enums.MenuList.ExcisableGoodsMovement,
                 CurrentMenu = PageInfo,
-                Detail = null
+                Detail = new PBCK1Item(),
+                NppbkcList = GlobalFunctions.GetNppbkcAll(),
+                MonthList = GlobalFunctions.GetMonthList(),
+                SupplierPortList = GlobalFunctions.GetSupplierPortList(),
+                SupplierPlantList = GlobalFunctions.GetSupplierPlantList(),
+                GoodTypeList =  GlobalFunctions.GetGoodTypeList(),
+                UOMList = GlobalFunctions.GetUomList()
             };
             return View(model);
         }
@@ -183,6 +188,6 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return PartialView("_ProdPlanList", model);
         }
-
+        
     }
 }
