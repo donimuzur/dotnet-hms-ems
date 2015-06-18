@@ -19,10 +19,18 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         [Display(Name = "Doc. No")]
         public string DocumentNumber { get; set; }
+
+        [Display(Name = "POA")]
         public int? POA { get; set; }
-        public string NPPBKCOrigin { get; set; }
-        public string NPPBKCDestination { get; set; }
-        public string Creator { get; set; }
+
+        [Display(Name = "NPPBKC Origin")]
+        public int? NPPBKCOrigin { get; set; }
+
+        [Display(Name = "NPPBKC Destination")]
+        public int? NPPBKCDestination { get; set; }
+
+        [Display(Name = "Creator")]
+        public int? Creator { get; set; }
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
@@ -33,6 +41,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList NPPBKCOriginList { get; set; }
         public SelectList NPPBKCDestinationList { get; set; }
         public SelectList CreatorList { get; set; }
+
+        public Enums.CK5Type Ck5Type { get; set; }
 
     }
 }

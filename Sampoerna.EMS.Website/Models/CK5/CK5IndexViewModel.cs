@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -19,14 +20,16 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public CK5SearchViewModel SearchView { get; set; }
 
         public List<CK5Item> DetailsList { get; set; }
-        
+
+        public List<CK5Item> DetailList2 { get; set; } 
+        public Enums.CK5Type Ck5Type { get; set; }
     }
 
     public class CK5Item
     {
         public string DocumentNumber { get; set; }
 
-        public int Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         public string UOM { get; set; }
 

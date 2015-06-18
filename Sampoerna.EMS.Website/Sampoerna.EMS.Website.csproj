@@ -570,6 +570,14 @@
     <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
     <Content Include="Views\CK5\Index.cshtml" />
     <Content Include="Views\PBCK1\Pbck1TablePartial.cshtml" />
+    <Content Include="Views\CK5\_CK5TablePartial.cshtml" />
+    <Content Include="Views\CK5\_CK5IntercompanyTablePartial.cshtml" />
+    <Content Include="Views\CK5\CK5Manual.cshtml" />
+    <Content Include="Views\CK5\_CK5Search.cshtml" />
+    <Content Include="Views\CK5\CK5Export.cshtml" />
+    <Content Include="Views\CK5\CK5DomesticAlcohol.cshtml" />
+    <Content Include="Views\CK5\CK5Completed.cshtml" />
+    <Content Include="Views\CK5\CK5Import.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
