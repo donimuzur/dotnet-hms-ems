@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Web;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BLL;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -9,18 +12,24 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Utility;
+
 
 namespace Sampoerna.EMS.Website.Controllers
 {
     public class PBCK1Controller : BaseController
     {
         private IPBCK1BLL _pbck1Bll;
-
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll)
+        private IZaidmExProdTypeBLL _prodTypeBll;
+        private IMonth _monthBll;
+          
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonth monthBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
-            _pbck1Bll = pbckBll;
-        }
+                _pbck1Bll = pbckBll;
+                _prodTypeBll = prodTypeBll;
+                _monthBll = monthBll;
+          }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
         {
@@ -95,7 +104,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new PBCK1ViewModel { SearchInput = { POAList = listPoa } };
             return Json(model);
         }
-
         [HttpPost]
         public PartialViewResult Filter(PBCK1ViewModel model)
         {
@@ -103,9 +111,77 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck1Table", model);
         }
 
-        public ActionResult CreateInitial(PBCK1ItemViewModel model)
+        [HttpPost]
+        public PartialViewResult UploadFileConversion(HttpPostedFileBase ProdConvExcelFile)
         {
-            return View(model);
+            var data = (new ExcelReader()).ReadExcel(ProdConvExcelFile);
+            var model = new PBCK1ItemViewModel();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var prodConvModel = new PBCK1ProdConvModel();
+                   
+                    try
+                    {
+                        var prodCodeFromFile = Convert.ToInt32(datarow[0]);
+                        var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
+                        if (prodType != null)
+                        {
+                            prodConvModel.ProductCode = prodType.PRODUCT_CODE;
+                            prodConvModel.ProductType = prodType.PRODUCT_TYPE;
+                            prodConvModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
+                            prodConvModel.ConverterOutput = Convert.ToDecimal(datarow[1]);
+                            prodConvModel.ConverterUom = datarow[2];
+                            model.ProductConversions.Add(prodConvModel);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                        
+                    }
+                    
+                }
+            }
+            return PartialView("_ProdConvList", model);
+        }
+        [HttpPost]
+        public PartialViewResult UploadFilePlan(HttpPostedFileBase ProdPlanExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(ProdPlanExcelFile);
+            var model = new PBCK1ItemViewModel();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var prodPlanModel = new PBCK1ProdPlanModel();
+
+                    try
+                    {
+                        var month = _monthBll.GetMonth(Convert.ToInt32(datarow[0]));
+                        var prodCodeFromFile = Convert.ToInt32(datarow[1]);
+                        var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
+                        if (prodType != null)
+                        {
+                            prodPlanModel.MonthName = month.MONTH_NAME_IND;
+                            prodPlanModel.ProductCode = prodType.PRODUCT_CODE;
+                            prodPlanModel.ProductType = prodType.PRODUCT_TYPE;
+                            prodPlanModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
+                            prodPlanModel.Amount = Convert.ToDecimal(datarow[2]);
+                            prodPlanModel.BKCRequires = datarow[3];
+                            model.ProductPlans.Add(prodPlanModel);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+
+                }
+            }
+            return PartialView("_ProdPlanList", model);
         }
 
     }

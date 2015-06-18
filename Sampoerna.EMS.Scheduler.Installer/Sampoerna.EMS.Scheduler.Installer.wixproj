@@ -23,16 +23,6 @@
   <ItemGroup>
     <Compile Include="Product.wxs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Sampoerna.HMS.Scheduler\Sampoerna.EMS.Scheduler.csproj">
-      <Name>Sampoerna.EMS.Scheduler</Name>
-      <Project>{1ae63cec-7c5e-4610-ab4e-28c3e49769ea}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
