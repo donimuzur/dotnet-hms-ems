@@ -221,6 +221,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NPPBKCController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
+    <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Models\PBCK1CreateViewModel.cs" />
     <Compile Include="Models\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
@@ -569,8 +571,8 @@
     <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
     <Content Include="Views\POA\Index.cshtml" />
     <Content Include="Views\NPPBKC\Index.cshtml" />
-    <Content Include="Views\ExcisableGoodsTypeGroupBLL\Index.cshtml" />
     <Content Include="Views\ExcisableGoodsTypeGroup\Index.cshtml" />
+    <Content Include="Views\Plant\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

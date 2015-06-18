@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Drawing;
+using AutoMapper;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
@@ -8,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.NPPBKC;
+using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 
@@ -97,6 +99,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
                 .ForMember(dest => dest.ExtTypDescending, opt => opt.MapFrom(src => src.EXT_TYP_DESC))
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE));
+
+            #endregion
+
+            #region Plant
+
+            Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY));
 
             #endregion
 

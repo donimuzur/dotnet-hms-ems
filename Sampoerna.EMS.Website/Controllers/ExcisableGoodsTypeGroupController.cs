@@ -12,10 +12,10 @@ namespace Sampoerna.EMS.Website.Controllers
     public class ExcisableGoodsTypeGroupController : BaseController
     {
 
-        private IExcisableGoodsTypeGroupBLL _goodsTypeGroupBLL;
+        private IZaidmExGoodTypeBLL _goodsTypeGroupBLL;
         private IMasterDataBLL _masterDataBll;
 
-        public ExcisableGoodsTypeGroupController(IExcisableGoodsTypeGroupBLL goodsTypeGroupBLL, IMasterDataBLL masterData, IPageBLL pageBLL)
+        public ExcisableGoodsTypeGroupController(IZaidmExGoodTypeBLL goodsTypeGroupBLL, IMasterDataBLL masterData, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _goodsTypeGroupBLL = goodsTypeGroupBLL;
@@ -31,10 +31,7 @@ namespace Sampoerna.EMS.Website.Controllers
             goodsTypeGroup.CurrentMenu = PageInfo;
 
             goodsTypeGroup.Details = _goodsTypeGroupBLL.GetAll().Select(AutoMapper.Mapper.Map<DetailsGoodsTypGroup>).ToList();
-
-
-
-
+            
             return View("Index", goodsTypeGroup);
         }
 	}
