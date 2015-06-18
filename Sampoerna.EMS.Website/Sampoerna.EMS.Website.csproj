@@ -567,6 +567,8 @@
     <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
     <Content Include="Views\PBCK1\_ProdConvList.cshtml" />
     <Content Include="Views\PBCK1\_ProdConvUpload.cshtml" />
+    <Content Include="Views\PBCK1\_ProdPlanUpload.cshtml" />
+    <Content Include="Views\PBCK1\_ProdPlanList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -76,12 +76,14 @@ namespace Sampoerna.EMS.Website.Models
         public PBCK1ItemViewModel()
         {
             ProductConversions = new List<PBCK1ProdConvModel>();
+            ProductPlans = new List<PBCK1ProdPlanModel>();
         }
         public PBCK1Item Detail { get; set; }
 
         public Enums.PBCK1Type PBCK1Types { get; set; }
 
         public List<PBCK1ProdConvModel> ProductConversions { get; set; }
+        public List<PBCK1ProdPlanModel> ProductPlans { get; set; }
 
     }
 
@@ -92,5 +94,15 @@ namespace Sampoerna.EMS.Website.Models
         public string ProductType { get; set; }
         public decimal? ConverterOutput { get; set; }
         public string ConverterUom { get; set; }
+    }
+    public class PBCK1ProdPlanModel
+    {
+        public int MonthId { get; set; }
+        public string MonthName { get; set; }
+        public int? ProductCode { get; set; }
+        public string ProductTypeAlias { get; set; }
+        public string ProductType { get; set; }
+        public decimal? Amount { get; set; }
+        public string BKCRequires { get; set; }
     }
 }

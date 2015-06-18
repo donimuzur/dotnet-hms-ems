@@ -3,6 +3,7 @@
     <table id="prod-conv-table" class="table table-bordered table-striped js-options-table">
         <thead>
             <tr>
+                <th style="display: none"></th>
                 <th>Product Type Alias</th>
                 <th>Product Type</th>
                 <th>Converted Output</th>
@@ -15,7 +16,7 @@
                 foreach (var row in Model.ProductConversions)
                 {
                     <tr>
-                       
+                        <td style="display: none">@row.ProductCode</td>
                         <td>@row.ProductTypeAlias</td>
                         <td>@row.ProductType</td>
                         <td>@row.ConverterOutput</td>

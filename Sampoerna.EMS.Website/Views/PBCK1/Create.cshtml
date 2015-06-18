@@ -673,79 +673,7 @@
                             </table>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="messages">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Upload Excel File
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control">
-                                                    <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                        Browse <input type="file" multiple>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <button class="btn btn-grey generate">Generate</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="table-container">
-                            <table class="table table-bordered table-striped js-options-table">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Month</th>
-                                        <th>Product Type Alias</th>
-                                        <th>Amount</th>
-                                        <th>BKC Required</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    @Html.Partial("_ProdPlanUpload", Model)
                     @Html.Partial("_ProdConvUpload", Model)
                    <div role="tabpanel" class="tab-pane" id="settings">
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -856,6 +784,12 @@
 <script type="text/javascript">
     
     $(document).ready(function () {
+        $('#prod-conv-save').click(function() {
+           GetTableData($('#prod-conv-table'));
+        });
+        $('#prod-plan-save').click(function () {
+            GetTableData($('#prod-plan-table'));
+        });
         
         $('#ProdConvSubmitBtn').click(function () {
             var fileName = $('[name="ProdConvExcelfile"]').val().trim();
@@ -868,6 +802,21 @@
             $('#FormProdConv').ajaxSubmit(function (data) {
                 $('#ProdConvContent').html("");
                 $('#ProdConvContent').html(data);
+
+            });
+            return false;
+        });
+        $('#ProdPlanSubmitBtn').click(function () {
+            var fileName = $('[name="ProdPlanExcelfile"]').val().trim();
+            var pos = fileName.lastIndexOf('.');
+            var extension = (pos <= 0) ? '' : fileName.substring(pos);
+            if (extension != '.xlsx') {
+                alert('Please browse a correct excel file to upload');
+                return false;
+            }
+            $('#FormProdPlan').ajaxSubmit(function (data) {
+                $('#ProdPlanContent').html("");
+                $('#ProdPlanContent').html(data);
 
             });
             return false;

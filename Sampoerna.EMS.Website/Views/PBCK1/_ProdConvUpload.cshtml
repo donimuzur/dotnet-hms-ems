@@ -1,7 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1ItemViewModel
 <div role="tabpanel" class="tab-pane" id="upload">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <form id="FormProdConv" action="@Url.Action("UploadFile", "PBCK1")" enctype="multipart/form-data" method="post">
+        <form id="FormProdConv" action="@Url.Action("UploadFileConversion", "PBCK1")" enctype="multipart/form-data" method="post">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingOne">
                     <h4 class="panel-title">
@@ -35,7 +35,7 @@
         @Html.Partial("_ProdConvList", Model)
     </div>
     <div>
-        <button class="button" onclick="GetTableData($('#prod-conv-table'))">Save</button>
+        <button class="button" id="prod-conv-save">Save</button>
     </div>
 </div>
 

@@ -1,0 +1,30 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1ItemViewModel
+<table id="prod-plan-table" class="table table-bordered table-striped js-options-table">
+    <thead>
+        <tr>
+            <th style="display: none"></th>
+            <th>Month</th>
+            <th style="display: none"></th>
+            <th>Product Type Alias</th>
+            <th>Amount</th>
+            <th>BKC Required</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+            {
+                foreach (var row in Model.ProductPlans)
+                {
+                    <tr>
+                        <td style="display: none">@row.MonthId</td>
+                        <td>@row.MonthName</td>
+                        <td style="display: none">@row.ProductCode</td>
+                        <td>@row.ProductTypeAlias</td>
+                        <td>@row.Amount</td>
+                        <td>@row.BKCRequires</td>
+                    </tr>
+                }
+            }
+    </tbody>
+</table>
+
