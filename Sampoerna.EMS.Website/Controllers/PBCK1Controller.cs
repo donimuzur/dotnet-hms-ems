@@ -17,15 +17,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IZaidmExPOAMapBLL _poaMapBll;
         private IUserBLL _userBll;
-
+        private IZaidmExProdTypeBLL _prodTypeBll;
         public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExNPPBKCBLL nppbkcbll,
-            IZaidmExPOAMapBLL poaMapBll, IUserBLL userBll)
+            IZaidmExPOAMapBLL poaMapBll, IUserBLL userBll, IZaidmExProdTypeBLL prodTypeBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
             _nppbkcbll = nppbkcbll;
             _poaMapBll = poaMapBll;
             _userBll = userBll;
+            _prodTypeBll = prodTypeBll;
         }
 
         private SelectList GetNPPBKC()
@@ -120,9 +121,36 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFile(HttpPostedFileBase ProdConvExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(ProdConvExcelFile);
-            Session[Constans.SessionKey.ExcelUploadProdConvPbck1] = data;
-
-            return PartialView("_ProdConvList", data);
+            var model = new PBCK1ItemViewModel();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var prodConvModel = new PBCK1ProdConvModel();
+                   
+                    try
+                    {
+                        var prodCodeFromFile = Convert.ToInt32(datarow[0]);
+                        var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
+                        if (prodType != null)
+                        {
+                            prodConvModel.ProductCode = prodType.PRODUCT_CODE;
+                            prodConvModel.ProductType = prodType.PRODUCT_TYPE;
+                            prodConvModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
+                            prodConvModel.ConverterOutput = Convert.ToDecimal(datarow[1]);
+                            prodConvModel.ConverterUom = datarow[2];
+                            model.ProductConversions.Add(prodConvModel);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                        
+                    }
+                    
+                }
+            }
+            return PartialView("_ProdConvList", model);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Sampoerna.EMS.Website.Models
 
     public class PBCK1Item
     {
+        
+
         public long PBCK1_ID { get; set; }
         public string NUMBER { get; set; }
         public long? PBCK1_REF { get; set; }
@@ -47,6 +49,7 @@ namespace Sampoerna.EMS.Website.Models
         public decimal? QTY_APPROVED { get; set; }
         public DateTime? DECREE_DATE { get; set; }
 
+       
         [UIHint("FormatDateTime")]
         public DateTime? CREATED_DATE { get; set; }
         public int? CREATED_BY { get; set; }
@@ -70,9 +73,24 @@ namespace Sampoerna.EMS.Website.Models
 
     public class PBCK1ItemViewModel : BaseModel
     {
+        public PBCK1ItemViewModel()
+        {
+            ProductConversions = new List<PBCK1ProdConvModel>();
+        }
         public PBCK1Item Detail { get; set; }
 
         public Enums.PBCK1Type PBCK1Types { get; set; }
+
+        public List<PBCK1ProdConvModel> ProductConversions { get; set; }
+
     }
-    
+
+    public class PBCK1ProdConvModel
+    {
+        public int? ProductCode { get; set; }
+        public string ProductTypeAlias { get; set; }
+        public string ProductType { get; set; }
+        public decimal? ConverterOutput { get; set; }
+        public string ConverterUom { get; set; }
+    }
 }

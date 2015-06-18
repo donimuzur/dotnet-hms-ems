@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Sampoerna.EMS.Website.Models.PBCK1ItemViewModel
+@{
     ViewBag.Title = "Create";
 }
 
@@ -745,45 +746,8 @@
                             </table>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="upload">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <form id="FormProdConv" action="@Url.Action("UploadFile", "PBCK1")" enctype="multipart/form-data" method="post">
-                          
-            
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingOne">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                Upload Excel File
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="input-group">
-                                                        <input type="file" class="form-control" name="ProdConvExcelfile">
-                                                        @*<span class=" input-group-addon file-input btn btn-primary btn-file">
-                                        Browse <input type="file" multiple>
-                                    </span>*@
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <button type="button" id="ProdConvSubmitBtn" class="btn btn-grey generate">Generate</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            
-                            </form>
-                        </div>
-                        <div class="table-container" id="ProdConvContent">
-                            @Html.Partial("_ProdConvList", new Sampoerna.EMS.Website.Utility.ExcelData())
-                        </div>
-                        </div>
-                    <div role="tabpanel" class="tab-pane" id="settings">
+                    @Html.Partial("_ProdConvUpload", Model)
+                   <div role="tabpanel" class="tab-pane" id="settings">
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="headingOne">
@@ -888,8 +852,9 @@
 
 <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 <script src="~/Scripts/jquery.form.min.js"></script>
+<script src="~/Scripts/UploadExcel.js"></script>
 <script type="text/javascript">
-   
+    
     $(document).ready(function () {
         
         $('#ProdConvSubmitBtn').click(function () {

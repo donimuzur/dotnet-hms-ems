@@ -1,24 +1,25 @@
-﻿@model Sampoerna.EMS.Website.Utility.ExcelData
+﻿@model Sampoerna.EMS.Website.Models.PBCK1ItemViewModel
 
-    <table class="table table-bordered table-striped js-options-table">
+    <table id="prod-conv-table" class="table table-bordered table-striped js-options-table">
         <thead>
             <tr>
                 <th>Product Type Alias</th>
                 <th>Product Type</th>
                 <th>Converted Output</th>
-                @*<th>Converted Uom</th>*@
+                <th>Converted Uom</th>
             </tr>
         </thead>
         <tbody>
             @if (Model != null)
             {
-                foreach (var row in Model.DataRows)
+                foreach (var row in Model.ProductConversions)
                 {
                     <tr>
-                        @foreach (var r in row)
-                        {
-                            <td>@r</td>
-                        }
+                       
+                        <td>@row.ProductTypeAlias</td>
+                        <td>@row.ProductType</td>
+                        <td>@row.ConverterOutput</td>
+                        <td>@row.ConverterUom</td>
                     </tr>
                 }
             }
