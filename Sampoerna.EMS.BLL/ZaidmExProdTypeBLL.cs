@@ -29,5 +29,9 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.Get().ToList();
         }
+        public ZAIDM_EX_PRODTYP GetByCode(int Code)
+        {
+            return _repository.Get(p=>p.PRODUCT_CODE == Code).OrderByDescending(x=>x.CREATED_DATE).FirstOrDefault();
+        }
     }
 }
