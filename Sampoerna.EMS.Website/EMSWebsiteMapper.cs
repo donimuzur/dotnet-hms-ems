@@ -8,8 +8,10 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.NPPBKC;
+using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
@@ -88,7 +90,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
             #endregion
 
-            #region NPPBKC
+          
 
             Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.CK5_NUMBER))
@@ -102,8 +104,10 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
 
             Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
-            Mapper.CreateMap<ZaidmExNPPBKCOutput, DetailNppbck>().IgnoreAllNonExisting();
+          
 
+            #region NPPBKC
+            Mapper.CreateMap<ZaidmExNPPBKCOutput, DetailNppbck>().IgnoreAllNonExisting();
             #endregion
 
             #region GoodsTypeGroup
