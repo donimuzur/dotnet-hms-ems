@@ -48,7 +48,6 @@
     <Compile Include="IMasterDataBLL.cs" />
     <Compile Include="IMonthBLL.cs" />
     <Compile Include="INPPBKCPlant.cs" />
-    <Compile Include="IMonth.cs" />
     <Compile Include="IPageBLL.cs" />
     <Compile Include="IPBCK1BLL.cs" />
     <Compile Include="IPlantBLL.cs" />

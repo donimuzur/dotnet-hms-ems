@@ -617,7 +617,6 @@
     <Content Include="Views\PBCK1\Create.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
-    <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
     <Content Include="Views\POA\Index.cshtml" />
     <Content Include="Views\NPPBKC\Index.cshtml" />
     <Content Include="Views\ExcisableGoodsTypeGroup\Index.cshtml" />
