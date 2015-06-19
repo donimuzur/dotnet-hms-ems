@@ -33,6 +33,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public SelectList UOMList { get; set; }
 
+        public SelectList StatusGovList { get; set; }
+
         public List<PBCK1ProdConvModel> ProductConversions { get; set; }
         public List<PBCK1ProdPlanModel> ProductPlans { get; set; }
 

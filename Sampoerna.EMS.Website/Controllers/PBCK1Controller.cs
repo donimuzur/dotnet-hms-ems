@@ -21,14 +21,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IMonthBLL _monthBll;
-          
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll)
+        private IStatusGovBLL _statusGovBll;
+
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IStatusGovBLL statusGovBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
-                _pbck1Bll = pbckBll;
-                _prodTypeBll = prodTypeBll;
-                _monthBll = monthBll;
-          }
+            _pbck1Bll = pbckBll;
+            _prodTypeBll = prodTypeBll;
+            _monthBll = monthBll;
+            _statusGovBll = statusGovBll;
+        }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
         {
@@ -54,6 +56,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
 
+        private SelectList GetStatusGovList()
+        {
+            var data = _statusGovBll.GetAll();
+            return new SelectList(data, "STATUS_GOV_ID", "STATUS_GOV_NAME");
+        }
+
         //
         // GET: /PBCK/
         public ActionResult Index()
@@ -75,26 +83,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Create()
-        {
-            var model = new PBCK1ItemViewModel
-            {
-                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
-                CurrentMenu = PageInfo,
-                Detail = new PBCK1Item(),
-                NppbkcList = GlobalFunctions.GetNppbkcAll(),
-                MonthList = GlobalFunctions.GetMonthList(),
-                SupplierPortList = GlobalFunctions.GetSupplierPortList(),
-                SupplierPlantList = GlobalFunctions.GetSupplierPlantList(),
-                GoodTypeList =  GlobalFunctions.GetGoodTypeList(),
-                UOMList = GlobalFunctions.GetUomList()
-            };
-            return View(model);
-        }
-
         public ActionResult Edit(long id)
         {
-            return View(new PBCK1ItemViewModel(){ MainMenu = Enums.MenuList.ExcisableGoodsMovement, CurrentMenu = PageInfo });
+            return View(new PBCK1ItemViewModel() { MainMenu = Enums.MenuList.ExcisableGoodsMovement, CurrentMenu = PageInfo });
         }
 
         public ActionResult Details(long id)
@@ -126,7 +117,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 foreach (var datarow in data.DataRows)
                 {
                     var prodConvModel = new PBCK1ProdConvModel();
-                   
+
                     try
                     {
                         var prodCodeFromFile = Convert.ToInt32(datarow[0]);
@@ -144,9 +135,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     catch (Exception)
                     {
                         continue;
-                        
+
                     }
-                    
+
                 }
             }
             return PartialView("_ProdConvList", model);
@@ -187,6 +178,30 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             return PartialView("_ProdPlanList", model);
+        }
+
+        public ActionResult Create()
+        {
+            var model = new PBCK1ItemViewModel
+            {
+                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
+                CurrentMenu = PageInfo,
+                Detail = new PBCK1Item(),
+                NppbkcList = GlobalFunctions.GetNppbkcAll(),
+                MonthList = GlobalFunctions.GetMonthList(),
+                SupplierPortList = GlobalFunctions.GetSupplierPortList(),
+                SupplierPlantList = GlobalFunctions.GetSupplierPlantList(),
+                GoodTypeList = GlobalFunctions.GetGoodTypeList(),
+                UOMList = GlobalFunctions.GetUomList(),
+                StatusGovList = GetStatusGovList()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetSupplierPlant()
+        {
+            return Json(GlobalFunctions.GetSupplierPlantList());
         }
         
     }

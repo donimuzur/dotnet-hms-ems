@@ -29,7 +29,7 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK Type</label>
                                         <div class="col-md-9">
-                                            @Html.EnumDropDownListFor(model => model.Detail.PBCK1_TYPE, Model.PBCK1Types, "All", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.Detail.PBCK1_TYPE, Model.PBCK1Types, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.NppbkcList, "All", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.NppbkcList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +120,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Port</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Detail.SUPPLIER_PORT_ID, Model.SupplierPortList, "none", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Detail.SUPPLIER_PORT_ID, Model.SupplierPortList, "None", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +136,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Plant</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Detail.SUPPLIER_PLANT, Model.SupplierPlantList, "None", new { @class = "form-control"})
+                                            <div id="supp-plant">
+                                                @Html.TextBoxFor(model => model.Detail.SUPPLIER_PLANT, new { @class = "form-control txtplant" })    
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,7 +190,7 @@
                                     <div class="row">
                                         <label class="col-md-4 long">Exciseable Goods Description</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Detail.GOODTYPE_ID, Model.GoodTypeList, "", new{ @class = "form-control"})
+                                            @Html.DropDownListFor(model => model.Detail.GOODTYPE_ID, Model.GoodTypeList, "Select", new{ @class = "form-control"})
                                         </div>
                                     </div>
                                 </div>
@@ -238,13 +240,13 @@
                                     <div class="row">
                                         <label class="col-md-4">LACK-1 To</label>
                                         <div class="col-md-4">
-                                            <select class="form-control">
-                                                <option>January</option>
-                                                <option>February</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Detail.LACK1_TO_MONTH_ID, Model.MonthList, "", new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                           @Html.DropDownListFor(model => model.Detail.LACK1_TO_MONTH_ID, Model.MonthList, "", new { @class = "form-control" })
+                                            <select class="form-control">
+                                                <option>2015</option>
+                                                <option>2016</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -416,10 +418,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Status Gov</label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>Partially Approve</option>
-                                                <option>Partially Reject</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Detail.STATUS_GOV_ID, Model.StatusGovList, "Select", new { @class = "form-control"})
                                         </div>
                                     </div>
                                 </div>
