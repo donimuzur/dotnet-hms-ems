@@ -51,6 +51,13 @@ $(document).ready(function () {
             }
         });
     });
+    
+    $('#ck5Table').dataTable({
+        "scrollY": "220px",
+        "scrollCollapse": true,
+        "order": [[1, "asc"]],
+        "paging": true
+    });
 });
 $(window).resize(function () {
     widthHtml = $("html").outerWidth();

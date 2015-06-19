@@ -555,6 +555,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />

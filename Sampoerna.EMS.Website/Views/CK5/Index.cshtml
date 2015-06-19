@@ -90,7 +90,9 @@
     @section scripts {
         <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-        <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+        <script type="text/javascript" language="javascript" src="../../Scripts/js/vendors/jquery.dataTables.min.js"></script>
+
+      <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
         <script type="text/javascript" language="javascript" class="init">
 
             $(document).ready(function() {
@@ -112,14 +114,25 @@
                     table.destroy();
                 }
 
+                //table  =  $('#ck5Table').dataTable({
+                //    "scrollY": "220px",
+                //    "scrollCollapse": true,
+                //    "order": [[1, "asc"]],
+                //    "paging": true
+                //});
+                
                 table = $('#ck5Table').DataTable(
                     {
                         "sDom": "Rlfrtip",
                         "language": {
-                            "lengthMenu": "Display _MENU_ records per page",
+                           // "lengthMenu": "Display _MENU_ records per page",
                             "zeroRecords": "No records found",
                             "info": "Showing page _PAGE_ of _PAGES_",
-                            "infoFiltered": "(filtered from _MAX_ total records)"
+                            "infoFiltered": "(filtered from _MAX_ total records)",
+                            "scrollY": "220px",
+                            "scrollCollapse": true,
+                            "order": [[1, "asc"]],
+                            "paging": true
                         }
                     });
 
@@ -129,7 +142,7 @@
                     if (idx != 0 && idx != 1) {
                         var title = $('#ck5Table thead th').eq($(this).index()).text();
                         //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                        $(this).html('<input type="text"  />');
+                        $(this).html('<input type="text"  style="width:100%" />');
                     }
                 });
 

@@ -32,5 +32,53 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public int RequestType { get; set; }
         public SelectList RequestTypeList { get; set; }
 
+        //[STO_SENDER_NUMBER]
+        //[STO_RECEIVER_NUMBER]
+        //[STOB_NUMBER]
+
+        public int SourcePlantId { get; set; }
+        public int DestPlantId { get; set; }
+
+        public string InvoiceNumber { get; set; }
+        public DateTime InvoiceDateTime { get; set; }
+
+        public int PbckDecreeId { get; set; }
+
+        public int CarriageMethod { get; set; }
+        public SelectList CarriageMethodList { get; set; }
+
+        public decimal GrandTotalEx { get; set; }
+
+        //[PACKAGE_UOM_ID]
+        //[DEST_COUNTRY_ID]
+        //[HARBOUR]
+        //[OFFICE_HARBOUR]
+        //[LAST_SHELTER_HARBOUR]
+        //[OFFICE_SHELTER]
+
+        public string DnNumber { get; set; }
+        public string DnDate { get; set; } //..todo ask?
+        public DateTime GiDate { get; set; }
+
+        public string SealingNotifNumber { get; set; }
+        public DateTime SealingNotifDate { get; set; }
+
+        public string UnSealingNotifNumber { get; set; }
+        public DateTime UnsealingNotifDate { get; set; }
+
+
+
+        //[DN_NUMBER]
+        //[GI_DATE]
+        //[SEALING_NOTIF_NUMBER]
+        //[UNSEALING_NOTIF_NUMBER]
+        //[SEALING_NOTIF_DATE]
+        //[UNSEALING_NOTIF_DATE]
+        //[STATUS_ID]
+        //[CREATED_BY]
+        //[CREATED_DATE]
+        //[APPROVED_BY]
+        //[APPROVED_DATE]
+
     }
 }
