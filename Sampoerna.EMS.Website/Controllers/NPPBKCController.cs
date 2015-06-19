@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using Sampoerna.EMS.BusinessObject.Outputs;
+using AutoMapper;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.NPPBKC;
@@ -30,7 +27,7 @@ namespace Sampoerna.EMS.Website.Controllers
             nppbkc.MainMenu = Enums.MenuList.MasterData;
             nppbkc.CurrentMenu = PageInfo;
 
-            nppbkc.Details = _nppbkcBll.GetAll().Select(AutoMapper.Mapper.Map<DetailNppbck>).ToList();
+            nppbkc.Details = Mapper.Map<List<DetailNppbck>>(_nppbkcBll.GetAll());
 
             return View("Index", nppbkc);
             
