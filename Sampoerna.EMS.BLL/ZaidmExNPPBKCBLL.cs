@@ -29,8 +29,13 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-        public List<ZaidmExNPPBKCOutput> GetAll()
+        public List<ZAIDM_EX_NPPBKC> GetAllNppbkc()
         {
+            return _repository.Get().ToList();
+        }
+
+        public List<ZaidmExNPPBKCOutput> GetAll()
+        {    
             var repoNppbkc = _repository.Get().ToList();
             var repoRegionOffice = _repositoryRegionOffice.Get().ToList();
 
@@ -44,11 +49,9 @@ namespace Sampoerna.EMS.BLL
                     City = nppbkcList.CITY,
                     RegionOfficeIdNppbkc = regionOffice.REGION_NAME,
                     TextTo = nppbkcList.TEXT_TO
-                    
+
                 }).ToList();
-
             return result;
-
         }
     }
 }

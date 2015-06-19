@@ -92,22 +92,22 @@
                                 <td></td>
                                 <td></td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.PoaIdCard)
+                                    @Html.DisplayFor(modelItem => item.POA_ID_CARD)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.UserName)
+                                    @Html.DisplayFor(modelItem => item != null ? item.USER.USERNAME : null)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.PoaPrintedName)
+                                    @Html.DisplayFor(modelItem => item.POA_PRINTED_NAME)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.PoaAddress)
+                                    @Html.DisplayFor(modelItem => item.POA_ADDRESS)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.PoaPhone)
+                                    @Html.DisplayFor(modelItem => item.POA_PHONE)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Title)
+                                    @Html.DisplayFor(modelItem => item.TITLE)
                                 </td>
                              
                             </tr>

@@ -11,7 +11,6 @@ using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
-using Sampoerna.EMS.Website.Models.POA;
 
 namespace Sampoerna.EMS.Website
 {
@@ -76,19 +75,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
-
-            #region POA
-            Mapper.CreateMap<ZAIDM_EX_POA, POAViewModelDetails>().IgnoreAllNonExisting()
-               .ForMember(dest => dest.PoaIdCard, opt => opt.MapFrom(src => src.POA_ID_CARD))
-               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.USER_ID))
-               .ForMember(dest => dest.PoaPrintedName, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
-               .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
-               .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
-               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
-            #endregion
-
-          
-
+            
             Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.CK5_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX)) //todo ask
@@ -115,7 +102,9 @@ namespace Sampoerna.EMS.Website
           
 
             #region NPPBKC
+
             Mapper.CreateMap<ZaidmExNPPBKCOutput, DetailNppbck>().IgnoreAllNonExisting();
+                
             #endregion
 
             #region GoodsTypeGroup

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Sampoerna.EMS.BusinessObject.Outputs;
+﻿using System.Collections.Generic;
 
 namespace Sampoerna.EMS.Website.Models.NPPBKC
 {
