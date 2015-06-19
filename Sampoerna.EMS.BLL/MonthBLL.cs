@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
 {
-    public class MonthBLL : IMonth
+    public class MonthBLL : IMonthBLL
     {
         private IGenericRepository<MONTH> _repository;
         private ILogger _logger;
@@ -25,6 +22,11 @@ namespace Sampoerna.EMS.BLL
         public MONTH GetMonth(int id)
         {
             return _repository.GetByID(id);
+        }
+
+        public List<MONTH> GetAll()
+        {
+            return _repository.Get().ToList();
         }
     }
 }

@@ -27,12 +27,22 @@ namespace Sampoerna.EMS.Core
 
         public enum PBCK1Type
         {
-            [Description("")]
-            All,
             [Description("New")]
             New,
             [Description("Additional")]
             Additional
+        }
+
+        public enum CK5Type
+        {
+            Domestic = 0,
+            Intercompany = 1,
+            PortToImporter = 2,
+            ImporterToPlant = 3,
+            Export = 4,
+            Manual = 5,
+            DomesticAlcohol = 6,
+            Completed = 7
         }
     }
 }

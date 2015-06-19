@@ -1,0 +1,58 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
+
+@Html.HiddenFor(model => model.Ck5Type)
+<div class="white-wrapper">
+    <form class="form-excise" role="form">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row">
+                    @*<label class="col-md-4">@Html.LabelFor(model => model.SearchView.DocumentNumber)</label>*@
+                    @Html.LabelFor(model => model.SearchView.DocumentNumber, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.SearchView.DocumentNumber, Model.SearchView.DocumentNumberList, "All", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    @*<label class="col-md-4 long">NPPBKC Origin</label>*@
+                    @Html.LabelFor(model => model.SearchView.NPPBKCOrigin, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.SearchView.NPPBKCOrigin, Model.SearchView.NPPBKCOriginList, "All", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    @*<label class="col-md-4 long">NPPBKC Destination</label>*@
+                    @Html.LabelFor(model => model.SearchView.NPPBKCDestination, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.SearchView.NPPBKCDestination, Model.SearchView.NPPBKCDestinationList, "All", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="row">
+                    @Html.LabelFor(model => model.SearchView.POA, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.SearchView.POA, Model.SearchView.POAList, "All", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="last-form">
+                <div class="col-md-4">
+                    <div class="row">
+                        @Html.LabelFor(model => model.SearchView.Creator, new { @class = "col-md-4" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-blue full">FILTER</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
