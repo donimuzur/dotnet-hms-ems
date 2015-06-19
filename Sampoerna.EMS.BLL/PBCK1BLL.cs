@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.NPBCKID))
             {
-                queryFilter = queryFilter.And(c => c.NUMBER.Contains(input.NPBCKID));
+                queryFilter = queryFilter.And(c => c.ZAIDM_EX_NPPBKC.NPPBKC_NO.Contains(input.NPBCKID));
             }
 
             //if (!string.IsNullOrEmpty(input.Pbck1Type))
