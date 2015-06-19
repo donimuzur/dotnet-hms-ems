@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string ADDR2 { get; set; }
         public string CITY { get; set; }
         public Nullable<long> KPPBC_ID { get; set; }
-        public Nullable<int> REGION_OFFICE_ID { get; set; }
+        public string REGION_OFFICE { get; set; }
         public Nullable<long> COMPANY_ID { get; set; }
         public Nullable<long> VENDOR_ID { get; set; }
         public string TEXT_TO { get; set; }
