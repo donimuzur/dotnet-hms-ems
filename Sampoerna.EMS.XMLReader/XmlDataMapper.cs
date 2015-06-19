@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,11 +20,17 @@ namespace Sampoerna.EMS.XMLReader
         private string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
-
+        public string _currFilePath;
+        public string _currFileName;
         public XmlDataMapper(string xmlName)
         {
-             
+            
             _xmlName = xmlName;
+            var files = Directory.GetFiles(RootPath);
+            var currFilePath = (from f in files where f.Contains(_xmlName) select f).FirstOrDefault();
+            _currFilePath = currFilePath;
+            _currFileName = Path.GetFileName(currFilePath);
+            
             _xmlData = ReadXMLFile();
             logger = new NullLogger();
             uow = new SqlUnitOfWork(logger);
@@ -33,7 +40,10 @@ namespace Sampoerna.EMS.XMLReader
 
         private XElement ReadXMLFile()
         {
-            return XElement.Load(Path.Combine(RootPath, _xmlName +  ".xml"));
+
+            if (_currFilePath == null)
+                return null;
+            return XElement.Load(Path.Combine(RootPath, _currFileName));
         }
 
         public XElement GetElement(string elementName)

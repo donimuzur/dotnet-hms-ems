@@ -437,13 +437,6 @@
           <Property Name="AMOUNT" Type="numeric" Precision="18" Scale="0" />
           <Property Name="BKC_REQUIRED" Type="numeric" Precision="18" Scale="0" />
         </EntityType>
-        <EntityType Name="REGION_OFFICE_ID">
-          <Key>
-            <PropertyRef Name="REGION_OFFICE_ID" />
-          </Key>
-          <Property Name="REGION_OFFICE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="REGION_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
         <EntityType Name="RENCANA_PRODUKSI">
           <Key>
             <PropertyRef Name="RENCANA_PROD_ID" />
@@ -667,7 +660,7 @@
           <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
           <Property Name="CITY" Type="nvarchar" MaxLength="50" />
           <Property Name="KPPBC_ID" Type="bigint" />
-          <Property Name="REGION_OFFICE_ID" Type="int" />
+          <Property Name="REGION_OFFICE" Type="nvarchar" MaxLength="20" />
           <Property Name="COMPANY_ID" Type="bigint" />
           <Property Name="VENDOR_ID" Type="bigint" />
           <Property Name="TEXT_TO" Type="nvarchar" MaxLength="50" />
@@ -2204,7 +2197,6 @@
           <EntitySet Name="PBCK4" EntityType="Self.PBCK4" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK4_ITEM" EntityType="Self.PBCK4_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REALISASI_PEMASUKAN" EntityType="Self.REALISASI_PEMASUKAN" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="REGION_OFFICE_ID" EntityType="Self.REGION_OFFICE_ID" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RENCANA_PRODUKSI" EntityType="Self.RENCANA_PRODUKSI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST_TYPE" EntityType="Self.REQUEST_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATUS" EntityType="Self.STATUS" Schema="dbo" store:Type="Tables" />
@@ -2751,7 +2743,6 @@
           <EntitySet Name="PBCK4" EntityType="EMSModel.PBCK4" />
           <EntitySet Name="PBCK4_ITEM" EntityType="EMSModel.PBCK4_ITEM" />
           <EntitySet Name="REALISASI_PEMASUKAN" EntityType="EMSModel.REALISASI_PEMASUKAN" />
-          <EntitySet Name="REGION_OFFICE_ID" EntityType="EMSModel.REGION_OFFICE_ID" />
           <EntitySet Name="RENCANA_PRODUKSI" EntityType="EMSModel.RENCANA_PRODUKSI" />
           <EntitySet Name="REQUEST_TYPE" EntityType="EMSModel.REQUEST_TYPE" />
           <EntitySet Name="STATUS" EntityType="EMSModel.STATUS" />
@@ -3810,13 +3801,6 @@
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_REALISASI_PEMASUKAN_PBCK1" FromRole="REALISASI_PEMASUKAN" ToRole="PBCK1" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_REALISASI_PEMASUKAN_ZAIDM_EX_PRODTYP" FromRole="REALISASI_PEMASUKAN" ToRole="ZAIDM_EX_PRODTYP" />
         </EntityType>
-        <EntityType Name="REGION_OFFICE_ID">
-          <Key>
-            <PropertyRef Name="REGION_OFFICE_ID1" />
-          </Key>
-          <Property Name="REGION_OFFICE_ID1" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="REGION_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="RENCANA_PRODUKSI">
           <Key>
             <PropertyRef Name="RENCANA_PROD_ID" />
@@ -4135,7 +4119,7 @@
           <Property Name="ADDR2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CITY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="KPPBC_ID" Type="Int64" />
-          <Property Name="REGION_OFFICE_ID" Type="Int32" />
+          <Property Name="REGION_OFFICE" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="COMPANY_ID" Type="Int64" />
           <Property Name="VENDOR_ID" Type="Int64" />
           <Property Name="TEXT_TO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -6133,14 +6117,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="REGION_OFFICE_ID">
-            <EntityTypeMapping TypeName="EMSModel.REGION_OFFICE_ID">
-              <MappingFragment StoreEntitySet="REGION_OFFICE_ID">
-                <ScalarProperty Name="REGION_NAME" ColumnName="REGION_NAME" />
-                <ScalarProperty Name="REGION_OFFICE_ID1" ColumnName="REGION_OFFICE_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="RENCANA_PRODUKSI">
             <EntityTypeMapping TypeName="EMSModel.RENCANA_PRODUKSI">
               <MappingFragment StoreEntitySet="RENCANA_PRODUKSI">
@@ -6381,7 +6357,7 @@
                 <ScalarProperty Name="TEXT_TO" ColumnName="TEXT_TO" />
                 <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
                 <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
-                <ScalarProperty Name="REGION_OFFICE_ID" ColumnName="REGION_OFFICE_ID" />
+                <ScalarProperty Name="REGION_OFFICE" ColumnName="REGION_OFFICE" />
                 <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
                 <ScalarProperty Name="CITY" ColumnName="CITY" />
                 <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />

@@ -61,7 +61,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK4> PBCK4 { get; set; }
         public virtual DbSet<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual DbSet<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
-        public virtual DbSet<REGION_OFFICE_ID> REGION_OFFICE_ID { get; set; }
         public virtual DbSet<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
         public virtual DbSet<REQUEST_TYPE> REQUEST_TYPE { get; set; }
         public virtual DbSet<STATUS> STATUS { get; set; }
