@@ -28,7 +28,6 @@ namespace Sampoerna.EMS.Website.Models
         {
             public long VirtualPlantMapId { get; set; }
             public long? CompanyId { get; set; }
-
             public string CompanyName { get; set; }
             public long? ImportPlantId { get; set; }
             public long ExportPlantId { get; set; }

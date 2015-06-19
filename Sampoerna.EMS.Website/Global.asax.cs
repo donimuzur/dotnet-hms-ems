@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IZaidmExNPPBKCBLL, ZaidmExNPPBKCBLL>();
             container.Register<IPlantBLL, PlantBLL>();
             container.Register<IZaidmExGoodTypeBLL, ZaidmExGoodTypeBLL>();
+            container.Register<IBrandRegistrationBLL, BrandRegistrationBLL>();
            
 
             // 3. Optionally verify the container's configuration.

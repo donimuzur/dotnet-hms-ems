@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.BrandRegistration;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PLANT;
@@ -110,6 +111,19 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY));
+
+            #endregion
+
+            #region BrandRegistration
+
+            Mapper.CreateMap<BrandRegistrationOutput, DetailBrandRegistration>().IgnoreAllNonExisting();
+            //.ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.StickerCode))
+            //.ForMember(dest => dest.Name1, opt => opt.MapFrom(src => src.Name1))
+            //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode))
+            //.ForMember(dest => dest.BrandCe, opt => opt.MapFrom(src => src.BRAND_CE))
+            //.ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.SERIES_ID))
+            //.ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
+            //.ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE)); 
 
             #endregion
 

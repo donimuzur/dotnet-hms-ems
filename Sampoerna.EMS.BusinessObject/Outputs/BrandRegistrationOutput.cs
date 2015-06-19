@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         //ZAIDM_EX_BRAND
         public long BrandIdZaidmExBrand { get; set; }
         public string StickerCode { get; set; }
-        public long SplantId { get; set; }
+        public long PlantId { get; set; }
         public string FaCode { get; set; }
         public long PerId { get; set; }
         public string BrandCe { get; set; }
@@ -43,13 +43,18 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public int CurrencyId { get; set; }
         public string CurrencyCode { get; set; }
 
-        
-        //T1001
-        public long CompanyIdT1001 { get; set; }
-        public string Bukrs { get; set; }
-        public string BukrsTxt { get; set; }
-        public string Npwp { get; set; }
-        public DateTime? CreateDateT1001 { get; set; }
+        //T1001W
+        public long PlantIdT1001W { get; set; }
+        public string Werks { get; set; }
+        public string Name1 { get; set; }
+        public string Ort01 { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
+        public string Skeptis { get; set; }
+        public long? NppbckId { get; set; }
+        public bool? IsMainPlant { get; set; }
+        public int? RecievedMaterialTypeId { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         //ZAIDM_EX_GOODTYP
         public int GoodTypeId { get; set; }
