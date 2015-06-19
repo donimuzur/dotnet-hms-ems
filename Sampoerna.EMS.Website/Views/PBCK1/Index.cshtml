@@ -152,8 +152,8 @@
             $('#pbckTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0 && idx != 1) {
-                    var title = $('#pbckTable thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" />');
+                    //var title = $('#pbckTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
 

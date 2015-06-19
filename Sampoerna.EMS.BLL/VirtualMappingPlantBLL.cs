@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -47,9 +45,8 @@ namespace Sampoerna.EMS.BLL
                 }).ToList();
 
             //var test = from p in _repository.GetQuery()
-            //           join k in _repositoryT1001.GetQuery()
-            //        on p.COMPANY_ID equals k.COMPANY_ID
-            //    select new
+            //           join k in _repositoryT1001.GetQuery() on p.COMPANY_ID equals k.COMPANY_ID
+            //           select new
             //    {
             //        company = k.BUKRSTXT,
             //        export = p.EXPORT_PLANT_ID,

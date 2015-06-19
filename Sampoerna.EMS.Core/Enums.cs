@@ -22,7 +22,8 @@ namespace Sampoerna.EMS.Core
             USER = 15,
             LOGIN = 16,
             COMPANY = 17,
-            POA = 18
+            POA = 18,
+            NPPBKC = 19
         }
 
         public enum PBCK1Type
@@ -31,6 +32,18 @@ namespace Sampoerna.EMS.Core
             New,
             [Description("Additional")]
             Additional
+        }
+
+        public enum CK5Type
+        {
+            Domestic = 0,
+            Intercompany = 1,
+            PortToImporter = 2,
+            ImporterToPlant = 3,
+            Export = 4,
+            Manual = 5,
+            DomesticAlcohol = 6,
+            Completed = 7
         }
     }
 }

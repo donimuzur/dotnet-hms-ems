@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLMapper.cs" />
+    <Compile Include="CK5BLL.cs" />
+    <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="MasterDataBLL.cs" />
     <Compile Include="MonthBLL.cs" />

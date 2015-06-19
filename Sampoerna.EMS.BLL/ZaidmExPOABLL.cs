@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -27,6 +28,26 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_POA> GetAll()
         {
+            //var repoZaidmExPOA = _repository.Get().ToList();
+            //var repoUser = _repositoryUser.Get().ToList();
+
+            //var result = repoZaidmExPOA.Join(repoUser,
+            //    poa => poa.USER_ID,
+            //    USER => USER.USER_ID,
+            //    (poa, USER) => new ZaidmExPOAOutput 
+            //    {
+            //        PoaIdCard = poa.POA_ID_CARD,
+            //        UserName = USER.USERNAME,
+            //        PoaPrintedName= poa.POA_PRINTED_NAME,
+            //        PoaAddress = poa.POA_ADDRESS,
+            //        PoaPhone = poa.POA_PHONE,
+            //        Title = poa.TITLE
+                   
+                    
+            //    }).ToList();
+
+            //return result;
+
             return _repository.Get(null, null, includeTables).ToList();
         }
 

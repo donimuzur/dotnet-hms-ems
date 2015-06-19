@@ -117,6 +117,7 @@
     <Compile Include="HEADER_FOOTER_FORM_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
@@ -129,8 +130,13 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Outputs\BLLBaseOutput.cs" />
+    <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
+    <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />
+    <Compile Include="Outputs\ZaidmExPOAOutput.cs" />
     <Compile Include="PAGE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -170,9 +176,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
     <Compile Include="REALISASI_PEMASUKAN.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="REGION_OFFICE_ID.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="RENCANA_PRODUKSI.cs">

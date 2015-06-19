@@ -51,6 +51,10 @@ namespace Sampoerna.EMS.Website
             container.Register<IVirtualMappingPlantBLL, VirtualMappingPlantBLL>();
             container.Register<IMasterDataBLL, MasterDataBLL>();
             container.Register<IZaidmExNPPBKCBLL, ZaidmExNPPBKCBLL>();
+            container.Register<IPlantBLL, PlantBLL>();
+            container.Register<IZaidmExGoodTypeBLL, ZaidmExGoodTypeBLL>();
+            container.Register<IBrandRegistrationBLL, BrandRegistrationBLL>();
+            container.Register<ICK5BLL, CK5BLL>();
             container.Register<IZaidmExProdTypeBLL, ZaidmExProdTypeBLL>();
             container.Register<IMonthBLL, MonthBLL>();
             container.Register<IStatusGovBLL, StatusGovBLL>();
