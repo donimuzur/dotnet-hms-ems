@@ -215,12 +215,16 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\ExcisableGoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\NPPBKCController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
+    <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
@@ -231,18 +235,23 @@
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PLANT\PlantViewModel.cs" />
+    <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
@@ -608,7 +617,11 @@
     <Content Include="Views\PBCK1\Create.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
-    <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
+    <Content Include="Views\POA\Index.cshtml" />
+    <Content Include="Views\NPPBKC\Index.cshtml" />
+    <Content Include="Views\ExcisableGoodsTypeGroup\Index.cshtml" />
+    <Content Include="Views\Plant\Index.cshtml" />
+    <Content Include="Views\BrandRegistration\Index.cshtml" />
     <Content Include="Views\CK5\Index.cshtml" />
     <Content Include="Views\PBCK1\_ProdConvList.cshtml" />
     <Content Include="Views\PBCK1\_ProdConvUpload.cshtml" />
@@ -632,7 +645,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AspxReportViewer\" />
-    <Folder Include="Views\POA\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

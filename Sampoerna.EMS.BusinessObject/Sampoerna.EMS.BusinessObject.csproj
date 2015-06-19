@@ -129,8 +129,13 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Outputs\BLLBaseOutput.cs" />
+    <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
+    <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />
+    <Compile Include="Outputs\ZaidmExPOAOutput.cs" />
     <Compile Include="PAGE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

@@ -12,8 +12,11 @@
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
-                var title = $('#example thead th').eq($(this).index()).text();
-                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                var idx = $(this).index();
+                if (idx != 0 && idx != 1) {
+                    var title = $('#mydata thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" />');
+                }
             });
 
             // DataTable
@@ -57,7 +60,8 @@
                 <table id="mydata" class="table table-striped table-hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            @*<th> NO  </th>*@
+                            <th> NO  </th>
+                            <th> Action </th>
                             <th> Company </th>
                             <th> Import Virtual Plant </th>
                             <th> Export Virtual Plant</th>
@@ -66,7 +70,8 @@
                     </thead>
                     <thead class="filters">
                         <tr>
-                            @*<th> NO  </th>*@
+                            <th> NO  </th>
+                            <th> Action </th>
                             <th> Company </th>
                             <th> Import Virtual Plant </th>
                             <th> Export Virtual Plant </th>
