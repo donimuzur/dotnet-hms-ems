@@ -21,10 +21,10 @@
             <div role="tabpanel">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation" id="home-tab"class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
                     <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                     <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Upload Production Plan</a></li>
-                    <li role="presentation"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload Production Converted</a></li>
+                    <li role="presentation" id="prod-plan-upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload Production Converted</a></li>
                     <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
                 </ul>
                 <!-- Tab panes -->
@@ -47,8 +47,26 @@
 
         $(document).ready(function() {
             $('#prod-conv-save').click(function() {
-                GetTableData($('#prod-conv-table'));
-                $('#home').tab('show');
+                var datarows = GetTableData($('#prod-conv-table'));
+                var columnLength = $('#pbck1-prod-conv-item').find("thead tr:first th").length;
+                $('#pbck1-prod-conv-item tbody').html('');
+                for (var i = 0; i < datarows.length; i++) {
+                    var data = '<tr>';
+                    if (columnLength > 0) {
+                        data += '<td style="display:none">' + datarows[i][0] + '</td>';
+                        data += '<td>' + datarows[i][1] + '</td>';
+                        data += '<td>' + datarows[i][2] + '</td>';
+                        data += '<td>' + datarows[i][3] + '</td>';
+                        data += '<td>' + datarows[i][4] + '</td>';
+                    }
+                    data += '</tr>';
+                    console.log(data);
+                    $('#pbck1-prod-conv-item tbody').append(data);
+                }
+                $('#prod-plan-upload-tab').removeClass('active');
+                $('#home-tab').addClass('active');
+                $('#home').addClass('active');
+                $('#upload').removeClass('active');
             });
             $('#prod-plan-save').click(function() {
                 GetTableData($('#prod-plan-table'));
