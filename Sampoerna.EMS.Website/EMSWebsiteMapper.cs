@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using AutoMapper;
-using Sampoerna.EMS.Utils;
+﻿using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -13,8 +11,6 @@ using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
-using Sampoerna.EMS.Website.Models.POA;
-using Sampoerna.EMS.Website.Models.GOODSTYPE;
 
 namespace Sampoerna.EMS.Website
 {
@@ -79,19 +75,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
-
-            #region POA
-            Mapper.CreateMap<ZAIDM_EX_POA, POAViewModelDetails>().IgnoreAllNonExisting()
-               .ForMember(dest => dest.PoaIdCard, opt => opt.MapFrom(src => src.POA_ID_CARD))
-               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.USER_ID))
-               .ForMember(dest => dest.PoaPrintedName, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
-               .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
-               .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
-               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
-            #endregion
-
-          
-
+            
             Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.CK5_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX)) //todo ask
@@ -104,10 +88,29 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
 
             Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
+            Mapper.CreateMap<SUPPLIER_PORT, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID + "-" + src.PORT_NAME))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
+                ;
+
+            Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.NAME1))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID));
+            Mapper.CreateMap<ZAIDM_EX_GOODTYP, SelectItemModel>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.GOODTYPE_ID + "-" + src.EXC_GOOD_TYP))
+               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.GOODTYPE_ID));
           
 
             #region NPPBKC
-            Mapper.CreateMap<ZaidmExNPPBKCOutput, DetailNppbck>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailNppbck>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.Addr1, opt => opt.MapFrom(src => src.ADDR1))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
+                .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
+                ;
+                
             #endregion
 
             #region GoodsTypeGroup

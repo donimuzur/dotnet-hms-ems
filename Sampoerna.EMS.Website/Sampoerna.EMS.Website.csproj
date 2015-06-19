@@ -244,8 +244,11 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
-    <Compile Include="Models\PBCK1\PBCK1CreateViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1Item.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
@@ -614,7 +617,6 @@
     <Content Include="Views\PBCK1\Create.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
-    <Content Include="Views\PBCK1\PoaListPartial.cshtml" />
     <Content Include="Views\POA\Index.cshtml" />
     <Content Include="Views\NPPBKC\Index.cshtml" />
     <Content Include="Views\ExcisableGoodsTypeGroup\Index.cshtml" />
@@ -635,6 +637,10 @@
     <Content Include="Views\CK5\CK5DomesticAlcohol.cshtml" />
     <Content Include="Views\CK5\CK5Completed.cshtml" />
     <Content Include="Views\CK5\CK5Import.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1Table.cshtml" />
+    <Content Include="Views\PBCK1\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK1\_PrintOut.cshtml" />
+    <Content Include="Views\PBCK1\_ChangeLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

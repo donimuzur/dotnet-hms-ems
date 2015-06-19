@@ -28,8 +28,6 @@ namespace Sampoerna.EMS.Core
 
         public enum PBCK1Type
         {
-            [Description("")]
-            All,
             [Description("New")]
             New,
             [Description("Additional")]

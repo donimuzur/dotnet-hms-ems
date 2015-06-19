@@ -178,9 +178,6 @@
     <Compile Include="REALISASI_PEMASUKAN.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="REGION_OFFICE_ID.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="RENCANA_PRODUKSI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

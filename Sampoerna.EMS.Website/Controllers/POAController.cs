@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using Sampoerna.EMS.BusinessObject.Outputs;
+﻿using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
-using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.POA;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -25,11 +21,12 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /POA/
         public ActionResult Index()
         {
-            var poa = new POAViewModel();
-            poa.MainMenu = Enums.MenuList.MasterData;
-            poa.CurrentMenu = PageInfo;
-
-            poa.Details = _poaBll.GetAll().Select(AutoMapper.Mapper.Map<ZaidmExPOAOutput>).ToList();
+            var poa = new POAViewModel
+            {
+                MainMenu = Enums.MenuList.MasterData,
+                CurrentMenu = PageInfo,
+                Details = _poaBll.GetAll()
+            };
 
             return View("Index", poa);
         }

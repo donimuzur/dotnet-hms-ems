@@ -3,9 +3,10 @@ using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Contract
 {
-    public interface IZaidmExPOABLL
+    public interface IMonthBLL
     {
-        ZAIDM_EX_POA GetById(int id);
-        List<ZAIDM_EX_POA> GetAll();
+        MONTH GetMonth(int id);
+        List<MONTH> GetAll();
+
     }
 }
