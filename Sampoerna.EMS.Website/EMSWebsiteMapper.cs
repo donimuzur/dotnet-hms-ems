@@ -80,6 +80,9 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.NAME1))
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID));
+            Mapper.CreateMap<ZAIDM_EX_GOODTYP, SelectItemModel>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.GOODTYPE_ID + "-" + src.EXC_GOOD_TYP))
+               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.GOODTYPE_ID));
 
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.GOODTYPE_ID))
