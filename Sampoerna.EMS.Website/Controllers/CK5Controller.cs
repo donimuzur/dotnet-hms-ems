@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -17,13 +16,16 @@ namespace Sampoerna.EMS.Website.Controllers
     public class CK5Controller : BaseController
     {
         private ICK5BLL _ck5Bll;
+        private IZaidmExNPPBKCBLL _nppbkcBll;
 
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll)
+        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
+            _nppbkcBll = nppbkcBll;
         }
 
+        #region View Documents
 
         private List<CK5Item> GetCk5Items(Enums.CK5Type ck5Type,CK5SearchViewModel filter = null)
         {
@@ -42,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
         }
 
-        private CK5IndexViewModel CreateInitModel(Enums.MenuList menulist, Enums.CK5Type ck5Type)
+        private CK5IndexViewModel CreateInitModelView(Enums.MenuList menulist, Enums.CK5Type ck5Type)
         {
             var model = new CK5IndexViewModel();
 
@@ -77,7 +79,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /CK5/
         public ActionResult Index()
         {
-            var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.Domestic);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Domestic);
             return View(model);
         }
 
@@ -106,32 +108,105 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CK5Manual()
         {
-            var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.Manual);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Manual);
             return View(model);
         }
 
         public ActionResult CK5Export()
         {
-            var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.Export);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Export);
             return View(model);
         }
 
         public ActionResult CK5DomesticAlcohol()
         {
-            var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.DomesticAlcohol);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.DomesticAlcohol);
             return View(model);
         }
 
         public ActionResult CK5Completed()
         {
-            var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.Completed);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Completed);
             return View(model);
         }
 
         public ActionResult CK5Import()
         {
-            var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
             return View("CK5Import",model);
+        }
+
+        #endregion
+
+
+        public ActionResult Create(string ck5Type)
+        {
+            var model = new CK5CreateViewModel();
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+            if (ck5Type == Enums.CK5Type.Domestic.ToString())
+                model.Ck5Type = Enums.CK5Type.Domestic;
+            else if (ck5Type == Enums.CK5Type.Intercompany.ToString())
+                model.Ck5Type = Enums.CK5Type.Intercompany;
+
+            return View(model);
+        }
+
+        private CK5CreateViewModel InitCreateCK5(Enums.CK5Type ck5Type)
+        {
+            var model = new CK5CreateViewModel();
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+            model.Ck5Type = ck5Type;
+
+            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+            model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
+            model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
+            model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
+
+            return model;
+        }
+        public ActionResult CreateDomestic()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.Domestic);
+            return View("Create", model);
+        }
+
+        public ActionResult CreateIntercompany()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.Intercompany);
+            return View("Create", model);
+        }
+
+        public ActionResult CreatePortToImporter()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.PortToImporter);
+            return View("Create", model);
+        }
+
+        public ActionResult CreateImporterToPlant()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.ImporterToPlant);
+            return View("Create", model);
+        }
+
+        public ActionResult CreateExport()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.Export);
+            return View("Create", model);
+        }
+
+        public ActionResult CreateManual()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.Manual);
+            return View("Create", model);
+        }
+
+        public ActionResult CreateDomesticAlcohol()
+        {
+            var model = InitCreateCK5(Enums.CK5Type.DomesticAlcohol);
+            return View("Create", model);
         }
     }
 }

@@ -11,6 +11,10 @@ namespace Sampoerna.EMS.Contract
     {
         List<string> GetDataCompany();
 
-        
+        List<EX_SETTLEMENT> GetAllExciseExSettlements();
+
+        List<EX_STATUS> GetAllExciseStatus();
+
+        List<REQUEST_TYPE> GetAllRequestTypes();
     }
 }

@@ -1,5 +1,7 @@
-﻿@using Sampoerna.EMS.Website.Helpers
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
+
 
 @section styles
 {
@@ -11,7 +13,8 @@
         <div class="col-sm-12">
             <h3 id="lblTitle">Domestic</h3>
             <div class="action-button new">
-                <a href="form.html"><button class="btn btn-blue">NEW</button></a>
+                <a id="newDomestic" href="@Url.Action("CreateDomestic", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                <a id="newIntercompany" href="@Url.Action("CreateIntercompany", "CK5")"><button class="btn btn-blue">NEW</button></a>
             </div>
         </div>
     </div>
@@ -90,12 +93,13 @@
         <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
         <script type="text/javascript" language="javascript" class="init">
 
-
-            $(document).ready(function () {
+            $(document).ready(function() {
                 setupDataTables();
                 setupDataTablesIntercompany();
-                
+
                 $('#MenuCK5Domestic').addClass('active');
+                $('#newDomestic').show();
+                $('#newIntercompany').hide();
             });
 
 
@@ -120,7 +124,7 @@
                     });
 
                 // Setup - add a text input to each footer cell
-                $('#ck5Table .filters th').each(function () {
+                $('#ck5Table .filters th').each(function() {
                     var idx = $(this).index();
                     if (idx != 0 && idx != 1) {
                         var title = $('#ck5Table thead th').eq($(this).index()).text();
@@ -130,8 +134,8 @@
                 });
 
                 // Apply the search
-                table.columns().eq(0).each(function (colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table.columns().eq(0).each(function(colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                         table
                             .column(colIdx)
                             .search(this.value)
@@ -141,7 +145,7 @@
 
                 $("#ck5Table_filter").hide();
             }
-            
+
             function ReloadDataTables() {
                 setupDataTables();
             }
@@ -171,7 +175,7 @@
                     });
 
                 // Setup - add a text input to each footer cell
-                $('#ck5TableIntercompany .filters th').each(function () {
+                $('#ck5TableIntercompany .filters th').each(function() {
                     var idx = $(this).index();
                     if (idx != 0 && idx != 1) {
                         var title = $('#ck5TableIntercompany thead th').eq($(this).index()).text();
@@ -181,8 +185,8 @@
                 });
 
                 // Apply the search
-                table.columns().eq(0).each(function (colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table.columns().eq(0).each(function(colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                         table
                             .column(colIdx)
                             .search(this.value)
@@ -193,8 +197,20 @@
                 $("#ck5TableIntercompany_filter").hide();
             }
 
+            function showNewButton() {
+
+            }
+
             function ChangeTitle(title) {
                 $('#lblTitle').text(title);
+                if (title == 'Domestic') {
+                    $('#newDomestic').show();
+                    $('#newIntercompany').hide();
+                } else {
+                    $('#newDomestic').hide();
+                    $('#newIntercompany').show();
+                    
+                }
             }
 
         </script>

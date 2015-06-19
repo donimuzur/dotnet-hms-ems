@@ -11,7 +11,8 @@
         <div class="col-sm-12">
             <h3 id="lblTitle">Importer</h3>
             <div class="action-button new">
-                <a href="form.html"><button class="btn btn-blue">NEW</button></a>
+                <a id="newPortToImporter" href="@Url.Action("CreatePortToImporter", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                <a id="newImporterToPlant" href="@Url.Action("CreateImporterToPlant", "CK5")"><button class="btn btn-blue">NEW</button></a>
             </div>
         </div>
     </div>
@@ -24,8 +25,8 @@
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#domestic" aria-controls="domestic" role="tab" data-toggle="tab">Port To Importer</a></li>
-                    <li role="presentation"><a href="#intercompany" aria-controls="intercompany" role="tab" data-toggle="tab">Importer To Plant</a></li>
+                    <li role="presentation" class="active"><a href="#domestic" onclick="OnShowNew(2);" aria-controls="domestic" role="tab" data-toggle="tab">Port To Importer</a></li>
+                    <li role="presentation"><a href="#intercompany" onclick="OnShowNew(3);" aria-controls="intercompany" role="tab" data-toggle="tab">Importer To Plant</a></li>
 
                 </ul>
 
@@ -96,6 +97,8 @@
             setupDataTablesIntercompany();
             
             $('#MenuCK5Import').addClass('active');
+            $('#newPortToImporter').show();
+            $('#newImporterToPlant').hide();
         });
 
 
@@ -195,6 +198,19 @@
 
         function ChangeTitle(title) {
             $('#lblTitle').text(title);
+        }
+        
+        function OnShowNew(type) {
+            if (type == 2)//PortToImporter
+            {
+                $('#newPortToImporter').show();
+                $('#newImporterToPlant').hide();
+            } else {
+                {
+                    $('#newPortToImporter').hide();
+                    $('#newImporterToPlant').show();
+                }
+            }
         }
 
     </script>
