@@ -31,11 +31,11 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual BACK1 BACK1 { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
-        public virtual STATUS STATUS { get; set; }
         public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
     }

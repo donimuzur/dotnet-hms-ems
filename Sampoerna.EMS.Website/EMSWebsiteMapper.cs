@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.DocumentBukrs, opt => opt.MapFrom(src => src.BUKRS))
             .ForMember(dest => dest.DocumentBukrstxt, opt => opt.MapFrom(src => src.BUKRSTXT))
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE));
-#endregion 
+#endregion
 
             Mapper.CreateMap<PBCK1, PBCK1Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.APPROVED_USER, opt => opt.MapFrom(src => src.USER))
@@ -43,9 +43,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.LACK1_TO_MONTH, opt => opt.MapFrom(src => src.MONTH1))
                 .ForMember(dest => dest.GOODTYPE, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP))
                 .ForMember(dest => dest.STATUS_GOV_ID, opt => opt.MapFrom(src => src.STATUS_GOV))
-                .ForMember(dest => dest.STATUS_GOV, opt => opt.MapFrom(src => src.STATUS_GOV1))
-                .ForMember(dest => dest.NPPBKC, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC))
-                .ForMember(dest => dest.STATUS_NAME, opt => opt.MapFrom(src => src.STATUS1 != null ? src.STATUS1.STATUS_NAME : string.Empty))
+                //  .ForMember(dest => dest.STATUS_GOV, opt => opt.MapFrom(src => src.STATUS_GOV1))
+                .ForMember(dest => dest.NPPBKC, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC));
+                //.ForMember(dest => dest.STATUS_NAME, opt => opt.MapFrom(src => src.STATUS1 != null ? src.STATUS1.STATUS_NAME : string.Empty))
                 ;
 
             Mapper.CreateMap<PBCK1FilterViewModel, PBCK1Input>().IgnoreAllNonExisting()
@@ -75,17 +75,17 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
-            
+
             Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.CK5_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX)) //todo ask
                 .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
-                .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.CK5_TYPE))
+                .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.CK5_TYPE));
             //.ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.po)) //todo ask
             //.ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.T1001W.ZAIDM_EX_NPPBKC.NPPBKC_NO))//todo ask
             // .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.T1001W.CITY)) //todo ask
             //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.)) //todo ask
-             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
+            // .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
 
             Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
             Mapper.CreateMap<SUPPLIER_PORT, SelectItemModel>().IgnoreAllNonExisting()

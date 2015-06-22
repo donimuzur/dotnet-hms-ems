@@ -641,6 +641,8 @@
     <Content Include="Views\PBCK1\_HomeCreate.cshtml" />
     <Content Include="Views\PBCK1\_PrintOut.cshtml" />
     <Content Include="Views\PBCK1\_ChangeLog.cshtml" />
+    <Content Include="Views\POA\Create.cshtml" />
+    <Content Include="Views\POA\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

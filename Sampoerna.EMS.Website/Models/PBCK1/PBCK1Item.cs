@@ -51,8 +51,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public ZAIDM_EX_NPPBKC NPPBKC { get; set; }
 
-        public STATUS_GOV STATUS_GOV { get; set; }
-
+        
         public MONTH LACK1_FROM_MONTH { get; set; }
         public MONTH LACK1_TO_MONTH { get; set; }
 

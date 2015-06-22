@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.XMLReader
            CK5 ck5 = new CK5();
            ck5.CK5_ID = 101;
            ck5.CK5_NUMBER = "CK5OOOP0023";
-           ck5.CK5_TYPE = "2323";
+           ck5.CK5_TYPE = Sampoerna.EMS.Core.Enums.CK5Type.Domestic;
            CK5_MATERIAL ck5Materialmaterial1 = new CK5_MATERIAL();
            ck5Materialmaterial1.CK5 = ck5;
            ck5Materialmaterial1.ZAIDM_EX_MATERIAL = material1;

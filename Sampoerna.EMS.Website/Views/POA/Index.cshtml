@@ -44,10 +44,12 @@
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
-                @*<a href="@Url.Action("Create", "Virtual")">
+                @*<a href="@Url.Action("Create", "POA")">
                         <button class="btn btn-blue">NEW</button>
                     </a>*@
-                <a data-toggle="modal" data-target=".menu-maping-type"><button class="btn btn-blue">NEW</button></a>
+                <a data-toggle="modal" data-target=".menu-maping-type">
+                    <button class="btn btn-blue">NEW</button>
+                </a>
             </div>
         </div>
     </div>
@@ -95,7 +97,8 @@
                                     @Html.DisplayFor(modelItem => item.POA_ID_CARD)
                                 </td>
                                 <td>
-                                    @if (item.USER != null) {
+                                    @if (item.USER != null)
+                                    {
                                         @Html.DisplayFor(modelItem => item.USER.USERNAME)
                                     }
                                 </td>
@@ -111,7 +114,7 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.TITLE)
                                 </td>
-                             
+
                             </tr>
                         }
                     </tbody>
@@ -120,5 +123,3 @@
         </div>
     </div>
 </div>
-
-

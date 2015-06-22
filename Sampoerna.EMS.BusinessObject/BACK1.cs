@@ -22,9 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public long BACK1_ID { get; set; }
         public string NUMBER { get; set; }
         public Nullable<System.DateTime> DATE { get; set; }
-        public Nullable<int> STATUS_GOV_ID { get; set; }
     
-        public virtual STATUS_GOV STATUS_GOV { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
     }
 }

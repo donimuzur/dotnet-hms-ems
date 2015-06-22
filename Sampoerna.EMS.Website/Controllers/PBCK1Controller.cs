@@ -21,15 +21,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IMonthBLL _monthBll;
-        private IStatusGovBLL _statusGovBll;
-
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IStatusGovBLL statusGovBll)
+        
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
             _prodTypeBll = prodTypeBll;
             _monthBll = monthBll;
-            _statusGovBll = statusGovBll;
+            
         }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
@@ -58,8 +57,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private SelectList GetStatusGovList()
         {
-            var data = _statusGovBll.GetAll();
-            return new SelectList(data, "STATUS_GOV_ID", "STATUS_GOV_NAME");
+            //var data = _statusGovBll.GetAll();
+            return new SelectList(null, "STATUS_GOV_ID", "STATUS_GOV_NAME");
         }
 
         //

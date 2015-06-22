@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -7,5 +8,7 @@ namespace Sampoerna.EMS.Contract
     {
         ZAIDM_EX_POA GetById(int id);
         List<ZAIDM_EX_POA> GetAll();
+        ZaidmExPOAOutput save(ZAIDM_EX_POA poa);
+
     }
 }

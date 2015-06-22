@@ -25,7 +25,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CK2_DATE { get; set; }
         public Nullable<int> STATUS_GOV { get; set; }
     
-        public virtual STATUS_GOV STATUS_GOV1 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
     }
