@@ -15,6 +15,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string SortOrderColumn { get; set; }
 
-        public string Ck5Type { get; set; }
+        public int? Ck5Type { get; set; }
     }
 }

@@ -25,7 +25,6 @@ namespace Sampoerna.EMS.Core
             POA = 18,
             NPPBKC = 19
         }
-
         public enum PBCK1Type
         {
             [Description("New")]
@@ -44,6 +43,41 @@ namespace Sampoerna.EMS.Core
             Manual = 5,
             DomesticAlcohol = 6,
             Completed = 7
+        }
+
+        public enum DocumentStatus
+        {
+            [Description("Draft")]
+            Draft = 1,
+            [Description("Revised")]
+            Revised = 2,
+            [Description("Waiting for Approval")]
+            WaitingForApproval = 3,
+            [Description("Approved")]
+            Approved = 4,
+            [Description("Rejected")]
+            Rejected = 5,
+            [Description("Completed")]
+            Completed = 6
+        }
+
+        public enum DocumentStatusGov
+        {
+            [Description("Partial Approved")]
+            PartialApproved = 1,
+            [Description("Full Approved")]
+            FullApproved = 2,
+            [Description("Rejected")]
+            Rejected = 3
+        }
+
+        public enum FormType
+        {
+            [Description("PBCK1")]
+            PBKC1 = 1,
+            [Description("CK5")]
+            CK5 = 2,
+            
         }
     }
 }
