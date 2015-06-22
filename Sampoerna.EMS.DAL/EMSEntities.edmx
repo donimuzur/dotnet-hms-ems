@@ -13,6 +13,7 @@
           <Property Name="LIFNR" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="NAME1" Type="nvarchar" MaxLength="35" />
           <Property Name="NAME2" Type="nvarchar" MaxLength="35" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="BACK1">
           <Key>
@@ -500,6 +501,7 @@
           </Key>
           <Property Name="UOM_ID" Type="int" Nullable="false" />
           <Property Name="UOM_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -1942,6 +1944,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+          <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_POA_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_POA" Type="Self.ZAIDM_EX_POA" Multiplicity="*" />
@@ -2447,6 +2461,10 @@
             <End Role="T1001" EntitySet="T1001" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="Self.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_POA_USER" Association="Self.FK_ZAIDM_EX_POA_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
@@ -2945,6 +2963,10 @@
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CK5">
           <Key>
@@ -3152,6 +3174,7 @@
           <Property Name="NAME1" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="NAME2" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA11" FromRole="C1LFA1" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="BACK1">
           <Key>
@@ -3629,6 +3652,7 @@
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_UOM1" FromRole="UOM" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_ITEM_ZAIDM_EX_PRODTYP" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
           <NavigationProperty Name="RENCANA_PRODUKSI" Relationship="EMSModel.FK_RENCANA_PRODUKSI_UOM" FromRole="UOM" ToRole="RENCANA_PRODUKSI" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -3751,6 +3775,7 @@
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="ZAIDM_EX_KPPBC" ToRole="CK5" />
           <NavigationProperty Name="MENGETAHUI" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI" FromRole="ZAIDM_EX_KPPBC" ToRole="MENGETAHUI" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="ZAIDM_EX_KPPBC" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_KPPBC" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -3829,6 +3854,7 @@
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="PBCK4" />
           <NavigationProperty Name="T1001" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T1001" FromRole="ZAIDM_EX_NPPBKC" ToRole="T1001" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -5136,6 +5162,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+          <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5272,6 +5310,7 @@
           <EntitySetMapping Name="C1LFA1">
             <EntityTypeMapping TypeName="EMSModel.C1LFA1">
               <MappingFragment StoreEntitySet="1LFA1">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="NAME2" ColumnName="NAME2" />
                 <ScalarProperty Name="NAME1" ColumnName="NAME1" />
                 <ScalarProperty Name="LIFNR" ColumnName="LIFNR" />
@@ -5687,6 +5726,7 @@
           <EntitySetMapping Name="UOM">
             <EntityTypeMapping TypeName="EMSModel.UOM">
               <MappingFragment StoreEntitySet="UOM">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="UOM_NAME" ColumnName="UOM_NAME" />
                 <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
               </MappingFragment>

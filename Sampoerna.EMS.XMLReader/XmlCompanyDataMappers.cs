@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
       
-        public XmlCompanyDataMapper()
+        public XmlCompanyDataMapper(string fileName)
         {
-            _xmlMapper = new XmlDataMapper("T1001");
+            _xmlMapper = new XmlDataMapper(fileName);
            
         }
 
@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.BUKRSTXT = xElement.Element("BUTXT").Value;
                     item.CREATED_DATE = DateTime.Now;
                     var companyDateXml = DateTime.MinValue;
+                    var modifiedDateXml =  xElement.Element("MODIFIED_DATE").Value;
                     DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out companyDateXml);
                     var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T1001>()
                            .Get(p => p.BUKRS == item.BUKRS)

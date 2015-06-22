@@ -10,6 +10,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
+
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlAreaDataMapper : IXmlDataReader 
