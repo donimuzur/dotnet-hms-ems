@@ -118,6 +118,14 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <label class="col-md-4">Company</label>
+                                        <div class="col-md-8">
+                                            <input id="tbxcompanyname" name="tbxcompanyname" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
                                         <label class="col-md-4">Supplier Port</label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Detail.SUPPLIER_PORT_ID, Model.SupplierPortList, "None", new { @class = "form-control" })
@@ -295,7 +303,7 @@
                 </div>
                 <div id="collapse6" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading6">
                     <div class="panel-body">
-                        <a href="#upload"><button class="btn btn-blue">Upload</button></a>
+                        <a href="#upload" id="btn-prod-conv-upload"><button class="btn btn-blue">Upload</button></a>
                         <div class="table-container">
                             <table id="pbck1-prod-conv-item" class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -358,7 +366,7 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading5">
                     <div class="panel-body">
-                        <a href="#messages"><button class="btn btn-blue">Upload</button></a>
+                        <a href="#messages" id="btn-prod-plan-upload"><button class="btn btn-blue">Upload</button></a>
                         <div class="table-container">
                             <table id="pbck1-prod-plan-item" class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -434,7 +442,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Status Gov</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Detail.STATUS_GOV_ID, Model.StatusGovList, "Select", new { @class = "form-control"})
+                                            @*@Html.DropDownListFor(model => model.Detail.STATUS_GOV_ID, Model.StatusGovList, "Select", new { @class = "form-control"})*@
+                                            @Html.EnumDropDownListFor(model => model.Detail.STATUS_GOV, Model.StatusGovList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

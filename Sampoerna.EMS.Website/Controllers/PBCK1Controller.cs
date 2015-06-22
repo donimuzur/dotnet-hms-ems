@@ -55,13 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
-
-        private SelectList GetStatusGovList()
-        {
-            //var data = _statusGovBll.GetAll();
-            return new SelectList(null, "STATUS_GOV_ID", "STATUS_GOV_NAME");
-        }
-
+        
         //
         // GET: /PBCK/
         public ActionResult Index()
@@ -192,8 +186,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 SupplierPortList = GlobalFunctions.GetSupplierPortList(),
                 SupplierPlantList = GlobalFunctions.GetSupplierPlantList(),
                 GoodTypeList = GlobalFunctions.GetGoodTypeList(),
-                UOMList = GlobalFunctions.GetUomList(),
-                StatusGovList = GetStatusGovList()
+                UOMList = GlobalFunctions.GetUomList()
             };
             return View(model);
         }
@@ -203,6 +196,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return Json(GlobalFunctions.GetSupplierPlantList());
         }
-        
+
+        [HttpPost]
+        public JsonResult GetNppbkcDetail(long nppbkcid)
+        {
+            var data = GlobalFunctions.GetNppbkcById(nppbkcid);
+            return Json(Mapper.Map<CompanyDetail>(data.T1001));
+        }
+
     }
 }

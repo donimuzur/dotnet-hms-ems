@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Year { get; set; }
         public DateTime? REPORTED_ON { get; set; }
         public long? NPPBKC_ID { get; set; }
+        public string CompanyName { get; set; }
         public string NPPBKC_NO { get; set; }
         public int? GOODTYPE_ID { get; set; }
         public string GOODTYPE_DESC { get; set; }

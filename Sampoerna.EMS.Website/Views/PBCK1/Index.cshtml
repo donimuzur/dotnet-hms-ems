@@ -145,10 +145,10 @@
 
         $("#SearchInput_NPBCKID").change(function () {
             if ($("#SearchInput_NPBCKID").length) {
-                var nbck = $(this).find("option:selected").val();
+                var nbck = $(this).find("option:selected").text();
                 $('#SearchInput_POA option').remove();
                 console.log(nbck);
-                if (nbck == '') {
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_POA').append('<option value="">All</option>');
                 } else {
                     ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
