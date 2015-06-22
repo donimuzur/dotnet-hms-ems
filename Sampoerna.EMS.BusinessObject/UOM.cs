@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
     
         public int UOM_ID { get; set; }
         public string UOM_NAME { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }

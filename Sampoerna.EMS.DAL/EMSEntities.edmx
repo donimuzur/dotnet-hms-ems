@@ -13,6 +13,7 @@
           <Property Name="LIFNR" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="NAME1" Type="nvarchar" MaxLength="35" />
           <Property Name="NAME2" Type="nvarchar" MaxLength="35" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="BACK1">
           <Key>
@@ -500,6 +501,7 @@
           </Key>
           <Property Name="UOM_ID" Type="int" Nullable="false" />
           <Property Name="UOM_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -3152,6 +3154,7 @@
           <Property Name="NAME1" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="NAME2" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA11" FromRole="C1LFA1" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="BACK1">
           <Key>
@@ -3629,6 +3632,7 @@
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_UOM1" FromRole="UOM" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_ITEM_ZAIDM_EX_PRODTYP" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
           <NavigationProperty Name="RENCANA_PRODUKSI" Relationship="EMSModel.FK_RENCANA_PRODUKSI_UOM" FromRole="UOM" ToRole="RENCANA_PRODUKSI" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -5272,6 +5276,7 @@
           <EntitySetMapping Name="C1LFA1">
             <EntityTypeMapping TypeName="EMSModel.C1LFA1">
               <MappingFragment StoreEntitySet="1LFA1">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="NAME2" ColumnName="NAME2" />
                 <ScalarProperty Name="NAME1" ColumnName="NAME1" />
                 <ScalarProperty Name="LIFNR" ColumnName="LIFNR" />
@@ -5687,6 +5692,7 @@
           <EntitySetMapping Name="UOM">
             <EntityTypeMapping TypeName="EMSModel.UOM">
               <MappingFragment StoreEntitySet="UOM">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="UOM_NAME" ColumnName="UOM_NAME" />
                 <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
               </MappingFragment>

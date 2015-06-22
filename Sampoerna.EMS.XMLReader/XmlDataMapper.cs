@@ -10,7 +10,6 @@ using System.Configuration;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
-using System.Configuration;
 using Voxteneo.WebCompoments.NLogLogger;
 namespace Sampoerna.EMS.XMLReader
 {
