@@ -45,5 +45,32 @@ namespace Sampoerna.EMS.Core
             DomesticAlcohol = 6,
             Completed = 7
         }
+
+        public enum DocumentStatus
+        {
+            [Description("Draft")]
+            Draft = 1,
+            [Description("Revised")]
+            Revised = 2,
+            [Description("Waiting for Approval")]
+            WaitingForApproval = 3,
+            [Description("Approved")]
+            Approved = 4,
+            [Description("Rejected")]
+            Rejected = 5,
+            [Description("Completed")]
+            Completed = 6
+        }
+         
+        public enum DocumentStatusGov
+        {
+            [Description("Partial Approved")]
+            PartialApproved = 1,
+            [Description("Full Approved")]
+            FullApproved = 2,
+            [Description("Rejected")]
+            Rejected = 3
+        }
+
     }
 }
