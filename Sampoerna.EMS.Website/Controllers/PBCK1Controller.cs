@@ -40,7 +40,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             //getbyparams
             var input = Mapper.Map<PBCK1Input>(filter);
-            return Mapper.Map<List<PBCK1Item>>(_pbck1Bll.GetPBCK1ByParam(input));
+            var dbData = _pbck1Bll.GetPBCK1ByParam(input);
+            return Mapper.Map<List<PBCK1Item>>(dbData);
         }
 
         private SelectList GetYearList(List<PBCK1Item> pbck1Data)
