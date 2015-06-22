@@ -36,6 +36,8 @@ namespace Sampoerna.EMS.XMLReader
 
             if (_xmlName == null)
                 return null;
+            if (!File.Exists(_xmlName))
+                return null;
             return XElement.Load(_xmlName);
         }
 
@@ -71,8 +73,21 @@ namespace Sampoerna.EMS.XMLReader
                 uow.RevertChanges();
             }
             uow.SaveChanges();
-
+            MoveFile();
         }
+
+        private void MoveFile()
+        {
+            string sourcePath = _xmlName;
+            string archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+            var sourcefileName = Path.GetFileName(sourcePath);
+            var destPath = Path.Combine(archievePath, sourcefileName);
+            if (File.Exists(destPath))
+                return;
+
+            File.Move(sourcePath, destPath);
+        }
+
 
     }
 }

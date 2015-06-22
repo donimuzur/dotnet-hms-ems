@@ -31,9 +31,9 @@ namespace Sampoerna.EMS.XMLReader
              //IXmlDataReader xmlData = new XmlKPPBCDataMapper();
              //IXmlDataReader xmlData = new XmlPCodeDataMapper();
              //IXmlDataReader xmlData = new XmlGoodsTypeDataMapper();
-             string RootPath= ConfigurationManager.AppSettings["XmlFolderPath"];
+             string RootPath = ConfigurationManager.AppSettings["XmlInboundPath"];
         
-             var xmlfiles = Directory.GetFiles(RootPath);
+             var xmlfiles = Directory.GetFiles(RootPath).OrderBy(x=>x);
 
              foreach (var xmlfile in xmlfiles)
              {
