@@ -85,8 +85,8 @@ namespace Sampoerna.EMS.Website.Helpers
                 items = from value in values
                         select new SelectListItem()
                         {
-                            Text = Enum.Parse(typeof(TEnum), value.ToString()).ToString(),
-                            Value = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(TEnum), value.ToString()))
+                            Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(TEnum), value.ToString())),
+                            Value =Enum.Parse(typeof(TEnum), value.ToString()).ToString()
                         };
             }
             if (optionLabel == null)
