@@ -42,9 +42,6 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual CK2 CK2 { get; set; }
         public virtual CK3 CK3 { get; set; }
-        public virtual DOCUMENT_TYPE DOCUMENT_TYPE { get; set; }
-        public virtual STATUS STATUS { get; set; }
-        public virtual STATUS STATUS1 { get; set; }
         public virtual T1001W T1001W { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }

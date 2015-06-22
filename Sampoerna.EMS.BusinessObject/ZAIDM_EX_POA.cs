@@ -31,6 +31,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string TITLE { get; set; }
         public Nullable<int> USER_ID { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<bool> IS_FROM_SAP { get; set; }
     
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }

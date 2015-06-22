@@ -25,7 +25,6 @@ namespace Sampoerna.EMS.Core
             POA = 18,
             NPPBKC = 19
         }
-
         public enum PBCK1Type
         {
             [Description("New")]
@@ -61,7 +60,7 @@ namespace Sampoerna.EMS.Core
             [Description("Completed")]
             Completed = 6
         }
-         
+
         public enum DocumentStatusGov
         {
             [Description("Partial Approved")]
@@ -70,6 +69,15 @@ namespace Sampoerna.EMS.Core
             FullApproved = 2,
             [Description("Rejected")]
             Rejected = 3
+        }
+
+        public enum FormType
+        {
+            [Description("PBCK1")]
+            PBKC1 = 1,
+            [Description("CK5")]
+            CK5 = 2,
+            
         }
 
     }
