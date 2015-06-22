@@ -26,7 +26,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string CK3_OFFICE_VALUE { get; set; }
         public Nullable<int> STATUS_GOV { get; set; }
     
-        public virtual STATUS_GOV STATUS_GOV1 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
     }

@@ -34,15 +34,14 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK3> CK3 { get; set; }
         public virtual DbSet<CK4C> CK4C { get; set; }
         public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
+        public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<COUNTRY> COUNTRY { get; set; }
         public virtual DbSet<CURRENCY> CURRENCY { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
-        public virtual DbSet<DOCUMENT_TYPE> DOCUMENT_TYPE { get; set; }
         public virtual DbSet<EX_SETTLEMENT> EX_SETTLEMENT { get; set; }
         public virtual DbSet<EX_STATUS> EX_STATUS { get; set; }
         public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
-        public virtual DbSet<FORM_TYPE> FORM_TYPE { get; set; }
         public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual DbSet<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
         public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
@@ -62,8 +61,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
         public virtual DbSet<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
         public virtual DbSet<REQUEST_TYPE> REQUEST_TYPE { get; set; }
-        public virtual DbSet<STATUS> STATUS { get; set; }
-        public virtual DbSet<STATUS_GOV> STATUS_GOV { get; set; }
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<T1001> T1001 { get; set; }
         public virtual DbSet<T1001K> T1001K { get; set; }
@@ -84,6 +81,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
-        public virtual DbSet<CK5> CK5 { get; set; }
     }
 }

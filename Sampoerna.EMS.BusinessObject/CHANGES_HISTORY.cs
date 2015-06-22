@@ -15,15 +15,16 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class CHANGES_HISTORY
     {
         public long CHANGES_HISTORY_ID { get; set; }
-        public Nullable<long> FORM_ID { get; set; }
         public Nullable<int> FORM_TYPE_ID { get; set; }
+        public Nullable<int> FORM_NO { get; set; }
         public string FIELD_NAME { get; set; }
         public string OLD_VALUE { get; set; }
         public string NEW_VALUE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<int> MODIFIED_BY { get; set; }
     
-        public virtual FORM_TYPE FORM_TYPE { get; set; }
+        public virtual CHANGES_HISTORY CHANGES_HISTORY1 { get; set; }
+        public virtual CHANGES_HISTORY CHANGES_HISTORY2 { get; set; }
         public virtual USER USER { get; set; }
     }
 }
