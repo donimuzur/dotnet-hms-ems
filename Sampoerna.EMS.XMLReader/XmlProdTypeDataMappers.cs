@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlProdTypeDataMapper()
+        public XmlProdTypeDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_PRODTYP");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 

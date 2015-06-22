@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlSeriesDataMapper()
+        public XmlSeriesDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_SERIES");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 

@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlPCodeDataMapper()
+        public XmlPCodeDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_PCODE");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 

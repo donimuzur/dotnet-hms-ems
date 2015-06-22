@@ -97,7 +97,131 @@ namespace Sampoerna.EMS.XMLReader
 
             }
         }
+        public void UoMRunning()
+        {
 
+            var files = xmlfiles.Where(x => x.Contains("UOM"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlUoMDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void MarketRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("MARKET"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlMarketDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void SeriesRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("SERIES"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlSeriesDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void ProdTypeRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("PRODTYP"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlProdTypeDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void PCodeRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("PCODE"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlPCodeDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void PlantRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("PLANT-"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlPlantDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void BrandRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("BRANDREG"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlBrandDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void MaterialRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("MATERIAL"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlMaterialDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
+
+        public void GoodTypeRunning()
+        {
+
+            var files = xmlfiles.Where(x => x.Contains("GOODT"));
+
+            foreach (var xmlfile in files)
+            {
+
+                reader = new XmlGoodsTypeDataMapper(xmlfile);
+                reader.InsertToDatabase();
+
+            }
+        }
         
     }
 }
