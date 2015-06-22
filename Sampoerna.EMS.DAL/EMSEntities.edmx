@@ -104,7 +104,8 @@
           <Property Name="CK5_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="CK5_TYPE" Type="nvarchar" MaxLength="25" />
           <Property Name="KPPBC_CITY" Type="bigint" />
-          <Property Name="SUMBISSION_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="SUBISSION_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="REGISTRATION_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="EX_GOODS_TYPE_ID" Type="int" />
           <Property Name="EX_SETTLEMENT_ID" Type="int" />
@@ -127,11 +128,17 @@
           <Property Name="LAST_SHELTER_HARBOUR" Type="nvarchar" MaxLength="50" />
           <Property Name="OFFICE_SHELTER" Type="nvarchar" MaxLength="50" />
           <Property Name="DN_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="GR_DATE" Type="datetime" />
           <Property Name="GI_DATE" Type="datetime" />
           <Property Name="SEALING_NOTIF_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="UNSEALING_NOTIF_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="SEALING_NOTIF_DATE" Type="datetime" />
           <Property Name="UNSEALING_NOTIF_DATE" Type="datetime" />
+          <Property Name="LOADING_PORT" Type="nvarchar" MaxLength="50" />
+          <Property Name="LOADING_PORT_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="LOADING_PORT_ID" Type="nvarchar" MaxLength="10" />
+          <Property Name="FINAL_PORT" Type="nvarchar" MaxLength="50" />
+          <Property Name="FINAL_PORT_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="STATUS_ID" Type="int" />
           <Property Name="CREATED_BY" Type="int" />
           <Property Name="CREATED_DATE" Type="datetime" />
@@ -2716,7 +2723,6 @@
           <EntitySet Name="CK3" EntityType="EMSModel.CK3" />
           <EntitySet Name="CK4C" EntityType="EMSModel.CK4C" />
           <EntitySet Name="CK4C_ITEM" EntityType="EMSModel.CK4C_ITEM" />
-          <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
           <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
           <EntitySet Name="COUNTRY" EntityType="EMSModel.COUNTRY" />
           <EntitySet Name="CURRENCY" EntityType="EMSModel.CURRENCY" />
@@ -2783,10 +2789,6 @@
             <End Role="STATUS_GOV" EntitySet="STATUS_GOV" />
             <End Role="BACK3_CK2" EntitySet="BACK3_CK2" />
           </AssociationSet>
-          <AssociationSet Name="FK_CK5_CARRIAGE_METHOD" Association="EMSModel.FK_CK5_CARRIAGE_METHOD">
-            <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
           <AssociationSet Name="FK_CHANGES_HISTORY_FORM_TYPE" Association="EMSModel.FK_CHANGES_HISTORY_FORM_TYPE">
             <End Role="FORM_TYPE" EntitySet="FORM_TYPE" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
@@ -2842,62 +2844,6 @@
           <AssociationSet Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND" Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND">
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
             <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_COUNTRY" Association="EMSModel.FK_CK5_COUNTRY">
-            <End Role="COUNTRY" EntitySet="COUNTRY" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_DOMESTIC_CITY" Association="EMSModel.FK_CK5_DOMESTIC_CITY">
-            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_DOMESTIC_EX_SETTLEMENT" Association="EMSModel.FK_CK5_DOMESTIC_EX_SETTLEMENT">
-            <End Role="EX_SETTLEMENT" EntitySet="EX_SETTLEMENT" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_DOMESTIC_EX_STATUS" Association="EMSModel.FK_CK5_DOMESTIC_EX_STATUS">
-            <End Role="EX_STATUS" EntitySet="EX_STATUS" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="EMSModel.FK_CK5_MATERIAL_CK5">
-            <End Role="CK5" EntitySet="CK5" />
-            <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_PBCK1" Association="EMSModel.FK_CK5_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_REQUEST_TYPE" Association="EMSModel.FK_CK5_REQUEST_TYPE">
-            <End Role="REQUEST_TYPE" EntitySet="REQUEST_TYPE" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_STATUS" Association="EMSModel.FK_CK5_STATUS">
-            <End Role="STATUS" EntitySet="STATUS" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_T1001W" Association="EMSModel.FK_CK5_T1001W">
-            <End Role="T1001W" EntitySet="T1001W" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_T1001W1" Association="EMSModel.FK_CK5_T1001W1">
-            <End Role="T1001W" EntitySet="T1001W" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_UOM" Association="EMSModel.FK_CK5_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_USER" Association="EMSModel.FK_CK5_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_USER1" Association="EMSModel.FK_CK5_USER1">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL">
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -3247,6 +3193,67 @@
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
           </AssociationSet>
+          <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
+          <AssociationSet Name="FK_CK5_CARRIAGE_METHOD" Association="EMSModel.FK_CK5_CARRIAGE_METHOD">
+            <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_COUNTRY" Association="EMSModel.FK_CK5_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_DOMESTIC_CITY" Association="EMSModel.FK_CK5_DOMESTIC_CITY">
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_DOMESTIC_EX_SETTLEMENT" Association="EMSModel.FK_CK5_DOMESTIC_EX_SETTLEMENT">
+            <End Role="EX_SETTLEMENT" EntitySet="EX_SETTLEMENT" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_DOMESTIC_EX_STATUS" Association="EMSModel.FK_CK5_DOMESTIC_EX_STATUS">
+            <End Role="EX_STATUS" EntitySet="EX_STATUS" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="EMSModel.FK_CK5_MATERIAL_CK5">
+            <End Role="CK5" EntitySet="CK5" />
+            <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_PBCK1" Association="EMSModel.FK_CK5_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_REQUEST_TYPE" Association="EMSModel.FK_CK5_REQUEST_TYPE">
+            <End Role="REQUEST_TYPE" EntitySet="REQUEST_TYPE" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_STATUS" Association="EMSModel.FK_CK5_STATUS">
+            <End Role="STATUS" EntitySet="STATUS" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_T1001W" Association="EMSModel.FK_CK5_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_T1001W1" Association="EMSModel.FK_CK5_T1001W1">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_UOM" Association="EMSModel.FK_CK5_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_USER" Association="EMSModel.FK_CK5_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_USER1" Association="EMSModel.FK_CK5_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C1LFA1">
           <Key>
@@ -3359,63 +3366,6 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="CK4C_ITEM" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="CK4C_ITEM" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
-        <EntityType Name="CK5">
-          <Key>
-            <PropertyRef Name="CK5_ID" />
-          </Key>
-          <Property Name="CK5_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CK5_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="CK5_TYPE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="KPPBC_CITY" Type="Int64" />
-          <Property Name="SUMBISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="REGISTRATION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="EX_GOODS_TYPE_ID" Type="Int32" />
-          <Property Name="EX_SETTLEMENT_ID" Type="Int32" />
-          <Property Name="EX_STATUS_ID" Type="Int32" />
-          <Property Name="REQUEST_TYPE_ID" Type="Int32" />
-          <Property Name="STO_SENDER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SOURCE_PLANT_ID" Type="Int64" />
-          <Property Name="DEST_PLANT_ID" Type="Int64" />
-          <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="PBCK1_DECREE_ID" Type="Int64" />
-          <Property Name="CARRIAGE_METHOD_ID" Type="Int32" />
-          <Property Name="GRAND_TOTAL_EX" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="PACKAGE_UOM_ID" Type="Int32" />
-          <Property Name="DEST_COUNTRY_ID" Type="Int32" />
-          <Property Name="HARBOUR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="OFFICE_HARBOUR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LAST_SHELTER_HARBOUR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="OFFICE_SHELTER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DN_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="GI_DATE" Type="DateTime" Precision="3" />
-          <Property Name="SEALING_NOTIF_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UNSEALING_NOTIF_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SEALING_NOTIF_DATE" Type="DateTime" Precision="3" />
-          <Property Name="UNSEALING_NOTIF_DATE" Type="DateTime" Precision="3" />
-          <Property Name="STATUS_ID" Type="Int32" />
-          <Property Name="CREATED_BY" Type="Int32" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="APPROVED_BY" Type="Int32" />
-          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CARRIAGE_METHOD" Relationship="EMSModel.FK_CK5_CARRIAGE_METHOD" FromRole="CK5" ToRole="CARRIAGE_METHOD" />
-          <NavigationProperty Name="COUNTRY" Relationship="EMSModel.FK_CK5_COUNTRY" FromRole="CK5" ToRole="COUNTRY" />
-          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="CK5" ToRole="ZAIDM_EX_KPPBC" />
-          <NavigationProperty Name="EX_SETTLEMENT" Relationship="EMSModel.FK_CK5_DOMESTIC_EX_SETTLEMENT" FromRole="CK5" ToRole="EX_SETTLEMENT" />
-          <NavigationProperty Name="EX_STATUS" Relationship="EMSModel.FK_CK5_DOMESTIC_EX_STATUS" FromRole="CK5" ToRole="EX_STATUS" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" FromRole="CK5" ToRole="ZAIDM_EX_GOODTYP" />
-          <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
-          <NavigationProperty Name="REQUEST_TYPE" Relationship="EMSModel.FK_CK5_REQUEST_TYPE" FromRole="CK5" ToRole="REQUEST_TYPE" />
-          <NavigationProperty Name="STATUS" Relationship="EMSModel.FK_CK5_STATUS" FromRole="CK5" ToRole="STATUS" />
-          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_CK5_T1001W" FromRole="CK5" ToRole="T1001W" />
-          <NavigationProperty Name="T1001W1" Relationship="EMSModel.FK_CK5_T1001W1" FromRole="CK5" ToRole="T1001W" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_USER1" FromRole="CK5" ToRole="USER" />
-        </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
             <PropertyRef Name="CK5_MATERIAL_ID" />
@@ -3427,8 +3377,8 @@
           <Property Name="QTY" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="Int32" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" FromRole="CK5_MATERIAL" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
         </EntityType>
         <EntityType Name="COUNTRY">
           <Key>
@@ -3437,9 +3387,9 @@
           <Property Name="COUNTRY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="COUNTRY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_COUNTRY" FromRole="COUNTRY" ToRole="CK5" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_COUNTRY" FromRole="COUNTRY" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_COUNTRY" FromRole="COUNTRY" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_COUNTRY" FromRole="COUNTRY" ToRole="CK5" />
         </EntityType>
         <EntityType Name="CURRENCY">
           <Key>
@@ -3616,7 +3566,6 @@
           <Property Name="CREATED_BY" Type="Int32" />
           <Property Name="APPROVED_BY" Type="Int32" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="PBCK1" ToRole="CK5" />
           <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_PBCK1_LACK1_MONTH_FROM" FromRole="PBCK1" ToRole="MONTH" />
           <NavigationProperty Name="MONTH1" Relationship="EMSModel.FK_PBCK1_MONTH" FromRole="PBCK1" ToRole="MONTH" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_PBCK1" FromRole="PBCK1" ToRole="PBCK11" />
@@ -3633,6 +3582,7 @@
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_POA" FromRole="PBCK1" ToRole="ZAIDM_EX_POA" />
           <NavigationProperty Name="REALISASI_PEMASUKAN" Relationship="EMSModel.FK_REALISASI_PEMASUKAN_PBCK1" FromRole="PBCK1" ToRole="REALISASI_PEMASUKAN" />
           <NavigationProperty Name="RENCANA_PRODUKSI" Relationship="EMSModel.FK_RENCANA_PRODUKSI_PBCK1" FromRole="PBCK1" ToRole="RENCANA_PRODUKSI" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="PBCK1" ToRole="CK5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_CONVERTER">
           <Key>
@@ -3829,12 +3779,12 @@
           </Key>
           <Property Name="STATUS_ID" Type="Int32" Nullable="false" />
           <Property Name="STATUS_NAME" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_STATUS" FromRole="STATUS" ToRole="CK5" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_STATUS" FromRole="STATUS" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK3_7" Relationship="EMSModel.FK_PBCK3_7_STATUS_PBCK3" FromRole="STATUS" ToRole="PBCK3_7" />
           <NavigationProperty Name="PBCK3_71" Relationship="EMSModel.FK_PBCK3_7_STATUS_PBCK7" FromRole="STATUS" ToRole="PBCK3_7" />
           <NavigationProperty Name="PBCK3_CK5" Relationship="EMSModel.FK_PBCK3_CK5_STATUS" FromRole="STATUS" ToRole="PBCK3_CK5" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_STATUS" FromRole="STATUS" ToRole="PBCK4" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_STATUS" FromRole="STATUS" ToRole="CK5" />
         </EntityType>
         <EntityType Name="STATUS_GOV">
           <Key>
@@ -3897,8 +3847,6 @@
           <Property Name="RECEIVED_MATERIAL_TYPE_ID" Type="Int32" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_T1001W" FromRole="T1001W" ToRole="CK4C" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_T1001W" FromRole="T1001W" ToRole="CK5" />
-          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_T1001W1" FromRole="T1001W" ToRole="CK5" />
           <NavigationProperty Name="PBCK3_7" Relationship="EMSModel.FK_PBCK3_7_T1001W" FromRole="T1001W" ToRole="PBCK3_7" />
           <NavigationProperty Name="PBCK3_CK5" Relationship="EMSModel.FK_PBCK3_CK5_T1001W" FromRole="T1001W" ToRole="PBCK3_CK5" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_T1001W" FromRole="T1001W" ToRole="PBCK4" />
@@ -3909,6 +3857,8 @@
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="T1001W" ToRole="ZAIDM_POA_MAP" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_T1001W" FromRole="T1001W" ToRole="CK5" />
+          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_T1001W1" FromRole="T1001W" ToRole="CK5" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -3917,10 +3867,10 @@
           <Property Name="UOM_ID" Type="Int32" Nullable="false" />
           <Property Name="UOM_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="UOM" ToRole="CK4C_ITEM" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_UOM" FromRole="UOM" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_ITEM_ZAIDM_EX_PRODTYP" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
           <NavigationProperty Name="RENCANA_PRODUKSI" Relationship="EMSModel.FK_RENCANA_PRODUKSI_UOM" FromRole="UOM" ToRole="RENCANA_PRODUKSI" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -3936,8 +3886,6 @@
           <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_USER" FromRole="USER" ToRole="CK5" />
-          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_USER1" FromRole="USER" ToRole="CK5" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_USER" FromRole="USER" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK3_7" Relationship="EMSModel.FK_PBCK3_7_USER" FromRole="USER" ToRole="PBCK3_7" />
           <NavigationProperty Name="PBCK3_71" Relationship="EMSModel.FK_PBCK3_7_USER1" FromRole="USER" ToRole="PBCK3_7" />
@@ -3948,6 +3896,8 @@
           <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_USER" FromRole="USER" ToRole="CK5" />
+          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_USER1" FromRole="USER" ToRole="CK5" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -4035,11 +3985,11 @@
           <Property Name="EXC_GOOD_TYP" Type="Int32" />
           <Property Name="EXT_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="CK5" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PBCK1" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="T1001W" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="CK5" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -4053,9 +4003,9 @@
           <Property Name="CK1_KEP_FOOTER" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="ZAIDM_EX_KPPBC" ToRole="CK5" />
           <NavigationProperty Name="MENGETAHUI" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI" FromRole="ZAIDM_EX_KPPBC" ToRole="MENGETAHUI" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="ZAIDM_EX_KPPBC" ToRole="USER" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="ZAIDM_EX_KPPBC" ToRole="CK5" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -4251,18 +4201,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CK5_CARRIAGE_METHOD">
-          <End Type="EMSModel.CARRIAGE_METHOD" Role="CARRIAGE_METHOD" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CARRIAGE_METHOD">
-              <PropertyRef Name="CARRIAGE_METHOD_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="CARRIAGE_METHOD_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CHANGES_HISTORY_FORM_TYPE">
           <End Type="EMSModel.FORM_TYPE" Role="FORM_TYPE" Multiplicity="0..1" />
           <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY" Multiplicity="*" />
@@ -4428,174 +4366,6 @@
             </Principal>
             <Dependent Role="CK4C_ITEM">
               <PropertyRef Name="BRAND_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_COUNTRY">
-          <End Type="EMSModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="COUNTRY_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="DEST_COUNTRY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_DOMESTIC_CITY">
-          <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_KPPBC">
-              <PropertyRef Name="KPPBC_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="KPPBC_CITY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_DOMESTIC_EX_SETTLEMENT">
-          <End Type="EMSModel.EX_SETTLEMENT" Role="EX_SETTLEMENT" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EX_SETTLEMENT">
-              <PropertyRef Name="EX_SETTLEMENT_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="EX_SETTLEMENT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_DOMESTIC_EX_STATUS">
-          <End Type="EMSModel.EX_STATUS" Role="EX_STATUS" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EX_STATUS">
-              <PropertyRef Name="EX_STATUS_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="EX_STATUS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="GOODTYPE_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="EX_GOODS_TYPE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_MATERIAL_CK5">
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5_MATERIAL" Role="CK5_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CK5">
-              <PropertyRef Name="CK5_ID" />
-            </Principal>
-            <Dependent Role="CK5_MATERIAL">
-              <PropertyRef Name="CK5_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_PBCK1">
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PBCK1">
-              <PropertyRef Name="PBCK1_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="PBCK1_DECREE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_REQUEST_TYPE">
-          <End Type="EMSModel.REQUEST_TYPE" Role="REQUEST_TYPE" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="REQUEST_TYPE">
-              <PropertyRef Name="REQUEST_TYPE_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="REQUEST_TYPE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_STATUS">
-          <End Type="EMSModel.STATUS" Role="STATUS" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STATUS">
-              <PropertyRef Name="STATUS_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="STATUS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_T1001W">
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001W">
-              <PropertyRef Name="PLANT_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="SOURCE_PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_T1001W1">
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001W">
-              <PropertyRef Name="PLANT_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="DEST_PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="PACKAGE_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_USER1">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="APPROVED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5643,6 +5413,250 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CK5">
+          <Key>
+            <PropertyRef Name="CK5_ID" />
+          </Key>
+          <Property Name="CK5_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK5_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CK5_TYPE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="KPPBC_CITY" Type="Int64" />
+          <Property Name="SUBISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REGISTRATION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="EX_GOODS_TYPE_ID" Type="Int32" />
+          <Property Name="EX_SETTLEMENT_ID" Type="Int32" />
+          <Property Name="EX_STATUS_ID" Type="Int32" />
+          <Property Name="REQUEST_TYPE_ID" Type="Int32" />
+          <Property Name="STO_SENDER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SOURCE_PLANT_ID" Type="Int64" />
+          <Property Name="DEST_PLANT_ID" Type="Int64" />
+          <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="PBCK1_DECREE_ID" Type="Int64" />
+          <Property Name="CARRIAGE_METHOD_ID" Type="Int32" />
+          <Property Name="GRAND_TOTAL_EX" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PACKAGE_UOM_ID" Type="Int32" />
+          <Property Name="DEST_COUNTRY_ID" Type="Int32" />
+          <Property Name="HARBOUR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OFFICE_HARBOUR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LAST_SHELTER_HARBOUR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OFFICE_SHELTER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DN_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="GR_DATE" Type="DateTime" Precision="3" />
+          <Property Name="GI_DATE" Type="DateTime" Precision="3" />
+          <Property Name="SEALING_NOTIF_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UNSEALING_NOTIF_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SEALING_NOTIF_DATE" Type="DateTime" Precision="3" />
+          <Property Name="UNSEALING_NOTIF_DATE" Type="DateTime" Precision="3" />
+          <Property Name="LOADING_PORT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LOADING_PORT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LOADING_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="FINAL_PORT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FINAL_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS_ID" Type="Int32" />
+          <Property Name="CREATED_BY" Type="Int32" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY" Type="Int32" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="CARRIAGE_METHOD" Relationship="EMSModel.FK_CK5_CARRIAGE_METHOD" FromRole="CK5" ToRole="CARRIAGE_METHOD" />
+          <NavigationProperty Name="COUNTRY" Relationship="EMSModel.FK_CK5_COUNTRY" FromRole="CK5" ToRole="COUNTRY" />
+          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="CK5" ToRole="ZAIDM_EX_KPPBC" />
+          <NavigationProperty Name="EX_SETTLEMENT" Relationship="EMSModel.FK_CK5_DOMESTIC_EX_SETTLEMENT" FromRole="CK5" ToRole="EX_SETTLEMENT" />
+          <NavigationProperty Name="EX_STATUS" Relationship="EMSModel.FK_CK5_DOMESTIC_EX_STATUS" FromRole="CK5" ToRole="EX_STATUS" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" FromRole="CK5" ToRole="ZAIDM_EX_GOODTYP" />
+          <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
+          <NavigationProperty Name="REQUEST_TYPE" Relationship="EMSModel.FK_CK5_REQUEST_TYPE" FromRole="CK5" ToRole="REQUEST_TYPE" />
+          <NavigationProperty Name="STATUS" Relationship="EMSModel.FK_CK5_STATUS" FromRole="CK5" ToRole="STATUS" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_CK5_T1001W" FromRole="CK5" ToRole="T1001W" />
+          <NavigationProperty Name="T1001W1" Relationship="EMSModel.FK_CK5_T1001W1" FromRole="CK5" ToRole="T1001W" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_USER1" FromRole="CK5" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_CK5_CARRIAGE_METHOD">
+          <End Type="EMSModel.CARRIAGE_METHOD" Role="CARRIAGE_METHOD" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CARRIAGE_METHOD">
+              <PropertyRef Name="CARRIAGE_METHOD_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="CARRIAGE_METHOD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_COUNTRY">
+          <End Type="EMSModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="DEST_COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_DOMESTIC_CITY">
+          <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="KPPBC_CITY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_DOMESTIC_EX_SETTLEMENT">
+          <End Type="EMSModel.EX_SETTLEMENT" Role="EX_SETTLEMENT" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_SETTLEMENT">
+              <PropertyRef Name="EX_SETTLEMENT_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="EX_SETTLEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_DOMESTIC_EX_STATUS">
+          <End Type="EMSModel.EX_STATUS" Role="EX_STATUS" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_STATUS">
+              <PropertyRef Name="EX_STATUS_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="EX_STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="EX_GOODS_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_MATERIAL_CK5">
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5_MATERIAL" Role="CK5_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK5">
+              <PropertyRef Name="CK5_ID" />
+            </Principal>
+            <Dependent Role="CK5_MATERIAL">
+              <PropertyRef Name="CK5_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_PBCK1">
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="PBCK1_DECREE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_REQUEST_TYPE">
+          <End Type="EMSModel.REQUEST_TYPE" Role="REQUEST_TYPE" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REQUEST_TYPE">
+              <PropertyRef Name="REQUEST_TYPE_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="REQUEST_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_STATUS">
+          <End Type="EMSModel.STATUS" Role="STATUS" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STATUS">
+              <PropertyRef Name="STATUS_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_T1001W">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="SOURCE_PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_T1001W1">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="DEST_PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="PACKAGE_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5746,49 +5760,6 @@
                 <ScalarProperty Name="BRAND_ID" ColumnName="BRAND_ID" />
                 <ScalarProperty Name="CK4C_ID" ColumnName="CK4C_ID" />
                 <ScalarProperty Name="CK4C_ITEM1" ColumnName="CK4C_ITEM" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CK5">
-            <EntityTypeMapping TypeName="EMSModel.CK5">
-              <MappingFragment StoreEntitySet="CK5">
-                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
-                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
-                <ScalarProperty Name="UNSEALING_NOTIF_DATE" ColumnName="UNSEALING_NOTIF_DATE" />
-                <ScalarProperty Name="SEALING_NOTIF_DATE" ColumnName="SEALING_NOTIF_DATE" />
-                <ScalarProperty Name="UNSEALING_NOTIF_NUMBER" ColumnName="UNSEALING_NOTIF_NUMBER" />
-                <ScalarProperty Name="SEALING_NOTIF_NUMBER" ColumnName="SEALING_NOTIF_NUMBER" />
-                <ScalarProperty Name="GI_DATE" ColumnName="GI_DATE" />
-                <ScalarProperty Name="DN_NUMBER" ColumnName="DN_NUMBER" />
-                <ScalarProperty Name="OFFICE_SHELTER" ColumnName="OFFICE_SHELTER" />
-                <ScalarProperty Name="LAST_SHELTER_HARBOUR" ColumnName="LAST_SHELTER_HARBOUR" />
-                <ScalarProperty Name="OFFICE_HARBOUR" ColumnName="OFFICE_HARBOUR" />
-                <ScalarProperty Name="HARBOUR" ColumnName="HARBOUR" />
-                <ScalarProperty Name="DEST_COUNTRY_ID" ColumnName="DEST_COUNTRY_ID" />
-                <ScalarProperty Name="PACKAGE_UOM_ID" ColumnName="PACKAGE_UOM_ID" />
-                <ScalarProperty Name="GRAND_TOTAL_EX" ColumnName="GRAND_TOTAL_EX" />
-                <ScalarProperty Name="CARRIAGE_METHOD_ID" ColumnName="CARRIAGE_METHOD_ID" />
-                <ScalarProperty Name="PBCK1_DECREE_ID" ColumnName="PBCK1_DECREE_ID" />
-                <ScalarProperty Name="INVOICE_DATE" ColumnName="INVOICE_DATE" />
-                <ScalarProperty Name="INVOICE_NUMBER" ColumnName="INVOICE_NUMBER" />
-                <ScalarProperty Name="DEST_PLANT_ID" ColumnName="DEST_PLANT_ID" />
-                <ScalarProperty Name="SOURCE_PLANT_ID" ColumnName="SOURCE_PLANT_ID" />
-                <ScalarProperty Name="STOB_NUMBER" ColumnName="STOB_NUMBER" />
-                <ScalarProperty Name="STO_RECEIVER_NUMBER" ColumnName="STO_RECEIVER_NUMBER" />
-                <ScalarProperty Name="STO_SENDER_NUMBER" ColumnName="STO_SENDER_NUMBER" />
-                <ScalarProperty Name="REQUEST_TYPE_ID" ColumnName="REQUEST_TYPE_ID" />
-                <ScalarProperty Name="EX_STATUS_ID" ColumnName="EX_STATUS_ID" />
-                <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
-                <ScalarProperty Name="EX_GOODS_TYPE_ID" ColumnName="EX_GOODS_TYPE_ID" />
-                <ScalarProperty Name="REGISTRATION_NUMBER" ColumnName="REGISTRATION_NUMBER" />
-                <ScalarProperty Name="SUMBISSION_NUMBER" ColumnName="SUMBISSION_NUMBER" />
-                <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
-                <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
-                <ScalarProperty Name="CK5_NUMBER" ColumnName="CK5_NUMBER" />
-                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6421,6 +6392,56 @@
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK5">
+            <EntityTypeMapping TypeName="EMSModel.CK5">
+              <MappingFragment StoreEntitySet="CK5">
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="FINAL_PORT_ID" ColumnName="FINAL_PORT_ID" />
+                <ScalarProperty Name="FINAL_PORT" ColumnName="FINAL_PORT" />
+                <ScalarProperty Name="LOADING_PORT_ID" ColumnName="LOADING_PORT_ID" />
+                <ScalarProperty Name="LOADING_PORT_NAME" ColumnName="LOADING_PORT_NAME" />
+                <ScalarProperty Name="LOADING_PORT" ColumnName="LOADING_PORT" />
+                <ScalarProperty Name="UNSEALING_NOTIF_DATE" ColumnName="UNSEALING_NOTIF_DATE" />
+                <ScalarProperty Name="SEALING_NOTIF_DATE" ColumnName="SEALING_NOTIF_DATE" />
+                <ScalarProperty Name="UNSEALING_NOTIF_NUMBER" ColumnName="UNSEALING_NOTIF_NUMBER" />
+                <ScalarProperty Name="SEALING_NOTIF_NUMBER" ColumnName="SEALING_NOTIF_NUMBER" />
+                <ScalarProperty Name="GI_DATE" ColumnName="GI_DATE" />
+                <ScalarProperty Name="GR_DATE" ColumnName="GR_DATE" />
+                <ScalarProperty Name="DN_NUMBER" ColumnName="DN_NUMBER" />
+                <ScalarProperty Name="OFFICE_SHELTER" ColumnName="OFFICE_SHELTER" />
+                <ScalarProperty Name="LAST_SHELTER_HARBOUR" ColumnName="LAST_SHELTER_HARBOUR" />
+                <ScalarProperty Name="OFFICE_HARBOUR" ColumnName="OFFICE_HARBOUR" />
+                <ScalarProperty Name="HARBOUR" ColumnName="HARBOUR" />
+                <ScalarProperty Name="DEST_COUNTRY_ID" ColumnName="DEST_COUNTRY_ID" />
+                <ScalarProperty Name="PACKAGE_UOM_ID" ColumnName="PACKAGE_UOM_ID" />
+                <ScalarProperty Name="GRAND_TOTAL_EX" ColumnName="GRAND_TOTAL_EX" />
+                <ScalarProperty Name="CARRIAGE_METHOD_ID" ColumnName="CARRIAGE_METHOD_ID" />
+                <ScalarProperty Name="PBCK1_DECREE_ID" ColumnName="PBCK1_DECREE_ID" />
+                <ScalarProperty Name="INVOICE_DATE" ColumnName="INVOICE_DATE" />
+                <ScalarProperty Name="INVOICE_NUMBER" ColumnName="INVOICE_NUMBER" />
+                <ScalarProperty Name="DEST_PLANT_ID" ColumnName="DEST_PLANT_ID" />
+                <ScalarProperty Name="SOURCE_PLANT_ID" ColumnName="SOURCE_PLANT_ID" />
+                <ScalarProperty Name="STOB_NUMBER" ColumnName="STOB_NUMBER" />
+                <ScalarProperty Name="STO_RECEIVER_NUMBER" ColumnName="STO_RECEIVER_NUMBER" />
+                <ScalarProperty Name="STO_SENDER_NUMBER" ColumnName="STO_SENDER_NUMBER" />
+                <ScalarProperty Name="REQUEST_TYPE_ID" ColumnName="REQUEST_TYPE_ID" />
+                <ScalarProperty Name="EX_STATUS_ID" ColumnName="EX_STATUS_ID" />
+                <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
+                <ScalarProperty Name="EX_GOODS_TYPE_ID" ColumnName="EX_GOODS_TYPE_ID" />
+                <ScalarProperty Name="REGISTRATION_NUMBER" ColumnName="REGISTRATION_NUMBER" />
+                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+                <ScalarProperty Name="SUBISSION_NUMBER" ColumnName="SUBISSION_NUMBER" />
+                <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
+                <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
+                <ScalarProperty Name="CK5_NUMBER" ColumnName="CK5_NUMBER" />
+                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -103,7 +103,13 @@ namespace Sampoerna.EMS.Website
 
             #region NPPBKC
 
-            Mapper.CreateMap<ZaidmExNPPBKCOutput, DetailNppbck>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailNppbck>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.Addr1, opt => opt.MapFrom(src => src.ADDR1))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
+                .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
+                ;
                 
             #endregion
 

@@ -95,7 +95,9 @@
                                     @Html.DisplayFor(modelItem => item.POA_ID_CARD)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item != null ? item.USER.USERNAME : null)
+                                    @if (item.USER != null) {
+                                        @Html.DisplayFor(modelItem => item.USER.USERNAME)
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.POA_PRINTED_NAME)

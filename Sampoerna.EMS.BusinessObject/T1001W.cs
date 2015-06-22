@@ -17,8 +17,6 @@ namespace Sampoerna.EMS.BusinessObject
         public T1001W()
         {
             this.CK4C = new HashSet<CK4C>();
-            this.CK5 = new HashSet<CK5>();
-            this.CK51 = new HashSet<CK5>();
             this.PBCK3_7 = new HashSet<PBCK3_7>();
             this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
             this.PBCK4 = new HashSet<PBCK4>();
@@ -27,6 +25,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.ZAIDM_POA_MAP = new HashSet<ZAIDM_POA_MAP>();
+            this.CK5 = new HashSet<CK5>();
+            this.CK51 = new HashSet<CK5>();
         }
     
         public long PLANT_ID { get; set; }
@@ -42,8 +42,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<CK4C> CK4C { get; set; }
-        public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual ICollection<CK5> CK51 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
@@ -54,5 +52,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
+        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual ICollection<CK5> CK51 { get; set; }
     }
 }

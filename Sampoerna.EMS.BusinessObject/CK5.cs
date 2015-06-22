@@ -23,7 +23,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string CK5_NUMBER { get; set; }
         public string CK5_TYPE { get; set; }
         public Nullable<long> KPPBC_CITY { get; set; }
-        public string SUMBISSION_NUMBER { get; set; }
+        public string SUBISSION_NUMBER { get; set; }
+        public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
         public Nullable<int> EX_SETTLEMENT_ID { get; set; }
@@ -46,11 +47,17 @@ namespace Sampoerna.EMS.BusinessObject
         public string LAST_SHELTER_HARBOUR { get; set; }
         public string OFFICE_SHELTER { get; set; }
         public string DN_NUMBER { get; set; }
+        public Nullable<System.DateTime> GR_DATE { get; set; }
         public Nullable<System.DateTime> GI_DATE { get; set; }
         public string SEALING_NOTIF_NUMBER { get; set; }
         public string UNSEALING_NOTIF_NUMBER { get; set; }
         public Nullable<System.DateTime> SEALING_NOTIF_DATE { get; set; }
         public Nullable<System.DateTime> UNSEALING_NOTIF_DATE { get; set; }
+        public string LOADING_PORT { get; set; }
+        public string LOADING_PORT_NAME { get; set; }
+        public string LOADING_PORT_ID { get; set; }
+        public string FINAL_PORT { get; set; }
+        public string FINAL_PORT_ID { get; set; }
         public Nullable<int> STATUS_ID { get; set; }
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }

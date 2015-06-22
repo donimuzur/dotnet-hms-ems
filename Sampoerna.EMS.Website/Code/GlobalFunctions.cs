@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetNppbkcAll()
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            var nppbkcList = nppbkcbll.GetAllNppbkc();
+            var nppbkcList = nppbkcbll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
