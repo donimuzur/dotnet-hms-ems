@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.XMLReader
                     if(existingPoa == null)
                         continue;
                     var plantCode = xElement.Element("PLANT_ID").Value;
-                    var existingPlant = new XmlPlantDataMapper().GetPlant(plantCode);
+                    var existingPlant = new XmlPlantDataMapper(null).GetPlant(plantCode);
                     if(existingPlant == null)
                         continue;
                     item.PLANT_ID = existingPlant.PLANT_ID;

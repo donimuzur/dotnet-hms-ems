@@ -16,9 +16,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlBrandDataMapper()
+        public XmlBrandDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_BRAND");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 
@@ -33,32 +33,32 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_BRAND();
                     item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
-                    var pCode = new XmlPCodeDataMapper().GetPCode(Convert.ToInt32(xElement.Element("PER_CODE").Value));
+                    var pCode = new XmlPCodeDataMapper(null).GetPCode(Convert.ToInt32(xElement.Element("PER_CODE").Value));
                     if (pCode == null)
                         continue;
                     item.PER_ID = pCode.PER_ID;
-                    var plant = new XmlPlantDataMapper().GetPlant(xElement.Element("PLANT_ID").Value);
+                    var plant = new XmlPlantDataMapper(null).GetPlant(xElement.Element("PLANT_ID").Value);
                     if(plant == null)
                         continue;
                     item.PLANT_ID = plant.PLANT_ID;
                     var goodsType =
-                        new XmlGoodsTypeDataMapper().GetGoodsType(Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value));
+                        new XmlGoodsTypeDataMapper(null).GetGoodsType(Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value));
                     if(goodsType== null)
                         continue;
                     item.GOODTYP_ID = goodsType.GOODTYPE_ID;
                     var market =
-                        new XmlMarketDataMapper().GetMarket(Convert.ToInt32(xElement.Element("MARKET_ID").Value));
+                        new XmlMarketDataMapper(null).GetMarket(Convert.ToInt32(xElement.Element("MARKET_ID").Value));
                     if(market == null)
                         continue;
                     item.MARKET_ID = market.MARKET_ID;
                     
                     var series =
-                        new XmlSeriesDataMapper().GetSeries(Convert.ToInt32(xElement.Element("SERIES_ID").Value));
+                        new XmlSeriesDataMapper(null).GetSeries(Convert.ToInt32(xElement.Element("SERIES_ID").Value));
                     if(series == null)
                         continue;
                     item.SERIES_ID = series.SERIES_ID;
                     item.HJE_IDR = Convert.ToDecimal(xElement.Element("HJE_IDR").Value);
-                    var prodType = new XmlProdTypeDataMapper().GetProdType(Convert.ToInt32(xElement.Element("PROD_CODE").Value));
+                    var prodType = new XmlProdTypeDataMapper(null).GetProdType(Convert.ToInt32(xElement.Element("PROD_CODE").Value));
                     if(prodType == null)
                         continue;
                     item.PRODUCT_ID = prodType.PRODUCT_ID;
