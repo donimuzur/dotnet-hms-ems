@@ -17,12 +17,14 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private ICK5BLL _ck5Bll;
         private IZaidmExNPPBKCBLL _nppbkcBll;
+        private IMasterDataBLL _masterDataBll;
 
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll)
+        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll, IMasterDataBLL masterDataBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
             _nppbkcBll = nppbkcBll;
+            _masterDataBll = masterDataBll;
         }
 
         #region View Documents
@@ -165,6 +167,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
             model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
 
+            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+
+            model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
+
             return model;
         }
         public ActionResult CreateDomestic()
@@ -207,6 +214,21 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = InitCreateCK5(Enums.CK5Type.DomesticAlcohol);
             return View("Create", model);
+        }
+
+        [HttpPost]
+        public JsonResult CeOfficeCodePartial(string kppBcCityId)
+        {
+            var ceOfficeCode = _masterDataBll.GetCeOfficeCodeByKppbcId(kppBcCityId);
+            return Json(ceOfficeCode);
+        }
+
+        [HttpPost]
+        public JsonResult GetSourcePlantDetails(string plantId)
+        {
+            var dbPlant = _masterDataBll.GetPlantById(plantId);
+            var model = Mapper.Map<CK5PlantModel>(dbPlant);
+            return Json(model);
         }
     }
 }

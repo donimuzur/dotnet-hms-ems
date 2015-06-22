@@ -84,6 +84,20 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
 
             Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID))
+            .ForMember(dest => dest.TextField, opt => opt.ResolveUsing<SourcePlantTextResolver>().FromMember(src => src));
+
+            Mapper.CreateMap<T1001W, CK5PlantModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.NPWP))
+                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBCK_ID))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT))
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ADDRESS))
+                .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY));
+            //todo : .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.KPPBC_ID));
+
         }
     }
 }

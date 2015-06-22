@@ -16,5 +16,13 @@ namespace Sampoerna.EMS.Contract
         List<EX_STATUS> GetAllExciseStatus();
 
         List<REQUEST_TYPE> GetAllRequestTypes();
+
+        string GetCeOfficeCodeByKppbcId(string kppBcId);
+
+        List<T1001W> GetAllSourcePlants();
+
+        T1001W GetPlantById(string plantId);
+
+        List<CARRIAGE_METHOD> GetAllCarriageMethods();
     }
 }

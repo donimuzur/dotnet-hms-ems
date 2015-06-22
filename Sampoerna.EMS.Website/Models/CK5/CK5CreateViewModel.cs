@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
@@ -11,7 +12,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public Enums.CK5Type Ck5Type { get; set; }
 
         public int KppBcCity { get; set; }
-
         public SelectList KppBcCityList { get; set; }
 
         public string SubmissionNumber { get; set; }
@@ -37,7 +37,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //[STOB_NUMBER]
 
         public int SourcePlantId { get; set; }
+        public SelectList SourcePlantList { get; set; }
+
         public int DestPlantId { get; set; }
+        public SelectList DestPlantList { get; set; }
 
         public string InvoiceNumber { get; set; }
         public DateTime InvoiceDateTime { get; set; }
@@ -47,24 +50,43 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public int CarriageMethod { get; set; }
         public SelectList CarriageMethodList { get; set; }
 
+        [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
 
-        //[PACKAGE_UOM_ID]
-        //[DEST_COUNTRY_ID]
-        //[HARBOUR]
-        //[OFFICE_HARBOUR]
-        //[LAST_SHELTER_HARBOUR]
-        //[OFFICE_SHELTER]
-
+        [Display(Name = "DN Number")]
         public string DnNumber { get; set; }
-        public string DnDate { get; set; } //..todo ask?
-        public DateTime GiDate { get; set; }
 
+        [Display(Name = "DN Date")]
+        public string DnDate { get; set; }
+
+        [Display(Name = "STO Sender Number")]
+        public string StoSenderNumber { get; set; }
+
+        [Display(Name = "STO Receiver Number")]
+        public string StoReceiverNumber { get; set; }
+
+        [Display(Name = "STOB Number")]
+        public string StobNumber { get; set; }
+
+        [UIHint("FormatDateTime")]
+        [Display(Name = "GI Date")]
+        public DateTime? GiDate { get; set; }
+
+        [Display(Name = "Sealing Notification Number")]
         public string SealingNotifNumber { get; set; }
-        public DateTime SealingNotifDate { get; set; }
 
+        [UIHint("FormatDateTime")]
+        [Display(Name = "Sealing Notification Date")]
+        public DateTime? SealingNotifDate { get; set; }
+
+        //GRDate -- todo ask
+
+        [Display(Name = "Unsealing Notification Number")]
         public string UnSealingNotifNumber { get; set; }
-        public DateTime UnsealingNotifDate { get; set; }
+
+         [UIHint("FormatDateTime")]
+        [Display(Name = "Unsealing Notification Date")]
+        public DateTime? UnsealingNotifDate { get; set; }
 
 
 

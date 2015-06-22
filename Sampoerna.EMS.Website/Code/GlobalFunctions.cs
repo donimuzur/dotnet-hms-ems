@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Antlr.Runtime;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
@@ -81,6 +80,23 @@ namespace Sampoerna.EMS.Website.Code
             IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
             var requestType = masterDataBll.GetAllRequestTypes();
             return new SelectList(requestType, "REQUEST_TYPE_ID", "REQUEST_TYPE_NAME");
+        }
+
+        public static SelectList GetSourcePlantList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var sourcePlant = masterDataBll.GetAllSourcePlants();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(sourcePlant);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
+        }
+
+        public static SelectList GetCarriageMethodList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var carriageMethod = masterDataBll.GetAllCarriageMethods();
+            return new SelectList(carriageMethod, "CARRIAGE_METHOD_ID", "CARRIAGE_METHOD_NAME");
         }
     }
 }

@@ -74,7 +74,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">CE Office Code</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" placeholder="">
+                                                                <input id="ceOfficeCode" type="text" class="form-control" placeholder="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -149,10 +149,6 @@
                                                             <label class="col-md-4">Request Type</label>
                                                             <div class="col-md-8">
                                                                 @Html.DropDownListFor(model => model.RequestType, Model.RequestTypeList, new { @class = "form-control" })
-                                                                @*<select class="form-control">
-                                                                    <option>Di Eksport</option>
-                                                                    <option>Di Import</option>
-                                                                </select>*@
                                                             </div>
                                                         </div>
                                                     </div>
@@ -180,7 +176,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Plant</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                               @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -188,7 +184,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">NPWP</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                <input id="SourceNpwp" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -196,7 +192,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">NPPBKC ID</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                <input id="SourceNppbkcId" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -204,7 +200,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Company Name</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                <input id="SourceCompanyName" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -212,7 +208,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Address</label>
                                                             <div class="col-md-8">
-                                                                <textarea class="form-control" rows="5"></textarea>
+                                                                <textarea id="SourceCompanyAddress" class="form-control" rows="5" disabled></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -220,12 +216,13 @@
                                                         <div class="row">
                                                             <label class="col-md-4">KPPBC Name, Office ID</label>
                                                             <div class="col-md-8">
-                                                                <select class="form-control">
+                                                                @*<select class="form-control">
                                                                     <option>None</option>
                                                                     <option>Tanjung Priok</option>
                                                                     <option>Surabaya</option>
                                                                     <option>Madura</option>
-                                                                </select>
+                                                                </select>*@
+                                                                <input id="SourceKppbcName" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -253,7 +250,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Plant</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                @Html.DropDownListFor(model => model.DestPlantId, Model.DestPlantList, "Select", new { @class = "form-control" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -261,7 +258,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">NPWP</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                <input id="DestNpwp" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -269,7 +266,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">NPPBKC ID</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                <input id="DestNppbkcId" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -277,7 +274,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Company Name</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" value="">
+                                                                <input id="DestCompanyName" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -285,7 +282,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Address</label>
                                                             <div class="col-md-8">
-                                                                <textarea class="form-control" rows="5"></textarea>
+                                                                <textarea id="DestCompanyAddress" class="form-control" rows="5" disabled></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -293,12 +290,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">KPPBC Name, Office ID</label>
                                                             <div class="col-md-8">
-                                                                <select class="form-control">
-                                                                    <option>None</option>
-                                                                    <option>Tanjung Priok</option>
-                                                                    <option>Surabaya</option>
-                                                                    <option>Madura</option>
-                                                                </select>
+                                                                <input id="DestKppbcName" type="text" class="form-control" value="" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -358,12 +350,10 @@
                                                         <div class="row">
                                                             <label class="col-md-4">PBCK-1 Decree Date</label>
                                                             <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    <input type="text" class="form-control">
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                </div>
+                                                               
+                                                            <input type="text" class="form-control" disabled>
+                                                                   
+                                                                   
                                                             </div>
                                                         </div>
                                                     </div>
@@ -371,9 +361,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Carriage Method</label>
                                                             <div class="col-md-8">
-                                                                <select class="form-control">
-                                                                    <option>Darat</option>
-                                                                </select>
+                                                                @Html.DropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -514,109 +502,93 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">DN Number</label>
+                                                            @Html.LabelFor(model => model.DnNumber, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.DnNumber, new { @class = "form-control" , @disabled="true"})
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">STO Sender Number</label>
+                                                            @Html.LabelFor(model => model.StoSenderNumber, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.StoSenderNumber, new { @class = "form-control" , @disabled="true"})
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">DN Date</label>
+                                                            @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.DnDate, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">STO Receiver Number</label>
+                                                            @Html.LabelFor(model => model.StoReceiverNumber, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.StoReceiverNumber, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 col-md-offset-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">STOB Number</label>
+                                                            @Html.LabelFor(model => model.StobNumber, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.StobNumber, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">GI Date</label>
+                                                            @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    <input type="text" class="form-control">
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
+                                                                    @Html.TextBoxFor(model => model.GiDate, new { @class = "form-control", @disabled = "true" })
+                                                                  
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <div class="row">
+                                                                <label class="col-md-4">GR Date</label>
+                                                                <div class="col-md-8">
+                                                                    <input type="text" class="form-control" disabled>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">GR Date</label>
+                                                            @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    <input type="text" class="form-control">
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                </div>
+                                                                @Html.TextBoxFor(model => model.SealingNotifNumber, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4 long">Sealing Notification Number</label>
+                                                            @Html.LabelFor(model => model.UnSealingNotifNumber, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.UnSealingNotifNumber, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4 long">Unsealing Notification Number</label>
+                                                            @Html.LabelFor(model => model.SealingNotifDate, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control">
+                                                                @Html.TextBoxFor(model => model.SealingNotifDate, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4 long">Sealing Notification Date</label>
+                                                            @Html.LabelFor(model => model.UnsealingNotifDate, new { @class = "col-md-4" })
                                                             <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    <input type="text" class="form-control">
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4 long">Unsealing Notification Date</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    <input type="text" class="form-control">
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                </div>
+                                                                @Html.TextBoxFor(model => model.UnsealingNotifDate, new { @class = "form-control", @disabled = "true" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1016,8 +988,99 @@
 
         $(document).ready(function() {
 
-            
+            //ceOfficeCode
 
         });
+
+        $("#DestPlantId").change(function () {
+            if ($("#DestPlantId").length) {
+                var destPlant = $(this).find("option:selected").val();
+                if (destPlant == '') {
+                    $('#DestNpwp').val('');
+                    $('#DestNppbkcId').val('');
+                    $('#DestCompanyName').val('');
+                    $('#DestCompanyAddress').val('');
+                    $('#DestKppbcName').val('');
+                } else {
+                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                }
+            }
+        });
+
+        function ajaxGetDestPlantDetails(url, formData) {
+            if (formData.plantId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#DestNpwp').val(data.PlantNpwp);
+                        $('#DestNppbkcId').val(data.NPPBCK_ID);
+                        $('#DestCompanyName').val(data.CompanyName);
+                        $('#DestCompanyAddress').val(data.CompanyAddress);
+                        $('#DestKppbcName').val(data.KppBcName);
+                    }
+                });
+            }
+        }
+        
+        $("#SourcePlantId").change(function() {
+            if ($("#SourcePlantId").length) {
+                var sourcePlant = $(this).find("option:selected").val();
+                if (sourcePlant == '') {
+                    $('#SourceNpwp').val('');
+                    $('#SourceNppbkcId').val('');
+                    $('#SourceCompanyName').val('');
+                    $('#SourceCompanyAddress').val('');
+                    $('#SourceKppbcName').val('');
+                } else {
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                }
+            }
+        });
+        
+        function ajaxGetPlantDetails(url, formData) {
+            if (formData.plantId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#SourceNpwp').val(data.PlantNpwp);
+                        $('#SourceNppbkcId').val(data.NPPBCK_ID);
+                        $('#SourceCompanyName').val(data.CompanyName);
+                        $('#SourceCompanyAddress').val(data.CompanyAddress);
+                        $('#SourceKppbcName').val(data.KppBcName);
+                    }
+                });
+            }
+        }
+        
+
+        $("#KppBcCity").change(function() {
+            if ($("#KppBcCity").length) {
+                var kppBcCity = $(this).find("option:selected").val();
+                if (kppBcCity == '') {
+                    $('#ceOfficeCode').val('');
+                } else {
+                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { kppBcCityId: kppBcCity });
+                }
+            }
+
+        });
+        
+        function ajaxGetCeOfficeCode(url, formData) {
+            if (formData.kppBcCityId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#ceOfficeCode').val(data);
+                    }
+                });
+            }
+        }
+        
     </script>
 }

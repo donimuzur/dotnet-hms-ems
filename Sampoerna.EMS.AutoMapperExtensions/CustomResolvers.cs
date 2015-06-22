@@ -2,6 +2,7 @@
 using System.Globalization;
 using AutoMapper;
 using AutoMapper.Internal;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.AutoMapperExtensions
 {
@@ -91,4 +92,26 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    public class SourcePlantTextResolver : ValueResolver<T1001W, string>
+    {
+        protected override string ResolveCore(T1001W value)
+        {
+            if (string.IsNullOrEmpty(value.CITY))
+                return value.NAME1;
+
+            return value.NAME1 + " - " + value.CITY;
+        }
+    }
+
+    //public class PlantCityCodeResolver : ValueResolver<T1001W, string>
+    //{
+    //    protected override string ResolveCore(T1001W value)
+    //    {
+    //        value.
+    //        if (string.IsNullOrEmpty(value.CITY))
+    //            return value.NAME1;
+
+    //        return value.NAME1 + " - " + value.CITY;
+    //    }
+    //}
 }
