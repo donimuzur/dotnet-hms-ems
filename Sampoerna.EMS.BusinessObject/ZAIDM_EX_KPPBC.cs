@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject
         public ZAIDM_EX_KPPBC()
         {
             this.CK5 = new HashSet<CK5>();
+            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
         }
     
         public long KPPBC_ID { get; set; }
@@ -31,5 +32,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MENGETAHUI MENGETAHUI { get; set; }
         public virtual USER USER { get; set; }
+        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }

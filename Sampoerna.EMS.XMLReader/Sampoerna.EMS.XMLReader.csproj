@@ -39,6 +39,9 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -47,6 +50,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Voxteneo.WebCompoments.NLogLogger">
+      <HintPath>..\packages\NLogLogger.1.3.0\lib\Voxteneo.WebCompoments.NLogLogger.dll</HintPath>
+    </Reference>
     <Reference Include="Voxteneo.WebComponents.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ILogger.1.3.0\lib\Voxteneo.WebComponents.Logger.dll</HintPath>
@@ -55,12 +61,15 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="XmlBrandDataMappers.cs" />
     <Compile Include="XmlCK5DataWriter.cs" />
     <Compile Include="XmlPCodeDataMappers .cs" />
     <Compile Include="XmlMaterialDataMappers.cs" />
     <Compile Include="XmlGoodsTypeDataMappers.cs" />
     <Compile Include="XmlNPPBCKDataMappers.cs" />
+    <Compile Include="XmlUoMDataMappers.cs" />
+    <Compile Include="XmlVendorDataMappers.cs" />
     <Compile Include="XmlProdTypeDataMappers.cs" />
     <Compile Include="XmlKPPBCDataMappers.cs" />
     <Compile Include="XmlSeriesDataMappers.cs" />

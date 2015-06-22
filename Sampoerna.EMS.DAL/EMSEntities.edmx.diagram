@@ -5,7 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="55" >
-        <EntityTypeShape EntityType="EMSModel.CK5" Width="3.75" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EMSModel.CK5" Width="3.75" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="2.75" PointX="1.125" PointY="13.5" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PBCK1" />
@@ -167,6 +167,7 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

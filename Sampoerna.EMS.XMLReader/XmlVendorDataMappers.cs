@@ -12,12 +12,12 @@ using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
 {
-    public class XmlPoaDataMapper : IXmlDataReader 
+    public class XmlVendorDataMapper : IXmlDataReader 
     {
         private XmlDataMapper _xmlMapper = null;
-       
-       
-        public XmlPoaDataMapper(string fileName)
+
+
+        public XmlVendorDataMapper(string fileName)
         {
            
              _xmlMapper = new XmlDataMapper(fileName);
@@ -25,29 +25,27 @@ namespace Sampoerna.EMS.XMLReader
         }
        
 
-        public List<ZAIDM_EX_POA> Items
+        public List<C1LFA1> Items
         {
          get
             {
                 var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<ZAIDM_EX_POA>();
+                var items = new List<C1LFA1>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_POA();
-                    var poaCodeXml = xElement.Element("POA_ID").Value;
+                    var item = new C1LFA1();
+                    var vendorCodeXml = xElement.Element("LIFNR").Value;
 
-                    var exisitingPoa = GetExPoa(poaCodeXml);
-                    var podDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out podDateXml);
-                    item.POA_CODE = poaCodeXml;
-                    item.POA_ID_CARD = xElement.Element("POA_ID_CARD").Value;
-                    item.POA_PRINTED_NAME = xElement.Element("POA_PRINTED_NAME").Value;
-                    item.POA_PHONE = xElement.Element("POA_PHONE").Value;
-                    item.POA_ADDRESS = xElement.Element("POA_ADDRESS").Value;
+                    var exsitingVendor = GetExVendor(vendorCodeXml);
+                    var dateXml = DateTime.MinValue;
+                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    item.LIFNR = vendorCodeXml;
+                    item.NAME1 = xElement.Element("NAME1").Value;
+                    item.NAME2 = xElement.Element("NAME2").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    if (exisitingPoa != null)
+                    if (exsitingVendor != null)
                     {
-                        if (podDateXml > exisitingPoa.CREATED_DATE)
+                        if (dateXml > exsitingVendor.CREATED_DATE)
                         {
                             items.Add(item);
                         }
@@ -71,14 +69,14 @@ namespace Sampoerna.EMS.XMLReader
 
         public void InsertToDatabase()
         {
-           _xmlMapper.InsertToDatabase<ZAIDM_EX_POA>(Items);
+            _xmlMapper.InsertToDatabase<C1LFA1>(Items);
        
         }
 
-        public ZAIDM_EX_POA GetExPoa(string PoaCode)
+        public C1LFA1 GetExVendor(string vendorCode)
         {
-            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_POA>()
-                            .Get(p => p.POA_CODE == PoaCode)
+            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<C1LFA1>()
+                            .Get(p => p.LIFNR == vendorCode)
                             .OrderByDescending(p => p.CREATED_DATE)
                             .FirstOrDefault();
             return exisitingPoa;

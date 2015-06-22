@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string LIFNR { get; set; }
         public string NAME1 { get; set; }
         public string NAME2 { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }

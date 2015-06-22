@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlNPPBKCDataMapper()
+        public XmlNPPBKCDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_NPPBKC");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 
@@ -31,11 +31,12 @@ namespace Sampoerna.EMS.XMLReader
                     item.ADDR1 = xElement.Element("ADDR1").Value;
                     item.ADDR2 = xElement.Element("ADDR2").Value;
                     item.CITY = xElement.Element("CITY").Value;
-                    var kppbc = new XmlKPPBCDataMapper().GetKPPBC(xElement.Element("KPPBC_NO").Value);
+                    var kppbc = new XmlKPPBCDataMapper(null
+                        ).GetKPPBC(xElement.Element("KPPBC_NO").Value);
                     if(kppbc == null)
                         continue;
                     item.KPPBC_ID = kppbc.KPPBC_ID;
-                    var company = new XmlCompanyDataMapper().GetCompany(xElement.Element("BUKRS").Value);
+                    var company = new XmlCompanyDataMapper(null).GetCompany(xElement.Element("BUKRS").Value);
                     if(company == null)
                         continue;
                     item.COMPANY_ID = company.COMPANY_ID;

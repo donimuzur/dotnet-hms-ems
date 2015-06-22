@@ -46,5 +46,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
         public virtual T1001 T1001 { get; set; }
         public virtual ICollection<T1001W> T1001W { get; set; }
+        public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
     }
 }
