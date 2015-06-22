@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.XMLReader
 
         public Service()
         {
+            
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
         }
 

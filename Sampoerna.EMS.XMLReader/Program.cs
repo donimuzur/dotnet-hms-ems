@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.XMLReader
         {
 
             Service svc = new Service();
-            //svc.PoaRunning();
+            svc.PoaRunning();
             // svc.PoaMapRunning();
              //svc.CompanyRunning();
              //svc.KPPBCRunning();
