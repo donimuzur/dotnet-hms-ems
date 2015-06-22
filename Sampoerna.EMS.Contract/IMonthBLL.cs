@@ -3,11 +3,10 @@ using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Contract
 {
-    public interface IStatusGovBLL
+    public interface IMonthBLL
     {
-        STATUS_GOV GetById(int id);
-
-        List<STATUS_GOV> GetAll();
+        MONTH GetMonth(int id);
+        List<MONTH> GetAll();
 
     }
 }

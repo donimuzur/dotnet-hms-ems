@@ -21,7 +21,5 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CK2_DATE { get; set; }
         public Nullable<decimal> CK2_VALUE { get; set; }
         public Nullable<int> STATUS_GOV_ID { get; set; }
-    
-        public virtual STATUS_GOV STATUS_GOV { get; set; }
     }
 }

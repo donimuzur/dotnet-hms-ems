@@ -2,6 +2,6 @@
 {
    public class VirtualMappingPlantInput
     {
-       public int? COMPANY_id { get; set; }
+       public int? CompanyId { get; set; }
     }
 }

@@ -74,7 +74,7 @@
                             <div class="row">
                                 <label class="col-md-4">Type</label>
                                 <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.PBCK1Types, null, new { @class = "form-control" })
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.PBCK1Types, "All", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -152,8 +152,8 @@
             $('#pbckTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0 && idx != 1) {
-                    var title = $('#pbckTable thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" />');
+                    //var title = $('#pbckTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
 

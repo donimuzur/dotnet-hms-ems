@@ -41,11 +41,12 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> HJE_IDR { get; set; }
         public Nullable<decimal> TARIFF { get; set; }
         public Nullable<int> TARIFF_CURR { get; set; }
-        public int GOODTYP_ID { get; set; }
+        public Nullable<int> GOODTYP_ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<bool> IS_ACTIVE { get; set; }
+        public Nullable<bool> IS_FROM_SAP { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }

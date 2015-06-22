@@ -88,9 +88,6 @@
     <Compile Include="CURRENCY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="DOCUMENT_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -106,9 +103,6 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="FILE_UPLOAD.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="FORM_TYPE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="HEADER_FOOTER.cs">
@@ -130,8 +124,13 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Outputs\BLLBaseOutput.cs" />
+    <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
+    <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />
+    <Compile Include="Outputs\ZaidmExPOAOutput.cs" />
     <Compile Include="PAGE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -173,19 +172,10 @@
     <Compile Include="REALISASI_PEMASUKAN.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="REGION_OFFICE_ID.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="RENCANA_PRODUKSI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="REQUEST_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="STATUS.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="STATUS_GOV.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="SUPPLIER_PORT.cs">
@@ -259,6 +249,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

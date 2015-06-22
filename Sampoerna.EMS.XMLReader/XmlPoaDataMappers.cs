@@ -16,12 +16,14 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
        
-        public XmlPoaDataMapper()
+       
+        public XmlPoaDataMapper(string fileName)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_POA");
            
+             _xmlMapper = new XmlDataMapper(fileName);
+            
         }
-
+       
 
         public List<ZAIDM_EX_POA> Items
         {

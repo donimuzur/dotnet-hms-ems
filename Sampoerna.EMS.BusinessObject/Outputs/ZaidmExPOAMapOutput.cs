@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sampoerna.EMS.BusinessObject;
 
-namespace Sampoerna.EMS.Contract
+namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public interface IMonth
+    public class ZaidmExPOAMapOutput
     {
-        MONTH GetMonth(int id);
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,9 +17,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlMaterialDataMapper()
+        public XmlMaterialDataMapper(string fileName)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_MATERIAL");
+            _xmlMapper = new XmlDataMapper(fileName);
            
         }
 
@@ -103,7 +104,8 @@ namespace Sampoerna.EMS.XMLReader
         public void InsertToDatabase()
         {
             _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
-       
+            
+
         }
         public ZAIDM_EX_MATERIAL GetMaterial(string stickerCode, long?plant_id, string fa_code)
         {

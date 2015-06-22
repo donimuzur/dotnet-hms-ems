@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -23,7 +24,7 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.GetByID(id);
         }
-
+        
         public List<ZAIDM_EX_NPPBKC> GetAll()
         {
             return _repository.Get().ToList();

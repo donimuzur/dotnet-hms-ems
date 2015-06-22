@@ -98,5 +98,43 @@ namespace Sampoerna.EMS.Website.Code
             var carriageMethod = masterDataBll.GetAllCarriageMethods();
             return new SelectList(carriageMethod, "CARRIAGE_METHOD_ID", "CARRIAGE_METHOD_NAME");
         }
+
+        public static SelectList GetSupplierPortList()
+        {
+            ISupplierPortBLL supplierPortBll = MvcApplication.GetInstance<SupplierPortBLL>();
+            var data = supplierPortBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetMonthList()
+        {
+            IMonthBLL monthBll = MvcApplication.GetInstance<MonthBLL>();
+            var data = monthBll.GetAll();
+            return new SelectList(data, "MONTH_ID", "MONTH_NAME_ENG");
+        }
+
+        public static SelectList GetSupplierPlantList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var data = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetGoodTypeList()
+        {
+            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            var data = goodTypeBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetUomList()
+        {
+            IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
+            var data = uomBll.GetAll();
+            return new SelectList(data, "UOM_ID", "UOM_NAME");
+        }
     }
 }

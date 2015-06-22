@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlKPPBCDataMapper()
+        public XmlKPPBCDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_KPPBC");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 

@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var virtualMappingPlant = new VirtualMappingPlantViewModel();
             virtualMappingPlant.MainMenu = Enums.MenuList.MasterData;
             virtualMappingPlant.CurrentMenu = PageInfo;
+            
             //DropDown
             virtualMappingPlant.CompanyList = new SelectList(_masterDataBll.GetDataCompany().Select(x => new SelectListItem() { Text = x, Value = x })
                  .ToList(), "Value", "Text");

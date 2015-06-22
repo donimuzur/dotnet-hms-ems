@@ -36,13 +36,14 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                input = new CK5Input {Ck5Type = ck5Type.ToString()};
+                //input = new CK5Input { Ck5Type = ck5Type };
+                input = new CK5Input();
                 return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
             }
             //getbyparams
 
             input = Mapper.Map<CK5Input>(filter);
-            input.Ck5Type = ck5Type.ToString();
+            //input.Ck5Type = ck5Type;
             return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
         }
 

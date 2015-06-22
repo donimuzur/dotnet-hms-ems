@@ -60,10 +60,10 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.HasValue && c.DEST_PLANT_ID.Value == input.NPPBKCDestination.Value);
             }
 
-            if (!string.IsNullOrEmpty(input.Ck5Type))
-            {
-                queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
-            }
+            //if (input.Ck5Type != null)
+            //{
+            //    queryFilter = queryFilter.And(c => c.CK5_TYPE == Sampoerna.EMS.Core.Enums.CK5Type);
+            //}
 
             Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
             if (!string.IsNullOrEmpty(input.SortOrderColumn))

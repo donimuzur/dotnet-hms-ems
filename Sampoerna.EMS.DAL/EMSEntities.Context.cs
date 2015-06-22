@@ -25,25 +25,25 @@ namespace Sampoerna.EMS.BusinessObject
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<CK5> CK5 { get; set; }
+        public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
+        public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
+        public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<C1LFA1> C1LFA1 { get; set; }
         public virtual DbSet<BACK1> BACK1 { get; set; }
         public virtual DbSet<BACK3_CK2> BACK3_CK2 { get; set; }
         public virtual DbSet<CARRIAGE_METHOD> CARRIAGE_METHOD { get; set; }
-        public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual DbSet<CK2> CK2 { get; set; }
         public virtual DbSet<CK3> CK3 { get; set; }
         public virtual DbSet<CK4C> CK4C { get; set; }
         public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
-        public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<COUNTRY> COUNTRY { get; set; }
         public virtual DbSet<CURRENCY> CURRENCY { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
-        public virtual DbSet<DOCUMENT_TYPE> DOCUMENT_TYPE { get; set; }
         public virtual DbSet<EX_SETTLEMENT> EX_SETTLEMENT { get; set; }
         public virtual DbSet<EX_STATUS> EX_STATUS { get; set; }
-        public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
-        public virtual DbSet<FORM_TYPE> FORM_TYPE { get; set; }
         public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual DbSet<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
         public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
@@ -51,7 +51,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PAGE> PAGE { get; set; }
         public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual DbSet<PARAMATER> PARAMATER { get; set; }
-        public virtual DbSet<PBCK1> PBCK1 { get; set; }
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual DbSet<PBCK3_7> PBCK3_7 { get; set; }
@@ -61,11 +60,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK4> PBCK4 { get; set; }
         public virtual DbSet<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual DbSet<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
-        public virtual DbSet<REGION_OFFICE_ID> REGION_OFFICE_ID { get; set; }
         public virtual DbSet<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
         public virtual DbSet<REQUEST_TYPE> REQUEST_TYPE { get; set; }
-        public virtual DbSet<STATUS> STATUS { get; set; }
-        public virtual DbSet<STATUS_GOV> STATUS_GOV { get; set; }
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<T1001> T1001 { get; set; }
         public virtual DbSet<T1001K> T1001K { get; set; }
@@ -74,7 +70,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
-        public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
