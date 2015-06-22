@@ -42,8 +42,8 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                     //IXmlDataReader xmlData = new XmlKPPBCDataMapper();
                     //IXmlDataReader xmlData = new XmlPCodeDataMapper();
                     //IXmlDataReader xmlData = new XmlGoodsTypeDataMapper();
-                    IXmlDataReader xmlData = new XmlMaterialDataMapper();
-                    xmlData.InsertToDatabase();
+                   // IXmlDataReader xmlData = new XmlMaterialDataMapper();
+                    //xmlData.InsertToDatabase();
                     logger.Info("Reading XML Material ended On " + DateTime.Now);
                 }
                 catch (Exception ex)

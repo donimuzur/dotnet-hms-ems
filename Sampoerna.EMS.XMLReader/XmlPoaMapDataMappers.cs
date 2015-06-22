@@ -16,9 +16,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
        
-        public XmlPoaMapDataMapper()
+        public XmlPoaMapDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_POA_MAP");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 
@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_POA_MAP();
                     var poaCode  = xElement.Element("POA_ID").Value;
-                    var existingPoa = new XmlPoaDataMapper().GetExPoa(poaCode);
+                    var existingPoa = new XmlPoaDataMapper(null).GetExPoa(poaCode);
                     if(existingPoa == null)
                         continue;
                     var plantCode = xElement.Element("PLANT_ID").Value;
