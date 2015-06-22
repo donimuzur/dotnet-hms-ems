@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string LOADING_PORT_ID { get; set; }
         public string FINAL_PORT { get; set; }
         public string FINAL_PORT_ID { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS_ID { get; set; }
         public Nullable<int> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<int> APPROVED_BY { get; set; }
