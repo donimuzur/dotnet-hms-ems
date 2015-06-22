@@ -1944,6 +1944,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+          <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_POA_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_POA" Type="Self.ZAIDM_EX_POA" Multiplicity="*" />
@@ -2449,6 +2461,10 @@
             <End Role="T1001" EntitySet="T1001" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="Self.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_POA_USER" Association="Self.FK_ZAIDM_EX_POA_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
@@ -2946,6 +2962,10 @@
           <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="CK5">
@@ -3755,6 +3775,7 @@
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_DOMESTIC_CITY" FromRole="ZAIDM_EX_KPPBC" ToRole="CK5" />
           <NavigationProperty Name="MENGETAHUI" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_MENGETAHUI" FromRole="ZAIDM_EX_KPPBC" ToRole="MENGETAHUI" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="ZAIDM_EX_KPPBC" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_KPPBC" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -3833,6 +3854,7 @@
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="PBCK4" />
           <NavigationProperty Name="T1001" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T1001" FromRole="ZAIDM_EX_NPPBKC" ToRole="T1001" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -5137,6 +5159,18 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
+          <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_KPPBC">
+              <PropertyRef Name="KPPBC_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="KPPBC_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
