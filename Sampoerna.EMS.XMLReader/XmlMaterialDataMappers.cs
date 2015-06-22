@@ -16,9 +16,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlMaterialDataMapper()
+        public XmlMaterialDataMapper(string fileName)
         {
-            _xmlMapper = new XmlDataMapper("MATERIAL");
+            _xmlMapper = new XmlDataMapper(fileName);
            
         }
 
@@ -104,7 +104,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
             
-            File.Move(_xmlMapper._currFilePath, @"H:/Archieve/"+_xmlMapper._currFileName);
+            File.Move(_xmlMapper._xmlName, @"H:/Archieve/"+_xmlMapper._xmlName);
 
         }
         public ZAIDM_EX_MATERIAL GetMaterial(string stickerCode, long?plant_id, string fa_code)

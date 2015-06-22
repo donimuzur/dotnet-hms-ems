@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -30,9 +31,20 @@ namespace Sampoerna.EMS.XMLReader
              //IXmlDataReader xmlData = new XmlKPPBCDataMapper();
              //IXmlDataReader xmlData = new XmlPCodeDataMapper();
              //IXmlDataReader xmlData = new XmlGoodsTypeDataMapper();
-             IXmlDataReader xmlData = new XmlMaterialDataMapper();
-             xmlData.InsertToDatabase();
-            //IXmlDataWriter xmlWriter = new XmlCK5DataWriter();
+             string RootPath= ConfigurationManager.AppSettings["XmlFolderPath"];
+        
+             var xmlfiles = Directory.GetFiles(RootPath);
+
+             foreach (var xmlfile in xmlfiles)
+             {
+                 if (xmlfile.Contains("MATERIAL"))
+                 {
+                     IXmlDataReader xmlData = new XmlMaterialDataMapper(xmlfile);
+                     xmlData.InsertToDatabase();
+                 }
+
+             }
+             //IXmlDataWriter xmlWriter = new XmlCK5DataWriter();
             //xmlWriter.CreateXML();
             timer.Stop();
             Console.WriteLine(timer.ElapsedMilliseconds);

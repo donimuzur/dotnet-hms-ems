@@ -11,28 +11,21 @@ using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using System.Configuration;
+using Voxteneo.WebCompoments.NLogLogger;
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
     {
-        private string RootPath= ConfigurationManager.AppSettings["XmlFolderPath"];
         public XElement _xmlData = null;
-        private string _xmlName = null;
+        public string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
-        public string _currFilePath;
-        public string _currFileName;
         public XmlDataMapper(string xmlName)
         {
             
             _xmlName = xmlName;
-            var files = Directory.GetFiles(RootPath);
-            var currFilePath = (from f in files where f.Contains(_xmlName) select f).FirstOrDefault();
-            _currFilePath = currFilePath;
-            _currFileName = Path.GetFileName(currFilePath);
-            
             _xmlData = ReadXMLFile();
-            logger = new NullLogger();
+            logger = new NLogLogger();
             uow = new SqlUnitOfWork(logger);
           
         }
@@ -41,9 +34,9 @@ namespace Sampoerna.EMS.XMLReader
         private XElement ReadXMLFile()
         {
 
-            if (_currFilePath == null)
+            if (_xmlName == null)
                 return null;
-            return XElement.Load(Path.Combine(RootPath, _currFileName));
+            return XElement.Load(_xmlName);
         }
 
         public XElement GetElement(string elementName)
@@ -74,6 +67,7 @@ namespace Sampoerna.EMS.XMLReader
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
                 uow.RevertChanges();
             }
             uow.SaveChanges();
