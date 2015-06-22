@@ -51,8 +51,6 @@
     <Compile Include="IPageBLL.cs" />
     <Compile Include="IPBCK1BLL.cs" />
     <Compile Include="IPlantBLL.cs" />
-    <Compile Include="IStatusBLL.cs" />
-    <Compile Include="IStatusGovBLL.cs" />
     <Compile Include="ISupplierPortBLL.cs" />
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
