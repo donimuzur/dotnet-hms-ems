@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Sampoerna.HMS.Scheduler</RootNamespace>
     <AssemblyName>Sampoerna.HMS.Scheduler</AssemblyName>
