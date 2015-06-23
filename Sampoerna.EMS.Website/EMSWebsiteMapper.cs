@@ -77,7 +77,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
 
             Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.CK5_NUMBER))
+                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBISSION_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX)) //todo ask
                 .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
                 .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.CK5_TYPE));

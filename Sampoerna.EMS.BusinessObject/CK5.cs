@@ -20,7 +20,6 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public long CK5_ID { get; set; }
-        public string CK5_NUMBER { get; set; }
         public Sampoerna.EMS.Core.Enums.CK5Type CK5_TYPE { get; set; }
         public Nullable<long> KPPBC_CITY { get; set; }
         public string SUBISSION_NUMBER { get; set; }
