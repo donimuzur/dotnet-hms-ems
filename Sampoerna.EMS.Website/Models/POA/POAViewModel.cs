@@ -15,26 +15,31 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         public int PoaId { get; set; }
 
-        [Display(Name = "ID Card")]
+        [Display(Name = "ID Card"), Required, StringLength(22)]
         public string PoaIdCard { get; set; }
 
-        [Display(Name = "POA Code")]
+        
+        [Display(Name = "POA Code"), Required, StringLength(12)]
         public string PoaCode { get; set; }
 
+      
         [Display(Name = "User Name")]
         public USER User { get; set; }
 
-
-        [Display(Name = "Printed Name")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
+        [Required]
+        [StringLength(50)]
         public string PoaPrintedName { get; set; }
 
-        [Display(Name = "Address")]
+        
+        [Display(Name = "Address"),Required, StringLength(100)]
         public string PoaAddress { get; set; }
 
-        [Display(Name = "Phone")]
+        [Display(Name = "Phone Number"), Required, StringLength(13)]
+        [RegularExpression("([1-9][0-9]*)")] 
         public string PoaPhone { get; set; }
 
-        [Display(Name = "Title")]
+        [Required(ErrorMessage = "Title")]
         public string Title { get; set; }
 
         public bool isNewData { get; set; }

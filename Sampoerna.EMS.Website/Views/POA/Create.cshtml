@@ -5,6 +5,7 @@
 }
 @using (Html.BeginForm("Create", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
+     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -48,7 +49,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Code</label>
+                                                    <label class="col-md-3">Poa Code</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaCode)
@@ -112,15 +113,4 @@
             </div>
         </div>
     </div>
-}
-
-@section scripts {
-    <script src="~/Scripts/js/scripts.min.js"></script>
-<script src="~/Scripts/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript">
-        $(window).load(function () {
-            document.getElementById('txtBox').disabled = false;
-
-        });
-    </script>
 }

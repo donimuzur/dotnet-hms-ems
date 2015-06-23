@@ -170,7 +170,8 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PoaPrintedName, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
                .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
                .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
-               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
+               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE))
+               .ForMember(dest => dest.isNewData, opt => opt.MapFrom(src => src.IS_FROM_SAP));
 
             Mapper.CreateMap<POAViewDetailModel, ZAIDM_EX_POA>().IgnoreAllUnmapped()
                .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
@@ -181,8 +182,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title))
                .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.User.USER_ID));
 
-
-            #endregion
+           #endregion
 
         }
     }

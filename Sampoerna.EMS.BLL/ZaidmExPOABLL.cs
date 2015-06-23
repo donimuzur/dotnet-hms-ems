@@ -16,6 +16,8 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_POA> _repository;
         private string includeTables = "ZAIDM_POA_MAP";
+        private string includeTablesPoa = "USER";
+
 
         public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
         {
@@ -23,6 +25,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_POA>();
         }
+
 
         public ZAIDM_EX_POA GetById(int id)
         {
@@ -58,6 +61,11 @@ namespace Sampoerna.EMS.BLL
               
             }
             
+        }
+
+        public List<ZAIDM_EX_POA> GetAllPoa()
+        {
+            return _repository.Get(null, null, includeTablesPoa).ToList();
         }
     }
 }
