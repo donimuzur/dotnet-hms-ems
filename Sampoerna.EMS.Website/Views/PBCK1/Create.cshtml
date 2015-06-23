@@ -195,7 +195,7 @@
             $('#txtSupplierNppbkc').prop('disabled', isDisable);
             $('#txtSupplierKppbc').prop('disabled', isDisable);
             $('#txtSupplierAddress').prop('disabled', isDisable);
-            $('#txtSupplierPhone').prop('disabled', isDisable);
+            //$('#txtSupplierPhone').prop('disabled', isDisable);
         }
 
         function ajaxLoadSupplierPlant() {
@@ -238,7 +238,7 @@
                         //load to form
                         $('#txtSupplierNppbkc').val(data.NPPBKC_NO);
                         $('#txtSupplierKppbc').val(data.KPPBC_NO);
-                        $('#txtSupplierPhone').val('Ini no telp.');
+                        $('#txtSupplierPhone').val('');
                         $('#txtSupplierAddress').val(data.Address);
                     } else {
                         setSupplierPlantEmpty();

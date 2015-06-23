@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.Website.Code
         public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            return nppbkcbll.GetById(id);
+            return nppbkcbll.GetDetailsById(id);
         }
 
         public static SelectList GetSupplierPortList()

@@ -2482,7 +2482,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="EMSEntities" annotation:LazyLoadingEnabled="true" >
+        <EntityContainer Name="EMSEntities" annotation:LazyLoadingEnabled="false" >
           <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
           <EntitySet Name="PBCK1" EntityType="EMSModel.PBCK1" />
           <AssociationSet Name="FK_CK5_PBCK1" Association="EMSModel.FK_CK5_PBCK1">
