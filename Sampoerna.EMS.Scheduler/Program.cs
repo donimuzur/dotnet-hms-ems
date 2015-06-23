@@ -11,13 +11,14 @@ namespace Sampoerna.HMS.Scheduler
     {
         static void Main(string[] args)
       {
-          ServiceBase[] ServicesToRun;
-          ServicesToRun = new ServiceBase[] 
-            { 
-                new SchedulerService(),  
-            };
-          ServiceBase.Run(ServicesToRun);
-                
+          //ServiceBase[] ServicesToRun;
+          //ServicesToRun = new ServiceBase[] 
+          //  { 
+          //      new SchedulerService(),  
+          //  };
+          //ServiceBase.Run(ServicesToRun);
+          QuartzScheduler.StartJobs();
+         
            
         }
     }
