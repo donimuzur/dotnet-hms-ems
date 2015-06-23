@@ -34,6 +34,7 @@ namespace Sampoerna.EMS.BLL.Test
             _logger = null;
             _uow = null;
             _repository = null;
+            _nppbkcRepository = null;
             _bll = null;
         }
 
@@ -48,7 +49,7 @@ namespace Sampoerna.EMS.BLL.Test
 
             var nppbkc = new ZAIDM_EX_NPPBKC()
             {
-                NPPBKC_ID = 1,
+                NPPBKC_ID = 1, CITY_ALIAS = "MLG",
                 T1001 = new T1001() { BUKRSTXT = "HMS-E", BUKRS = "3006" }
             };
 
@@ -60,7 +61,7 @@ namespace Sampoerna.EMS.BLL.Test
             _repository.Get().ReturnsForAnyArgs(new List<DOC_NUMBER_SEQ>() { docNumberSeq });
             _nppbkcRepository.GetByID(input.NppbkcId).Returns(nppbkc);
 
-            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + nppbkc.T1001.BUKRSTXT + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + nppbkc.T1001.BUKRSTXT + "/" + nppbkc.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             //act
             var result = _bll.GenerateNumber(input);
