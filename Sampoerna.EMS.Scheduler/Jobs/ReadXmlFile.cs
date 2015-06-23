@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Quartz;
+using Sampoerna.EMS.Core;
 using SimpleInjector;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.XMLReader;
@@ -72,6 +73,8 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 }
                 catch (Exception ex)
                 {
+                    EmailUtility.Email("mugia@voxteneo.asia", ex.Message, "Test Error Email", "EMSScheduler@gmail.com", "EMS Scheduler", "adnan@voxteneo.asia", "Adnan_989", null);
+           
                     logger.Error("Reading XML crashed", ex);
                 }
               }

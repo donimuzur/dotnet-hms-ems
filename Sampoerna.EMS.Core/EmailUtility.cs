@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.Core
 {
-    class EmailUtility
+    public class EmailUtility
     {
         public static void Email(string to,
                          string body,
@@ -33,18 +33,22 @@ namespace Sampoerna.EMS.Core
                 mail.Subject = subject;
                 mail.SubjectEncoding = Encoding.UTF8;
                 mail.Priority = MailPriority.Normal;
-                foreach (MailAttachment ma in attachments)
+                if (attachments != null)
                 {
-                    mail.Attachments.Add(ma.File);
+                    foreach (MailAttachment ma in attachments)
+                    {
+                        mail.Attachments.Add(ma.File);
+                    }
                 }
                 SmtpClient smtp = new SmtpClient();
                 smtp.Credentials = new System.Net.NetworkCredential(credentialUser, credentialPassword);
                 smtp.Host = host;
+                smtp.Port = 587;
                 smtp.Send(mail);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-               
+               Console.WriteLine(ex.Message);
                 
             }
         }
