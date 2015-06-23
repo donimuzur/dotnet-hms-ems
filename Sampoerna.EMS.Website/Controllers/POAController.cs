@@ -59,9 +59,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
-                poa.USER_ID = poa.USER.USER_ID;
-                poa.USER = null;
-                _poaBll.save(poa);
+               _poaBll.save(poa);
                 return RedirectToAction("Index");
             }
             catch(Exception exception)

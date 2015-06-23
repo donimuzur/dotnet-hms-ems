@@ -159,13 +159,14 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
                .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
-            Mapper.CreateMap<POAViewDetailModel, ZAIDM_EX_POA>().IgnoreAllNonExisting()
+            Mapper.CreateMap<POAViewDetailModel, ZAIDM_EX_POA>().IgnoreAllUnmapped()
            .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
                .ForMember(dest => dest.POA_CODE, opt => opt.MapFrom(src => src.PoaCode))
                .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
                .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
                .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
-               .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title));
+               .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title))
+               .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.User.USER_ID));
             #endregion
 
         }
