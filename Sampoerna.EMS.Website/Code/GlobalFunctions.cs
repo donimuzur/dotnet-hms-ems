@@ -144,5 +144,11 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetPBCK1ByParam(input);
             return new SelectList(data, "PBCK1_ID", "NUMBER");
         }
+        
+        public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            return nppbkcbll.GetById(id);
+        }
     }
 }

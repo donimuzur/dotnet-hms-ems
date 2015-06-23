@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
@@ -11,6 +12,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Utility;
 
 
@@ -21,14 +23,15 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IMonthBLL _monthBll;
+        private IPlantBLL _plantBll;
         
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
             _prodTypeBll = prodTypeBll;
             _monthBll = monthBll;
-            
+            _plantBll = plantBll;
         }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
@@ -40,7 +43,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             //getbyparams
             var input = Mapper.Map<PBCK1Input>(filter);
-            return Mapper.Map<List<PBCK1Item>>(_pbck1Bll.GetPBCK1ByParam(input));
+            var dbData = _pbck1Bll.GetPBCK1ByParam(input);
+            return Mapper.Map<List<PBCK1Item>>(dbData);
         }
 
         private SelectList GetYearList(List<PBCK1Item> pbck1Data)
@@ -54,13 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
-
-        private SelectList GetStatusGovList()
-        {
-            //var data = _statusGovBll.GetAll();
-            return new SelectList(null, "STATUS_GOV_ID", "STATUS_GOV_NAME");
-        }
-
+        
         //
         // GET: /PBCK/
         public ActionResult Index()
@@ -191,8 +189,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 SupplierPortList = GlobalFunctions.GetSupplierPortList(),
                 SupplierPlantList = GlobalFunctions.GetSupplierPlantList(),
                 GoodTypeList = GlobalFunctions.GetGoodTypeList(),
-                UOMList = GlobalFunctions.GetUomList(),
-                StatusGovList = GetStatusGovList()
+                UOMList = GlobalFunctions.GetUomList()
             };
             return View(model);
         }
@@ -202,6 +199,31 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return Json(GlobalFunctions.GetSupplierPlantList());
         }
-        
+
+        [HttpPost]
+        public JsonResult GetNppbkcDetail(long nppbkcid)
+        {
+            var data = GlobalFunctions.GetNppbkcById(nppbkcid);
+            return Json(Mapper.Map<CompanyDetail>(data.T1001));
+        }
+
+        [HttpPost]
+        public JsonResult GetSupplierPlantDetail(long plantid)
+        {
+            var data = _plantBll.GetId(plantid);
+            return Json(Mapper.Map<DetailPlantT1001W>(data));
+        }
+
+        [HttpPost]
+        public ActionResult Save(PBCK1ItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //do something
+                
+            }
+            return RedirectToAction("Create");
+        }
+
     }
 }

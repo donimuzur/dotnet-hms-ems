@@ -11,6 +11,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             ProductConversions = new List<PBCK1ProdConvModel>();
             ProductPlans = new List<PBCK1ProdPlanModel>();
         }
+
+        public string SubmitType { get; set; }
+
         public PBCK1Item Detail { get; set; }
 
         public Enums.PBCK1Type PBCK1Types { get; set; }
@@ -33,7 +36,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public SelectList UOMList { get; set; }
 
-        public SelectList StatusGovList { get; set; }
+        public Enums.DocumentStatusGov StatusGovList { get; set; }
 
         public List<PBCK1ProdConvModel> ProductConversions { get; set; }
         public List<PBCK1ProdPlanModel> ProductPlans { get; set; }
