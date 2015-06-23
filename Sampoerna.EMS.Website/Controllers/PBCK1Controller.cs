@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
@@ -179,18 +178,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            var model = new PBCK1ItemViewModel
-            {
-                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
-                CurrentMenu = PageInfo,
-                Detail = new PBCK1Item(),
-                NppbkcList = GlobalFunctions.GetNppbkcAll(),
-                MonthList = GlobalFunctions.GetMonthList(),
-                SupplierPortList = GlobalFunctions.GetSupplierPortList(),
-                SupplierPlantList = GlobalFunctions.GetSupplierPlantList(),
-                GoodTypeList = GlobalFunctions.GetGoodTypeList(),
-                UOMList = GlobalFunctions.GetUomList()
-            };
+            return CreateInitial(new PBCK1ItemViewModel());
+        }
+
+        public ActionResult CreateInitial(PBCK1ItemViewModel model)
+        {
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = Enums.MenuList.ExcisableGoodsMovement;
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.MonthList = GlobalFunctions.GetMonthList();
+            model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
+            model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.UOMList = GlobalFunctions.GetUomList();
             return View(model);
         }
 
@@ -217,12 +217,15 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Save(PBCK1ItemViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                //do something
-                
+                return CreateInitial(model);
             }
+
+            //process
+
             return RedirectToAction("Create");
+
         }
 
     }

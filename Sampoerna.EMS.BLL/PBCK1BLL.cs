@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
+        private IDocumentSequenceNumberBLL _docSeqNumBll;
         private string includeTables = "";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
@@ -24,6 +25,7 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<PBCK1>();
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
         public List<PBCK1> GetPBCK1ByParam(PBCK1Input input)
@@ -91,6 +93,13 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 //Insert
+                var input = new GenerateDocNumberInput()
+                {
+                    Year = pbck1.PERIOD_FROM.Value.Year,
+                    Month = pbck1.PERIOD_FROM.Value.Month,
+                    NppbkcId = pbck1.NPPBKC_ID.Value
+                };
+                pbck1.NUMBER = _docSeqNumBll.GenerateNumber(input);
                 _repository.Insert(pbck1);
             }
 
