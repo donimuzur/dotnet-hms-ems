@@ -3,14 +3,17 @@
     ViewBag.Title = "Create";
 }
 
+@using (Html.BeginForm("Save", "PBCK1", new { @class = "form-excise", role = "form" }))
+{
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
             <h3>PBCK-1 Form</h3>
             <label class="status">Draft</label>
             <div class="action-button">
-                <button class="btn btn-blue">Save</button>
-                <button class="btn btn-grey">Print Preview</button>
+                @*<button class="btn btn-blue">Save</button>*@
+                <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-blue" value="Save" />
+                <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-grey" value="Print Preview" />
             </div>
         </div>
     </div>
@@ -29,16 +32,18 @@
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    @Html.Partial("_HomeCreate", Model)
+                    @Html.Partial("_HomeCreate")
                     @Html.Partial("_PrintOut")
-                    @Html.Partial("_ProdPlanUpload", Model)
-                    @Html.Partial("_ProdConvUpload", Model)
+                    @Html.Partial("_ProdPlanUpload")
+                    @Html.Partial("_ProdConvUpload")
                     @Html.Partial("_ChangeLog")
                 </div>
             </div>
         </div>
     </div>
 </div>
+}
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -122,25 +127,25 @@
                 return false;
             });
 
-            $('#btn-prod-conv-upload').click(function () {
+            $('#btn-prod-conv-upload').click(function() {
                 $('#home-tab').removeClass('active');
                 $('#home').removeClass('active');
                 $('#prod-conv-upload-tab').addClass('active');
                 $('#upload').addClass('active');
             });
-            
-            $('#btn-prod-plan-upload').click(function () {
+
+            $('#btn-prod-plan-upload').click(function() {
                 $('#home-tab').removeClass('active');
                 $('#home').removeClass('active');
                 $('#prod-plan-upload-tab').addClass('active');
                 $('#messages').addClass('active');
             });
-            
+
             ajaxLoadSupplierPlant();
 
         });
 
-        $('#Detail_NPPBKC_ID').change(function () {
+        $('#Detail_NPPBKC_ID').change(function() {
             if ($("#Detail_NPPBKC_ID").length) {
                 var nppbkcid = $(this).find("option:selected").val();
                 console.log(nppbkcid);
@@ -151,14 +156,14 @@
                 }
             }
         });
-        
+
         function ajaxLoadNppbkcDetail(formData) {
             if (formData.nppbkcid) {
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("GetNppbkcDetail", "PBCK1")',
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         if (data != null) {
                             $('#tbxcompanyname').val(data.DocumentBukrstxt);
                         } else {
@@ -171,18 +176,27 @@
 
         $("#Detail_SUPPLIER_PORT_ID").change(function() {
             if ($("#Detail_SUPPLIER_PORT_ID").length) {
-                var plant_id = $(this).find("option:selected").val();
-                console.log(plant_id);
+                var port_id = $(this).find("option:selected").val();
+                console.log(port_id);
                 $('#Detail_SUPPLIER_PLANT').remove();
-                if (plant_id == '') {
+                if (port_id == '') {
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SUPPLIER_PLANT" name="Detail.SUPPLIER_PLANT" type="text" />');
+                    disableSupplierFormInput(false);
+                    setSupplierPlantEmpty();
                 } else {
                     loadSupplierPlant();
+                    disableSupplierFormInput(true);
                 }
             }
-
         });
+
+        function disableSupplierFormInput(isDisable) {
+            $('#txtSupplierNppbkc').prop('disabled', isDisable);
+            $('#txtSupplierKppbc').prop('disabled', isDisable);
+            $('#txtSupplierAddress').prop('disabled', isDisable);
+            $('#txtSupplierPhone').prop('disabled', isDisable);
+        }
 
         function ajaxLoadSupplierPlant() {
             $.ajax({
@@ -198,13 +212,54 @@
             var list = supplierData;
             if (list.length > 0) {
                 var htmlSelect = '';
-                htmlSelect += '<select class="form-control" id="Detail_SUPPLIER_PLANT" name="Detail.SUPPLIER_PLANT">';
+                htmlSelect += '<select class="form-control" id="Detail_SUPPLIER_PLANT" name="Detail.SUPPLIER_PLANT" onchange="supplierChange();">';
                 for (var i = 0; i < list.length; i++) {
                     htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
                 }
                 htmlSelect += '</select>';
                 $('#supp-plant').html(htmlSelect);
+                //selected to 1
+                if ($("#Detail_SUPPLIER_PLANT").length) {
+                    var plant_id = $("#Detail_SUPPLIER_PLANT").find("option:selected").val();
+                    console.log(plant_id);
+                    ajaxLoadDetailSupplierPlant({ plantid: plant_id });
+                }
             }
+        }
+
+        function ajaxLoadDetailSupplierPlant(formData) {
+            $.ajax({
+                type: 'POST',
+                data: formData,
+                url: '@Url.Action("GetSupplierPlantDetail", "PBCK1")',
+                success: function(data) {
+
+                    if (data != null) {
+                        //load to form
+                        $('#txtSupplierNppbkc').val(data.NPPBKC_NO);
+                        $('#txtSupplierKppbc').val(data.KPPBC_NO);
+                        $('#txtSupplierPhone').val('Ini no telp.');
+                        $('#txtSupplierAddress').val(data.Address);
+                    } else {
+                        setSupplierPlantEmpty();
+                    }
+                }
+            });
+        }
+
+        function supplierChange() {
+            if ($("#Detail_SUPPLIER_PLANT").length) {
+                var plantid = $("#Detail_SUPPLIER_PLANT").find("option:selected").val();
+                console.log(plantid);
+                ajaxLoadDetailSupplierPlant({ plantid: plantid });
+            }
+        }
+        
+        function setSupplierPlantEmpty() {
+            $('#txtSupplierNppbkc').val('');
+            $('#txtSupplierKppbc').val('');
+            $('#txtSupplierPhone').val('');
+            $('#txtSupplierAddress').val('');
         }
 
     </script>

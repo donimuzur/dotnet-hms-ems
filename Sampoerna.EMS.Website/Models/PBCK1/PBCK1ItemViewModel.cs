@@ -11,6 +11,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             ProductConversions = new List<PBCK1ProdConvModel>();
             ProductPlans = new List<PBCK1ProdPlanModel>();
         }
+
+        public string SubmitType { get; set; }
+
         public PBCK1Item Detail { get; set; }
 
         public Enums.PBCK1Type PBCK1Types { get; set; }
