@@ -34,12 +34,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            var poa = new POAViewModel();
+            var poa = new POAViewModel
+            {
+                MainMenu = Enums.MenuList.MasterData,
+                CurrentMenu = PageInfo,
+            };
             return View(poa);
         }
-
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(POAViewModel model)
         {
             if (!ModelState.IsValid)
@@ -48,6 +51,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model);
+                poa.USER_ID = 100;
                 _poaBll.save(poa);
 
                 return RedirectToAction("Index");
@@ -57,6 +61,63 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View();
             }
         }
+
+        public ActionResult Edit(int id)
+        {
+            var poamenu = new POAViewModel
+            {
+                MainMenu = Enums.MenuList.MasterData,
+                CurrentMenu = PageInfo,
+            };
+
+            var poa = _poaBll.GetById(id);
+
+            if (poa == null)
+            {
+
+                return HttpNotFound();
+            }
+            var model = AutoMapper.Mapper.Map<POAViewModel>(poa);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(POAViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            try
+            {
+                var poaId = model.PoaId;
+                var poa = _poaBll.GetById(poaId);
+                AutoMapper.Mapper.Map(model, poa);
+                _poaBll.save(poa);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+
+        }
+
+        public ActionResult Detail(int id)
+        {
+           var poa = _poaBll.GetById(id);
+            if (poa == null)
+            {
+                return HttpNotFound();
+            }
+            var model = AutoMapper.Mapper.Map<POAViewModel>(poa);
+
+            return View(model);
+        }
+        
 
 	}
 }

@@ -643,6 +643,7 @@
     <Content Include="Views\PBCK1\_ChangeLog.cshtml" />
     <Content Include="Views\POA\Create.cshtml" />
     <Content Include="Views\POA\Edit.cshtml" />
+    <Content Include="Views\POA\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

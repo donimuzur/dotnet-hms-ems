@@ -18,82 +18,90 @@
 </div>
 @section scripts {
     <script type="text/javascript" language="javascript" src="../../Scripts/js/scripts.min.js"></script>
-}
+    <script type="text/javascript">
+        $(window).load(function () {
+            document.getElementById('txtBox').disabled;
 
-<div class="container-wrap">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="white-wrapper">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Update POA
-                                    <i class="fa fa-caret-down"></i>
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <form class="form-excise" role="form">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">ID Card</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.PoaIdCard, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.PoaId)
+        });
+    </script>
+}
+@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Update POA
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">ID Card</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.PoaIdCard, new {@class = "form-control", id = "txtBox"})
+                                                        @Html.ValidationMessageFor(model => model.PoaId)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Name</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.PoaCode, new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.PoaCode)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Printed Name</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.PoaPrintedName, new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.PoaPrintedName)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Phone</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.PoaPhone, new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.PoaPhone)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Address</label>
+                                                    <div class="col-md-9" r>
+                                                        @Html.TextAreaFor(model => model.PoaAddress, new {@class = "form-control", rows = "6", id = "comment"})
+                                                        @Html.ValidationMessageFor(model => model.PoaAddress)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Title</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Title, new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.Title)
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Name</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.UserName)
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Printed Name</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.PoaPrintedName, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.PoaPrintedName)
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Phone</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.PoaPhone, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.PoaPhone)
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Address</label>
-                                                <div class="col-md-9" r>
-                                                    @Html.TextAreaFor(model => model.PoaAddress, new { @class = "form-control", rows = "6", id = "comment" })
-                                                    @Html.ValidationMessageFor(model => model.PoaAddress)
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Title</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.Title)
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -101,6 +109,6 @@
             </div>
         </div>
     </div>
-</div>
+}
 
 

@@ -8,7 +8,8 @@ namespace Sampoerna.EMS.Contract
     {
         ZAIDM_EX_POA GetById(int id);
         List<ZAIDM_EX_POA> GetAll();
-        ZaidmExPOAOutput save(ZAIDM_EX_POA poa);
+        void save(ZAIDM_EX_POA poa);
+
 
     }
 }

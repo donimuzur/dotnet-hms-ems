@@ -34,9 +34,9 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
-        public ZaidmExPOAOutput save(ZAIDM_EX_POA poa)
+        public void save(ZAIDM_EX_POA poa)
         {
-            if (poa.POA_ID > 0)
+            if (poa.POA_ID != 0)
             {
                 //update
                 _repository.Update(poa);
@@ -46,23 +46,18 @@ namespace Sampoerna.EMS.BLL
                 //Insert
                 _repository.Insert(poa);
             }
-
-            var output = new ZaidmExPOAOutput();
-
+            
             try
             {
                 _uow.SaveChanges();
-                output.Success = true;
-                output.PoaId = poa.POA_ID;
+           
             }
             catch (Exception exception)
             {
                 _logger.Error(exception);
-                output.Success = false;
-                output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
+              
             }
-            return output;
+            
         }
     }
 }

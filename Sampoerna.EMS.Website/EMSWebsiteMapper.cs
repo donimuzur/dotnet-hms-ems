@@ -11,6 +11,7 @@ using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
+using Sampoerna.EMS.Website.Models.POA;
 
 namespace Sampoerna.EMS.Website
 {
@@ -137,14 +138,27 @@ namespace Sampoerna.EMS.Website
             #region BrandRegistration
 
             Mapper.CreateMap<BrandRegistrationOutput, DetailBrandRegistration>().IgnoreAllNonExisting();
-            //.ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.StickerCode))
-            //.ForMember(dest => dest.Name1, opt => opt.MapFrom(src => src.Name1))
-            //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode))
-            //.ForMember(dest => dest.BrandCe, opt => opt.MapFrom(src => src.BRAND_CE))
-            //.ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.SERIES_ID))
-            //.ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
-            //.ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE)); 
+           
 
+            #endregion
+
+            #region POA
+
+            Mapper.CreateMap<POAViewModel, ZAIDM_EX_POA>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
+                .ForMember(dest => dest.POA_CODE, opt => opt.MapFrom(src => src.PoaCode))
+                .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
+                .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
+                .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
+                .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title));
+
+            Mapper.CreateMap<ZAIDM_EX_POA, POAViewModel>().IgnoreAllNonExisting()
+           .ForMember(dest => dest.PoaIdCard, opt => opt.MapFrom(src => src.POA_ID_CARD))
+               .ForMember(dest => dest.PoaCode, opt => opt.MapFrom(src => src.POA_CODE))
+               .ForMember(dest => dest.PoaPrintedName, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
+               .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
+               .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
+               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE));
             #endregion
 
         }

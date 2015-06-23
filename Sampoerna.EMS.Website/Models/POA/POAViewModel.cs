@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         public string PoaIdCard { get; set; }
 
         [Display(Name = "Name")]
-        public string UserName { get; set; }
+        public string PoaCode { get; set; }
 
         [Display(Name = "Printed Name")]
         public string PoaPrintedName { get; set; }
@@ -31,7 +31,8 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         [Display(Name = "Title")]
         public string Title { get; set; }
-       
+
+        public bool isNewData { get; set; }
     }
     
 }
