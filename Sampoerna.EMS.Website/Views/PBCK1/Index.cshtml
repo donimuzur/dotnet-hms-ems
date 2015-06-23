@@ -1,30 +1,6 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ViewModel
 
-<style>
-    .custom-combobox {
-        position: relative;
-        display: inline-block;
-    }
-
-    .custom-combobox-toggle {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        margin-left: -1px;
-        padding: 0;
-        /* support: IE7 */
-        *height: 1.7em;
-        *top: 0.1em;
-    }
-
-    .custom-combobox-input {
-        margin: 0;
-        padding: 0.3em;
-    }
-</style>
-
-
 @section styles
 {
     <link rel="stylesheet" type="text/css" href="~/Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
@@ -53,13 +29,13 @@
         <div class="col-sm-12">
             <div class="white-wrapper">
                 @using (Ajax.BeginForm("Filter", "PBCK1",
-                new AjaxOptions
-                {
-                    HttpMethod = "POST",
-                    InsertionMode = InsertionMode.Replace,
-                    UpdateTargetId = "contenttable",
-                    OnComplete = "ReloadDataTables"
-                }, new { @class = "form-excise", role = "form" }))
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables"
+                    }, new { @class = "form-excise", role = "form" }))
                 {
                     <div class="row">
                         <div class="col-md-4">
@@ -113,9 +89,9 @@
                         </div>
                     </div>
                 }
-                <div id="contenttable" class="table-container">
-                    @Html.Partial("_Pbck1Table")
-                </div>
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_Pbck1Table")
             </div>
         </div>
     </div>
@@ -124,9 +100,7 @@
 @section scripts {
     
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/input.js"></script>
     <script type="text/javascript" language="javascript">
         function setupDataTables() {
 
@@ -141,9 +115,7 @@
                 {
                     "sDom": "Rlfrtip",
                     "language": {
-                        "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "No records found",
-                        "info": "Showing page _PAGE_ of _PAGES_",
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
@@ -151,8 +123,7 @@
             // Setup - add a text input to each footer cell
             $('#pbckTable .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
-                    //var title = $('#pbckTable thead th').eq($(this).index()).text();
+                if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
@@ -168,14 +139,16 @@
             });
 
             $("#pbckTable_filter").hide();
+            $('#pbckTable_length').hide();
+            $('#pbckTable_info').hide();
         }
 
         $("#SearchInput_NPBCKID").change(function () {
             if ($("#SearchInput_NPBCKID").length) {
-                var nbck = $(this).find("option:selected").val();
+                var nbck = $(this).find("option:selected").text();
                 $('#SearchInput_POA option').remove();
                 console.log(nbck);
-                if (nbck == '') {
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_POA').append('<option value="">All</option>');
                 } else {
                     ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
@@ -211,142 +184,6 @@
             setupDataTables();
         }
 
-    </script>
-
-    <script>
-        (function ($) {
-            $.widget("custom.combobox", {
-                _create: function () {
-                    this.wrapper = $("<span>")
-                      .addClass("custom-combobox")
-                      .insertAfter(this.element);
-
-                    this.element.hide();
-                    this._createAutocomplete();
-                    this._createShowAllButton();
-                },
-
-                _createAutocomplete: function () {
-                    var selected = this.element.children(":selected"),
-                      value = selected.val() ? selected.text() : "";
-
-                    this.input = $("<input>")
-                      .appendTo(this.wrapper)
-                      .val(value)
-                      .attr("title", "")
-                      .addClass("custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left")
-                      .autocomplete({
-                          delay: 0,
-                          minLength: 0,
-                          source: $.proxy(this, "_source")
-                      })
-                      .tooltip({
-                          tooltipClass: "ui-state-highlight"
-                      });
-
-                    this._on(this.input, {
-                        autocompleteselect: function (event, ui) {
-                            ui.item.option.selected = true;
-                            this._trigger("select", event, {
-                                item: ui.item.option
-                            });
-                        },
-
-                        autocompletechange: "_removeIfInvalid"
-                    });
-                },
-
-                _createShowAllButton: function () {
-                    var input = this.input,
-                      wasOpen = false;
-
-                    $("<a>")
-                      .attr("tabIndex", -1)
-                      .tooltip()
-
-                      .appendTo(this.wrapper)
-                      .button({
-                          icons: {
-                              primary: "ui-icon-triangle-1-s"
-                          },
-                          text: false
-                      })
-                      .removeClass("ui-corner-all")
-                      .addClass("custom-combobox-toggle ui-corner-right")
-                      .mousedown(function () {
-                          wasOpen = input.autocomplete("widget").is(":visible");
-                      })
-                      .click(function () {
-                          input.focus();
-
-                          // Close if already visible
-                          if (wasOpen) {
-                              return;
-                          }
-
-                          // Pass empty string as value to search for, displaying all results
-                          input.autocomplete("search", "");
-                      });
-                },
-
-                _source: function (request, response) {
-                    var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-                    response(this.element.children("option").map(function () {
-                        var text = $(this).text();
-                        if (this.value && (!request.term || matcher.test(text)))
-                            return {
-                                label: text,
-                                value: text,
-                                option: this
-                            };
-                    }));
-                },
-
-                _removeIfInvalid: function (event, ui) {
-
-                    // Selected an item, nothing to do
-                    if (ui.item) {
-                        return;
-                    }
-
-                    // Search for a match (case-insensitive)
-                    var value = this.input.val(),
-                      valueLowerCase = value.toLowerCase(),
-                      valid = false;
-                    this.element.children("option").each(function () {
-                        if ($(this).text().toLowerCase() === valueLowerCase) {
-                            this.selected = valid = true;
-                            return false;
-                        } else return true;
-                    });
-
-                    // Found a match, nothing to do
-                    if (valid) {
-                        return;
-                    }
-
-                    // Remove invalid value
-                    this.input.val("");
-                    this.element.val("");
-                    this._delay(function () {
-                        this.input.tooltip("close").attr("title", "");
-                    }, 2500);
-                    this.input.data("ui-autocomplete").term = "";
-                },
-
-                _destroy: function () {
-                    this.wrapper.remove();
-                    this.element.show();
-                }
-            });
-        })(jQuery);
-
-        //$(function () {
-        //    $("#SearchInput_POA").combobox();
-        //    //$("#toggle").click(function () {
-        //    //    $("#SearchInput_POA").toggle();
-        //    //});
-        //});
     </script>
 
 }

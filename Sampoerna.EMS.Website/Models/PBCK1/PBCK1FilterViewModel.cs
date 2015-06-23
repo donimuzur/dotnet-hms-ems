@@ -9,13 +9,13 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         {
             NPBCKID = string.Empty;
             POA = null;
-            Pbck1Type = string.Empty;
+            Pbck1Type = null;
             Creator = null;
             Year = null;
         }
         public string NPBCKID { get; set; }
         public string POA { get; set; }
-        public string Pbck1Type { get; set; }
+        public Core.Enums.PBCK1Type? Pbck1Type { get; set; }
         public int? Creator { get; set; }
         public int? Year { get; set; }
         /// <summary>
