@@ -79,5 +79,6 @@ namespace Sampoerna.EMS.Core
             CK5 = 2,
             
         }
+
     }
 }
