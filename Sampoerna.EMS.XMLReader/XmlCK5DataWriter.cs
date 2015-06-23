@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.XMLReader
            material2.MARKET_ID = 124;
            CK5 ck5 = new CK5();
            ck5.CK5_ID = 101;
-           ck5.CK5_NUMBER = "CK5OOOP0023";
+           //ck5.CK5_NUMBER = "CK5OOOP0023";
            ck5.CK5_TYPE = Sampoerna.EMS.Core.Enums.CK5Type.Domestic;
            CK5_MATERIAL ck5Materialmaterial1 = new CK5_MATERIAL();
            ck5Materialmaterial1.CK5 = ck5;
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.XMLReader
                writer.WriteStartDocument();
                writer.WriteStartElement("EMS_CK45");
                writer.WriteStartElement("ITEM");
-               writer.WriteElementString("CK5_NUMBER", ck5.CK5_NUMBER);
+               //writer.WriteElementString("CK5_NUMBER", ck5.CK5_NUMBER);
                 
                writer.WriteStartElement("MATERIAL"); // <-- Write employee element
                  
