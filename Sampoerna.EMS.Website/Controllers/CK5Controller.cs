@@ -264,8 +264,22 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-                CK5 dbCk5 = Mapper.Map<CK5>(model);
+                //CK5 dbCk5 = Mapper.Map<CK5>(model);
                 
+                CK5 dbCk5 = new CK5();
+                dbCk5.STATUS_ID = model.DocumentStatus;
+                dbCk5.CK5_TYPE = model.Ck5Type;
+                dbCk5.KPPBC_CITY = model.KppBcCity;
+                dbCk5.SUBISSION_NUMBER = model.SubmissionNumber;
+                dbCk5.SUBMISSION_DATE = model.SubmissionDate;
+                dbCk5.EX_GOODS_TYPE_ID = model.GoodTypeId;
+                dbCk5.EX_SETTLEMENT_ID = model.ExciseSettlement;
+                dbCk5.EX_STATUS_ID = model.ExciseStatus;
+                dbCk5.REQUEST_TYPE_ID = model.RequestType;
+                dbCk5.REGISTRATION_NUMBER = model.RegistrationNumber;
+                dbCk5.SOURCE_PLANT_ID = model.SourcePlantId;
+                dbCk5.DEST_PLANT_ID = model.DestPlantId;
+
                 dbCk5.CREATED_BY = 100;
                 _ck5Bll.SaveCk5(dbCk5);
 
