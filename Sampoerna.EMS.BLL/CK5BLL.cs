@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.DocumentNumber))
             {
-                queryFilter = queryFilter.And(c => c.SUBISSION_NUMBER.Contains(input.DocumentNumber));
+                queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
             }
 
             if (input.POA.HasValue)
