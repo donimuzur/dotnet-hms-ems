@@ -20,22 +20,22 @@ namespace Sampoerna.EMS.XMLReader
          static void Main(string[] args)
         {
 
-            Service svc = new Service();
-            svc.PoaRunning();
-            svc.PoaMapRunning();
-            svc.CompanyRunning();
-            svc.KPPBCRunning();
-            svc.NPPBKCRunning();
-            svc.VendorRunning();
-             svc.PCodeRunning();
-             svc.PlantRunning();
-             svc.MarketRunning();
-             svc.GoodTypeRunning();
-             svc.UoMRunning();
-             svc.ProdTypeRunning();
-             svc.SeriesRunning();
-             svc.BrandRunning();
-             svc.MaterialRunning();
+            //Service svc = new Service();
+            //svc.PoaRunning();
+            //svc.PoaMapRunning();
+            //svc.CompanyRunning();
+            //svc.KPPBCRunning();
+            //svc.NPPBKCRunning();
+            //svc.VendorRunning();
+            // svc.PCodeRunning();
+            // svc.PlantRunning();
+            // svc.MarketRunning();
+            // svc.GoodTypeRunning();
+            // svc.UoMRunning();
+            // svc.ProdTypeRunning();
+            // svc.SeriesRunning();
+            // svc.BrandRunning();
+            // svc.MaterialRunning();
 
             Console.ReadLine();
         }
