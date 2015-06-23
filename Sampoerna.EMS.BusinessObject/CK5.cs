@@ -22,7 +22,6 @@ namespace Sampoerna.EMS.BusinessObject
         public long CK5_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.CK5Type CK5_TYPE { get; set; }
         public Nullable<long> KPPBC_CITY { get; set; }
-        public string SUBISSION_NUMBER { get; set; }
         public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
@@ -63,6 +62,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string SUBMISSION_NUMBER { get; set; }
     
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
