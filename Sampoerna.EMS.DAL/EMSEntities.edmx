@@ -101,7 +101,6 @@
             <PropertyRef Name="CK5_ID" />
           </Key>
           <Property Name="CK5_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CK5_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="CK5_TYPE" Type="int" Nullable="false" />
           <Property Name="KPPBC_CITY" Type="bigint" />
           <Property Name="SUBISSION_NUMBER" Type="nvarchar" MaxLength="30" />
@@ -645,6 +644,7 @@
           <Property Name="ADDR1" Type="nvarchar" MaxLength="50" />
           <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
           <Property Name="CITY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="15" />
           <Property Name="KPPBC_ID" Type="bigint" />
           <Property Name="REGION_OFFICE" Type="nvarchar" MaxLength="20" />
           <Property Name="COMPANY_ID" Type="bigint" />
@@ -2973,7 +2973,6 @@
             <PropertyRef Name="CK5_ID" />
           </Key>
           <Property Name="CK5_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CK5_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CK5_TYPE" Type="EMSModel.CK5Type" Nullable="false" />
           <Property Name="KPPBC_CITY" Type="Int64" />
           <Property Name="SUBISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -3855,6 +3854,7 @@
           <NavigationProperty Name="T1001" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T1001" FromRole="ZAIDM_EX_NPPBKC" ToRole="T1001" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T1001W" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
+          <Property Name="CITY_ALIAS" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -5226,7 +5226,6 @@
                 <ScalarProperty Name="SUBISSION_NUMBER" ColumnName="SUBISSION_NUMBER" />
                 <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
                 <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
-                <ScalarProperty Name="CK5_NUMBER" ColumnName="CK5_NUMBER" />
                 <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -5864,6 +5863,7 @@
           <EntitySetMapping Name="ZAIDM_EX_NPPBKC">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_NPPBKC">
               <MappingFragment StoreEntitySet="ZAIDM_EX_NPPBKC">
+                <ScalarProperty Name="CITY_ALIAS" ColumnName="CITY_ALIAS" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
