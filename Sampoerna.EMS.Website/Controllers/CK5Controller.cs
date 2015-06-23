@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Ck5Type = ck5Type;
 
             var dbCk5 = _ck5Bll.GetAll();
-            model.SearchView.DocumentNumberList = new SelectList(dbCk5, "CK5_NUMBER", "CK5_NUMBER");
+            model.SearchView.DocumentNumberList = new SelectList(dbCk5, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
             model.SearchView.POAList = GlobalFunctions.GetPoaAll();
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
@@ -270,7 +270,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbCk5.STATUS_ID = model.DocumentStatus;
                 dbCk5.CK5_TYPE = model.Ck5Type;
                 dbCk5.KPPBC_CITY = model.KppBcCity;
-                dbCk5.SUBISSION_NUMBER = model.SubmissionNumber;
+                dbCk5.SUBMISSION_NUMBER = model.SubmissionNumber;
                 dbCk5.SUBMISSION_DATE = model.SubmissionDate;
                 dbCk5.EX_GOODS_TYPE_ID = model.GoodTypeId;
                 dbCk5.EX_SETTLEMENT_ID = model.ExciseSettlement;

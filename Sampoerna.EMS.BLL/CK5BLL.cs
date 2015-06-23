@@ -17,11 +17,15 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<CK5> _repository;
         private string includeTables = "";
+        private IDocumentSequenceNumberBLL _docSeqNumBll;
+        private IMasterDataBLL _masterDataBll;
 
-        public CK5BLL(IUnitOfWork uow, ILogger logger)
+        public CK5BLL(IUnitOfWork uow, ILogger logger, IDocumentSequenceNumberBLL docSeqNumBll, IMasterDataBLL masterDataBll)
         {
             _logger = logger;
             _uow = uow;
+            _docSeqNumBll = docSeqNumBll;
+            _masterDataBll = masterDataBll;
             _repository = _uow.GetGenericRepository<CK5>();
         }
 
@@ -92,7 +96,22 @@ namespace Sampoerna.EMS.BLL
             if (ck5.CK5_ID <= 0)
             {
                 //insert
-                ck5.SUBISSION_NUMBER = "Test" + DateTime.Now.ToString("yyMMhhmmss");
+                long plantId = 0;
+                if (ck5.SOURCE_PLANT_ID.HasValue)
+                    plantId = ck5.SOURCE_PLANT_ID.Value;
+
+                var plant = _masterDataBll.GetPlantById(plantId);
+                long nppbkc = 0;
+                if (plant.NPPBCK_ID.HasValue)
+                    nppbkc = plant.NPPBCK_ID.Value;
+
+                var input = new GenerateDocNumberInput()
+                {
+                    Year = DateTime.Now.Year,
+                    Month = DateTime.Now.Month,
+                    NppbkcId = nppbkc
+                };
+                ck5.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(input);
                 ck5.CREATED_DATE = DateTime.Now;
             }
           
