@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography.X509Certificates;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
@@ -8,17 +7,24 @@ namespace Sampoerna.EMS.Website.Models.CK5
 {
     public class CK5CreateViewModel : BaseModel
     {
-        
+
+        public Enums.DocumentStatus DocumentStatus { get; set; }
+
         public Enums.CK5Type Ck5Type { get; set; }
 
+        [Required(ErrorMessage = "KPPBC City field is required")]
         public int KppBcCity { get; set; }
         public SelectList KppBcCityList { get; set; }
 
         public string SubmissionNumber { get; set; }
-        public DateTime SubmissionDate { get; set; }
+
+        [UIHint("FormatDateTime")]
+        public DateTime? SubmissionDate { get; set; }
 
         public string RegistrationNumber { get; set; }
-        public DateTime RegistrationDate { get; set; }
+
+        [UIHint("FormatDateTime")]
+        public DateTime? RegistrationDate { get; set; }
 
         public int GoodTypeId { get; set; }
         public SelectList GoodTypeList { get; set; }
@@ -36,18 +42,23 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //[STO_RECEIVER_NUMBER]
         //[STOB_NUMBER]
 
+        [Required(ErrorMessage = "Origin Plant field is required")]
         public int SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
 
+        [Required(ErrorMessage = "Destination Plant field is required")]
         public int DestPlantId { get; set; }
         public SelectList DestPlantList { get; set; }
 
         public string InvoiceNumber { get; set; }
-        public DateTime InvoiceDateTime { get; set; }
 
-        public int PbckDecreeId { get; set; }
-
-        public int CarriageMethod { get; set; }
+        [UIHint("FormatDateTime")]
+        public DateTime? InvoiceDate { get; set; }
+        
+        public int? PbckDecreeId { get; set; }
+        public SelectList PbckDecreeList { get; set; }
+        
+        public int? CarriageMethod { get; set; }
         public SelectList CarriageMethodList { get; set; }
 
         [Display(Name = "Grand Total Exciseable")]
@@ -89,18 +100,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? UnsealingNotifDate { get; set; }
 
 
-
-        //[DN_NUMBER]
-        //[GI_DATE]
-        //[SEALING_NOTIF_NUMBER]
-        //[UNSEALING_NOTIF_NUMBER]
-        //[SEALING_NOTIF_DATE]
-        //[UNSEALING_NOTIF_DATE]
-        //[STATUS_ID]
-        //[CREATED_BY]
-        //[CREATED_DATE]
-        //[APPROVED_BY]
-        //[APPROVED_DATE]
 
     }
 }

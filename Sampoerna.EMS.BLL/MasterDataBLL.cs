@@ -51,9 +51,9 @@ namespace Sampoerna.EMS.BLL
             return _RequestTypeRepository.Get().ToList();
         }
 
-        public string GetCeOfficeCodeByKppbcId(string kppBcId)
+        public string GetCeOfficeCodeByKppbcId(long kppBcId)
         {
-            var dbZaid = _ZaidExKppbkcRepository.GetByID(Convert.ToInt32(kppBcId));
+            var dbZaid = _ZaidExKppbkcRepository.GetByID(kppBcId);
             if (dbZaid == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -66,9 +66,9 @@ namespace Sampoerna.EMS.BLL
             return _T1001WRepository.Get().ToList();
         }
 
-        public T1001W GetPlantById(string plantId)
+        public T1001W GetPlantById(long plantId)
         {
-            var dbT100W = _T1001WRepository.GetByID(Convert.ToInt32(plantId));
+            var dbT100W = _T1001WRepository.GetByID(plantId);
            if (dbT100W == null)
                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 

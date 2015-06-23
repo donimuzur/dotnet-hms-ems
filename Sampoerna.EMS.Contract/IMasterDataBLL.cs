@@ -17,11 +17,11 @@ namespace Sampoerna.EMS.Contract
 
         List<REQUEST_TYPE> GetAllRequestTypes();
 
-        string GetCeOfficeCodeByKppbcId(string kppBcId);
+        string GetCeOfficeCodeByKppbcId(long kppBcId);
 
         List<T1001W> GetAllSourcePlants();
 
-        T1001W GetPlantById(string plantId);
+        T1001W GetPlantById(long plantId);
 
         List<CARRIAGE_METHOD> GetAllCarriageMethods();
     }

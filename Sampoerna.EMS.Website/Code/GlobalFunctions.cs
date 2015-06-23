@@ -136,5 +136,13 @@ namespace Sampoerna.EMS.Website.Code
             var data = uomBll.GetAll();
             return new SelectList(data, "UOM_ID", "UOM_NAME");
         }
+
+        public static SelectList GetPbck1CompletedList()
+        {
+            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
+            var input = new PBCK1Input();
+            var data = pbck1.GetPBCK1ByParam(input);
+            return new SelectList(data, "PBCK1_ID", "NUMBER");
+        }
     }
 }

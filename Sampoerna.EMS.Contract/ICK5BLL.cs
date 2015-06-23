@@ -10,8 +10,13 @@ namespace Sampoerna.EMS.Contract
 {
    public interface ICK5BLL
    {
+
+       CK5 GetById(long id);
+
        List<CK5> GetAll();
 
        List<CK5> GetCK5ByParam(CK5Input input);
+
+       void SaveCk5(CK5 ck5);
    }
 }

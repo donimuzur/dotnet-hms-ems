@@ -25,6 +25,10 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<CK5>();
         }
 
+        public CK5 GetById(long id)
+        {
+            return _repository.GetByID(id);
+        }
         public List<CK5> GetAll()
         {
             return _repository.Get(null, null, includeTables).ToList();
@@ -78,6 +82,22 @@ namespace Sampoerna.EMS.BLL
             }
 
             return rc.ToList();
+        }
+
+        public void SaveCk5(CK5 ck5)
+        {
+            //get generate number
+
+
+            if (ck5.CK5_ID <= 0)
+            {
+                //insert
+                ck5.SUBISSION_NUMBER = "Test" + DateTime.Now.ToString("yyMMhhmmss");
+                ck5.CREATED_DATE = DateTime.Now;
+            }
+          
+            _repository.InsertOrUpdate(ck5);
+            _uow.SaveChanges();
         }
     }
 }

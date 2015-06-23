@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -18,13 +19,15 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICK5BLL _ck5Bll;
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IMasterDataBLL _masterDataBll;
+        private IPBCK1BLL _pbck1Bll;
 
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll, IMasterDataBLL masterDataBll)
+        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll, IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
             _nppbkcBll = nppbkcBll;
             _masterDataBll = masterDataBll;
+            _pbck1Bll = pbckBll;
         }
 
         #region View Documents
@@ -161,6 +164,18 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
+            model.DocumentStatus = Enums.DocumentStatus.Draft;
+            model = InitCK5List(model);
+
+            return model;
+        }
+
+        private CK5CreateViewModel InitCK5List(CK5CreateViewModel model )
+        {
+            //var model = new CK5CreateViewModel();
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+            //model.Ck5Type = ck5Type;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
@@ -171,10 +186,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
             model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
             return model;
         }
+
+
+
         public ActionResult CreateDomestic()
         {
             var model = InitCreateCK5(Enums.CK5Type.Domestic);
@@ -218,18 +237,44 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult CeOfficeCodePartial(string kppBcCityId)
+        public JsonResult CeOfficeCodePartial(long kppBcCityId)
         {
             var ceOfficeCode = _masterDataBll.GetCeOfficeCodeByKppbcId(kppBcCityId);
             return Json(ceOfficeCode);
         }
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId)
+        public JsonResult GetSourcePlantDetails(long plantId)
         {
             var dbPlant = _masterDataBll.GetPlantById(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
             return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult Pbck1DatePartial(long pbck1Id)
+        {
+            var pbck1 = _pbck1Bll.GetById(pbck1Id);
+            
+            return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
+        }
+
+        [HttpPost]
+        public ActionResult SaveCK5(CK5CreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                CK5 dbCk5 = Mapper.Map<CK5>(model);
+                
+                dbCk5.CREATED_BY = 100;
+                _ck5Bll.SaveCk5(dbCk5);
+
+            }
+
+           
+            model = InitCK5List(model);
+            
+            return View("Create", model);
         }
     }
 }
