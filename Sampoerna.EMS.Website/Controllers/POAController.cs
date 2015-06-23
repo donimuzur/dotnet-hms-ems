@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Collections;
+using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -11,11 +13,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IZaidmExPOAMapBLL _poaMapBll;
         private IZaidmExPOABLL _poaBll;
+        private IUserBLL _userBll;
 
-        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, IZaidmExPOABLL poaBll) : base(pageBLL, Enums.MenuList.MasterData)
+        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, IZaidmExPOABLL poaBll, IUserBLL userBll
+            ) : base(pageBLL, Enums.MenuList.MasterData)
         {
             _poaMapBll = poadMapBll;
             _poaBll = poaBll;
+            _userBll = userBll;
         }
 
         //
@@ -34,32 +39,37 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            var poa = new POAViewModel
-            {
-                MainMenu = Enums.MenuList.MasterData,
-                CurrentMenu = PageInfo,
-            };
+            
+            //var poa = new POAViewModel
+            //{
+            //    MainMenu = Enums.MenuList.MasterData,
+            //    CurrentMenu = PageInfo,
+            //};
+            var poa = new POAFormModel();
+            poa.MainMenu = Enums.MenuList.MasterData;
+            poa.CurrentMenu = PageInfo;
+            poa.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");
             return View(poa);
         }
         
         [HttpPost]
-        public ActionResult Create(POAViewModel model)
+        public ActionResult Create(POAFormModel model)
         {
-            if (!ModelState.IsValid)
-                return View();
-
+            
             try
             {
-                var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model);
-                poa.USER_ID = 100;
+                var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
+                poa.USER_ID = poa.USER.USER_ID;
+                poa.USER = null;
                 _poaBll.save(poa);
-
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception exception)
             {
+               
                 return View();
             }
+            return RedirectToAction("Index");
         }
 
         public ActionResult Edit(int id)
