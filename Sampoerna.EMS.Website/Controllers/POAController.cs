@@ -40,11 +40,6 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             
-            //var poa = new POAViewModel
-            //{
-            //    MainMenu = Enums.MenuList.MasterData,
-            //    CurrentMenu = PageInfo,
-            //};
             var poa = new POAFormModel();
             poa.MainMenu = Enums.MenuList.MasterData;
             poa.CurrentMenu = PageInfo;
@@ -55,8 +50,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(POAFormModel model)
         {
-            
-            try
+         try
             {
                 var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
                _poaBll.save(poa);
@@ -72,42 +66,36 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int id)
         {
-            var poamenu = new POAViewModel
-            {
-                MainMenu = Enums.MenuList.MasterData,
-                CurrentMenu = PageInfo,
-            };
-
             var poa = _poaBll.GetById(id);
+            
 
             if (poa == null)
             {
 
                 return HttpNotFound();
             }
-            var model = AutoMapper.Mapper.Map<POAViewModel>(poa);
-
+            var model = new POAFormModel();
+            var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
+            model.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME", detail.User.USER_ID);
+            model.Detail = detail;
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Edit(POAViewModel model)
+        public ActionResult Edit(POAFormModel model)
         {
-            if (!ModelState.IsValid)
+           try
             {
-                return View();
-            }
-
-            try
-            {
-                var poaId = model.PoaId;
+                var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
                 AutoMapper.Mapper.Map(model, poa);
                 _poaBll.save(poa);
 
+               
                 return RedirectToAction("Index");
             }
-            catch
+            
+           catch
             {
                 return View();
             }
