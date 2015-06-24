@@ -87,7 +87,10 @@
                         {
                             <tr>
                                 <td></td>
-                                <td></td>
+                                <td class="action">
+                                    <a href="@Url.Action("Details", "PBCK1", new { id = item.GoodsTypeId})"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "PBCK1", new { id = item.GoodsTypeId })"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.GoodsTypeId)
                                 </td>
