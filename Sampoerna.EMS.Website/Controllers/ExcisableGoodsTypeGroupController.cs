@@ -109,5 +109,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Create", model);
         }
+
+        public ActionResult Details(string groupName)
+        {
+            var model = new GoodsTypeGroupDetailsViewModel();
+            model.MainMenu = Enums.MenuList.MasterData;
+            model.CurrentMenu = PageInfo;
+            model.GroupName = groupName;
+
+            var childDetails = _goodsTypeGroupBLL.GetGroupTypesByName(groupName);
+
+            model.Details = Mapper.Map<List<GoodsTypeDetails>>(childDetails).ToList();
+
+            foreach (var details in model.Details)
+            {
+                details.IsChecked = true;
+            }
+            return View(model);
+        }
+
     }
 }

@@ -240,6 +240,7 @@
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -647,6 +648,7 @@
     <Content Include="Views\POA\Detail.cshtml" />
     <Content Include="Views\ExcisableGoodsTypeGroup\Create.cshtml" />
     <Content Include="Views\ExcisableGoodsTypeGroup\_ListGroupDetails.cshtml" />
+    <Content Include="Views\ExcisableGoodsTypeGroup\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
