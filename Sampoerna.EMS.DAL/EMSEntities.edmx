@@ -222,7 +222,7 @@
             <PropertyRef Name="HEADER_FOOTER_FORM_MAP_ID" />
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="COMPANY_ID" Type="bigint" Nullable="false" />
+          <Property Name="HEADER_FOOTER_ID" Type="int" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" />
           <Property Name="IS_HEADER_SET" Type="bit" />
           <Property Name="IS_FOOTER_SET" Type="bit" />
@@ -997,15 +997,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_HEADER_FOOTER_FORM_MAP_T1001">
-          <End Role="T1001" Type="Self.T1001" Multiplicity="1" />
+        <Association Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="1" />
           <End Role="HEADER_FOOTER_FORM_MAP" Type="Self.HEADER_FOOTER_FORM_MAP" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="T1001">
-              <PropertyRef Name="COMPANY_ID" />
+            <Principal Role="HEADER_FOOTER">
+              <PropertyRef Name="HEADER_FOOTER_ID" />
             </Principal>
             <Dependent Role="HEADER_FOOTER_FORM_MAP">
-              <PropertyRef Name="COMPANY_ID" />
+              <PropertyRef Name="HEADER_FOOTER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2158,8 +2158,8 @@
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
           </AssociationSet>
-          <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_T1001" Association="Self.FK_HEADER_FOOTER_FORM_MAP_T1001">
-            <End Role="T1001" EntitySet="T1001" />
+          <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="Self.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
             <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_T1001" Association="Self.FK_HEADER_FOOTER_T1001">
@@ -2984,8 +2984,8 @@
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
-          <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_T1001" Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_T1001">
-            <End Role="T1001" EntitySet="T1001" />
+          <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
             <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
           </AssociationSet>
         </EntityContainer>
@@ -3351,6 +3351,7 @@
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="T1001" Relationship="EMSModel.FK_HEADER_FOOTER_T1001" FromRole="HEADER_FOOTER" ToRole="T1001" />
+          <NavigationProperty Name="HEADER_FOOTER_FORM_MAP" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" FromRole="HEADER_FOOTER" ToRole="HEADER_FOOTER_FORM_MAP" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER_FORM_MAP">
           <Key>
@@ -3360,8 +3361,8 @@
           <Property Name="FORM_TYPE_ID" Type="Int32" />
           <Property Name="IS_HEADER_SET" Type="Boolean" />
           <Property Name="IS_FOOTER_SET" Type="Boolean" />
-          <Property Name="COMPANY_ID" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="T1001" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_T1001" FromRole="HEADER_FOOTER_FORM_MAP" ToRole="T1001" />
+          <Property Name="HEADER_FOOTER_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" FromRole="HEADER_FOOTER_FORM_MAP" ToRole="HEADER_FOOTER" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -3622,7 +3623,6 @@
           <NavigationProperty Name="T1001K" Relationship="EMSModel.FK_T1001K_T1001" FromRole="T1001" ToRole="T1001K" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" FromRole="T1001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T1001" FromRole="T1001" ToRole="ZAIDM_EX_NPPBKC" />
-          <NavigationProperty Name="HEADER_FOOTER_FORM_MAP" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_T1001" FromRole="T1001" ToRole="HEADER_FOOTER_FORM_MAP" />
         </EntityType>
         <EntityType Name="T1001K">
           <Key>
@@ -5198,15 +5198,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_HEADER_FOOTER_FORM_MAP_T1001">
-          <End Type="EMSModel.T1001" Role="T1001" Multiplicity="1" />
+        <Association Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="1" />
           <End Type="EMSModel.HEADER_FOOTER_FORM_MAP" Role="HEADER_FOOTER_FORM_MAP" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="T1001">
-              <PropertyRef Name="COMPANY_ID" />
+            <Principal Role="HEADER_FOOTER">
+              <PropertyRef Name="HEADER_FOOTER_ID" />
             </Principal>
             <Dependent Role="HEADER_FOOTER_FORM_MAP">
-              <PropertyRef Name="COMPANY_ID" />
+              <PropertyRef Name="HEADER_FOOTER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5500,7 +5500,7 @@
           <EntitySetMapping Name="HEADER_FOOTER_FORM_MAP">
             <EntityTypeMapping TypeName="EMSModel.HEADER_FOOTER_FORM_MAP">
               <MappingFragment StoreEntitySet="HEADER_FOOTER_FORM_MAP">
-                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="HEADER_FOOTER_ID" ColumnName="HEADER_FOOTER_ID" />
                 <ScalarProperty Name="IS_FOOTER_SET" ColumnName="IS_FOOTER_SET" />
                 <ScalarProperty Name="IS_HEADER_SET" ColumnName="IS_HEADER_SET" />
                 <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
