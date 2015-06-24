@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BLL
         }
         public List<CK5> GetAll()
         {
+            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
             return _repository.Get(null, null, includeTables).ToList();
         }
 

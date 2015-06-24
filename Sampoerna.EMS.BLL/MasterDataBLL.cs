@@ -68,7 +68,10 @@ namespace Sampoerna.EMS.BLL
 
         public T1001W GetPlantById(long plantId)
         {
-            var dbT100W = _T1001WRepository.GetByID(plantId);
+            var includeTables = "ZAIDM_EX_NPPBKC.T1001";
+
+            //var dbT100W = _T1001WRepository.GetByID(plantId);
+            var dbT100W = _T1001WRepository.Get(p=>p.PLANT_ID == plantId, null, includeTables).FirstOrDefault();
            if (dbT100W == null)
                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
