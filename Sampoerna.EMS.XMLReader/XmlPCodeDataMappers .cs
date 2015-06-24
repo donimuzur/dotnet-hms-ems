@@ -30,8 +30,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.PER_CODE = Convert.ToInt32(xElement.Element("PER_CODE").Value);
                     item.PER_DESC = xElement.Element("PER_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingPCode = GetPCode(item.PER_CODE);
                     if (existingPCode != null)
                     {

@@ -44,9 +44,8 @@ namespace Sampoerna.EMS.XMLReader
                     item.POA_ID = existingPoa.POA_ID;
                     item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    
-                    var podDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out podDateXml);
+
+                    var podDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingPoaMap = GetPoaMap(item.PLANT_ID, item.POA_ID);
                     if (existingPoaMap != null)
                     {

@@ -73,9 +73,8 @@ namespace Sampoerna.EMS.XMLReader
                     item.END_DATE = Convert.ToDateTime(xElement.Element("END_DATE").Value);
                     item.FA_CODE = xElement.Element("FA_CODE").Value;
                     item.CREATED_DATE = DateTime.Now;
-                   
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingMaterial = GetMaterial(item.STICKER_CODE,item.PLANT_ID, item.FA_CODE);
                     if (existingMaterial != null)
                     {

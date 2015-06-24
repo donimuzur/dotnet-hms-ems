@@ -36,8 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;
                     var exisitingMarket = GetMarket(item.MARKET_CODE);
-                    var marketDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out marketDateXml);
+                    var marketDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                      if (exisitingMarket != null)
                     {
                         if (marketDateXml > exisitingMarket.CREATED_DATE)

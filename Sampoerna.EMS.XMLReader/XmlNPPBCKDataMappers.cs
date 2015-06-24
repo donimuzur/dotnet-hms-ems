@@ -42,8 +42,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.COMPANY_ID = company.COMPANY_ID;
 
                     item.CREATED_DATE = DateTime.Now;
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var exisitingNppbkc = GetNPPBKC(item.NPPBKC_NO);
                     if (exisitingNppbkc != null)
                     {
