@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.POA_PHONE = xElement.Element("POA_PHONE").Value;
                     item.POA_ADDRESS = xElement.Element("POA_ADDRESS").Value;
                     item.CREATED_DATE = DateTime.Now;
+                    item.IS_FROM_SAP = true;
                     if (exisitingPoa != null)
                     {
                         if (podDateXml > exisitingPoa.CREATED_DATE)
