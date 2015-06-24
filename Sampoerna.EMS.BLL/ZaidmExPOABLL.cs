@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -12,14 +15,15 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_POA> _repository;
-        private string includeTables = "ZAIDM_POA_MAP";
-
+        private string includeTables = "ZAIDM_POA_MAP, USER";
+        
         public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_POA>();
         }
+
 
         public ZAIDM_EX_POA GetById(int id)
         {
@@ -28,28 +32,35 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_POA> GetAll()
         {
-            //var repoZaidmExPOA = _repository.Get().ToList();
-            //var repoUser = _repositoryUser.Get().ToList();
-
-            //var result = repoZaidmExPOA.Join(repoUser,
-            //    poa => poa.USER_ID,
-            //    USER => USER.USER_ID,
-            //    (poa, USER) => new ZaidmExPOAOutput 
-            //    {
-            //        PoaIdCard = poa.POA_ID_CARD,
-            //        UserName = USER.USERNAME,
-            //        PoaPrintedName= poa.POA_PRINTED_NAME,
-            //        PoaAddress = poa.POA_ADDRESS,
-            //        PoaPhone = poa.POA_PHONE,
-            //        Title = poa.TITLE
-                   
-                    
-            //    }).ToList();
-
-            //return result;
-
             return _repository.Get(null, null, includeTables).ToList();
         }
 
+        public void save(ZAIDM_EX_POA poa)
+        {
+            if (poa.POA_ID != 0)
+            {
+                //update
+                _repository.Update(poa);
+            }
+            else
+            {
+                //Insert
+                _repository.Insert(poa);
+            }
+            
+            try
+            {
+                _uow.SaveChanges();
+           
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+              
+            }
+            
+        }
+
+       
     }
 }
