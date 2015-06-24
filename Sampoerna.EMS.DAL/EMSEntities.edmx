@@ -181,6 +181,14 @@
           <Property Name="MONTH" Type="int" />
           <Property Name="YEAR" Type="int" />
         </EntityType>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="EX_GOODTYP_ID" Type="int" />
+        </EntityType>
         <EntityType Name="EX_SETTLEMENT">
           <Key>
             <PropertyRef Name="EX_SETTLEMENT_ID" />
@@ -223,7 +231,7 @@
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="HEADER_FOOTER_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_TYPE_ID" Type="int" />
+          <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="IS_HEADER_SET" Type="bit" />
           <Property Name="IS_FOOTER_SET" Type="bit" />
         </EntityType>
@@ -994,6 +1002,18 @@
             </Principal>
             <Dependent Role="DOC_NUMBER_SEQ">
               <PropertyRef Name="MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GOODTYP_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2020,6 +2040,7 @@
           <EntitySet Name="COUNTRY" EntityType="Self.COUNTRY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CURRENCY" EntityType="Self.CURRENCY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="Self.EX_GROUP_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_SETTLEMENT" EntityType="Self.EX_SETTLEMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_STATUS" EntityType="Self.EX_STATUS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
@@ -2157,6 +2178,10 @@
           <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="Self.FK_DOC_NUMBER_SEQ_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" Association="Self.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="Self.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
             <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
@@ -2988,6 +3013,11 @@
             <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
             <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
           </AssociationSet>
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="EMSModel.EX_GROUP_TYPE" />
+          <AssociationSet Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CK5">
           <Key>
@@ -3050,7 +3080,8 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_USER1" FromRole="CK5" ToRole="USER" />
-          <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_NUMBER" Type="String" Unicode="true" FixedLength="false" MaxLength="30" />
+          
         </EntityType>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3358,7 +3389,7 @@
             <PropertyRef Name="HEADER_FOOTER_FORM_MAP_ID" />
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="IS_HEADER_SET" Type="Boolean" />
           <Property Name="IS_FOOTER_SET" Type="Boolean" />
           <Property Name="HEADER_FOOTER_ID" Type="Int32" Nullable="false" />
@@ -3782,6 +3813,7 @@
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="T1001W" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="EX_GROUP_TYPE" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -5210,6 +5242,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EX_GOODTYP_ID" Type="Int32" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="EX_GROUP_TYPE" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
+        <Association Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GOODTYP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5219,7 +5272,6 @@
           <EntitySetMapping Name="CK5">
             <EntityTypeMapping TypeName="EMSModel.CK5">
               <MappingFragment StoreEntitySet="CK5">
-                <ScalarProperty Name="SUBMISSION_NUMBER" ColumnName="SUBMISSION_NUMBER" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
                 <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
@@ -5259,6 +5311,7 @@
                 <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
                 <ScalarProperty Name="EX_GOODS_TYPE_ID" ColumnName="EX_GOODS_TYPE_ID" />
                 <ScalarProperty Name="REGISTRATION_NUMBER" ColumnName="REGISTRATION_NUMBER" />
+                <ScalarProperty Name="SUBMISSION_NUMBER" ColumnName="SUBMISSION_NUMBER" />
                 <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
                 <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
                 <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
@@ -5973,6 +6026,15 @@
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EX_GROUP_TYPE">
+            <EntityTypeMapping TypeName="EMSModel.EX_GROUP_TYPE">
+              <MappingFragment StoreEntitySet="EX_GROUP_TYPE">
+                <ScalarProperty Name="EX_GOODTYP_ID" ColumnName="EX_GOODTYP_ID" />
+                <ScalarProperty Name="GROUP_NAME" ColumnName="GROUP_NAME" />
+                <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
