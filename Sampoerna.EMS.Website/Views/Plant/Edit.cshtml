@@ -1,0 +1,61 @@
+﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
+
+@{
+    ViewBag.Title = "Edit Master Plant";
+}
+@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Update Master Plan</h3>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "Plant")">
+                        <button class="btn btn-grey">Cancel</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Update Master Plant
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">ID Card</label>
+                                                    <div class="col-md-9">
+                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC.NPPBKC_NO, Model.Nppbkc, "Select", new { @class = "form-control", id = "dropBoxUserName" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.NPPBKC.NPPBKC_NO)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+

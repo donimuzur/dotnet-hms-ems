@@ -13,6 +13,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T1001W> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private string includeTables = "ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP";
         
         public PlantBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -28,7 +29,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<T1001W> GetAll()
         {
-            return _repository.Get().ToList();
+            return _repository.Get(null, null, includeTables).ToList();
         }
 
         public void save(T1001W plantT1001W)
