@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -185,7 +185,7 @@
           <Key>
             <PropertyRef Name="EX_GROUP_TYPE_ID" />
           </Key>
-          <Property Name="EX_GROUP_TYPE_ID" Type="int" Nullable="false" />
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="EX_GOODTYP_ID" Type="int" />
         </EntityType>
@@ -231,7 +231,7 @@
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="HEADER_FOOTER_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_TYPE_ID" Type="int" />
+          <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="IS_HEADER_SET" Type="bit" />
           <Property Name="IS_FOOTER_SET" Type="bit" />
         </EntityType>
@@ -653,7 +653,6 @@
           <Property Name="ADDR1" Type="nvarchar" MaxLength="50" />
           <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
           <Property Name="CITY" Type="nvarchar" MaxLength="50" />
-          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="15" />
           <Property Name="KPPBC_ID" Type="bigint" />
           <Property Name="REGION_OFFICE" Type="nvarchar" MaxLength="20" />
           <Property Name="COMPANY_ID" Type="bigint" />
@@ -662,6 +661,7 @@
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -678,7 +678,7 @@
           </Key>
           <Property Name="POA_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="POA_CODE" Type="nvarchar" MaxLength="12" Nullable="false" />
-          <Property Name="POA_ID_CARD" Type="nvarchar" MaxLength="22" Nullable="false" />
+          <Property Name="POA_ID_CARD" Type="nvarchar" MaxLength="22" />
           <Property Name="POA_ADDRESS" Type="nvarchar" MaxLength="100" />
           <Property Name="POA_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="50" />
@@ -3080,6 +3080,7 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_USER1" FromRole="CK5" ToRole="USER" />
+          <Property Name="SUBMISSION_NUMBER" Type="String" Unicode="true" FixedLength="false" MaxLength="30" />
           
         </EntityType>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3388,7 +3389,7 @@
             <PropertyRef Name="HEADER_FOOTER_FORM_MAP_ID" />
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="IS_HEADER_SET" Type="Boolean" />
           <Property Name="IS_FOOTER_SET" Type="Boolean" />
           <Property Name="HEADER_FOOTER_ID" Type="Int32" Nullable="false" />
@@ -3928,7 +3929,7 @@
           </Key>
           <Property Name="POA_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="POA_CODE" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" />
           <Property Name="POA_ADDRESS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="POA_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5310,6 +5311,7 @@
                 <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
                 <ScalarProperty Name="EX_GOODS_TYPE_ID" ColumnName="EX_GOODS_TYPE_ID" />
                 <ScalarProperty Name="REGISTRATION_NUMBER" ColumnName="REGISTRATION_NUMBER" />
+                <ScalarProperty Name="SUBMISSION_NUMBER" ColumnName="SUBMISSION_NUMBER" />
                 <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
                 <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
                 <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
