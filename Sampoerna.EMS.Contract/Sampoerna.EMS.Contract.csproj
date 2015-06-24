@@ -46,6 +46,7 @@
     <Compile Include="IDocumentSequenceNumberBLL.cs" />
     <Compile Include="IEmailTemplateBLL.cs" />
     <Compile Include="IGenericRepository.cs" />
+    <Compile Include="IHeaderFooterBLL.cs" />
     <Compile Include="IMasterDataBLL.cs" />
     <Compile Include="IMonthBLL.cs" />
     <Compile Include="INPPBKCPlant.cs" />

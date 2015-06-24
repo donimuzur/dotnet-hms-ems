@@ -1,0 +1,87 @@
+﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterItemViewModel
+
+@{
+    ViewBag.Title = "Details Header Footer";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="scroll">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Header Footer
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Company Code</label>
+                                                    <div class="col-md-8">
+                                                        @Html.DisplayFor(model => model.Detail.COMPANY_CODE)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Company Name</label>
+                                                    <div class="col-md-8">
+                                                        @Html.DisplayFor(model => model.Detail.COMPANY_NAME)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4 long">Company Footer</label>
+                                                    <div class="col-md-8">
+                                                        @Html.Raw(Model.Detail.FOOTER_CONTENT)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Header Image</label>
+                                                    <div class="col-md-8">
+                                                        <img src="@Url.Content(Model.Detail.HEADER_IMAGE_PATH)" width="250"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Header</th>
+                                    <th>Footer</th>
+                                    <th>Preview</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Detail.HeaderFooterMapList) {
+                                    
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

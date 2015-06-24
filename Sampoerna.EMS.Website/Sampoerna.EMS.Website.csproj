@@ -219,6 +219,7 @@
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\ExcisableGoodsTypeGroupController.cs" />
+    <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -240,6 +241,8 @@
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
+    <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
+    <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -318,6 +321,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\upload\header\sample_header.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -644,6 +648,10 @@
     <Content Include="Views\POA\Create.cshtml" />
     <Content Include="Views\POA\Edit.cshtml" />
     <Content Include="Views\POA\Detail.cshtml" />
+    <Content Include="Views\HeaderFooter\Index.cshtml" />
+    <Content Include="Views\HeaderFooter\Create.cshtml" />
+    <Content Include="Views\HeaderFooter\Edit.cshtml" />
+    <Content Include="Views\HeaderFooter\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

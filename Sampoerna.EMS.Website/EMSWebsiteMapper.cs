@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -9,6 +10,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
+using Sampoerna.EMS.Website.Models.HeaderFooter;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
@@ -183,6 +185,13 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.User.USER_ID));
 
            #endregion
+
+            Mapper.CreateMap<HeaderFooter, HeaderFooterItem>().IgnoreAllNonExisting();
+            Mapper.CreateMap<HeaderFooterMap, HeaderFooterMapItem>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<HeaderFooterDetails, HeaderFooterDetailItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.HeaderFooterMapList,
+                    opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMapItem>>(src.HeaderFooterMapList)));
 
         }
     }
