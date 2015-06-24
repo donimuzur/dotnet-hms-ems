@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
@@ -28,6 +29,31 @@ namespace Sampoerna.EMS.BLL
         public List<T1001W> GetAll()
         {
             return _repository.Get().ToList();
+        }
+
+        public void save(T1001W plantT1001W)
+        {
+            if (plantT1001W.PLANT_ID != 0)
+            {
+                //update
+                _repository.Update(plantT1001W);
+            }
+            else
+            {
+                //Insert
+                _repository.Insert(plantT1001W);
+            }
+
+            try
+            {
+                _uow.SaveChanges();
+
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+
+            }
         }
     }
 }

@@ -15,10 +15,8 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_POA> _repository;
-        private string includeTables = "ZAIDM_POA_MAP";
-        private string includeTablesPoa = "USER";
-
-
+        private string includeTables = "ZAIDM_POA_MAP, USER";
+        
         public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -63,9 +61,6 @@ namespace Sampoerna.EMS.BLL
             
         }
 
-        public List<ZAIDM_EX_POA> GetAllPoa()
-        {
-            return _repository.Get(null, null, includeTablesPoa).ToList();
-        }
+       
     }
 }

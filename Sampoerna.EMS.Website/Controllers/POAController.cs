@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = Enums.MenuList.MasterData,
                 CurrentMenu = PageInfo,
-                Details = _poaBll.GetAllPoa()
+                Details = _poaBll.GetAll()
             };
 
             ViewBag.Message = TempData["message"];
