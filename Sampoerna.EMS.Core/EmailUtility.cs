@@ -12,25 +12,19 @@ namespace Sampoerna.EMS.Core
 {
     public class EmailUtility
     {
-        public static void Email(string to,
+        public static void Email(
                          string body,
-                         string subject,
-                         string fromAddress,
-                         string fromDisplay,
-                         string credentialUser,
-                         string credentialPassword,
                          params MailAttachment[] attachments)
         {
-            string host = ConfigurationManager.AppSettings["SMTPHost"];
-            //body = UpgradeEmailFormat(body);
             try
             {
-                MailMessage mail = new MailMessage();
+                var config = EmailConfiguration.GetConfig();
+               MailMessage mail = new MailMessage();
                 mail.Body = body;
                 mail.IsBodyHtml = true;
-                mail.To.Add(new MailAddress(to));
-                mail.From = new MailAddress(fromAddress, fromDisplay, Encoding.UTF8);
-                mail.Subject = subject;
+                mail.To.Add(new MailAddress(config.To));
+                mail.From = new MailAddress(config.Sender, config.SenderDisplay, Encoding.UTF8);
+                mail.Subject = config.Subject;
                 mail.SubjectEncoding = Encoding.UTF8;
                 mail.Priority = MailPriority.Normal;
                 if (attachments != null)
@@ -41,9 +35,9 @@ namespace Sampoerna.EMS.Core
                     }
                 }
                 SmtpClient smtp = new SmtpClient();
-                smtp.Credentials = new System.Net.NetworkCredential(credentialUser, credentialPassword);
-                smtp.Host = host;
-                smtp.Port = 587;
+                smtp.Credentials = new System.Net.NetworkCredential(config.User, config.Password);
+                smtp.Host = config.Host;
+                smtp.Port = config.Port;
                 smtp.Send(mail);
             }
             catch(Exception ex)

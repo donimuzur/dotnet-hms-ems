@@ -33,13 +33,14 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_POA_MAP();
                     var poaCode  = xElement.Element("POA_ID").Value;
+
                     var existingPoa = new XmlPoaDataMapper(null).GetExPoa(poaCode);
                     if(existingPoa == null)
-                        continue;
+                        throw  new Exception("No Existing POA with POA ID "+ poaCode);
                     var plantCode = xElement.Element("PLANT_ID").Value;
                     var existingPlant = new XmlPlantDataMapper(null).GetPlant(plantCode);
                     if(existingPlant == null)
-                        continue;
+                        throw new Exception("No Existing Plant with Plant ID " + plantCode);
                     item.PLANT_ID = existingPlant.PLANT_ID;
                     item.POA_ID = existingPoa.POA_ID;
                     item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;

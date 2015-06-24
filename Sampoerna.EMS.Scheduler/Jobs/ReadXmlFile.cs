@@ -42,8 +42,8 @@ namespace Sampoerna.HMS.Scheduler.Jobs
         {
             using (_container.BeginLifetimeScope())
             {
-                
-               
+
+                var config = EmailConfiguration.GetConfig();
                 var loggerFactory = _container.GetInstance<ILoggerFactory>();
                 ILogger logger = loggerFactory.GetLogger("Scheduler");
                 var errorList = new List<string>();
@@ -62,7 +62,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 }
                 if (errorList.Count > 0)
                 {
-                    EmailUtility.Email("adnansetiawan@gmail.com", StringErrorList(errorList), "Test Error Email", "EMSScheduler@gmail.com", "EMS Scheduler", "adnan@voxteneo.asia", "Adnan_989", null);
+                    EmailUtility.Email(StringErrorList(errorList), null);
            
                 }
 

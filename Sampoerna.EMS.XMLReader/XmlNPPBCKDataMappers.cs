@@ -31,14 +31,16 @@ namespace Sampoerna.EMS.XMLReader
                     item.ADDR1 = xElement.Element("ADDR1").Value;
                     item.ADDR2 = xElement.Element("ADDR2").Value;
                     item.CITY = xElement.Element("CITY").Value;
+                    var kppbcNo = xElement.Element("KPPBC_NO").Value;
                     var kppbc = new XmlKPPBCDataMapper(null
-                        ).GetKPPBC(xElement.Element("KPPBC_NO").Value);
+                        ).GetKPPBC(kppbcNo);
                     if(kppbc == null)
-                        continue;
+                        throw new Exception("no existing KPPBC NO " + kppbcNo);
                     item.KPPBC_ID = kppbc.KPPBC_ID;
-                    var company = new XmlCompanyDataMapper(null).GetCompany(xElement.Element("BUKRS").Value);
+                    var companyCode = xElement.Element("BUKRS").Value;
+                    var company = new XmlCompanyDataMapper(null).GetCompany(companyCode);
                     if(company == null)
-                        continue;
+                        throw new Exception("no existing Company Code " + companyCode);
                     item.COMPANY_ID = company.COMPANY_ID;
 
                     item.CREATED_DATE = DateTime.Now;

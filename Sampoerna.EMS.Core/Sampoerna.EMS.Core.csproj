@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Constans.cs" />
     <Compile Include="EmailUtility.cs" />
+    <Compile Include="EmailConfiguration.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions\BLLException.cs" />
     <Compile Include="Exceptions\ExceptionBase.cs" />
