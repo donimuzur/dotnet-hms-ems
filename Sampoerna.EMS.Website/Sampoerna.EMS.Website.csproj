@@ -239,6 +239,7 @@
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />

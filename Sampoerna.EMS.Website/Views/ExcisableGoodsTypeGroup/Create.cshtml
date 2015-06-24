@@ -1,4 +1,6 @@
-﻿
+﻿@model Sampoerna.EMS.Website.Models.GOODSTYPE.GoodsTypeGroupCreateViewModel
+
+
 @using (Html.BeginForm("Create", "ExcisableGoodsTypeGroup", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
@@ -40,30 +42,13 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Group Name</label>
                                                     <div class="col-md-4">
-                                                        <input type="text" class="form-control" placeholder="">
+                                                        
+                                                        @Html.TextBoxFor(model => model.GroupName, new { @class = "form-control" })
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
-                                                <div class="row">
-                                                    <label class="col-md-2">Excise Group Type</label>
-                                                    <div class="col-md-4">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <input type="checkbox" name="yes"> Hasil Tembakau
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <input type="checkbox" name="no"> TIS
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <input type="checkbox" name="no"> TIS Reject
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <input type="checkbox" name="no"> Etil Alkohol
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                              @Html.Partial("_ListGroupDetails")
                                             </div>
                                         </div>
                                     </div>
