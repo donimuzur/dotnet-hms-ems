@@ -64,6 +64,7 @@
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
+    <Compile Include="DocumentSequenceNumberBLL.cs" />
     <Compile Include="MasterDataBLL.cs" />
     <Compile Include="MonthBLL.cs" />
     <Compile Include="PageBLL.cs" />

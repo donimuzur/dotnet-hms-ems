@@ -44,6 +44,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            return nppbkcbll.GetById(id);
+        }
+
         public static SelectList GetSupplierPortList()
         {
             ISupplierPortBLL supplierPortBll = MvcApplication.GetInstance<SupplierPortBLL>();
