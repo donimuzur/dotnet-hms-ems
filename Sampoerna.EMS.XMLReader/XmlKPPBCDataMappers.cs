@@ -32,9 +32,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.CK1_KEP_FOOTER = xElement.Element("CK1_KEP_FOOTER").Value;
                     item.CK1_KEP_HEADER = xElement.Element("CK1_KEP_HEADER").Value;
                     item.MODIFIED_DATE = DateTime.Now;
-                    //item.MODIFIED_BY = 100;
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); ;
                     var existingKppbc = GetKPPBC(item.KPPBC_NUMBER);
                     if (existingKppbc != null)
                     {

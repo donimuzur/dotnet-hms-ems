@@ -18,8 +18,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> FORM_TYPE_ID { get; set; }
         public Nullable<bool> IS_HEADER_SET { get; set; }
         public Nullable<bool> IS_FOOTER_SET { get; set; }
-        public long COMPANY_ID { get; set; }
+        public int HEADER_FOOTER_ID { get; set; }
     
-        public virtual T1001 T1001 { get; set; }
+        public virtual HEADER_FOOTER HEADER_FOOTER { get; set; }
     }
 }
