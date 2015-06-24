@@ -77,14 +77,23 @@ namespace Sampoerna.EMS.XMLReader
 
         private void MoveFile()
         {
-            string sourcePath = _xmlName;
-            string archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
-            var sourcefileName = Path.GetFileName(sourcePath);
-            var destPath = Path.Combine(archievePath, sourcefileName);
-            if (File.Exists(destPath))
-                return;
+            try
+            {
+                string sourcePath = _xmlName;
+                string archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+                var sourcefileName = Path.GetFileName(sourcePath);
+                var destPath = Path.Combine(archievePath, sourcefileName);
+                if (File.Exists(destPath))
+                    return;
 
-            File.Move(sourcePath, destPath);
+                File.Move(sourcePath, destPath);
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+          
         }
 
 

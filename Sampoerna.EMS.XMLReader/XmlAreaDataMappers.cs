@@ -17,9 +17,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
        
-        public XmlAreaDataMapper()
+        public XmlAreaDataMapper(string fileName)
         {
-            _xmlMapper = new XmlDataMapper("T1001K");
+            _xmlMapper = new XmlDataMapper(fileName);
            
         }
 
