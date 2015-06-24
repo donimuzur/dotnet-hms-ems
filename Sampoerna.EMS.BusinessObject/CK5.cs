@@ -63,7 +63,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string SUBMISSION_NUMBER { get; set; }
-        public string SUBISSION_NUMBER { get; set; }
     
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
