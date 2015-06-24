@@ -96,6 +96,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="EX_GROUP_TYPE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="EX_SETTLEMENT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
