@@ -12,14 +12,12 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class HEADER_FOOTER_FORM_MAP
+    public partial class EX_GROUP_TYPE
     {
-        public int HEADER_FOOTER_FORM_MAP_ID { get; set; }
-        public Nullable<int> FORM_TYPE_ID { get; set; }
-        public Nullable<bool> IS_HEADER_SET { get; set; }
-        public Nullable<bool> IS_FOOTER_SET { get; set; }
-        public int HEADER_FOOTER_ID { get; set; }
+        public int EX_GROUP_TYPE_ID { get; set; }
+        public string GROUP_NAME { get; set; }
+        public Nullable<int> EX_GOODTYP_ID { get; set; }
     
-        public virtual HEADER_FOOTER HEADER_FOOTER { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
     }
 }
