@@ -35,10 +35,8 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_POA();
                     var poaCodeXml = xElement.Element("POA_ID").Value;
-
                     var exisitingPoa = GetExPoa(poaCodeXml);
-                    var podDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out podDateXml);
+                    var podDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     item.POA_CODE = poaCodeXml;
                     item.POA_ID_CARD = xElement.Element("POA_ID_CARD").Value;
                     item.POA_PRINTED_NAME = xElement.Element("POA_PRINTED_NAME").Value;

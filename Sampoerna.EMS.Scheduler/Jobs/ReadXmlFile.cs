@@ -20,64 +20,53 @@ namespace Sampoerna.HMS.Scheduler.Jobs
         {
             _container = container;
         }
+
+        private string StringErrorList(List<string> errorList)
+        {
+            string result = string.Empty;
+            result += "<p>There are error of these files below :</p>";
+            foreach (var error in errorList)
+            {
+                if (error.Contains("String was not recognized as a valid DateTime"))
+                {
+                    result += "<p>" + error + ", valid format datetime is yyyy-MM-dd</p>";
+                    continue;
+                    
+                }
+                result += "<p>"+error+"</p>";
+            }
+            return result;
+        }
+
         public void Execute(IJobExecutionContext context)
         {
             using (_container.BeginLifetimeScope())
             {
                 
-                
+               
                 var loggerFactory = _container.GetInstance<ILoggerFactory>();
                 ILogger logger = loggerFactory.GetLogger("Scheduler");
-
+                var errorList = new List<string>();
                 try
                 {
-                    Console.WriteLine("start...");
+                     
                     logger.Info("Reading XML start on " + DateTime.Now);
                     Service svc = new Service();
-                    Console.WriteLine("POA Running...");
-                    svc.PoaRunning();
-                    Console.WriteLine("POA Map Running...");
-                    svc.PoaMapRunning();
-                    Console.WriteLine("Company Running...");
-                    svc.CompanyRunning();
-                    Console.WriteLine("KPPBC Running...");
-                    svc.KPPBCRunning();
-                    Console.WriteLine("NPPBCK Running...");
-                    svc.NPPBKCRunning();
-                    Console.WriteLine("Vendor Running...");
-                    svc.VendorRunning();
-                    Console.WriteLine("PCode Running...");
-                    svc.PCodeRunning();
-                    Console.WriteLine("Plant Running...");
-                    svc.PlantRunning();
-                    Console.WriteLine("Market Running...");
-                    svc.MarketRunning();
-                    Console.WriteLine("GoodType Running...");
-                   
-                    svc.GoodTypeRunning();
-                    Console.WriteLine("UoM Running...");
-                   
-                    svc.UoMRunning();
-                    Console.WriteLine("ProdType Running...");
-                    svc.ProdTypeRunning();
-                    Console.WriteLine("Series Running...");
-                   
-                    svc.SeriesRunning();
-                    Console.WriteLine("Brand Running...");
-                   
-                    svc.BrandRunning();
-                    Console.WriteLine("Material Running...");
-                   
-                    svc.MaterialRunning();
+                    errorList.AddRange(svc.Run());
                     logger.Info("Reading XML ended On " + DateTime.Now);
                 }
                 catch (Exception ex)
                 {
-                    EmailUtility.Email("mugia@voxteneo.asia", ex.Message, "Test Error Email", "EMSScheduler@gmail.com", "EMS Scheduler", "adnan@voxteneo.asia", "Adnan_989", null);
-           
+                    
                     logger.Error("Reading XML crashed", ex);
                 }
-              }
+                if (errorList.Count > 0)
+                {
+                    EmailUtility.Email("adnansetiawan@gmail.com", StringErrorList(errorList), "Test Error Email", "EMSScheduler@gmail.com", "EMS Scheduler", "adnan@voxteneo.asia", "Adnan_989", null);
+           
+                }
+
+            }
         }
     }
 }

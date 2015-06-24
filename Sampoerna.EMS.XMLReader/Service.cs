@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.ModelConfiguration.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,206 +23,92 @@ namespace Sampoerna.EMS.XMLReader
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
         }
 
-
-        public void PoaRunning()
+        private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            var files = xmlfiles.Where(x => x.Contains("POA-"));
-            foreach (var xmlfile in files)
+            if (xmlfile.Contains("POA-"))
             {
-                reader = new XmlPoaDataMapper(xmlfile);
-                reader.InsertToDatabase();
-                
+                return new XmlPoaDataMapper(xmlfile);
             }
-        }
-        public void PoaMapRunning()
-        {
-            var files = xmlfiles.Where(x => x.Contains("POAMAP"));
-           
-            foreach (var xmlfile in files)
+            else if (xmlfile.Contains("POAMAP"))
             {
-                
-                reader = new XmlPoaMapDataMapper(xmlfile);
-                reader.InsertToDatabase();
-                
+                return new XmlPoaMapDataMapper(xmlfile);
             }
-        }
-        public void CompanyRunning()
-        {
-            
-            var files = xmlfiles.Where(x => x.Contains("COY"));
-           
-            foreach (var xmlfile in files)
+            else if (xmlfile.Contains("COY"))
             {
-                
-                reader = new XmlCompanyDataMapper(xmlfile);
-                reader.InsertToDatabase();
-                
+                return new XmlCompanyDataMapper(xmlfile);
             }
-        }
-        public void KPPBCRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("KPPBC"));
-
-            foreach (var xmlfile in files)
+            else if (xmlfile.Contains("NPPBKC"))
             {
-
-                reader = new XmlKPPBCDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
+                return new XmlNPPBKCDataMapper(xmlfile);
             }
-        }
-        public void NPPBKCRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("NPPBKC"));
-
-            foreach (var xmlfile in files)
+            else if (xmlfile.Contains("KPPBC"))
             {
-
-                reader = new XmlNPPBKCDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
+               return  new XmlKPPBCDataMapper(xmlfile);
             }
-        }
-        public void VendorRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("VENDOR"));
-
-            foreach (var xmlfile in files)
+            else if (xmlfile.Contains("VENDOR"))
             {
-
-                reader = new XmlVendorDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
+                return  new XmlVendorDataMapper(xmlfile);
             }
-        }
-        public void UoMRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("UOM"));
-
-            foreach (var xmlfile in files)
+            else if (xmlfile.Contains("UOM"))
             {
-
-                reader = new XmlUoMDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
+                return  new XmlUoMDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("MARKET"))
+            {
+                return  new XmlMarketDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PRODTYP"))
+            {
+                return new XmlProdTypeDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PCODE"))
+            {
+                return new XmlPCodeDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("SERIES"))
+            {
+                return new XmlSeriesDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PLANT-"))
+            {
+                return new XmlPlantDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("GOODT"))
+            {
+                return new XmlGoodsTypeDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("BRANDREG"))
+            {
+                return  new XmlBrandDataMapper(xmlfile);
+            }
+            return null;
         }
 
-        public void MarketRunning()
+        public List<string> Run()
         {
-
-            var files = xmlfiles.Where(x => x.Contains("MARKET"));
-
-            foreach (var xmlfile in files)
+            var errorList = new List<string>();
+            foreach (var xmlfile in xmlfiles)
             {
-
-                reader = new XmlMarketDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
+                try
+                {
+                    IXmlDataReader reader = XmlReaderFactory(xmlfile);
+                  
+                    if (reader != null)
+                    {
+                        reader.InsertToDatabase();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errorList.Add(string.Format("<b>File: {0} </b> -> Error : {1}", xmlfile, ex.Message));
+                    continue;
+                }
             }
+            return errorList;
         }
 
-        public void SeriesRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("SERIES"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlSeriesDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
-
-        public void ProdTypeRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("PRODTYP"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlProdTypeDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
-
-        public void PCodeRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("PCODE"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlPCodeDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
-
-        public void PlantRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("PLANT-"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlPlantDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
-
-        public void BrandRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("BRANDREG"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlBrandDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
-
-        public void MaterialRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("MATERIAL"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlMaterialDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
-
-        public void GoodTypeRunning()
-        {
-
-            var files = xmlfiles.Where(x => x.Contains("GOODT"));
-
-            foreach (var xmlfile in files)
-            {
-
-                reader = new XmlGoodsTypeDataMapper(xmlfile);
-                reader.InsertToDatabase();
-
-            }
-        }
+     
+       
         
     }
 }
