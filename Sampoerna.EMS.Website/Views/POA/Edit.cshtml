@@ -1,0 +1,147 @@
+﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
+
+@{
+    ViewBag.Title = "Update POA (Power of Attorney)";
+}
+@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Update POA</h3>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "POA")">
+                        <button class="btn btn-grey">Cancel</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Update POA
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">ID Card</label>
+                                                    <div class="col-md-9">
+                                                        @Html.HiddenFor(model => model.Detail.PoaId)
+                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", id = "txtBoxIdCard" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaId)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Poa Code</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control", id = "txtBoxPoaCode" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaCode)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">User Name</label>
+                                                    <div class="col-md-9">
+                                                        @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "Select", new { @class = "form-control", id = "txtBoxUserName" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaCode)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Printed Name</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", id = "txtBoxPrintedName" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaPrintedName)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Phone</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", id = "txtBoxPoaPhone" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaPhone)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Address</label>
+                                                    <div class="col-md-9" r>
+                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "txtArea" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Title</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.Title)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+        $(window).load(function () {
+            @{
+                if (@Model.Detail.isNewData == false)
+                {
+                    @: document.getElementById('txtBoxIdCard').disabled = true;
+                    @: document.getElementById('txtBoxPoaCode').disabled = true;
+                    @: document.getElementById('txtBoxUserName').disabled = true;
+                    @: document.getElementById('txtBoxPrintedName').disabled = true;
+                    @: document.getElementById('txtBoxPoaPhone').disabled = true;
+                    @: document.getElementById('txtArea').disabled = true;
+                                                                }
+                else
+                {
+                    @: document.getElementById('txtBoxIdCard').disabled = false;
+                    @: document.getElementById('txtBoxPoaCode').disabled = false;
+                    @: document.getElementById('txtBoxUserName').disabled = false;
+                    @: document.getElementById('txtBoxPrintedName').disabled = false;
+                    @: document.getElementById('txtBoxPoaPhone').disabled = false;
+                    @: document.getElementById('txtArea').disabled = false;
+
+                }
+            }
+
+        });
+    </script>
+}
+
+

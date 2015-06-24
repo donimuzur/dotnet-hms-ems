@@ -168,6 +168,7 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_SERIES" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" />
+        <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_T1001" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

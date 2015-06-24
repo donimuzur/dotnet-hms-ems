@@ -54,6 +54,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                     Service svc = new Service();
                     errorList.AddRange(svc.Run());
                     logger.Info("Reading XML ended On " + DateTime.Now);
+                    
                 }
                 catch (Exception ex)
                 {
