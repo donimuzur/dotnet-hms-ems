@@ -40,6 +40,8 @@ namespace Sampoerna.EMS.Website.Models.PLANT
 
         public long PlantId { get; set; }
 
+        public T1001W WerksT1001W { get; set; }
+
         [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Werks")]
         public string Werks { get; set; }

@@ -40,7 +40,7 @@
                                                     <label class="col-md-3">Plant Id</label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(model => model.Detail.PlantId)
-                                                        @Html.DropDownListFor(model => model.Detail.PlantId, Model.PlantIdListItems, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.WerksT1001W.PLANT_ID, Model.PlantIdListItems, "Select", new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PlantId)
                                                     </div>
                                                 </div>
@@ -95,6 +95,8 @@
                                                     <label class="col-md-4">Main Plant</label>
                                                     <div class="col-md-2">
                                                         @Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })
+                                                        @Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })
+                                                       
                                                     </div>
 
                                                 </div>

@@ -209,7 +209,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<PlantViewModel, T1001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
-                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription))
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription + "-" + src.City ))
                 .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
                 .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
