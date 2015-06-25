@@ -11,12 +11,14 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_GOODTYP> _repository;
-        
+        private IGenericRepository<EX_GROUP_TYPE> _repositoryGroup;
+
         public ZaidmExGoodTypeBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
+            _repositoryGroup = _uow.GetGenericRepository<EX_GROUP_TYPE>();
         }
 
         public ZAIDM_EX_GOODTYP GetById(int id)
@@ -28,5 +30,7 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.Get().ToList();
         }
+
+       
     }
 }
