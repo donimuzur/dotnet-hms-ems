@@ -1,5 +1,5 @@
 ﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterViewModel
-           
+
 @section styles
     {
     <link rel="stylesheet" type="text/css" href="~/Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
@@ -30,11 +30,11 @@
                         .draw();
                 });
             });
-            
+
             $("#headerfootertable_filter").hide();
             $('#headerfootertable_length').hide();
             $('#headerfootertable_info').hide();
-            
+
         });
     </script>
 }
@@ -47,12 +47,9 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>@ViewBag.Title</h3>
+            <h3>HEADER FOOTER</h3>
             <div class="action-button new">
-                @*<a href="@Url.Action("Create", "Virtual")">
-                        <button class="btn btn-blue">NEW</button>
-                    </a>*@
-                <a data-toggle="modal" data-target=".menu-maping-type" href="@Url.Action("Create", "HeaderFooter")"><button class="btn btn-blue">NEW</button></a>
+                <a href="@Url.Action("create", "headerfooter")"><button class="btn btn-blue">NEW</button></a>
             </div>
         </div>
     </div>
@@ -96,7 +93,11 @@
                                 <td>@Html.DisplayFor(model => item.COMPANY_CODE)</td>
                                 <td>@Html.DisplayFor(model => item.COMPANY_NAME)
                                 <td>
-                                    <img src="@Url.Content(@item.HEADER_IMAGE_PATH)" width="100" />
+                                    @if (!string.IsNullOrEmpty(item.HEADER_IMAGE_PATH))
+                                    {
+                                        <img src="@Url.Content(@item.HEADER_IMAGE_PATH)" width="100" />
+                                    }
+
                                 </td>
                                 <td class="last">
                                     @*@Html.DisplayFor(model => item.FOOTER_CONTENT)*@
@@ -110,4 +111,3 @@
         </div>
     </div>
 </div>
-

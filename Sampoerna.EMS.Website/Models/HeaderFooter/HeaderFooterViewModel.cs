@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
+using System.Web.Mvc;
+using Sampoerna.EMS.Website.Helpers;
 
 namespace Sampoerna.EMS.Website.Models.HeaderFooter
 {
@@ -11,7 +14,16 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
 
     public class HeaderFooterItemViewModel : BaseModel
     {
+
         public HeaderFooterDetailItem Detail { get; set; }
+
+        public SelectList CompanyList { get; set; }
+
+        // in our viewmodel we will be posting files....
+        //use Data Annotations to validate properties
+        [ValidateFile(MaximumSize = 100)]
+        public HttpPostedFileBase HeaderImageFile { get; set; }
+
     }
 
     public class HeaderFooterItem
@@ -20,6 +32,8 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
         public string FORM_NAME { get; set; }
         public long? COMPANY_ID { get; set; }
         public string HEADER_IMAGE_PATH { get; set; }
+        public string HEADER_IMAGE_PATH_BEFOREEDIT { get; set; }
+
         public string FOOTER_CONTENT { get; set; }
         public bool? IS_ACTIVE { get; set; }
         public DateTime? CREATED_DATE { get; set; }

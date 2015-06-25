@@ -4,7 +4,17 @@
     ViewBag.Title = "Details Header Footer";
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Header Footer Form</h3>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "HeaderFooter")" class="btn btn-grey">Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container-wrap">
     <div class="row">
@@ -16,20 +26,20 @@
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Header Footer
+                                        @ViewBag.Title
                                         <i class="fa fa-caret-down"></i>
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
-                                    <form class="form-excise" role="form">
+                                    <div class="form-excise" role="form">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-4">Company Code</label>
                                                     <div class="col-md-8">
-                                                        @Html.DisplayFor(model => model.Detail.COMPANY_CODE)
+                                                        @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "form-control" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -37,7 +47,7 @@
                                                 <div class="row">
                                                     <label class="col-md-4">Company Name</label>
                                                     <div class="col-md-8">
-                                                        @Html.DisplayFor(model => model.Detail.COMPANY_NAME)
+                                                        <input id="Detail_COMPANY_NAME" name="Detail.COMPANY_NAME" type="text" class="form-control" placeholder="" disabled />
                                                     </div>
                                                 </div>
                                             </div>
@@ -45,7 +55,7 @@
                                                 <div class="row">
                                                     <label class="col-md-4 long">Company Footer</label>
                                                     <div class="col-md-8">
-                                                        @Html.Raw(Model.Detail.FOOTER_CONTENT)
+                                                        <textarea class="form-control" rows="5" id="comment"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -53,18 +63,23 @@
                                                 <div class="row">
                                                     <label class="col-md-4">Header Image</label>
                                                     <div class="col-md-8">
-                                                        <img src="@Url.Content(Model.Detail.HEADER_IMAGE_PATH)" width="250"/>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control">
+                                                            <span class=" input-group-addon file-input btn btn-primary btn-file">
+                                                                Browse <input type="file" multiple>
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="table-container">
-                        <table class="table table-bordered table-striped js-options-table">
+                        <table id="Detail_HeaderFooterMapList" name="Detail.HeaderFooterMapList" class="table table-bordered table-striped js-options-table">
                             <thead>
                                 <tr>
                                     <th>Module</th>
@@ -74,8 +89,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.Detail.HeaderFooterMapList) {
-                                    
+                                @foreach (var item in Model.Detail.HeaderFooterMapList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.FORM_TYPE_DESC
+                                        </td>
+                                        <td><input type="checkbox" checked="@item.IS_HEADER_SET"></td>
+                                        <td><input type="checkbox" checked="@item.IS_FOOTER_SET"></td>
+                                        <td><button class="btn btn-grey">Print Preview</button></td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>

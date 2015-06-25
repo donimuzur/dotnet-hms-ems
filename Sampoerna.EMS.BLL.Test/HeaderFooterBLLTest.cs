@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Remoting.Messaging;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using NSubstitute.Core;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Test
 {
@@ -52,14 +49,14 @@ namespace Sampoerna.EMS.BLL.Test
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = 1,
+                    FORM_TYPE_ID = Enums.FormType.PBKC1,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = false
                 },
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = 2,
+                    FORM_TYPE_ID = Enums.FormType.CK5,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = true
                 }
@@ -91,14 +88,14 @@ namespace Sampoerna.EMS.BLL.Test
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = 1,
+                    FORM_TYPE_ID = Enums.FormType.PBKC1,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = false
                 },
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = 2,
+                    FORM_TYPE_ID = Enums.FormType.CK5,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = true
                 }

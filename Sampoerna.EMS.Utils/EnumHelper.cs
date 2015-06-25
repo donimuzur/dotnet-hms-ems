@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace Sampoerna.EMS.Utils
@@ -46,5 +47,11 @@ namespace Sampoerna.EMS.Utils
                     yield return (TEnum)field.GetValue(null);
             }
         }
+
+        public static IEnumerable<T> GetValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
+
     }
 }

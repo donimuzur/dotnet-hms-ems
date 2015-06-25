@@ -234,6 +234,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
+    <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
