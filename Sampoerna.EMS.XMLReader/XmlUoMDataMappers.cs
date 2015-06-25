@@ -37,8 +37,7 @@ namespace Sampoerna.EMS.XMLReader
                     var uomCodeXml = xElement.Element("CODE").Value;
 
                     var existingUom = GetExUoM(uomCodeXml);
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     item.UOM_NAME = uomCodeXml;
                     item.CREATED_DATE = DateTime.Now;
                     if (existingUom != null)

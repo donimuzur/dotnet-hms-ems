@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1AE63CEC-7C5E-4610-AB4E-28C3E49769EA}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Sampoerna.HMS.Scheduler</RootNamespace>
     <AssemblyName>Sampoerna.HMS.Scheduler</AssemblyName>
@@ -32,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Sampoerna.HMS.Scheduler.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Logging">
@@ -115,6 +118,10 @@
     <ProjectReference Include="..\Sampoerna.EMS.Contract\Sampoerna.EMS.Contract.csproj">
       <Project>{7f4a15c1-8f58-49ea-ba04-0d7ea572954b}</Project>
       <Name>Sampoerna.EMS.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.DAL\Sampoerna.EMS.DAL.csproj">
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>

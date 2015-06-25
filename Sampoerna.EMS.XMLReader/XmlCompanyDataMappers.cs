@@ -30,9 +30,8 @@ namespace Sampoerna.EMS.XMLReader
                     item.BUKRS = xElement.Element("BUKRS").Value;
                     item.BUKRSTXT = xElement.Element("BUTXT").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    var companyDateXml = DateTime.MinValue;
+                    var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var modifiedDateXml =  xElement.Element("MODIFIED_DATE").Value;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out companyDateXml);
                     var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T1001>()
                            .Get(p => p.BUKRS == item.BUKRS)
                            .OrderByDescending(p => p.CREATED_DATE)
