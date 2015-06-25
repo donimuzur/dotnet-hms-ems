@@ -68,12 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
             }
 
-            var viewModel = new POAFormModel();
-            viewModel.MainMenu = Enums.MenuList.MasterData;
-            viewModel.CurrentMenu = PageInfo;
-            viewModel.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");
-            return View(viewModel);
-            //return RedirectToAction("Create");
+            return RedirectToAction("Create");
             
             
         }
