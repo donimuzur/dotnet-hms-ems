@@ -4,20 +4,7 @@
     <script type="text/javascript">
         $('#MenuMasterPlant').addClass('active');
     </script>
-    <script type="text/javascript">
-        $(window).load(function () {
-            document.getElementById('PlantId').disabled = true;
-            document.getElementById('NPPBKC_NO').disabled = true;
-            document.getElementById('PlantDescription').disabled = true;
-            document.getElementById('Address').disabled = true;
-            document.getElementById('City').disabled = true;
-            document.getElementById('Skeptis').disabled = true;
-            document.getElementById('IsMainPlant').disabled = true;
-            document.getElementById('RecieveMaterial').disabled = true;
-
-        });
-    </script>
-
+  
 }
 @{
     ViewBag.Title = "Detail Master Plant";
@@ -27,7 +14,7 @@
         <div class="col-sm-12">
             <h3>Update Master Plan</h3>
             <div class="action-button">
-                <a href="@Url.Action("Index", "Plant")" class="btn btn-grey">Cancel</a>
+                <a href="@Url.Action("Index", "Plant")" class="btn btn-grey">Back</a>
             </div>
         </div>
     </div>
@@ -54,7 +41,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Plant Id</label>
                                                 <div class="col-md-9">
-                                                    @Html.DropDownListFor(model => model.Detail.PlantId, Model.PlantIdListItems, "Select", new { @class = "form-control", id = "PlantId" })
+                                                    @Html.DropDownListFor(model => model.Detail.PlantId, Model.PlantIdListItems, "Select", new { @class = "form-control", @disabled = "false" })
                                                     @Html.ValidationMessageFor(model => model.Detail.PlantId)
                                                 </div>
                                             </div>
@@ -63,7 +50,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">NPPBKC NO</label>
                                                 <div class="col-md-9">
-                                                    @Html.DropDownListFor(model => model.Detail.NPPBKC.NPPBKC_NO, Model.Nppbkc, "Select", new { @class = "form-control", id = "NPPBKC_NO" })
+                                                    @Html.DropDownListFor(model => model.Detail.NPPBKC.NPPBKC_NO, Model.Nppbkc, "Select", new { @class = "form-control", @disabled = "false" })
                                                     @Html.ValidationMessageFor(model => model.Detail.NPPBKC.NPPBKC_NO)
                                                 </div>
                                             </div>
@@ -72,7 +59,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Plant Description</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", id = "PlantDescription" })
+                                                    @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", @disabled = "false" })
                                                     @Html.ValidationMessageFor(model => model.Detail.PlantDescription)
                                                 </div>
                                             </div>
@@ -81,7 +68,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Plant Address</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5", id = "Address" })
+                                                    @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5", @disabled = "false" })
                                                     @Html.ValidationMessageFor(model => model.Detail.Address)
                                                 </div>
                                             </div>
@@ -90,7 +77,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Plant City</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", id = "City" })
+                                                    @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @disabled = "false" })
                                                     @Html.ValidationMessageFor(model => model.Detail.Address)
                                                     @Html.ValidationMessageFor(model => model.Detail.City)
                                                 </div>
@@ -100,7 +87,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">SKEPTIS</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", id = "Skeptis" })
+                                                    @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", @disabled = "false" })
                                                     @Html.ValidationMessageFor(model => model.Detail.Skeptis)
                                                 </div>
                                             </div>
@@ -109,7 +96,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Is Main Plant</label>
                                                 <div class="col-md-2">
-                                                    @Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control", id = "IsMainPlant" })
+                                                    @Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control", @disabled = "false" })
                                                         @Html.ValidationMessageFor(model => model.Detail.IsMainPlant)
                                                     </div>
                                                 </div>
@@ -118,7 +105,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Recieve Material ID</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.GOODTYP.EXC_GOOD_TYP, Model.RecieveMaterialListItems, "Select", new { @class = "form-control", id = "RecieveMaterial" })
+                                                        @Html.DropDownListFor(model => model.Detail.GOODTYP.EXC_GOOD_TYP, Model.RecieveMaterialListItems, "Select", new { @class = "form-control", @disabled = "false" })
                                                         @Html.ValidationMessageFor(model => model.Detail.GOODTYP.EXC_GOOD_TYP)
                                                     </div>
                                                 </div>

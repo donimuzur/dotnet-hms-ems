@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public string Address { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
-        [Display(Name = "City")]
+        [Display(Name = "Plant City")]
         [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string City { get; set; }
 

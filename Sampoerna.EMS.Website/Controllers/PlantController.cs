@@ -27,8 +27,6 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Plant/
         public ActionResult Index()
         {
-            
-
             var plant = new PlantViewModel
             {
                 MainMenu = Enums.MenuList.MasterData,
