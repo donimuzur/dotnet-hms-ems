@@ -24,6 +24,12 @@ namespace Sampoerna.EMS.Website.Controllers
             _headerFooterBll = headerFooterBll;
             _companyBll = companyBll;
         }
+        
+        private SelectList GetCompanyList()
+        {
+            var data = _companyBll.GetMasterData();
+            return new SelectList(data, "COMPANY_ID", "BUKRS");
+        }
 
         //
         // GET: /HeaderFooter/
@@ -54,6 +60,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult InitialCreate(HeaderFooterItemViewModel model)
         {
             model.CompanyList = GetCompanyList();
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = Enums.MenuList.MasterData;
             return View("Create", model);
         }
 
@@ -66,17 +74,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 Detail = new HeaderFooterDetailItem() { HeaderFooterMapList = InitialHeaderFooterMapList() }
             });
         }
-
-        private SelectList GetCompanyList()
-        {
-            var data = _companyBll.GetMasterData();
-            return new SelectList(data, "COMPANY_ID", "BUKRS");
-        }
-
+        
         [HttpPost]
-        public ActionResult Save(HeaderFooterItemViewModel model)
+        public ActionResult Create(HeaderFooterItemViewModel model)
         {
-            bool isEdit = model.Detail.HEADER_FOOTER_ID > 0;
             
             if (ModelState.IsValid)
             {
@@ -84,19 +85,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail.FOOTER_CONTENT = model.Detail.FOOTER_CONTENT.Replace(Environment.NewLine, "<br />");
                 
                 //do upload image header
-                string imageHeaderUrl;
-                if (isEdit)
-                {
-                    //delete first if there is already have header image
-                    DeleteUploadedFile(model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT);
-                    imageHeaderUrl = SaveUploadedFile(model.HeaderImageFile, model.Detail.COMPANY_ID.Value.ToString(),
-                        model.Detail.COMPANY_CODE);
-                }
-                else
-                {
-                    imageHeaderUrl = SaveUploadedFile(model.HeaderImageFile, model.Detail.COMPANY_ID.Value.ToString(),
-                        model.Detail.COMPANY_CODE);
-                }
+                string imageHeaderUrl = SaveUploadedFile(model.HeaderImageFile, model.Detail.COMPANY_ID.Value.ToString(),
+                    model.Detail.COMPANY_CODE);
                 
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
                 
@@ -111,20 +101,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ErrorMessage = saveOutput.ErrorCode + "\n\r" + saveOutput.ErrorMessage;
             }
 
-            return RevertSave(model);
-        }
-
-        private ActionResult RevertSave(HeaderFooterItemViewModel model)
-        {
-            if (model.Detail.HEADER_FOOTER_ID > 0)
-            {
-                //Edit
-                return InitialEdit(model);
-            }
-            //Create
             return InitialCreate(model);
         }
-
+        
         public ActionResult Edit(int id)
         {
             var data = _headerFooterBll.GetDetailsById(id);
@@ -137,9 +116,51 @@ namespace Sampoerna.EMS.Website.Controllers
             return InitialEdit(model);
         }
 
+        [HttpPost]
+        public ActionResult Edit(HeaderFooterItemViewModel model)
+        {
+            
+            if (ModelState.IsValid)
+            {
+                //do save
+                model.Detail.FOOTER_CONTENT = model.Detail.FOOTER_CONTENT.Replace(Environment.NewLine, "<br />");
+
+                //do upload image header
+                //delete first if there is already have header image
+                string imageHeaderUrl;
+                if (model.HeaderImageFile != null)
+                {
+                    DeleteUploadedFile(model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT);
+                    imageHeaderUrl = SaveUploadedFile(model.HeaderImageFile, model.Detail.COMPANY_ID.Value.ToString(),
+                    model.Detail.COMPANY_CODE);
+                }
+                else
+                {
+                    imageHeaderUrl = model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT;
+                }
+
+
+                model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
+
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail));
+
+                if (saveOutput.Success)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                //Set ErrorMessage
+                model.ErrorMessage = saveOutput.ErrorCode + "\n\r" + saveOutput.ErrorMessage;
+            }
+
+            return InitialEdit(model);
+        }
+
         public ActionResult InitialEdit(HeaderFooterItemViewModel model)
         {
             model.CompanyList = GetCompanyList();
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = Enums.MenuList.MasterData;
             return View("Edit", model);
         }
         

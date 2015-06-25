@@ -4,7 +4,7 @@
     ViewBag.Title = "Header Footer";
 }
 
-@using (Html.BeginForm("Save", "HeaderFooter", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create", "HeaderFooter", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -87,7 +87,7 @@
                                         <th>Module</th>
                                         <th>Header</th>
                                         <th>Footer</th>
-                                        <th>Preview</th>
+                                        @*<th>Preview</th>*@
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -96,7 +96,7 @@
                                         <tr>
                                             <td>
                                                 @Html.HiddenFor(x => x.Detail.HeaderFooterMapList[idx].FORM_TYPE_ID)
-                                                @Html.Label(Model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC)
+                                                @Html.DisplayFor(model => model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC);
                                             </td>
                                             <td>
                                                 @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_HEADER_SET)
@@ -104,7 +104,7 @@
                                             <td>
                                                 @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
                                             </td>
-                                            <td><button class="btn btn-grey">Print Preview</button></td>
+                                            @*<td><button class="btn btn-grey">Print Preview</button></td>*@
                                         </tr>
                                     }
                                 </tbody>

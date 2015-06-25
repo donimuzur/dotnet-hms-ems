@@ -16,15 +16,17 @@ namespace Sampoerna.EMS.BLL
     {
 
         private IGenericRepository<HEADER_FOOTER> _repository;
+        private IGenericRepository<HEADER_FOOTER_FORM_MAP> _mapRepository;
         private ILogger _logger;
         private IUnitOfWork _uow;
         private string includeTables = "T1001, HEADER_FOOTER_FORM_MAP";
-
+        
         public HeaderFooterBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<HEADER_FOOTER>();
+            _mapRepository = _uow.GetGenericRepository<HEADER_FOOTER_FORM_MAP>();
         }
 
         public HeaderFooterDetails GetDetailsById(int id)
@@ -39,16 +41,34 @@ namespace Sampoerna.EMS.BLL
 
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData)
         {
-            var data = Mapper.Map<HEADER_FOOTER>(headerFooterData);
+            HEADER_FOOTER dbData = null;
             if (headerFooterData.HEADER_FOOTER_ID > 0)
             {
                 //update
-                _repository.Update(data);
+                dbData =
+                    _repository.Get(c => c.HEADER_FOOTER_ID == headerFooterData.HEADER_FOOTER_ID, null, includeTables)
+                        .FirstOrDefault();
+                //hapus dulu aja ya ? //todo ask the cleanist way
+                var dataToDelete =
+                    _mapRepository.Get(c => c.HEADER_FOOTER_ID == headerFooterData.HEADER_FOOTER_ID)
+                        .ToList();
+                foreach (var item in dataToDelete)
+                {
+                    _mapRepository.Delete(item);
+                }
+
+                dbData = Mapper.Map<HeaderFooterDetails, HEADER_FOOTER>(headerFooterData, dbData);
+
+                dbData.HEADER_FOOTER_FORM_MAP = null;
+                dbData.HEADER_FOOTER_FORM_MAP =
+                    Mapper.Map<List<HEADER_FOOTER_FORM_MAP>>(headerFooterData.HeaderFooterMapList);
+
             }
             else
             {
                 //Insert
-                _repository.Insert(data);
+                dbData = Mapper.Map<HEADER_FOOTER>(headerFooterData);
+                _repository.Insert(dbData);
             }
 
             var output = new SaveHeaderFooterOutput();
@@ -57,7 +77,7 @@ namespace Sampoerna.EMS.BLL
             {
                 _uow.SaveChanges();
                 output.Success = true;
-                output.HeaderFooterId = headerFooterData.HEADER_FOOTER_ID;
+                output.HeaderFooterId = dbData.HEADER_FOOTER_ID;
             }
             catch (Exception exception)
             {
