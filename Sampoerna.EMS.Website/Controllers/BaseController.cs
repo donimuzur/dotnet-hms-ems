@@ -116,12 +116,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (CurrentUser == null)
             {
-                //RedirectToAction("Index", "Login");
-                //filterContext.Result = new RedirectToRouteResult(
-                //    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+                
+                filterContext.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
 
-                CurrentUser = new Login() { USERNAME = "Guest", USER_ID = 0, USER_GROUP_ID = 1, FIRST_NAME = "Guest", LAST_NAME = "User"};
-
+                
             }
 
         }
