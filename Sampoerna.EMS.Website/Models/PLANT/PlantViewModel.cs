@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 
@@ -20,9 +21,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         
         public IEnumerable<SelectListItem> PlantIdListItems { get; set; }
         public IEnumerable<SelectListItem> Nppbkc { get; set; }
-
         public IEnumerable<SelectListItem> RecieveMaterialListItems { get; set; }
-        
         public  DetailPlantT1001W Detail { get; set; }
     }
 
@@ -32,8 +31,16 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public long PlantId { get; set; }
         public string Werks { get; set; }
         public string PlantDescription { get; set; }
+
         public bool IsMainPlant { get; set; }
+
+        [Required(ErrorMessage = "Please Insert Address")]
+        [Display(Name = "Address")]
         public string Address { get; set; }
+
+        [Required(ErrorMessage = "Please Insert City")]
+        [Display(Name = "City")]
+        [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string City { get; set; }
         public string Skeptis { get; set; }
         public int? RecievedMaterialTypeId { get; set; }

@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         public int PoaId { get; set; }
 
-        [Required(ErrorMessage = "Please Insert POA Code")]
+        [Required(ErrorMessage = "Please Insert ID  Card")]
         [Display(Name = "ID Card")]
         [StringLength(22, ErrorMessage = "Max Lenght : 22")]
         public string PoaIdCard { get; set; }
@@ -75,7 +75,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         [Display(Name = "User Name")]
         public USER User { get; set; }
 
-        [Required(ErrorMessage = "Please Insert Data Address")]
+        [Required(ErrorMessage = "Please Insert Data Printed Name")]
         [StringLength(50, ErrorMessage = "Max length : 50")]
         [Display(Name = "Printed Name")]
         public string PoaPrintedName { get; set; }
@@ -90,7 +90,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         [RegularExpression("([0-9][1-9]*)", ErrorMessage = "type data must number") ] 
         public string PoaPhone { get; set; }
 
-        [Required(ErrorMessage = "Please Insert Data")]
+        [Required(ErrorMessage = "Please Insert Title")]
         [Display(Name = "Title")]
         [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string Title { get; set; }

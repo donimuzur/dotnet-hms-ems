@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var plantId = model.Detail.PlantId;
                 var plant = _plantBll.GetId(plantId);
                 AutoMapper.Mapper.Map(model.Detail, plant);
-                plant.ZAIDM_EX_NPPBKC.CREATED_DATE = Convert.ToDateTime("2015-06-09 11:49:32.000");
+               
                 _plantBll.save(plant);
                
                 return RedirectToAction("Index");
