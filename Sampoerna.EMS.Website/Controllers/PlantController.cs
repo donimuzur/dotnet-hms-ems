@@ -27,13 +27,24 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Plant/
         public ActionResult Index()
         {
-            var plantT1001W = new PlantViewModel();
-            plantT1001W.MainMenu = Enums.MenuList.MasterData;
-            plantT1001W.CurrentMenu = PageInfo;
+            //var plantT1001W = new PlantViewModel();
+            //plantT1001W.MainMenu = Enums.MenuList.MasterData;
+            //plantT1001W.CurrentMenu = PageInfo;
 
-            plantT1001W.Details = _plantBll.GetAll().Select(AutoMapper.Mapper.Map<DetailPlantT1001W>).ToList();
+            //plantT1001W.Details = _plantBll.GetAll().Select(AutoMapper.Mapper.Map<DetailPlantT1001W>).ToList();
 
-            return View("Index", plantT1001W);
+            //return View("Index", plantT1001W);
+
+            var plant = new PlantViewModel
+            {
+                MainMenu = Enums.MenuList.MasterData,
+                CurrentMenu = PageInfo,
+                Details = _plantBll.GetAll()
+            };
+            
+            //ViewBag.Message = TempData["message"];
+            return View("Index", plant);
+            
         }
 
         public ActionResult Edit(long id )

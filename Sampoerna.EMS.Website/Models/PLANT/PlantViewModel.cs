@@ -10,10 +10,20 @@ namespace Sampoerna.EMS.Website.Models.PLANT
     {
         public PlantViewModel()
         {
-            Details = new List<DetailPlantT1001W>();
+            Details = new List<T1001W>();
         }
 
-        public List<DetailPlantT1001W> Details;
+        public List<T1001W> Details { get; set; }
+        public ZAIDM_EX_NPPBKC Nppbkc { get; set; }
+        public long PlantId { get; set; }
+        public string Werks { get; set; }
+        public string PlantDescription { get; set; }
+        public bool IsMainPlant { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string Skeptis { get; set; }
+        public int? RecievedMaterialTypeId { get; set; }
+       
 
     }
     public class PlantFormModel : BaseModel
@@ -52,7 +62,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public string Skeptis { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
-        [Display(Name = "Skeptis")]
+        [Display(Name = "Recieved Material Type Id")]
         public int? RecievedMaterialTypeId { get; set; }
         public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }

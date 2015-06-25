@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -188,14 +189,15 @@ namespace Sampoerna.EMS.Website
             #region PlantDetail
 
             Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1 + "-" + src.CITY))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.CITY + "-" + src.NAME1))
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS ))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
                 .ForMember(dest => dest.Skeptis, opt => opt.MapFrom(src => src.SKEPTIS))
                 .ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID));
 
-            Mapper.CreateMap<DetailPlantT1001W, T1001W>().IgnoreAllNonExisting()
+            Mapper.CreateMap<DetailPlantT1001W, T1001W>().IgnoreAllUnmapped()
                 .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription + "-" + src.City))
                 .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
                 .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
@@ -204,7 +206,14 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBKC.NPPBKC_ID));
 
-
+            Mapper.CreateMap<PlantViewModel, T1001W>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription))
+                .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
+                .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis));
 
             #endregion
 
