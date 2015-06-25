@@ -123,6 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = new Login() { USERNAME = "Guest", USER_ID = 0, USER_GROUP_ID = 1, FIRST_NAME = "Guest", LAST_NAME = "User"};
 
             }
+
         }
     }
 }
