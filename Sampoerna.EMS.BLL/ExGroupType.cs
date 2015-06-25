@@ -63,5 +63,14 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.Get().ToList().Select(type => type.GROUP_NAME).Distinct().ToList(); ;
         }
+
+        public bool IsGroupNameExist(string name)
+        {
+            var dbGroup = _repository.Get(g => g.GROUP_NAME == name).FirstOrDefault();
+            if (dbGroup == null)
+                return false;
+
+            return true;
+        }
     }
 }

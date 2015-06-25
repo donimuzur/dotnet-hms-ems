@@ -116,21 +116,22 @@
                             </a>
                             <ul class="child list">
                                 <li>
-                                    <a href="@Url.Action("Index", "POA")">
+                                    <a id="MenuPOA" href="@Url.Action("Index", "POA")">
                                         <i class="fa fa-angle-right"></i>
                                         POA
                                     </a>
                                 </li>
                                 <li>
-                                    <a  href="@Url.Action("Index", "NPPBKC")">
+                                    <a id="MenuMasterPlant" href="@Url.Action("Index", "Plant")">
                                         <i class="fa fa-angle-right"></i>
-                                        NPPBKC
+                                        Master Plant
                                     </a>
                                 </li>
                                 <li>
-                                    <a  href="@Url.Action("Index", "Plant")">
+                                   
+                                    <a href="@Url.Action("Index", "NPPBKC")">
                                         <i class="fa fa-angle-right"></i>
-                                        Master Plant
+                                        NPPBKC
                                     </a>
                                 </li>
                                 <li>
@@ -259,6 +260,9 @@
     <!-- Load Fixed Header table JavaScript -->
     @Scripts.Render("~/bundles/fixedheadertable")
     @Scripts.Render("~/bundles/customjs")
+    @Scripts.Render("~/bundles/validate")
+
+
     @RenderSection("styles", required: false)
     @RenderSection("scripts", required: false)
 

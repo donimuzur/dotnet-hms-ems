@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.Website
                 ;
 
             #endregion
-
+            
             #region GoodsTypeGroup
 
             //Mapper.CreateMap<ZAIDM_EX_GOODTYP, DetailsGoodsTypGroup>().IgnoreAllNonExisting()
@@ -135,6 +135,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
@@ -183,6 +184,30 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.User.USER_ID));
 
            #endregion
+
+            #region PlantDetail
+
+            Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1 + "-" + src.CITY))
+                .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS ))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.Skeptis, opt => opt.MapFrom(src => src.SKEPTIS))
+                .ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID));
+
+            Mapper.CreateMap<DetailPlantT1001W, T1001W>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription + "-" + src.City))
+                .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
+                .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
+                .ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
+                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBKC.NPPBKC_ID));
+
+
+
+            #endregion
+
 
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, GoodsTypeDetails>().IgnoreAllNonExisting()
                .ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.GOODTYPE_ID))

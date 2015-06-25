@@ -28,11 +28,6 @@
             public const string ExcelUploadProdConvPbck1 = "ExcelUploadProdConvertedPbck1";
         }
 
-        public class SubmitType
-        {
-            public const string Save = "Save";
-            public const string Cancel = "Cancel";
-        }
-
+     
     }
 }

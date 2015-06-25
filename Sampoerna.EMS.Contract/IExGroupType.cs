@@ -10,5 +10,6 @@ namespace Sampoerna.EMS.Contract
        EX_GROUP_TYPE GetGroupTypeByName(string name);
        List<EX_GROUP_TYPE> GetGroupTypesByName(string name);
        List<string> GetGroupByGroupName();
+       bool IsGroupNameExist(string name);
    }
 }

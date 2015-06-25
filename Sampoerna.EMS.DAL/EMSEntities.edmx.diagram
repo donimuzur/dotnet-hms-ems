@@ -171,6 +171,9 @@
         <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="8.25" PointY="26.125" />
         <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" />
+        <EntityTypeShape EntityType="EMSModel.EMAIL_TEMPLATE" Width="1.5" PointX="9.375" PointY="4.875" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_EMAIL" Width="1.5" PointX="11.625" PointY="4.875" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -647,6 +647,8 @@
     <Content Include="Views\POA\Create.cshtml" />
     <Content Include="Views\POA\Edit.cshtml" />
     <Content Include="Views\POA\Detail.cshtml" />
+    <Content Include="Views\Plant\Edit.cshtml" />
+    <Content Include="Views\Plant\Detail.cshtml" />
     <Content Include="Views\GoodsTypeGroup\Create.cshtml" />
     <Content Include="Views\GoodsTypeGroup\_ListGroupDetails.cshtml" />
     <Content Include="Views\GoodsTypeGroup\Details.cshtml" />

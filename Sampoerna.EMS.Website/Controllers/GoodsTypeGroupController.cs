@@ -85,14 +85,19 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create(GoodsTypeGroupCreateViewModel model)
         {
 
-            if (model.SubmitType == Core.Constans.SubmitType.Cancel)
-                return RedirectToAction("Index");
-          
-
             if (ModelState.IsValid)
             {
+
+                if (_exGroupTypeBll.IsGroupNameExist(model.GroupName))
+                {
+                    ModelState.AddModelError("GroupName", "Group name already exist");
+                    InitCreateModel(model);
+
+                    return View("Create", model);
+                }
+
                 var listGroup = new List<EX_GROUP_TYPE>();
-               
+                
                 foreach (var detail in model.Details.Where(detail => detail.IsChecked))
                 {
                    
@@ -165,9 +170,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(GoodsTypeGroupEditViewModel model)
         {
 
-            if (model.SubmitType == Core.Constans.SubmitType.Cancel)
-                return RedirectToAction("Index");
-
+          
             if (ModelState.IsValid)
             {
 
