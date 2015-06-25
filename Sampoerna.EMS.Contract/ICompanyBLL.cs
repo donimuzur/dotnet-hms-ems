@@ -7,5 +7,6 @@ namespace Sampoerna.EMS.Contract
     {
        List<T1001> GetMasterData();
 
+        List<T1001> GetAllData();
     }
 }

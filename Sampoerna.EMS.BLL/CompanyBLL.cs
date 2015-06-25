@@ -38,6 +38,9 @@ namespace Sampoerna.EMS.BLL
             return queryData.ToList();
         }
 
-       
+        public List<T1001> GetAllData()
+        {
+            return _repository.Get().ToList();
+        }
     }
 }
