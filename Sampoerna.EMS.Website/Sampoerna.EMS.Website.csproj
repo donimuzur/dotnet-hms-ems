@@ -218,7 +218,7 @@
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
-    <Compile Include="Controllers\ExcisableGoodsTypeGroupController.cs" />
+    <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -241,6 +241,7 @@
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupEditViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -621,7 +622,7 @@
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
     <Content Include="Views\POA\Index.cshtml" />
     <Content Include="Views\NPPBKC\Index.cshtml" />
-    <Content Include="Views\ExcisableGoodsTypeGroup\Index.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Index.cshtml" />
     <Content Include="Views\Plant\Index.cshtml" />
     <Content Include="Views\BrandRegistration\Index.cshtml" />
     <Content Include="Views\CK5\Index.cshtml" />
@@ -646,9 +647,10 @@
     <Content Include="Views\POA\Create.cshtml" />
     <Content Include="Views\POA\Edit.cshtml" />
     <Content Include="Views\POA\Detail.cshtml" />
-    <Content Include="Views\ExcisableGoodsTypeGroup\Create.cshtml" />
-    <Content Include="Views\ExcisableGoodsTypeGroup\_ListGroupDetails.cshtml" />
-    <Content Include="Views\ExcisableGoodsTypeGroup\Details.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Create.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\_ListGroupDetails.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Details.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

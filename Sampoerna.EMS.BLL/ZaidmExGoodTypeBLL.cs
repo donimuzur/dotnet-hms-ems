@@ -31,33 +31,6 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get().ToList();
         }
 
-        public List<ZAIDM_EX_GOODTYP> GetAllChildName()
-        {
-            return _repository.Get().ToList();
-        }
-
-        public void SaveGroup(List<EX_GROUP_TYPE> listGroupTypes)
-        {
-            foreach (var listGroupType in listGroupTypes)
-            {
-                _repositoryGroup.InsertOrUpdate(listGroupType);
-            }
-            _uow.SaveChanges();
-        }
-
-        public EX_GROUP_TYPE GetGroupTypeByName(string name)
-        {
-            return _repositoryGroup.Get(g => g.GROUP_NAME == name).FirstOrDefault();
-        }
-
-        public List<EX_GROUP_TYPE> GetGroupTypesByName(string name)
-        {
-            return _repositoryGroup.Get(g => g.GROUP_NAME == name, null, "ZAIDM_EX_GOODTYP").ToList();
-        }
-
-        public List<EX_GROUP_TYPE> GetAllGroup()
-        {
-            return _repositoryGroup.Get().ToList();
-        }
+       
     }
 }

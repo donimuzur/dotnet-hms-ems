@@ -1,7 +1,7 @@
-﻿@model Sampoerna.EMS.Website.Models.GOODSTYPE.GoodsTypeGroupCreateViewModel
+﻿@model Sampoerna.EMS.Website.Models.GOODSTYPE.GoodsTypeGroupEditViewModel
 
 
-@using (Html.BeginForm("Create", "ExcisableGoodsTypeGroup", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Edit", "GoodsTypeGroup", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
     <div class="container-wrap title-page">
@@ -10,10 +10,10 @@
                 <h3>Update Excisable Goods Type Group</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
-                    <a href="@Url.Action("Index", "ExcisableGoodsTypeGroup")">
+                    <a href="@Url.Action("Index", "GoodsTypeGroup")">
                         <button class="btn btn-grey">Cancel</button>
                     </a>
-                
+
                 </div>
             </div>
         </div>
@@ -34,6 +34,9 @@
                                     </a>
                                 </h4>
                             </div>
+
+                            @Html.HiddenFor(model => model.GroupName)
+
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
                                     <div class="form-excise" role="form">
@@ -42,13 +45,32 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Group Name</label>
                                                     <div class="col-md-4">
-                                                        
-                                                        @Html.TextBoxFor(model => model.GroupName, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.GroupName, new { @class = "form-control", @disabled = "disabled" })
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
-                                              @Html.Partial("_ListGroupDetails")
+                                                <div class="row">
+                                                    <label class="col-md-2">Excise Group Type</label>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            @for (int i = 0; i < Model.Details.Count; i++)
+                                                            {
+                                                                @Html.HiddenFor(x => x.Details[i].GoodTypeId)
+                                                                @Html.HiddenFor(x => x.Details[i].GoodTypeName)
+                                                               
+
+                                                                <div class="col-md-12">
+                                                                    @Html.EditorFor(x => x.Details[i].IsChecked)
+                                                                    @Html.Label(Model.Details[i].GoodTypeName)
+                                                                </div>
+
+                                                            }
+
+                                                            @Html.ValidationMessageFor(model => model.Details)
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -65,6 +87,6 @@
 
 @section scripts {
     $(document).ready(function () {
-        $('#MenuMasterGoodType').addClass('active');
-        });
+    $('#MenuMasterGoodType').addClass('active');
+    });
 }

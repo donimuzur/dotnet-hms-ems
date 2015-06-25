@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IZaidmExProdTypeBLL, ZaidmExProdTypeBLL>();
             container.Register<IMonthBLL, MonthBLL>();
             container.Register<IDocumentSequenceNumberBLL, DocumentSequenceNumberBLL>();
-            
+            container.Register<IExGroupType, ExGroupType>();
             // 3. Optionally verify the container's configuration.
             container.Verify();
 
