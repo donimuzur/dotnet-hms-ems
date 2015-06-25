@@ -9,8 +9,9 @@
             <div class="col-sm-12">
                 <h3>Update Excisable Goods Type Group</h3>
                 <div class="action-button">
-                    <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-blue" value="@Sampoerna.EMS.Core.Constans.SubmitType.Save" />
-                    <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-grey" value="@Sampoerna.EMS.Core.Constans.SubmitType.Cancel" />
+                    @*<input type="submit" class="btn btn-blue" value="Save" />*@
+                    <button class="btn btn-blue">Save</button>
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel"/>
                 </div>
             </div>
         </div>
@@ -31,7 +32,7 @@
                                     </a>
                                 </h4>
                             </div>
-                            @*@Html.ValidationSummary(false)*@
+                          
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
                                     <div class="form-excise" role="form">
@@ -85,6 +86,11 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
             $('#MenuMasterGoodType').addClass('active');
+            
+            $('#btnCancel').click(function (e) {
+                @*location.href = '@Url.Content("~/GoodsTypeGroup/Index/")';*@
+                location.href = '@Url.Action("Index", "GoodsTypeGroup")';
+            });
         });
 
     </script>

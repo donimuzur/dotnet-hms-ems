@@ -15,7 +15,6 @@ namespace Sampoerna.EMS.Website.Models.GOODSTYPE
         public string GroupName { get; set; }
 
         public List<GoodsTypeDetails> Details { get; set; }
-
-        public string SubmitType { get; set; }
+       
     }
 }

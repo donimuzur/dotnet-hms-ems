@@ -10,10 +10,10 @@
                 <h3>Update Excisable Goods Type Group</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
-                    <a href="@Url.Action("Index", "GoodsTypeGroup")">
+                    @*<a href="@Url.Action("Index", "GoodsTypeGroup")">
                         <button class="btn btn-grey">Cancel</button>
-                    </a>
-
+                    </a>*@
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
         </div>
@@ -86,7 +86,14 @@
 }
 
 @section scripts {
-    $(document).ready(function () {
-    $('#MenuMasterGoodType').addClass('active');
-    });
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $('#MenuMasterGoodType').addClass('active');
+
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "GoodsTypeGroup")';
+            });
+        });
+
+    </script>
 }
