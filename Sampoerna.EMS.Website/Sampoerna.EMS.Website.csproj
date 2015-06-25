@@ -615,7 +615,6 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ViewDetail.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
-    <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\PBCK1\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
@@ -655,6 +654,7 @@
     <Content Include="Views\GoodsTypeGroup\Create.cshtml" />
     <Content Include="Views\GoodsTypeGroup\Details.cshtml" />
     <Content Include="Views\GoodsTypeGroup\Edit.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
