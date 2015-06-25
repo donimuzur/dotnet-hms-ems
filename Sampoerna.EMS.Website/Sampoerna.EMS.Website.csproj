@@ -644,6 +644,8 @@
     <Content Include="Views\POA\Create.cshtml" />
     <Content Include="Views\POA\Edit.cshtml" />
     <Content Include="Views\POA\Detail.cshtml" />
+    <Content Include="Views\Plant\Edit.cshtml" />
+    <Content Include="Views\Plant\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
