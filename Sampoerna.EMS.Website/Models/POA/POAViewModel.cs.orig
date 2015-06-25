@@ -61,7 +61,11 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         public int PoaId { get; set; }
 
+<<<<<<< HEAD
+        [Required(ErrorMessage = "Please Insert ID  Card")]
+=======
         [Required(ErrorMessage = "please fill this field")]
+>>>>>>> dev
         [Display(Name = "ID Card")]
         [StringLength(22, ErrorMessage = "Max Lenght : 22")]
         public string PoaIdCard { get; set; }
@@ -75,7 +79,11 @@ namespace Sampoerna.EMS.Website.Models.POA
         [Display(Name = "User Name")]
         public USER User { get; set; }
 
+<<<<<<< HEAD
+        [Required(ErrorMessage = "Please Insert Data Printed Name")]
+=======
         [Required(ErrorMessage = "please fill this field")]
+>>>>>>> dev
         [StringLength(50, ErrorMessage = "Max length : 50")]
         [Display(Name = "Printed Name")]
         public string PoaPrintedName { get; set; }
@@ -90,7 +98,11 @@ namespace Sampoerna.EMS.Website.Models.POA
         [RegularExpression("([0-9][1-9]*)", ErrorMessage = "type data must number") ] 
         public string PoaPhone { get; set; }
 
+<<<<<<< HEAD
+        [Required(ErrorMessage = "Please Insert Title")]
+=======
         [Required(ErrorMessage = "please fill this field")]
+>>>>>>> dev
         [Display(Name = "Title")]
         [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string Title { get; set; }
