@@ -18,15 +18,18 @@ namespace Sampoerna.EMS.Website.Models.PLANT
     public class PlantFormModel : BaseModel
     {
         
-        public IEnumerable<SelectListItem> PlantId { get; set; }
+        public IEnumerable<SelectListItem> PlantIdListItems { get; set; }
         public IEnumerable<SelectListItem> Nppbkc { get; set; }
 
+        public IEnumerable<SelectListItem> RecieveMaterialListItems { get; set; }
+        
         public  DetailPlantT1001W Detail { get; set; }
     }
 
     public class DetailPlantT1001W
     {
-        public string PlantId { get; set; }
+       
+        public long PlantId { get; set; }
         public string Werks { get; set; }
         public string PlantDescription { get; set; }
         public bool IsMainPlant { get; set; }
@@ -36,8 +39,9 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public int? RecievedMaterialTypeId { get; set; }
         public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }
-
         public ZAIDM_EX_NPPBKC NPPBKC { get; set; }
+
+        public ZAIDM_EX_GOODTYP GOODTYP { get; set; }   
     }
 
 }

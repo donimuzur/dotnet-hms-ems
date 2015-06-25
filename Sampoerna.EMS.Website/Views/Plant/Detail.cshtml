@@ -1,17 +1,18 @@
 ﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
 
-
-@{
-    ViewBag.Title = "Edit Master Plant";
+@section scripts {
+    <script type="text/javascript">
+        $('#MenuMasterPlant').addClass('active');
+    </script>
 }
-@using (Html.BeginForm("Edit", "Plant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
-{
+@{
+    ViewBag.Title = "Detail Master Plant";
+}
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>Update Master Plan</h3>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
                     <a href="@Url.Action("Index", "Plant")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
@@ -26,7 +27,7 @@
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Update Master Plant
+                                        Detail Master Plant
                                         <i class="fa fa-caret-down"></i>
                                     </a>
                                 </h4>
@@ -39,8 +40,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Plant Id</label>
                                                     <div class="col-md-9">
-                                                        @Html.HiddenFor(model => model.Detail.PlantId)
-                                                        @Html.DropDownListFor(model => model.Detail.PlantId, Model.PlantIdListItems, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.PlantId, Model.PlantIdListItems, "Select", new { @class = "form-control", id = "dropBoxUserName" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PlantId)
                                                     </div>
                                                 </div>
@@ -49,7 +49,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">NPPBKC NO</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC.NPPBKC_NO, Model.Nppbkc, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC.NPPBKC_NO, Model.Nppbkc, "Select", new { @class = "form-control", id = "dropBoxUserName" })
                                                         @Html.ValidationMessageFor(model => model.Detail.NPPBKC.NPPBKC_NO)
                                                     </div>
                                                 </div>
@@ -92,19 +92,19 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-4">Main Plant</label>
-                                                    <div class="col-md-2">
+                                                    <label class="col-md-3">SKEPTIS</label>
+                                                    <div class="col-md-9">
                                                         @Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.IsMainPlant)
                                                     </div>
-                                                   
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Recieve Material</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.GOODTYP.EXT_TYP_DESC, Model.RecieveMaterialListItems, "Select", new { @class = "form-control", id = "dropBoxUserName" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.GOODTYP.EXT_TYP_DESC)
+                                                        @Html.DropDownListFor(model => model.Detail.GOODTYP.EXC_GOOD_TYP, Model.RecieveMaterialListItems, "Select", new { @class = "form-control", id = "dropBoxUserName" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.GOODTYP.EXC_GOOD_TYP)
                                                     </div>
                                                 </div>
                                             </div>
@@ -119,14 +119,4 @@
         </div>
     </div>
 
-}
-@section scripts {
-    <script src="~/Scripts/js/scripts.min.js"></script>
-    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript">
-        $(window).load(function() {
-            document.getElementById('PlantDescription').disabled = true;
-        });
-        $('#MenuMasterPlant').addClass('active');
-    </script>
-}
+

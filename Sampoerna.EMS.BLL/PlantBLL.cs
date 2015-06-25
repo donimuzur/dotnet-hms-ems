@@ -29,7 +29,9 @@ namespace Sampoerna.EMS.BLL
 
         public List<T1001W> GetAll()
         {
-            return _repository.Get(null, null, includeTables).ToList();
+
+           return _repository.Get(null, null, includeTables).ToList();
+            
         }
 
         public void save(T1001W plantT1001W)

@@ -12,9 +12,7 @@
                 <h3>Create New POA</h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
-                    <a href="javascript:void(0);">
-                        <button class="btn btn-grey" onclick="redirecttoindex">Cancel</button>
-                    </a>
+                    <a href="@Url.Action("Index", "POA")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
         </div>
@@ -118,11 +116,5 @@
 {
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    <script type="text/javascript">
-        function redirecttoindex() {
-            window.href = '@Url.Action("Index","POA")';
-        }
-
-    </script>    
 
 } 

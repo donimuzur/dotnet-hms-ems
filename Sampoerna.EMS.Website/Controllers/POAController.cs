@@ -49,7 +49,6 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(POAFormModel model)
         {
             if (ModelState.IsValid)
@@ -99,7 +98,6 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Edit(POAFormModel model)
         {
             try
@@ -116,6 +114,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 
                 _poaBll.save(poa);
+                TempData["message"] = "Save Successful";
 
 
                 return RedirectToAction("Index");
