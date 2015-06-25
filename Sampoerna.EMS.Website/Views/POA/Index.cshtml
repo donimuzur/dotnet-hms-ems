@@ -10,7 +10,15 @@
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
-          
+            $('.toggle-row').click(function () {
+               
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+                    //$this.find('span').text(function (_, value) {
+                    //    return value == '-' ? '+' : '-';
+                    //});
+                });
+            });
 
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
@@ -24,6 +32,7 @@
 
             // DataTable
             var table = $('#mydata').DataTable();
+            
 
             // Apply the search
 
@@ -37,7 +46,7 @@
             });
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
-            $('#mydata_info').hide();
+
             @if (@ViewBag.Message != null)
             {
                 @: alert('@ViewBag.Message');
@@ -76,7 +85,7 @@
                     <thead>
                         <tr>
 
-                            <th> Action </th>
+                            <th class="toggle-row"> Filter </th>
                             <th> ID Card </th>
                             <th> Name </th>
                             <th> Printed Name</th>
@@ -88,7 +97,7 @@
                     </thead>
                     <thead class="filters">
                         <tr>
-                            <th>   </th>
+                            <th>Action</th>
                             <th> ID Card </th>
                             <th> Name </th>
                             <th> Printed Name</th>

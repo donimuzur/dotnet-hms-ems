@@ -23,7 +23,7 @@
                 <h3>Update POA</h3>
                 <div class="action-button">
                     <a href="@Url.Action("Index", "POA")">
-                        <button class="btn btn-grey">Cancel</button>
+                        <button class="btn btn-grey">Back</button>
                     </a>
                 </div>
             </div>
@@ -94,21 +94,22 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Address</label>
-                                                <div class="col-md-9" r>
-                                                    @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "txtArea" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
-                                                </div>
-                                            </div>
-                                        </div>
+                                       
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Title</label>
                                                 <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", id = "txtBoxtitle" })
                                                     @Html.ValidationMessageFor(model => model.Detail.Title)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Address</label>
+                                                <div class="col-md-9" r>
+                                                    @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "txtArea" })
+                                                    @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
                                                 </div>
                                             </div>
                                         </div>

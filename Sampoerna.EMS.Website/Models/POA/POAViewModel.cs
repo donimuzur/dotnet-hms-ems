@@ -61,26 +61,26 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         public int PoaId { get; set; }
 
-        [Required(ErrorMessage = "Please Insert POA Code")]
+        [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "ID Card")]
         [StringLength(22, ErrorMessage = "Max Lenght : 22")]
         public string PoaIdCard { get; set; }
 
-        [Required(ErrorMessage = "Please Insert POA Code")]
+        [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "POA Code")]
         [StringLength(22, ErrorMessage = "Max Lenght : 22")]
         public string PoaCode { get; set; }
 
-        [Required(ErrorMessage = "Please choose User Name")]
+        [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "User Name")]
         public USER User { get; set; }
 
-        [Required(ErrorMessage = "Please Insert Data Address")]
+        [Required(ErrorMessage = "please fill this field")]
         [StringLength(50, ErrorMessage = "Max length : 50")]
         [Display(Name = "Printed Name")]
         public string PoaPrintedName { get; set; }
 
-        [Required(ErrorMessage = "Please Insert Data Address")]
+        [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Address")]
         [StringLength(100, ErrorMessage = "Max length 100")]
         public string PoaAddress { get; set; }
@@ -90,7 +90,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         [RegularExpression("([0-9][1-9]*)", ErrorMessage = "type data must number") ] 
         public string PoaPhone { get; set; }
 
-        [Required(ErrorMessage = "Please Insert Data")]
+        [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Title")]
         [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string Title { get; set; }
