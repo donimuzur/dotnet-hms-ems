@@ -35,6 +35,9 @@
                                 </div>
                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                     <div class="panel-body">
+                                        <div>
+                                            @Html.DisplayFor(model => model.ErrorMessage)
+                                        </div>
                                         <div class="form-excise" role="form">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -42,6 +45,7 @@
                                                         <label class="col-md-4">Company Code</label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "form-control" })
+                                                            @Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -53,11 +57,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4 long">Company Footer</label>
                                                         <div class="col-md-8">
                                                             <textarea id="Detail_FOOTER_CONTENT" name="Detail.FOOTER_CONTENT" class="form-control" rows="5"></textarea>
+                                                            @Html.ValidationMessageFor(model => model.Detail.FOOTER_CONTENT)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -67,6 +74,7 @@
                                                         <div class="col-md-8">
                                                             <div class="input-group">
                                                                 @Html.TextBoxFor(model => model.HeaderImageFile, new { type = "file" })
+                                                                @*@Html.ValidationMessageFor(model => model.HeaderImageFile)*@
                                                             </div>
                                                             <div>
                                                                 <img id="imgPrev" src="#" width="100" />
@@ -96,7 +104,8 @@
                                         <tr>
                                             <td>
                                                 @Html.HiddenFor(x => x.Detail.HeaderFooterMapList[idx].FORM_TYPE_ID)
-                                                @Html.DisplayFor(model => model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC);
+                                                @Html.HiddenFor(model => model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC)
+                                                @Html.DisplayFor(model => model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC)
                                             </td>
                                             <td>
                                                 @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_HEADER_SET)

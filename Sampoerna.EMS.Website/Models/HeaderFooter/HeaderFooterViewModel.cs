@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Website.Helpers;
@@ -21,6 +22,8 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
 
         // in our viewmodel we will be posting files....
         //use Data Annotations to validate properties
+        [Required(ErrorMessage = "please fill this field")]
+        [Display(Name = "Header Image")]
         [ValidateFile(MaximumSize = 100)]
         public HttpPostedFileBase HeaderImageFile { get; set; }
 
@@ -30,10 +33,15 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
     {
         public int HEADER_FOOTER_ID { get; set; }
         public string FORM_NAME { get; set; }
+        
+        [Required(ErrorMessage = "please fill this field")]
+        [Display(Name = "Company Code")]
         public long? COMPANY_ID { get; set; }
         public string HEADER_IMAGE_PATH { get; set; }
         public string HEADER_IMAGE_PATH_BEFOREEDIT { get; set; }
 
+        [Required(ErrorMessage = "please fill this field")]
+        [Display(Name = "Company Footer")]
         public string FOOTER_CONTENT { get; set; }
         public bool? IS_ACTIVE { get; set; }
         public DateTime? CREATED_DATE { get; set; }
