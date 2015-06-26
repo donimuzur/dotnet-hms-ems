@@ -99,28 +99,43 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        
-        public ActionResult Edit(int id)
+        private VirtualMappingPlantEditViewModel InitEditModel(VirtualMappingPlantEditViewModel model)
         {
-            var model = new VirtualMappingPlantEditViewModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-
-            var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
-
-            model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
-
-            if (dbVirtual.COMPANY_ID.HasValue)
-                model.CompanyId = dbVirtual.COMPANY_ID.Value;
-
-            model.ImportPlantId = dbVirtual.T1001W.PLANT_ID;
-            model.ExportPlantId = dbVirtual.T1001W1.PLANT_ID;
 
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
 
+            return model;
+        }
 
+        
+        public ActionResult Edit(int id)
+        {
+            var model = new VirtualMappingPlantEditViewModel();
+            InitEditModel(model);
+
+            var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
+            if (dbVirtual != null)
+            {
+                model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
+
+                if (dbVirtual.COMPANY_ID.HasValue)
+                    model.CompanyId = dbVirtual.COMPANY_ID.Value;
+
+                model.ImportPlantId = dbVirtual.T1001W.PLANT_ID;
+                model.ExportPlantId = dbVirtual.T1001W1.PLANT_ID;
+            }
+            else
+            {
+                //model.VirtualMapId = 0;
+                //model.ImportPlantId = 0;
+                //model.ExportPlantId = 0;
+                //ModelState.AddModelError("Exception", "Data Not Found");
+                throw new HttpException(403, "Data not found");
+            }
             return View(model);
         }
 
@@ -136,12 +151,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (dbVirtual == null)
                 {
                     ModelState.AddModelError("Details", "Data Not Found");
-                    model.MainMenu = Enums.MenuList.MasterData;
-                    model.CurrentMenu = PageInfo;
-
-                    model.CompanyNameList = GlobalFunctions.GetCompanyList();
-                    model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
-                    model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
+                    InitEditModel(model);
 
                     return View("Edit", model);
                 }
@@ -156,13 +166,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
             }
 
-            // InitCreateModel(model);
-            model.MainMenu = Enums.MenuList.MasterData;
-            model.CurrentMenu = PageInfo;
-            model.CompanyNameList = GlobalFunctions.GetCompanyList();
-            model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
-            model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
-
+           
+            InitEditModel(model);
             return View("Edit", model);
         }
     }
