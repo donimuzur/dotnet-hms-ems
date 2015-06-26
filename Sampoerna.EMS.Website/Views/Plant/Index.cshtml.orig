@@ -71,11 +71,46 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
+<<<<<<< HEAD
+           
+                <div class="table-container">
+                    <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                        <thead>
+=======
             <div id="contenttable" class="table-container">
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th class="toggle-row">Filter</th>
+                            <th> NPPBKC ID </th>
+                            <th> Plant ID </th>
+                            <th> Plant Description </th>
+                            <th> Main Plant </th>
+                            <th> Plant Address </th>
+                            <th> Plant City </th>
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th> NPPBKC ID  </th>
+                            <th> Plant ID </th>
+                            <th> Plant Description </th>
+                            <th> Main Plant </th>
+                            <th> Plant Address </th>
+                            <th> Plant City </th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+>>>>>>> dev
+                            <tr>
+                                <th class="toggle-row"> Filter </th>
                                 <th> NPPBKC ID </th>
                                 <th> Plant ID </th>
                                 <th> Plant Description </th>
@@ -87,7 +122,7 @@
                         </thead>
                         <thead class="filters">
                             <tr>
-                            <th>Action</th>
+                                <th> Action  </th>
                                 <th> NPPBKC ID  </th>
                                 <th> Plant ID </th>
                                 <th> Plant Description </th>
