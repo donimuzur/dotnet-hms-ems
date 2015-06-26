@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Details = _plantBll.GetAll()
             };
 
-            //ViewBag.Message = TempData["message"];
+            ViewBag.Message = TempData["message"];
             return View("Index", plant);
 
         }

@@ -46,13 +46,17 @@
             });
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
-
+            
+             @if (@ViewBag.Message != null)
+            {
+                @: alert('@ViewBag.Message');
+            }
+           
             $('#MenuMasterPlant').addClass('active');
 
         });
     </script>
 }
-
 
 @{
     ViewBag.Title = "MASTER PLANT";
@@ -67,7 +71,7 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            <div class="white-wrapper">
+           
                 <div class="table-container">
                     <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                         <thead>
@@ -116,7 +120,11 @@
 
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.IS_MAIN_PLANT)
+                                        @if (!item.IS_MAIN_PLANT.HasValue)
+                                        {
+                                            item.IS_MAIN_PLANT = false;
+                                        }
+                                        @Html.CheckBoxFor(modelItem => item.IS_MAIN_PLANT.Value)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.ADDRESS)
@@ -132,4 +140,4 @@
             </div>
         </div>
     </div>
-</div>
+
