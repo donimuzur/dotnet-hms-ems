@@ -26,71 +26,93 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public List<SaveVirtualMappingPlantOutput> GetAll()
+        public VIRTUAL_PLANT_MAP GetById(long id)
         {
-            var repoVirtualPlantMap = _repository.Get().ToList();
-            var repoT1001 = _repositoryT1001.Get().ToList();
-
-            //var repoPlantMapTest = _repository.GetQuery();
-            //var repoT1001Test = _repositoryT1001.GetQuery();
-
-            var result = repoVirtualPlantMap.Join(repoT1001,
-                virtualMap => virtualMap.COMPANY_ID,
-                T1001 => T1001.COMPANY_ID,
-                (virtualMap, T1001) => new SaveVirtualMappingPlantOutput
-                {
-                    Company = T1001.BUKRSTXT,
-                    ImportVitualPlant = virtualMap.IMPORT_PLANT_ID,
-                    ExportVirtualPlant = virtualMap.EXPORT_PLANT_ID
-                }).ToList();
-
-            //var test = from p in _repository.GetQuery()
-            //           join k in _repositoryT1001.GetQuery() on p.COMPANY_ID equals k.COMPANY_ID
-            //           select new
-            //    {
-            //        company = k.BUKRSTXT,
-            //        export = p.EXPORT_PLANT_ID,
-            //        import = p.IMPORT_PLANT_ID
-            //    };
-
-
-            return result;
-
-
-            //return _repository.Get().ToList();
+            return _repository.GetByID(id);
         }
 
-
-
-        public SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap)
+        public VIRTUAL_PLANT_MAP GetByIdIncludeChild(long id)
         {
-            if (virtualPlantMap.VIRTUAL_PLANT_MAP_ID > 0)
-            {
-                //update
-                _repository.Update(virtualPlantMap);
-            }
-            else
-            {
-                //Insert
-                _repository.Insert(virtualPlantMap);
-            }
-
-            var output = new SaveVirtualMappingPlantOutput();
-
-            try
-            {
-                _uow.SaveChanges();
-                output.Success = true;
-                output.Id = virtualPlantMap.VIRTUAL_PLANT_MAP_ID;
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(exception);
-                output.Success = false;
-                output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-            }
-            return output ;
+            return _repository.Get(a => a.VIRTUAL_PLANT_MAP_ID == id, null, "T1001,T1001W,T1001W1").FirstOrDefault();
         }
+
+        public List<VIRTUAL_PLANT_MAP> GetAll()
+        {
+            return _repository.Get(null, null, "T1001,T1001W,T1001W1").ToList();
+        }
+
+        public VIRTUAL_PLANT_MAP Save(VIRTUAL_PLANT_MAP virtualPlant)
+        {
+            _repository.InsertOrUpdate(virtualPlant);
+            _uow.SaveChanges();
+            return virtualPlant;
+        }
+
+        //public List<SaveVirtualMappingPlantOutput> GetAll()
+        //{
+        //    var repoVirtualPlantMap = _repository.Get().ToList();
+        //    var repoT1001 = _repositoryT1001.Get().ToList();
+
+        //    //var repoPlantMapTest = _repository.GetQuery();
+        //    //var repoT1001Test = _repositoryT1001.GetQuery();
+
+        //    var result = repoVirtualPlantMap.Join(repoT1001,
+        //        virtualMap => virtualMap.COMPANY_ID,
+        //        T1001 => T1001.COMPANY_ID,
+        //        (virtualMap, T1001) => new SaveVirtualMappingPlantOutput
+        //        {
+        //            Company = T1001.BUKRSTXT,
+        //            ImportVitualPlant = virtualMap.IMPORT_PLANT_ID,
+        //            ExportVirtualPlant = virtualMap.EXPORT_PLANT_ID
+        //        }).ToList();
+
+        //    //var test = from p in _repository.GetQuery()
+        //    //           join k in _repositoryT1001.GetQuery() on p.COMPANY_ID equals k.COMPANY_ID
+        //    //           select new
+        //    //    {
+        //    //        company = k.BUKRSTXT,
+        //    //        export = p.EXPORT_PLANT_ID,
+        //    //        import = p.IMPORT_PLANT_ID
+        //    //    };
+
+
+        //    return result;
+
+
+        //    //return _repository.Get().ToList();
+        //}
+
+
+
+        //public SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap)
+        //{
+        //    if (virtualPlantMap.VIRTUAL_PLANT_MAP_ID > 0)
+        //    {
+        //        //update
+        //        _repository.Update(virtualPlantMap);
+        //    }
+        //    else
+        //    {
+        //        //Insert
+        //        _repository.Insert(virtualPlantMap);
+        //    }
+
+        //    var output = new SaveVirtualMappingPlantOutput();
+
+        //    try
+        //    {
+        //        _uow.SaveChanges();
+        //        output.Success = true;
+        //        output.Id = virtualPlantMap.VIRTUAL_PLANT_MAP_ID;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        _logger.Error(exception);
+        //        output.Success = false;
+        //        output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
+        //        output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
+        //    }
+        //    return output ;
+        //}
     }
 }
