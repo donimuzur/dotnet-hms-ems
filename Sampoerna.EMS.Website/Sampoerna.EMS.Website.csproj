@@ -223,6 +223,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MaterialController.cs" />
     <Compile Include="Controllers\NPPBKCController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
@@ -675,6 +676,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\Material\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
