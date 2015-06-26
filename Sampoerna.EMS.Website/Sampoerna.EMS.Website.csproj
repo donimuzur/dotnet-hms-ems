@@ -237,7 +237,10 @@
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
-    <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationCreateViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
@@ -676,6 +679,9 @@
     <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\Details.cshtml" />
+    <Content Include="Views\BrandRegistration\Create.cshtml" />
+    <Content Include="Views\BrandRegistration\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

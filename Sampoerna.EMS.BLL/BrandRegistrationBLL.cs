@@ -30,6 +30,30 @@ namespace Sampoerna.EMS.BLL
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
 
         }
+
+        public List<ZAIDM_EX_BRAND> GetAllBrands()
+        {
+            return _repository.Get(null, null, "T1001W,ZAIDM_EX_SERIES").ToList();   
+        }
+
+        public ZAIDM_EX_BRAND GetById(long id)
+        {
+            var dbData = _repository.GetByID(id);
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData;
+        }
+
+        public ZAIDM_EX_BRAND GetByIdIncludeChild(long id)
+        {
+            var dbData = _repository.Get(a => a.BRAND_ID == id, null, "T1001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_series, ZAIDM_EX_MARKET, CURRENCY, ZAIDM_EX_GOODTYP").FirstOrDefault();
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData;
+        }
+
         public List<BrandRegistrationOutput> GetAll()
         {
             //var repoBrand = _repository.GetQuery();

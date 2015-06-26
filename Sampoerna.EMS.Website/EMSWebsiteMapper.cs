@@ -139,13 +139,6 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-            #region BrandRegistration
-
-            Mapper.CreateMap<BrandRegistrationOutput, DetailBrandRegistration>().IgnoreAllNonExisting();
-
-
-            #endregion
-
             #region POA
 
             Mapper.CreateMap<POAViewModel, ZAIDM_EX_POA>().IgnoreAllNonExisting()
@@ -263,6 +256,82 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
                 .ForMember(dest => dest.IMPORT_PLANT_ID, opt => opt.MapFrom(src => src.ImportPlantId))
                 .ForMember(dest => dest.EXPORT_PLANT_ID, opt => opt.MapFrom(src => src.ExportPlantId));
+
+            #endregion
+
+            #region BrandRegistration
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.BRAND_ID))
+                .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T1001W.WERKS))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
+                .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_VALUE))
+                .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
+                .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE));
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationDetailsViewModel>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.BRAND_ID))
+             .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
+             .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T1001W.WERKS))
+             .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+             .ForMember(dest => dest.PersonalizationCode, opt => opt.MapFrom(src => src.ZAIDM_EX_PCODE.PER_CODE))
+             .ForMember(dest => dest.PersonalizationCodeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_PCODE.PER_DESC))
+             .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
+             .ForMember(dest => dest.SkepNo, opt => opt.MapFrom(src => src.SKEP_NP))
+             .ForMember(dest => dest.SkepDate, opt => opt.MapFrom(src => src.SKEP_DATE))
+             .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_CODE))
+             .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_TYPE))
+             .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS))
+             .ForMember(dest => dest.SeriesCode, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_CODE))
+             .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_VALUE))
+             .ForMember(dest => dest.MarketCode, opt => opt.MapFrom(src => src.ZAIDM_EX_MARKET.MARKET_CODE))
+             .ForMember(dest => dest.MarketDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_MARKET.MARKET_DESC))
+             .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.COUNTRY.COUNTRY_CODE))
+             .ForMember(dest => dest.HjeValue, opt => opt.MapFrom(src => src.HJE_IDR))
+             .ForMember(dest => dest.HjeCurrency, opt => opt.MapFrom(src => src.CURRENCY.CURRENCY_CODE)) //todo check which one correct
+             .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+             .ForMember(dest => dest.TariffCurrency, opt => opt.MapFrom(src => src.CURRENCY1.CURRENCY_CODE)) //todo check which one correct
+             .ForMember(dest => dest.ColourName, opt => opt.MapFrom(src => src.COLOUR))
+             .ForMember(dest => dest.GoodType, opt => opt.MapFrom(src => src.GOODTYP_ID))
+             .ForMember(dest => dest.GoodTypeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
+             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Active" : "Inactive"))
+             .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
+             .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE));
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationEditViewModel>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.BRAND_ID))
+            .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
+            .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T1001W.WERKS))
+            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+            .ForMember(dest => dest.PersonalizationCode, opt => opt.MapFrom(src => src.ZAIDM_EX_PCODE.PER_CODE))
+            .ForMember(dest => dest.PersonalizationCodeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_PCODE.PER_DESC))
+            .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
+            .ForMember(dest => dest.SkepNo, opt => opt.MapFrom(src => src.SKEP_NP))
+            .ForMember(dest => dest.SkepDate, opt => opt.MapFrom(src => src.SKEP_DATE))
+            .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_CODE))
+            .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_TYPE))
+            .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS))
+            .ForMember(dest => dest.SeriesCode, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_CODE))
+            .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_VALUE))
+            .ForMember(dest => dest.MarketCode, opt => opt.MapFrom(src => src.ZAIDM_EX_MARKET.MARKET_CODE))
+            .ForMember(dest => dest.MarketDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_MARKET.MARKET_DESC))
+            .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.COUNTRY.COUNTRY_CODE))
+            .ForMember(dest => dest.HjeValue, opt => opt.MapFrom(src => src.HJE_IDR))
+            .ForMember(dest => dest.HjeCurrency, opt => opt.MapFrom(src => src.CURRENCY.CURRENCY_CODE)) //todo check which one correct
+            .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+            .ForMember(dest => dest.TariffCurrency, opt => opt.MapFrom(src => src.CURRENCY1.CURRENCY_CODE)) //todo check which one correct
+            .ForMember(dest => dest.ColourName, opt => opt.MapFrom(src => src.COLOUR))
+            .ForMember(dest => dest.GoodType, opt => opt.MapFrom(src => src.GOODTYP_ID))
+            .ForMember(dest => dest.GoodTypeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Active" : "Inactive"))
+            .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
+            .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE));
 
             #endregion
         }
