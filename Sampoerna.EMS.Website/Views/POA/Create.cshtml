@@ -35,64 +35,73 @@
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
                                     <form class="form-excise" role="form">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">ID Card</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
-                                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">ID Card</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.PoaIdCard, new {@class = "form-control"})
+                                                    @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Poa Code</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaCode)
-                                                    </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Poa Code</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.Detail.PoaCode)
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Name</label>
-                                                    <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control" })
-                                                        
-                                                        @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
 
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Printed Name</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaPrintedName)
-                                                    </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Name</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control" })
+
+                                                    @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Phone</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaPhone)
-                                                    </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Printed Name</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.Detail.PoaPrintedName)
                                                 </div>
                                             </div>
-                                            
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Title</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Title, new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.Detail.Title)
-                                                    </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Phone</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.Detail.PoaPhone)
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Title</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.Detail.Title)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <div class="row">
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Address</label>
@@ -113,3 +122,11 @@
         </div>
     </div>
 }
+@section scripts
+{
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        $('#MenuPOA').addClass('active');
+    </script>
+} 

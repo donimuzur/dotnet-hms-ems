@@ -262,6 +262,10 @@
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
@@ -287,6 +291,11 @@
     <Content Include="Content\assets\images\icon-user.png" />
     <Content Include="Content\assets\images\logo-large.png" />
     <Content Include="Content\assets\images\logo.png" />
+    <Content Include="Content\assets\images\sort_asc.png" />
+    <Content Include="Content\assets\images\sort_asc_disabled.png" />
+    <Content Include="Content\assets\images\sort_both.png" />
+    <Content Include="Content\assets\images\sort_desc.png" />
+    <Content Include="Content\assets\images\sort_desc_disabled.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\main.min.css" />
@@ -620,7 +629,6 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ViewDetail.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
-    <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\PBCK1\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
@@ -664,6 +672,10 @@
     <Content Include="Views\GoodsTypeGroup\Create.cshtml" />
     <Content Include="Views\GoodsTypeGroup\Details.cshtml" />
     <Content Include="Views\GoodsTypeGroup\Edit.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

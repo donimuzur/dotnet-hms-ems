@@ -153,6 +153,8 @@
                 readURL(this);
             });
             
+            $('#MenuHeaderFooter').addClass('active');
+            
         });
 
         function ajaxCompanyLoad(formData) {
@@ -179,7 +181,7 @@
 
                 reader.onload = function(e) {
                     $('#imgPrev').attr('src', e.target.result);
-                }
+                };
 
                 reader.readAsDataURL(input.files[0]);
             }

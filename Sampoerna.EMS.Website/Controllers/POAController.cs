@@ -56,6 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
+                    poa.IS_FROM_SAP = false;
                     _poaBll.save(poa);
                     TempData["message"] = "Save Successful";
                     return RedirectToAction("Index");
