@@ -251,6 +251,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Material\MaterialIndexViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
@@ -672,11 +673,11 @@
     <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\Material\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AspxReportViewer\" />
-    <Folder Include="Views\Material\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
