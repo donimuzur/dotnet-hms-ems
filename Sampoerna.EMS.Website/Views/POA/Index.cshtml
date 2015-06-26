@@ -2,34 +2,39 @@
 
 @section styles
     {
-    <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
-}
+   }
 
 @section scripts {
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
-            @if (@ViewBag.Message != null)
-                      {
-                @: alert('@ViewBag.Message');
-            }
-            
+            $('.toggle-row').click(function () {
+               
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+                    //$this.find('span').text(function (_, value) {
+                    //    return value == '-' ? '+' : '-';
+                    //});
+                });
+            });
+
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
+                if (idx != 0 && idx != 0) {
                     var title = $('#mydata thead th').eq($(this).index()).text();
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
-                    
+
                 }
             });
 
             // DataTable
             var table = $('#mydata').DataTable();
+            
 
             // Apply the search
-          
+
             table.columns().eq(0).each(function (colIdx) {
                 $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
@@ -40,8 +45,13 @@
             });
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
-            $('#mydata_info').hide();
-        
+
+            @if (@ViewBag.Message != null)
+            {
+                @: alert('@ViewBag.Message');
+            }
+            $('#MenuPOA').addClass('active');
+
         });
     </script>
 }
@@ -69,12 +79,12 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            <div class="white-wrapper">
-                <table id="mydata" class="table table-striped table-hover" cellspacing="0" width="100%">
+            <div class="white-wrapper table-container">
+                <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>
                         <tr>
 
-                            <th> Action </th>
+                            <th class="toggle-row"> Filter </th>
                             <th> ID Card </th>
                             <th> Name </th>
                             <th> Printed Name</th>
@@ -86,9 +96,8 @@
                     </thead>
                     <thead class="filters">
                         <tr>
-
-                            <th>  </th>
-                            <th>  </th>
+                            <th>Action</th>
+                            <th> ID Card </th>
                             <th> Name </th>
                             <th> Printed Name</th>
                             <th> Address </th>
@@ -110,10 +119,7 @@
                                     @Html.DisplayFor(modelItem => item.POA_ID_CARD)
                                 </td>
                                 <td>
-                                    @if (item.USER != null)
-                                    {
-                                        @Html.DisplayFor(modelItem => item.USER.USERNAME)
-                                    }
+                                    @Html.DisplayFor(modelItem => item.USER.USERNAME)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.POA_PRINTED_NAME)

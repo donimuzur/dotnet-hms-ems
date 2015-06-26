@@ -14,13 +14,16 @@ namespace Sampoerna.EMS.Website.Models.GOODSTYPE
             Details = new List<DetailsGoodsTypGroup>();
         }
         public List<DetailsGoodsTypGroup> Details;
+      
 
     }
     public class DetailsGoodsTypGroup
     {
         public int GoodsTypeId { get; set; }
-        public int? ExcisableGoodsType { get; set; }
-        public string ExtTypDescending { get; set; }
-        public DateTime? CreateDate { get; set; }
+
+        public string GroupName { get; set; }
+
+        public string GroupTypeName { get; set; }
+
     }
 }

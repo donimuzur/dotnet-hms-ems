@@ -23,7 +23,8 @@ namespace Sampoerna.EMS.Core
             LOGIN = 16,
             COMPANY = 17,
             POA = 18,
-            NPPBKC = 19
+            NPPBKC = 19,
+            HHeaderFooter = 20
         }
         public enum PBCK1Type
         {
@@ -73,11 +74,14 @@ namespace Sampoerna.EMS.Core
 
         public enum FormType
         {
-            [Description("PBCK1")]
+            [Description("PBCK-1")]
             PBKC1 = 1,
-            [Description("CK5")]
+            [Description("CK-5")]
             CK5 = 2,
-            
+            [Description("PBCK-4")]
+            PBKC4 = 3,
+            [Description("PBCK-3")]
+            PBKC3 = 4
         }
 
     }

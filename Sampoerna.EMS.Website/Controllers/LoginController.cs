@@ -7,11 +7,11 @@ namespace Sampoerna.EMS.Website.Controllers
 {
     public class LoginController : BaseController
     {
-        private IUserBLL _bll;
+        private IUserBLL _userBll;
 
-        public LoginController( IUserBLL bll, IPageBLL pageBll) : base(pageBll, Enums.MenuList.USER)
+        public LoginController( IUserBLL userBll, IPageBLL pageBll) : base(pageBll, Enums.MenuList.USER)
         {
-            _bll = bll;
+            _userBll = userBll;
 
         }
 
@@ -19,14 +19,16 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Login/
         public ActionResult Index()
         {
-            return View();
+            var model = new LoginFormModel();
+            model.Users = new SelectList(_userBll.GetUserTree(), "USERNAME", "FIRST_NAME");
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult Index(LoginModel model)
+        public ActionResult Index(LoginFormModel model)
         {
-
-            var loginResult = _bll.GetLogin(model.Username);
+            
+            var loginResult = _userBll.GetLogin(model.Login.Username);
 
             if (loginResult != null)
             {
@@ -35,8 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Error = "Username incorrect";
-            return PartialView("Index");
+            return RedirectToAction("UnAuthorize", "Error");
 
         }
 	}

@@ -13,9 +13,9 @@
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
+                if (idx != 0) {
                     var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" />');
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
                 }
             });
 
@@ -31,6 +31,11 @@
                         .draw();
                 });
             });
+            $("#mydata_filter").hide();
+            $('#mydata_length').hide();
+            $('#mydata_info').hide();
+            
+            $('#MenuMasterPlant').addClass('active');
         });
     </script>
 }
@@ -43,16 +48,9 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
-            <div class="action-button new">
-                @*<a href="@Url.Action("Create", "Virtual")">
-                        <button class="btn btn-blue">NEW</button>
-                    </a>*@
-                <a data-toggle="modal" data-target=".menu-maping-type"><button class="btn btn-blue">NEW</button></a>
-            </div>
         </div>
     </div>
 </div>
-
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
@@ -60,8 +58,8 @@
                 <table id="mydata" class="table table-striped table-hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th> NO  </th>
                             <th> Action </th>
+                            <th> NPPBKC ID </th>
                             <th> Plant ID </th>
                             <th> Plant Description </th>
                             <th> Main Plant </th>
@@ -72,8 +70,8 @@
                     </thead>
                     <thead class="filters">
                         <tr>
-                            <th> NO  </th>
-                            <th> Action </th>
+                            <th>   </th>
+                            <th> NPPBKC ID  </th>
                             <th> Plant ID </th>
                             <th> Plant Description </th>
                             <th> Main Plant </th>
@@ -82,16 +80,21 @@
                         </tr>
 
                     </thead>
-                   
+
                     <tbody>
 
                         @foreach (var item in Model.Details)
                         {
                             <tr>
-                                <td></td>
-                                <td></td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.PlantId)
+                                    <a href="@Url.Action("Detail", "plant", new { id = item.PlantId })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Plant", new { id = item.PlantId })"> <i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NPPBKC.NPPBKC_NO)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Werks)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlantDescription)
@@ -113,5 +116,3 @@
         </div>
     </div>
 </div>
-
-

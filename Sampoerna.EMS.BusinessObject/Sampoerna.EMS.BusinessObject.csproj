@@ -54,6 +54,8 @@
     <Compile Include="BACK3_CK2.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Business\HeaderFooter.cs" />
+    <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
     <Compile Include="C1LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
@@ -89,6 +91,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="DOC_NUMBER_SEQ.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EMSEntities.cs">
@@ -129,6 +134,7 @@
     </Compile>
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
@@ -204,6 +210,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WORKFLOW_EMAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WORKFLOW_HISTORY.cs">

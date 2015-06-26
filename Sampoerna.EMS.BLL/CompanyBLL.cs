@@ -38,6 +38,11 @@ namespace Sampoerna.EMS.BLL
             return queryData.ToList();
         }
 
+        public T1001 GetById(long id)
+        {
+            return _repository.GetByID(id);
+        }
+
        
     }
 }

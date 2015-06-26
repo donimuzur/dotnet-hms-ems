@@ -218,7 +218,8 @@
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
-    <Compile Include="Controllers\ExcisableGoodsTypeGroupController.cs" />
+    <Compile Include="Controllers\GoodsTypeGroupController.cs" />
+    <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -233,13 +234,19 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
+    <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupEditViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
+    <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
+    <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -318,6 +325,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\upload\header\sample_header.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -566,6 +574,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
+    <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
+    <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
@@ -609,7 +620,6 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ViewDetail.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
-    <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\PBCK1\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
@@ -619,7 +629,7 @@
     <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
     <Content Include="Views\POA\Index.cshtml" />
     <Content Include="Views\NPPBKC\Index.cshtml" />
-    <Content Include="Views\ExcisableGoodsTypeGroup\Index.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Index.cshtml" />
     <Content Include="Views\Plant\Index.cshtml" />
     <Content Include="Views\BrandRegistration\Index.cshtml" />
     <Content Include="Views\CK5\Index.cshtml" />
@@ -644,6 +654,16 @@
     <Content Include="Views\POA\Create.cshtml" />
     <Content Include="Views\POA\Edit.cshtml" />
     <Content Include="Views\POA\Detail.cshtml" />
+    <Content Include="Views\HeaderFooter\Index.cshtml" />
+    <Content Include="Views\HeaderFooter\Create.cshtml" />
+    <Content Include="Views\HeaderFooter\Edit.cshtml" />
+    <Content Include="Views\HeaderFooter\Details.cshtml" />
+    <Content Include="Views\Plant\Edit.cshtml" />
+    <Content Include="Views\Plant\Detail.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Create.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Details.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Edit.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
