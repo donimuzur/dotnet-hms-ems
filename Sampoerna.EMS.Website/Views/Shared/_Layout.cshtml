@@ -264,6 +264,17 @@
 
 
     @RenderSection("styles", required: false)
+    
+    <script type="text/javascript">
+        $('.toggle-row').click(function () {
+
+            var filter = $(".filters");
+            filter.slideToggle(100).promise().done(function () {
+
+            });
+        });
+    </script>
+
     @RenderSection("scripts", required: false)
 
 

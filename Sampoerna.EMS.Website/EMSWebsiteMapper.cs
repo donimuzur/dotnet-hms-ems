@@ -24,11 +24,11 @@ namespace Sampoerna.EMS.Website
         public static void Initialize()
         {
             //AutoMapper
-            Mapper.CreateMap<USER, UserViewModel>().IgnoreAllNonExisting()
+            Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
                 .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
 
-            Mapper.CreateMap<UserTree, UserViewModel>().IgnoreAllNonExisting()
+            Mapper.CreateMap<UserTree, UserItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE.HasValue && src.IS_ACTIVE.Value))
                 ;
 
