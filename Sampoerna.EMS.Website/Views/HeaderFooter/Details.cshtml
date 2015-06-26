@@ -1,0 +1,136 @@
+﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterItemViewModel
+
+@{
+    ViewBag.Title = "Header Footer";
+}
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Header Footer Form</h3>
+            <div class="action-button">
+                <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="scroll">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        @ViewBag.Title
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Company Code</label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.Detail.COMPANY_CODE, new { disabled = "disabled", @class = "form-control" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Company Name</label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.Detail.COMPANY_NAME, new { disabled = "disabled", @class = "form-control" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4 long">Company Footer</label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextAreaFor(model => model.Detail.FOOTER_CONTENT, new { disabled = "disabled", @class="form-control"})
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Header Image</label>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group">
+                                                            @if (!string.IsNullOrEmpty(Model.Detail.HEADER_IMAGE_PATH)) {
+                                                                <img id="imgPrev" src="@Url.Content(Model.Detail.HEADER_IMAGE_PATH)" width="150" alt="no image available" />
+                                                            }
+                                                            else {
+                                                                <img id="imgPrev" src="#" width="150" alt="no image available" />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="Detail_HeaderFooterMapList" class="table table-bordered table-striped js-options-table">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Header</th>
+                                    <th>Footer</th>
+                                    <th>Preview</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int idx = 0; idx < Model.Detail.HeaderFooterMapList.Count; idx++)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.HiddenFor(x => x.Detail.HeaderFooterMapList[idx].FORM_TYPE_ID)
+                                            @Html.Label(Model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC)
+                                        </td>
+                                        <td>
+                                            @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_HEADER_SET)
+                                        </td>
+                                        <td>
+                                            @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
+                                        </td>
+                                        <td class="last">
+                                            <button class="btn btn-grey" onclick="previewClick()">Print Preview</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#btnCancel').click(function ( e ) {
+                location.href = '@Url.Action("Index", "HeaderFooter")';
+            });
+
+        });
+        
+        function previewClick() {
+            alert("Preview on progress");
+        }
+
+    </script>
+}
