@@ -1,67 +1,104 @@
-﻿@model List<Sampoerna.EMS.Website.Models.UserViewModel>
+﻿@model Sampoerna.EMS.Website.Models.UserViewModel
 
-@section styles 
+@section styles
     {
-        <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
-    }
+
+}
 
 @section scripts
     {
-        <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-        <script type="text/javascript" language="javascript" class="init">
-            $(document).ready(function () {
-                $('#mydata').DataTable(
-                    {
-                        "sDom": "Rlfrtip"
-                    });
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            // Setup - add a text input to each footer cell
+            $('#mydata .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 3) {
+                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                }
             });
-        </script>
-    }
-    
-    @{
-        ViewBag.Title = "Data User";
-    }
 
-    <h2>@ViewBag.Title</h2>
+            // DataTable
+            var table = $('#mydata').DataTable();
 
-    <table id="mydata" class="display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
 
-        <tfoot>
-            <tr>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Action</th>
-            </tr>
-        </tfoot>
+            $("#mydata_filter").hide();
+            $('#mydata_length').hide();
+            $('#mydata_info').hide();
+        });
+    </script>
+}
 
-        <tbody>
+@{
+    ViewBag.Title = "Data User";
+}
 
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.USERNAME)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FIRST_NAME)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LAST_NAME)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Detail", "ViewDetail", new { id = item.USER_ID })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>DATA USER</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row">Filter</th>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+
+                        </tr>
+                    </thead>
+
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.ActionLink("Detail", "ViewDetail", new { id = item.USER_ID })
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.USERNAME)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FIRST_NAME)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LAST_NAME)
+                                </td>
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

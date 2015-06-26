@@ -1,0 +1,116 @@
+﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterViewModel
+
+@section styles
+    {
+}
+
+@section scripts {
+    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            
+            // Setup - add a text input to each footer cell
+            $('#headerfootertable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 3) {
+                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                }
+            });
+
+            // DataTable
+            var table = $('#headerfootertable').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+            $("#headerfootertable_filter").hide();
+            $('#headerfootertable_length').hide();
+            $('#headerfootertable_info').hide();
+            $('#MenuHeaderFooter').addClass('active');
+        });
+    </script>
+}
+
+
+@{
+    ViewBag.Title = "Header Footer";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>HEADER FOOTER</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "HeaderFooter")"><button class="btn btn-blue">NEW</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="headerfootertable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row">Filter</th>
+                            <th>Company Code</th>
+                            <th>Company Name</th>
+                            <th>Company Header Image</th>
+                            <th>Company Footer</th>
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Details", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td class="last">@Html.DisplayFor(model => item.COMPANY_CODE)</td>
+                                <td>@Html.DisplayFor(model => item.COMPANY_NAME)
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.HEADER_IMAGE_PATH))
+                                    {
+                                        <img src="@Url.Content(@item.HEADER_IMAGE_PATH)" width="100" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imgPrev" src="#" width="100" alt="no image available" />
+                                    }
+                                </td>
+                                <td>
+                                    @Html.Raw(item.FOOTER_CONTENT)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
