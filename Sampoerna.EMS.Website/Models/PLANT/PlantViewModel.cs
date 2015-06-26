@@ -68,7 +68,9 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public int? RecievedMaterialTypeId { get; set; }
         public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }
-        public ZAIDM_EX_NPPBKC NPPBKC { get; set; }
+
+        [Required(ErrorMessage = "please fill this field")]
+        public int NppbkcNo { get; set; }
 
         public ZAIDM_EX_GOODTYP GOODTYP { get; set; }
     }
