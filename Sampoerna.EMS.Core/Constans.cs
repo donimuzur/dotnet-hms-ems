@@ -2,7 +2,7 @@
 {
     public class Constans
     {
-
+        public const string MasterDataHeaderFooterFolder = "~/Content/upload/header/";
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
         /// <summary>
@@ -26,6 +26,12 @@
             public const string MainMenu = "sk_main_menu";
 
             public const string ExcelUploadProdConvPbck1 = "ExcelUploadProdConvertedPbck1";
+        }
+
+        public class  SubmitType
+        {
+            public const string Save = "Save";
+            public const string Cancel = "Cancel";
         }
 
      
