@@ -7,7 +7,9 @@ namespace Sampoerna.EMS.Contract
     {
        List<T1001> GetMasterData();
 
-        T1001 GetById(long id);
+        List<T1001> GetAllData();
+
+ 	 T1001 GetById(long id);
 
     }
 }

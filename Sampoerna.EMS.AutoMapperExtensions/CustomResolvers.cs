@@ -91,4 +91,18 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+
+    //public class VirtualPlantMapCompanyNameResolver : ValueResolver<object, string>
+    //{
+    //    protected override string ResolveCore(object value)
+    //    {
+            
+    //        string InputAsString = value.ToNullSafeString();
+
+    //        if (string.IsNullOrWhiteSpace(InputAsString))
+    //            return null;
+
+    //        return int.Parse(InputAsString);
+    //    }
+    //}
 }

@@ -1,0 +1,87 @@
+﻿@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantCreateViewModel
+
+@using (Html.BeginForm("Create", "VirtualMappingPlant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>New Virtual Plant Mapping</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        New Virtual Plant Mapping
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Company Name</label>
+                                                    <div class="col-md-4">
+                                                        @Html.DropDownListFor(model => model.CompanyId, Model.CompanyNameList, "Select", new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.CompanyId)
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Import Virtual Plant</label>
+                                                    <div class="col-md-4">
+                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.ImportPlantId)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Export Virtual Plant</label>
+                                                    <div class="col-md-4">
+                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new {@class = "form-control"})
+                                                        @Html.ValidationMessageFor(model => model.ExportPlantId)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $('#MenuMasterVirtualMappingPlant').addClass('active');
+
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "VirtualMappingPlant")';
+            });
+        });
+
+    </script>
+}
