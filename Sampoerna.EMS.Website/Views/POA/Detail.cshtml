@@ -41,7 +41,7 @@
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Detail POA
+                                    Create New POA
                                     <i class="fa fa-caret-down"></i>
                                 </a>
                             </h4>
@@ -54,7 +54,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">ID Card</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled="disabled" })
                                                     @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                 </div>
                                             </div>
@@ -64,15 +64,23 @@
                                                 <label class="col-md-3">User Account</label>
                                                 <div class="col-md-9">
                                                     @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+
                                                     @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Manager</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
 
-
-
+                                                    @Html.ValidationMessageFor(model => model.Detail.Manager.USER_ID)
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Printed Name</label>
@@ -82,6 +90,13 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div class="row">
+
+
+
+
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Phone</label>
@@ -91,8 +106,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Email</label>
@@ -102,6 +115,9 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
+
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Title</label>
@@ -111,8 +127,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
 
                                         <div class="col-md-6">
                                             <div class="row">
@@ -123,8 +137,9 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <span>@Html.GetUnobtrusiveValidationAttributes("Detail.Title").Values</span>
+
                                 </form>
                             </div>
                         </div>
@@ -134,5 +149,6 @@
         </div>
     </div>
 </div>
+
 
 

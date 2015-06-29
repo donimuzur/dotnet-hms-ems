@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         
 
         public IEnumerable<SelectListItem> Users { get; set; }
+        public IEnumerable<SelectListItem> Managers { get; set; }
         
         public POAViewDetailModel Detail { get; set; }
 
@@ -47,8 +48,11 @@ namespace Sampoerna.EMS.Website.Models.POA
         [Display(Name = "User Name")]
         public USER User { get; set; }
 
+        public USER Manager { get; set; }
+
         [Required(ErrorMessage = "please fill this field")]
         public int UserId { get; set; }
+        public int ManagerId { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
         [StringLength(50, ErrorMessage = "Max length : 50")]

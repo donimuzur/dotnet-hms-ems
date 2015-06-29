@@ -54,8 +54,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(POAFormModel model)
         {
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
@@ -70,7 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View();
                 }
                 
-            }
+            
 
             return RedirectToAction("Create");
             
@@ -91,7 +90,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
-            model.Users = GlobalFunctions.GetCreatorList(); 
+            model.Managers = GlobalFunctions.GetCreatorList(detail.Manager.USER_ID);
+            model.Users = GlobalFunctions.GetCreatorList(detail.User.USER_ID); 
             model.Detail = detail;
             return View(model);
         }
@@ -112,7 +112,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     AutoMapper.Mapper.Map(model.Detail, poa);    
                 }
                 
-                _poaBll.Save(poa);
+                _poaBll.Update(poa);
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
             }
@@ -123,7 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
         }
-
+        
         public ActionResult Detail(int id)
         {
             var poa = _poaBll.GetById(id);
@@ -154,6 +154,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 TempData[Constans.SubmitType.Delete] = ex.Message;
             }
             return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public JsonResult GetUser(string userId)
+        {
+            var id = Convert.ToInt32(userId);
+            return Json(_userBll.GetUserById(id));
         }
     }
 }

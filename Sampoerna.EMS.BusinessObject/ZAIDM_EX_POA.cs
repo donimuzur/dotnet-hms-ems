@@ -43,5 +43,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
         public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
         public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
     }
 }

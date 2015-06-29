@@ -530,6 +530,7 @@
           <Property Name="MANAGER_ID" Type="int" />
           <Property Name="FIRST_NAME" Type="nvarchar" MaxLength="25" />
           <Property Name="LAST_NAME" Type="nvarchar" MaxLength="25" />
+          <Property Name="PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="IS_ACTIVE" Type="bit" />
           <Property Name="USER_GROUP_ID" Type="int" />
           <Property Name="EMAIL" Type="nvarchar" MaxLength="50" />
@@ -2038,6 +2039,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_POA_USER1">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_POA" Type="Self.ZAIDM_EX_POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_POA">
+              <PropertyRef Name="MANAGER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_POA_MAP_EX_POA">
           <End Role="T1001W" Type="Self.T1001W" Multiplicity="1" />
           <End Role="ZAIDM_POA_MAP" Type="Self.ZAIDM_POA_MAP" Multiplicity="*" />
@@ -2554,6 +2567,10 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_POA_USER1" Association="Self.FK_ZAIDM_EX_POA_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_POA_MAP_EX_POA" Association="Self.FK_ZAIDM_POA_MAP_EX_POA">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
@@ -3066,6 +3083,10 @@
           <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="EMSModel.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_POA_USER1" Association="EMSModel.FK_ZAIDM_EX_POA_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="CK5">
@@ -3755,6 +3776,8 @@
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
           <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
+          <Property Name="PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_POA1" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER1" FromRole="USER" ToRole="ZAIDM_EX_POA" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -5250,6 +5273,7 @@
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="ZAIDM_EX_POA" ToRole="USER" />
           <Property Name="MANAGER_ID" Type="Int32" />
           <Property Name="IS_DELETED" Type="Boolean" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER1" FromRole="ZAIDM_EX_POA" ToRole="USER" />
         </EntityType>
         <Association Name="FK_PBCK1_ZAIDM_EX_POA">
           <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
@@ -5348,6 +5372,18 @@
             </Principal>
             <Dependent Role="CHANGES_HISTORY">
               <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_POA_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_POA">
+              <PropertyRef Name="MANAGER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5898,6 +5934,7 @@
           <EntitySetMapping Name="USER">
             <EntityTypeMapping TypeName="EMSModel.USER">
               <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
                 <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />

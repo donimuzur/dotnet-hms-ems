@@ -26,7 +26,7 @@
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Update POA
+                                        Create New POA
                                         <i class="fa fa-caret-down"></i>
                                     </a>
                                 </h4>
@@ -39,8 +39,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">ID Card</label>
                                                     <div class="col-md-9">
-                                                        @Html.HiddenFor(model=>model.Detail.PoaId)
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled= @Model.Detail.IsFromSAP })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                     </div>
                                                 </div>
@@ -49,17 +48,24 @@
                                                 <div class="row">
                                                     <label class="col-md-3">User Account</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, new { @class = "form-control" })
 
-                                                        @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
+                                                        @Html.ValidationMessageFor(model => model.Detail.UserId)
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Manager</label>
+                                                    <div class="col-md-9">
+                                                        @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Managers,  new { @class = "form-control" })
 
-
-
+                                                        @Html.ValidationMessageFor(model => model.Detail.Manager.USER_ID)
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Printed Name</label>
@@ -69,6 +75,13 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="row">
+
+
+
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Phone</label>
@@ -78,8 +91,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Email</label>
@@ -89,6 +100,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row">
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Title</label>
@@ -98,19 +112,19 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
 
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Address</label>
-                                                    <div class="col-md-9" >
+                                                    <div class="col-md-9">
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
+
                                     </form>
                                 </div>
                             </div>
