@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
-        public void save(ZAIDM_EX_POA poa)
+        public void Save(ZAIDM_EX_POA poa)
         {
             if (poa.POA_ID != 0)
             {
@@ -61,6 +61,16 @@ namespace Sampoerna.EMS.BLL
             
         }
 
+
+
+
        
+        public void Delete(int id)
+        {
+            var existingPoa = GetById(id);
+            existingPoa.IS_DELETED = true;
+            _repository.Update(existingPoa);
+            _uow.SaveChanges();
+        }
     }
 }
