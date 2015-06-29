@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.POA.POAViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.POA.POAViewModel
 
 @section styles
     {
@@ -37,9 +38,17 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            @if (@ViewBag.Message != null)
+            @if (TempData[Constans.SubmitType.Save] != null)
             {
-                @: alert('@ViewBag.Message');
+                @: alert('@TempData[Constans.SubmitType.Save]');
+            }
+             @if (TempData[Constans.SubmitType.Update] != null)
+             {
+                 @: alert('@TempData[Constans.SubmitType.Update]');
+             }
+            @if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: alert('@TempData[Constans.SubmitType.Delete]');
             }
             $('#MenuPOA').addClass('active');
 
@@ -78,11 +87,11 @@
 
                             <th class="toggle-row"> Filter </th>
                             <th> ID Card </th>
-                            <th> Name </th>
+                            <th> User Account </th>
                             <th> Printed Name</th>
-                            <th> Address </th>
                             <th> Phone </th>
                             <th> Title </th>
+                            <th> Deleted </th>
                         </tr>
 
                     </thead>
@@ -90,11 +99,11 @@
                         <tr>
                             <th> Action</th>
                             <th> ID Card </th>
-                            <th> Name </th>
+                            <th> User Account </th>
                             <th> Printed Name</th>
-                            <th> Address </th>
                             <th> Phone </th>
                             <th> Title </th>
+                            <th> Deleted </th>
                         </tr>
                     </thead>
 
@@ -104,28 +113,30 @@
                         {
                             <tr>
                                 <td>
-                                    <a href="@Url.Action("Detail", "POA", new { id = item.POA_ID })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "POA", new { id = item.POA_ID })"> <i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "POA", new { id = item.PoaId })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "POA", new { id = item.PoaId })"> <i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.POA_ID_CARD)
+                                    @Html.DisplayFor(modelItem => item.PoaIdCard)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.USER.USERNAME)
+                                    @if (item.User != null)
+                                    {
+                                        <a href="@Url.Action("Detail", "User", new {id = @item.User.USER_ID})">@item.User.USERNAME</a>
+                                    }
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.POA_PRINTED_NAME)
+                                    @Html.DisplayFor(modelItem => item.PoaPrintedName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.POA_ADDRESS)
+                                    @Html.DisplayFor(modelItem => item.PoaPhone)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.POA_PHONE)
+                                    @Html.DisplayFor(modelItem => item.Title)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.TITLE)
+                                    @Html.DisplayFor(modelItem => item.Is_Deleted)
                                 </td>
-
                             </tr>
                         }
                     </tbody>

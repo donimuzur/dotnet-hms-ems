@@ -47,19 +47,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row">
-                                                <label class="col-md-3">Poa Code</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaCode)
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Name</label>
+                                                <label class="col-md-3">User Account</label>
                                                 <div class="col-md-9">
                                                     @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control" })
 
@@ -67,6 +55,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
+
+                                     
 
                                         <div class="col-md-6">
                                             <div class="row">
@@ -77,9 +69,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Phone</label>
@@ -89,7 +78,17 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                    </div>
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Email</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.Detail.Email)
+                                                </div>
+                                            </div>
+                                       </div>
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Title</label>
@@ -101,11 +100,11 @@
                                         </div>
                                     </div>
                                         <div class="row">
-
+                                            
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Address</label>
-                                                    <div class="col-md-9" r>
+                                                    <div class="col-md-9">
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
                                                     </div>

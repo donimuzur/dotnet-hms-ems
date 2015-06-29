@@ -70,7 +70,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
-        public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
@@ -78,12 +77,13 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
-        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
         public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
         public virtual DbSet<EMAIL_TEMPLATE> EMAIL_TEMPLATE { get; set; }
         public virtual DbSet<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
+        public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
+        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
     }
 }

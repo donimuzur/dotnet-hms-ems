@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.POA;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -31,7 +34,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = Enums.MenuList.MasterData,
                 CurrentMenu = PageInfo,
-                Details = _poaBll.GetAll()
+                Details = Mapper.Map<List<POAViewDetailModel>>(_poaBll.GetAll())
             };
 
             ViewBag.Message = TempData["message"];
@@ -44,7 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var poa = new POAFormModel();
             poa.MainMenu = Enums.MenuList.MasterData;
             poa.CurrentMenu = PageInfo;
-            poa.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");
+            poa.Users = GlobalFunctions.GetCreatorList();
             return View(poa);
         }
 
@@ -57,13 +60,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
                     poa.IS_FROM_SAP = false;
-                    _poaBll.save(poa);
-                    TempData["message"] = "Save Successful";
+                    _poaBll.Save(poa);
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-
+                    TempData[Constans.SubmitType.Save] = ex.Message;
                     return View();
                 }
                 
@@ -88,7 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
-            model.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME", poa.USER_ID);
+            model.Users = GlobalFunctions.GetCreatorList(); 
             model.Detail = detail;
             return View(model);
         }
@@ -109,10 +112,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     AutoMapper.Mapper.Map(model.Detail, poa);    
                 }
                 
-                _poaBll.save(poa);
-                TempData["message"] = "Save Successful";
-
-
+                _poaBll.Save(poa);
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
             }
 
@@ -135,12 +136,24 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
-            model.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME", poa.USER_ID);
+            model.Users = GlobalFunctions.GetCreatorList();
             model.Detail = detail;
             return View(model);
 
         }
 
-
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                _poaBll.Delete(id);
+                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+            }
+            catch (Exception ex)
+            {
+                TempData[Constans.SubmitType.Delete] = ex.Message;
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

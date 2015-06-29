@@ -39,35 +39,32 @@
                                                 <div class="row">
                                                     <label class="col-md-3">ID Card</label>
                                                     <div class="col-md-9">
-                                                        @Html.HiddenFor(model => model.Detail.PoaId)
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", id = "txtBoxIdCard" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaId)
+                                                        @Html.HiddenFor(model=>model.Detail.PoaId)
+                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Poa Code</label>
+                                                    <label class="col-md-3">User Account</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control", id = "txtBoxPoaCode" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaCode)
+                                                        @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control" })
+
+                                                        @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">User Name</label>
-                                                    <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "Select", new { @class = "form-control", id = "txtBoxUserName" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.User.USERNAME)
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        </div>
+                                        <div class="row">
+
+
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Printed Name</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", id = "txtBoxPrintedName" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaPrintedName)
                                                     </div>
                                                 </div>
@@ -76,12 +73,22 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Phone</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", id = "txtBoxPoaPhone" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaPhone)
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Email</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.Email)
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Title</label>
@@ -91,11 +98,14 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row">
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Address</label>
-                                                    <div class="col-md-9" r>
-                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "txtArea" })
+                                                    <div class="col-md-9" >
+                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
                                                     </div>
                                                 </div>
@@ -118,23 +128,15 @@
     <script type="text/javascript">
         $(window).load(function () {
             @{
-                if (@Model.Detail.isNewData == true)
+                if (!@Model.Detail.IsFromSAP)
                 {
                     @: document.getElementById('txtBoxIdCard').disabled = true;
-                    @: document.getElementById('txtBoxPoaCode').disabled = true;
-                    @: document.getElementById('txtBoxUserName').disabled = true;
-                    @: document.getElementById('txtBoxPrintedName').disabled = true;
-                    @: document.getElementById('txtBoxPoaPhone').disabled = true;
-                    @: document.getElementById('txtArea').disabled = true;
+                    
                 }
                 else
                 {
                     @: document.getElementById('txtBoxIdCard').disabled = false;
-                    @: document.getElementById('txtBoxPoaCode').disabled = false;
-                    @: document.getElementById('txtBoxUserName').disabled = false;
-                    @: document.getElementById('txtBoxPrintedName').disabled = false;
-                    @: document.getElementById('txtBoxPoaPhone').disabled = false;
-                    @: document.getElementById('txtArea').disabled = false;
+                    
 
                 }
             }
