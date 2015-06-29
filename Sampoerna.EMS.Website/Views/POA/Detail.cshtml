@@ -64,7 +64,6 @@
                                                 <label class="col-md-3">User Account</label>
                                                 <div class="col-md-9">
                                                     @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
-
                                                     @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
                                                 </div>
                                             </div>
@@ -125,6 +124,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <span>@Html.GetUnobtrusiveValidationAttributes("Detail.Title").Values</span>
                                 </form>
                             </div>
                         </div>

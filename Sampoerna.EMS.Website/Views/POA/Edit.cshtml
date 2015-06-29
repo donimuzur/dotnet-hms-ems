@@ -40,7 +40,7 @@
                                                     <label class="col-md-3">ID Card</label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(model=>model.Detail.PoaId)
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled= @Model.Detail.IsFromSAP })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                     </div>
                                                 </div>
@@ -126,23 +126,8 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript">
-        $(window).load(function () {
-            @{
-                if (!@Model.Detail.IsFromSAP)
-                {
-                    @: document.getElementById('txtBoxIdCard').disabled = true;
-                    
-                }
-                else
-                {
-                    @: document.getElementById('txtBoxIdCard').disabled = false;
-                    
-
-                }
-            }
-
-        });
-        $('#MenuPOA').addClass('active');
+   
+    $('#MenuPOA').addClass('active');
     </script>
 
 }
