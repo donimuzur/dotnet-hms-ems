@@ -38,7 +38,7 @@
 
 
 @{
-    ViewBag.Title = "NPPBKC (Nomor Pokok Pengusaha Barang Kena Cukai)";
+    ViewBag.Title = "NPPBKC";
 }
 <div class="container-wrap title-page">
     <div class="row">
@@ -61,8 +61,8 @@
                 <table id="mydata" class="table table-striped table-hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th> NO  </th>
-                            <th> Action </th>
+                           
+                            <th class="toggle-row"> Filter </th>
                             <th> NPPBKC ID </th>
                             <th> Address </th>
                             <th> City Alias</th>
@@ -74,7 +74,6 @@
                     </thead>
                     <thead class="filters">
                         <tr>
-                            <th> NO  </th>
                             <th> Action </th>
                             <th> NPPBKC ID </th>
                             <th> Address </th>
@@ -90,12 +89,12 @@
                         {
                         <tr>
                             <td></td>
-                            <td></td>
+                    
                             <td>
                                 @Html.DisplayFor(modelItem => item.NppbckId)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Addr1)
+                                @Html.DisplayFor(modelItem => item.Address1)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.City)

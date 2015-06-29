@@ -48,6 +48,8 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public string PlantDescription { get; set; }
 
         public bool IsMainPlant { get; set; }
+        public bool IsYes { get; set; }
+        public bool IsNo { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Address")]

@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var poa = new POAFormModel();
             poa.MainMenu = Enums.MenuList.MasterData;
             poa.CurrentMenu = PageInfo;
-            poa.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");
+            poa.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");          
             return View(poa);
         }
 
