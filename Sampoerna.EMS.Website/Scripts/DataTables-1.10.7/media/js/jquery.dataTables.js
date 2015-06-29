@@ -3467,7 +3467,7 @@
 							pages = all ? 1 : Math.ceil( visRecords / len ),
 							buttons = plugin(page, pages),
 							i, ien;
-	
+					    
 						for ( i=0, ien=features.p.length ; i<ien ; i++ ) {
 							_fnRenderer( settings, 'pageButton' )(
 								settings, features.p[i], i, buttons, page, pages
@@ -14207,16 +14207,18 @@
 				var classes = settings.oClasses;
 				var lang = settings.oLanguage.oPaginate;
 				var btnDisplay, btnClass, counter=0;
-	
+				
 				var attach = function( container, buttons ) {
-					var i, ien, node, button;
-					var clickHandler = function ( e ) {
-						_fnPageChange( settings, e.data.action, true );
+				    var i, ien, node, button;
+
+				    
+
+					var clickHandler = function (e) {
+					    _fnPageChange(settings, e.data.action, true);
 					};
-	
-					for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
+				    	for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
 						button = buttons[i];
-	
+	                     
 						if ( $.isArray( button ) ) {
 							var inner = $( '<'+(button.DT_el || 'div')+'/>' )
 								.appendTo( container );
@@ -14261,8 +14263,7 @@
 										classes.sPageButtonActive : '';
 									break;
 							}
-	
-							if ( btnDisplay ) {
+						    if ( btnDisplay ) {
 								node = $('<a>', {
 										'class': classes.sPageButton+' '+btnClass,
 										'aria-controls': settings.sTableId,
@@ -14283,13 +14284,14 @@
 							}
 						}
 					}
+					
 				};
-	
+				
 				// IE9 throws an 'unknown error' if document.activeElement is used
 				// inside an iframe or frame. Try / catch the error. Not good for
 				// accessibility, but neither are frames.
 				var activeEl;
-	
+				
 				try {
 					// Because this approach is destroying and recreating the paging
 					// elements, focus is lost on the select button which is bad for
@@ -14297,13 +14299,26 @@
 					// completed
 					activeEl = $(document.activeElement).data('dt-idx');
 				}
-				catch (e) {}
-	
-				attach( $(host).empty(), buttons );
-	
+			    catch (e) { }
+				
+			    attach( $(host).empty(), buttons );
+			    $('.paginate_button').wrapAll('<div style="float:left"></div>');
+			    $('#' + settings.sTableId + '_paginate').append('<div class="goto" style="float:left; margin:0 0 0 0px"><span>Go to Page</span> <input class="form-control" type="text" placeholder=""></div>');
+			    $('.goto input').keyup(function (e) {
+			        if (e.keyCode == 13) {
+			            var m = $(this).val();
+			            if (!isNaN(m)) {
+			                _fnPageChange(settings, Number(m) - 1, true);
+			            }
+			        }
+			    });
+
+
 				if ( activeEl ) {
 					$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
 				}
+				
+
 			}
 		}
 	} );
