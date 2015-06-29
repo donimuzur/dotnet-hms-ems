@@ -1,7 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationEditViewModel
 
 
-@using (Html.BeginForm("Edit", "BrandRegistration", null, FormMethod.Post, new {@class = "form-excise", role = "form"}))
+@using (Html.BeginForm("Edit", "BrandRegistration", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
     <div class="container-wrap title-page">
@@ -33,260 +33,298 @@
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <form class="form-excise" role="form">
-                                            <div class="row">
+                                @Html.HiddenFor(model => model.BrandId)
+                                @Html.HiddenFor(model => model.IsFromSAP)
+                                @if (Model.IsFromSAP)
+                                {
+                                     @Html.Partial("_EditSAP")
+                                }
+                                else
+                                {
 
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Stiker Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.StickerCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Plant</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.PlantName, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">FA Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.FaCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Personalization Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.PersonalizationCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Product Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ProductCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Personalization Code Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PersonalizationCodeDescription, new {@rows = "5", @class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Data Element for Product Type</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.ProductType, new {@rows = "5", @class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Brand Name Registration by CE Office</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.BrandName, new {@rows = "5", @class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Data Element for Product Type Alias</label>
-                                                        <div class="col-md-8">
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <form class="form-excise" role="form">
+                                                <div class="row">
 
-                                                            @Html.TextAreaFor(model => model.ProductAlias, new {@rows = "5", @class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">SKEP No</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SkepNo, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">SKEP Date</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SkepDate, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Series Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SeriesCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Series Value</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SeriesValue, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Content</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Content, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Market Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MarketCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Market Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MarketDescription, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Country Key</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CountryCode, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">HJE</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.HjeValue, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">HJE Currency</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.HjeCurrency, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Tariff</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Tariff, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Tariff Currency</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.TariffCurrency, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Exciseable Goods Type</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.GoodType, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Colour</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ColourName, new {@class = "form-control", @disabled = "false"})
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Exciseable Goods Type Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.GoodTypeDescription, new {@rows = "5", @class = "form-control", @disabled = "false"})
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Start Date</label>
-                                                        <div class="col-md-8">
-                                                            <div class="col-md-5">
-                                                                @Html.TextBoxFor(model => model.StartDate, new {@class = "form-control", @disabled = "false"})
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Stiker Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.StickerCode, new {@class = "form-control"})
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <label>to</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Plant</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new {@class = "form-control"})
                                                             </div>
-                                                            <div class="col-md-5">
-                                                                @Html.TextBoxFor(model => model.EndDate, new {@class = "form-control", @disabled = "false"})
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">FA Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.FaCode, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Personalization Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Product Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4 long">Personalization Code Description</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextAreaFor(model => model.PersonalizationCodeDescription, new {@rows = "5", @class = "form-control", @disabled = "disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4 long">Data Element for Product Type</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextAreaFor(model => model.ProductType, new {@rows = "5", @class = "form-control", @disabled = "disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4 long">Brand Name Registration by CE Office</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextAreaFor(model => model.BrandName, new {@rows = "5", @class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4 long">Data Element for Product Type Alias</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextAreaFor(model => model.ProductAlias, new {@rows = "5", @class = "form-control", @disabled = "disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">SKEP No</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.SkepNo, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">SKEP Date</label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.SkepDate, new {@class = "form-control"})
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Printing Price</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.PrintingPrice, new {@class = "form-control", @disabled = "false"})
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Series Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.SeriesId, Model.SeriesList, "Select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Series Value</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.SeriesValue, new {@class = "form-control", @disabled = "disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Content</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.Content, new {@class = "form-control"})
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Convertion</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new {@class = "form-control", @disabled = "false"})
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Market Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.MarketCode, Model.MarketCodeList, "Select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Market Description</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.MarketDescription, new {@class = "form-control", @disabled = "disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Country Key</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.CountryCode, Model.CountryCodeList, "Select", new {@class = "form-control"})
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Status</label>
-                                                        <div class="col-md-8">
-                                                           @Html.TextBoxFor(model => model.Status, new { @class = "form-control", @disabled = "false" })
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">HJE</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.HjeValue, new {@class = "form-control"})
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Cut Filler Code</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new {@class = "form-control", @disabled = "false"})
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">HJE Currency</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.HjeCurrency, Model.HjeCurrencyList, "Select", new {@class = "form-control"})
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Tariff</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.Tariff, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Tariff Currency</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.TariffCurrency, Model.TariffCurrencyList, "Select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                            </div>
-                                        </form>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Exciseable Goods Type</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Colour</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.ColourName, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4 long">Exciseable Goods Type Description</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextAreaFor(model => model.GoodTypeDescription, new {@rows = "5", @class = "form-control", @disabled = "disabled"})
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Start Date</label>
+                                                            <div class="col-md-8">
+
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.StartDate, new {@class = "form-control"})
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">End Date</label>
+                                                            <div class="col-md-8">
+
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.EndDate, new {@class = "form-control"})
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Printing Price</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.PrintingPrice, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Convertion</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.Convertion, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Status</label>
+                                                            <div class="col-md-8">
+                                                                @Html.EditorFor(model => model.IsActive, new {@class = "form-control"}) Active
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Cut Filler Code</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.Convertion, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
+
+                                }
                             </div>
                         </div>
                     </div>
@@ -298,14 +336,16 @@
 }
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
-            $('.check-box').attr('disabled', 'disabled');
-            $('#MenuMasterBrandRegistration').addClass('active');
-            
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("Index", "BrandRegistration")';
-            });
+    $(document).ready(function () {
+        //$('.check-box').attr('disabled', 'disabled');
+        $('#MenuMasterBrandRegistration').addClass('active');
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "BrandRegistration")';
         });
+
+     
+    });
 
     </script>
 }

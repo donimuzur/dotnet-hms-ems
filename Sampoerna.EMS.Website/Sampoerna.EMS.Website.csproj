@@ -682,6 +682,7 @@
     <Content Include="Views\BrandRegistration\Details.cshtml" />
     <Content Include="Views\BrandRegistration\Create.cshtml" />
     <Content Include="Views\BrandRegistration\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\_EditSAP.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

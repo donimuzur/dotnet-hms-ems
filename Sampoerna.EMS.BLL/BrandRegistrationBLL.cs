@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_BRAND GetByIdIncludeChild(long id)
         {
-            var dbData = _repository.Get(a => a.BRAND_ID == id, null, "T1001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_series, ZAIDM_EX_MARKET, CURRENCY, ZAIDM_EX_GOODTYP").FirstOrDefault();
+            var dbData = _repository.Get(a => a.BRAND_ID == id, null, "T1001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_series, ZAIDM_EX_MARKET,Country, CURRENCY,CURRENCY1, ZAIDM_EX_GOODTYP").FirstOrDefault();
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -78,37 +78,50 @@ namespace Sampoerna.EMS.BLL
             return result.ToList();
         }
 
-        public BrandRegistrationOutput save(ZAIDM_EX_BRAND brandRegistrasionExBrand)
+        public void Save(ZAIDM_EX_BRAND brandRegistration)
         {
+            _repository.InsertOrUpdate(brandRegistration);
+            try
             {
-                if (brandRegistrasionExBrand.BRAND_ID > 0)
-                {
-                    //update
-                    _repository.Update(brandRegistrasionExBrand);
-                }
-                else
-                {
-                    //Insert
-                    _repository.Insert(brandRegistrasionExBrand);
-                }
+                _uow.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
 
-                var output = new BrandRegistrationOutput();
-
-                try
-                {
-                    _uow.SaveChanges();
-                    output.Success = true;
-                    output.BrandIdZaidmExBrand = brandRegistrasionExBrand.BRAND_ID;
-                }
-                catch (Exception exception)
-                {
-                    _logger.Error(exception);
-                    output.Success = false;
-                    output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                    output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-                }
-                return output;
             }
         }
+        //public BrandRegistrationOutput save(ZAIDM_EX_BRAND brandRegistrasionExBrand)
+        //{
+        //    {
+        //        if (brandRegistrasionExBrand.BRAND_ID > 0)
+        //        {
+        //            //update
+        //            _repository.Update(brandRegistrasionExBrand);
+        //        }
+        //        else
+        //        {
+        //            //Insert
+        //            _repository.Insert(brandRegistrasionExBrand);
+        //        }
+
+        //        var output = new BrandRegistrationOutput();
+
+        //        try
+        //        {
+        //            _uow.SaveChanges();
+        //            output.Success = true;
+        //            output.BrandIdZaidmExBrand = brandRegistrasionExBrand.BRAND_ID;
+        //        }
+        //        catch (Exception exception)
+        //        {
+        //            _logger.Error(exception);
+        //            output.Success = false;
+        //            output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
+        //            output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
+        //        }
+        //        return output;
+        //    }
+        //}
     }
 }

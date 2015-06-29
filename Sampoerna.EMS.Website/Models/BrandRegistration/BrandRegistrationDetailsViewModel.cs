@@ -16,7 +16,10 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string PersonalizationCodeDescription { get; set; }
         public string BrandName { get; set; }
         public string SkepNo { get; set; }
-        public DateTime SkepDate { get; set; }
+
+        [UIHint("FormatDateTime")]
+        public DateTime? SkepDate { get; set; }
+        
         public string ProductCode { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }
@@ -35,10 +38,10 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string GoodTypeDescription { get; set; }
 
         [UIHint("FormatDateTime")]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         [UIHint("FormatDateTime")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public string Status { get; set; }
 

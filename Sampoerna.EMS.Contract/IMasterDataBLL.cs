@@ -11,6 +11,17 @@ namespace Sampoerna.EMS.Contract
     {
         List<string> GetDataCompany();
 
-        
+        List<ZAIDM_EX_PCODE> GetDataPersonalization();
+        ZAIDM_EX_PCODE GetDataPersonalizationById(long id);
+
+        List<ZAIDM_EX_SERIES> GetAllDataSeries();
+        ZAIDM_EX_SERIES GetDataSeriesById(long id);
+
+        List<ZAIDM_EX_MARKET> GetAllDataMarket();
+        ZAIDM_EX_MARKET GetDataMarketById(long id);
+
+        List<COUNTRY> GetAllDataCountry();
+
+        List<CURRENCY> GetAllDataCurrency();
     }
 }
