@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var poa = new POAFormModel();
             poa.MainMenu = Enums.MenuList.MasterData;
             poa.CurrentMenu = PageInfo;
-            poa.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");
+            poa.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");          
             return View(poa);
         }
 
@@ -56,6 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
+                    poa.IS_FROM_SAP = false;
                     _poaBll.save(poa);
                     TempData["message"] = "Save Successful";
                     return RedirectToAction("Index");

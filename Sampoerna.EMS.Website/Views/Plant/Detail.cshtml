@@ -1,15 +1,10 @@
 ﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
 
-@section scripts {
-    <script type="text/javascript">
-        $('#MenuMasterPlant').addClass('active');
-    </script>
 
-}
 @{
     ViewBag.Title = "Detail Master Plant";
-    var isCheckYes = Model.Detail.IsMainPlant ? new { @checked = "checked", disabled = "disabled" } : null;
-    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked", disabled = "disabled" };
+    var isCheckYes = Model.Detail.IsMainPlant ? new { @checked = "checked", @id="radio1"} : null;
+    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked", @id = "radio2" };
 }
 <div class="container-wrap title-page">
     <div class="row">
@@ -97,9 +92,11 @@
                                             <label class="col-md-4">Main Plant</label>
                                             <div class="col-md-2">
                                                 @*@Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })*@
+                                                @*@Html.RadioButtonFor(model => model.Detail.IsYes, new { @class = "form-control", @disabled = "disabled", @checked = "checked" })Yes*@
                                                 @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, isCheckYes)Yes
                                             </div>
                                             <div class="col-md-2">
+                                                @*@Html.RadioButtonFor(model => model.Detail.IsNo, new { @class = "form-control", @disabled = "disabled", @checked = "checked" })No*@
                                                 @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, isCheckNo)No
                                             </div>
                                         </div>
@@ -123,7 +120,14 @@
     </div>
 </div>
 
+@section scripts {
+    <script type="text/javascript">
+        $('#MenuMasterPlant').addClass('active');
+        $(document).ready(function () {
+            $('input:radio').attr('disabled', 'disabled');
+            //$('#Detail_IsMainPlant').attr('disabled', 'disabled');
+        });
 
+    </script>
 
-
-
+}

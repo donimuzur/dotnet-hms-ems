@@ -104,13 +104,13 @@ namespace Sampoerna.EMS.Website
 
             #region NPPBKC
 
-            Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailNppbck>().IgnoreAllNonExisting()
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailsNppbck>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.Addr1, opt => opt.MapFrom(src => src.ADDR1))
+                .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
                 .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
                 .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
-                ;
+                .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO));
 
             #endregion
             
@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
                .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE))
-               .ForMember(dest => dest.isNewData, opt => opt.MapFrom(src => src.IS_FROM_SAP));
+               .ForMember(dest => dest.isNewData, opt => opt.MapFrom(src => src.IS_FROM_SAP.HasValue && src.IS_FROM_SAP.Value));
 
             Mapper.CreateMap<POAViewDetailModel, ZAIDM_EX_POA>().IgnoreAllUnmapped()
                .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
@@ -265,6 +265,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.EXPORT_PLANT_ID, opt => opt.MapFrom(src => src.ExportPlantId));
 
             #endregion
+
+
         }
     }
 }

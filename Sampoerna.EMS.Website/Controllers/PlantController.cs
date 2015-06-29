@@ -115,6 +115,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
 
             model.Detail = detail;
+            model.Detail.IsNo = !model.Detail.IsMainPlant;
+            model.Detail.IsYes = model.Detail.IsMainPlant;
             return View(model);
 
         }

@@ -676,6 +676,7 @@
     <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\NPPBKC\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
