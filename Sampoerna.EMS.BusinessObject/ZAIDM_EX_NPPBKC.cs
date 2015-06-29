@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> END_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string CITY_ALIAS { get; set; }
+        public string REGION_OFFICE_DGCE { get; set; }
     
         public virtual C1LFA1 C1LFA1 { get; set; }
         public virtual ICollection<CK4C> CK4C { get; set; }

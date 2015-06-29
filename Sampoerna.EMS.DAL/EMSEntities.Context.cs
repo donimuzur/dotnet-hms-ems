@@ -28,7 +28,6 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
-        public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<C1LFA1> C1LFA1 { get; set; }
@@ -85,5 +84,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
+        public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
     }
 }
