@@ -279,9 +279,11 @@ namespace Sampoerna.EMS.ReportingData {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class HeaderFooterDataTable : global::System.Data.TypedTableBase<HeaderFooterRow> {
             
-            private global::System.Data.DataColumn columnHeaderImageUrl;
+            private global::System.Data.DataColumn columnHEADER_IMAGE_PATH;
             
-            private global::System.Data.DataColumn columnFooterContent;
+            private global::System.Data.DataColumn columnFOOTER_CONTENT;
+            
+            private global::System.Data.DataColumn columnIsHeaderHide;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -318,17 +320,25 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn HeaderImageUrlColumn {
+            public global::System.Data.DataColumn HEADER_IMAGE_PATHColumn {
                 get {
-                    return this.columnHeaderImageUrl;
+                    return this.columnHEADER_IMAGE_PATH;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn FooterContentColumn {
+            public global::System.Data.DataColumn FOOTER_CONTENTColumn {
                 get {
-                    return this.columnFooterContent;
+                    return this.columnFOOTER_CONTENT;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn IsHeaderHideColumn {
+                get {
+                    return this.columnIsHeaderHide;
                 }
             }
             
@@ -369,11 +379,12 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public HeaderFooterRow AddHeaderFooterRow(string HeaderImageUrl, string FooterContent) {
+            public HeaderFooterRow AddHeaderFooterRow(string HEADER_IMAGE_PATH, string FOOTER_CONTENT, bool IsHeaderHide) {
                 HeaderFooterRow rowHeaderFooterRow = ((HeaderFooterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        HeaderImageUrl,
-                        FooterContent};
+                        HEADER_IMAGE_PATH,
+                        FOOTER_CONTENT,
+                        IsHeaderHide};
                 rowHeaderFooterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowHeaderFooterRow);
                 return rowHeaderFooterRow;
@@ -396,17 +407,20 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columnHeaderImageUrl = base.Columns["HeaderImageUrl"];
-                this.columnFooterContent = base.Columns["FooterContent"];
+                this.columnHEADER_IMAGE_PATH = base.Columns["HEADER_IMAGE_PATH"];
+                this.columnFOOTER_CONTENT = base.Columns["FOOTER_CONTENT"];
+                this.columnIsHeaderHide = base.Columns["IsHeaderHide"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnHeaderImageUrl = new global::System.Data.DataColumn("HeaderImageUrl", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnHeaderImageUrl);
-                this.columnFooterContent = new global::System.Data.DataColumn("FooterContent", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnFooterContent);
+                this.columnHEADER_IMAGE_PATH = new global::System.Data.DataColumn("HEADER_IMAGE_PATH", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnHEADER_IMAGE_PATH);
+                this.columnFOOTER_CONTENT = new global::System.Data.DataColumn("FOOTER_CONTENT", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFOOTER_CONTENT);
+                this.columnIsHeaderHide = new global::System.Data.DataColumn("IsHeaderHide", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnIsHeaderHide);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -549,58 +563,86 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string HeaderImageUrl {
+            public string HEADER_IMAGE_PATH {
                 get {
                     try {
-                        return ((string)(this[this.tableHeaderFooter.HeaderImageUrlColumn]));
+                        return ((string)(this[this.tableHeaderFooter.HEADER_IMAGE_PATHColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'HeaderImageUrl\' in table \'HeaderFooter\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'HEADER_IMAGE_PATH\' in table \'HeaderFooter\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableHeaderFooter.HeaderImageUrlColumn] = value;
+                    this[this.tableHeaderFooter.HEADER_IMAGE_PATHColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string FooterContent {
+            public string FOOTER_CONTENT {
                 get {
                     try {
-                        return ((string)(this[this.tableHeaderFooter.FooterContentColumn]));
+                        return ((string)(this[this.tableHeaderFooter.FOOTER_CONTENTColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'FooterContent\' in table \'HeaderFooter\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'FOOTER_CONTENT\' in table \'HeaderFooter\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableHeaderFooter.FooterContentColumn] = value;
+                    this[this.tableHeaderFooter.FOOTER_CONTENTColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsHeaderImageUrlNull() {
-                return this.IsNull(this.tableHeaderFooter.HeaderImageUrlColumn);
+            public bool IsHeaderHide {
+                get {
+                    try {
+                        return ((bool)(this[this.tableHeaderFooter.IsHeaderHideColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'IsHeaderHide\' in table \'HeaderFooter\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableHeaderFooter.IsHeaderHideColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetHeaderImageUrlNull() {
-                this[this.tableHeaderFooter.HeaderImageUrlColumn] = global::System.Convert.DBNull;
+            public bool IsHEADER_IMAGE_PATHNull() {
+                return this.IsNull(this.tableHeaderFooter.HEADER_IMAGE_PATHColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsFooterContentNull() {
-                return this.IsNull(this.tableHeaderFooter.FooterContentColumn);
+            public void SetHEADER_IMAGE_PATHNull() {
+                this[this.tableHeaderFooter.HEADER_IMAGE_PATHColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetFooterContentNull() {
-                this[this.tableHeaderFooter.FooterContentColumn] = global::System.Convert.DBNull;
+            public bool IsFOOTER_CONTENTNull() {
+                return this.IsNull(this.tableHeaderFooter.FOOTER_CONTENTColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFOOTER_CONTENTNull() {
+                this[this.tableHeaderFooter.FOOTER_CONTENTColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsIsHeaderHideNull() {
+                return this.IsNull(this.tableHeaderFooter.IsHeaderHideColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetIsHeaderHideNull() {
+                this[this.tableHeaderFooter.IsHeaderHideColumn] = global::System.Convert.DBNull;
             }
         }
         

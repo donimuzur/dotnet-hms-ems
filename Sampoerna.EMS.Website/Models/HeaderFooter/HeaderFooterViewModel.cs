@@ -27,6 +27,10 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
         [ValidateFile(MaximumSize = 100)]
         public HttpPostedFileBase HeaderImageFile { get; set; }
 
+        public string SubmitType { get; set; }
+
+        public int idxToPreview { get; set; }
+
     }
 
     public class HeaderFooterItem
@@ -50,6 +54,7 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
         public string COMPANY_CODE { get; set; }
         public string COMPANY_NAME { get; set; }
         public string COMPANY_NPWP { get; set; }
+        public bool IsHeaderHide { get; set; }
     }
 
     public class HeaderFooterDetailItem : HeaderFooterItem

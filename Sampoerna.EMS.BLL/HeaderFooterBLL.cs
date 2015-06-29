@@ -33,7 +33,11 @@ namespace Sampoerna.EMS.BLL
         {
             return Mapper.Map<HeaderFooterDetails>(_repository.Get(c => c.HEADER_FOOTER_ID == id, null, includeTables).FirstOrDefault());
         }
-
+        
+        public HeaderFooter GetById(int id)
+        {
+            return Mapper.Map<HeaderFooter>(_repository.GetByID(id));
+        }
         public List<HeaderFooter> GetAll()
         {
             return Mapper.Map<List<HeaderFooter>>(_repository.Get(null, null, includeTables).ToList());

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Microsoft.Reporting.WebForms;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
 
@@ -119,7 +121,6 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(HeaderFooterItemViewModel model)
         {
-            
             if (ModelState.IsValid)
             {
                 //do save
@@ -138,7 +139,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     imageHeaderUrl = model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT;
                 }
-
 
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
 
@@ -221,6 +221,30 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 System.IO.File.Delete(path);
             }
+        }
+
+        public ActionResult PrintPreview(int id, bool isHeaderSet, bool isFooterSet)
+        {
+            
+            var headerFooterData = Mapper.Map<HeaderFooterItem>(_headerFooterBll.GetById(id));
+            headerFooterData.HEADER_IMAGE_PATH = !string.IsNullOrEmpty(headerFooterData.HEADER_IMAGE_PATH)
+                ? new Uri(Server.MapPath(headerFooterData.HEADER_IMAGE_PATH)).AbsoluteUri
+                : string.Empty;
+            headerFooterData.FOOTER_CONTENT = !isFooterSet ? string.Empty : headerFooterData.FOOTER_CONTENT;
+            headerFooterData.IsHeaderHide = !isHeaderSet;
+
+            var srcToConvert = new List<HeaderFooterItem> { headerFooterData };
+            var headerFooterDataTable =
+                DataTableHelper.ConvertToDataTable(srcToConvert.ToArray(), new dsHeaderFooter.HeaderFooterDataTable());
+            var rptDataSources = new List<ReportDataSource>
+            {
+                new ReportDataSource("ds_headerfooter", headerFooterDataTable)
+            };
+            
+            //set session for reporting
+            Session[Constans.SessionKey.ReportPath] = "Reports/HeaderFooterPreview.rdlc";
+            Session[Constans.SessionKey.ReportDataSources] = rptDataSources;
+            return RedirectToAction("ShowReport", "AspxReportViewer");
         }
 
     }
