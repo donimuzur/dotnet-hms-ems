@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -181,6 +181,24 @@
           <Property Name="MONTH" Type="int" />
           <Property Name="YEAR" Type="int" />
         </EntityType>
+        <EntityType Name="EMAIL_TEMPLATE">
+          <Key>
+            <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+          </Key>
+          <Property Name="EMAIL_TEMPLATE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TEMPLATE_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="SUBJECT" Type="nvarchar" MaxLength="50" />
+          <Property Name="BODY" Type="nvarchar(max)" />
+          <Property Name="CREATED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="EX_GOODTYP_ID" Type="int" />
+        </EntityType>
         <EntityType Name="EX_SETTLEMENT">
           <Key>
             <PropertyRef Name="EX_SETTLEMENT_ID" />
@@ -222,6 +240,7 @@
             <PropertyRef Name="HEADER_FOOTER_FORM_MAP_ID" />
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HEADER_FOOTER_ID" Type="int" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" />
           <Property Name="IS_HEADER_SET" Type="bit" />
           <Property Name="IS_FOOTER_SET" Type="bit" />
@@ -533,6 +552,16 @@
           <Property Name="IMPORT_PLANT_ID" Type="bigint" />
           <Property Name="EXPORT_PLANT_ID" Type="bigint" Nullable="false" />
         </EntityType>
+        <EntityType Name="WORKFLOW_EMAIL">
+          <Key>
+            <PropertyRef Name="WORKFLOW_EMAIL_ID" />
+          </Key>
+          <Property Name="WORKFLOW_EMAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="int" />
+          <Property Name="FORM_STATUS" Type="int" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="int" />
+          <Property Name="CREATED_DATE" Type="datetime" />
+        </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
             <PropertyRef Name="WORKFLOW_HISTORY_ID" />
@@ -644,6 +673,7 @@
           <Property Name="ADDR1" Type="nvarchar" MaxLength="50" />
           <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
           <Property Name="CITY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="15" />
           <Property Name="KPPBC_ID" Type="bigint" />
           <Property Name="REGION_OFFICE" Type="nvarchar" MaxLength="20" />
           <Property Name="COMPANY_ID" Type="bigint" />
@@ -652,7 +682,6 @@
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -669,7 +698,7 @@
           </Key>
           <Property Name="POA_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="POA_CODE" Type="nvarchar" MaxLength="12" Nullable="false" />
-          <Property Name="POA_ID_CARD" Type="nvarchar" MaxLength="22" />
+          <Property Name="POA_ID_CARD" Type="nvarchar" MaxLength="22" Nullable="false" />
           <Property Name="POA_ADDRESS" Type="nvarchar" MaxLength="100" />
           <Property Name="POA_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="50" />
@@ -993,6 +1022,30 @@
             </Principal>
             <Dependent Role="DOC_NUMBER_SEQ">
               <PropertyRef Name="MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GOODTYP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="1" />
+          <End Role="HEADER_FOOTER_FORM_MAP" Type="Self.HEADER_FOOTER_FORM_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HEADER_FOOTER">
+              <PropertyRef Name="HEADER_FOOTER_ID" />
+            </Principal>
+            <Dependent Role="HEADER_FOOTER_FORM_MAP">
+              <PropertyRef Name="HEADER_FOOTER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1656,6 +1709,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE">
+          <End Role="EMAIL_TEMPLATE" Type="Self.EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Role="WORKFLOW_EMAIL" Type="Self.WORKFLOW_EMAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_EMAIL">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_WORKFLOW_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="WORKFLOW_HISTORY" Type="Self.WORKFLOW_HISTORY" Multiplicity="*" />
@@ -2007,6 +2072,8 @@
           <EntitySet Name="COUNTRY" EntityType="Self.COUNTRY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CURRENCY" EntityType="Self.CURRENCY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMAIL_TEMPLATE" EntityType="Self.EMAIL_TEMPLATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="Self.EX_GROUP_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_SETTLEMENT" EntityType="Self.EX_SETTLEMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_STATUS" EntityType="Self.EX_STATUS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
@@ -2037,6 +2104,7 @@
           <EntitySet Name="USER" EntityType="Self.USER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USER_GROUP" EntityType="Self.USER_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_EMAIL" EntityType="Self.WORKFLOW_EMAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
@@ -2144,6 +2212,14 @@
           <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="Self.FK_DOC_NUMBER_SEQ_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" Association="Self.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="Self.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+            <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_T1001" Association="Self.FK_HEADER_FOOTER_T1001">
             <End Role="T1001" EntitySet="T1001" />
@@ -2364,6 +2440,10 @@
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T1001W1" Association="Self.FK_VIRTUAL_PLANT_MAP_T1001W1">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" Association="Self.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_EMAIL" EntitySet="WORKFLOW_EMAIL" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -2967,6 +3047,21 @@
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
+          <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+            <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
+          </AssociationSet>
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="EMSModel.EX_GROUP_TYPE" />
+          <AssociationSet Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+          </AssociationSet>
+          <EntitySet Name="EMAIL_TEMPLATE" EntityType="EMSModel.EMAIL_TEMPLATE" />
+          <EntitySet Name="WORKFLOW_EMAIL" EntityType="EMSModel.WORKFLOW_EMAIL" />
+          <AssociationSet Name="FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" Association="EMSModel.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_EMAIL" EntitySet="WORKFLOW_EMAIL" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CK5">
           <Key>
@@ -3029,7 +3124,8 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_USER1" FromRole="CK5" ToRole="USER" />
-          <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_NUMBER" Type="String" Unicode="true" FixedLength="false" MaxLength="30" />
+          
         </EntityType>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3330,15 +3426,18 @@
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="T1001" Relationship="EMSModel.FK_HEADER_FOOTER_T1001" FromRole="HEADER_FOOTER" ToRole="T1001" />
+          <NavigationProperty Name="HEADER_FOOTER_FORM_MAP" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" FromRole="HEADER_FOOTER" ToRole="HEADER_FOOTER_FORM_MAP" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER_FORM_MAP">
           <Key>
             <PropertyRef Name="HEADER_FOOTER_FORM_MAP_ID" />
           </Key>
           <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="IS_HEADER_SET" Type="Boolean" />
           <Property Name="IS_FOOTER_SET" Type="Boolean" />
+          <Property Name="HEADER_FOOTER_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" FromRole="HEADER_FOOTER_FORM_MAP" ToRole="HEADER_FOOTER" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -3758,6 +3857,7 @@
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="T1001W" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="EX_GROUP_TYPE" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -3873,7 +3973,7 @@
           </Key>
           <Property Name="POA_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="POA_CODE" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ID_CARD" Type="String" MaxLength="22" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="POA_ADDRESS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="POA_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5174,6 +5274,73 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
+          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="1" />
+          <End Type="EMSModel.HEADER_FOOTER_FORM_MAP" Role="HEADER_FOOTER_FORM_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HEADER_FOOTER">
+              <PropertyRef Name="HEADER_FOOTER_ID" />
+            </Principal>
+            <Dependent Role="HEADER_FOOTER_FORM_MAP">
+              <PropertyRef Name="HEADER_FOOTER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EX_GOODTYP_ID" Type="Int32" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="EX_GROUP_TYPE" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
+        <Association Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GOODTYP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EMAIL_TEMPLATE">
+          <Key>
+            <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+          </Key>
+          <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TEMPLATE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SUBJECT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BODY" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="WORKFLOW_EMAIL" Relationship="EMSModel.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" FromRole="EMAIL_TEMPLATE" ToRole="WORKFLOW_EMAIL" />
+        </EntityType>
+        <EntityType Name="WORKFLOW_EMAIL">
+          <Key>
+            <PropertyRef Name="WORKFLOW_EMAIL_ID" />
+          </Key>
+          <Property Name="WORKFLOW_EMAIL_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" />
+          <Property Name="FORM_STATUS" Type="EMSModel.DocumentStatus" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" FromRole="WORKFLOW_EMAIL" ToRole="EMAIL_TEMPLATE" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE">
+          <End Type="EMSModel.EMAIL_TEMPLATE" Role="EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Type="EMSModel.WORKFLOW_EMAIL" Role="WORKFLOW_EMAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_EMAIL">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5183,7 +5350,6 @@
           <EntitySetMapping Name="CK5">
             <EntityTypeMapping TypeName="EMSModel.CK5">
               <MappingFragment StoreEntitySet="CK5">
-                <ScalarProperty Name="SUBMISSION_NUMBER" ColumnName="SUBMISSION_NUMBER" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
                 <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
@@ -5223,6 +5389,7 @@
                 <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
                 <ScalarProperty Name="EX_GOODS_TYPE_ID" ColumnName="EX_GOODS_TYPE_ID" />
                 <ScalarProperty Name="REGISTRATION_NUMBER" ColumnName="REGISTRATION_NUMBER" />
+                <ScalarProperty Name="SUBMISSION_NUMBER" ColumnName="SUBMISSION_NUMBER" />
                 <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
                 <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
                 <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
@@ -5464,6 +5631,7 @@
           <EntitySetMapping Name="HEADER_FOOTER_FORM_MAP">
             <EntityTypeMapping TypeName="EMSModel.HEADER_FOOTER_FORM_MAP">
               <MappingFragment StoreEntitySet="HEADER_FOOTER_FORM_MAP">
+                <ScalarProperty Name="HEADER_FOOTER_ID" ColumnName="HEADER_FOOTER_ID" />
                 <ScalarProperty Name="IS_FOOTER_SET" ColumnName="IS_FOOTER_SET" />
                 <ScalarProperty Name="IS_HEADER_SET" ColumnName="IS_HEADER_SET" />
                 <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
@@ -5936,6 +6104,37 @@
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EX_GROUP_TYPE">
+            <EntityTypeMapping TypeName="EMSModel.EX_GROUP_TYPE">
+              <MappingFragment StoreEntitySet="EX_GROUP_TYPE">
+                <ScalarProperty Name="EX_GOODTYP_ID" ColumnName="EX_GOODTYP_ID" />
+                <ScalarProperty Name="GROUP_NAME" ColumnName="GROUP_NAME" />
+                <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMAIL_TEMPLATE">
+            <EntityTypeMapping TypeName="EMSModel.EMAIL_TEMPLATE">
+              <MappingFragment StoreEntitySet="EMAIL_TEMPLATE">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="BODY" ColumnName="BODY" />
+                <ScalarProperty Name="SUBJECT" ColumnName="SUBJECT" />
+                <ScalarProperty Name="TEMPLATE_NAME" ColumnName="TEMPLATE_NAME" />
+                <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_EMAIL">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_EMAIL">
+              <MappingFragment StoreEntitySet="WORKFLOW_EMAIL">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
+                <ScalarProperty Name="FORM_STATUS" ColumnName="FORM_STATUS" />
+                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="WORKFLOW_EMAIL_ID" ColumnName="WORKFLOW_EMAIL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

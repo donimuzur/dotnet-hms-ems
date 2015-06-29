@@ -49,7 +49,6 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(POAFormModel model)
         {
             if (ModelState.IsValid)
@@ -57,6 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
+                    poa.IS_FROM_SAP = false;
                     _poaBll.save(poa);
                     TempData["message"] = "Save Successful";
                     return RedirectToAction("Index");
@@ -69,12 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
             }
 
-            var viewModel = new POAFormModel();
-            viewModel.MainMenu = Enums.MenuList.MasterData;
-            viewModel.CurrentMenu = PageInfo;
-            viewModel.Users = new SelectList(_userBll.GetUserTree(), "USER_ID", "FIRST_NAME");
-            return View(viewModel);
-            //return RedirectToAction("Create");
+            return RedirectToAction("Create");
             
             
         }
@@ -99,7 +94,6 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Edit(POAFormModel model)
         {
             try
@@ -116,6 +110,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 
                 _poaBll.save(poa);
+                TempData["message"] = "Save Successful";
 
 
                 return RedirectToAction("Index");

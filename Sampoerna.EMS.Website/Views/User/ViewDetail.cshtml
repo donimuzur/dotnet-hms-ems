@@ -1,150 +1,180 @@
-﻿@model Sampoerna.EMS.Website.Models.UserViewModel
+﻿@model Sampoerna.EMS.Website.Models.UserItemViewModel
 
 @section styles {
-    <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
+
 }
 
-@section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
-            $('#employeeTable').DataTable(
-                {
-                    "sDom": "Rlfrtip"
-                });
-        });
-    </script>
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script type="text/javascript">
 
+        $(document).ready(function () {
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "User")';
+            });
+            // DataTable
+            $('#employeeTable').DataTable();
+        });
+
+    </script>
 }
 
 @{
     ViewBag.Title = "View Detail User";
 }
 
-<fieldset>
-    <legend>@ViewBag.Title</legend>
-    @{
-        if (Model.Manager != null)
-        {
 
-            <div id="data_manager">
-                <h2>Data Manager</h2>
-                <div class="display-label">
-                    Username
-                </div>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Header Footer Form</h3>
+            <div class="action-button">
+                <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="display-field">
-                    @Html.DisplayFor(model => model.Manager.USERNAME)
-                </div>
+@{
+    if (Model.Detail.Manager != null)
+    {
 
-                <div class="display-label">
-                    First Name
-                </div>
-                <div class="display-field">
-                    @Html.DisplayFor(model => model.Manager.FIRST_NAME)
-                </div>
-
-                <div class="display-label">
-                    Last Name
-                </div>
-                <div class="display-field">
-                    @Html.DisplayFor(model => model.Manager.LAST_NAME)
-                </div>
-
+        <div id="data_manager">
+            <h2>Data Manager</h2>
+            <div class="display-label">
+                Username
             </div>
 
-        }
-    }
-
-    <h2>Informasi User</h2>
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.USERNAME)
-    </div>
-
-    <div class="display-field">
-        @Html.DisplayFor(model => model.USERNAME)
-    </div>
-
-    <div class="display-label">
-        First Name
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.FIRST_NAME)
-    </div>
-
-    <div class="display-label">
-        Last Name
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.LAST_NAME)
-    </div>
-    
-    <div class="display-label">
-        User Group
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.USER_GROUP.GROUP_NAME)
-    </div>
-
-    <div class="display-label">
-        Is Active
-    </div>
-    <div class="display-field">
-        @Html.CheckBoxFor(model => model.IS_ACTIVE, htmlAttributes: new { @disabled = "true" })
-    </div>
-
-    @{
-        if (Model.Employees.Count > 0)
-        {
-            <div id="data_employee">
-                <h2>Data Employee</h2>
-                <table id="employeeTable" class="display" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tfoot>
-                        <tr>
-                            <th>Username</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-
-                    <tbody>
-
-                        @foreach (var item in Model.Employees)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.USERNAME)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FIRST_NAME)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LAST_NAME)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Detail", "ViewDetail", new { id = item.USER_ID })
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Detail.Manager.USERNAME)
             </div>
-        }
+
+            <div class="display-label">
+                First Name
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Detail.Manager.FIRST_NAME)
+            </div>
+
+            <div class="display-label">
+                Last Name
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Detail.Manager.LAST_NAME)
+            </div>
+
+        </div>
+
     }
+}
 
-</fieldset>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Informasi User
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="display-label">
+                                    @Html.DisplayNameFor(model => model.Detail.USERNAME)
+                                </div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+                                <div class="display-field">
+                                    @Html.DisplayFor(model => model.Detail.USERNAME)
+                                </div>
+
+                                <div class="display-label">
+                                    First Name
+                                </div>
+                                <div class="display-field">
+                                    @Html.DisplayFor(model => model.Detail.FIRST_NAME)
+                                </div>
+
+                                <div class="display-label">
+                                    Last Name
+                                </div>
+                                <div class="display-field">
+                                    @Html.DisplayFor(model => model.Detail.LAST_NAME)
+                                </div>
+
+                                <div class="display-label">
+                                    User Group
+                                </div>
+                                <div class="display-field">
+                                    @Html.DisplayFor(model => model.Detail.USER_GROUP.GROUP_NAME)
+                                </div>
+
+                                <div class="display-label">
+                                    Is Active
+                                </div>
+                                <div class="display-field">
+                                    @Html.CheckBoxFor(model => model.Detail.IS_ACTIVE, htmlAttributes: new { @disabled = "true" })
+                                </div>
+
+                                @{
+                                    if (Model.Detail.Employees.Count > 0)
+                                    {
+                                        <div id="data_employee">
+                                            <h2>Data Employee</h2>
+                                            <table id="employeeTable" class="display" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Username</th>
+                                                        <th>First Name</th>
+                                                        <th>Last Name</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Username</th>
+                                                        <th>First Name</th>
+                                                        <th>Last Name</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </tfoot>
+
+                                                <tbody>
+
+                                                    @foreach (var item in Model.Detail.Employees)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.USERNAME)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.FIRST_NAME)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.LAST_NAME)
+                                                            </td>
+                                                            <td>
+                                                                @Html.ActionLink("Detail", "ViewDetail", new { id = item.USER_ID })
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

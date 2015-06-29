@@ -87,5 +87,20 @@ namespace Sampoerna.EMS.Website.Code
             var data = uomBll.GetAll();
             return new SelectList(data, "UOM_ID", "UOM_NAME");
         }
+
+        public static SelectList GetCompanyList()
+        {
+            ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
+            var data = companyBll.GetAllData();
+            return new SelectList(data, "COMPANY_ID", "BUKRSTXT");
+        }
+
+        public static SelectList GetVirtualPlantList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var data = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
     }
 }

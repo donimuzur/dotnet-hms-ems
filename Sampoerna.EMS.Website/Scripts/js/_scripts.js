@@ -10,12 +10,12 @@ $(document).ready(function () {
             $(".side-main i.fa").removeClass("fa-caret-right");
             $(".collapse-menu.active").addClass('open');
             $(".collapse-menu.active ul.list").fadeIn('fast');
-
         } else {
             $("body").addClass("hideMenu");
             $(".side-main i.fa").addClass("fa-caret-right");
             $("ul.list").fadeOut('fast');
             $(".collapse-menu").removeClass('open');
+            alert(a);
         }
     });
     $(".other").mouseenter(function () {

@@ -82,5 +82,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
+        public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
+        public virtual DbSet<EMAIL_TEMPLATE> EMAIL_TEMPLATE { get; set; }
+        public virtual DbSet<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
     }
 }

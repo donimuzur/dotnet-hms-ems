@@ -11,9 +11,7 @@
                 <h3>Update POA</h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
-                    <a href="@Url.Action("Index", "POA")">
-                        <button class="btn btn-grey">Cancel</button>
-                    </a>
+                    <a href="@Url.Action("Index", "POA")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
         </div>
@@ -61,7 +59,7 @@
                                                     <label class="col-md-3">User Name</label>
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "Select", new { @class = "form-control", id = "txtBoxUserName" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaCode)
+                                                        @Html.ValidationMessageFor(model => model.Detail.User.USERNAME)
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,21 +81,22 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Address</label>
-                                                    <div class="col-md-9" r>
-                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "txtArea" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Title</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.Title)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Address</label>
+                                                    <div class="col-md-9" r>
+                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "txtArea" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
                                                     </div>
                                                 </div>
                                             </div>
@@ -114,12 +113,12 @@
 }
 
 @section scripts {
-    <script src="~/Scripts/js/scripts.min.js"></script>
-    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript">
         $(window).load(function () {
             @{
-                if (@Model.Detail.isNewData == false)
+                if (@Model.Detail.isNewData == true)
                 {
                     @: document.getElementById('txtBoxIdCard').disabled = true;
                     @: document.getElementById('txtBoxPoaCode').disabled = true;
@@ -127,7 +126,7 @@
                     @: document.getElementById('txtBoxPrintedName').disabled = true;
                     @: document.getElementById('txtBoxPoaPhone').disabled = true;
                     @: document.getElementById('txtArea').disabled = true;
-                                                                }
+                }
                 else
                 {
                     @: document.getElementById('txtBoxIdCard').disabled = false;
@@ -141,7 +140,9 @@
             }
 
         });
+        $('#MenuPOA').addClass('active');
     </script>
+
 }
 
 
