@@ -43,5 +43,11 @@ namespace Sampoerna.EMS.BLL
             history.MODIFIED_DATE = DateTime.Now;
             _repository.Insert(history);
         }
+
+        public List<CHANGES_HISTORY> GetByFormTypeAndFormId(Enums.MenuList formTypeId, long id)
+        {
+            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, includeTables).ToList();
+        }
+
     }
 }
