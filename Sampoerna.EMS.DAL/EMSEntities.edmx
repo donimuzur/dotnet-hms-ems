@@ -650,6 +650,7 @@
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="30" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="30" />
+          <Property Name="BRAND_ID" Type="bigint" />
           <Property Name="PLANT_ID" Type="bigint" />
           <Property Name="EX_GOODTYP" Type="int" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="30" />
@@ -738,18 +739,6 @@
           <Property Name="POA_ID" Type="int" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
-        <Association Name="FK_CHANGES_HISTORY_CHANGES_HISTORY">
-          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="1" />
-          <End Role="CHANGES_HISTORY1" Type="Self.CHANGES_HISTORY" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="CHANGES_HISTORY">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY1">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
@@ -1902,6 +1891,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND">
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="BRAND_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="BRAND_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="EX_GOODTYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_1LFA11">
           <End Role="1LFA1" Type="Self.1LFA1" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
@@ -2046,10 +2059,6 @@
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_POA_MAP" EntityType="Self.ZAIDM_POA_MAP" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_CHANGES_HISTORY_CHANGES_HISTORY" Association="Self.FK_CHANGES_HISTORY_CHANGES_HISTORY">
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-            <End Role="CHANGES_HISTORY1" EntitySet="CHANGES_HISTORY" />
-          </AssociationSet>
           <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
@@ -2434,6 +2443,14 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" Association="Self.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND">
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="Self.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_1LFA11" Association="Self.FK_ZAIDM_EX_NPPBKC_1LFA11">
             <End Role="1LFA1" EntitySet="1LFA1" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
@@ -2785,10 +2802,6 @@
             <End Role="C1LFA1" EntitySet="C1LFA1" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_CHANGES_HISTORY" Association="EMSModel.FK_CHANGES_HISTORY_CHANGES_HISTORY">
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-            <End Role="CHANGES_HISTORY1" EntitySet="CHANGES_HISTORY" />
-          </AssociationSet>
           <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="EMSModel.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
@@ -2942,6 +2955,14 @@
           <AssociationSet Name="FK_ZAIDM_POA_MAP_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA">
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND">
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="CK5">
@@ -3613,6 +3634,7 @@
           <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="EX_GROUP_TYPE" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -4505,15 +4527,13 @@
             <PropertyRef Name="CHANGES_HISTORY_ID" />
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="OLD_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" />
-          <NavigationProperty Name="CHANGES_HISTORY1" Relationship="EMSModel.FK_CHANGES_HISTORY_CHANGES_HISTORY" FromRole="CHANGES_HISTORY" ToRole="CHANGES_HISTORY1" />
-          <NavigationProperty Name="CHANGES_HISTORY2" Relationship="EMSModel.FK_CHANGES_HISTORY_CHANGES_HISTORY" FromRole="CHANGES_HISTORY1" ToRole="CHANGES_HISTORY" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER">
@@ -4552,6 +4572,9 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T1001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T1001W" />
+          <Property Name="BRAND_ID" Type="Int64" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -4592,18 +4615,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="VENDOR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CHANGES_HISTORY_CHANGES_HISTORY">
-          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY" Multiplicity="1" />
-          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY1" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="CHANGES_HISTORY">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY1">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4808,6 +4819,7 @@
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="ZAIDM_EX_BRAND" ToRole="T1001W" />
           <Property Name="BRAND_CONTENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
         <Association Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND">
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="0..1" />
@@ -5136,6 +5148,31 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="MenuList" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.MenuList" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND">
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="BRAND_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="BRAND_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="EX_GOODTYP" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5847,6 +5884,7 @@
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+                <ScalarProperty Name="BRAND_ID" ColumnName="BRAND_ID" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
