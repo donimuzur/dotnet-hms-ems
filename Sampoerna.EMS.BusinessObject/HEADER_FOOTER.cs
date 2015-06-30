@@ -26,8 +26,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string FOOTER_CONTENT { get; set; }
         public Nullable<bool> IS_ACTIVE { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     
-        public virtual T1001 T1001 { get; set; }
         public virtual ICollection<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
+        public virtual T1001 T1001 { get; set; }
     }
 }
