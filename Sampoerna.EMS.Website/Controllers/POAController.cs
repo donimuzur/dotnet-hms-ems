@@ -104,15 +104,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
-                if (poa.IS_FROM_SAP == null)
-                {
-                    poa.TITLE = model.Detail.Title;
-                }
-                else
-                {
-                    AutoMapper.Mapper.Map(model.Detail, poa);    
-                }
-                
+              
+                AutoMapper.Mapper.Map(model.Detail, poa);    
                 _poaBll.Update(poa);
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
@@ -161,6 +154,20 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var id = Convert.ToInt32(userId);
             return Json(_userBll.GetUserById(id));
+        }
+
+        private Dictionary<string, bool> GetChanges(ZAIDM_EX_POA origin, ZAIDM_EX_POA formData)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("title", origin.TITLE.Equals(formData.TITLE));
+            changesData.Add("user", origin.USER.Equals(formData.USER));
+            changesData.Add("manager", origin.MANAGER_ID.Equals(formData.MANAGER_ID));
+            changesData.Add("phone", origin.PHONE.Equals(formData.PHONE));
+            changesData.Add("email", origin.EMAIL.Equals(formData.EMAIL));
+            changesData.Add("address", origin.POA_ADDRESS.Equals(formData.POA_ADDRESS));
+            changesData.Add("id_card", origin.POA_ID_CARD.Equals(formData.POA_ID_CARD));
+            return changesData;
+
         }
     }
 }
