@@ -113,6 +113,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int id)
         {
             var data = _headerFooterBll.GetDetailsById(id);
+            if (data.IS_DELETED.HasValue && data.IS_DELETED.Value)
+            {
+                return RedirectToAction("Details", "HeaderFooter", new { id = data.HEADER_FOOTER_ID });
+            }
             var model = new HeaderFooterItemViewModel()
             {
                 CurrentMenu = PageInfo,
@@ -255,7 +259,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Delete(int id)
         {
             _headerFooterBll.Delete(id, CurrentUser.USER_ID);
-            return RedirectToAction("Details", id);
+            return RedirectToAction("Index");
         }
 
     }

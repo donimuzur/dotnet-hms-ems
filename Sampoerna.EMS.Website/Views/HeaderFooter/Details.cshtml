@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterItemViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterItemViewModel
 
 @{
     ViewBag.Title = "Header Footer";
@@ -9,7 +10,7 @@
             <h3>Header Footer Form</h3>
             <div class="action-button">
                 <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-                @if (Model.Detail.IS_DELETED)
+                @if (!Model.Detail.IS_DELETED)
                 {
                     <a href="javascript:void(0);" onclick="deleteData()" class="btn btn-grey">Delete</a>
                 }
@@ -129,55 +130,6 @@
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="changes">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingTwo">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                            Changes Log
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <form class="form-excise " role="form">
-                                                <div class="last-form">
-                                                    <div class="col-md-4">
-                                                        <div class="row">
-                                                            <label class="col-md-3">Date</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group date">
-                                                                    <input type="text" class="form-control">
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="row">
-                                                            <label class="col-md-3">User</label>
-                                                            <div class="col-md-9">
-                                                                <input type="text" class="form-control" placeholder="">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <button class="btn btn-blue full">Export to xls</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="table-container">
                             @Html.Partial("_ChangesHistoryTable", Model)
                         </div>
@@ -195,6 +147,9 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+            
+            $('.check-box').attr('disabled', 'disabled');
+
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "HeaderFooter")';
             });
@@ -213,8 +168,7 @@
 
             // DataTable
             var table = $('#changesHistoryTable').DataTable();
-
-
+            
             // Apply the search
 
             table.columns().eq(0).each(function (colIdx) {
@@ -227,8 +181,6 @@
             });
             $("#changesHistoryTable_filter").hide();
             $('#changesHistoryTable_length').hide();
-
-            $('.check-box').attr('disabled', 'disabled');
 
         });
 
