@@ -16,14 +16,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMasterDataBLL _masterDataBll;
         private ICompanyBLL _companyBll;
         private IZaidmExKPPBCBLL _kppbcBll;
+        private IPlantBLL _plantBll;
 
-        public NPPBKCController(IZaidmExNPPBKCBLL nppbkcBll, ICompanyBLL companyBll, IMasterDataBLL masterData, IZaidmExKPPBCBLL kppbcBll,  IPageBLL pageBLL)
-            : base(pageBLL, Enums.MenuList.MasterData)
+        public NPPBKCController(IZaidmExNPPBKCBLL nppbkcBll, ICompanyBLL companyBll, IMasterDataBLL masterData, IZaidmExKPPBCBLL kppbcBll, 
+            IPageBLL pageBLL, IPlantBLL plantBll) : base(pageBLL, Enums.MenuList.MasterData)
         {
             _nppbkcBll = nppbkcBll;
             _masterDataBll = masterData;
             _companyBll = companyBll;
             _kppbcBll = kppbcBll;
+            _plantBll = plantBll;
         }
         
         //
@@ -52,23 +54,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-
+            model.Plant = _plantBll.GetAll();
+            
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
             
-            //var model = new NppbkcFormModel();
-            //model.Detail.NppbckNo = nppbkc.NPPBKC_NO;
-            //model.Detail.City = nppbkc.CITY;
-            //model.Detail.Address1 = nppbkc.ADDR1;
-            //model.Detail.RegionOfficeOfDGCE = nppbkc.REGION_OFFICE;
-            //model.Detail.Address2 = nppbkc.ADDR2;
-            //model.Detail.TextTo = nppbkc.TEXT_TO;
-            //model.Detail.KppbcId = nppbkc.ZAIDM_EX_KPPBC.KPPBC_NUMBER;
-            //model.Detail.CityAlias = nppbkc.CITY_ALIAS;
-            ////model.Detail.RegionOfficeOfDGCE = nppbkc.REGION_OFFICE;
-            //model.Detail.AcountNumber = nppbkc.C1LFA1.LIFNR;
-            //model.Detail.StartDate = nppbkc.START_DATE;
-            //model.Detail.EndDate = nppbkc.END_DATE;
-            return View(model);
+          return View(model);
 
            
         }

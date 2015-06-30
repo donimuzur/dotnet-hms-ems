@@ -41,7 +41,7 @@
                                                         <label class="col-md-3">NPPBKC ID</label>
                                                         <div class="col-md-9">
                                                             @Html.HiddenFor(model => model.Detail.VirtualNppbckId)
-                                                            @Html.TextBoxFor(model => model.Detail.NppbckNo, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.Detail.NppbckNo, new { @class = "form-control", disabled = "disabled" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -49,7 +49,7 @@
                                                     <div class="row">
                                                         <label class="col-md-3">City</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", disabled = "disabled" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -89,7 +89,7 @@
                                                     <div class="row">
                                                         <label class="col-md-3">KPPBC ID</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.KppbcId, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.Detail.KppbcId, new { @class = "form-control", disabled = "disabled" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -97,7 +97,7 @@
                                                     <div class="row">
                                                         <label class="col-md-3">City Alias</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.CityAlias, new { @class = "form-control", id = "txtBoxPoaCode" })
+                                                            @Html.TextBoxFor(model => model.Detail.CityAlias, new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -105,7 +105,8 @@
                                                     <div class="row">
                                                         <label class="col-md-3">Region</label>
                                                         <div class="col-md-9">
-                                                            <input type="text" class="form-control" placeholder="" disabled>
+                                                            @Html.TextBoxFor(model => model.Detail.Region, new { @class = "form-control", disabled = "disabled" })
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -113,7 +114,7 @@
                                                     <div class="row">
                                                         <label class="col-md-3 long">Account Number</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.AcountNumber,  new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.Detail.AcountNumber, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -123,10 +124,10 @@
                                                         <div class="col-md-9">
                                                             <div class="row">
                                                                 <div class="col-md-6">
-                                                                    @Html.TextBoxFor(model => model.Detail.StartDate, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.Detail.StartDate, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                                 <div class="col-md-6">
-                                                                     @Html.TextBoxFor(model => model.Detail.EndDate, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.Detail.EndDate, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -138,11 +139,33 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 }
+@*<div class="table-container">
+    <table class="table table-bordered table-striped js-options-table fix-header">
+        <thead>
+            <tr>
+                <th>Plant ID</th>
+                <th>Plant City</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Plant)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WERKS)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CITY)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>*@
+

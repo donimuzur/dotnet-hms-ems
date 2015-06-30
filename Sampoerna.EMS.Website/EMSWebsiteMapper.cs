@@ -265,14 +265,15 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-            #region NPPBKC Index
+            #region NPPBKC 
 
             Mapper.CreateMap<ZAIDM_EX_NPPBKC, VirtualNppbckDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.VirtualNppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
                 .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
-                .ForMember(dest => dest.RegionOfficeOfDGCE, opt => opt.MapFrom(src => src.REGION_OFFICE))
+                .ForMember(dest => dest.RegionOfficeOfDGCE, opt => opt.MapFrom(src => src.REGION_OFFICE_DGCE))
+                .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.REGION_OFFICE))
                 .ForMember(dest => dest.Address2, opt => opt.MapFrom(src => src.ADDR2))
                 .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
                 .ForMember(dest => dest.KppbcId, opt => opt.MapFrom(src => src.ZAIDM_EX_KPPBC.KPPBC_NUMBER))

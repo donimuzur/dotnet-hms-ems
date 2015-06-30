@@ -10,8 +10,10 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public NPPBKCIViewModels()
         {
             Details = new List<ZAIDM_EX_NPPBKC>();
+            
         }
         public List<ZAIDM_EX_NPPBKC> Details { get; set; }
+        
      
     }
     public class NppbkcFormModel : BaseModel
@@ -19,8 +21,10 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public NppbkcFormModel()
         {
             Detail = new VirtualNppbckDetails();
+            Plant = new List<T1001W>();
         }
         public VirtualNppbckDetails Detail { get; set; }
+        public List<T1001W> Plant { get; set; }
     }
 
     public class VirtualNppbckDetails 
@@ -32,6 +36,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string City { get; set; }
         public string CityAlias { get; set; }
         public string RegionOfficeOfDGCE{ get; set; }
+        public string Region { get; set; }
         public string TextTo { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? StartDate { get; set; }
