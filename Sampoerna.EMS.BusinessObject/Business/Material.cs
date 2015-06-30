@@ -8,49 +8,20 @@ namespace Sampoerna.EMS.BusinessObject.Business
 {
     public class Material
     {
+
         public long MATERIAL_ID { get; set; }
-        
-        public string STICKER_ID { get; set; }
-
-        
-        public string STICKER_CODE { get; set; }
-
-        
-        public long PLANT_ID { get; set; }
-
-        
-        public string FA_CODE { get; set; }
-
-        
-        public string PURCHASING_GROUP { get; set; }
-
-        
-        public string ISSUE_STORAGE { get; set; }
-
-        
-        public Nullable<decimal> CONVERSION { get; set; }
-
-
-        
+        public string MATERIAL_NUMBER { get; set; }
         public string MATERIAL_DESC { get; set; }
-
-
-        
-        public int UOM_ID { get; set; }
-
-        
-        public Nullable<int> GOODTYP_ID { get; set; }
-
-        
-        public Nullable<System.DateTime> CREATED_ON { get; set; }
-
-        
-        public Nullable<System.DateTime> CHANGED_ON { get; set; }
-
-        
-        public string CREATED_DATE { get; set; }
-
-        
-        public string CHANGED_BY { get; set; }
+        public string MATERIAL_GROUP { get; set; }
+        public string PURCHASING_GROUP { get; set; }
+        public Nullable<long> PLANT_ID { get; set; }
+        public Nullable<int> EX_GOODTYP { get; set; }
+        public string ISSUE_STORANGE_LOC { get; set; }
+        public Nullable<int> BASE_UOM { get; set; }
+        public Nullable<int> CREATED_BY { get; set; }
+        public Nullable<bool> IS_FROM_SAP { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public Nullable<long> BRAND_ID { get; set; }
     }
 }

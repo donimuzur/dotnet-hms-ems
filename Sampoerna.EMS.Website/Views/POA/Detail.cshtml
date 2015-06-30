@@ -13,7 +13,9 @@
 }
     @{
         ViewBag.Title = "Detail POA (Power of Attorney)";
+        
     }
+    
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -55,6 +57,7 @@
                                                 <label class="col-md-3">ID Card</label>
                                                 <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled="disabled" })
+                                                    
                                                     @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                 </div>
                                             </div>

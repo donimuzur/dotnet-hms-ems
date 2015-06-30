@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.Material.MaterialIndexViewModel
+﻿@model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
 
 @section scripts {
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
@@ -38,7 +38,7 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterVirtualMappingPlant').addClass('active');
+            $('#MenuMasterMaterial').addClass('active');
         });
     </script>
 }
@@ -48,7 +48,7 @@
         <div class="col-sm-12">
             <h3>Virtual Plant Mapping</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "VirtualMappingPlant")">
+                <a href="@Url.Action("Create", "Material")">
                     <button class="btn btn-blue">NEW</button>
                 </a>
             </div>
@@ -67,18 +67,24 @@
                     <thead>
                         <tr>
                             <th class="toggle-row"> Filter </th>
-                            <th> Company </th>
-                            <th> Import Virtual Plant </th>
-                            <th> Export Virtual Plant</th>
+                            <th> Plant </th>
+                            <th> Sticker Code </th>
+                            <th> Material Desc</th>
+                            <th> Good Type</th>
+                            <th> UOM</th>
+                            <th> Deletion Status</th>
                         </tr>
 
                     </thead>
                     <thead class="filters">
                         <tr>
                             <th> Action </th>
-                            <th> Company </th>
-                            <th> Import Virtual Plant </th>
-                            <th> Export Virtual Plant </th>
+                            <th> Plant </th>
+                            <th> Sticker Code </th>
+                            <th> Material Desc</th>
+                            <th> Good Type</th>
+                            <th> UOM</th>
+                            
                         </tr>
                     </thead>
 
@@ -88,19 +94,28 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "Material", new { id = item.MaterialId })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Material", new { id = item.MaterialId })"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.CompanyName)
+                                    @Html.DisplayFor(modelItem => item.PlantName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ImportPlanName)
+                                    @Html.DisplayFor(modelItem => item.MaterialNumber)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ExportPlanName)
+                                    @Html.DisplayFor(modelItem => item.MaterialDesc)
                                 </td>
-
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GoodTypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UomName)
+                                </td>
+                                <td>
+                                    @*@Html.CheckBoxFor(modetItem => item.PlantDeletion)*@
+                                </td>
+                                
                             </tr>
                         }
                     </tbody>

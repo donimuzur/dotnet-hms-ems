@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IHeaderFooterBLL, HeaderFooterBLL>();
             container.Register<IExGroupType, ExGroupType>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
-
+            container.Register<IMaterialBLL, MaterialBLL>();
             // 3. Optionally verify the container's configuration.
             container.Verify();
 

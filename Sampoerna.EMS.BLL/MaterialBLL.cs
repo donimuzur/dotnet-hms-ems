@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
         
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "T1001W, ZAIDM_EX_BRAND, ZAIDM_EX_GOODTYP, UOM";
+        private string includeTables = "T1001W, UOM,ZAIDM_EX_GOODTYP, USER";
 
         public MaterialBLL(IUnitOfWork uow, ILogger logger){
             _logger = logger;
@@ -28,38 +28,39 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL>();
         }
 
-        public Material getByID(long materialId)
+        public ZAIDM_EX_MATERIAL getByID(long materialId)
         {
-            return Mapper.Map<Material>(_repository.GetByID(materialId));
+            return _repository.Get(q => q.MATERIAL_ID == materialId, null, includeTables).FirstOrDefault();
+            //return _repository.GetByID(materialId);
         }
 
-        public List<Material> getAll()
+        public List<ZAIDM_EX_MATERIAL> getAll()
         {
-            return Mapper.Map <List<Material >>(_repository.Get(null, null, includeTables).ToList());
+            return _repository.Get(null, null, includeTables).ToList();
         }
 
-        public MaterialOutput Save(Material data)
+        public MaterialOutput Save(ZAIDM_EX_MATERIAL data)
         {
-            ZAIDM_EX_MATERIAL saveData = null;
 
-            //edit
-            if (data.MATERIAL_ID > 0)
+
+            //insert
+            if (data.MATERIAL_ID == 0)
             {
-                
-                saveData = Mapper.Map<Material, ZAIDM_EX_MATERIAL>(data);
+                _repository.Insert(data);
             }
-            else { //insert
-                saveData = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                _repository.Insert(saveData);
+            else
+            {
+                _repository.Update(data);
             }
 
+            
             var output = new MaterialOutput();
 
             try
             {
                 _uow.SaveChanges();
                 output.Success = true;
-                output.materialId = saveData.MATERIAL_ID;
+                output.materialId = data.MATERIAL_ID;
             }
             catch (Exception exception)
             {
@@ -71,19 +72,6 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        ZAIDM_EX_MATERIAL IMaterialBLL.getByID(long materialId)
-        {
-            throw new NotImplementedException();
-        }
-
-        List<ZAIDM_EX_MATERIAL> IMaterialBLL.getAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public MaterialOutput Save(ZAIDM_EX_MATERIAL data)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

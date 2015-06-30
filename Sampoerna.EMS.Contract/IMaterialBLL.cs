@@ -1,4 +1,5 @@
 ﻿using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using System;
 using System.Collections.Generic;

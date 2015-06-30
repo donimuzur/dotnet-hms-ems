@@ -14,11 +14,13 @@ namespace Sampoerna.EMS.Website.Models.Material
 
     public class MaterialDetail
     {
+        public long MaterialId { get; set; }
         public string PlantName { get; set; }
 
         public string MaterialNumber { get; set; }
-        public string MaterialDescription { get; set; }
+        public string MaterialDesc { get; set; }
 
+        public int GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
         public string UomName { get; set; }
 

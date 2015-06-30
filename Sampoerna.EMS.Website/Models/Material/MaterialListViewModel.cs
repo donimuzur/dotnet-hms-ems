@@ -6,9 +6,9 @@ using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
-    public class MaterialIndexViewModel : BaseModel
+    public class MaterialListViewModel : BaseModel
     {
-        public MaterialIndexViewModel()
+        public MaterialListViewModel()
         {
             Details = new List<MaterialDetails>();
         }
@@ -52,7 +52,9 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public Nullable<int> GoodtypId { get; set; }
 
-        public int IsDeleted { get; set; }
+        public string GoodTypeName { get; set; }
+
+        public bool IsDeleted { get; set; }
 
 
 

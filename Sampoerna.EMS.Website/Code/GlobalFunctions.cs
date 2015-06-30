@@ -102,5 +102,13 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
+
+        public static SelectList GetBrandList()
+        {
+            IBrandRegistrationBLL brandBLL = MvcApplication.GetInstance<BrandRegistrationBLL>();
+            var data = brandBLL.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
     }
 }
