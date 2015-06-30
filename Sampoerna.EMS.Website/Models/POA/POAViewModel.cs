@@ -61,12 +61,9 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Address")]
-        [StringLength(100, ErrorMessage = "Max length 100")]
-        public string PoaAddress { get; set; }
+         public string PoaAddress { get; set; }
 
         [Display(Name = "Phone Number")]
-        [StringLength(15, ErrorMessage = "Please Insert the Number Min 10, Max 15.", MinimumLength = 10)]
-        [RegularExpression("([0-9][1-9]*)", ErrorMessage = "type data must number")]
         public string PoaPhone { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]

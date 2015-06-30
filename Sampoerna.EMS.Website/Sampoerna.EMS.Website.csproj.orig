@@ -255,7 +255,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
@@ -684,8 +684,6 @@
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
-    <Content Include="Views\NPPBKC\Edit.cshtml" />
-    <Content Include="Views\NPPBKC\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -744,11 +742,20 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
+<<<<<<< HEAD
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+=======
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+>>>>>>> dev
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>

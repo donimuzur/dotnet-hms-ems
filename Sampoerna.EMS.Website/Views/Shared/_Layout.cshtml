@@ -17,7 +17,7 @@
     @Styles.Render("~/Content/jqueryui/autocomplete/css")
     <!-- Load Modernizr.js -->
     @Scripts.Render("~/bundles/modernizrmin")
-
+    <link href="~/Content/css/loading.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -261,6 +261,9 @@
     @Scripts.Render("~/bundles/fixedheadertable")
     @Scripts.Render("~/bundles/customjs")
     @Scripts.Render("~/bundles/validate")
+    @Scripts.Render("~/bundles/datatables")
+
+
 
 
     @RenderSection("styles", required: false)
