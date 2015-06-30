@@ -6,7 +6,6 @@
    }
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
             
@@ -34,8 +33,7 @@
                         .draw();
                 });
             });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
+            
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
@@ -143,4 +141,5 @@
             </div>
         </div>
     </div>
+    
 </div>

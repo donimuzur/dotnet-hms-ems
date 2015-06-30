@@ -155,33 +155,6 @@
             });
 
             $('#MenuHeaderFooter').addClass('active');
-            $('#changesHistoryTable').DataTable();
-            
-            // Setup - add a text input to each footer cell
-            $('#changesHistoryTable .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0) {
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
-
-                }
-            });
-
-            // DataTable
-            var table = $('#changesHistoryTable').DataTable();
-            
-            // Apply the search
-
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-            $("#changesHistoryTable_filter").hide();
-            $('#changesHistoryTable_length').hide();
-
         });
 
         function printPreview(idx, id) {

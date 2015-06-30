@@ -78,12 +78,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<EMAIL_TEMPLATE> EMAIL_TEMPLATE { get; set; }
         public virtual DbSet<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
-        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
         public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<T1001W> T1001W { get; set; }
+        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
     }
 }
