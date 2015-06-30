@@ -215,9 +215,9 @@
                         <label class="col-md-4">Start Date</label>
                         <div class="col-md-8">
 
-                           
-                                @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", @disabled = "disabled" })
-                                
+
+                            @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", @disabled = "disabled" })
+
 
                         </div>
                     </div>
@@ -227,9 +227,9 @@
                         <label class="col-md-4">End Date</label>
                         <div class="col-md-8">
 
-                           
-                                @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", @disabled = "disabled" })
-                               
+
+                            @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", @disabled = "disabled" })
+
                         </div>
 
                     </div>
@@ -254,7 +254,7 @@
                     <div class="row">
                         <label class="col-md-4">Status</label>
                         <div class="col-md-8">
-                            @Html.EditorFor(model => model.Status, new { @class = "form-control", @disabled = "disabled" })
+                            @Html.TextBoxFor(model => model.Status, new { @class = "form-control", @disabled = "disabled" })
                         </div>
                     </div>
                 </div>
