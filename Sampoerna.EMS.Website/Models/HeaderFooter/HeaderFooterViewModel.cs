@@ -20,12 +20,15 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
 
         public SelectList CompanyList { get; set; }
 
-        // in our viewmodel we will be posting files....
+        //in our viewmodel we will be posting files....
         //use Data Annotations to validate properties
-        [Required(ErrorMessage = "please fill this field")]
+        //[Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Header Image")]
-        [ValidateFile(MaximumSize = 100)]
         public HttpPostedFileBase HeaderImageFile { get; set; }
+
+        public string SubmitType { get; set; }
+
+        public int idxToPreview { get; set; }
 
     }
 
@@ -37,6 +40,8 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
         [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "Company Code")]
         public long? COMPANY_ID { get; set; }
+
+        [Required(ErrorMessage = "please fill this field")]
         public string HEADER_IMAGE_PATH { get; set; }
         public string HEADER_IMAGE_PATH_BEFOREEDIT { get; set; }
 
@@ -48,6 +53,10 @@ namespace Sampoerna.EMS.Website.Models.HeaderFooter
         public string COMPANY_CODE { get; set; }
         public string COMPANY_NAME { get; set; }
         public string COMPANY_NPWP { get; set; }
+        public bool IsHeaderHide { get; set; }
+        public bool IS_DELETED { get; set; }
+
+        public string IsDeletedDesc { get; set; }
     }
 
     public class HeaderFooterDetailItem : HeaderFooterItem

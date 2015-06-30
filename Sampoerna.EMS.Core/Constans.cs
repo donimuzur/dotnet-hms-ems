@@ -18,6 +18,9 @@
             /// List of ReportDataSources
             /// </summary>
             public const string ReportDataSources = "sk_reportdatasources";
+
+            public const string ReportParameters = "sk_reportparameters";
+
             /// <summary>
             /// Current User session key
             /// </summary>
@@ -33,6 +36,7 @@
             public const string Save = "Save";
             public const string Cancel = "Cancel";
             public const string Update = "Update";
+            public const string PrintPreview = "PrintPreview";
             public const string Delete = "Delete";
         }
         public class SubmitMessage
