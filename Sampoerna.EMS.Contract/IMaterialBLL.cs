@@ -10,10 +10,10 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IMaterialBLL
     {
-        public ZAIDM_EX_MATERIAL getByID(long materialId);
+        ZAIDM_EX_MATERIAL getByID(long materialId);
 
-        public List<ZAIDM_EX_MATERIAL> getAll();
+        List<ZAIDM_EX_MATERIAL> getAll();
 
-        public MaterialOutput Save(ZAIDM_EX_MATERIAL data);
+        MaterialOutput Save(ZAIDM_EX_MATERIAL data);
     }
 }

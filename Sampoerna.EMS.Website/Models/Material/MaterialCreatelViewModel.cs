@@ -1,6 +1,4 @@
-﻿using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,52 +7,52 @@ using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
-    public class MaterialItemModel : BaseModel
+    public class MaterialCreateViewModel : BaseModel
     {
-        public long MATERIAL_ID { get; set; }
+        public long MaterialId { get; set; }
         [Required, Display(Name = "Sticker Id")]
-        public string STICKER_ID { get; set; }
+        public string StickerId { get; set; }
 
         [Required, Display(Name = "Sticker Code")]
-        public string STICKER_CODE { get; set; }
+        public string StickerCode { get; set; }
 
         [Required, Display(Name = "Plant Id")]
-        public long PLANT_ID { get; set; }
+        public long PlantId { get; set; }
 
         [Required, Display(Name = "FA Code")]
-        public string FA_CODE { get; set; }
+        public string FaCode { get; set; }
 
         [Required, Display(Name = "Purchasing Group")]
-        public string PURCHASING_GROUP { get; set; }
+        public string PurchasingGroup { get; set; }
 
         [Required, Display(Name = "Issue Storage No.")]
-        public string ISSUE_STORAGE { get; set; }
+        public string IssueStorage { get; set; }
 
         [Required, Display(Name = "Conversion")]
-        public Nullable<decimal> CONVERSION { get; set; }
+        public Nullable<decimal> Conversion { get; set; }
 
 
         [Required, Display(Name = "Material Desc.")]
-        public string MATERIAL_DESC { get; set; }
+        public string MaterialDesc { get; set; }
 
 
         [Required, Display(Name = "Base UOM")]
-        public int UOM_ID { get; set; }
+        public int UomId { get; set; }
 
         [Required, Display(Name = "Excisable Goods Type")]
-        public Nullable<int> GOODTYP_ID { get; set; }
+        public Nullable<int> GoodtypId { get; set; }
 
         [Required, Display(Name = "Created On")]
-        public Nullable<System.DateTime> CREATED_ON { get; set; }
+        public Nullable<System.DateTime> CreatedOn { get; set; }
 
         [Required, Display(Name = "Sticker Id")]
-        public Nullable<System.DateTime> CHANGED_ON { get; set; }
+        public Nullable<System.DateTime> ChangedOn { get; set; }
 
         [Required, Display(Name = "Created By")]
-        public string CREATED_DATE { get; set; }
+        public string CreatedBy { get; set; }
 
         [Required, Display(Name = "Changed By")]
-        public string CHANGED_BY { get; set; }
+        public string ChangedBy { get; set; }
 
 
         // list for dropdown in the form
