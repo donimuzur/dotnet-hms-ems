@@ -289,6 +289,8 @@
                 });
                 var tableHistory = $('#changesHistoryTable').DataTable();
                 // Setup - add a text input to each footer cell
+                if (tableHistory.columns().eq(0) != null)
+                    {
                 tableHistory.columns().eq(0).each(function (colIdx) {
                     $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                         tableHistory
@@ -297,6 +299,7 @@
                             .draw();
                     });
                 });
+                    }
 
             }
             
