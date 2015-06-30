@@ -720,6 +720,10 @@
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.ReportingData\Sampoerna.EMS.ReportingData.csproj">
+      <Project>{8708b0f2-5e32-43ea-a2f1-f18aab51dc47}</Project>
+      <Name>Sampoerna.EMS.ReportingData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
       <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
       <Name>Sampoerna.EMS.Utils</Name>
@@ -729,6 +733,9 @@
     <Content Include="Reports\EmployeeData.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\HeaderFooterPreview.rdlc" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

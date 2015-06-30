@@ -5,10 +5,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Microsoft.Reporting.WebForms;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -17,12 +20,14 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IHeaderFooterBLL _headerFooterBll;
         private ICompanyBLL _companyBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public HeaderFooterController(IPageBLL pageBLL, IHeaderFooterBLL headerFooterBll, ICompanyBLL companyBll)
-            : base(pageBLL, Enums.MenuList.HHeaderFooter)
+        public HeaderFooterController(IPageBLL pageBLL, IHeaderFooterBLL headerFooterBll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll)
+            : base(pageBLL, Enums.MenuList.HeaderFooter)
         {
             _headerFooterBll = headerFooterBll;
             _companyBll = companyBll;
+            _changesHistoryBll = changesHistoryBll;
         }
         
         private SelectList GetCompanyList()
@@ -52,7 +57,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CurrentMenu = PageInfo,
                 MainMenu = Enums.MenuList.MasterData,
-                Detail = Mapper.Map<HeaderFooterDetailItem>(data)
+                Detail = Mapper.Map<HeaderFooterDetailItem>(data),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             };
             return View(model);
         }
@@ -90,7 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
                 
-                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail));
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
                 if (saveOutput.Success)
                 {
@@ -107,11 +113,16 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int id)
         {
             var data = _headerFooterBll.GetDetailsById(id);
+            if (data.IS_DELETED.HasValue && data.IS_DELETED.Value)
+            {
+                return RedirectToAction("Details", "HeaderFooter", new { id = data.HEADER_FOOTER_ID });
+            }
             var model = new HeaderFooterItemViewModel()
             {
                 CurrentMenu = PageInfo,
                 MainMenu = Enums.MenuList.MasterData,
-                Detail = Mapper.Map<HeaderFooterDetailItem>(data)
+                Detail = Mapper.Map<HeaderFooterDetailItem>(data),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             };
             return InitialEdit(model);
         }
@@ -119,7 +130,6 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(HeaderFooterItemViewModel model)
         {
-            
             if (ModelState.IsValid)
             {
                 //do save
@@ -139,10 +149,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     imageHeaderUrl = model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT;
                 }
 
-
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
 
-                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail));
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
                 if (saveOutput.Success)
                 {
@@ -152,7 +161,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Set ErrorMessage
                 model.ErrorMessage = saveOutput.ErrorCode + "\n\r" + saveOutput.ErrorMessage;
             }
-
+            model.Detail.FOOTER_CONTENT = model.Detail.FOOTER_CONTENT.Replace("<br />", Environment.NewLine);
             return InitialEdit(model);
         }
 
@@ -221,6 +230,36 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 System.IO.File.Delete(path);
             }
+        }
+
+        public ActionResult PrintPreview(int id, bool isHeaderSet, bool isFooterSet)
+        {
+            
+            var headerFooterData = Mapper.Map<HeaderFooterItem>(_headerFooterBll.GetById(id));
+            headerFooterData.HEADER_IMAGE_PATH = !string.IsNullOrEmpty(headerFooterData.HEADER_IMAGE_PATH)
+                ? new Uri(Server.MapPath(headerFooterData.HEADER_IMAGE_PATH)).AbsoluteUri
+                : string.Empty;
+            headerFooterData.FOOTER_CONTENT = !isFooterSet ? string.Empty : headerFooterData.FOOTER_CONTENT;
+            headerFooterData.IsHeaderHide = !isHeaderSet;
+
+            var srcToConvert = new List<HeaderFooterItem> { headerFooterData };
+            var headerFooterDataTable =
+                DataTableHelper.ConvertToDataTable(srcToConvert.ToArray(), new dsHeaderFooter.HeaderFooterDataTable());
+            var rptDataSources = new List<ReportDataSource>
+            {
+                new ReportDataSource("ds_headerfooter", headerFooterDataTable)
+            };
+            
+            //set session for reporting
+            Session[Constans.SessionKey.ReportPath] = "Reports/HeaderFooterPreview.rdlc";
+            Session[Constans.SessionKey.ReportDataSources] = rptDataSources;
+            return RedirectToAction("ShowReport", "AspxReportViewer");
+        }
+
+        public ActionResult Delete(int id)
+        {
+            _headerFooterBll.Delete(id, CurrentUser.USER_ID);
+            return RedirectToAction("Index");
         }
 
     }
