@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
@@ -47,7 +48,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Details(long id)
         {
             var model = new BrandRegistrationDetailsViewModel();
-            model.ChangesHistoryList = new List<ChangesHistoryItemModel>();
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, id));
 
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(id);
             model = AutoMapper.Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> POA_ID { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
-        public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
         public virtual T1001W T1001W { get; set; }
+        public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
     }
 }

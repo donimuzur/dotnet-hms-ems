@@ -7,6 +7,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -16,12 +17,13 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_POA> _repository;
         private string includeTables = "ZAIDM_POA_MAP, USER, USER1";
-        
-        public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
+        private IChangesHistoryBLL _changesHistoryBll ;
+        public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger, IChangesHistoryBLL changesHistoryBll)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_POA>();
+            _changesHistoryBll = changesHistoryBll;
         }
 
 
@@ -69,12 +71,19 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-
-        public void Update(ZAIDM_EX_POA poa)
+        public void Update( ZAIDM_EX_POA poa)
         {
-
-            _repository.Update(poa);
-            _uow.SaveAsync();
+            try
+            {
+                 _repository.Update(poa);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                _uow.RevertChanges();
+                throw;
+            }
+          
         }
     }
 }
