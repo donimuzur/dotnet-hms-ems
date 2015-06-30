@@ -8,5 +8,7 @@ namespace Sampoerna.EMS.Website.Models
         public Enums.MenuList MainMenu { get; set; }
         public PAGE CurrentMenu { get; set; }
         public string ErrorMessage { get; set; }
+
+       
     }
 }
