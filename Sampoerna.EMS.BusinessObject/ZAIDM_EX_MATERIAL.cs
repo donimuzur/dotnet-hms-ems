@@ -32,10 +32,13 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_FROM_SAP { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
+        public Nullable<long> BRAND_ID { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
         public virtual T1001W T1001W { get; set; }
+        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
     }
 }
