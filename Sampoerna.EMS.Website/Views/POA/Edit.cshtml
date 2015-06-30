@@ -26,7 +26,7 @@
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Create New POA
+                                        Edit POA
                                         <i class="fa fa-caret-down"></i>
                                     </a>
                                 </h4>
@@ -41,8 +41,7 @@
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(x=>x.Detail.PoaId)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
-                                                    </div>
+                                                      </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -51,8 +50,7 @@
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "form-control" })
 
-                                                        @Html.ValidationMessageFor(model => model.Detail.UserId)
-                                                    </div>
+                                                                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -63,7 +61,6 @@
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select",  new { @class = "form-control" })
 
-                                                        @Html.ValidationMessageFor(model => model.Detail.ManagerId)
                                                     </div>
                                                 </div>
                                             </div>
@@ -72,8 +69,7 @@
                                                     <label class="col-md-3">Printed Name</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaPrintedName)
-                                                    </div>
+                                               </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -88,8 +84,7 @@
                                                     <label class="col-md-3">Phone</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaPhone)
-                                                    </div>
+                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -97,8 +92,7 @@
                                                     <label class="col-md-3">Email</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.Email)
-                                                    </div>
+                                                   </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -109,8 +103,7 @@
                                                     <label class="col-md-3">Title</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.Title)
-                                                    </div>
+                                                     </div>
                                                 </div>
                                             </div>
 
@@ -119,7 +112,6 @@
                                                     <label class="col-md-3">Address</label>
                                                     <div class="col-md-9">
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
                                                     </div>
                                                 </div>
                                             </div>
