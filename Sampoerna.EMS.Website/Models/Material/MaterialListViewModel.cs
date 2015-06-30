@@ -39,23 +39,26 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         //public Nullable<decimal> Conversion { get; set; }
 
-
+        public string MaterialNumber { get; set; }
 
         public string MaterialDesc { get; set; }
 
 
 
-        public int UomId { get; set; }
+        public int BaseUom { get; set; }
 
         public string UomName { get; set; }
 
 
         public Nullable<int> GoodtypId { get; set; }
 
-        public string GoodtypName { get; set; }
+        public int IsDeleted { get; set; }
 
 
-       
+
+
+
+
 
     }
 }
