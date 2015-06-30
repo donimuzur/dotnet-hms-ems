@@ -242,6 +242,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
+    <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
@@ -680,6 +681,7 @@
     <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -738,11 +740,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
