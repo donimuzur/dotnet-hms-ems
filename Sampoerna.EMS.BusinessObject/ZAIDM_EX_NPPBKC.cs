@@ -29,16 +29,17 @@ namespace Sampoerna.EMS.BusinessObject
         public string ADDR1 { get; set; }
         public string ADDR2 { get; set; }
         public string CITY { get; set; }
+        public string CITY_ALIAS { get; set; }
         public Nullable<long> KPPBC_ID { get; set; }
         public string REGION_OFFICE { get; set; }
+        public string REGION_OFFICE_DGCE { get; set; }
         public Nullable<long> COMPANY_ID { get; set; }
         public Nullable<long> VENDOR_ID { get; set; }
         public string TEXT_TO { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-        public string CITY_ALIAS { get; set; }
-        public string REGION_OFFICE_DGCE { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     
         public virtual C1LFA1 C1LFA1 { get; set; }
         public virtual ICollection<CK4C> CK4C { get; set; }
@@ -47,7 +48,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
         public virtual T1001 T1001 { get; set; }
-        public virtual ICollection<T1001W> T1001W { get; set; }
         public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
+        public virtual ICollection<T1001W> T1001W { get; set; }
     }
 }

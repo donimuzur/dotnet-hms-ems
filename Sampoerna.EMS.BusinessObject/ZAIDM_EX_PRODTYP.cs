@@ -20,7 +20,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.REALISASI_PEMASUKAN = new HashSet<REALISASI_PEMASUKAN>();
             this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
         public int PRODUCT_ID { get; set; }
@@ -33,6 +32,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
         public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }
