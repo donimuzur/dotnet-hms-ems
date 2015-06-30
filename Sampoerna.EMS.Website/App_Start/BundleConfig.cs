@@ -52,7 +52,10 @@ namespace Sampoerna.EMS.Website
                        "~/Scripts/jquery.validate.min.js",
                        "~/Scripts/jquery.validate.unobtrusive.min.js"
                        ));
-
+            bundles.Add(new ScriptBundle("~/bundles/datatables").Include(
+                      "~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"
+                    
+                      ));
         }
     }
 }

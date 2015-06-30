@@ -14301,10 +14301,10 @@
 				}
 			    catch (e) { }
 				
-			    attach( $(host).empty(), buttons );
+				attach( $(host).empty(), buttons );
+				$('#' + settings.sTableId + '_paginate').append(' <span id="goto_' + settings.sTableId + '" style="margin-left:5px"> <span>go to page</span><input style="width:50px; margin-left:5px" type="text" placeholder=""></span>');
 			    $('.paginate_button').wrapAll('<div style="float:left"></div>');
-			    $('#' + settings.sTableId + '_paginate').append('<div class="goto" style="float:left; margin:0 0 0 0px"><span>Go to Page</span> <input class="form-control" type="text" placeholder=""></div>');
-			    $('.goto input').keyup(function (e) {
+			    $('#goto_' + settings.sTableId + ' input').keyup(function (e) {
 			        if (e.keyCode == 13) {
 			            var m = $(this).val();
 			            if (!isNaN(m)) {
@@ -14317,6 +14317,8 @@
 				if ( activeEl ) {
 					$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
 				}
+				$('#' + settings.sTableId + '_filter').hide();
+				$('#' + settings.sTableId + '_length').hide();
 				
 
 			}

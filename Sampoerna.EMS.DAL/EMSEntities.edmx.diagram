@@ -115,13 +115,6 @@
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" />
         <EntityTypeShape EntityType="EMSModel.VIRTUAL_PLANT_MAP" Width="1.5" PointX="10.75" PointY="12.875" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" />
-        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_POA" Width="1.5" PointX="14.375" PointY="1" />
-        <AssociationConnector Association="EMSModel.FK_PBCK1_ZAIDM_EX_POA" />
-        <AssociationConnector Association="EMSModel.FK_PBCK7_ZAIDM_EX_POA" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_POA" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER1" />
         <EntityTypeShape EntityType="EMSModel.CHANGES_HISTORY" Width="1.5" PointX="10.5" PointY="22" />
         <EntityTypeShape EntityType="EMSModel.HEADER_FOOTER" Width="1.5" PointX="3" PointY="25.125" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_MATERIAL" Width="1.5" PointX="10.5" PointY="16.875" />
@@ -169,6 +162,13 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" />
+        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_POA" Width="1.5" PointX="10.5" PointY="64.125" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_ZAIDM_EX_POA" />
+        <AssociationConnector Association="EMSModel.FK_PBCK7_ZAIDM_EX_POA" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_POA" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER1" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

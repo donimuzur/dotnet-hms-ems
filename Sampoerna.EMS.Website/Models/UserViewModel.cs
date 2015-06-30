@@ -26,6 +26,12 @@ namespace Sampoerna.EMS.Website.Models
         public List<USER> Employees { get; set; }
         public USER Manager { get; set; }
         public USER_GROUP USER_GROUP { get; set; }
+
+        public string EMAIL { get; set; }
+
+        public string PHONE { get; set; }
+
+        
     }
 
     public class UserItemViewModel : BaseModel
