@@ -50,6 +50,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [UIHint("FormatDecimal")]
         public decimal? PrintingPrice { get; set; }
         public string CutFilterCode { get; set; }
-    
+        public string IsDeleted { get; set; }
     }
 }

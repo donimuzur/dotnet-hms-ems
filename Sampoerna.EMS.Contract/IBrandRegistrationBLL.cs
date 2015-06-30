@@ -19,6 +19,8 @@ namespace Sampoerna.EMS.Contract
         void Save(ZAIDM_EX_BRAND brandRegistration);
 
         List<ZAIDM_EX_BRAND> GetAllBrands();
+
+        void Delete(long id);
     }
 
 }

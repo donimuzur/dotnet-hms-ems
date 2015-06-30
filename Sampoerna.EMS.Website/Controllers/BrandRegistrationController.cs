@@ -203,5 +203,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Edit", model);
         }
+
+        public ActionResult Delete(long id)
+        {
+            _brandRegistrationBll.Delete(id);
+
+            return RedirectToAction("Index");
+        }
     }
 }

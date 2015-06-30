@@ -9,7 +9,10 @@
                 <a href="@Url.Action("Index", "BrandRegistration")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-
+                @if (Model.IsDeleted.Equals("No"))
+                {
+                    <a href="javascript:void(0);" onclick=" deleteBrand() " class="btn btn-grey">Delete</a>
+                }
             </div>
         </div>
     </div>
@@ -300,5 +303,11 @@
             $('#MenuMasterBrandRegistration').addClass('active');
         });
 
+        var deleteBrand = function() {
+            if (confirm('Are You Sure')) {
+                window.location = "@Url.Action("Delete", "BrandRegistration", new { id = @Model.BrandId })";
+            }
+            
+        };
     </script>
 }

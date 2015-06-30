@@ -268,7 +268,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
                 .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_VALUE))
                 .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
-                .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE));
+                .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
+                .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED));
+            
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationDetailsViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.BRAND_ID))
@@ -303,7 +305,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Active" : "Inactive"))
                 .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
-                .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE));
+                .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
+                .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED));
               
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationEditViewModel>().IgnoreAllNonExisting()

@@ -91,6 +91,16 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    public class NullableBooleanToStringDeletedResolver : ValueResolver<bool?, string>
+    {
+        protected override string ResolveCore(bool? value)
+        {
+            if (!value.HasValue)
+                return "No";
+            return value.Value ? "Yes" : "No";
+        }
+    }
+
 
     //public class VirtualPlantMapCompanyNameResolver : ValueResolver<object, string>
     //{

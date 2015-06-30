@@ -91,37 +91,21 @@ namespace Sampoerna.EMS.BLL
 
             }
         }
-        //public BrandRegistrationOutput save(ZAIDM_EX_BRAND brandRegistrasionExBrand)
-        //{
-        //    {
-        //        if (brandRegistrasionExBrand.BRAND_ID > 0)
-        //        {
-        //            //update
-        //            _repository.Update(brandRegistrasionExBrand);
-        //        }
-        //        else
-        //        {
-        //            //Insert
-        //            _repository.Insert(brandRegistrasionExBrand);
-        //        }
 
-        //        var output = new BrandRegistrationOutput();
+        public void Delete(long id)
+        {
+            var dbBrand = _repository.GetByID(id);
+            if (dbBrand == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-        //        try
-        //        {
-        //            _uow.SaveChanges();
-        //            output.Success = true;
-        //            output.BrandIdZaidmExBrand = brandRegistrasionExBrand.BRAND_ID;
-        //        }
-        //        catch (Exception exception)
-        //        {
-        //            _logger.Error(exception);
-        //            output.Success = false;
-        //            output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-        //            output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-        //        }
-        //        return output;
-        //    }
-        //}
+            if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            dbBrand.IS_DELETED = true;
+            //todo : change log
+            _uow.SaveChanges();
+
+
+        }
     }
 }
