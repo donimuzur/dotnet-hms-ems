@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
@@ -7,6 +8,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -16,14 +18,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMasterDataBLL _masterBll;
         private IZaidmExProdTypeBLL _productBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll)
+        public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, IChangesHistoryBLL changesHistoryBll)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _brandRegistrationBll = brandRegistrationBll;
             _masterBll = masterBll;
             _productBll = productBll;
             _goodTypeBll = goodTypeBll;
+            _changesHistoryBll = changesHistoryBll;
         }
 
         //
@@ -43,7 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Details(long id)
         {
             var model = new BrandRegistrationDetailsViewModel();
-
+            model.ChangesHistoryList = new List<ChangesHistoryItemModel>();
 
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(id);
             model = AutoMapper.Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
@@ -78,6 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = InitCreate(model);
 
+            model.IsActive = true;
             return View(model);
         }
 
@@ -125,8 +130,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 dbBrand = AutoMapper.Mapper.Map<ZAIDM_EX_BRAND>(model);
 
+                dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.IS_FROM_SAP = false;
-
+                
                 _brandRegistrationBll.Save(dbBrand);
 
                 return RedirectToAction("Index");
@@ -158,10 +164,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(long id)
         {
+           
             var model = new BrandRegistrationEditViewModel();
 
 
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(id);
+
+            if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
+                return RedirectToAction("Details", "BrandRegistration", new { id = dbBrand.BRAND_ID });
+
+
+
             model = AutoMapper.Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
 
             model = InitEdit(model);
@@ -176,7 +189,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (ModelState.IsValid)
             {
-
+                
                 var dbBrand = _brandRegistrationBll.GetById(model.BrandId);
                 if (dbBrand == null)
                 {
@@ -187,13 +200,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View("Edit", model);
                 }
 
-                //convertion
-
-                dbBrand.PRINTING_PRICE = model.PrintingPrice;
-                dbBrand.CUT_FILLER_CODE = model.CutFilterCode;
+                
+                SetChangesLog(dbBrand, model);
+            
+                AutoMapper.Mapper.Map(model, dbBrand);
 
                 _brandRegistrationBll.Save(dbBrand);
-
+                
                 return RedirectToAction("Index");
             }
 
@@ -204,11 +217,64 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Edit", model);
         }
 
+        private void SetChangesLog(ZAIDM_EX_BRAND origin, BrandRegistrationEditViewModel updatedModel)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("STICKER_CODE", origin.PRINTING_PRICE.Equals(updatedModel.PrintingPrice));
+            changesData.Add("PRINTING_PRICE", origin.STICKER_CODE.Equals(updatedModel.StickerCode));
+
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value == true)
+                {
+                    var changes = new CHANGES_HISTORY();
+                    changes.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
+                    changes.FORM_ID = origin.BRAND_ID;
+                    changes.FIELD_NAME = listChange.Key;
+                    changes.MODIFIED_BY = CurrentUser.USER_ID;
+                    changes.MODIFIED_DATE = DateTime.Now;
+                    switch (listChange.Key)
+                    {
+                        case "PRINTING_PRICE":
+                            changes.OLD_VALUE = origin.PRINTING_PRICE.ToString();
+                            changes.NEW_VALUE = updatedModel.PrintingPrice.ToString();
+                            break;
+                        case "STICKER_CODE":
+                            changes.OLD_VALUE = origin.STICKER_CODE;
+                            changes.NEW_VALUE = updatedModel.StickerCode;
+                            break;
+                       
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+
+
+                }
+            }
+
+
+
+        } 
+
         public ActionResult Delete(long id)
         {
+            AddHistoryDelete(id);
             _brandRegistrationBll.Delete(id);
 
             return RedirectToAction("Index");
+        }
+
+        private void AddHistoryDelete(long id)
+        {
+            var history = new CHANGES_HISTORY();
+            history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
+            history.FORM_ID = id;
+            history.FIELD_NAME = "IS_DELETED";
+            history.OLD_VALUE = "false";
+            history.NEW_VALUE = "true";
+            history.MODIFIED_DATE = DateTime.Now;
+            history.MODIFIED_BY = CurrentUser.USER_ID;
+
+            _changesHistoryBll.AddHistory(history);
         }
     }
 }

@@ -45,11 +45,13 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 
         public string Status { get; set; }
 
-        public string Convertion { get; set; }
+        public decimal? Conversion { get; set; }
         
         [UIHint("FormatDecimal")]
         public decimal? PrintingPrice { get; set; }
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
+
+        
     }
 }

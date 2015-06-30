@@ -136,7 +136,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCountry();
-            return new SelectList(data, "COUNTRY_CODE", "COUNTRY_NAME");
+            return new SelectList(data, "COUNTRY_ID", "COUNTRY_NAME");
         }
 
         public static SelectList GetCurrencyList()

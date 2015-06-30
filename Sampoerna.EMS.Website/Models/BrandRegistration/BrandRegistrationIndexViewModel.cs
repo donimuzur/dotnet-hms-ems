@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string FaCode { get; set; }
         public string BrandName { get; set; }
         public string SeriesValue { get; set; }
-        public string Convertion { get; set; }
+        public string Conversion { get; set; }
         public decimal? PrintingPrice { get; set; }
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }

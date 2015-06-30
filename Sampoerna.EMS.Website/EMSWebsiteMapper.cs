@@ -268,6 +268,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
                 .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_VALUE))
+                .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
                 .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
                 .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
                 .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED));
@@ -307,7 +308,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Active" : "Inactive"))
                 .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
                 .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
-                .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED));
+                .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED))
+                .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT));
               
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationEditViewModel>().IgnoreAllNonExisting()
@@ -341,7 +344,9 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Active" : "Inactive"))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE))
-            .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP));
+            .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP))
+            .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT));
 
             Mapper.CreateMap<BrandRegistrationCreateViewModel, ZAIDM_EX_BRAND>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
@@ -365,8 +370,35 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.END_DATE, opt => opt.MapFrom(src => src.EndDate))
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
-                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFilterCode));
+                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFilterCode))
+                .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
 
+            Mapper.CreateMap<BrandRegistrationEditViewModel, ZAIDM_EX_BRAND>().IgnoreAllUnmapped()
+                .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.PER_ID, opt => opt.MapFrom(src => src.PersonalizationCode))
+                .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.BrandName))
+                .ForMember(dest => dest.SKEP_NP, opt => opt.MapFrom(src => src.SkepNo))
+                .ForMember(dest => dest.SKEP_DATE, opt => opt.MapFrom(src => src.SkepDate))
+                .ForMember(dest => dest.PRODUCT_ID, opt => opt.MapFrom(src => src.ProductCode))
+                .ForMember(dest => dest.SERIES_ID, opt => opt.MapFrom(src => src.SeriesId))
+                .ForMember(dest => dest.MARKET_ID, opt => opt.MapFrom(src => src.MarketCode))
+                .ForMember(dest => dest.COUNTRY_ID, opt => opt.MapFrom(src => src.CountryCode))
+                .ForMember(dest => dest.HJE_IDR, opt => opt.MapFrom(src => src.HjeValue))
+                .ForMember(dest => dest.HJE_CURR, opt => opt.MapFrom(src => src.HjeCurrency))
+                .ForMember(dest => dest.TARIFF, opt => opt.MapFrom(src => src.Tariff))
+                .ForMember(dest => dest.TARIFF_CURR, opt => opt.MapFrom(src => src.TariffCurrency))
+                .ForMember(dest => dest.COLOUR, opt => opt.MapFrom(src => src.ColourName))
+                .ForMember(dest => dest.GOODTYP_ID, opt => opt.MapFrom(src => src.GoodType))
+                .ForMember(dest => dest.START_DATE, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dest => dest.END_DATE, opt => opt.MapFrom(src => src.EndDate))
+                .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
+                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFilterCode))
+                .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
             #endregion
 
             Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()

@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [UIHint("FormatDateTime")]
         public DateTime? EndDate { get; set; }
 
-        public string Convertion { get; set; }
+        public string Conversion { get; set; }
 
         [UIHint("FormatDecimal")]
         public decimal? PrintingPrice { get; set; }

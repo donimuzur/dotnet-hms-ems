@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -19,7 +21,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T1001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
-      
+       // private IChangesHistoryBLL _changesHistoryBll;
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -28,7 +30,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T1001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
-
+            //_changesHistoryBll = changesHistoryBll;
         }
 
         public List<ZAIDM_EX_BRAND> GetAllBrands()
@@ -80,7 +82,10 @@ namespace Sampoerna.EMS.BLL
 
         public void Save(ZAIDM_EX_BRAND brandRegistration)
         {
+         
             _repository.InsertOrUpdate(brandRegistration);
+
+           
             try
             {
                 _uow.SaveChanges();
@@ -102,10 +107,13 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             dbBrand.IS_DELETED = true;
-            //todo : change log
+           
+           
             _uow.SaveChanges();
 
 
         }
+
+     
     }
 }
