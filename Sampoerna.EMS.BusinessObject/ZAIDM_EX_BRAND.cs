@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK3_7_ITEM = new HashSet<PBCK3_7_ITEM>();
             this.PBCK3_CK5_ITEM = new HashSet<PBCK3_CK5_ITEM>();
             this.PBCK4_ITEM = new HashSet<PBCK4_ITEM>();
+            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
         public long BRAND_ID { get; set; }
@@ -64,5 +65,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
         public virtual T1001W T1001W { get; set; }
+        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }
