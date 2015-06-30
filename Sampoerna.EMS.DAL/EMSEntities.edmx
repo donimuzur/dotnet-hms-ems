@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -50,8 +50,8 @@
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="bigint" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
-          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="50" />
-          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="50" />
+          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
+          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="int" />
         </EntityType>
@@ -650,7 +650,6 @@
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="30" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="30" />
-          <Property Name="BRAND_ID" Type="bigint" />
           <Property Name="PLANT_ID" Type="bigint" />
           <Property Name="EX_GOODTYP" Type="int" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="30" />
@@ -659,6 +658,7 @@
           <Property Name="IS_FROM_SAP" Type="bit" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="BRAND_ID" Type="bigint" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -4530,8 +4530,8 @@
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="OLD_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NEW_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
