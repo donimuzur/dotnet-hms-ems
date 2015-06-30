@@ -152,7 +152,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
-
+                    
 
                 }
             }
@@ -168,8 +168,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
+                var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                  AutoMapper.Mapper.Map(model.Detail, poa);
-                 SetChanges(model.Detail,poa);
+                 SetChanges(origin,poa);
                
                 _poaBll.Update(poa);
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
