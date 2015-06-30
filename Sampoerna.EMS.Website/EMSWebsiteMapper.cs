@@ -292,6 +292,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE));
 
+            Mapper.CreateMap<VirtualNppbckDetails, ZAIDM_EX_NPPBKC>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.VirtualNppbckId))
+                .ForMember(dest => dest.REGION_OFFICE_DGCE, opt => opt.MapFrom(src => src.RegionOfficeOfDGCE))
+                .ForMember(dest => dest.TEXT_TO, opt => opt.MapFrom(src => src.TextTo))
+                .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias));
+
+
             #endregion
 
         }

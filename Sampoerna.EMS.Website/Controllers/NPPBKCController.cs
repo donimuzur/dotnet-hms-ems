@@ -59,30 +59,54 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
             
           return View(model);
-
-           
+            
         }
 
         [HttpPost]
         public ActionResult Edit(NppbkcFormModel model)
         {
             if (!ModelState.IsValid)
-                return View();
+            {
+                var Nppbkc = _nppbkcBll.GetById(model.Detail.VirtualNppbckId);
+                model.MainMenu = Enums.MenuList.MasterData;
+                model.CurrentMenu = PageInfo;
 
+                var detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(Nppbkc);
+
+                model.Detail = detail;
+                return View("Edit", model);
+            }
             try
             {
                 var nppbkcId = model.Detail.VirtualNppbckId;
                 var nppbkc = _nppbkcBll.GetById(nppbkcId);
+                AutoMapper.Mapper.Map(model.Detail, nppbkc);
 
-                AutoMapper.Mapper.Map(model, nppbkc);
                 _nppbkcBll.Save(nppbkc);
-
                 return RedirectToAction("Index");
+
             }
             catch
             {
                 return View();
             }
+
+        }
+        public ActionResult Detail(long id)
+        {
+            var nppbkc = _nppbkcBll.GetById(id);
+            if (nppbkc == null)
+            {
+                HttpNotFound();
+            }
+            var model = new NppbkcFormModel();
+            model.MainMenu = Enums.MenuList.MasterData;
+            model.CurrentMenu = PageInfo;
+           
+            model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
+
+            return View(model);
+
 
         }
 

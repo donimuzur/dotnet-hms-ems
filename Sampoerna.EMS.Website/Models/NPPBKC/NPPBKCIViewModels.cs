@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.NPPBKC
@@ -35,11 +36,18 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string Address2 { get; set; }
         public string City { get; set; }
         public string CityAlias { get; set; }
+
+        [Required(ErrorMessage = "please fill this field")]
         public string RegionOfficeOfDGCE{ get; set; }
         public string Region { get; set; }
         public string TextTo { get; set; }
         public DateTime? CreateDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)] 
         public DateTime? StartDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)] 
         public DateTime? EndDate { get; set; }
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }

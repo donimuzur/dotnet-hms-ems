@@ -80,6 +80,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail = detail;
                 return View("Edit", model);
             }
+
             try
             {
                 var plantId = model.Detail.PlantId;

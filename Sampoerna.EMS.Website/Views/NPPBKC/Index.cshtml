@@ -72,6 +72,7 @@
                             <th> City Alias</th>
                             <th> Region Office of DGCE </th>
                             <th> Text to </th>
+                            <th> Deleted </th>
 
                         </tr>
 
@@ -84,6 +85,7 @@
                             <th> City Alias</th>
                             <th> Region Office of DGCE </th>
                             <th> Text to </th>
+                            <th> Deleted </th>
                         </tr>
                     </thead>
 
@@ -93,7 +95,7 @@
                         {
                         <tr>
                             <td>
-                                <a href="@Url.Action("Detail", "Plant", new {id = item.NPPBKC_ID})"><i class="fa fa-eye"></i></a>
+                                <a href="@Url.Action("Detail", "NPPBKC", new { id = item.NPPBKC_ID })"><i class="fa fa-eye"></i></a>
                                 <a href="@Url.Action("Edit", "NPPBKC", new { id = item.NPPBKC_ID })"><i class="fa fa-pencil-square-o"></i></a>
                             </td>
                             <td>
@@ -106,10 +108,13 @@
                                 @Html.DisplayFor(modelItem => item.CITY_ALIAS)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.REGION_OFFICE)
+                                @Html.DisplayFor(modelItem => item.REGION_OFFICE_DGCE)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.TEXT_TO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IS_DELETED)
                             </td>
                         </tr>
                         }
