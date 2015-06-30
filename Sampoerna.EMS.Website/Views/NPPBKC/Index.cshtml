@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NPPBKCViewModels
+﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NPPBKCIViewModels
 
 @section styles
     {
@@ -10,19 +10,23 @@
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
+            
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
+                if (idx != 0 && idx != 0) {
                     var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" />');
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
                 }
             });
 
             // DataTable
             var table = $('#mydata').DataTable();
+            
 
             // Apply the search
+
             table.columns().eq(0).each(function (colIdx) {
                 $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
@@ -31,7 +35,12 @@
                         .draw();
                 });
             });
+            $("#mydata_filter").hide();
+            $('#mydata_length').hide();
+
+          
             $('#MenuNPPBKC').addClass('active');
+
         });
     </script>
 }
@@ -44,12 +53,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
-            <div class="action-button new">
-                @*<a href="@Url.Action("Create", "Virtual")">
-                        <button class="btn btn-blue">NEW</button>
-                    </a>*@
-                <a data-toggle="modal" data-target=".menu-maping-type"><button class="btn btn-blue">NEW</button></a>
-            </div>
+            
         </div>
     </div>
 </div>
@@ -88,22 +92,24 @@
                         @foreach (var item in Model.Details)
                         {
                         <tr>
-                            <td></td>
-                    
                             <td>
-                                @Html.DisplayFor(modelItem => item.NppbckId)
+                                <a href="@Url.Action("Detail", "Plant", new {id = item.NPPBKC_ID})"><i class="fa fa-eye"></i></a>
+                                <a href="@Url.Action("Edit", "NPPBKC", new { id = item.NPPBKC_ID })"><i class="fa fa-pencil-square-o"></i></a>
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Address1)
+                                @Html.DisplayFor(modelItem => item.NPPBKC_NO)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.City)
+                                @Html.DisplayFor(modelItem => item.ADDR1)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.RegionOfficeIdNppbkc)
+                                @Html.DisplayFor(modelItem => item.CITY_ALIAS)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.TextTo)
+                                @Html.DisplayFor(modelItem => item.REGION_OFFICE)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TEXT_TO)
                             </td>
                         </tr>
                         }

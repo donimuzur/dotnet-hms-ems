@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
-        private string includeable = "ZAIDM_EX_NPPBKC, ZAIDM_EX_KPPBC,T1001";
+        private string includeTables = "ZAIDM_EX_KPPBC,T1001,C1LFA1";
 
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -24,25 +24,37 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_NPPBKC GetById(long id)
         {
-            return _repository.GetByID(id);
+            //return _repository.Get(id);
+            return _repository.Get(c => c.NPPBKC_ID == id, null, includeTables).FirstOrDefault();
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()
         {
-            return _repository.Get(null, null, includeable).ToList();
+            return _repository.Get(null, null, includeTables).ToList();
         }
         
         public void Save(ZAIDM_EX_NPPBKC nppbkc)
         {
-            _repository.Update(nppbkc);
+            if (nppbkc.NPPBKC_ID != 0)
+            {
+                //update
+                _repository.Update(nppbkc);
+            }
+            else
+            {
+                //Insert
+                _repository.Insert(nppbkc);
+            }
+
             try
             {
                 _uow.SaveChanges();
+
             }
             catch (Exception exception)
             {
                 _logger.Error(exception);
-                
+
             }
             
         }

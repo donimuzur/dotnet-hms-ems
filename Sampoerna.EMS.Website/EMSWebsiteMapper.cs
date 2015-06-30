@@ -104,13 +104,13 @@ namespace Sampoerna.EMS.Website
 
             #region NPPBKC
 
-            Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailsNppbck>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
-                .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
-                .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
-                .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO));
+            //Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailsNppbck>().IgnoreAllNonExisting()
+            //    .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+            //    .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
+            //    .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+            //    .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
+            //    .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
+            //    .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO));
 
             #endregion
             
@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website
             #region POA
 
             Mapper.CreateMap<POAViewModel, ZAIDM_EX_POA>().IgnoreAllNonExisting()
-            .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
+                .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
                 .ForMember(dest => dest.POA_CODE, opt => opt.MapFrom(src => src.PoaCode))
                 .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
                 .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
@@ -266,6 +266,23 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region NPPBKC Index
+
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, VirtualNppbckDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.VirtualNppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
+                .ForMember(dest => dest.RegionOfficeOfDGCE, opt => opt.MapFrom(src => src.REGION_OFFICE))
+                .ForMember(dest => dest.Address2, opt => opt.MapFrom(src => src.ADDR2))
+                .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
+                .ForMember(dest => dest.KppbcId, opt => opt.MapFrom(src => src.ZAIDM_EX_KPPBC.KPPBC_NUMBER))
+                .ForMember(dest => dest.CityAlias, opt => opt.MapFrom(src => src.CITY_ALIAS))
+                .ForMember(dest => dest.AcountNumber, opt => opt.MapFrom(src => src.C1LFA1.LIFNR))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE));
+
+            #endregion
 
         }
     }

@@ -14,8 +14,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExPOABLL _poaBll;
         private IUserBLL _userBll;
 
-        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, IZaidmExPOABLL poaBll, IUserBLL userBll
-            )
+        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, IZaidmExPOABLL poaBll, IUserBLL userBll )
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _poaMapBll = poadMapBll;
@@ -77,8 +76,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int id)
         {
             var poa = _poaBll.GetById(id);
-
-
+            
             if (poa == null)
             {
 
