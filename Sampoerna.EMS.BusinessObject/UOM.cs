@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
+            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
         public int UOM_ID { get; set; }
@@ -34,5 +35,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
+        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }

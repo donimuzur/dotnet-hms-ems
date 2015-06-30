@@ -17,7 +17,6 @@ namespace Sampoerna.EMS.BusinessObject
         public ZAIDM_EX_MARKET()
         {
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
         public long MARKET_ID { get; set; }
@@ -26,6 +25,5 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }

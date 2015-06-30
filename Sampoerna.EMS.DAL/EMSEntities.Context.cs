@@ -28,7 +28,6 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
-        public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<C1LFA1> C1LFA1 { get; set; }
@@ -45,7 +44,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<EX_SETTLEMENT> EX_SETTLEMENT { get; set; }
         public virtual DbSet<EX_STATUS> EX_STATUS { get; set; }
-        public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual DbSet<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
         public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
         public virtual DbSet<MONTH> MONTH { get; set; }
@@ -66,24 +64,26 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<T1001> T1001 { get; set; }
         public virtual DbSet<T1001K> T1001K { get; set; }
-        public virtual DbSet<T1001W> T1001W { get; set; }
         public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
-        public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
-        public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual DbSet<ZAIDM_EX_MARKET> ZAIDM_EX_MARKET { get; set; }
-        public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
-        public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
-        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
         public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
         public virtual DbSet<EMAIL_TEMPLATE> EMAIL_TEMPLATE { get; set; }
         public virtual DbSet<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
+        public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
+        public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
+        public virtual DbSet<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
+        public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
+        public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
+        public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual DbSet<T1001W> T1001W { get; set; }
     }
 }

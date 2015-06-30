@@ -28,12 +28,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
         
-        public static SelectList GetCreatorList()
+        public static SelectList GetCreatorList(object selectedValue=null)
         {
             IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
             var users = userBll.GetUsers(new UserInput());
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue );
         }
 
         public static SelectList GetNppbkcAll()
