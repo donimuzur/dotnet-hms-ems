@@ -16,7 +16,6 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public USER()
         {
-            this.CHANGES_HISTORY = new HashSet<CHANGES_HISTORY>();
             this.CK5 = new HashSet<CK5>();
             this.CK51 = new HashSet<CK5>();
             this.PBCK1 = new HashSet<PBCK1>();
@@ -27,6 +26,9 @@ namespace Sampoerna.EMS.BusinessObject
             this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
             this.ZAIDM_EX_KPPBC = new HashSet<ZAIDM_EX_KPPBC>();
             this.ZAIDM_EX_POA = new HashSet<ZAIDM_EX_POA>();
+            this.ZAIDM_EX_POA1 = new HashSet<ZAIDM_EX_POA>();
+            this.CHANGES_HISTORY = new HashSet<CHANGES_HISTORY>();
+            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
         public int USER_ID { get; set; }
@@ -38,8 +40,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> USER_GROUP_ID { get; set; }
         public string EMAIL { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public string PHONE { get; set; }
     
-        public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<CK5> CK51 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
@@ -52,5 +54,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual ICollection<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
+        public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA1 { get; set; }
+        public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
+        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }

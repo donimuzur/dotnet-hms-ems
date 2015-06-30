@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_POA> _repository;
-        private string includeTables = "ZAIDM_POA_MAP, USER";
+        private string includeTables = "ZAIDM_POA_MAP, USER, USER1";
         
         public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
         {
@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_POA GetById(int id)
         {
-            return _repository.GetByID(id);
+            return _repository.Get(p=>p.POA_ID == id, null, includeTables).FirstOrDefault();
         }
 
         public List<ZAIDM_EX_POA> GetAll()
@@ -35,32 +35,46 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
-        public void save(ZAIDM_EX_POA poa)
+        public void Save(ZAIDM_EX_POA poa)
         {
-            if (poa.POA_ID != 0)
-            {
-                //update
-                _repository.Update(poa);
-            }
-            else
-            {
-                //Insert
-                _repository.Insert(poa);
-            }
+            
+                
             
             try
             {
+                //Insert
+                _repository.Insert(poa);
+            
                 _uow.SaveChanges();
            
             }
             catch (Exception exception)
             {
+                _uow.RevertChanges();
                 _logger.Error(exception);
               
             }
             
         }
 
+
+
+
        
+        public void Delete(int id)
+        {
+            var existingPoa = GetById(id);
+            existingPoa.IS_DELETED = true;
+            _repository.Update(existingPoa);
+            _uow.SaveChanges();
+        }
+
+
+        public void Update(ZAIDM_EX_POA poa)
+        {
+
+            _repository.Update(poa);
+            _uow.SaveAsync();
+        }
     }
 }

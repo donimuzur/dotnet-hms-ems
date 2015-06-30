@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual T1001 T1001 { get; set; }
-        public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
+        public virtual T1001W T1001W { get; set; }
     }
 }
