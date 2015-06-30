@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -738,18 +738,6 @@
           <Property Name="POA_ID" Type="int" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
-        <Association Name="FK_CHANGES_HISTORY_CHANGES_HISTORY">
-          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="1" />
-          <End Role="CHANGES_HISTORY1" Type="Self.CHANGES_HISTORY" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="CHANGES_HISTORY">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY1">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
@@ -2046,10 +2034,6 @@
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_POA_MAP" EntityType="Self.ZAIDM_POA_MAP" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_CHANGES_HISTORY_CHANGES_HISTORY" Association="Self.FK_CHANGES_HISTORY_CHANGES_HISTORY">
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-            <End Role="CHANGES_HISTORY1" EntitySet="CHANGES_HISTORY" />
-          </AssociationSet>
           <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
@@ -2784,10 +2768,6 @@
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_1LFA11" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA11">
             <End Role="C1LFA1" EntitySet="C1LFA1" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_CHANGES_HISTORY" Association="EMSModel.FK_CHANGES_HISTORY_CHANGES_HISTORY">
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-            <End Role="CHANGES_HISTORY1" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="EMSModel.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -4505,15 +4485,13 @@
             <PropertyRef Name="CHANGES_HISTORY_ID" />
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="OLD_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" />
-          <NavigationProperty Name="CHANGES_HISTORY1" Relationship="EMSModel.FK_CHANGES_HISTORY_CHANGES_HISTORY" FromRole="CHANGES_HISTORY" ToRole="CHANGES_HISTORY1" />
-          <NavigationProperty Name="CHANGES_HISTORY2" Relationship="EMSModel.FK_CHANGES_HISTORY_CHANGES_HISTORY" FromRole="CHANGES_HISTORY1" ToRole="CHANGES_HISTORY" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER">
@@ -4592,18 +4570,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="VENDOR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CHANGES_HISTORY_CHANGES_HISTORY">
-          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY" Multiplicity="1" />
-          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY1" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="CHANGES_HISTORY">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY1">
-              <PropertyRef Name="CHANGES_HISTORY_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5139,6 +5105,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="MenuList" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.MenuList" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
