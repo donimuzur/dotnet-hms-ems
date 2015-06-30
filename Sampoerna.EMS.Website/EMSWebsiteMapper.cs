@@ -163,6 +163,8 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED == null  ? "No" : "Yes"))
                .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER1))
                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.USER))
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.MANAGER_ID))
                .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP.HasValue && src.IS_FROM_SAP.Value));
 
             Mapper.CreateMap<POAViewDetailModel, ZAIDM_EX_POA>().IgnoreAllUnmapped()
@@ -171,6 +173,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
                .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
                .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
+               .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.PoaId))
                .ForMember(dest => dest.EMAIL, opt => opt.MapFrom(src => src.Email))
                .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title))
                .ForMember(dest => dest.MANAGER_ID, opt => opt.MapFrom(src => src.ManagerId))
@@ -266,7 +269,7 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-            Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
+            Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllUnmapped()
                 .ForMember(dest => dest.USERNAME,
                     opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
                 .ForMember(dest => dest.USER_FIRST_NAME,

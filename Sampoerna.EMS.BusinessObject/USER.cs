@@ -25,10 +25,10 @@ namespace Sampoerna.EMS.BusinessObject
             this.USER1 = new HashSet<USER>();
             this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
             this.ZAIDM_EX_KPPBC = new HashSet<ZAIDM_EX_KPPBC>();
-            this.ZAIDM_EX_POA = new HashSet<ZAIDM_EX_POA>();
-            this.ZAIDM_EX_POA1 = new HashSet<ZAIDM_EX_POA>();
             this.CHANGES_HISTORY = new HashSet<CHANGES_HISTORY>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.ZAIDM_EX_POA = new HashSet<ZAIDM_EX_POA>();
+            this.ZAIDM_EX_POA1 = new HashSet<ZAIDM_EX_POA>();
         }
     
         public int USER_ID { get; set; }
@@ -53,9 +53,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER_GROUP USER_GROUP { get; set; }
         public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual ICollection<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
-        public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
-        public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA1 { get; set; }
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
+        public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA1 { get; set; }
     }
 }

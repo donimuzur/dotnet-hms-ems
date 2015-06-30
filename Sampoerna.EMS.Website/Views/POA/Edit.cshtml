@@ -39,6 +39,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">ID Card</label>
                                                     <div class="col-md-9">
+                                                        @Html.HiddenFor(x=>x.Detail.PoaId)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PoaIdCard)
                                                     </div>
@@ -60,9 +61,9 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Manager</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Managers, "select",  new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select",  new { @class = "form-control" })
 
-                                                        @Html.ValidationMessageFor(model => model.Detail.Manager.USER_ID)
+                                                        @Html.ValidationMessageFor(model => model.Detail.ManagerId)
                                                     </div>
                                                 </div>
                                             </div>
