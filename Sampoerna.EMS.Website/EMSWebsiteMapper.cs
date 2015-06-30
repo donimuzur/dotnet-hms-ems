@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-            Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllUnmapped()
+            Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USERNAME,
                     opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
                 .ForMember(dest => dest.USER_FIRST_NAME,
