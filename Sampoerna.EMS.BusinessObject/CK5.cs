@@ -73,10 +73,10 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual REQUEST_TYPE REQUEST_TYPE { get; set; }
-        public virtual T1001W T1001W { get; set; }
-        public virtual T1001W T1001W1 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
+        public virtual T1001W T1001W { get; set; }
+        public virtual T1001W T1001W1 { get; set; }
     }
 }
