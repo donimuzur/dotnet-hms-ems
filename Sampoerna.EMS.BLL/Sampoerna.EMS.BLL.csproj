@@ -68,6 +68,7 @@
     <Compile Include="HeaderFooterBLL.cs" />
     <Compile Include="ExGroupType.cs" />
     <Compile Include="MasterDataBLL.cs" />
+    <Compile Include="MaterialBLL.cs" />
     <Compile Include="MonthBLL.cs" />
     <Compile Include="PageBLL.cs" />
     <Compile Include="PBCK1BLL.cs" />
