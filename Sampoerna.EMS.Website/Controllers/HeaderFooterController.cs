@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = Enums.MenuList.MasterData,
                 Detail = Mapper.Map<HeaderFooterDetailItem>(data),
-                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeId(Enums.MenuList.HeaderFooter))
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             };
             return View(model);
         }
@@ -117,7 +117,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CurrentMenu = PageInfo,
                 MainMenu = Enums.MenuList.MasterData,
-                Detail = Mapper.Map<HeaderFooterDetailItem>(data)
+                Detail = Mapper.Map<HeaderFooterDetailItem>(data),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             };
             return InitialEdit(model);
         }
@@ -156,7 +157,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Set ErrorMessage
                 model.ErrorMessage = saveOutput.ErrorCode + "\n\r" + saveOutput.ErrorMessage;
             }
-
+            model.Detail.FOOTER_CONTENT = model.Detail.FOOTER_CONTENT.Replace("<br />", Environment.NewLine);
             return InitialEdit(model);
         }
 

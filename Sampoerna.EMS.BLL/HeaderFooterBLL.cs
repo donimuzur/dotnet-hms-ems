@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
@@ -79,6 +80,7 @@ namespace Sampoerna.EMS.BLL
             {
                 //Insert
                 dbData = Mapper.Map<HEADER_FOOTER>(headerFooterData);
+                dbData.CREATED_DATE = DateTime.Now;
                 _repository.Insert(dbData);
             }
 
@@ -89,6 +91,20 @@ namespace Sampoerna.EMS.BLL
                 _uow.SaveChanges();
                 output.Success = true;
                 output.HeaderFooterId = dbData.HEADER_FOOTER_ID;
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
             }
             catch (Exception exception)
             {
