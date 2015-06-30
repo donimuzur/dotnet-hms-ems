@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using System.Web.Routing;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
@@ -87,6 +88,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 return HttpNotFound();
+            }
+
+            if (poa.IS_DELETED == true)
+            {
+                return RedirectToAction("Detail", "POA", new {id = poa.POA_ID});
             }
             var model = new POAFormModel();
             model.MainMenu = Enums.MenuList.MasterData;
