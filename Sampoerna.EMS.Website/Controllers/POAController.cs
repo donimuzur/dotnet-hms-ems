@@ -90,8 +90,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
-            model.Managers = GlobalFunctions.GetCreatorList(detail.Manager.USER_ID);
-            model.Users = GlobalFunctions.GetCreatorList(detail.User.USER_ID); 
+            
+            model.Managers = detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(detail.Manager.USER_ID);
+            model.Users = detail.User == null? GlobalFunctions.GetCreatorList(): GlobalFunctions.GetCreatorList(detail.User.USER_ID); 
             model.Detail = detail;
             return View(model);
         }

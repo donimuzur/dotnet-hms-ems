@@ -48,6 +48,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_ACTIVE { get; set; }
         public Nullable<bool> IS_FROM_SAP { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
+        public string BRAND_CONTENT { get; set; }
+        public Nullable<decimal> CONVERSION { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }

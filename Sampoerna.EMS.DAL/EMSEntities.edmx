@@ -583,6 +583,8 @@
           </Key>
           <Property Name="BRAND_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="50" />
+          <Property Name="CONVERSION" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PLANT_ID" Type="bigint" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PER_ID" Type="bigint" Nullable="false" />
@@ -4804,6 +4806,8 @@
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="ZAIDM_EX_BRAND" ToRole="T1001W" />
+          <Property Name="BRAND_CONTENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <Association Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND">
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="0..1" />
@@ -5884,6 +5888,8 @@
           <EntitySetMapping Name="ZAIDM_EX_BRAND">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_BRAND">
               <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
+                <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
+                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
                 <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
