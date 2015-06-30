@@ -58,5 +58,14 @@ namespace Sampoerna.EMS.BLL
             }
             
         }
+
+
+        public void Delete(int id)
+        {
+            var existingNppbkc = GetById(id);
+            existingNppbkc.IS_DELETED = true;
+            _repository.Update(existingNppbkc);
+            _uow.SaveChanges();
+        }
     }
 }

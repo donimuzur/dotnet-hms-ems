@@ -18,8 +18,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExKPPBCBLL _kppbcBll;
         private IPlantBLL _plantBll;
 
-        public NPPBKCController(IZaidmExNPPBKCBLL nppbkcBll, ICompanyBLL companyBll, IMasterDataBLL masterData, IZaidmExKPPBCBLL kppbcBll, 
-            IPageBLL pageBLL, IPlantBLL plantBll) : base(pageBLL, Enums.MenuList.MasterData)
+        public NPPBKCController(IZaidmExNPPBKCBLL nppbkcBll, ICompanyBLL companyBll, IMasterDataBLL masterData, IZaidmExKPPBCBLL kppbcBll,
+            IPageBLL pageBLL, IPlantBLL plantBll)
+            : base(pageBLL, Enums.MenuList.MasterData)
         {
             _nppbkcBll = nppbkcBll;
             _masterDataBll = masterData;
@@ -27,7 +28,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _kppbcBll = kppbcBll;
             _plantBll = plantBll;
         }
-        
+
         //
         // GET: /NPPBKC/
         public ActionResult Index()
@@ -41,7 +42,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //ViewBag.Message = TempData["message"];
             return View("Index", plant);
-            
+
         }
 
         public ActionResult Edit(long id)
@@ -55,11 +56,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             model.Plant = _plantBll.GetAll();
-            
+
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
-            
-          return View(model);
-            
+
+            return View(model);
+
         }
 
         [HttpPost]
@@ -102,12 +103,24 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-           
+
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
 
             return View(model);
 
-
+        }
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                _nppbkcBll.Delete(id);
+                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+            }
+            catch (Exception ex)
+            {
+                TempData[Constans.SubmitType.Delete] = ex.Message;
+            }
+            return RedirectToAction("Index");
         }
 
     }

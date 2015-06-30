@@ -42,17 +42,16 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string Region { get; set; }
         public string TextTo { get; set; }
         public DateTime? CreateDate { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)] 
+       
         public DateTime? StartDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)] 
+       
         public DateTime? EndDate { get; set; }
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }
         public string AcountNumber { get; set; }
         public C1LFA1 VENDOR { get; set; }
+        public string Is_Deleted { get; set; }
     }
 
 }
