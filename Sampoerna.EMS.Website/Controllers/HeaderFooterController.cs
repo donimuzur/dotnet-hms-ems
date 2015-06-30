@@ -11,6 +11,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -19,12 +20,14 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IHeaderFooterBLL _headerFooterBll;
         private ICompanyBLL _companyBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public HeaderFooterController(IPageBLL pageBLL, IHeaderFooterBLL headerFooterBll, ICompanyBLL companyBll)
-            : base(pageBLL, Enums.MenuList.HHeaderFooter)
+        public HeaderFooterController(IPageBLL pageBLL, IHeaderFooterBLL headerFooterBll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll)
+            : base(pageBLL, Enums.MenuList.HeaderFooter)
         {
             _headerFooterBll = headerFooterBll;
             _companyBll = companyBll;
+            _changesHistoryBll = changesHistoryBll;
         }
         
         private SelectList GetCompanyList()
@@ -54,7 +57,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CurrentMenu = PageInfo,
                 MainMenu = Enums.MenuList.MasterData,
-                Detail = Mapper.Map<HeaderFooterDetailItem>(data)
+                Detail = Mapper.Map<HeaderFooterDetailItem>(data),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeId(Enums.MenuList.HeaderFooter))
             };
             return View(model);
         }
@@ -92,7 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
                 
-                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail));
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
                 if (saveOutput.Success)
                 {
@@ -142,7 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
 
-                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail));
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
                 if (saveOutput.Success)
                 {
@@ -245,6 +249,12 @@ namespace Sampoerna.EMS.Website.Controllers
             Session[Constans.SessionKey.ReportPath] = "Reports/HeaderFooterPreview.rdlc";
             Session[Constans.SessionKey.ReportDataSources] = rptDataSources;
             return RedirectToAction("ShowReport", "AspxReportViewer");
+        }
+
+        public ActionResult Delete(int id)
+        {
+            _headerFooterBll.Delete(id, CurrentUser.USER_ID);
+            return RedirectToAction("Details", id);
         }
 
     }

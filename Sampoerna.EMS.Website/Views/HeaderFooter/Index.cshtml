@@ -67,12 +67,14 @@
                             <th>Company Name</th>
                             <th>Company Header Image</th>
                             <th>Company Footer</th>
+                            <th> Deleted </th>
                         </tr>
 
                     </thead>
                     <thead class="filters">
                         <tr>
                             <th>Action</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -104,6 +106,9 @@
                                 </td>
                                 <td>
                                     @Html.Raw(item.FOOTER_CONTENT)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsDeletedDesc)
                                 </td>
                             </tr>
                         }

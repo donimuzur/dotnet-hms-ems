@@ -10,6 +10,8 @@ namespace Sampoerna.EMS.Contract
         List<HeaderFooter> GetAll();
         HeaderFooter GetById(int id);
 
-        SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData);
+        SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, int userId);
+
+        void Delete(int id, int userId);
     }
 }
