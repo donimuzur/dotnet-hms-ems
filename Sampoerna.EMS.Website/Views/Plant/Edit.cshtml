@@ -51,7 +51,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">NPPBKC NO</label>
+                                                    <label class="col-md-3">NPPBKC NO<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.NPPBCK_ID, Model.Nppbkc, "Select", new { @class = "form-control" })
                                                     </div>
@@ -72,7 +72,6 @@
                                                     <label class="col-md-3">Plant Address</label>
                                                     <div class="col-md-9">
                                                         @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5" })
-                                                        @*@Html.ValidationMessageFor(model => model.Detail.Address)*@
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,7 +82,6 @@
                                                     <label class="col-md-3">Plant City</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @maxlength = "50" })
-                                                        @*@Html.ValidationMessageFor(model => model.Detail.City)*@
                                                     </div>
                                                 </div>
                                             </div>
@@ -92,7 +90,6 @@
                                                     <label class="col-md-3">SKEPTIS</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", @maxlength = "50" })
-                                                        @*@Html.ValidationMessageFor(model => model.Detail.Skeptis)*@
                                                     </div>
                                                 </div>
                                             </div>
@@ -136,9 +133,13 @@
                                                     <label class="col-md-3">Phone</label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control" })
-                                                        @*@Html.ValidationMessageFor(model => model.Detail.Phone)*@
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <span class="red">*</span> ) This Field Required
                                             </div>
                                         </div>
                                     </form>
