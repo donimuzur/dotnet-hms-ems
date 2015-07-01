@@ -16,6 +16,7 @@ using Sampoerna.EMS.Website.Models.HeaderFooter;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
+using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 
@@ -127,6 +128,12 @@ namespace Sampoerna.EMS.Website
 
             #region Plant
 
+            Mapper.CreateMap<PLANT_RECEIVE_MATERIAL, PlantReceiveMaterialItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EXC_GOOD_TYP,
+                    opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP != null ? src.ZAIDM_EX_GOODTYP.EXC_GOOD_TYP : null))
+                    .ForMember(dest => dest.EXT_TYP_DESC, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP != null ? src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC : string.Empty))
+                    ;
+
             Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
@@ -134,8 +141,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PHONE))
                 .ForMember(dest => dest.NPPBKC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null ? src.ZAIDM_EX_NPPBKC.NPPBKC_NO : string.Empty))
                 .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null && src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC != null ? src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER : string.Empty))
+                .ForMember(dest => dest.ReceiveMaterials, opt => opt.MapFrom(src => Mapper.Map<List<PlantReceiveMaterialItemModel>>(src.PLANT_RECEIVE_MATERIAL)))
                 ;
 
             #endregion

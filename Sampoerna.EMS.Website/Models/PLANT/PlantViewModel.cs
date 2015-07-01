@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 
 
 namespace Sampoerna.EMS.Website.Models.PLANT
@@ -31,12 +32,16 @@ namespace Sampoerna.EMS.Website.Models.PLANT
 
         public IEnumerable<SelectListItem> PlantIdListItems { get; set; }
         public IEnumerable<SelectListItem> Nppbkc { get; set; }
-        public IEnumerable<SelectListItem> RecieveMaterialListItems { get; set; }
         public DetailPlantT1001W Detail { get; set; }
     }
 
     public class DetailPlantT1001W
     {
+
+        public DetailPlantT1001W()
+        {
+            ReceiveMaterials = new List<PlantReceiveMaterialItemModel>();
+        }
 
         public long PlantId { get; set; }
 
@@ -65,16 +70,15 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string Skeptis { get; set; }
 
-        [Required(ErrorMessage = "please fill this field")]
-        [Display(Name = "Recieved Material Type Id")]
-        public int? RecievedMaterialTypeId { get; set; }
         public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
         public int NppbkcNo { get; set; }
+        
+        public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }
 
-        public ZAIDM_EX_GOODTYP GOODTYP { get; set; }
+        public string Phone { get; set; }
     }
 
 }

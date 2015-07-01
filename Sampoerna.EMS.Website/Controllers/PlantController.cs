@@ -48,16 +48,18 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
-            var model = new PlantFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
-            model.CurrentMenu = PageInfo;
 
             var detail = AutoMapper.Mapper.Map<DetailPlantT1001W>(plant);
-            model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID);
-            model.PlantIdListItems = new SelectList(_plantBll.GetAll(), "PLANT_ID", "WERKS", plant.PLANT_ID);
-            //model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
 
-            model.Detail = detail;
+            var model = new PlantFormModel
+            {
+                MainMenu = Enums.MenuList.MasterData,
+                CurrentMenu = PageInfo,
+                Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID),
+                PlantIdListItems = new SelectList(_plantBll.GetAll(), "PLANT_ID", "WERKS", plant.PLANT_ID),
+                Detail = detail
+            };
+
             return View(model);
         }
 
@@ -85,7 +87,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var plantId = model.Detail.PlantId;
                 var plant = _plantBll.GetId(plantId);
                 AutoMapper.Mapper.Map(model.Detail, plant);
-                
+
                 _plantBll.save(plant);
 
                 return RedirectToAction("Index");
