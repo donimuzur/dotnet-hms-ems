@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
-        private string includeable = "ZAIDM_EX_NPPBKC, ZAIDM_EX_KPPBC,T1001";
+        private string includeable = "ZAIDM_EX_KPPBC, T1001";
 
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
         {

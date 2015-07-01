@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
                 ;
 
-            Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Plant, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.NAME1))
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID));
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, SelectItemModel>().IgnoreAllNonExisting()
@@ -134,18 +134,35 @@ namespace Sampoerna.EMS.Website
                     .ForMember(dest => dest.EXT_TYP_DESC, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP != null ? src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC : string.Empty))
                     ;
 
-            Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
+            Mapper.CreateMap<PlantReceiveMaterialItemModel, PLANT_RECEIVE_MATERIAL>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Plant, DetailPlantT1001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1))
-                .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
+                .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT.HasValue && src.IS_MAIN_PLANT.Value))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.Name1, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PHONE))
-                .ForMember(dest => dest.NPPBKC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null ? src.ZAIDM_EX_NPPBKC.NPPBKC_NO : string.Empty))
-                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null && src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC != null ? src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER : string.Empty))
+                .ForMember(dest => dest.Ort01, opt => opt.MapFrom(src => src.ORT01))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.ReceiveMaterials, opt => opt.MapFrom(src => Mapper.Map<List<PlantReceiveMaterialItemModel>>(src.PLANT_RECEIVE_MATERIAL)))
                 ;
+
+            Mapper.CreateMap<DetailPlantT1001W, Plant>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.Name1))
+                .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
+                .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
+                .ForMember(dest => dest.PHONE, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.Ort01))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.PLANT_RECEIVE_MATERIAL,
+                    opt => opt.MapFrom(src => Mapper.Map<List<PLANT_RECEIVE_MATERIAL>>(src.ReceiveMaterials)));
 
             #endregion
 
@@ -218,40 +235,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.HeaderFooterMapList,
                     opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HeaderFooterMapList)))
                     .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
-
-            #region PlantDetail
-
-            Mapper.CreateMap<T1001W, DetailPlantT1001W>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
-                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.CITY + "-" + src.NAME1))
-                .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS ))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
-                .ForMember(dest => dest.Skeptis, opt => opt.MapFrom(src => src.SKEPTIS))
-                //.ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID))
-                .ForMember(dest => dest.NppbkcNo, opt => opt.MapFrom(src => src.NPPBCK_ID));
-
-            Mapper.CreateMap<DetailPlantT1001W, T1001W>().IgnoreAllUnmapped()
-                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription + "-" + src.City))
-                .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
-                .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
-                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
-                .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
-                //.ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
-                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NppbkcNo));
-
-            Mapper.CreateMap<PlantViewModel, T1001W>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
-                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
-                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.PlantDescription + "-" + src.City ))
-                .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
-                .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
-                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
-                .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis));
-
-            #endregion
-
-
+            
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, GoodsTypeDetails>().IgnoreAllNonExisting()
                .ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.GOODTYPE_ID))
                .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.EXT_TYP_DESC));
@@ -275,7 +259,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ExportPlantId, opt => opt.MapFrom(src => src.EXPORT_PLANT_ID))
                 .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T1001W1.WERKS));
 
-            Mapper.CreateMap<T1001W, SelectItemModelVirtualPlant>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Plant, SelectItemModelVirtualPlant>().IgnoreAllNonExisting()
               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.WERKS))
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID));
 
