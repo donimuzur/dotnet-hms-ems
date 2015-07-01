@@ -17,14 +17,14 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>Detail NPPBKC</h3>
+            <h3>NPPBKC (Nomor Pokok Pengusaha Barang Kena Cukai) Detail </h3>
             <div class="action-button">
                 <a href="@Url.Action("Index", "NPPBKC")">
                     <button class="btn btn-grey">Back</button>
                 </a>
                 @if (Model.Detail.Is_Deleted.Equals("No"))
                 {
-                    <a href="javascript:void(0);" onclick=" deleteNppbkc() " class="btn btn-grey">Delete</a>
+                    <a href="javascript:void(0);" onclick=" deleteNppbkc() " class="btn btn-danger">Delete</a>
                 }
             </div>
         </div>
@@ -51,7 +51,7 @@
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
                                             <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                NPPBKC Detail
+                                                NPPBKC (Nomor Pokok Pengusaha Barang Kena Cukai) Detail
                                                 <i class="fa fa-caret-down"></i>
                                             </a>
                                         </h4>
