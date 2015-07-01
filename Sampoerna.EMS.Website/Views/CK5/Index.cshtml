@@ -1,12 +1,5 @@
-﻿@using Sampoerna.EMS.Core
-@using Sampoerna.EMS.Website.Helpers
+﻿
 @model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
-
-
-@section styles
-{
-    
-}
 
 <div class="container-wrap title-page">
     <div class="row">
@@ -88,143 +81,149 @@
 </div>
 
     @section scripts {
-        <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-        <script type="text/javascript" language="javascript" src="../../Scripts/js/vendors/jquery.dataTables.min.js"></script>
-
-      <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+       
         <script type="text/javascript" language="javascript" class="init">
 
             $(document).ready(function() {
-                setupDataTables();
-                setupDataTablesIntercompany();
-
                 $('#MenuCK5Domestic').addClass('active');
                 $('#newDomestic').show();
                 $('#newIntercompany').hide();
+
+                setupDataTables();
+                setupDataTablesIntercompany();
+
+
             });
 
 
-            function setupDataTables() {
+    function setupDataTables() {
 
-                // DataTable
-                var table = null;
-                if ($.fn.dataTable.isDataTable('#ck5Table')) {
-                    table = $('#ck5Table').DataTable();
-                    table.destroy();
-                }
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#ck5Table')) {
+            table = $('#ck5Table').DataTable();
+            table.destroy();
+        }
 
-                //table  =  $('#ck5Table').dataTable({
-                //    "scrollY": "220px",
-                //    "scrollCollapse": true,
-                //    "order": [[1, "asc"]],
-                //    "paging": true
-                //});
-                
-                table = $('#ck5Table').DataTable(
-                    {
-                        "sDom": "Rlfrtip",
-                        "language": {
-                           // "lengthMenu": "Display _MENU_ records per page",
-                            "zeroRecords": "No records found",
-                            "info": "Showing page _PAGE_ of _PAGES_",
-                            "infoFiltered": "(filtered from _MAX_ total records)",
-                            "scrollY": "220px",
-                            "scrollCollapse": true,
-                            "order": [[1, "asc"]],
-                            "paging": true
-                        }
-                    });
 
-                // Setup - add a text input to each footer cell
-                $('#ck5Table .filters th').each(function() {
-                    var idx = $(this).index();
-                    if (idx != 0 && idx != 1) {
-                        var title = $('#ck5Table thead th').eq($(this).index()).text();
-                        //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                        $(this).html('<input type="text"  style="width:100%" />');
-                    }
-                });
+        //table = $('#ck5Table').DataTable(
+        //    {
+        //        "sDom": "Rlfrtip",
+        //        "language": {
+        //           // "lengthMenu": "Display _MENU_ records per page",
+        //            "zeroRecords": "No records found",
+        //            "info": "Showing page _PAGE_ of _PAGES_",
+        //            "infoFiltered": "(filtered from _MAX_ total records)",
+        //            "scrollY": "220px",
+        //            "scrollCollapse": true,
+        //            "order": [[1, "asc"]],
+        //            "paging": true
+        //        }
+        //    });
 
-                // Apply the search
-                table.columns().eq(0).each(function(colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
-                        table
-                            .column(colIdx)
-                            .search(this.value)
-                            .draw();
-                    });
-                });
-
-                $("#ck5Table_filter").hide();
-            }
-
-            function ReloadDataTables() {
-                setupDataTables();
-            }
-
-            function ReloadDataTablesIntercompany() {
-                setupDataTablesIntercompany();
-            }
-
-            function setupDataTablesIntercompany() {
-
-                // DataTable
-                var table = null;
-                if ($.fn.dataTable.isDataTable('#ck5TableIntercompany')) {
-                    table = $('#ck5TableIntercompany').DataTable();
-                    table.destroy();
-                }
-
-                table = $('#ck5TableIntercompany').DataTable(
-                    {
-                        "sDom": "Rlfrtip",
-                        "language": {
-                            "lengthMenu": "Display _MENU_ records per page",
-                            "zeroRecords": "No records found",
-                            "info": "Showing page _PAGE_ of _PAGES_",
-                            "infoFiltered": "(filtered from _MAX_ total records)"
-                        }
-                    });
-
-                // Setup - add a text input to each footer cell
-                $('#ck5TableIntercompany .filters th').each(function() {
-                    var idx = $(this).index();
-                    if (idx != 0 && idx != 1) {
-                        var title = $('#ck5TableIntercompany thead th').eq($(this).index()).text();
-                        //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                        $(this).html('<input type="text"  />');
-                    }
-                });
-
-                // Apply the search
-                table.columns().eq(0).each(function(colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
-                        table
-                            .column(colIdx)
-                            .search(this.value)
-                            .draw();
-                    });
-                });
-
-                $("#ck5TableIntercompany_filter").hide();
-            }
-
-            function showNewButton() {
+        // Setup - add a text input to each footer cell
+        $('#ck5Table .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                var title = $('#ck5Table thead th').eq($(this).index()).text();
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
             }
+        });
 
-            function ChangeTitle(title) {
-                $('#lblTitle').text(title);
-                if (title == 'Domestic') {
-                    $('#newDomestic').show();
-                    $('#newIntercompany').hide();
-                } else {
-                    $('#newDomestic').hide();
-                    $('#newIntercompany').show();
-                    
-                }
+        // DataTable
+        var tableck5 = $('#ck5Table').DataTable();
+
+        // Apply the search
+        tableck5.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+        // $("#ck5Table_filter").hide();
+    }
+
+    function ReloadDataTables() {
+        setupDataTables();
+    }
+
+    function ReloadDataTablesIntercompany() {
+        setupDataTablesIntercompany();
+    }
+
+    function setupDataTablesIntercompany() {
+
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#ck5TableIntercompany')) {
+            table = $('#ck5TableIntercompany').DataTable();
+            table.destroy();
+        }
+
+        //table = $('#ck5TableIntercompany').DataTable(
+        //    {
+        //        "sDom": "Rlfrtip",
+        //        "language": {
+        //            "lengthMenu": "Display _MENU_ records per page",
+        //            "zeroRecords": "No records found",
+        //            "info": "Showing page _PAGE_ of _PAGES_",
+        //            "infoFiltered": "(filtered from _MAX_ total records)"
+        //        }
+        //    });
+
+        // Setup - add a text input to each footer cell
+        //$('#ck5TableIntercompany .filters th').each(function() {
+        //    var idx = $(this).index();
+        //    if (idx != 0 && idx != 1) {
+        //        var title = $('#ck5TableIntercompany thead th').eq($(this).index()).text();
+        //        //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        //        $(this).html('<input type="text"  />');
+        //    }
+        //});
+        $('#ck5TableIntercompany .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                var title = $('#ck5TableIntercompany thead th').eq($(this).index()).text();
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
             }
+        });
 
-        </script>
+        // DataTable
+        var tableck5Intercompany = $('#ck5TableIntercompany').DataTable();
+        
+        // Apply the search
+        tableck5Intercompany.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+
+        //$("#ck5TableIntercompany_filter").hide();
+    }
+
+    function showNewButton() {
+
+    }
+
+    function ChangeTitle(title) {
+        $('#lblTitle').text(title);
+        if (title == 'Domestic') {
+            $('#newDomestic').show();
+            $('#newIntercompany').hide();
+        } else {
+            $('#newDomestic').hide();
+            $('#newIntercompany').show();
+
+        }
+    }
+
+</script>
+
     }

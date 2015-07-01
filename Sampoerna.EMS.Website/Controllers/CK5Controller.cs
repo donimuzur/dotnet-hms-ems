@@ -43,10 +43,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 input = new CK5Input();
                 return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
             }
+
             //getbyparams
 
             input = Mapper.Map<CK5Input>(filter);
-            //input.Ck5Type = ck5Type;
+            input.Ck5Type = ck5Type;
             return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
         }
 
@@ -70,6 +71,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.NPPBKCOriginList = new SelectList(sourcePlant, "NPPBKC_ID", "NPPBKC_NO");
             model.SearchView.NPPBKCDestinationList = new SelectList(destinationPlant, "NPPBKC_ID", "NPPBKC_NO");
 
+           //list table
             model.DetailsList = GetCk5Items(ck5Type);
             if (ck5Type == Enums.CK5Type.Domestic)
             {
@@ -172,10 +174,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private CK5CreateViewModel InitCK5List(CK5CreateViewModel model )
         {
-            //var model = new CK5CreateViewModel();
+          
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
-            //model.Ck5Type = ck5Type;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
@@ -191,8 +192,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return model;
         }
-
-
 
         public ActionResult CreateDomestic()
         {

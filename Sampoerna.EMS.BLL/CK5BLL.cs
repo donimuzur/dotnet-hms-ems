@@ -8,6 +8,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -40,6 +41,12 @@ namespace Sampoerna.EMS.BLL
         }
 
 
+        public List<CK5> GetCK5ByType(Enums.CK5Type ck5Type)
+        {
+            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
+            return _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+        }
+
         public List<CK5> GetCK5ByParam(CK5Input input)
         {
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
@@ -69,10 +76,10 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.HasValue && c.DEST_PLANT_ID.Value == input.NPPBKCDestination.Value);
             }
 
-            //if (input.Ck5Type != null)
-            //{
-            //    queryFilter = queryFilter.And(c => c.CK5_TYPE == Sampoerna.EMS.Core.Enums.CK5Type);
-            //}
+            if (input.Ck5Type != null)
+            {
+                queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
+            }
 
             Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
             if (!string.IsNullOrEmpty(input.SortOrderColumn))

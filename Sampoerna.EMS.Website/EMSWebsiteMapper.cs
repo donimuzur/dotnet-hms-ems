@@ -104,8 +104,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.NPWP))
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBCK_ID))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT))
-                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ADDRESS))
-                .ForMember(dest => dest.KppBcName, opt => opt.ResolveUsing<PlantCityCodeResolver>().FromMember(src => src));
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ADDRESS));
+               //TODO : ASK .ForMember(dest => dest.KppBcName, opt => opt.ResolveUsing<PlantCityCodeResolver>().FromMember(src => src));
 
             Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.NAME1))

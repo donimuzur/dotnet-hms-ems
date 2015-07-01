@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T1001W> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP";
+        private string includeTables = "ZAIDM_EX_NPPBKC";
         
         public PlantBLL(IUnitOfWork uow, ILogger logger)
         {

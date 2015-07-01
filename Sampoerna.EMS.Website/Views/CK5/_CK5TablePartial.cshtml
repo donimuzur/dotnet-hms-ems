@@ -1,13 +1,11 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
 
-<table id="ck5Table" class="display" cellspacing="0" width="100%">
 <table id="ck5Table" class="table cell-border display no-wrap" cellspacing="0" width="100%">
     <thead>
         <tr>
-            <th>Action</th>
-            <th>No</th>
+            <th class="toggle-row"> Filter </th>
             <th>Document</th>
-            <th>Qty</th>
+            <th>Qty - Type of Packaging</th>
             <th>POA</th>
             <th>NPPBKC</th>
             <th>Source Plant</th>
@@ -17,15 +15,14 @@
     </thead>
     <thead class="filters">
         <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th> Action</th>
+            <th>Document</th>
+            <th>Qty</th>
+            <th>POA</th>
+            <th>NPPBKC</th>
+            <th>Source Plant</th>
+            <th>Destination</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -35,9 +32,9 @@
         @foreach (var item in Model.DetailsList)
         {
             <tr>
-                <td class="action">
-                    <a href="#"><i class="fa fa-eye"></i></a>
-                    <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                <td>
+                    <a href="@Url.Action("Detail", "POA", new { id = item.NPPBKC_ID })"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "POA", new { id = item.NPPBKC_ID })"> <i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>@rownum</td>
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>

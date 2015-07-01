@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
             return nppbkcbll.GetById(id);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            
         }
         
         

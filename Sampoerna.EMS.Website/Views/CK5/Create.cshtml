@@ -1,10 +1,10 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
 
-@section styles
+@*@section styles
 {
     <link rel="stylesheet" type="text/css" href="../../Scripts/DataTables-1.10.7/media/css/jquery.dataTables.css">
-}
+}*@
 @using (Html.BeginForm("SaveCK5", "CK5", FormMethod.Post))
 { 
    
@@ -16,8 +16,6 @@
             <label class="status">Draft</label>
          
              <div class="action-button">
-             
-
                     <button class="btn btn-blue">Save</button>
                
                 <button class="btn btn-grey">Print Preview</button>
@@ -132,7 +130,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Goods Type Group</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, new {@class = "form-control"})
+                                                                    @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList,"Select", new {@class = "form-control"})
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -140,7 +138,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Excise Settlement</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, new {@class = "form-control"})
+                                                                    @Html.DropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -148,7 +146,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Excise Status</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, new {@class = "form-control"})
+                                                                    @Html.DropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -156,7 +154,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Request Type</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.RequestType, Model.RequestTypeList, new {@class = "form-control"})
+                                                                    @Html.DropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -922,9 +920,9 @@
                                                         </div>
                                                         <div class="col-md-3">
                                                             <div class="row">
-                                                                <div class="col-md-12">
+                                                                @*<div class="col-md-12">
                                                                     <button class="btn btn-blue full">Export to xls</button>
-                                                                </div>
+                                                                </div>*@
                                                             </div>
                                                         </div>
                                                     </div>
@@ -989,13 +987,16 @@
 	
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+   
+    <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
         $(document).ready(function() {
 
-            //ceOfficeCode
+            $('.input-group.date').datepicker({
+                toggleActive: true,
+                defaultViewDate: { year: 2015, month: 06, day: 28 }
+            });
 
         });
 
