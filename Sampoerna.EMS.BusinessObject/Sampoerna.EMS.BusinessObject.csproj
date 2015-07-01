@@ -177,6 +177,9 @@
     <Compile Include="PBCK4_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PLANT_RECEIVE_MATERIAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
     <Compile Include="REALISASI_PEMASUKAN.cs">
