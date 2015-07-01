@@ -106,13 +106,13 @@ namespace Sampoerna.EMS.Website
 
             #region NPPBKC
 
-            Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailsNppbck>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
-                .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
-                .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
-                .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO));
+            //Mapper.CreateMap<ZAIDM_EX_NPPBKC, DetailsNppbck>().IgnoreAllNonExisting()
+            //    .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+            //    .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
+            //    .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+            //    .ForMember(dest => dest.RegionOfficeIdNppbkc, opt => opt.MapFrom(src => src.REGION_OFFICE))
+            //    .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
+            //    .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO));
 
             #endregion
             
@@ -278,6 +278,34 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.USER_LAST_NAME,
                     opt => opt.MapFrom(src => src.USER != null ? src.USER.LAST_NAME : string.Empty))
                     .ForMember(dest => dest.FORM_TYPE_DESC, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.FORM_TYPE_ID)));
+                    
+            #region NPPBKC 
+
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, VirtualNppbckDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.VirtualNppbckId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.NppbckNo, opt => opt.MapFrom(src => src.NPPBKC_NO))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
+                .ForMember(dest => dest.Address1, opt => opt.MapFrom(src => src.ADDR1))
+                .ForMember(dest => dest.RegionOfficeOfDGCE, opt => opt.MapFrom(src => src.REGION_OFFICE_DGCE))
+                .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.REGION_OFFICE))
+                .ForMember(dest => dest.Address2, opt => opt.MapFrom(src => src.ADDR2))
+                .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
+                .ForMember(dest => dest.KppbcId, opt => opt.MapFrom(src => src.ZAIDM_EX_KPPBC.KPPBC_NUMBER))
+                .ForMember(dest => dest.CityAlias, opt => opt.MapFrom(src => src.CITY_ALIAS))
+                .ForMember(dest => dest.AcountNumber, opt => opt.MapFrom(src => src.C1LFA1.LIFNR))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
+                .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE));
+
+            Mapper.CreateMap<VirtualNppbckDetails, ZAIDM_EX_NPPBKC>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.VirtualNppbckId))
+                .ForMember(dest => dest.REGION_OFFICE_DGCE, opt => opt.MapFrom(src => src.RegionOfficeOfDGCE))
+                .ForMember(dest => dest.TEXT_TO, opt => opt.MapFrom(src => src.TextTo))
+                .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias));
+
+
+            #endregion
+
         }
     }
 }

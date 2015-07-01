@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IDocumentSequenceNumberBLL, DocumentSequenceNumberBLL>();
             container.Register<IHeaderFooterBLL, HeaderFooterBLL>();
             container.Register<IExGroupType, ExGroupType>();
+            container.Register<IZaidmExKPPBCBLL, ZaidmExKPPBCBLL>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
 
             // 3. Optionally verify the container's configuration.
