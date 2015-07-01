@@ -8,7 +8,10 @@ namespace Sampoerna.EMS.Contract
     {
         CHANGES_HISTORY GetById(long id);
         List<CHANGES_HISTORY> GetByFormTypeId(Enums.MenuList formTypeId);
+
         List<CHANGES_HISTORY> GetAll();
         void AddHistory(CHANGES_HISTORY history);
+
+        List<CHANGES_HISTORY> GetByFormTypeAndFormId(Enums.MenuList formTypeId, long id);
     }
 }

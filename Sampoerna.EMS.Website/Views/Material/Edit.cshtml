@@ -158,9 +158,10 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Last Change On</label>
-                                                        @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control datepicker" })
-                                                        @Html.ValidationMessageFor(model => model.ChangedDate)
-                                                    </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control datepicker" })
+                                                            @Html.ValidationMessageFor(model => model.ChangedDate)
+                                                        </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">

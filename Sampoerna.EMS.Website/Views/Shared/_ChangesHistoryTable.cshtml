@@ -26,14 +26,13 @@
                 <td>@Html.DisplayFor(model => item.MODIFIED_DATE)</td>
                 <td>@Html.DisplayFor(model => item.FIELD_NAME)
                 <td>
-                    @Html.DisplayFor(model => item.OLD_VALUE)
+                    @Html.Raw(item.OLD_VALUE)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.NEW_VALUE)
+                    @Html.Raw(item.NEW_VALUE)
                 </td>
                 <td class="last">@Html.DisplayFor(model => item.USERNAME)</td>
             </tr>
         }
     </tbody>
 </table>
-

@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        public ActionResult ViewDetail(int? id)
+        public ActionResult Detail(int? id)
         {
             if (!id.HasValue)
                 return RedirectToAction("Index");
@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList)
             };
 
-            return View(model);
+            return View("Detail",model);
         }
     }
 }

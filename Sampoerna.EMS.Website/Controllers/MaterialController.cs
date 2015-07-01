@@ -10,20 +10,23 @@ using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
     public class MaterialController : BaseController
     {
         private IMaterialBLL _materialBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll) : base(pageBLL, Enums.MenuList.MasterData){
+        public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MaterialMaster){
             _materialBll = materialBll;
+            _changesHistoryBll = changesHistoryBll;
         }
 
         private MaterialCreateViewModel InitCreateModel(MaterialCreateViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = Enums.MenuList.MaterialMaster;
             model.CurrentMenu = PageInfo;
 
             
@@ -38,7 +41,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new MaterialListViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = Enums.MenuList.MaterialMaster;
             model.CurrentMenu = PageInfo;
 
             var data = _materialBll.getAll();
@@ -54,16 +57,19 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var model = new MaterialDetailViewModel();
+            model.MainMenu = Enums.MenuList.MaterialMaster;
+            model.CurrentMenu = PageInfo;
+
             var data = _materialBll.getByID(id);
             Mapper.Map(data,model);
-
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
 
             return View("Details",model);
         }
 
         private MaterialEditViewModel InitEditModel(MaterialEditViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = Enums.MenuList.MaterialMaster;
             model.CurrentMenu = PageInfo;
 
 
@@ -118,6 +124,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var data = _materialBll.getByID(id);
             
             var model = Mapper.Map<MaterialEditViewModel>(data);
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
             model.MaterialId = id;
             InitEditModel(model);
             return View(model);
@@ -137,6 +144,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     
                     model.ChangedById = CurrentUser.USER_ID;
                     model.ChangedDate = DateTime.Now;
+                    //model.ChangesHistoryList =  Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
                     if (data == null) {
                         ModelState.AddModelError("Details", "Data Not Found");
                         InitEditModel(model);

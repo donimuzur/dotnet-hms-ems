@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.Contract
         void Update(ZAIDM_EX_POA poa);
         void Delete(int id);
 
+
+
     }
 }

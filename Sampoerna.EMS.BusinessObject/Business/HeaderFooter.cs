@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string COMPANY_CODE { get; set; }
         public string COMPANY_NAME { get; set; }
         public string COMPANY_NPWP { get; set; }
-
+        public bool? IS_DELETED { get; set; }
     }
 
     public class HeaderFooterDetails : HeaderFooter

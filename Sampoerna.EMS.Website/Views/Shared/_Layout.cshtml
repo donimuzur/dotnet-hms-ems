@@ -17,7 +17,7 @@
     @Styles.Render("~/Content/jqueryui/autocomplete/css")
     <!-- Load Modernizr.js -->
     @Scripts.Render("~/bundles/modernizrmin")
-
+    <link href="~/Content/css/loading.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -267,6 +267,9 @@
     @Scripts.Render("~/bundles/fixedheadertable")
     @Scripts.Render("~/bundles/customjs")
     @Scripts.Render("~/bundles/validate")
+    @Scripts.Render("~/bundles/datatables")
+
+
 
 
     @RenderSection("styles", required: false)
@@ -279,6 +282,35 @@
 
             });
         });
+       
+        $(document).ready(function () {
+            if ($('#changesHistoryTable') != null)
+            {
+                $('#changesHistoryTable .filters th').each(function () {
+                    var idx = $(this).index();
+                    var title = $('#changesHistoryTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+
+                });
+                var tableHistory = $('#changesHistoryTable').DataTable();
+                // Setup - add a text input to each footer cell
+                if (tableHistory.columns().eq(0) != null)
+                    {
+                tableHistory.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        tableHistory
+                            .column(colIdx)
+                            .search(this.value)
+                            .draw();
+                    });
+                });
+                    }
+
+            }
+            
+        });
+        
     </script>
 
     @RenderSection("scripts", required: false)
