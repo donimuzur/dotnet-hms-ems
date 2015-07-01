@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         [Required(ErrorMessage = "please fill this field")]
         public int UserId { get; set; }
+        [Required]
         public int ManagerId { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]

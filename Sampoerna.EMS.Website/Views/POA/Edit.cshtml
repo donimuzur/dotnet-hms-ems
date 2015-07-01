@@ -37,7 +37,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">ID Card</label>
+                                                    <label class="col-md-3">ID Card<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(x=>x.Detail.PoaId)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @maxlength = "22" })
@@ -46,7 +46,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Login As</label>
+                                                    <label class="col-md-3">Login As<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new {  @class = "selectpicker form-control" })
 
@@ -57,7 +57,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Manager</label>
+                                                    <label class="col-md-3">Manager<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select", new { @class = "selectpicker form-control" })
 
@@ -89,7 +89,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Email</label>
+                                                    <label class="col-md-3">Email<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
                                                    </div>
@@ -100,10 +100,10 @@
 
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Title</label>
+                                                    <label class="col-md-3">Title<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @maxlength = "50" })
-                                                     </div>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -116,6 +116,11 @@
                                                 </div>
                                             </div>
 
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <span class="red">*</span> ) This Field Required
+                                            </div>
                                         </div>
 
                                     </form>
