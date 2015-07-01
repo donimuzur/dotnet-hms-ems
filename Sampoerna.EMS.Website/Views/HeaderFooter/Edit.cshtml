@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterItemViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterItemViewModel
 
 @{
     ViewBag.Title = "Header Footer";
@@ -33,8 +34,9 @@
                                         </a>
                                     </h4>
                                 </div>
-                                
+
                                 @Html.HiddenFor(model => model.Detail.HEADER_FOOTER_ID)
+                                @Html.HiddenFor(model => model.Detail.CREATED_DATE)
                                 @Html.HiddenFor(model => model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT)
 
                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
@@ -57,6 +59,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Company Name</label>
                                                         <div class="col-md-8">
+                                                            @Html.HiddenFor(model => model.Detail.COMPANY_NAME)
                                                             <input id="Detail_COMPANY_NAME" name="Detail.COMPANY_NAME" type="text" class="form-control" value="@Model.Detail.COMPANY_NAME" disabled />
                                                         </div>
                                                     </div>
@@ -78,7 +81,8 @@
                                                         <div class="col-md-8">
                                                             <div class="input-group">
                                                                 @Html.TextBoxFor(model => model.HeaderImageFile, new { type = "file" })
-                                                                @Html.ValidationMessageFor(model => model.HeaderImageFile)
+                                                                @Html.HiddenFor(model => model.Detail.HEADER_IMAGE_PATH)
+                                                                @Html.ValidationMessageFor(model => model.Detail.HEADER_IMAGE_PATH)
                                                             </div>
                                                             <div>
                                                                 @if (!string.IsNullOrEmpty(Model.Detail.HEADER_IMAGE_PATH))
@@ -126,7 +130,9 @@
                                             <td>
                                                 @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
                                             </td>
-                                            <td><button class="btn btn-grey" onclick="previewClick();">Print Preview</button></td>
+                                            <td>
+                                                <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID)" />
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -146,11 +152,16 @@
     <script type="text/javascript">
 
         $(document).ready(function() {
-            $('#btnCancel').click(function ( e ) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "HeaderFooter")';
             });
 
-            $("#Detail_COMPANY_ID").change(function () {
+            $('#btnPreview').click(function (e) {
+                e.preventDefault();
+                previewClick();
+            });
+
+            $("#Detail_COMPANY_ID").change(function() {
                 if ($("#Detail_COMPANY_ID").length) {
                     var company_id = $(this).find("option:selected").val();
                     console.log(company_id);
@@ -162,10 +173,10 @@
                 }
             });
 
-            $("#HeaderImageFile").change(function () {
+            $("#HeaderImageFile").change(function() {
                 readURL(this);
             });
-            
+
             $('#MenuHeaderFooter').addClass('active');
 
         });
@@ -187,6 +198,19 @@
             }
         }
 
+        function printPreview(idx, id) {
+            
+            var elementHeaderId = '#Detail_HeaderFooterMapList_' + idx + '__IS_HEADER_SET';
+            var elementFooterId = '#Detail_HeaderFooterMapList_' + idx + '__IS_FOOTER_SET';
+
+            var isHeaderSet = $(elementHeaderId).is(':checked');
+            var isFooterSet = $(elementFooterId).is(':checked');
+            
+            var url = '/HeaderFooter/PrintPreview/' + id + '?isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
+            window.open(url, '_blank', 'width=1200,height=600');
+
+        }
+
         function readURL(input) {
 
             if (input.files && input.files[0]) {
@@ -194,7 +218,8 @@
 
                 reader.onload = function(e) {
                     $('#imgPrev').attr('src', e.target.result);
-                }
+                    $('#Detail_HEADER_IMAGE_PATH').val(e.target.result);
+                };
 
                 reader.readAsDataURL(input.files[0]);
             }

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsHeaderFooter" targetNamespace="http://tempuri.org/dsHeaderFooter.xsd" xmlns:mstns="http://tempuri.org/dsHeaderFooter.xsd" xmlns="http://tempuri.org/dsHeaderFooter.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsHeaderFooter" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsHeaderFooter" msprop:Generator_UserDSName="dsHeaderFooter">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="HeaderFooter" msprop:Generator_TableClassName="HeaderFooterDataTable" msprop:Generator_TableVarName="tableHeaderFooter" msprop:Generator_RowChangedName="HeaderFooterRowChanged" msprop:Generator_TablePropName="HeaderFooter" msprop:Generator_RowDeletingName="HeaderFooterRowDeleting" msprop:Generator_RowChangingName="HeaderFooterRowChanging" msprop:Generator_RowEvHandlerName="HeaderFooterRowChangeEventHandler" msprop:Generator_RowDeletedName="HeaderFooterRowDeleted" msprop:Generator_RowClassName="HeaderFooterRow" msprop:Generator_UserTableName="HeaderFooter" msprop:Generator_RowEvArgName="HeaderFooterRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HEADER_IMAGE_PATH" msprop:Generator_ColumnVarNameInTable="columnHEADER_IMAGE_PATH" msprop:Generator_ColumnPropNameInRow="HEADER_IMAGE_PATH" msprop:Generator_ColumnPropNameInTable="HEADER_IMAGE_PATHColumn" msprop:Generator_UserColumnName="HEADER_IMAGE_PATH" type="xs:string" minOccurs="0" />
+              <xs:element name="FOOTER_CONTENT" msprop:Generator_ColumnVarNameInTable="columnFOOTER_CONTENT" msprop:Generator_ColumnPropNameInRow="FOOTER_CONTENT" msprop:Generator_ColumnPropNameInTable="FOOTER_CONTENTColumn" msprop:Generator_UserColumnName="FOOTER_CONTENT" type="xs:string" minOccurs="0" />
+              <xs:element name="IsHeaderHide" msprop:Generator_ColumnVarNameInTable="columnIsHeaderHide" msprop:Generator_ColumnPropNameInRow="IsHeaderHide" msprop:Generator_ColumnPropNameInTable="IsHeaderHideColumn" msprop:Generator_UserColumnName="IsHeaderHide" type="xs:boolean" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

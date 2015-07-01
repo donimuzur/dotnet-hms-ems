@@ -13,19 +13,24 @@ namespace Sampoerna.EMS.Website.AspnetWebForms
             {
 
                 string reportPath = Session[Constans.SessionKey.ReportPath].ToString();
-                List<ReportDataSource> reportDataSources = (List<ReportDataSource>)Session[Constans.SessionKey.ReportDataSources];
+                var reportDataSources = (List<ReportDataSource>)Session[Constans.SessionKey.ReportDataSources];
 
                 myviewer.ProcessingMode = ProcessingMode.Local;
                 myviewer.LocalReport.ReportPath = Server.MapPath("~/" + reportPath);
+                myviewer.LocalReport.EnableExternalImages = true;
+                
+                //set ReportParameters
+                var parameters = (List<ReportParameter>) Session[Constans.SessionKey.ReportParameters];
+                if(parameters != null)
+                    myviewer.LocalReport.SetParameters(parameters);
 
                 //Set ReportDataSource
                 myviewer.LocalReport.DataSources.Clear();
-
+                if (reportDataSources == null) return;
                 foreach (var reportDataSource in reportDataSources)
                 {
                     myviewer.LocalReport.DataSources.Add(reportDataSource);
                 }
-
             }
         }
     }
