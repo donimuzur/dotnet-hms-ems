@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -11,6 +12,6 @@ namespace Sampoerna.EMS.Contract
     {
         List<string> GetDataCompany();
 
-        
+        List<AutoCompletePlant> GetAutoCompletePlant();
     }
 }

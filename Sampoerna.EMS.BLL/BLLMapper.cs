@@ -3,6 +3,7 @@ using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -38,6 +39,10 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<HeaderFooterDetails, HEADER_FOOTER>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.HEADER_FOOTER_FORM_MAP, opt => opt.MapFrom(src => Mapper.Map<List<HEADER_FOOTER_FORM_MAP>>(src.HeaderFooterMapList)));
+
+            Mapper.CreateMap<T1001W, AutoCompletePlant>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.WERKS));
 
         }
     }

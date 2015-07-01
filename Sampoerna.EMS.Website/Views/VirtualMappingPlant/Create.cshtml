@@ -47,7 +47,7 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Import Virtual Plant</label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new {@class = "form-control"})
+                                                        @Html.TextBoxFor(model => model.ImportPlantId, "Select", new {@class = "form-control"})
                                                         @Html.ValidationMessageFor(model => model.ImportPlantId)
                                                     </div>
                                                 </div>
@@ -81,6 +81,12 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "VirtualMappingPlant")';
             });
+
+            $("#ImportPlantId").autocomplete({
+                    source: '@Url.Action("PlantList", "VirtualMappingPlant")',
+                    minLength: 1
+            });
+            
         });
 
     </script>

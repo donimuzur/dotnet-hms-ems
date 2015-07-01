@@ -12,6 +12,7 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -20,12 +21,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IVirtualMappingPlantBLL _virtualMappingPlanBll;
         private IMasterDataBLL _masterDataBll;
+        private IChangesHistoryBLL _changesHistoryBLL;
+        private List<AutoCompletePlant> _plantList;
 
-        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IPageBLL pageBLL)
+        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
             _masterDataBll = masterData;
+            _changesHistoryBLL = changeLogHistoryBLL;
+            _plantList = _masterDataBll.GetAutoCompletePlant();
         }
 
         //
@@ -50,7 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
-
+            
             return model;
         }
 
@@ -88,7 +93,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new VirtualMappingPlantDetailsViewModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id));
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
             model.CompanyName = dbVirtual.T1001.BUKRSTXT;
@@ -169,6 +174,10 @@ namespace Sampoerna.EMS.Website.Controllers
            
             InitEditModel(model);
             return View("Edit", model);
+        }
+
+        public ActionResult PlantList() { 
+            return Json(_plantList , JsonRequestBehavior.AllowGet);
         }
     }
 }

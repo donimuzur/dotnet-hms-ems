@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new HeaderFooterViewModel()
             {
                 CurrentMenu = PageInfo,
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = Enums.MenuList.VirtualMappingPlant,
                 Details = Mapper.Map<List<HeaderFooterItem>>(data)
             };
             return View(model);
@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new HeaderFooterItemViewModel()
             {
                 CurrentMenu = PageInfo,
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = Enums.MenuList.VirtualMappingPlant,
                 Detail = Mapper.Map<HeaderFooterDetailItem>(data),
                 ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             };
@@ -67,7 +67,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyList = GetCompanyList();
             model.CurrentMenu = PageInfo;
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = Enums.MenuList.VirtualMappingPlant;
             return View("Create", model);
         }
 
@@ -76,7 +76,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return InitialCreate(new HeaderFooterItemViewModel()
             {
                 CurrentMenu = PageInfo,
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = Enums.MenuList.VirtualMappingPlant,
                 Detail = new HeaderFooterDetailItem() { HeaderFooterMapList = InitialHeaderFooterMapList() }
             });
         }
@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new HeaderFooterItemViewModel()
             {
                 CurrentMenu = PageInfo,
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = Enums.MenuList.VirtualMappingPlant,
                 Detail = Mapper.Map<HeaderFooterDetailItem>(data),
                 ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             };
@@ -169,7 +169,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyList = GetCompanyList();
             model.CurrentMenu = PageInfo;
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = Enums.MenuList.VirtualMappingPlant;
             return View("Edit", model);
         }
         
