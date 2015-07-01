@@ -81,6 +81,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return  new XmlBrandDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("MATERIAL"))
+            {
+                return new XmlMaterialDataMapper(xmlfile);
+            }
             return null;
         }
 
