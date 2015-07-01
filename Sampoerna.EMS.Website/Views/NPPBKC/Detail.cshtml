@@ -1,13 +1,15 @@
 ﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NppbkcFormModel
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/js/scripts.min.js"></script>
+    <script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
         $('#MenuNPPBKC').addClass('active');
-        var deleteNppbkc = function () {
-            if (confirm('Are You Sure')) {
-                window.location = "@Url.Action("Delete", "NPPBKC", new {id = @Model.Detail.VirtualNppbckId})";
-            }
+        var NppbkcDelete = function () {
+               window.location = "@Url.Action("Delete", "NPPBKC", new {id = @Model.Detail.VirtualNppbckId})";
+            
 
+        };
+        var confirmDeleteNPPBKC = function () {
+            $('#btn-delete-nppbkc').click();
         };
     </script>
 }
@@ -24,7 +26,7 @@
                 </a>
                 @if (Model.Detail.Is_Deleted.Equals("No"))
                 {
-                    <a href="javascript:void(0);" onclick=" deleteNppbkc() " class="btn btn-danger">Delete</a>
+                    <a href="javascript:void(0);" onclick="confirmDeleteNPPBKC() " class="btn btn-danger">Delete</a>
                 }
             </div>
         </div>
@@ -138,7 +140,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3 long">Account Number</label>
                                                             <div class="col-md-9">
-                                                                @Html.TextBoxFor(model => model.Detail.AcountNumber, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                                @Html.TextBoxFor(model => model.Detail.AcountNumber, new { @class = "form-control", disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -172,6 +174,25 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--delete-->
+<input id="btn-delete-nppbkc" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.Nppbkc" value="delete">
+<div class="modal main-menu-child fade delete-modal Nppbkc" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Delete</h3>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="NppbkcDelete();">Delete</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
