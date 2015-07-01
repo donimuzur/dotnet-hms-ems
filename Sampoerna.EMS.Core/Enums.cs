@@ -25,8 +25,10 @@ namespace Sampoerna.EMS.Core
             POA = 18,
             NPPBKC = 19,
             HeaderFooter = 20,
-            VirtualMappingPlant = 22,
-            MaterialMaster = 23
+			User = 21,
+            MasterPlant = 22,
+            VirtualMappingPlant = 23,
+            MaterialMaster = 24
         }
         public enum PBCK1Type
         {

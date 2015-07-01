@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
             if (plantT1001W.PLANT_ID != 0)
             {
                 //update
-                _repository.Update(plantT1001W);
+                _repository.Update(Mapper.Map<T1001W>(plantT1001W));
                 var origin =
                     _repository.Get(c => c.PLANT_ID == plantT1001W.PLANT_ID, null, includeTables).FirstOrDefault();
 
