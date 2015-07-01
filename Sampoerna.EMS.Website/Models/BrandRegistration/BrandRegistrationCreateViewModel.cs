@@ -52,15 +52,17 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string SeriesCode { get; set; }
         public string SeriesValue { get; set; }
 
+        [Required]
+        [StringLength(30)]
         public string Content { get; set; }
 
         [Required]
-        public string MarketCode { get; set; }
+        public long MarketId { get; set; }
         public SelectList MarketCodeList { get; set; }
         public string MarketDescription { get; set; }
 
         [Required]
-        public string CountryCode { get; set; }
+        public int CountryId { get; set; }
         public SelectList CountryCodeList { get; set; }
 
         [Required]
@@ -68,7 +70,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public decimal? HjeValue { get; set; }
 
         [Required]
-        public string HjeCurrency { get; set; }
+        public int HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
         [Required]
@@ -76,7 +78,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public decimal? Tariff { get; set; }
 
         [Required]
-        public string TariffCurrency { get; set; }
+        public int TariffCurrency { get; set; }
         public SelectList TariffCurrencyList { get; set; }
 
         [Required]
@@ -84,7 +86,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string ColourName { get; set; }
 
         [Required]
-        public string GoodType { get; set; }
+        public int GoodType { get; set; }
         public SelectList GoodTypeList { get; set; }
         public string GoodTypeDescription { get; set; }
 
@@ -95,8 +97,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [Required]
         [UIHint("FormatDateTime")]
         public DateTime? EndDate { get; set; }
-        
-        public string Conversion { get; set; }
+
+        [UIHint("FormatDecimal")]
+        public decimal? Conversion { get; set; }
 
         [UIHint("FormatDecimal")]
         public decimal? PrintingPrice { get; set; }

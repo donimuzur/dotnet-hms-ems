@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    @Html.ValidationSummary(false);
+    @*@Html.ValidationSummary(false);*@
     
     <div class="container-wrap">
         <div class="row">
@@ -43,7 +43,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Stiker Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -59,7 +59,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">FA Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.FaCode, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.FaCode, new { @class = "form-control", @maxlength = "18" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -100,7 +100,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4 long">Brand Name Registration by CE Office</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.BrandName, new { @rows = "5", @class = "form-control" })
+                                                            @Html.TextAreaFor(model => model.BrandName, new { @rows = "5", @class = "form-control", @maxlength = "60" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -117,7 +117,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">SKEP No</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SkepNo, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.SkepNo, new { @class = "form-control", @maxlength = "30" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -156,7 +156,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Content</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Content, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "50" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -166,7 +166,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Market Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.MarketCode, Model.MarketCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.MarketId, Model.MarketCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -182,7 +182,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Country Key</label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.CountryCode, Model.CountryCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -233,7 +233,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Colour</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ColourName, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.ColourName, new { @class = "form-control", @maxlength = "70" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -289,7 +289,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Convertion</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.Conversion, new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -305,7 +305,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Cut Filler Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -414,8 +414,8 @@
         }
 
 
-        $("#MarketCode").change(function () {
-            if ($("#MarketCode").length) {
+        $("#MarketId").change(function () {
+            if ($("#MarketId").length) {
                 var marketCode = $(this).find("option:selected").val();
                 if (marketCode == '') {
                     $('#MarketDescription').val('');

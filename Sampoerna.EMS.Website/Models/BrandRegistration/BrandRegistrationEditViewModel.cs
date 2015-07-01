@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 
         [Required]
         [UIHint("FormatDateTime")]
-        public DateTime? SkepDate { get; set; }
+        public DateTime SkepDate { get; set; }
 
         [Required]
         public int ProductCode { get; set; }
@@ -52,15 +52,17 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string SeriesCode { get; set; }
         public string SeriesValue { get; set; }
 
+        [Required]
+        [StringLength(30)]
         public string Content { get; set; }
 
         [Required]
-        public long MarketCode { get; set; }
+        public long MarketId { get; set; }
         public SelectList MarketCodeList { get; set; }
         public string MarketDescription { get; set; }
 
         [Required]
-        public int CountryCode { get; set; }
+        public int CountryId { get; set; }
         public SelectList CountryCodeList { get; set; }
 
         [Required]
@@ -96,7 +98,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [UIHint("FormatDateTime")]
         public DateTime? EndDate { get; set; }
 
-        public string Conversion { get; set; }
+        [UIHint("FormatDecimal")]
+        public decimal? Conversion { get; set; }
 
         [UIHint("FormatDecimal")]
         public decimal? PrintingPrice { get; set; }
