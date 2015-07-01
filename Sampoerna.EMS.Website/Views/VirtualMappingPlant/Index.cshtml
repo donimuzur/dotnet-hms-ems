@@ -1,5 +1,9 @@
 ﻿@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantIndexViewModel
 
+@{
+    ViewBag.Title = "Virtual Plant Mapping";
+}
+
 @section scripts {
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
@@ -73,6 +77,7 @@
                                 <th> Company </th>
                                 <th> Import Virtual Plant </th>
                                 <th> Export Virtual Plant </th>
+                                <th> Deleted </th>
                             </tr>
                         </thead>
 
@@ -95,7 +100,7 @@
                                         @Html.DisplayFor(modelItem => item.ExportPlanName)
                                     </td>
                                     <td>
-                                        @Html.CheckBoxFor(modelItem => item.IsDeleted, new { @disabled = "disabled" })
+                                        @Html.DisplayFor(modelItem => item.IsDeletedString, new { @disabled = "disabled" })
                                     </td>
 
                                 </tr>

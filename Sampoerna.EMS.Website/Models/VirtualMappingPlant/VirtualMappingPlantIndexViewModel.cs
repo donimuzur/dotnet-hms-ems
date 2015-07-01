@@ -29,5 +29,12 @@ namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
 
         public bool IsDeleted { get; set; }
 
+        public string IsDeletedString { 
+            get {
+                return IsDeleted ? "Yes" : "No";
+            } 
+        
+        }
+
     }
 }

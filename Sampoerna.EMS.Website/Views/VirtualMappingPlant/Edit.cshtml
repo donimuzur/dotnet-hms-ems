@@ -1,5 +1,10 @@
 ﻿@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantEditViewModel
 
+
+@{
+    ViewBag.Title = "Virtual Plant Mapping";
+}
+
 @using (Html.BeginForm("Edit", "VirtualMappingPlant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 

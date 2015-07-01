@@ -1,6 +1,8 @@
 ﻿@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantDetailsViewModel
 
-
+@{
+    ViewBag.Title = "Virtual Plant Mapping";
+}
 
     <div class="container-wrap title-page">
         <div class="row">
@@ -12,7 +14,7 @@
                     </a>
                     @if (!Model.IsDeleted)
                     {
-                        <a href="javascript:void(0);" onclick="deleteData()" class="btn btn-grey">Delete</a>
+                        <a href="javascript:void(0);" onclick="deleteData() " class="btn btn-danger">Delete</a>
                     }
                 </div>
             </div>
