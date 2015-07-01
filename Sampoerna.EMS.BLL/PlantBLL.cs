@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<T1001W>();
             _plantReceiveMaterialRepository = _uow.GetGenericRepository<PLANT_RECEIVE_MATERIAL>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
-            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger, _changesHistoryBll);
         }
 
         public Plant GetId(long id)
