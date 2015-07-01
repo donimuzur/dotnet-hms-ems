@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var detail = AutoMapper.Mapper.Map<DetailPlantT1001W>(plant);
             model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID);
             model.PlantIdListItems = new SelectList(_plantBll.GetAll(), "PLANT_ID", "WERKS", plant.PLANT_ID);
-            model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
+            //model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
 
             model.Detail = detail;
             return View(model);
@@ -75,7 +75,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var detail = AutoMapper.Mapper.Map<DetailPlantT1001W>(plant);
                 model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID);
                 model.PlantIdListItems = new SelectList(_plantBll.GetAll(), "PLANT_ID", "WERKS", plant.PLANT_ID);
-                model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
+                //model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
 
                 model.Detail = detail;
                 return View("Edit", model);
@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var detail = AutoMapper.Mapper.Map<DetailPlantT1001W>(plant);
             model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID);
             model.PlantIdListItems = new SelectList(_plantBll.GetAll(), "PLANT_ID", "WERKS", plant.PLANT_ID);
-            model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
+            //model.RecieveMaterialListItems = new SelectList(_goodTypeBll.GetAll(), "GOODTYPE_ID", "EXT_TYP_DESC", plant.RECEIVED_MATERIAL_TYPE_ID);
 
             model.Detail = detail;
             model.Detail.IsNo = !model.Detail.IsMainPlant;

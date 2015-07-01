@@ -219,7 +219,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS ))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
                 .ForMember(dest => dest.Skeptis, opt => opt.MapFrom(src => src.SKEPTIS))
-                .ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID))
+                //.ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID))
                 .ForMember(dest => dest.NppbkcNo, opt => opt.MapFrom(src => src.NPPBCK_ID));
 
             Mapper.CreateMap<DetailPlantT1001W, T1001W>().IgnoreAllUnmapped()
@@ -228,7 +228,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
                 .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
-                .ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
+                //.ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NppbkcNo));
 
             Mapper.CreateMap<PlantViewModel, T1001W>().IgnoreAllNonExisting()
