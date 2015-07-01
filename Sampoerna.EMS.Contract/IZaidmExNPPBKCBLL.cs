@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Contract
@@ -7,7 +8,7 @@ namespace Sampoerna.EMS.Contract
     {
         ZAIDM_EX_NPPBKC GetById(long id);
         List<ZAIDM_EX_NPPBKC> GetAll();
-
-
+        void Save (ZAIDM_EX_NPPBKC nppbkc);
+        
     }
 }

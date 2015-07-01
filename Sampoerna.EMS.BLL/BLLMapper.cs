@@ -44,6 +44,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.WERKS));
 
+            Mapper.CreateMap<Plant, T1001W>().IgnoreAllNonExisting();
+            Mapper.CreateMap<T1001W, Plant>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPPBKC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null ? src.ZAIDM_EX_NPPBKC.NPPBKC_NO : string.Empty))
+                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null && src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC != null ? src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER : string.Empty))
+                ;
+
         }
     }
 }

@@ -81,6 +81,7 @@
     <Compile Include="VirtualMappingPlantBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
+    <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />
     <Compile Include="ZaidmExPOABLL.cs" />
     <Compile Include="ZaidmExPOAMapBLL.cs" />

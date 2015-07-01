@@ -57,6 +57,7 @@
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
+    <Compile Include="Business\Plant.cs" />
     <Compile Include="C1LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
