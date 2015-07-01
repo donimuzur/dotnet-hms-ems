@@ -116,7 +116,7 @@
                         @foreach (var item in Model.Details)
                         {
                             <tr>
-                                <td>
+                                <td class="action">
                                     <a href="@Url.Action("Detail", "POA", new { id = item.PoaId })"><i class="fa fa-eye"></i></a>
                                     <a href="@Url.Action("Edit", "POA", new { id = item.PoaId })"> <i class="fa fa-pencil-square-o"></i></a>
                                 </td>
