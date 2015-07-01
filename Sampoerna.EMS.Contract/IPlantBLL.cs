@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 
 namespace Sampoerna.EMS.Contract
 {

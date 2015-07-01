@@ -259,13 +259,14 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
+    <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -693,7 +694,8 @@
     <Content Include="Views\BrandRegistration\Edit.cshtml" />
     <Content Include="Views\BrandRegistration\_EditSAP.cshtml" />
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
-
+    <Content Include="Views\NPPBKC\Edit.cshtml" />
+    <Content Include="Views\NPPBKC\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
