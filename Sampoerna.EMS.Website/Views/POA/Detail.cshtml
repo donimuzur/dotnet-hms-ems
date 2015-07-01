@@ -4,11 +4,14 @@
     <script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
         $('#MenuPOA').addClass('active');
-        var deletePoa = function () {
-            if (confirm('Are You Sure')) {
-                window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
-            }
+        var poaDelete = function () {
+               window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
+           
 
+
+        };
+        var confirmDeletePOA = function () {
+            $('#btn-delete-poa').click();
         };
     </script>
 }
@@ -25,7 +28,7 @@
                 </a>
                 @if (Model.Detail.Is_Deleted.Equals("No"))
                 {
-                    <a href="javascript:void(0);" onclick=" deletePoa() " class="btn btn-danger">Delete</a>
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Delete</a>
                 }
             </div>
         </div>
@@ -145,25 +148,44 @@
 
                                                 </div>
 
-                                                </form>
+                                            </form>
 
-                                                                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-
-                                <div role="tabpanel" class="tab-pane" id="changes">
-                                    <div class="table-container">
-                                        @Html.Partial("_ChangesHistoryTable", Model)
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<!--delete-->
+<input id="btn-delete-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poa" value="delete">
+<div class="modal main-menu-child fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Delete</h3>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="poaDelete();">Delete</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
