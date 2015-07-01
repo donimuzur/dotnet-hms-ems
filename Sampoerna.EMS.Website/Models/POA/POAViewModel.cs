@@ -16,21 +16,21 @@ namespace Sampoerna.EMS.Website.Models.POA
     }
 
 
-    public class POAFormModel :BaseModel
+    public class POAFormModel : BaseModel
     {
-        
+
 
         public IEnumerable<SelectListItem> Users { get; set; }
         public IEnumerable<SelectListItem> Managers { get; set; }
-        
+
         public POAViewDetailModel Detail { get; set; }
 
         
     }
 
-    public class POAViewDetailModel 
+    public class POAViewDetailModel
     {
-       
+
 
         public int PoaId { get; set; }
 

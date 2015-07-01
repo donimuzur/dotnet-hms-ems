@@ -25,7 +25,8 @@ namespace Sampoerna.EMS.Core
             POA = 18,
             NPPBKC = 19,
             HeaderFooter = 20,
-            User = 21
+            User = 21,
+            MasterPlant = 22
         }
         public enum PBCK1Type
         {

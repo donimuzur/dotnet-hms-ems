@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -12,6 +13,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
+        private string includeable = "ZAIDM_EX_KPPBC, T1001";
 
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -24,10 +26,25 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.GetByID(id);
         }
-        
+
         public List<ZAIDM_EX_NPPBKC> GetAll()
         {
-            return _repository.Get().ToList();
+            return _repository.Get(null, null, includeable).ToList();
+        }
+        
+        public void Save(ZAIDM_EX_NPPBKC nppbkc)
+        {
+            _repository.Update(nppbkc);
+            try
+            {
+                _uow.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+                
+            }
+            
         }
     }
 }
