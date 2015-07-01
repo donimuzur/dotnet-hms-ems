@@ -443,6 +443,14 @@
           <Property Name="CK1_DATE" Type="datetime" />
           <Property Name="NOTE" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="PLANT_RECEIVE_MATERIAL">
+          <Key>
+            <PropertyRef Name="PLANT_MATERIAL_ID" />
+          </Key>
+          <Property Name="PLANT_MATERIAL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PLANT_ID" Type="bigint" Nullable="false" />
+          <Property Name="GOODTYPE_ID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="REALISASI_PEMASUKAN">
           <Key>
             <PropertyRef Name="REALISASI_PEMASUKAN_ID" />
@@ -512,7 +520,6 @@
           <Property Name="SKEPTIS" Type="nvarchar" MaxLength="50" />
           <Property Name="NPPBCK_ID" Type="bigint" />
           <Property Name="IS_MAIN_PLANT" Type="bit" />
-          <Property Name="RECEIVED_MATERIAL_TYPE_ID" Type="int" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="UOM">
@@ -704,6 +711,7 @@
           <Property Name="USER_ID" Type="int" />
           <Property Name="MANAGER_ID" Type="int" />
           <Property Name="EMAIL" Type="nvarchar" MaxLength="35" />
+          <Property Name="PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
@@ -1530,6 +1538,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T1001W">
+          <End Role="T1001W" Type="Self.T1001W" Multiplicity="1" />
+          <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_REALISASI_PEMASUKAN_MONTH">
           <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
           <End Role="REALISASI_PEMASUKAN" Type="Self.REALISASI_PEMASUKAN" Multiplicity="*" />
@@ -1611,18 +1643,6 @@
             </Principal>
             <Dependent Role="T1001K">
               <PropertyRef Name="COMPANY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_T1001W_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
-          <End Role="T1001W" Type="Self.T1001W" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="GOODTYPE_ID" />
-            </Principal>
-            <Dependent Role="T1001W">
-              <PropertyRef Name="RECEIVED_MATERIAL_TYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2034,6 +2054,7 @@
           <EntitySet Name="PBCK3_CK5_ITEM" EntityType="Self.PBCK3_CK5_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK4" EntityType="Self.PBCK4" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK4_ITEM" EntityType="Self.PBCK4_ITEM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REALISASI_PEMASUKAN" EntityType="Self.REALISASI_PEMASUKAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RENCANA_PRODUKSI" EntityType="Self.RENCANA_PRODUKSI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST_TYPE" EntityType="Self.REQUEST_TYPE" Schema="dbo" store:Type="Tables" />
@@ -2322,6 +2343,14 @@
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="PBCK3_7" EntitySet="PBCK3_7" />
           </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T1001W" Association="Self.FK_PLANT_RECEIVE_MATERIAL_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="Self.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_REALISASI_PEMASUKAN_MONTH" Association="Self.FK_REALISASI_PEMASUKAN_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="REALISASI_PEMASUKAN" EntitySet="REALISASI_PEMASUKAN" />
@@ -2349,10 +2378,6 @@
           <AssociationSet Name="FK_T1001K_T1001" Association="Self.FK_T1001K_T1001">
             <End Role="T1001" EntitySet="T1001" />
             <End Role="T1001K" EntitySet="T1001K" />
-          </AssociationSet>
-          <AssociationSet Name="FK_T1001W_ZAIDM_EX_GOODTYP" Association="Self.FK_T1001W_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="T1001W" EntitySet="T1001W" />
           </AssociationSet>
           <AssociationSet Name="FK_T1001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T1001W_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
@@ -2902,10 +2927,6 @@
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="PBCK4" EntitySet="PBCK4" />
           </AssociationSet>
-          <AssociationSet Name="FK_T1001W_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="T1001W" EntitySet="T1001W" />
-          </AssociationSet>
           <AssociationSet Name="FK_T1001W_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="T1001W" EntitySet="T1001W" />
@@ -2962,6 +2983,15 @@
           <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
+          </AssociationSet>
+          <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T1001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="CK5">
@@ -3632,8 +3662,8 @@
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PBCK1" />
           <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="EX_GROUP_TYPE" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="T1001W" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -4880,7 +4910,6 @@
           <Property Name="SKEPTIS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NPPBCK_ID" Type="Int64" />
           <Property Name="IS_MAIN_PLANT" Type="Boolean" />
-          <Property Name="RECEIVED_MATERIAL_TYPE_ID" Type="Int32" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_T1001W" FromRole="T1001W" ToRole="CK4C" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_T1001W" FromRole="T1001W" ToRole="CK5" />
@@ -4888,13 +4917,13 @@
           <NavigationProperty Name="PBCK3_7" Relationship="EMSModel.FK_PBCK3_7_T1001W" FromRole="T1001W" ToRole="PBCK3_7" />
           <NavigationProperty Name="PBCK3_CK5" Relationship="EMSModel.FK_PBCK3_CK5_T1001W" FromRole="T1001W" ToRole="PBCK3_CK5" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_T1001W" FromRole="T1001W" ToRole="PBCK4" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_GOODTYP" FromRole="T1001W" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_T1001W_ZAIDM_EX_NPPBKC" FromRole="T1001W" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W" FromRole="T1001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1" FromRole="T1001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T1001W" FromRole="T1001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" FromRole="T1001W" ToRole="ZAIDM_POA_MAP" />
+          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W" FromRole="T1001W" ToRole="PLANT_RECEIVE_MATERIAL" />
         </EntityType>
         <Association Name="FK_CK4C_T1001W">
           <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="0..1" />
@@ -4965,18 +4994,6 @@
             </Principal>
             <Dependent Role="PBCK4">
               <PropertyRef Name="PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_T1001W_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="GOODTYPE_ID" />
-            </Principal>
-            <Dependent Role="T1001W">
-              <PropertyRef Name="RECEIVED_MATERIAL_TYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5101,6 +5118,7 @@
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="ZAIDM_EX_POA" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER1" FromRole="ZAIDM_EX_POA" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_EX_POA" ToRole="ZAIDM_POA_MAP" />
+          <Property Name="PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_PBCK1_ZAIDM_EX_POA">
           <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
@@ -5171,6 +5189,40 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PLANT_RECEIVE_MATERIAL">
+          <Key>
+            <PropertyRef Name="PLANT_MATERIAL_ID" />
+          </Key>
+          <Property Name="PLANT_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PLANT_ID" Type="Int64" Nullable="false" />
+          <Property Name="GOODTYPE_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T1001W">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="GOODTYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5938,7 +5990,6 @@
             <EntityTypeMapping TypeName="EMSModel.T1001W">
               <MappingFragment StoreEntitySet="T1001W">
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="RECEIVED_MATERIAL_TYPE_ID" ColumnName="RECEIVED_MATERIAL_TYPE_ID" />
                 <ScalarProperty Name="IS_MAIN_PLANT" ColumnName="IS_MAIN_PLANT" />
                 <ScalarProperty Name="NPPBCK_ID" ColumnName="NPPBCK_ID" />
                 <ScalarProperty Name="SKEPTIS" ColumnName="SKEPTIS" />
@@ -5955,6 +6006,7 @@
           <EntitySetMapping Name="ZAIDM_EX_POA">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_POA">
               <MappingFragment StoreEntitySet="ZAIDM_EX_POA">
+                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
                 <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
@@ -5969,6 +6021,15 @@
                 <ScalarProperty Name="POA_ID_CARD" ColumnName="POA_ID_CARD" />
                 <ScalarProperty Name="POA_CODE" ColumnName="POA_CODE" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PLANT_RECEIVE_MATERIAL">
+            <EntityTypeMapping TypeName="EMSModel.PLANT_RECEIVE_MATERIAL">
+              <MappingFragment StoreEntitySet="PLANT_RECEIVE_MATERIAL">
+                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="PLANT_MATERIAL_ID" ColumnName="PLANT_MATERIAL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

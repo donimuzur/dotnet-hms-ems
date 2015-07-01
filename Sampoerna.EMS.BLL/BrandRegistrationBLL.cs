@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_BRAND GetByIdIncludeChild(long id)
         {
-            var dbData = _repository.Get(a => a.BRAND_ID == id, null, "T1001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_series, ZAIDM_EX_MARKET,Country, CURRENCY,CURRENCY1, ZAIDM_EX_GOODTYP").FirstOrDefault();
+            var dbData = _repository.Get(a => a.BRAND_ID == id, null, "T1001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_series, ZAIDM_EX_GOODTYP, ZAIDM_EX_MARKET,Country, CURRENCY,CURRENCY1").FirstOrDefault();
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
