@@ -1,38 +1,64 @@
-﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NPPBKCViewModels
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.NPPBKC.NPPBKCIViewModels
 
 @section styles
     {
-    
+
 }
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#mydata .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
-                    var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" />');
-                }
-            });
+   <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
 
-            // DataTable
-            var table = $('#mydata').DataTable();
+        // Setup - add a text input to each footer cell
+        $('#mydata .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                var title = $('#mydata thead th').eq($(this).index()).text();
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
-            // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-            $('#MenuNPPBKC').addClass('active');
+            }
         });
+
+        // DataTable
+        var table = $('#mydata').DataTable();
+
+
+        // Apply the search
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+
+
+          @if (TempData[Constans.SubmitType.Save] != null)
+               {
+               @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
+               @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Save] = null;
+            }
+               else if (TempData[Constans.SubmitType.Update] != null)
+               {
+              @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
+               @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Update] = null;
+             }
+               else if (TempData[Constans.SubmitType.Delete] != null)
+               {
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
+                 @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Delete] = null;
+            }
+
+
+        $('#MenuNPPBKC').addClass('active');
+
+    });
     </script>
 }
 
@@ -44,12 +70,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
-            <div class="action-button new">
-                @*<a href="@Url.Action("Create", "Virtual")">
-                        <button class="btn btn-blue">NEW</button>
-                    </a>*@
-                <a data-toggle="modal" data-target=".menu-maping-type"><button class="btn btn-blue">NEW</button></a>
-            </div>
+
         </div>
     </div>
 </div>
@@ -61,13 +82,14 @@
                 <table id="mydata" class="table table-striped table-hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                           
+
                             <th class="toggle-row"> Filter </th>
                             <th> NPPBKC ID </th>
                             <th> Address </th>
                             <th> City Alias</th>
                             <th> Region Office of DGCE </th>
                             <th> Text to </th>
+                            <th> Deleted </th>
 
                         </tr>
 
@@ -80,6 +102,7 @@
                             <th> City Alias</th>
                             <th> Region Office of DGCE </th>
                             <th> Text to </th>
+                            <th> Deleted </th>
                         </tr>
                     </thead>
 
@@ -87,25 +110,30 @@
 
                         @foreach (var item in Model.Details)
                         {
-                        <tr>
-                            <td></td>
-                    
-                            <td>
-                                @Html.DisplayFor(modelItem => item.NppbckId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Address1)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.City)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.RegionOfficeIdNppbkc)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TextTo)
-                            </td>
-                        </tr>
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"><i class=" fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })"><i class=" fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NppbckNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address1)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CityAlias)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RegionOfficeOfDGCE)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TextTo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Is_Deleted)
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -113,5 +141,20 @@
         </div>
     </div>
 </div>
+<!--modal-->
+<input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
+<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-poa-message">
+
+            </div>
+        </div>
+    </div>
+</div>
 

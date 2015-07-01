@@ -79,6 +79,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return InitialEdit(model);
             }
+
             try
             {
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
