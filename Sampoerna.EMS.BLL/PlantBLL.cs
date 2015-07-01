@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.BLL
 
         public T1001W GetId(long id)
         {
-            return _repository.GetByID(id);
+            return _repository.Get(c => c.PLANT_ID == id,null, includeTables).FirstOrDefault();
         }
 
         public List<T1001W> GetAll()

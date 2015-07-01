@@ -1,8 +1,18 @@
 ﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
-
-
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+        $('#MenuMasterPlant').addClass('active');
+    </script>
+}
 @{
     ViewBag.Title = "Edit Master Plant";
+    var isCheckYes = Model.Detail.IsMainPlant ? new {@checked = "checked"} : null;
+    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked" };
 }
 @using (Html.BeginForm("Edit", "Plant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
@@ -20,7 +30,7 @@
     <div class="container-wrap">
         <div class="row">
             <div class="col-sm-12">
-                <div class="white-wrapper">
+       
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingOne">
@@ -40,7 +50,8 @@
                                                     <label class="col-md-3">Plant Id</label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(model => model.Detail.PlantId)
-                                                        @Html.DropDownListFor(model => model.Detail.PlantId, Model.PlantIdListItems, "Select", new { @class = "form-control" })
+                                                        @Html.HiddenFor(model => model.Detail.Werks)
+                                                        @Html.DropDownListFor(model => model.Detail.WerksT1001W.PLANT_ID, Model.PlantIdListItems, "Select", new { @class = "form-control", @disabled = "disabled" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PlantId)
                                                     </div>
                                                 </div>
@@ -49,8 +60,8 @@
                                                 <div class="row">
                                                     <label class="col-md-3">NPPBKC NO</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC.NPPBKC_NO, Model.Nppbkc, "Select", new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.NPPBKC.NPPBKC_NO)
+                                                        @Html.DropDownListFor(model => model.Detail.NppbkcNo, Model.Nppbkc, "Select", new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.NppbkcNo)
                                                     </div>
                                                 </div>
                                             </div>
@@ -58,7 +69,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Plant Description</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", id = "PlantDescription" })
+                                                        @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", @disabled = "disabled" })
                                                         @Html.ValidationMessageFor(model => model.Detail.PlantDescription)
                                                     </div>
                                                 </div>
@@ -67,7 +78,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Plant Address</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5", id = "Address" })
+                                                        @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5" })
                                                         @Html.ValidationMessageFor(model => model.Detail.Address)
                                                     </div>
                                                 </div>
@@ -94,17 +105,20 @@
                                                 <div class="row">
                                                     <label class="col-md-4">Main Plant</label>
                                                     <div class="col-md-2">
-                                                        @Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })
+                                                        @*@Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })*@
+                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, isCheckYes)Yes
                                                     </div>
-                                                   
+                                                    <div class="col-md-2">
+                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, isCheckNo)No
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Recieve Material</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.GOODTYP.EXT_TYP_DESC, Model.RecieveMaterialListItems, "Select", new { @class = "form-control", id = "dropBoxUserName" })
-                                                        @Html.ValidationMessageFor(model => model.Detail.GOODTYP.EXT_TYP_DESC)
+                                                        @Html.DropDownListFor(model => model.Detail.RecievedMaterialTypeId, Model.RecieveMaterialListItems, "Select", new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Detail.RecievedMaterialTypeId)
                                                     </div>
                                                 </div>
                                             </div>
@@ -117,16 +131,7 @@
                 </div>
             </div>
         </div>
-    </div>
+  
 
 }
-@section scripts {
-    <script src="~/Scripts/js/scripts.min.js"></script>
-    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript">
-        $(window).load(function() {
-            document.getElementById('PlantDescription').disabled = true;
-        });
-        $('#MenuMasterPlant').addClass('active');
-    </script>
-}
+

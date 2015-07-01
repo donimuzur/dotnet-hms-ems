@@ -1,0 +1,131 @@
+﻿@model Sampoerna.EMS.Website.Models.UserItemViewModel
+
+@section styles {
+
+}
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "User")';
+            });
+            // DataTable
+            $('#employeeTable').DataTable();
+        });
+
+    </script>
+}
+
+@{
+    ViewBag.Title = "View Detail User";
+}
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Master User</h3>
+            <div class="action-button">
+                <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    User Detail
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">User Id</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.USER_ID)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Username</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.USERNAME)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">First Name</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.FIRST_NAME)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Last Name</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.LAST_NAME)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Phone</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.PHONE)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Email</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.EMAIL)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Group</label>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(m => m.Detail.USER_GROUP.GROUP_NAME)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    </form>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

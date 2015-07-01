@@ -30,14 +30,18 @@ namespace Sampoerna.EMS.BusinessObject
         public string POA_PRINTED_NAME { get; set; }
         public string TITLE { get; set; }
         public Nullable<int> USER_ID { get; set; }
+        public Nullable<int> MANAGER_ID { get; set; }
+        public string EMAIL { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
         public Nullable<bool> IS_FROM_SAP { get; set; }
     
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
         public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
         public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
     }
 }

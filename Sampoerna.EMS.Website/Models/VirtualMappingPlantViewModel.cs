@@ -24,15 +24,15 @@ namespace Sampoerna.EMS.Website.Models
         public SelectList ExportList { set; get; }
     }
 
-    public class VirtualMappingPlantDetail
-        {
-            public long VirtualPlantMapId { get; set; }
-            public long? CompanyId { get; set; }
-            public string CompanyName { get; set; }
-            public long? ImportPlantId { get; set; }
-            public long ExportPlantId { get; set; }
+    //public class VirtualMappingPlantDetail
+    //    {
+    //        public long VirtualPlantMapId { get; set; }
+    //        public long? CompanyId { get; set; }
+    //        public string CompanyName { get; set; }
+    //        public long? ImportPlantId { get; set; }
+    //        public long ExportPlantId { get; set; }
 
            
-        }
+    //    }
         
     }
