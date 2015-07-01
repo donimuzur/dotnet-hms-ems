@@ -46,8 +46,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public DateTime? CreateDate { get; set; }
        
         public DateTime? StartDate { get; set; }
-
-       
+        
         public DateTime? EndDate { get; set; }
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }

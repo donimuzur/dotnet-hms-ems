@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (nppbkc.IS_DELETED == true)
             {
-                return RedirectToAction("Detail", "POA", new { id = nppbkc.NPPBKC_ID });
+                return RedirectToAction("Detail", "NPPBKC", new { id = nppbkc.NPPBKC_ID });
             }
             var model = new NppbkcFormModel();
             model.MainMenu = Enums.MenuList.MasterData;

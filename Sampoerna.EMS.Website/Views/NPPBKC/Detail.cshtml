@@ -2,7 +2,7 @@
 @section scripts {
     <script type="text/javascript" language="javascript" src="../../Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
-        $('#MenuPOA').addClass('active');
+        $('#MenuNPPBKC').addClass('active');
         var deleteNppbkc = function() {
             if (confirm('Are You Sure')) {
                 window.location = "@Url.Action("Delete", "NPPBKC", new {id = @Model.Detail.VirtualNppbckId})";
