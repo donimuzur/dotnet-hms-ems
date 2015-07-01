@@ -40,7 +40,7 @@
                                                     <label class="col-md-3">ID Card</label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(x=>x.Detail.PoaId)
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @maxlength = "22" })
                                                       </div>
                                                 </div>
                                             </div>
@@ -68,7 +68,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Printed Name</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @maxlength = "50" })
                                                </div>
                                                 </div>
                                             </div>
@@ -83,7 +83,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Phone</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "15" })
                                                      </div>
                                                 </div>
                                             </div>
@@ -91,7 +91,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Email</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
                                                    </div>
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Title</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @maxlength = "50" })
                                                      </div>
                                                 </div>
                                             </div>
@@ -111,7 +111,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Address</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment" })
+                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
                                                     </div>
                                                 </div>
                                             </div>
