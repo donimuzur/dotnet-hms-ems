@@ -588,6 +588,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\custom.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
@@ -754,6 +755,11 @@
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
