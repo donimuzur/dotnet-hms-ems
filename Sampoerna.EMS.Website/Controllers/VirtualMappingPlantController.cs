@@ -12,6 +12,7 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -20,12 +21,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IVirtualMappingPlantBLL _virtualMappingPlanBll;
         private IMasterDataBLL _masterDataBll;
+        private IChangesHistoryBLL _changesHistoryBLL;
+        private List<AutoCompletePlant> _plantList;
 
-        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IPageBLL pageBLL)
+        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
             _masterDataBll = masterData;
+            _changesHistoryBLL = changeLogHistoryBLL;
+            _plantList = _masterDataBll.GetAutoCompletePlant();
         }
 
         //
@@ -50,7 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
-
+            
             return model;
         }
 
@@ -88,12 +93,14 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new VirtualMappingPlantDetailsViewModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id));
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
+            model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
             model.CompanyName = dbVirtual.T1001.BUKRSTXT;
             model.ImportPlanName = dbVirtual.T1001W.WERKS;
             model.ExportPlanName = dbVirtual.T1001W1.WERKS;
+            model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
             
 
             return View(model);
@@ -114,19 +121,41 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public ActionResult Edit(int id)
         {
+            
             var model = new VirtualMappingPlantEditViewModel();
             InitEditModel(model);
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
             if (dbVirtual != null)
             {
-                model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
+                if (dbVirtual.IS_DELETED == true)
+                {
+                    var modeldetail = new VirtualMappingPlantDetailsViewModel();
+                    modeldetail.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
-                if (dbVirtual.COMPANY_ID.HasValue)
-                    model.CompanyId = dbVirtual.COMPANY_ID.Value;
+                    if (dbVirtual.COMPANY_ID.HasValue)
+                        modeldetail.CompanyName = dbVirtual.T1001.BUKRSTXT;
 
-                model.ImportPlantId = dbVirtual.T1001W.PLANT_ID;
-                model.ExportPlantId = dbVirtual.T1001W1.PLANT_ID;
+                    modeldetail.ImportPlanName = dbVirtual.T1001W.WERKS;
+                    modeldetail.ExportPlanName = dbVirtual.T1001W1.WERKS;
+
+                    return View("Details",modeldetail);
+                }
+                else {
+                    model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
+
+                    if (dbVirtual.COMPANY_ID.HasValue)
+                        model.CompanyId = dbVirtual.COMPANY_ID.Value;
+
+                    model.ImportPlantId = dbVirtual.T1001W.PLANT_ID;
+                    model.ExportPlantId = dbVirtual.T1001W1.PLANT_ID;
+
+                    return View(model);
+                }
+                
+                
+
+                
             }
             else
             {
@@ -136,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //ModelState.AddModelError("Exception", "Data Not Found");
                 throw new HttpException(403, "Data not found");
             }
-            return View(model);
+            
         }
 
         [HttpPost]
@@ -169,6 +198,16 @@ namespace Sampoerna.EMS.Website.Controllers
            
             InitEditModel(model);
             return View("Edit", model);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            _virtualMappingPlanBll.Delete(id, CurrentUser.USER_ID);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult PlantList() { 
+            return Json(_plantList , JsonRequestBehavior.AllowGet);
         }
     }
 }

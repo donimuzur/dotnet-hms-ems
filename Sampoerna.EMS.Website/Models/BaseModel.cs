@@ -16,6 +16,8 @@ namespace Sampoerna.EMS.Website.Models
         public string ErrorMessage { get; set; }
 
         public List<ChangesHistoryItemModel> ChangesHistoryList { get; set; }
+
+
        
     }
 }

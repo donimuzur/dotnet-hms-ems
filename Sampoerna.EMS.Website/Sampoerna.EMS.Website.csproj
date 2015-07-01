@@ -242,7 +242,13 @@
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
-    <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
+
+    <Compile Include="Models\BrandRegistration\BrandRegistrationCreateViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
+     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+
     <Compile Include="Models\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -261,12 +267,14 @@
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
+    <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -693,6 +701,13 @@
     <Content Include="Views\Material\Details.cshtml" />
     <Content Include="Views\Material\Create.cshtml" />
     <Content Include="Views\Material\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\Details.cshtml" />
+    <Content Include="Views\BrandRegistration\Create.cshtml" />
+    <Content Include="Views\BrandRegistration\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\_EditSAP.cshtml" />
+    <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
+    <Content Include="Views\NPPBKC\Edit.cshtml" />
+    <Content Include="Views\NPPBKC\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -762,6 +777,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
+
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
