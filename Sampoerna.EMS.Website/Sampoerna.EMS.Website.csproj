@@ -242,6 +242,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
+    <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
@@ -293,6 +294,7 @@
     <Content Include="Content\assets\images\icon-setting-white.png" />
     <Content Include="Content\assets\images\icon-setting.png" />
     <Content Include="Content\assets\images\icon-user.png" />
+    <Content Include="Content\assets\images\loading.gif" />
     <Content Include="Content\assets\images\logo-large.png" />
     <Content Include="Content\assets\images\logo.png" />
     <Content Include="Content\assets\images\sort_asc.png" />
@@ -305,6 +307,7 @@
     <Content Include="Content\css\main.min.css" />
     <Content Include="Content\css\vendors\font-awesome.min.css" />
     <Content Include="Content\css\vendors\yamm.css" />
+    <Content Include="Content\css\loading.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -585,6 +588,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\custom.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
@@ -631,7 +635,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\User\ViewDetail.cshtml" />
+    <Content Include="Views\User\Detail.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\PBCK1\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
@@ -681,6 +685,7 @@
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
     <Content Include="Views\NPPBKC\Edit.cshtml" />
+    <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -715,6 +720,10 @@
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.ReportingData\Sampoerna.EMS.ReportingData.csproj">
+      <Project>{8708b0f2-5e32-43ea-a2f1-f18aab51dc47}</Project>
+      <Name>Sampoerna.EMS.ReportingData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
       <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
       <Name>Sampoerna.EMS.Utils</Name>
@@ -724,6 +733,9 @@
     <Content Include="Reports\EmployeeData.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\HeaderFooterPreview.rdlc" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -739,11 +751,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

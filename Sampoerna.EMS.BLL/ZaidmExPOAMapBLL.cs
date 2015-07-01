@@ -43,5 +43,11 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+
+
+        public void Delet(int id)
+        {
+           _repository.Delete(id);
+        }
     }
 }

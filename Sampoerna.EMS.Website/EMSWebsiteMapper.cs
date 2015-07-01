@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
@@ -75,7 +76,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.USER_ID + "-" + src.USERNAME)));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.FIRST_NAME + ' ' + src.LAST_NAME)));
 
             Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
@@ -148,14 +149,7 @@ namespace Sampoerna.EMS.Website
 
             #region POA
 
-            Mapper.CreateMap<POAViewModel, ZAIDM_EX_POA>().IgnoreAllNonExisting()
-            .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
-                .ForMember(dest => dest.POA_CODE, opt => opt.MapFrom(src => src.PoaCode))
-                .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
-                .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
-                .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
-                .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title));
-
+           
 
             Mapper.CreateMap<ZAIDM_EX_POA, POAViewDetailModel>().IgnoreAllNonExisting()
                .ForMember(dest => dest.PoaIdCard, opt => opt.MapFrom(src => src.POA_ID_CARD))
@@ -164,8 +158,14 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PoaPrintedName, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
                .ForMember(dest => dest.PoaPhone, opt => opt.MapFrom(src => src.POA_PHONE))
                .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
+               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EMAIL))
                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE))
-               .ForMember(dest => dest.isNewData, opt => opt.MapFrom(src => src.IS_FROM_SAP.HasValue && src.IS_FROM_SAP.Value));
+               .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED == null  ? "No" : "Yes"))
+               .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER1))
+               .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.USER))
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.MANAGER_ID))
+               .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP.HasValue && src.IS_FROM_SAP.Value));
 
             Mapper.CreateMap<POAViewDetailModel, ZAIDM_EX_POA>().IgnoreAllUnmapped()
                .ForMember(dest => dest.POA_ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
@@ -173,13 +173,21 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
                .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
                .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
+               .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.PoaId))
+               .ForMember(dest => dest.EMAIL, opt => opt.MapFrom(src => src.Email))
                .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title))
-               .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.User.USER_ID));
+               .ForMember(dest => dest.MANAGER_ID, opt => opt.MapFrom(src => src.ManagerId))
+               .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.UserId));
 
             #endregion
 
             Mapper.CreateMap<HeaderFooter, HeaderFooterItem>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.HEADER_IMAGE_PATH_BEFOREEDIT, opt => opt.MapFrom(src => src.HEADER_IMAGE_PATH));
+                .ForMember(dest => dest.HEADER_IMAGE_PATH_BEFOREEDIT, opt => opt.MapFrom(src => src.HEADER_IMAGE_PATH))
+                .ForMember(dest => dest.FOOTER_CONTENT,
+                    opt => opt.MapFrom(src => src.FOOTER_CONTENT.Replace("<br />", Environment.NewLine)))
+                    .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value))
+                    .ForMember(dest => dest.IsDeletedDesc, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
+                    ;
 
             Mapper.CreateMap<HeaderFooterMap, HeaderFooterMapItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IS_HEADER_SET, opt => opt.MapFrom(src => src.IS_HEADER_SET.HasValue && src.IS_HEADER_SET.Value))
@@ -191,13 +199,16 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.HEADER_IMAGE_PATH_BEFOREEDIT, opt => opt.MapFrom(src => src.HEADER_IMAGE_PATH))
                 .ForMember(dest => dest.FOOTER_CONTENT, opt => opt.MapFrom(src => src.FOOTER_CONTENT.Replace("<br />", Environment.NewLine)))
                 .ForMember(dest => dest.HeaderFooterMapList,
-                    opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMapItem>>(src.HeaderFooterMapList)));
+                    opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMapItem>>(src.HeaderFooterMapList)))
+                    .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value))
+                    .ForMember(dest => dest.IsDeletedDesc, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"));
 
             Mapper.CreateMap<HeaderFooterMapItem, HeaderFooterMap>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<HeaderFooterDetailItem, HeaderFooterDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.HeaderFooterMapList,
-                    opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HeaderFooterMapList)));
+                    opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HeaderFooterMapList)))
+                    .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
 
             #region PlantDetail
 
@@ -208,7 +219,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS ))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
                 .ForMember(dest => dest.Skeptis, opt => opt.MapFrom(src => src.SKEPTIS))
-                .ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID))
+                //.ForMember(dest => dest.RecievedMaterialTypeId, opt => opt.MapFrom(src => src.RECEIVED_MATERIAL_TYPE_ID))
                 .ForMember(dest => dest.NppbkcNo, opt => opt.MapFrom(src => src.NPPBCK_ID));
 
             Mapper.CreateMap<DetailPlantT1001W, T1001W>().IgnoreAllUnmapped()
@@ -217,7 +228,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
                 .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
-                .ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
+                //.ForMember(dest => dest.RECEIVED_MATERIAL_TYPE_ID, opt => opt.MapFrom(src => src.GOODTYP.EXT_TYP_DESC))
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NppbkcNo));
 
             Mapper.CreateMap<PlantViewModel, T1001W>().IgnoreAllNonExisting()
@@ -266,7 +277,14 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-
+            Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.USERNAME,
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
+                .ForMember(dest => dest.USER_FIRST_NAME,
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.FIRST_NAME : string.Empty))
+                .ForMember(dest => dest.USER_LAST_NAME,
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.LAST_NAME : string.Empty))
+                    .ForMember(dest => dest.FORM_TYPE_DESC, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.FORM_TYPE_ID)));
         }
     }
 }

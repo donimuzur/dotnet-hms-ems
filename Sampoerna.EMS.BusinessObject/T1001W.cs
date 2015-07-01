@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.ZAIDM_POA_MAP = new HashSet<ZAIDM_POA_MAP>();
+            this.PLANT_RECEIVE_MATERIAL = new HashSet<PLANT_RECEIVE_MATERIAL>();
         }
     
         public long PLANT_ID { get; set; }
@@ -34,11 +35,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
         public string CITY { get; set; }
+        public string PHONE { get; set; }
         public string ADDRESS { get; set; }
         public string SKEPTIS { get; set; }
         public Nullable<long> NPPBCK_ID { get; set; }
         public Nullable<bool> IS_MAIN_PLANT { get; set; }
-        public Nullable<int> RECEIVED_MATERIAL_TYPE_ID { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
         public virtual ICollection<CK4C> CK4C { get; set; }
@@ -47,12 +48,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
         public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<ZAIDM_POA_MAP> ZAIDM_POA_MAP { get; set; }
+        public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
     }
 }

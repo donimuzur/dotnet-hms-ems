@@ -1,8 +1,15 @@
 ﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/js/scripts.min.js"></script>
+    
+<script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
         $('#MenuPOA').addClass('active');
+        var deletePoa = function() {
+            if (confirm('Are You Sure')) {
+                window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
+            }
+            
+        };
     </script>
 }
     @{
@@ -16,6 +23,10 @@
                     <a href="@Url.Action("Index", "POA")">
                         <button class="btn btn-grey">Back</button>
                     </a>
+                    @if (Model.Detail.Is_Deleted.Equals("No"))
+                    {
+                        <a href="javascript:void(0);" onclick=" deletePoa() " class="btn btn-grey">Delete</a>
+                    }
                 </div>
             </div>
         </div>
@@ -31,7 +42,7 @@
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Detail POA
+                                    POA Detail
                                     <i class="fa fa-caret-down"></i>
                                 </a>
                             </h4>
@@ -44,26 +55,27 @@
                                             <div class="row">
                                                 <label class="col-md-3">ID Card</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled ="disabled"})
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaId)
-                                                </div>
+                                                    @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled="disabled" })
+                                                  </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row">
-                                                <label class="col-md-3">Poa Code</label>
+                                                <label class="col-md-3">User Account</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.PoaCode, new { @class = "form-control", @disabled = "disabled" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaCode)
+                                                    @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-6">
                                             <div class="row">
-                                                <label class="col-md-3">User Name</label>
+                                                <label class="col-md-3">Manager</label>
                                                 <div class="col-md-9">
-                                                    @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "Select", new { @class = "form-control", @disabled = "disabled" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.User.USER_ID)
+                                                    @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+
                                                 </div>
                                             </div>
                                         </div>
@@ -72,46 +84,67 @@
                                                 <label class="col-md-3">Printed Name</label>
                                                 <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @disabled = "disabled" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaPrintedName)
-                                                </div>
+                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div class="row">
+
+
+
+
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Phone</label>
                                                 <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @disabled = "disabled" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaPhone)
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Email</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
-                                       
+                                    </div>
+                                    <div class="row">
+
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Title</label>
                                                 <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @disabled = "disabled" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.Title)
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Address</label>
-                                                <div class="col-md-9" r>
-                                                    @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", @disabled = "disabled" })
-                                                    @Html.ValidationMessageFor(model => model.Detail.PoaAddress)
+                                                <div class="col-md-9">
+                                                    @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
+
                                 </form>
                             </div>
                         </div>
+                    </div>
+                    <div class="table-container">
+                        @Html.Partial("_ChangesHistoryTable")
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
