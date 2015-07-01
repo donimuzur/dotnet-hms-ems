@@ -43,7 +43,7 @@
         {
             public const string Saved = "Save Succefully";
             public const string Updated = "Update Succefully";
-            public const string Deleted = "Deleted Succefully";
+            public const string Deleted = "Delete Succefully";
         }
 
     }

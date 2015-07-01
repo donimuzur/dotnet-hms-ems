@@ -11,7 +11,7 @@
             <div class="col-sm-12">
                 <h3>Create New POA</h3>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="submit" class="btn btn-blue" value="Save">
                     <a href="@Url.Action("Index", "POA")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
@@ -40,17 +40,17 @@
                                                 <div class="row">
                                                     <label class="col-md-3">ID Card</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new {@class = "form-control"})
+                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new {@class = "form-control", @maxlength = "22"})
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">User Account</label>
+                                                    <label class="col-md-3">Login As</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "selectpicker form-control" })
 
-                                                      </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -59,64 +59,64 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Manager</label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Users, "select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Users, "select", new { @class="selectpicker form-control" })
 
-                                                     </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Printed Name</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @maxlength = "50" })
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                    <div class="row">
+                                        <div class="row">
 
                                      
 
                                         
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Phone</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control" })
-                                                 </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Phone</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "15" })
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Email</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control" })
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Email</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
+                                        <div class="row">
                                        
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Title</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control" })
-                                                 </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Title</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @maxlength = "50" })
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
                                        
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Address</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment" })
-                                                     </div>
+                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
+                                                    </div>
                                                 </div>
                                             </div>
                                        
-                                    </div>
+                                        </div>
                                         
                                     </form>
                                 </div>
@@ -127,6 +127,7 @@
             </div>
         </div>
     </div>
+   
 }
 @section scripts
 {
@@ -134,8 +135,7 @@
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript">
         $('#MenuPOA').addClass('active');
-
-        $('#Detail_UserId').change(function () {
+         $('#Detail_UserId').change(function () {
             OnChangeUser($(this).find("option:selected").val());
         });
 
@@ -145,7 +145,6 @@
                 url: '@Url.Action("GetUser", "POA")',
                 data: { userId: id },
                 success: function (data) {
-                    console.log(data);
                     $('#Detail_PoaPhone').val(data.PHONE);
                     $('#Detail_Email').val(data.EMAIL);
                 }

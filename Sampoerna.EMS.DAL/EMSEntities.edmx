@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -50,8 +50,8 @@
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="bigint" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
-          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
-          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
+          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="50" />
+          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="int" />
         </EntityType>
@@ -561,6 +561,9 @@
           <Property Name="COMPANY_ID" Type="bigint" />
           <Property Name="IMPORT_PLANT_ID" Type="bigint" />
           <Property Name="EXPORT_PLANT_ID" Type="bigint" />
+          <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="CREATED_BY" Type="int" />
+          <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="WORKFLOW_EMAIL">
           <Key>
@@ -657,7 +660,9 @@
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="30" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="30" />
+          <Property Name="BRAND_ID" Type="bigint" />
           <Property Name="PLANT_ID" Type="bigint" />
+          <Property Name="CONVERSION" Type="decimal" Precision="18" Scale="2" />
           <Property Name="EX_GOODTYP" Type="int" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="30" />
           <Property Name="BASE_UOM" Type="int" />
@@ -665,7 +670,6 @@
           <Property Name="IS_FROM_SAP" Type="bit" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="BRAND_ID" Type="bigint" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -711,7 +715,6 @@
           <Property Name="USER_ID" Type="int" />
           <Property Name="MANAGER_ID" Type="int" />
           <Property Name="EMAIL" Type="nvarchar" MaxLength="35" />
-          <Property Name="PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
@@ -1718,6 +1721,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE">
           <End Role="EMAIL_TEMPLATE" Type="Self.EMAIL_TEMPLATE" Multiplicity="0..1" />
           <End Role="WORKFLOW_EMAIL" Type="Self.WORKFLOW_EMAIL" Multiplicity="*" />
@@ -2403,6 +2418,10 @@
             <End Role="T1001W" EntitySet="T1001W" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_USER" Association="Self.FK_VIRTUAL_PLANT_MAP_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE" Association="Self.FK_WORKFLOW_EMAIL_EMAIL_TEMPLATE">
             <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
             <End Role="WORKFLOW_EMAIL" EntitySet="WORKFLOW_EMAIL" />
@@ -2959,6 +2978,19 @@
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
+          <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T1001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W">
+            <End Role="T1001W" EntitySet="T1001W" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_USER" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
           <EntitySet Name="ZAIDM_EX_POA" EntityType="EMSModel.ZAIDM_EX_POA" />
           <AssociationSet Name="FK_PBCK1_ZAIDM_EX_POA" Association="EMSModel.FK_PBCK1_ZAIDM_EX_POA">
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
@@ -2983,15 +3015,6 @@
           <AssociationSet Name="FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA">
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
-          </AssociationSet>
-          <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
-          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T1001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W">
-            <End Role="T1001W" EntitySet="T1001W" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="CK5">
@@ -3637,6 +3660,7 @@
           <Property Name="PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
           <NavigationProperty Name="ZAIDM_EX_POA1" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER1" FromRole="USER" ToRole="ZAIDM_EX_POA" />
         </EntityType>
@@ -4440,6 +4464,10 @@
           <NavigationProperty Name="T1001" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001" />
           <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001W" />
           <NavigationProperty Name="T1001W1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T1001W1" FromRole="VIRTUAL_PLANT_MAP" ToRole="T1001W" />
+          <Property Name="IS_DELETED" Type="Boolean" />
+          <Property Name="CREATED_BY" Type="Int32" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_USER" FromRole="VIRTUAL_PLANT_MAP" ToRole="USER" />
           </EntityType>
         <Association Name="FK_VIRTUAL_PLANT_MAP_T1001">
           <End Type="EMSModel.T1001" Role="T1001" Multiplicity="0..1" />
@@ -4461,8 +4489,8 @@
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="Int32" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
@@ -4506,6 +4534,7 @@
           <Property Name="BRAND_ID" Type="Int64" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -5094,6 +5123,52 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PLANT_RECEIVE_MATERIAL">
+          <Key>
+            <PropertyRef Name="PLANT_MATERIAL_ID" />
+          </Key>
+          <Property Name="PLANT_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PLANT_ID" Type="Int64" Nullable="false" />
+          <Property Name="GOODTYPE_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="T1001W" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T1001W">
+          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T1001W">
+              <PropertyRef Name="PLANT_ID" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="ZAIDM_EX_POA">
           <Key>
             <PropertyRef Name="POA_ID" />
@@ -5118,7 +5193,6 @@
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="ZAIDM_EX_POA" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER1" FromRole="ZAIDM_EX_POA" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_POA_MAP" Relationship="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" FromRole="ZAIDM_EX_POA" ToRole="ZAIDM_POA_MAP" />
-          <Property Name="PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_PBCK1_ZAIDM_EX_POA">
           <End Type="EMSModel.ZAIDM_EX_POA" Role="ZAIDM_EX_POA" Multiplicity="0..1" />
@@ -5189,40 +5263,6 @@
             </Principal>
             <Dependent Role="ZAIDM_POA_MAP">
               <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="PLANT_RECEIVE_MATERIAL">
-          <Key>
-            <PropertyRef Name="PLANT_MATERIAL_ID" />
-          </Key>
-          <Property Name="PLANT_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PLANT_ID" Type="Int64" Nullable="false" />
-          <Property Name="GOODTYPE_ID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="T1001W" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="T1001W" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
-        </EntityType>
-        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T1001W">
-          <End Type="EMSModel.T1001W" Role="T1001W" Multiplicity="1" />
-          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T1001W">
-              <PropertyRef Name="PLANT_ID" />
-            </Principal>
-            <Dependent Role="PLANT_RECEIVE_MATERIAL">
-              <PropertyRef Name="PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="GOODTYPE_ID" />
-            </Principal>
-            <Dependent Role="PLANT_RECEIVE_MATERIAL">
-              <PropertyRef Name="GOODTYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5875,6 +5915,9 @@
           <EntitySetMapping Name="VIRTUAL_PLANT_MAP">
             <EntityTypeMapping TypeName="EMSModel.VIRTUAL_PLANT_MAP">
               <MappingFragment StoreEntitySet="VIRTUAL_PLANT_MAP">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="EXPORT_PLANT_ID" ColumnName="EXPORT_PLANT_ID" />
                 <ScalarProperty Name="IMPORT_PLANT_ID" ColumnName="IMPORT_PLANT_ID" />
                 <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
@@ -5913,6 +5956,7 @@
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+                <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
                 <ScalarProperty Name="BRAND_ID" ColumnName="BRAND_ID" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
@@ -6003,10 +6047,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PLANT_RECEIVE_MATERIAL">
+            <EntityTypeMapping TypeName="EMSModel.PLANT_RECEIVE_MATERIAL">
+              <MappingFragment StoreEntitySet="PLANT_RECEIVE_MATERIAL">
+                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="PLANT_MATERIAL_ID" ColumnName="PLANT_MATERIAL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_POA">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_POA">
               <MappingFragment StoreEntitySet="ZAIDM_EX_POA">
-                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
                 <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
@@ -6021,15 +6073,6 @@
                 <ScalarProperty Name="POA_ID_CARD" ColumnName="POA_ID_CARD" />
                 <ScalarProperty Name="POA_CODE" ColumnName="POA_CODE" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PLANT_RECEIVE_MATERIAL">
-            <EntityTypeMapping TypeName="EMSModel.PLANT_RECEIVE_MATERIAL">
-              <MappingFragment StoreEntitySet="PLANT_RECEIVE_MATERIAL">
-                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="PLANT_MATERIAL_ID" ColumnName="PLANT_MATERIAL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
