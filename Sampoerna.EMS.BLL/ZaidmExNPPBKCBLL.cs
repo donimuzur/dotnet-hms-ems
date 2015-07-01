@@ -67,5 +67,20 @@ namespace Sampoerna.EMS.BLL
             _repository.Update(existingNppbkc);
             _uow.SaveChanges();
         }
+
+
+        public void Update(ZAIDM_EX_NPPBKC nppbkc)
+        {
+            try
+            {
+                _repository.Update(nppbkc);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                _uow.RevertChanges();
+                throw;
+            }
+        }
     }
 }

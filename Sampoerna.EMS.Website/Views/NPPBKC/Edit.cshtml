@@ -74,6 +74,7 @@
                                                         <label class="col-md-3 long">Region Office of DGCE</label>
                                                         <div class="col-md-9">
                                                             @Html.TextAreaFor(model => model.Detail.RegionOfficeOfDGCE, new { @class = "form-control", rows = "5" })
+                                                            @Html.ValidationMessageFor(model => model.Detail.RegionOfficeOfDGCE)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -90,6 +91,7 @@
                                                         <label class="col-md-3">Text to</label>
                                                         <div class="col-md-9">
                                                             @Html.TextAreaFor(model => model.Detail.TextTo, new { @class = "form-control", rows = "5" })
+                                                            @Html.ValidationMessageFor(model => model.Detail.TextTo)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -106,6 +108,7 @@
                                                         <label class="col-md-3">City Alias</label>
                                                         <div class="col-md-9">
                                                             @Html.TextBoxFor(model => model.Detail.CityAlias, new { @class = "form-control" })
+                                                            @Html.ValidationMessageFor(model => model.Detail.CityAlias)
                                                         </div>
                                                     </div>
                                                 </div>

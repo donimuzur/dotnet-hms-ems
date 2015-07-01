@@ -34,8 +34,21 @@
                         .draw();
                 });
             });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
+            
+          
+             @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: alert('@TempData[Constans.SubmitType.Save]');
+            }
+             @if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: alert('@TempData[Constans.SubmitType.Update]');
+            }
+            @if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: alert('@TempData[Constans.SubmitType.Delete]');
+            }
+
 
            $('#MenuNPPBKC').addClass('active');
 
@@ -93,26 +106,26 @@
                         {
                             <tr>
                                 <td>
-                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.NPPBKC_ID })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.NPPBKC_ID })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.NPPBKC_NO)
+                                    @Html.DisplayFor(modelItem => item.NppbckNo)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ADDR1)
+                                    @Html.DisplayFor(modelItem => item.Address1)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.CITY_ALIAS)
+                                    @Html.DisplayFor(modelItem => item.CityAlias)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.REGION_OFFICE_DGCE)
+                                    @Html.DisplayFor(modelItem => item.RegionOfficeOfDGCE)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.TEXT_TO)
+                                    @Html.DisplayFor(modelItem => item.TextTo)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.IS_DELETED)
+                                    @Html.DisplayFor(modelItem => item.Is_Deleted)
                                 </td>
                             </tr>
                         }

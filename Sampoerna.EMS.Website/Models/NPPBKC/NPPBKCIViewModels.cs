@@ -10,10 +10,10 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
 
         public NPPBKCIViewModels()
         {
-            Details = new List<ZAIDM_EX_NPPBKC>();
+            Details = new List<VirtualNppbckDetails>();
             
         }
-        public List<ZAIDM_EX_NPPBKC> Details { get; set; }
+        public List<VirtualNppbckDetails> Details { get; set; }
         
      
     }
@@ -35,11 +35,13 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string Address1 { get; set; }
         public string Address2 { get; set; }
         public string City { get; set; }
+        [Required(ErrorMessage = "please fill this field")]
         public string CityAlias { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
         public string RegionOfficeOfDGCE{ get; set; }
         public string Region { get; set; }
+        [Required(ErrorMessage = "please fill this field")]
         public string TextTo { get; set; }
         public DateTime? CreateDate { get; set; }
        

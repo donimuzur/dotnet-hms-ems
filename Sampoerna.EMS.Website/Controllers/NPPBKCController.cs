@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = Enums.MenuList.MasterData,
                 CurrentMenu = PageInfo,
-                Details = _nppbkcBll.GetAll()
+                Details = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll()) 
             };
 
             //ViewBag.Message = TempData["message"];
@@ -48,9 +48,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(long id)
         {
             var nppbkc = _nppbkcBll.GetById(id);
+
             if (nppbkc == null)
             {
                 HttpNotFound();
+            }
+            if (nppbkc.IS_DELETED == true)
+            {
+                return RedirectToAction("Detail", "POA", new { id = nppbkc.NPPBKC_ID });
             }
             var model = new NppbkcFormModel();
             model.MainMenu = Enums.MenuList.MasterData;
@@ -83,7 +88,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 var nppbkc = _nppbkcBll.GetById(nppbkcId);
                 AutoMapper.Mapper.Map(model.Detail, nppbkc);
 
-                _nppbkcBll.Save(nppbkc);
+                _nppbkcBll.Update(nppbkc);
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
 
             }
