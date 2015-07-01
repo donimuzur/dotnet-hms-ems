@@ -269,7 +269,7 @@
     @Scripts.Render("~/bundles/validate")
     @Scripts.Render("~/bundles/datatables")
 
-
+    <script src="~/Scripts/js/vendors/bootstrap-select.min.js"></script>
 
 
     @RenderSection("styles", required: false)
@@ -284,6 +284,8 @@
         });
        
         $(document).ready(function () {
+            $(".selectpicker.form-control").attr('data-live-search', true);
+
             if ($('#changesHistoryTable') != null)
             {
                 $('#changesHistoryTable .filters th').each(function () {
