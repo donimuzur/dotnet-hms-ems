@@ -30,7 +30,7 @@
                 });
             });
 
-            
+            $('#MenuMasterUser').addClass("active");
         });
     </script>
 }
@@ -81,7 +81,7 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.ActionLink("Detail", "ViewDetail", new { id = item.USER_ID })
+                                    @Html.ActionLink("Detail", "Detail", new { id = item.USER_ID })
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.USERNAME)

@@ -158,6 +158,12 @@
                                         Goods Type Group
                                     </a>
                                 </li>
+                                <li>
+                                    <a id="MenuMasterUser" href="@Url.Action("Index", "User")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="other">
@@ -263,7 +269,7 @@
     @Scripts.Render("~/bundles/validate")
     @Scripts.Render("~/bundles/datatables")
 
-
+    <script src="~/Scripts/js/vendors/bootstrap-select.min.js"></script>
 
 
     @RenderSection("styles", required: false)
@@ -278,6 +284,8 @@
         });
        
         $(document).ready(function () {
+            $(".selectpicker.form-control").attr('data-live-search', true);
+
             if ($('#changesHistoryTable') != null)
             {
                 $('#changesHistoryTable .filters th').each(function () {
