@@ -37,8 +37,7 @@ namespace Sampoerna.EMS.XMLReader
                     var vendorCodeXml = xElement.Element("LIFNR").Value;
 
                     var exsitingVendor = GetExVendor(vendorCodeXml);
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     item.LIFNR = vendorCodeXml;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.NAME2 = xElement.Element("NAME2").Value;

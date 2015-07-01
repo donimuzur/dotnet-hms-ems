@@ -61,10 +61,9 @@ namespace Sampoerna.HMS.Scheduler
                 //Ask the scheduler factory for a scheduler
                 IScheduler scheduler = _quartzContainer.GetInstance<IScheduler>();
                 scheduler.Start();
-
-                logger.Info("Starting scheduler, job listed : ");
+                 logger.Debug("Starting scheduler, job listed : ");
                 IList<string> jobGroups = scheduler.GetJobGroupNames();
-                logger.Info("groups: " + string.Join(" - ", jobGroups.ToArray()));
+                logger.Debug("groups: " + string.Join(" - ", jobGroups.ToArray()));
                 IList<string> triggerGroups = scheduler.GetTriggerGroupNames();
 
                 foreach (string group in jobGroups)
@@ -78,16 +77,17 @@ namespace Sampoerna.HMS.Scheduler
                         var triggers = scheduler.GetTriggersOfJob(jobKey);
                         foreach (ITrigger trigger in triggers)
                         {
-                            logger.Info("group: " + group);
-                            logger.Info("jobkey name: " + jobKey.Name);
-                            logger.Info("detail description: " + detail.Description);
-                            logger.Info("trigger key name: " + trigger.Key.Name);
-                            logger.Info("trigger key group: " + trigger.Key.Group);
-                            logger.Info("trigger type name: " + trigger.GetType().Name);
-                            logger.Info("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
+                            logger.Debug("group: " + group);
+                            logger.Debug("jobkey name: " + jobKey.Name);
+                            logger.Debug("detail description: " + detail.Description);
+                            logger.Debug("trigger key name: " + trigger.Key.Name);
+                            logger.Debug("trigger key group: " + trigger.Key.Group);
+                            logger.Debug("trigger type name: " + trigger.GetType().Name);
+                            logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
                             DateTimeOffset? nextFireTime = trigger.GetNextFireTimeUtc();
                             if (nextFireTime.HasValue)
                             {
+                               
                                 logger.Info("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
                             }
 
@@ -104,7 +104,7 @@ namespace Sampoerna.HMS.Scheduler
             }
             catch (Exception ex)
             {
-                logger.Error("first" +ex);
+                logger.Error("first-" +ex);
             }
         }
         public static void StopJobs()

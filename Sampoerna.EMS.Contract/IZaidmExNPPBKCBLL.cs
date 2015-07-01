@@ -8,5 +8,7 @@ namespace Sampoerna.EMS.Contract
         ZAIDM_EX_NPPBKC GetById(long id);
         ZAIDM_EX_NPPBKC GetDetailsById(long id);
         List<ZAIDM_EX_NPPBKC> GetAll();
+
+
     }
 }

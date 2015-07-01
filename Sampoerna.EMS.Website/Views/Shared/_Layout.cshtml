@@ -17,7 +17,7 @@
     @Styles.Render("~/Content/jqueryui/autocomplete/css")
     <!-- Load Modernizr.js -->
     @Scripts.Render("~/bundles/modernizrmin")
-
+    <link href="~/Content/css/loading.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -59,14 +59,14 @@
     <div class="excise-site">
         <div class="side-menu">
             <div class="side-main">
-                <h5>Main</h5>
+                <h5>Main Menu</h5>
                 <i class="fa fa-caret-left"></i>
             </div>
             <div class="list-group">
                 @{
                     switch (Model.MainMenu)
                     {
-                        case Enums.MenuList.ExcisableGoodsMovement:
+                        case Enums.MenuList.PBCK1:
                             <div class="collapse-menu active open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -74,8 +74,8 @@
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a class="active" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
-                                    <li><a href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                    <li><a id="MenuPBCK1OpenListDocument" class="active" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
+                                    <li><a id="MenuPBCK1CompletedListDocument" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
                                 </ul>
                             </div>
                             <div class="collapse-menu">
@@ -116,46 +116,46 @@
                             </a>
                             <ul class="child list">
                                 <li>
-                                    <a class="active" href="@Url.Action("Index", "POA")">
+                                    <a id="MenuPOA" href="@Url.Action("Index", "POA")">
                                         <i class="fa fa-angle-right"></i>
                                         POA
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="active" href="@Url.Action("Index", "NPPBKC")">
-                                        <i class="fa fa-angle-right"></i>
-                                        NPPBKC
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="active" href="@Url.Action("Index", "Plant")">
+                                    <a id="MenuMasterPlant" href="@Url.Action("Index", "Plant")">
                                         <i class="fa fa-angle-right"></i>
                                         Master Plant
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="1.3-header-footer-list.html">
+                                   
+                                    <a id="MenuNPPBKC" href="@Url.Action("Index", "NPPBKC")">
+                                        <i class="fa fa-angle-right"></i>
+                                        NPPBKC
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuHeaderFooter" href="@Url.Action("Index", "HeaderFooter")">
                                         <i class="fa fa-angle-right"></i>
                                         Header Footer
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="active" href="@Url.Action("Index", "BrandRegistration")">
+                                    <a href="@Url.Action("Index", "BrandRegistration")">
                                         <i class="fa fa-angle-right"></i>
                                         Brand Registration
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="active" href="@Url.Action("Index", "VirtualMappingPlant")">
+                                    <a id="MenuMasterVirtualMappingPlant" href="@Url.Action("Index", "VirtualMappingPlant")">
                                         <i class="fa fa-angle-right"></i>
                                         Maping Virtual Plant
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="active" href="@Url.Action("Index", "ExcisableGoodsTypeGroup")">
+                                    <a id="MenuMasterGoodType" href="@Url.Action("Index", "GoodsTypeGroup")" > 
                                         <i class="fa fa-angle-right"></i>
-                                        Excisable Goods<br />
-                                        Type Group
+                                        Goods Type Group
                                     </a>
                                 </li>
                             </ul>
@@ -260,7 +260,53 @@
     <!-- Load Fixed Header table JavaScript -->
     @Scripts.Render("~/bundles/fixedheadertable")
     @Scripts.Render("~/bundles/customjs")
+    @Scripts.Render("~/bundles/validate")
+    @Scripts.Render("~/bundles/datatables")
+
+
+
+
     @RenderSection("styles", required: false)
+    
+    <script type="text/javascript">
+        $('.toggle-row').click(function () {
+
+            var filter = $(".filters");
+            filter.slideToggle(100).promise().done(function () {
+
+            });
+        });
+       
+        $(document).ready(function () {
+            if ($('#changesHistoryTable') != null)
+            {
+                $('#changesHistoryTable .filters th').each(function () {
+                    var idx = $(this).index();
+                    var title = $('#changesHistoryTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+
+                });
+                var tableHistory = $('#changesHistoryTable').DataTable();
+                // Setup - add a text input to each footer cell
+                if (tableHistory.columns().eq(0) != null)
+                    {
+                tableHistory.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        tableHistory
+                            .column(colIdx)
+                            .search(this.value)
+                            .draw();
+                    });
+                });
+                    }
+
+            }
+            
+        });
+        
+    </script>
+
     @RenderSection("scripts", required: false)
 
 

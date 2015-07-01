@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlSeriesDataMapper()
+        public XmlSeriesDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_SERIES");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 
@@ -30,8 +30,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.SERIES_CODE = Convert.ToInt32(xElement.Element("SERIES_CODE").Value);
                     item.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingSeries = GetSeries(item.SERIES_CODE);
                     if (existingSeries != null)
                     {
