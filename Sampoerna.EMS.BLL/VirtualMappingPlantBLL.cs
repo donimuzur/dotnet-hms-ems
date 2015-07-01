@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<VIRTUAL_PLANT_MAP>();
             _repositoryT1001 = _uow.GetGenericRepository<T1001>();
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
 
         }
 
@@ -51,22 +52,25 @@ namespace Sampoerna.EMS.BLL
 
         public void Delete(int id, int userId) {
             var data = _repository.GetByID(id);
-            //data.IS_DELETED = true;
+            data.IS_DELETED = true;
             _repository.Update(data);
+            
 
 
             var changes = new CHANGES_HISTORY
             {
-                FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
+                FORM_TYPE_ID = Core.Enums.MenuList.VirtualMappingPlant,
                 FORM_ID = data.VIRTUAL_PLANT_MAP_ID,
-                //FIELD_NAME = "IS_DELETED",
+                FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now,
-                //OLD_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL",
+                OLD_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL",
                 NEW_VALUE = true.ToString()
             };
 
             _changesHistoryBll.AddHistory(changes);
+
+            _uow.SaveChanges();
         }
 
         private void SetChanges(VIRTUAL_PLANT_MAP origin, VIRTUAL_PLANT_MAP data, int userId)
@@ -75,7 +79,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("COMPANY_ID", origin.COMPANY_ID.Equals(data.COMPANY_ID));
             changesData.Add("IMPORT_PLANT_ID", origin.IMPORT_PLANT_ID.Equals(data.IMPORT_PLANT_ID));
             changesData.Add("EXPORT_PLANT_ID", origin.EXPORT_PLANT_ID.Equals(data.EXPORT_PLANT_ID));
-            //changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
+            changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
             
 
             foreach (var listChange in changesData)
@@ -104,11 +108,11 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.IMPORT_PLANT_ID.ToString();
                             changes.NEW_VALUE = data.IMPORT_PLANT_ID.ToString();
                             break;
-                        
-                        //case "IS_DELETED":
-                        //    changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
-                        //    changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
-                        //    break;
+
+                        case "IS_DELETED":
+                            changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
+                            break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }

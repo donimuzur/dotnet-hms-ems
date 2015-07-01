@@ -26,8 +26,7 @@ namespace Sampoerna.EMS.Core
             NPPBKC = 19,
 
             HeaderFooter = 20,
-            User = 21
-
+            User = 21,
             VirtualMappingPlant = 22,
             MaterialMaster = 23
         }

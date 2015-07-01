@@ -47,7 +47,7 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Import Virtual Plant</label>
                                                     <div class="col-md-4">
-                                                        @Html.TextBoxFor(model => model.ImportPlantId, "Select", new {@class = "form-control"})
+                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "selectpicker form-control" })
                                                         @Html.ValidationMessageFor(model => model.ImportPlantId)
                                                     </div>
                                                 </div>
@@ -56,7 +56,7 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Export Virtual Plant</label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new {@class = "form-control"})
+                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "selectpicker form-control" })
                                                         @Html.ValidationMessageFor(model => model.ExportPlantId)
                                                     </div>
                                                 </div>
@@ -82,10 +82,10 @@
                 location.href = '@Url.Action("Index", "VirtualMappingPlant")';
             });
 
-            $("#ImportPlantId").autocomplete({
+            @*$("#ImportPlantId").autocomplete({
                     source: '@Url.Action("PlantList", "VirtualMappingPlant")',
                     minLength: 1
-            });
+            });*@
             
         });
 

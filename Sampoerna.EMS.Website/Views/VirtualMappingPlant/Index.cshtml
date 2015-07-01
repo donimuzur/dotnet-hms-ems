@@ -63,6 +63,7 @@
                                 <th> Company </th>
                                 <th> Import Virtual Plant </th>
                                 <th> Export Virtual Plant</th>
+                                <th> Deleted</th>
                             </tr>
 
                         </thead>
@@ -92,6 +93,9 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.ExportPlanName)
+                                    </td>
+                                    <td>
+                                        @Html.CheckBoxFor(modelItem => item.IsDeleted, new { @disabled = "disabled" })
                                     </td>
 
                                 </tr>

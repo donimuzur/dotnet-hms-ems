@@ -10,10 +10,10 @@
                     <a href="@Url.Action("Index", "VirtualMappingPlant")">
                         <button class="btn btn-grey">Back</button>
                     </a>
-                    @*@if (!Model.Detail.IS_DELETED)
+                    @if (!Model.IsDeleted)
                     {
                         <a href="javascript:void(0);" onclick="deleteData()" class="btn btn-grey">Delete</a>
-                    }*@
+                    }
                 </div>
             </div>
         </div>
@@ -101,5 +101,11 @@
           
         });
 
+        var deleteData = function () {
+            if (confirm('Are You Sure')) {
+                window.location = "@Url.Action("Delete", "VirtualMappingPlant", new { id = @Model.VirtualMapId })";
+            }
+
+        };
     </script>
 }
