@@ -1,6 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
 
 <table id="ck5Table" class="display" cellspacing="0" width="100%">
+<table id="ck5Table" class="table cell-border display no-wrap" cellspacing="0" width="100%">
     <thead>
         <tr>
             <th>Action</th>
@@ -41,7 +42,6 @@
                 <td>@rownum</td>
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
                 <td>@Html.DisplayFor(model => item.Qty)</td>
-
                 <td>
                     @Html.DisplayFor(model => item.POA)
                 </td>

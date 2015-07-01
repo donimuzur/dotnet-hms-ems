@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual CK2 CK2 { get; set; }
         public virtual CK3 CK3 { get; set; }
         public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
-        public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
+        public virtual T1001W T1001W { get; set; }
     }
 }

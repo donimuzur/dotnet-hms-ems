@@ -40,12 +40,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBrandRegistrationBLL.cs" />
+    <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK4C_BLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IDocumentSequenceNumberBLL.cs" />
     <Compile Include="IEmailTemplateBLL.cs" />
+    <Compile Include="IExGroupType.cs" />
     <Compile Include="IGenericRepository.cs" />
+    <Compile Include="IHeaderFooterBLL.cs" />
     <Compile Include="IMasterDataBLL.cs" />
     <Compile Include="IMonthBLL.cs" />
     <Compile Include="INPPBKCPlant.cs" />
@@ -71,6 +74,10 @@
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
       <Project>{3c89fdd1-a506-4047-89e3-40708cf6b2c5}</Project>
       <Name>Sampoerna.EMS.BusinessObject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

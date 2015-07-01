@@ -29,12 +29,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
         
-        public static SelectList GetCreatorList()
+        public static SelectList GetCreatorList(object selectedValue=null)
         {
             IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
             var users = userBll.GetUsers(new UserInput());
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue );
         }
 
         public static SelectList GetNppbkcAll()
@@ -149,6 +149,23 @@ namespace Sampoerna.EMS.Website.Code
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
             return nppbkcbll.GetById(id);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+        
+        
+        public static SelectList GetCompanyList()
+        {
+            ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
+            var data = companyBll.GetAllData();
+            return new SelectList(data, "COMPANY_ID", "BUKRSTXT");
+        }
+
+        public static SelectList GetVirtualPlantList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var data = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
     }
 }

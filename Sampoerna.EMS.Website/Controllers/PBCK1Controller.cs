@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IMonthBLL _monthBll;
         private IPlantBLL _plantBll;
+        private Enums.MenuList _mainMenu;
         
         public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
@@ -32,6 +33,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _prodTypeBll = prodTypeBll;
             _monthBll = monthBll;
             _plantBll = plantBll;
+            _mainMenu = Enums.MenuList.PBCK1;
         }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
@@ -65,7 +67,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return IndexInitial(new PBCK1ViewModel()
             {
-                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
+                MainMenu = _mainMenu,
                 CurrentMenu = PageInfo
             });
         }
@@ -82,12 +84,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(long id)
         {
-            return View(new PBCK1ItemViewModel() { MainMenu = Enums.MenuList.ExcisableGoodsMovement, CurrentMenu = PageInfo });
+            return View(new PBCK1ItemViewModel() { MainMenu = _mainMenu, CurrentMenu = PageInfo });
         }
 
         public ActionResult Details(long id)
         {
-            return View(new PBCK1ItemViewModel() { MainMenu = Enums.MenuList.ExcisableGoodsMovement, CurrentMenu = PageInfo });
+            return View(new PBCK1ItemViewModel() { MainMenu = _mainMenu, CurrentMenu = PageInfo });
         }
 
         [HttpPost]
@@ -181,7 +183,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new PBCK1ItemViewModel
             {
-                MainMenu = Enums.MenuList.ExcisableGoodsMovement,
+                MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Detail = new PBCK1Item(),
                 NppbkcList = GlobalFunctions.GetNppbkcAll(),

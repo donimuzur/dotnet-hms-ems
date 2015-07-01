@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlProdTypeDataMapper()
+        public XmlProdTypeDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_PRODTYP");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 
@@ -30,8 +30,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.PRODUCT_CODE = Convert.ToInt32(xElement.Element("PRODUCT_CODE").Value);
                     item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    var dateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingProdType = GetProdType(item.PRODUCT_CODE);
                     if (existingProdType != null)
                     {

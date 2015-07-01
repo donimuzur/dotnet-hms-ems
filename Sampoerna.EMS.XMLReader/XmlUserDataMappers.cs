@@ -70,8 +70,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.LAST_NAME = xElement.Element("LAST_NAME").Value;
                         item.EMAIL = xElement.Element("EMAIL").Value;
                         item.CREATED_DATE = DateTime.Now;
-                        var dateXml = DateTime.MinValue;
-                        DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out dateXml);
+                        var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                         var exsitingUser = GetUser(item.USER_ID);
                         if (exsitingUser != null)
                         {
