@@ -98,6 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new PBCK1ViewModel { SearchInput = { POAList = listPoa } };
             return Json(model);
         }
+
         [HttpPost]
         public PartialViewResult Filter(PBCK1ViewModel model)
         {
@@ -106,9 +107,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFileConversion(HttpPostedFileBase ProdConvExcelFile)
+        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
         {
-            var data = (new ExcelReader()).ReadExcel(ProdConvExcelFile);
+            var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
             var model = new PBCK1ItemViewModel();
             if (data != null)
             {
@@ -133,17 +134,17 @@ namespace Sampoerna.EMS.Website.Controllers
                     catch (Exception)
                     {
                         continue;
-
                     }
 
                 }
             }
             return PartialView("_ProdConvList", model);
         }
+
         [HttpPost]
-        public PartialViewResult UploadFilePlan(HttpPostedFileBase ProdPlanExcelFile)
+        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
         {
-            var data = (new ExcelReader()).ReadExcel(ProdPlanExcelFile);
+            var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
             var model = new PBCK1ItemViewModel();
             if (data != null)
             {
@@ -185,7 +186,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateInitial(PBCK1ItemViewModel model)
         {
-                MainMenu = _mainMenu,
+            model.MainMenu = _mainMenu;
             model.MainMenu = Enums.MenuList.ExcisableGoodsMovement;
             model.NppbkcList = GlobalFunctions.GetNppbkcAll();
             model.MonthList = GlobalFunctions.GetMonthList();
