@@ -12,7 +12,7 @@
     <form id="form1" runat="server">
     <div>
         <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
-        <rsweb:ReportViewer ID="myviewer" runat="server" Width="100%" ShowBackButton="False" ShowCredentialPrompts="False" ShowDocumentMapButton="False" ShowExportControls="False" ShowFindControls="False" ShowPageNavigationControls="False" ShowWaitControlCancelLink="False" ShowZoomControl="False">
+        <rsweb:ReportViewer ID="myviewer" runat="server" Width="100%" Height="100%" ShowBackButton="False" ShowCredentialPrompts="False" ShowDocumentMapButton="False" ShowExportControls="False" ShowFindControls="False" ShowWaitControlCancelLink="False" ShowZoomControl="False">
         </rsweb:ReportViewer>
     
     </div>

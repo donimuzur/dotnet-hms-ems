@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Core
             COMPANY = 17,
             POA = 18,
             NPPBKC = 19,
-            HHeaderFooter = 20,
+            HeaderFooter = 20,
             BrandRegistration = 21
         }
         public enum PBCK1Type
