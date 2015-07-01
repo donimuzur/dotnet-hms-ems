@@ -99,9 +99,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                    model.CREATED_BY = CurrentUser.USER_ID;
-                    model.CREATED_DATE = DateTime.Now;
-                    MaterialOutput output = _materialBll.Save(model);
+                    //model.CREATED_BY = CurrentUser.USER_ID;
+                    //model.CREATED_DATE = DateTime.Now;
+                    MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);
                     return RedirectToAction("Index");    
                 }
 
@@ -109,7 +109,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(data);
                 
             }
-            catch
+            catch(Exception ex)
             {
                 InitCreateModel(data);
                 return View(data);
@@ -123,11 +123,27 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = _materialBll.getByID(id);
             
-            var model = Mapper.Map<MaterialEditViewModel>(data);
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
-            model.MaterialId = id;
-            InitEditModel(model);
-            return View(model);
+            
+
+            if (data.IS_FROM_SAP.HasValue && data.IS_FROM_SAP.Value)
+            {
+                var model = Mapper.Map<MaterialDetailViewModel>(data);
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
+                model.MaterialId = id;
+                //InitEditModel(model);
+
+                return View("Details", model);
+            }
+            else {
+                var model = Mapper.Map<MaterialEditViewModel>(data);
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
+                model.MaterialId = id;
+                InitEditModel(model);
+
+                return View("Edit", model);
+            }
+
+            
         }
 
         //
@@ -165,10 +181,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         data.MATERIAL_NUMBER = model.MaterialNumber;
                         data.PLANT_ID = model.PlantId;
                         data.PURCHASING_GROUP = model.PurchasingGroup;
-                        
+                        //data.CHANGED_BY = CurrentUser.USER_ID;
+                        //data.CHANGED_DATE = DateTime.Now;
                     }
                     
-                    _materialBll.Save(data);
+                    _materialBll.Save(data,CurrentUser.USER_ID);
                 }
                 return RedirectToAction("Index");
             }
@@ -183,12 +200,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // POST: /Material/Delete/5
-        [HttpPost]
+        
         public ActionResult Delete(int id, FormCollection collection)
         {
             try
             {
                 // TODO: Add delete logic here
+                _materialBll.Delete(id, CurrentUser.USER_ID);
 
                 return RedirectToAction("Index");
             }

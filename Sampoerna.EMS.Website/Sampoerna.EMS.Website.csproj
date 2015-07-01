@@ -242,14 +242,11 @@
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
-
     <Compile Include="Models\BrandRegistration\BrandRegistrationCreateViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
-     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
-
-    <Compile Include="Models\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
@@ -266,7 +263,6 @@
     <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
-    <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
@@ -777,7 +773,6 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>

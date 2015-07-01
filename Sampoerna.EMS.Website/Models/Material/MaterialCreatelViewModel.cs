@@ -101,7 +101,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         }
 
         [Required, Display(Name = "Convertion")]
-        public object Convertion { get; set; }
+        public decimal? Convertion { get; set; }
 
         // list for dropdown in the form
         public SelectList PlantList { get; set; }

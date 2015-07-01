@@ -95,10 +95,10 @@
 										            <div class="row">
 													    <label class="col-md-4">Excisable Good Type</label>
 													    <div class="col-md-8">
-                                                            <div class="col-md-8">
+                                                            
                                                                 @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
                                                                 @Html.ValidationMessageFor(model => model.GoodTypeId)
-                                                            </div>
+                                                            
 													    </div>
 												    </div>
 											    </div>		
@@ -106,10 +106,10 @@
 										            <div class="row">
 													    <label class="col-md-4">Issue Storage Loc</label>
 													    <div class="col-md-8">
-                                                            <div class="col-md-8">
+                                                            
                                                                 @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control" })
                                                                 @Html.ValidationMessageFor(model => model.IssueStorageLoc)
-                                                            </div>
+                                                            
 													    </div>
 												    </div>
 											    </div>
@@ -128,7 +128,7 @@
 										        <div class="row">
 													<label class="col-md-4">Create By</label>
                                                     <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control" ,@disabled = "disabled" })
                                                         @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control" })
                                                         @Html.ValidationMessageFor(model => model.CreatedBy)
                                                     </div>
@@ -138,11 +138,11 @@
 										        <div class="row">
 													<label class="col-md-4">Changed By</label>
                                                     <div class="col-md-8">
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control" })
+                                                        
+                                                            @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
                                                             @Html.HiddenFor(model => model.ChangedById, new { @class = "form-control" })
                                                             @Html.ValidationMessageFor(model => model.CreatedBy)
-                                                        </div>
+                                                        
                                                     </div>
 												</div>
 											</div>	
@@ -150,7 +150,7 @@
 										        <div class="row">
 													<label class="col-md-4">Created On</label>
 													<div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control datepicker" })
+                                                        @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
                                                         @Html.ValidationMessageFor(model => model.CreatedDate)
 													</div>
 												</div>
@@ -158,25 +158,31 @@
 											<div class="col-md-6">
 										        <div class="row">
 													<label class="col-md-4">Last Change On</label>
-													@Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control datepicker" })
-                                                    @Html.ValidationMessageFor(model => model.ChangedDate)
-												</div>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
+                                                        @Html.ValidationMessageFor(model => model.ChangedDate)
+                                                    </div>
+                                                 </div>
 											</div>
-											<div class="col-md-6">
-										        <div class="row">
-													<label class="col-md-4">Plant Deletion</label>
-													<div class="col-md-8">
-														@Html.CheckBoxFor(model => model.IsPlantDelete , new { @class = "form-control" })
-													</div>
-												</div>
-											</div>
-										</div>
+											
+										
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant Deletion</label>
+                                                    <div class="col-md-8">
+                                                        @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "form-control checkbox" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
 										<div class="row">
 											<div class="col-md-6">
 										        <div class="row">
 													<label class="col-md-4">Client Deletion</label>
                                                     <div class="col-md-8">
-                                                        @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "form-control" })
+                                                        @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "form-control checkbox" })
                                                     </div>
 												</div>
 											</div>

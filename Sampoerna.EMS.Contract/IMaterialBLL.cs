@@ -15,6 +15,8 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_MATERIAL> getAll();
 
-        MaterialOutput Save(ZAIDM_EX_MATERIAL data);
+        MaterialOutput Save(ZAIDM_EX_MATERIAL data, int userId);
+
+        void Delete(int id, int userId);
     }
 }

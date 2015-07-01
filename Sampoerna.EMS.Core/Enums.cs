@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Core
             COMPANY = 17,
             POA = 18,
             NPPBKC = 19,
+            HeaderFooter = 20,
             User = 21,
             BrandRegistration = 22,
 
