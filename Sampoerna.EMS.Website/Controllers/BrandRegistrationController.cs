@@ -18,8 +18,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExProdTypeBLL _productBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IPlantBLL _plantBll;
+        
 
-        public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, IChangesHistoryBLL changesHistoryBll)
+        public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
+            IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
+            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _brandRegistrationBll = brandRegistrationBll;
@@ -27,6 +31,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _productBll = productBll;
             _goodTypeBll = goodTypeBll;
             _changesHistoryBll = changesHistoryBll;
+            _plantBll = plantBll;
         }
 
         //
@@ -257,16 +262,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.StickerCode;
                         break;
                     case "PlantId":
-                        changes.OLD_VALUE = origin.PLANT_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.PlantId.ToString();
+                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(origin.PLANT_ID);
+                        changes.NEW_VALUE = _plantBll.GetPlantWerksById(updatedModel.PlantId);
                         break;
                     case "FACode":
                         changes.OLD_VALUE = origin.FA_CODE;
                         changes.NEW_VALUE = updatedModel.FaCode;
                         break;
                     case "PersonalizationCode":
-                        changes.OLD_VALUE = origin.PER_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.PersonalizationCode.ToString();
+                        changes.OLD_VALUE = _masterBll.GetPersonalizationDescById(origin.PER_ID);
+                        changes.NEW_VALUE =_masterBll.GetPersonalizationDescById(updatedModel.PersonalizationCode);
                         break;
                     case "BrandName":
                         changes.OLD_VALUE = origin.BRAND_CE;
@@ -281,24 +286,24 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.SkepDate.ToString("dd MMM yyyy");
                         break;
                     case "ProductCode":
-                        changes.OLD_VALUE = origin.PRODUCT_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.ProductCode.ToString();
+                        changes.OLD_VALUE = _masterBll.GetProductCodeTypeDescById(origin.PRODUCT_ID);
+                        changes.NEW_VALUE = _masterBll.GetProductCodeTypeDescById(updatedModel.ProductCode);
                         break;
                     case "SeriesId":
-                        changes.OLD_VALUE = origin.SERIES_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.SeriesId.ToString();
+                        changes.OLD_VALUE = _masterBll.GetDataSeriesDescById(origin.SERIES_ID);
+                        changes.NEW_VALUE = _masterBll.GetDataSeriesDescById(updatedModel.SeriesId);
                         break;
                     case "Content":
                         changes.OLD_VALUE = origin.BRAND_CONTENT;
                         changes.NEW_VALUE = updatedModel.Content;
                         break;
                     case "MarketId":
-                        changes.OLD_VALUE = origin.MARKET_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.MarketId.ToString();
+                        changes.OLD_VALUE = _masterBll.GetMarketDescById(origin.MARKET_ID);
+                        changes.NEW_VALUE = _masterBll.GetMarketDescById(updatedModel.MarketId);
                         break;
                     case "CountryId":
-                        changes.OLD_VALUE = origin.COUNTRY_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.CountryId.ToString();
+                        changes.OLD_VALUE = _masterBll.GetCountryCodeById(origin.COUNTRY_ID);
+                        changes.NEW_VALUE = _masterBll.GetCountryCodeById(updatedModel.CountryId);
                         break;
                     case "HjeValue":
                         changes.OLD_VALUE = origin.HJE_IDR.ToString();
@@ -306,24 +311,24 @@ namespace Sampoerna.EMS.Website.Controllers
                         break;
 
                     case "HjeCurrency":
-                        changes.OLD_VALUE = origin.HJE_CURR.ToString();
-                        changes.NEW_VALUE = updatedModel.HjeCurrency.ToString();
+                        changes.OLD_VALUE = _masterBll.GetCurrencyCodeById(origin.HJE_CURR);
+                        changes.NEW_VALUE = _masterBll.GetCurrencyCodeById(updatedModel.HjeCurrency);
                         break;
                     case "Tariff":
                         changes.OLD_VALUE = origin.TARIFF.ToString();
                         changes.NEW_VALUE = updatedModel.Tariff.ToString();
                         break;
                     case "TariffCurrency":
-                        changes.OLD_VALUE = origin.TARIFF_CURR.ToString();
-                        changes.NEW_VALUE = updatedModel.TariffCurrency.ToString();
+                        changes.OLD_VALUE = _masterBll.GetCurrencyCodeById(origin.TARIFF_CURR);
+                        changes.NEW_VALUE = _masterBll.GetCurrencyCodeById(updatedModel.TariffCurrency);
                         break;
                     case "ColourName":
                         changes.OLD_VALUE = origin.COLOUR;
                         changes.NEW_VALUE = updatedModel.ColourName;
                         break;
                     case "GoodType":
-                        changes.OLD_VALUE = origin.GOODTYP_ID.ToString();
-                        changes.NEW_VALUE = updatedModel.GoodType.ToString();
+                        changes.OLD_VALUE = _goodTypeBll.GetGoodTypeDescById(origin.GOODTYP_ID);
+                        changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(updatedModel.GoodType);
                         break;
                     case "StartDate":
                         changes.OLD_VALUE = origin.START_DATE.HasValue ? origin.START_DATE.Value.ToString("dd MMM yyyy") : string.Empty;

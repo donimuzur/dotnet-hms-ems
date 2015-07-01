@@ -31,6 +31,10 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get().ToList();
         }
 
-       
+        public string GetGoodTypeDescById(int? id)
+        {
+            var dbData = _repository.GetByID(id);
+            return dbData == null ? string.Empty : dbData.EXT_TYP_DESC;
+        }
     }
 }

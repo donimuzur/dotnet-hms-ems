@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -57,6 +58,12 @@ namespace Sampoerna.EMS.BLL
                 _logger.Error(exception);
 
             }
+        }
+
+        public string GetPlantWerksById(long id)
+        {
+            var dbPlant = _repository.GetByID(id);
+            return dbPlant == null ? string.Empty : dbPlant.WERKS;
         }
     }
 }
