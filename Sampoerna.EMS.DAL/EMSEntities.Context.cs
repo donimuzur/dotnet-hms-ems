@@ -85,5 +85,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<T1001W> T1001W { get; set; }
         public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
+        public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
     }
 }
