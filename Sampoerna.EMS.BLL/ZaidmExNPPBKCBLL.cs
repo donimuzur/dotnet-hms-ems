@@ -14,12 +14,14 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
         private string includeTables = "ZAIDM_EX_KPPBC,T1001,C1LFA1";
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
+        public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger, IChangesHistoryBLL changesHistoryBll)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
+            _changesHistoryBll = changesHistoryBll;
         }
 
         public ZAIDM_EX_NPPBKC GetById(long id)

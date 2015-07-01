@@ -105,9 +105,9 @@
                         @foreach (var item in Model.Details)
                         {
                             <tr>
-                                <td>
-                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })"><i class="fa fa-pencil-square-o"></i></a>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"><i class=" fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })"><i class=" fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.NppbckNo)
