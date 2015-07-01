@@ -179,7 +179,7 @@ namespace Sampoerna.EMS.Website.Controllers
                  SetChanges(origin,poa);
                
                 _poaBll.Update(poa);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
 
