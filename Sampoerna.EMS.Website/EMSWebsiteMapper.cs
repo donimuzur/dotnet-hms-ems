@@ -544,7 +544,8 @@ namespace Sampoerna.EMS.Website
                 //.ForMember(dest => dest.ChangedDate, opt => opt.MapFrom(src => src.MOD))
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))
                 .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
-                .ForMember(dest => dest.Convertion, opt => opt.MapFrom(src => src.CONVERSION));
+                .ForMember(dest => dest.Convertion, opt => opt.MapFrom(src => src.CONVERSION))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
                 //.ForMember(dest => dest.isPlantDeleteTemp, opt => opt.MapFrom(src => src.));
             
             

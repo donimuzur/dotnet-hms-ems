@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private Enums.MenuList _mainMenu;
 
-        public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MaterialMaster){
+        public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MasterData){
             _materialBll = materialBll;
             _changesHistoryBll = changesHistoryBll;
             _mainMenu = Enums.MenuList.MasterData;
@@ -48,7 +48,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var data = _materialBll.getAll();
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
-
+            ViewBag.Message = TempData["message"];
             return View("Index", model);
             
         }
@@ -64,12 +64,25 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var data = _materialBll.getByID(id);
             Mapper.Map(data,model);
+            
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
-
+            InitDetailModel(model);
             return View("Details",model);
         }
 
         private MaterialEditViewModel InitEditModel(MaterialEditViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+
+            model.PlantList = GlobalFunctions.GetVirtualPlantList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.BaseUOM = GlobalFunctions.GetUomList();
+            return model;
+        }
+
+        private MaterialDetailViewModel InitDetailModel(MaterialDetailViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -104,6 +117,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     //model.CREATED_BY = CurrentUser.USER_ID;
                     //model.CREATED_DATE = DateTime.Now;
                     MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);
+
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");    
                 }
 
@@ -130,6 +145,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data.IS_FROM_SAP.HasValue && data.IS_FROM_SAP.Value)
             {
                 var model = Mapper.Map<MaterialDetailViewModel>(data);
+                model.MainMenu = Enums.MenuList.MasterData;
+                model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
                 model.MaterialId = id;
                 //InitEditModel(model);
@@ -138,6 +155,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else {
                 var model = Mapper.Map<MaterialEditViewModel>(data);
+                model.MainMenu = Enums.MenuList.MasterData;
+                model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
                 model.MaterialId = id;
                 InitEditModel(model);
@@ -189,6 +208,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     
                     _materialBll.Save(data,CurrentUser.USER_ID);
                 }
+                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
@@ -209,7 +229,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add delete logic here
                 _materialBll.Delete(id, CurrentUser.USER_ID);
-
+                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
                 return RedirectToAction("Index");
             }
             catch
