@@ -109,10 +109,10 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
         }
-        public ZAIDM_EX_BRAND GetBrand(string stickerCode, long?plant_id, string fa_code)
+        public ZAIDM_EX_BRAND GetBrand(long?plant_id, string fa_code)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                          .Get(p => p.STICKER_CODE == stickerCode && plant_id == plant_id && p.FA_CODE == fa_code)
+                          .Get(p=>plant_id == plant_id && p.FA_CODE == fa_code)
                           .OrderByDescending(p => p.CREATED_DATE)
                           .FirstOrDefault();
             return existingData;

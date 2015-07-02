@@ -37,17 +37,16 @@ namespace Sampoerna.EMS.XMLReader
                     item.MATERIAL_GROUP = xElement.Element("MATERIAL_GROUP").Value;
                     item.PURCHASING_GROUP = xElement.Element("PURCHASING_GROUP").Value;
                     item.ISSUE_STORANGE_LOC = xElement.Element("ISSUE_STORANGE_LOC").Value;
-                    var brandStickerCode = xElement.Element("BRAND_STICKER_CODE").Value;
                     var brandfaCode = xElement.Element("BRAND_FA_CODE").Value;
                     var brandPlant = xElement.Element("BRAND_PLANT_ID").Value;
                     var plant = new XmlPlantDataMapper(null).GetPlant(brandPlant);
                     if(plant == null)
                         throw new Exception(string.Format("There no data plant macthing with  {0} ", brandPlant));
 
-                    var brand = new XmlBrandDataMapper(null).GetBrand(brandStickerCode, plant.PLANT_ID, brandfaCode);
+                    var brand = new XmlBrandDataMapper(null).GetBrand(plant.PLANT_ID, brandfaCode);
                     if(brand == null)
-                        throw  new Exception(string.Format("There no data brand macthing with sticker code {0} " +
-                                                           " fa code {1}", brandStickerCode, brandfaCode));
+                        throw  new Exception(string.Format("There no data brand macthing with plant {0} " +
+                                                           " fa code {1}", brandPlant, brandfaCode));
                     item.BRAND_ID = brand.BRAND_ID;
                     var exGoodTypCode = Convert.ToInt32(xElement.Element("EX_GOODTYP").Value);
                     var exGoodType = new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodTypCode);
