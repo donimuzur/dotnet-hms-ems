@@ -107,7 +107,21 @@ namespace Sampoerna.EMS.BLL
             };
 
             _changesHistoryBll.AddHistory(changes);
-            _uow.SaveChanges();
+
+            var output = new MaterialOutput();
+            try
+            {
+                _uow.SaveChanges();
+                output.Success = true;
+                output.materialId = existingData.MATERIAL_ID;
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+                output.Success = false;
+                output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
+                output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
+            }
         }
 
         private void SetChanges(ZAIDM_EX_MATERIAL origin, ZAIDM_EX_MATERIAL data, int userId)

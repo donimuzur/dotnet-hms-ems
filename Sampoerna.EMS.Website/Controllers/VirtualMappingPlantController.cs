@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _virtualMappingPlanBll.GetAll();
             model.Details = AutoMapper.Mapper.Map<List<VirtualMappingPlantDetail>>(dbData);
-            
+            ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
 
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbVirtual = AutoMapper.Mapper.Map<VIRTUAL_PLANT_MAP>(model);
 
                 _virtualMappingPlanBll.Save(dbVirtual);
-
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
             }
 
@@ -134,6 +134,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     modeldetail.ImportPlanName = dbVirtual.T1001W.WERKS;
                     modeldetail.ExportPlanName = dbVirtual.T1001W1.WERKS;
 
+                    
                     return View("Details",modeldetail);
                 }
                 else {
@@ -186,7 +187,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbVirtual.EXPORT_PLANT_ID = model.ExportPlantId;
 
                 _virtualMappingPlanBll.Save(dbVirtual);
-
+                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
 
@@ -198,6 +199,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Delete(int id)
         {
             _virtualMappingPlanBll.Delete(id, CurrentUser.USER_ID);
+            TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
             return RedirectToAction("Index");
         }
 
