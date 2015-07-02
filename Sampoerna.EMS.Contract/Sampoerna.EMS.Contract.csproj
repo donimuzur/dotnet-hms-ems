@@ -50,6 +50,7 @@
     <Compile Include="IGenericRepository.cs" />
     <Compile Include="IHeaderFooterBLL.cs" />
     <Compile Include="IMasterDataBLL.cs" />
+    <Compile Include="IMaterialBLL.cs" />
     <Compile Include="IMonthBLL.cs" />
     <Compile Include="INPPBKCPlant.cs" />
     <Compile Include="IPageBLL.cs" />

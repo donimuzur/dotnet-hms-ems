@@ -5,6 +5,7 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -17,7 +18,8 @@ namespace Sampoerna.EMS.BLL
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
+        private string includeTables = "ZAIDM_EX_NPPBKC";
+        //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
         private IZaidmExNPPBKCBLL _nppbkcbll;
         
         public PlantBLL(IUnitOfWork uow, ILogger logger)
@@ -47,6 +49,7 @@ namespace Sampoerna.EMS.BLL
             if (plantT1001W.PLANT_ID != 0)
             {
                 //update
+                _repository.Update(Mapper.Map<T1001W>(plantT1001W));
                 var origin =
                     _repository.Get(c => c.PLANT_ID == plantT1001W.PLANT_ID, null, includeTables).FirstOrDefault();
 
@@ -134,5 +137,11 @@ namespace Sampoerna.EMS.BLL
                 }
             }
         } 
+
+        public string GetPlantWerksById(long id)
+        {
+            var dbPlant = _repository.GetByID(id);
+            return dbPlant == null ? string.Empty : dbPlant.WERKS;
+        }
     }
 }

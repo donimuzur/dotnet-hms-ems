@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -19,7 +21,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T1001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
-      
+       // private IChangesHistoryBLL _changesHistoryBll;
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -28,8 +30,32 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T1001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
-
+            //_changesHistoryBll = changesHistoryBll;
         }
+
+        public List<ZAIDM_EX_BRAND> GetAllBrands()
+        {
+            return _repository.Get(null, null, "T1001W,ZAIDM_EX_SERIES").ToList();   
+        }
+
+        public ZAIDM_EX_BRAND GetById(long id)
+        {
+            var dbData = _repository.GetByID(id);
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData;
+        }
+
+        public ZAIDM_EX_BRAND GetByIdIncludeChild(long id)
+        {
+            var dbData = _repository.Get(a => a.BRAND_ID == id, null, "T1001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_series, ZAIDM_EX_GOODTYP, ZAIDM_EX_MARKET,Country, CURRENCY,CURRENCY1").FirstOrDefault();
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData;
+        }
+
         public List<BrandRegistrationOutput> GetAll()
         {
             //var repoBrand = _repository.GetQuery();
@@ -54,37 +80,40 @@ namespace Sampoerna.EMS.BLL
             return result.ToList();
         }
 
-        public BrandRegistrationOutput save(ZAIDM_EX_BRAND brandRegistrasionExBrand)
+        public void Save(ZAIDM_EX_BRAND brandRegistration)
         {
+         
+            _repository.InsertOrUpdate(brandRegistration);
+
+           
+            try
             {
-                if (brandRegistrasionExBrand.BRAND_ID > 0)
-                {
-                    //update
-                    _repository.Update(brandRegistrasionExBrand);
-                }
-                else
-                {
-                    //Insert
-                    _repository.Insert(brandRegistrasionExBrand);
-                }
+                _uow.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
 
-                var output = new BrandRegistrationOutput();
-
-                try
-                {
-                    _uow.SaveChanges();
-                    output.Success = true;
-                    output.BrandIdZaidmExBrand = brandRegistrasionExBrand.BRAND_ID;
-                }
-                catch (Exception exception)
-                {
-                    _logger.Error(exception);
-                    output.Success = false;
-                    output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                    output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-                }
-                return output;
             }
         }
+
+        public void Delete(long id)
+        {
+            var dbBrand = _repository.GetByID(id);
+            if (dbBrand == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            dbBrand.IS_DELETED = true;
+           
+           
+            _uow.SaveChanges();
+
+
+        }
+
+     
     }
 }
