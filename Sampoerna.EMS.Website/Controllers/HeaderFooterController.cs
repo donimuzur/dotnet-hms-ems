@@ -49,6 +49,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 Details = Mapper.Map<List<HeaderFooterItem>>(data)
             };
+            ViewBag.Message = TempData["message"];
             return View(model);
         }
 
@@ -102,6 +103,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
                 }
 
@@ -157,6 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
                 }
 
