@@ -143,12 +143,12 @@
                @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Update] = null;
              }
-            else if (TempData[Constans.SubmitType.Delete] != null)
+            @*else if (TempData[Constans.SubmitType.Delete] != null)
             {
                 @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
                  @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Delete] = null;
-            }
+            }*@
 
         $('#MenuMasterPlant').addClass('active');
 
