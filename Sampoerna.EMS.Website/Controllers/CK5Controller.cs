@@ -10,6 +10,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.CK5;
+using Sampoerna.EMS.Website.Utility;
 
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -279,15 +280,47 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbCk5.SOURCE_PLANT_ID = model.SourcePlantId;
                 dbCk5.DEST_PLANT_ID = model.DestPlantId;
 
-                dbCk5.CREATED_BY = 100;
-                _ck5Bll.SaveCk5(dbCk5);
+                dbCk5.CREATED_BY = CurrentUser.USER_ID;
 
+                _ck5Bll.SaveCk5(dbCk5);
             }
 
-           
             model = InitCK5List(model);
             
             return View("Create", model);
         }
+
+        [HttpPost]
+        public PartialViewResult UploadFileCk5(HttpPostedFileBase ck5ItemExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(ck5ItemExcelFile);
+            var model = new CK5CreateViewModel();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new CK5UploadViewModel();
+
+                    try
+                    {
+                        uploadItem.Brand = datarow[0];
+                        uploadItem.Qty = datarow[1];
+                        uploadItem.Uom = datarow[2];
+                        uploadItem.Convertion = datarow[3];
+
+                        model.UploadItemModels.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+
+                }
+            }
+            return PartialView("_CK5UploadList", model);
+        }
+
     }
 }

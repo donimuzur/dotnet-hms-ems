@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
@@ -7,6 +8,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
 {
     public class CK5CreateViewModel : BaseModel
     {
+        public CK5CreateViewModel()
+        {
+            UploadItemModels = new List<CK5UploadViewModel>();
+        }
 
         public Enums.DocumentStatus DocumentStatus { get; set; }
 
@@ -100,6 +105,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? UnsealingNotifDate { get; set; }
 
 
+         public List<CK5UploadViewModel> UploadItemModels { get; set; } 
 
     }
 }
