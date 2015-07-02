@@ -90,9 +90,9 @@ namespace Sampoerna.EMS.BLL
         {
             var changesData = new Dictionary<string, bool>();
             changesData.Add("NPPBKC_NO", origin.NPPBCK_ID.HasValue && origin.NPPBCK_ID.Equals(data.NPPBCK_ID));
-            changesData.Add("CITY", origin.CITY.Equals(data.CITY));
-            changesData.Add("ADDRESS", origin.ADDRESS.Equals(data.ADDRESS));
-            changesData.Add("SKEPTIS", origin.SKEPTIS.Equals(data.SKEPTIS));
+            changesData.Add("CITY", !string.IsNullOrEmpty(origin.CITY) && !string.IsNullOrEmpty(data.CITY) ? origin.CITY.Equals(data.CITY) : true);
+            changesData.Add("ADDRESS", !string.IsNullOrEmpty(origin.ADDRESS) && !string.IsNullOrEmpty(data.ADDRESS) ? origin.ADDRESS.Equals(data.ADDRESS) : true);
+            changesData.Add("SKEPTIS", !string.IsNullOrEmpty(origin.SKEPTIS) && !string.IsNullOrEmpty(data.SKEPTIS) ? origin.SKEPTIS.Equals(data.SKEPTIS) : true);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT.Equals(data.IS_MAIN_PLANT));
 
             foreach (var listChange in changesData)
