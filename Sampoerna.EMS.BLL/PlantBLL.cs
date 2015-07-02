@@ -5,7 +5,6 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -18,8 +17,7 @@ namespace Sampoerna.EMS.BLL
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "ZAIDM_EX_NPPBKC";
-        //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
+        private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
         private IZaidmExNPPBKCBLL _nppbkcbll;
         
         public PlantBLL(IUnitOfWork uow, ILogger logger)
@@ -49,14 +47,13 @@ namespace Sampoerna.EMS.BLL
             if (plantT1001W.PLANT_ID != 0)
             {
                 //update
-                _repository.Update(Mapper.Map<T1001W>(plantT1001W));
                 var origin =
                     _repository.Get(c => c.PLANT_ID == plantT1001W.PLANT_ID, null, includeTables).FirstOrDefault();
 
                 plantT1001W.NPPBKC_NO = _nppbkcbll.GetById(plantT1001W.NPPBCK_ID.Value).NPPBKC_NO;
 
                 SetChanges(origin, plantT1001W, userId);
-                
+
                 //hapus dulu aja ya ? //todo ask the cleanist way
                 var dataToDelete =
                     _plantReceiveMaterialRepository.Get(c => c.PLANT_ID == plantT1001W.PLANT_ID)
@@ -92,10 +89,10 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(T1001W origin, Plant data, int userId)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("NPPBKC_NO", origin.NPPBCK_ID.Equals(data.NPPBCK_ID));
-            changesData.Add("CITY", origin.CITY.Equals(data.CITY));
-            changesData.Add("ADDRESS", origin.ADDRESS.Equals(data.ADDRESS));
-            changesData.Add("SKEPTIS", !string.IsNullOrEmpty(origin.SKEPTIS) && origin.SKEPTIS.Equals(data.SKEPTIS));
+            changesData.Add("NPPBKC_NO", origin.NPPBCK_ID.HasValue && origin.NPPBCK_ID.Equals(data.NPPBCK_ID));
+            changesData.Add("CITY", !string.IsNullOrEmpty(origin.CITY) && !string.IsNullOrEmpty(data.CITY) ? origin.CITY.Equals(data.CITY) : true);
+            changesData.Add("ADDRESS", !string.IsNullOrEmpty(origin.ADDRESS) && !string.IsNullOrEmpty(data.ADDRESS) ? origin.ADDRESS.Equals(data.ADDRESS) : true);
+            changesData.Add("SKEPTIS", !string.IsNullOrEmpty(origin.SKEPTIS) && !string.IsNullOrEmpty(data.SKEPTIS) ? origin.SKEPTIS.Equals(data.SKEPTIS) : true);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT.Equals(data.IS_MAIN_PLANT));
 
             foreach (var listChange in changesData)
