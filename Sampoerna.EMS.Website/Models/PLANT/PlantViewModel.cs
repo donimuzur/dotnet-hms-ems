@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }
 
+        [Required]
         public int? NPPBCK_ID { get; set; }
         public DateTime? CreatedDate { get; set; }
         
