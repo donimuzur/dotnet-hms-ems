@@ -141,21 +141,33 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="@Url.Action("Index", "BrandRegistration")">
+                                    <a id="MenuMasterBrandRegistration" href="@Url.Action("Index", "BrandRegistration")">
                                         <i class="fa fa-angle-right"></i>
                                         Brand Registration
                                     </a>
                                 </li>
                                 <li>
+                                    <a id="MenuMasterMaterial" href="@Url.Action("Index", "Material")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Material Master
+                                    </a>
+                                </li>
+                                <li>
                                     <a id="MenuMasterVirtualMappingPlant" href="@Url.Action("Index", "VirtualMappingPlant")">
                                         <i class="fa fa-angle-right"></i>
-                                        Maping Virtual Plant
+                                        Virtual Plant Mapping
                                     </a>
                                 </li>
                                 <li>
                                     <a id="MenuMasterGoodType" href="@Url.Action("Index", "GoodsTypeGroup")" > 
                                         <i class="fa fa-angle-right"></i>
                                         Goods Type Group
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuMasterUser" href="@Url.Action("Index", "User")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User
                                     </a>
                                 </li>
                             </ul>
@@ -263,7 +275,7 @@
     @Scripts.Render("~/bundles/validate")
     @Scripts.Render("~/bundles/datatables")
 
-
+    <script src="~/Scripts/js/vendors/bootstrap-select.min.js"></script>
 
 
     @RenderSection("styles", required: false)
@@ -278,6 +290,8 @@
         });
        
         $(document).ready(function () {
+            $(".selectpicker.form-control").attr('data-live-search', true);
+
             if ($('#changesHistoryTable') != null)
             {
                 $('#changesHistoryTable .filters th').each(function () {

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
         }
 
-        public ZAIDM_EX_PRODTYP GetById(int id)
+        public ZAIDM_EX_PRODTYP GetById(long id)
         {
             return _repository.GetByID(id);
         }

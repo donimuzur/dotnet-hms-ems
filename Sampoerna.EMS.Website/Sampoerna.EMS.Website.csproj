@@ -225,6 +225,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MaterialController.cs" />
     <Compile Include="Controllers\NPPBKCController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
@@ -241,7 +242,10 @@
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
-    <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationCreateViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -255,13 +259,18 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\NPPBKC\NPPBKCViewModels.cs" />
+    <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
+    <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
+    <Compile Include="Models\Material\MaterialEditViewModel.cs" />
+    <Compile Include="Models\Material\MaterialListViewModel.cs" />
+    <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -684,7 +693,17 @@
     <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\Material\Index.cshtml" />
+    <Content Include="Views\Material\Details.cshtml" />
+    <Content Include="Views\Material\Create.cshtml" />
+    <Content Include="Views\Material\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\Details.cshtml" />
+    <Content Include="Views\BrandRegistration\Create.cshtml" />
+    <Content Include="Views\BrandRegistration\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\_EditSAP.cshtml" />
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
+    <Content Include="Views\NPPBKC\Edit.cshtml" />
+    <Content Include="Views\NPPBKC\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -734,7 +753,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\HeaderFooterPreview.rdlc" />
+    <Content Include="Reports\HeaderFooterPreview.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -754,7 +775,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
