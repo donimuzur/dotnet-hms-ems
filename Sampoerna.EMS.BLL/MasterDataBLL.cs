@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -12,6 +13,7 @@ namespace Sampoerna.EMS.BLL
     {
         private IGenericRepository<T1001> _repositoryT1001;
         private IGenericRepository<ZAIDM_EX_PCODE> _repositoryPersonalization;
+        private IGenericRepository<T1001W> _repositoryT1001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
         private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
         private IGenericRepository<COUNTRY> _repositoryCountry;
@@ -24,6 +26,7 @@ namespace Sampoerna.EMS.BLL
         {
             _uow = uow;
             _repositoryT1001 = _uow.GetGenericRepository<T1001>();
+            _repositoryT1001W = _uow.GetGenericRepository<T1001W>();
             _repositoryPersonalization = _uow.GetGenericRepository<ZAIDM_EX_PCODE>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
             _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();

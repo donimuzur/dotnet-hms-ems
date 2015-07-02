@@ -15,7 +15,8 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<VIRTUAL_PLANT_MAP> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private IGenericRepository<T1001> _repositoryT1001; 
+        private IGenericRepository<T1001> _repositoryT1001;
+        private IChangesHistoryBLL _changesHistoryBll;
 
         public VirtualMappingPlantBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -23,6 +24,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<VIRTUAL_PLANT_MAP>();
             _repositoryT1001 = _uow.GetGenericRepository<T1001>();
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
 
         }
 
@@ -46,6 +48,75 @@ namespace Sampoerna.EMS.BLL
             _repository.InsertOrUpdate(virtualPlant);
             _uow.SaveChanges();
             return virtualPlant;
+        }
+
+        public void Delete(int id, int userId) {
+            var data = _repository.GetByID(id);
+            data.IS_DELETED = true;
+            _repository.Update(data);
+            
+
+
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Core.Enums.MenuList.VirtualMappingPlant,
+                FORM_ID = data.VIRTUAL_PLANT_MAP_ID,
+                FIELD_NAME = "IS_DELETED",
+                MODIFIED_BY = userId,
+                MODIFIED_DATE = DateTime.Now,
+                OLD_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL",
+                NEW_VALUE = true.ToString()
+            };
+
+            _changesHistoryBll.AddHistory(changes);
+
+            _uow.SaveChanges();
+        }
+
+        private void SetChanges(VIRTUAL_PLANT_MAP origin, VIRTUAL_PLANT_MAP data, int userId)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("COMPANY_ID", origin.COMPANY_ID.Equals(data.COMPANY_ID));
+            changesData.Add("IMPORT_PLANT_ID", origin.IMPORT_PLANT_ID.Equals(data.IMPORT_PLANT_ID));
+            changesData.Add("EXPORT_PLANT_ID", origin.EXPORT_PLANT_ID.Equals(data.EXPORT_PLANT_ID));
+            changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
+            
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
+                        FORM_ID = data.VIRTUAL_PLANT_MAP_ID,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "COMPANY_ID":
+                            changes.OLD_VALUE = origin.COMPANY_ID.HasValue ? origin.COMPANY_ID.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.COMPANY_ID.HasValue ? data.COMPANY_ID.Value.ToString() : "NULL";
+                            break;
+                        case "EXPORT_PLANT_ID":
+                            changes.OLD_VALUE = origin.EXPORT_PLANT_ID.ToString();
+                            changes.NEW_VALUE = data.EXPORT_PLANT_ID.ToString();
+                            break;
+                        case "IMPORT_PLANT_ID":
+                            changes.OLD_VALUE = origin.IMPORT_PLANT_ID.ToString();
+                            changes.NEW_VALUE = data.IMPORT_PLANT_ID.ToString();
+                            break;
+
+                        case "IS_DELETED":
+                            changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
+                            break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
         }
 
         //public List<SaveVirtualMappingPlantOutput> GetAll()

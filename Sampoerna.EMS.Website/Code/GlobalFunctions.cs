@@ -103,6 +103,14 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static SelectList GetBrandList()
+        {
+            IBrandRegistrationBLL brandBLL = MvcApplication.GetInstance<BrandRegistrationBLL>();
+            var data = brandBLL.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
         public static SelectList GetPersonalizationCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
@@ -146,6 +154,11 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "CURRENCY_ID", "CURRENCY_CODE");
         }
 
-      
+        public static SelectList GetStickerCodeList()
+        {
+            IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
+            var data = materialBll.getAll();
+            return new SelectList(data, "MATERIAL_NUMBER", "MATERIAL_NUMBER");
+        }
     }
 }

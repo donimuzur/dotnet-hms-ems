@@ -1,0 +1,229 @@
+﻿@model Sampoerna.EMS.Website.Models.Material.MaterialDetailViewModel
+@{
+    ViewBag.Title = "Detail";
+}
+
+@using (Html.BeginForm("Detail", "Material", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Detail Master Material</h3>
+                <div class="action-button">
+                    <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Back</a>
+                    @*@if (!Model.IsDeleted)*@
+                    @*{*@
+                        <a href="javascript:void(0);" onclick="deleteData() " class="btn btn-danger">Delete</a>
+                    @*}*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Material Master
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <form class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Material Number</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.MaterialNumber, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Material Group</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.MaterialGroup, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4 long">Material Description</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.MaterialDesc, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Purchasing Group</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.PurchasingGroup, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Plant</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.PlantName, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Base UOM</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.UomName, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Excisable Good Type</label>
+                                                            <div class="col-md-8">
+                                                                
+                                                                    @Html.DisplayFor(model => model.GoodTypeName, new { @class = "form-control", @disabled = "disabled" })
+
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Issue Storage Loc</label>
+                                                            <div class="col-md-8">
+                                                                
+                                                                    @Html.DisplayFor(model => model.IssueStorageLoc, new { @class = "form-control", @disabled = "disabled" })
+
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Conversion</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.Convertion, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Create By</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.CreatedBy, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Changed By</label>
+                                                            <div class="col-md-8">
+                                                                
+                                                                    @Html.DisplayFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
+                                                                    @Html.HiddenFor(model => model.ChangedById, new { @class = "form-control", @disabled = "disabled" })
+
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Created On</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Last Change On</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Plant Deletion</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.IsPlantDelete, new { @class = "form-control checkbox", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Client Deletion</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DisplayFor(model => model.IsClientDelete, new { @class = "form-control checkbox", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+}
+
+@section scripts {
+    <script type="text/javascript" language="javascript">
+        
+        var deleteData = function () {
+            if (confirm('Are You Sure')) {
+                window.location = "@Url.Action("Delete", "Material", new { id = @Model.MaterialId })";
+            }
+
+        };
+    </script>
+}

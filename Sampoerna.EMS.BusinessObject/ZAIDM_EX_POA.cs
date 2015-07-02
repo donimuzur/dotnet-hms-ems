@@ -36,7 +36,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
         public Nullable<bool> IS_FROM_SAP { get; set; }
-        public string PHONE { get; set; }
     
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
