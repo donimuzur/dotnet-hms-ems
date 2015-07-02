@@ -13,5 +13,7 @@ namespace Sampoerna.EMS.Contract
         // SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap);
 
 
+
+        void Delete(int id, int p);
     }
 }

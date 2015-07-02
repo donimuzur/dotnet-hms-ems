@@ -20,8 +20,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1 = new HashSet<PBCK1>();
             this.EX_GROUP_TYPE = new HashSet<EX_GROUP_TYPE>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.T1001W = new HashSet<T1001W>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.PLANT_RECEIVE_MATERIAL = new HashSet<PLANT_RECEIVE_MATERIAL>();
         }
     
         public int GOODTYPE_ID { get; set; }
@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<T1001W> T1001W { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
     }
 }

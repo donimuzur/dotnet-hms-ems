@@ -8,6 +8,7 @@ namespace Sampoerna.EMS.Contract
         ZAIDM_EX_GOODTYP GetById(int id);
         
         List<ZAIDM_EX_GOODTYP> GetAll();
-       
+
+        string GetGoodTypeDescById(int? id);
     }
 }

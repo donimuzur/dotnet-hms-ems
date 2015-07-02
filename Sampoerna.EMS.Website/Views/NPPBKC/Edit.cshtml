@@ -1,0 +1,202 @@
+﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NppbkcFormModel
+
+@{
+    ViewBag.Title = "Edit NPPBKC";
+}
+
+@using (Html.BeginForm("Edit", "NPPBKC", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Update NPPBKC</h3>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "NPPBKC")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Update NPPBKC
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">NPPBKC ID</label>
+                                                        <div class="col-md-9">
+                                                            @Html.HiddenFor(model => model.Detail.VirtualNppbckId)
+                                                            @Html.TextBoxFor(model => model.Detail.NppbckNo, new { @class = "form-control", disabled = "disabled" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">City</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", disabled = "disabled" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Address 1</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.Address1, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3 long">Region Office of DGCE<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.RegionOfficeOfDGCE, new { @class = "form-control", rows = "5", maxlength = "20" })
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.RegionOfficeOfDGCE)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Address 2</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.Address2, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Text to<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.TextTo, new { @class = "form-control", rows = "5", maxlength = "50" })
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.TextTo)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">KPPBC ID</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.KppbcId, new { @class = "form-control", disabled = "disabled" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">City Alias<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.CityAlias, new { @class = "form-control", maxlength = "15" })
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.CityAlias)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Region</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.Region, new { @class = "form-control", disabled = "disabled" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3 long">Account Number</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.AcountNumber, new { @class = "form-control", id = "txtBoxPoaCode", disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3 long">Start Date</label>
+                                                        <div class="col-md-9">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    @Html.TextBoxFor(model => model.Detail.StartDate, new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.ValidationMessageFor(model => model.Detail.StartDate)
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.TextBoxFor(model => model.Detail.EndDate, new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.ValidationMessageFor(model => model.Detail.EndDate)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <span class="red">*</span> ) This Field Required
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table fix-header" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Plant ID</th>
+                                        <th>Plant City</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Plant)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.WERKS)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CITY)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+}
+
+
+@section scripts {
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            $('#MenuNPPBKC').addClass('active');
+        });
+    </script>
+
+}
