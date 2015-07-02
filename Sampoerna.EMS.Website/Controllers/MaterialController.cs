@@ -18,15 +18,17 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IMaterialBLL _materialBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private Enums.MenuList _mainMenu;
 
         public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MaterialMaster){
             _materialBll = materialBll;
             _changesHistoryBll = changesHistoryBll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         private MaterialCreateViewModel InitCreateModel(MaterialCreateViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MaterialMaster;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             
@@ -41,7 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new MaterialListViewModel();
-            model.MainMenu = Enums.MenuList.MaterialMaster;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var data = _materialBll.getAll();
@@ -57,7 +59,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var model = new MaterialDetailViewModel();
-            model.MainMenu = Enums.MenuList.MaterialMaster;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var data = _materialBll.getByID(id);
@@ -69,7 +71,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private MaterialEditViewModel InitEditModel(MaterialEditViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MaterialMaster;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
 
