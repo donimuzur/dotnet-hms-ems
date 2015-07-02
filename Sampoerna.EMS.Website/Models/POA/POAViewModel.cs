@@ -51,18 +51,14 @@ namespace Sampoerna.EMS.Website.Models.POA
         public USER Manager { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         [Required]
-        public int ManagerId { get; set; }
+        public int? ManagerId { get; set; }
 
-        [Required(ErrorMessage = "please fill this field")]
-        [StringLength(50, ErrorMessage = "Max length : 50")]
-        [Display(Name = "Printed Name")]
         public string PoaPrintedName { get; set; }
 
-        [Required(ErrorMessage = "please fill this field")]
-        [Display(Name = "Address")]
-         public string PoaAddress { get; set; }
+       
+        public string PoaAddress { get; set; }
 
         [Display(Name = "Phone Number")]
         public string PoaPhone { get; set; }
@@ -71,6 +67,8 @@ namespace Sampoerna.EMS.Website.Models.POA
         [Display(Name = "Title")]
         [StringLength(50, ErrorMessage = "Max Lenght : 50")]
         public string Title { get; set; }
+
+        [Required]
         public string Email { get; set; }
 
         public bool IsFromSAP { get; set; }
