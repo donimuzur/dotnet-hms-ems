@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
 
 @section scripts {
     <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
@@ -39,6 +40,25 @@
             $('#mydata_length').hide();
 
             $('#MenuMasterMaterial').addClass('active');
+
+            @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-mastermaterial-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-mastermaterial-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-mastermaterial-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-mastermaterial-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-mastermaterial-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-mastermaterial-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
         });
     </script>
 }
@@ -84,7 +104,7 @@
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
-                            
+                            <th> Deletion Status</th>
                         </tr>
                     </thead>
 
@@ -113,7 +133,7 @@
                                     @Html.DisplayFor(modelItem => item.UomName)
                                 </td>
                                 <td>
-                                    @*@Html.CheckBoxFor(modetItem => item.PlantDeletion)*@
+                                    @Html.DisplayFor(modelItem => item.IsDeletedString, new { @disabled = "disabled" })
                                 </td>
                                 
                             </tr>
@@ -127,3 +147,19 @@
     </div>
 </div>
 
+<!--modal-->
+<input id="btn-mastermaterial-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-mastermaterial-message">
+
+            </div>
+        </div>
+    </div>
+</div>

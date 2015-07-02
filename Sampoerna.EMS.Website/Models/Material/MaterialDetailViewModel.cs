@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
@@ -22,17 +23,19 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Display(Name = "Purchasing Group")]
         public string PurchasingGroup { get; set; }
 
-        
 
+        public int PlantId { get; set; }
         [Display(Name = "Plant")]
         public string PlantName { get; set; }
 
+        public int GoodTypeId { get; set; }
         [Display(Name = "Excisable Good Type")]        
         public string GoodTypeName { get; set; }
 
         [Display(Name = "Issue Storace Loc")]        
         public string IssueStorageLoc { get; set; }
 
+        public int UomId { get; set; }
         [Display(Name = "Base UOM")]
         public string UomName { get; set; }
 
@@ -75,16 +78,16 @@ namespace Sampoerna.EMS.Website.Models.Material
         }
 
 
-        public Nullable<bool> isClientDelete;
+        public Nullable<bool> isClientDeleteTemp;
 
         [Required, Display(Name = "Client Deletion")]
         public string IsClientDelete
         {
             get
             {
-                if (this.isClientDelete.HasValue)
+                if (this.isClientDeleteTemp.HasValue)
                 {
-                    return this.isClientDelete.Value ? "Yes" : "No";
+                    return this.isClientDeleteTemp.Value ? "Yes" : "No";
                 }
                 else
                 {
@@ -93,6 +96,13 @@ namespace Sampoerna.EMS.Website.Models.Material
             }
             
         }
+
+        public Nullable<bool> IsDeleted;
+
+        // list for dropdown in the form
+        public SelectList PlantList { get; set; }
+        public SelectList GoodTypeList { get; set; }
+        public SelectList BaseUOM { get; set; }
         
     }
 }
