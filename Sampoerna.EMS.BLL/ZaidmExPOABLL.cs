@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.BLL
                  _repository.Update(poa);
                 _uow.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _uow.RevertChanges();
                 throw;
