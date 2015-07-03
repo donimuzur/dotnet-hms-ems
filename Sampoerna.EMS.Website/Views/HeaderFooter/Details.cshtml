@@ -12,7 +12,7 @@
                 <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                 @if (!Model.Detail.IS_DELETED)
                 {
-                    <a href="javascript:void(0);" onclick="deleteData()" class="btn btn-grey">Delete</a>
+                     <a href="javascript:void(0);" onclick="confirmDeleteHeaderfooter() " class="btn btn-danger">Delete</a>
                 }
             </div>
         </div>
@@ -68,7 +68,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4 long">Company Footer</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextAreaFor(model => model.Detail.FOOTER_CONTENT, new { disabled = "disabled", @class = "form-control" })
+                                                                @Html.TextAreaFor(model => model.Detail.FOOTER_CONTENT, new { @class = "form-control", rows = "5", id = "Detail_FOOTER_CONTENT",disabled="disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -79,11 +79,11 @@
                                                                 <div class="input-group">
                                                                     @if (!string.IsNullOrEmpty(Model.Detail.HEADER_IMAGE_PATH))
                                                                     {
-                                                                    <img id="imgPrev" src="@Url.Content(Model.Detail.HEADER_IMAGE_PATH)" width="150" alt="no image available" />
+                                                                        <img id="imgPrev" src="@Url.Content(Model.Detail.HEADER_IMAGE_PATH)" width="150" alt="no image available" />
                                                                     }
                                                                     else
                                                                     {
-                                                                    <img id="imgPrev" src="#" width="150" alt="no image available" />
+                                                                        <img id="imgPrev" src="#" width="150" alt="no image available" />
                                                                     }
                                                                 </div>
                                                             </div>
@@ -106,21 +106,21 @@
                                             <tbody>
                                                 @for (int idx = 0; idx < Model.Detail.HeaderFooterMapList.Count; idx++)
                                                 {
-                                                <tr>
-                                                    <td>
-                                                        @Html.HiddenFor(x => x.Detail.HeaderFooterMapList[idx].FORM_TYPE_ID)
-                                                        @Html.Label(Model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC)
-                                                    </td>
-                                                    <td>
-                                                        @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_HEADER_SET)
-                                                    </td>
-                                                    <td>
-                                                        @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
-                                                    </td>
-                                                    <td class="last">
-                                                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID)" />
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            @Html.HiddenFor(x => x.Detail.HeaderFooterMapList[idx].FORM_TYPE_ID)
+                                                            @Html.Label(Model.Detail.HeaderFooterMapList[idx].FORM_TYPE_DESC)
+                                                        </td>
+                                                        <td>
+                                                            @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_HEADER_SET)
+                                                        </td>
+                                                        <td>
+                                                            @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
+                                                        </td>
+                                                        <td class="last">
+                                                            <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID)" />
+                                                        </td>
+                                                    </tr>
                                                 }
                                             </tbody>
                                         </table>
@@ -139,6 +139,25 @@
         </div>
     </div>
 </div>
+<!--delete-->
+<input id="btn-delete-headerfooter" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.headerfooter" value="delete">
+<div class="modal main-menu-child fade delete-modal headerfooter" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Delete</h3>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="headerfooterDelete();">Delete</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section scripts{
@@ -146,12 +165,12 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function () {
-            
-            $('.check-box').attr('disabled', 'disabled');
+    $(document).ready(function () {
 
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("Index", "HeaderFooter")';
+        $('.check-box').attr('disabled', 'disabled');
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "HeaderFooter")';
             });
 
             $('#MenuHeaderFooter').addClass('active');
@@ -170,11 +189,11 @@
 
         }
 
-        var deleteData = function () {
-            if (confirm('Are You Sure')) {
-                window.location = "@Url.Action("Delete", "HeaderFooter", new {id = @Model.Detail.HEADER_FOOTER_ID})";
-            }
-
+       var headerfooterDelete = function () {
+               window.location = "@Url.Action("Delete", "HeaderFooter", new {id = @Model.Detail.HEADER_FOOTER_ID})";
+       };
+        var confirmDeleteHeaderfooter = function () {
+            $('#btn-delete-headerfooter').click();
         };
 
     </script>
