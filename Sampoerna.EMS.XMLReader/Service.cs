@@ -81,6 +81,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return  new XmlBrandDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("MATERIAL"))
+            {
+                return new XmlMaterialDataMapper(xmlfile);
+            }
             return null;
         }
 
@@ -100,7 +104,12 @@ namespace Sampoerna.EMS.XMLReader
                 }
                 catch (Exception ex)
                 {
-                    errorList.Add(string.Format("<b>File: {0} </b> -> Error : {1}", xmlfile, ex.Message));
+                    var error = ex.Message;
+                    if (ex.InnerException != null)
+                    {
+                        error = ex.InnerException.Message;
+                    }
+                    errorList.Add(string.Format("<b>File: {0} </b> -> Error : {1}", xmlfile, error));
                     continue;
                 }
             }
