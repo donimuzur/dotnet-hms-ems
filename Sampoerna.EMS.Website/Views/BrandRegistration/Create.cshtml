@@ -43,7 +43,8 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Stiker Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })
+                                                            @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
+                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -327,6 +328,12 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
 
+            $('.input-group.date').datepicker({
+                dateFormat: 'dd mmm yyyy',
+                toggleActive: true,
+                defaultViewDate: { year: 2015, month: 06, day: 28 }
+            });
+            
             $('#MenuMasterBrandRegistration').addClass('active');
 
             $('#btnCancel').click(function (e) {

@@ -48,10 +48,10 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Company Code</label>
+                                                        <label class="col-md-4">Company Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "form-control" })
-                                                            @Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -68,10 +68,11 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4 long">Company Footer</label>
+                                                        <label class="col-md-4 long">Company Footer<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            <textarea id="Detail_FOOTER_CONTENT" name="Detail.FOOTER_CONTENT" class="form-control" rows="5">@Model.Detail.FOOTER_CONTENT</textarea>
-                                                            @Html.ValidationMessageFor(model => model.Detail.FOOTER_CONTENT)
+                                                            @Html.TextAreaFor(model => model.Detail.FOOTER_CONTENT, new { @class = "form-control", rows = "5", id = "Detail_FOOTER_CONTENT" })
+                                                            @*<textarea id="Detail_FOOTER_CONTENT" name="Detail.FOOTER_CONTENT" class="form-control" rows="5">@Model.Detail.FOOTER_CONTENT</textarea>*@
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.FOOTER_CONTENT)*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -199,13 +200,13 @@
         }
 
         function printPreview(idx, id) {
-            
+
             var elementHeaderId = '#Detail_HeaderFooterMapList_' + idx + '__IS_HEADER_SET';
             var elementFooterId = '#Detail_HeaderFooterMapList_' + idx + '__IS_FOOTER_SET';
 
             var isHeaderSet = $(elementHeaderId).is(':checked');
             var isFooterSet = $(elementFooterId).is(':checked');
-            
+
             var url = '/HeaderFooter/PrintPreview/' + id + '?isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
             window.open(url, '_blank', 'width=1200,height=600');
 

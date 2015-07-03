@@ -154,6 +154,11 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "CURRENCY_ID", "CURRENCY_CODE");
         }
 
-      
+        public static SelectList GetStickerCodeList()
+        {
+            IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
+            var data = materialBll.getAll();
+            return new SelectList(data, "MATERIAL_NUMBER", "MATERIAL_NUMBER");
+        }
     }
 }

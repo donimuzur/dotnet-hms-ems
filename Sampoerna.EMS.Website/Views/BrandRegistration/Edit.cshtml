@@ -336,7 +336,11 @@
 }
 @section scripts {
     <script type="text/javascript" language="javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
+            $('.input-group.date').datepicker({
+                toggleActive: true,
+                defaultViewDate: { year: 2015, month: 06, day: 28 }
+            });
         //$('.check-box').attr('disabled', 'disabled');
         $('#MenuMasterBrandRegistration').addClass('active');
 

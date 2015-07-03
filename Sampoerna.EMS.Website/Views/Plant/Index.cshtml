@@ -66,7 +66,7 @@
                                     @Html.DisplayFor(modelItem => item.Name1)
                                 </td>
                                 <td>
-                                    @Html.CheckBoxFor(modelItem => item.IsMainPlant)
+                                   @Html.CheckBoxFor(modelItem => item.IsMainPlant, new { @disabled = "disabled" })
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Address)
@@ -143,12 +143,12 @@
                @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Update] = null;
              }
-            else if (TempData[Constans.SubmitType.Delete] != null)
+            @*else if (TempData[Constans.SubmitType.Delete] != null)
             {
                 @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
                  @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Delete] = null;
-            }
+            }*@
 
         $('#MenuMasterPlant').addClass('active');
 
