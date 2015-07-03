@@ -14,16 +14,10 @@
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Load the site CSS after Boostrap's to override -->
     @Styles.Render("~/Content/css")
-
-    <!-- Load jQuery -->
-    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/jqueryui/autocomplete/css")
     <!-- Load Modernizr.js -->
     @Scripts.Render("~/bundles/modernizrmin")
-    <!-- Load Bootstrap JavaScript -->
-    @Scripts.Render("~/bundles/bootstrap")
-    <!-- Load Fixed Header table JavaScript -->
-    @Scripts.Render("~/bundles/fixedheadertable")
-
+    <link href="~/Content/css/loading.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -65,14 +59,14 @@
     <div class="excise-site">
         <div class="side-menu">
             <div class="side-main">
-                <h5>Main</h5>
+                <h5>Main Menu</h5>
                 <i class="fa fa-caret-left"></i>
             </div>
             <div class="list-group">
                 @{
                     switch (Model.MainMenu)
                     {
-                        case Enums.MenuList.ExcisableGoodsMovement:
+                        case Enums.MenuList.PBCK1:
                             <div class="collapse-menu active open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -80,8 +74,8 @@
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a class="active" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
-                                    <li><a href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                    <li><a id="MenuPBCK1OpenListDocument" class="active" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
+                                    <li><a id="MenuPBCK1CompletedListDocument" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
                                 </ul>
                             </div>
                             <div class="collapse-menu">
@@ -122,51 +116,135 @@
                             </a>
                             <ul class="child list">
                                 <li>
-                                    <a class="active" href="#1.0-poa-list.html">
+                                    <a id="MenuPOA" href="@Url.Action("Index", "POA")">
                                         <i class="fa fa-angle-right"></i>
                                         POA
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#1.1-nppbkc-list.html">
+                                    <a id="MenuMasterPlant" href="@Url.Action("Index", "Plant")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Master Plant
+                                    </a>
+                                </li>
+                                <li>
+                                   
+                                    <a id="MenuNPPBKC" href="@Url.Action("Index", "NPPBKC")">
                                         <i class="fa fa-angle-right"></i>
                                         NPPBKC
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#1.2-nppbkc-plant-list.html">
-                                        <i class="fa fa-angle-right"></i>
-                                        NPPBKC Plant
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#1.3-header-footer-list.html">
+                                    <a id="MenuHeaderFooter" href="@Url.Action("Index", "HeaderFooter")">
                                         <i class="fa fa-angle-right"></i>
                                         Header Footer
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#1.4-brand-registration-list.html">
+                                    <a id="MenuMasterMaterial" href="@Url.Action("Index", "Material")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Material Master
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuMasterBrandRegistration" href="@Url.Action("Index", "BrandRegistration")">
                                         <i class="fa fa-angle-right"></i>
                                         Brand Registration
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="active" href="@Url.Action("Index", "VirtualMappingPlant")">
-                                       <i class="fa fa-angle-right"></i>
-                                        Maping Virtual Plant
+                                    <a id="MenuMasterVirtualMappingPlant" href="@Url.Action("Index", "VirtualMappingPlant")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Virtual Plant Mapping
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="1.6-excisable-goods-type-group.html">
+                                    <a id="MenuMasterGoodType" href="@Url.Action("Index", "GoodsTypeGroup")" > 
                                         <i class="fa fa-angle-right"></i>
-                                        Excisable Goods<br />
-                                        Type Group
+                                        Goods Type Group
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuMasterUser" href="@Url.Action("Index", "User")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User
                                     </a>
                                 </li>
                             </ul>
                         </div>
+                        <div class="other">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-th"></i>
+                                <span>Other Modules</span>
+                            </a>
+                            <ul class="child other-menu">
+                                <li><a href="list.html"><i class="fa fa-angle-right"></i> PBCK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                            </ul>
+                        </div>
                             break;
+
+                        case Enums.MenuList.CK5:
+
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </div>
+                        <div class="collapse-menu active open">
+                            <a href="#" class="list-group-item list-parent">
+                                <i class="fa fa-clipboard"></i>
+                                <span>Document List</span>
+                                <i class="down fa fa-caret-down"></i>
+                            </a>
+                            <ul class="child list">
+                                <li><a href="#"><i class="fa fa-angle-right"></i>Upload File</a></li>
+                                <li><a id="MenuCK5Domestic"  href="@Url.Action("Index", "CK5")"><i class="fa fa-angle-right"></i> Domestic</a></li>
+                                <li><a id="MenuCK5Import" href="@Url.Action("CK5Import", "CK5")"><i class="fa fa-angle-right"></i>Importer</a></li>
+                                <li><a id="MenuCK5Export" href="@Url.Action("CK5Export", "CK5")"><i class="fa fa-angle-right"></i>Export (Union)</a></li>
+                                <li><a id="MenuCK5Manual" href="@Url.Action("CK5Manual", "CK5")"><i class="fa fa-angle-right"></i>Manual</a></li>
+                                <li><a id="MenuCK5DomesticAlcohol" href="@Url.Action("CK5DomesticAlcohol", "CK5")"><i class="fa fa-angle-right"></i>Domestic Alcohol</a></li>
+                                <li><a id="MenuCK5Completed" href="@Url.Action("CK5Completed", "CK5")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+                            </ul>
+                        </div>
+                        <div class="collapse-menu">
+                            <a href="#" class="list-group-item list-parent">
+                                <i class="fa fa-signal"></i>
+                                <span>Report</span>
+                                <i class="down fa fa-caret-down"></i>
+                            </a>
+                            <ul class="child list">
+                                <li><a href="report-summary.html"><i class="fa fa-angle-right"></i> Summary</a></li>
+                                <li><a href="report-monitoring.html"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>
+                            </ul>
+                        </div>
+                        <div class="other">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-th"></i>
+                                <span>Other Modules</span>
+                            </a>
+                            <ul class="child other-menu">
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                            </ul>
+                        </div>
+                            break;
+
+
                     }
                 }
             </div>
@@ -185,9 +263,64 @@
             </div>
         </div>
     </footer>
+    <!-- Load jQuery -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
 
+    <!-- Load Bootstrap JavaScript -->
+    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Load Fixed Header table JavaScript -->
+    @Scripts.Render("~/bundles/fixedheadertable")
     @Scripts.Render("~/bundles/customjs")
+    @Scripts.Render("~/bundles/validate")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script src="~/Scripts/js/vendors/bootstrap-select.min.js"></script>
+
+
     @RenderSection("styles", required: false)
+    
+    <script type="text/javascript">
+        $('.toggle-row').click(function () {
+
+            var filter = $(".filters");
+            filter.slideToggle(100).promise().done(function () {
+
+            });
+        });
+       
+        $(document).ready(function () {
+            $(".selectpicker.form-control").attr('data-live-search', true);
+
+            if ($('#changesHistoryTable') != null)
+            {
+                $('#changesHistoryTable .filters th').each(function () {
+                    var idx = $(this).index();
+                    var title = $('#changesHistoryTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+
+                });
+                var tableHistory = $('#changesHistoryTable').DataTable();
+                // Setup - add a text input to each footer cell
+                if (tableHistory.columns().eq(0) != null)
+                    {
+                tableHistory.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        tableHistory
+                            .column(colIdx)
+                            .search(this.value)
+                            .draw();
+                    });
+                });
+                    }
+
+            }
+            
+        });
+        
+    </script>
+
     @RenderSection("scripts", required: false)
 
 

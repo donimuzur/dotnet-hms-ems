@@ -16,9 +16,9 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
        
-        public XmlPoaMapDataMapper()
+        public XmlPoaMapDataMapper(string filename)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_POA_MAP");
+            _xmlMapper = new XmlDataMapper(filename);
            
         }
 
@@ -33,20 +33,20 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_POA_MAP();
                     var poaCode  = xElement.Element("POA_ID").Value;
-                    var existingPoa = new XmlPoaDataMapper().GetExPoa(poaCode);
+
+                    var existingPoa = new XmlPoaDataMapper(null).GetExPoa(poaCode);
                     if(existingPoa == null)
-                        continue;
+                        throw  new Exception("No Existing POA with POA ID "+ poaCode);
                     var plantCode = xElement.Element("PLANT_ID").Value;
-                    var existingPlant = new XmlPlantDataMapper().GetPlant(plantCode);
+                    var existingPlant = new XmlPlantDataMapper(null).GetPlant(plantCode);
                     if(existingPlant == null)
-                        continue;
+                        throw new Exception("No Existing Plant with Plant ID " + plantCode);
                     item.PLANT_ID = existingPlant.PLANT_ID;
                     item.POA_ID = existingPoa.POA_ID;
                     item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    
-                    var podDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out podDateXml);
+
+                    var podDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingPoaMap = GetPoaMap(item.PLANT_ID, item.POA_ID);
                     if (existingPoaMap != null)
                     {

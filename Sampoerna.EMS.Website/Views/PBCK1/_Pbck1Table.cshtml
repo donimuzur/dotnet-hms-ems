@@ -1,0 +1,53 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ViewModel
+
+<table id="pbckTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Type</th>
+            <th>Year</th>
+            <th>NPPBKC ID</th>
+            <th>PBCK-1 Number</th>
+            <th>Proposed Ammount</th>
+            <th>Last Update</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Details", "PBCK1", new { id = item.PBCK1_ID})"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "PBCK1", new { id = item.PBCK1_ID})"><i class="fa fa-pencil-square-o"></i></a>
+                </td>
+                <td>@Html.DisplayFor(model => item.PBCK1_TYPEText)</td>
+                <td>@Html.DisplayFor(model => item.Year)
+                <td>
+                    @Html.DisplayFor(model => item.NPPBKC_NO)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.NUMBER)
+            </td>
+            <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
+            <td>
+                @item.APPROVED_USERNAME
+            </td>
+            <td class="last">@Html.DisplayFor(model => item.STATUS_NAME)</td>
+        </tr>
+        }
+    </tbody>
+</table>
+

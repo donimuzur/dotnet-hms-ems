@@ -1,0 +1,168 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.POA.POAViewModel
+
+@section styles
+    {
+   }
+
+@section scripts {
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+
+        // Setup - add a text input to each footer cell
+        $('#mydata .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                var title = $('#mydata thead th').eq($(this).index()).text();
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+            }
+        });
+
+        // DataTable
+        var table = $('#mydata').DataTable();
+
+
+        // Apply the search
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+
+
+        @if (TempData[Constans.SubmitType.Save] != null)
+            {
+               @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
+               @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Save] = null;
+            }
+        else if (TempData[Constans.SubmitType.Update] != null)
+             {
+              @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
+               @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Update] = null;
+             }
+        else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
+                 @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Delete] = null;
+            }
+       
+        $('#MenuPOA').addClass('active');
+
+    });
+    </script>
+}
+
+
+@{
+    ViewBag.Title = "POA (Power of Attorney)";
+    
+}
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "POA")">
+                    <button class="btn btn-blue">NEW</button>
+                </a>
+                <a data-toggle="modal" data-target=".menu-maping-type">
+
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+
+                            <th class="toggle-row"> Filter </th>
+                            <th> ID Card </th>
+                            <th> User Account </th>
+                            <th> Printed Name</th>
+                            <th> Phone </th>
+                            <th> Title </th>
+                            <th> Deleted </th>
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th> ID Card </th>
+                            <th> User Account </th>
+                            <th> Printed Name</th>
+                            <th> Phone </th>
+                            <th> Title </th>
+                            <th> Deleted </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "POA", new { id = item.PoaId })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "POA", new { id = item.PoaId })"> <i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PoaIdCard)
+                                </td>
+                                <td>
+                                    @if (item.User != null)
+                                    {
+                                        <a href="@Url.Action("Detail", "User", new {id = @item.User.USER_ID})">@item.User.USERNAME</a>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PoaPrintedName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PoaPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Is_Deleted)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!--modal-->
+<input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div  class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-poa-message">
+               
+            </div>
+        </div>
+    </div>
+</div>

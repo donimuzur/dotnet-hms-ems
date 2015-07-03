@@ -5,7 +5,12 @@ namespace Sampoerna.EMS.Website.Models
 {
     public class UserViewModel : BaseModel
     {
-        public UserViewModel()
+        public List<UserItem> Details { get; set; }
+    }
+
+    public class UserItem
+    {
+        public UserItem()
         {
             this.Employees = new List<USER>();
             this.Manager = new USER();
@@ -21,5 +26,16 @@ namespace Sampoerna.EMS.Website.Models
         public List<USER> Employees { get; set; }
         public USER Manager { get; set; }
         public USER_GROUP USER_GROUP { get; set; }
+
+        public string EMAIL { get; set; }
+
+        public string PHONE { get; set; }
+
+        
+    }
+
+    public class UserItemViewModel : BaseModel
+    {
+        public UserItem Detail { get; set; }
     }
 }

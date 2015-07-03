@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
+using EnumHelper = Sampoerna.EMS.Utils.EnumHelper;
 
 namespace Sampoerna.EMS.Website.Helpers
 {
@@ -58,6 +59,40 @@ namespace Sampoerna.EMS.Website.Helpers
             }
 
             return htmlHelper.DropDownListFor(expression, list, new { @class = htmlclass });
+        }
+
+        public static MvcHtmlString EnumDropDownListFor<TModel, TProperty, TEnum>(
+                    this HtmlHelper<TModel> htmlHelper,
+                    Expression<Func<TModel, TProperty>> expression,
+                    TEnum selectedValue,
+            string optionLabel = null, object htmlattr = null)
+        {
+            var values = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
+            IEnumerable<SelectListItem> items;
+
+            if (values.ToString().Contains("Languages"))
+            {
+                items = from value in values
+                        select new SelectListItem()
+                        {
+                            Text = value.ToString(),
+                            Value = value.ToString()
+                        };
+
+            }
+            else
+            {
+                items = from value in values
+                        select new SelectListItem()
+                        {
+                            Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(TEnum), value.ToString())),
+                            Value = Enum.Parse(typeof(TEnum), value.ToString()).ToString()
+                        };
+            }
+            if (optionLabel == null)
+                return htmlHelper.DropDownListFor(expression, items, htmlattr);
+
+            return htmlHelper.DropDownListFor(expression, items, optionLabel, htmlattr);
         }
         
         public static string UserName(this HtmlHelper htmlHelper)

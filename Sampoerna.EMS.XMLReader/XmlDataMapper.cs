@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,21 +10,21 @@ using System.Configuration;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
+using Voxteneo.WebCompoments.NLogLogger;
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
     {
-        private const string RootPath = @"E:/XML_EMS/";
         public XElement _xmlData = null;
-        private string _xmlName = null;
+        public string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
-
-        public XmlDataMapper(string xmlName)  
+        public XmlDataMapper(string xmlName)
         {
+            
             _xmlName = xmlName;
             _xmlData = ReadXMLFile();
-            logger = new NullLogger();
+            logger = new NLogLogger();
             uow = new SqlUnitOfWork(logger);
           
         }
@@ -31,7 +32,12 @@ namespace Sampoerna.EMS.XMLReader
 
         private XElement ReadXMLFile()
         {
-            return XElement.Load(Path.Combine(RootPath, _xmlName +  ".xml"));
+
+            if (_xmlName == null)
+                return null;
+            if (!File.Exists(_xmlName))
+                return null;
+            return XElement.Load(_xmlName);
         }
 
         public XElement GetElement(string elementName)
@@ -62,11 +68,34 @@ namespace Sampoerna.EMS.XMLReader
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
                 uow.RevertChanges();
             }
             uow.SaveChanges();
-
+            MoveFile();
         }
+
+        private void MoveFile()
+        {
+            try
+            {
+                string sourcePath = _xmlName;
+                string archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+                var sourcefileName = Path.GetFileName(sourcePath);
+                var destPath = Path.Combine(archievePath, sourcefileName);
+                if (File.Exists(destPath))
+                    return;
+
+                File.Move(sourcePath, destPath);
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+          
+        }
+
 
     }
 }

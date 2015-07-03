@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class HEADER_FOOTER
     {
+        public HEADER_FOOTER()
+        {
+            this.HEADER_FOOTER_FORM_MAP = new HashSet<HEADER_FOOTER_FORM_MAP>();
+        }
+    
         public int HEADER_FOOTER_ID { get; set; }
         public string FORM_NAME { get; set; }
         public Nullable<long> COMPANY_ID { get; set; }
@@ -21,7 +26,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string FOOTER_CONTENT { get; set; }
         public Nullable<bool> IS_ACTIVE { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     
+        public virtual ICollection<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
         public virtual T1001 T1001 { get; set; }
     }
 }

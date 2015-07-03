@@ -74,4 +74,45 @@ namespace Sampoerna.EMS.AutoMapperExtensions
 
         }
     }
+
+    /// <summary>
+    /// Resolve String as CultureInfo.InvariantCulture to a nullable DateTime
+    /// </summary>
+    public class StringToNullableIntegerResolver : ValueResolver<object, int?>
+    {
+        protected override int? ResolveCore(object value)
+        {
+            string InputAsString = value.ToNullSafeString();
+
+            if (string.IsNullOrWhiteSpace(InputAsString))
+                return null;
+
+            return int.Parse(InputAsString);
+        }
+    }
+
+    public class NullableBooleanToStringDeletedResolver : ValueResolver<bool?, string>
+    {
+        protected override string ResolveCore(bool? value)
+        {
+            if (!value.HasValue)
+                return "No";
+            return value.Value ? "Yes" : "No";
+        }
+    }
+
+
+    //public class VirtualPlantMapCompanyNameResolver : ValueResolver<object, string>
+    //{
+    //    protected override string ResolveCore(object value)
+    //    {
+            
+    //        string InputAsString = value.ToNullSafeString();
+
+    //        if (string.IsNullOrWhiteSpace(InputAsString))
+    //            return null;
+
+    //        return int.Parse(InputAsString);
+    //    }
+    //}
 }

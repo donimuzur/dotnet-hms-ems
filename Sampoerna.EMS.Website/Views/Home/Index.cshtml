@@ -44,7 +44,7 @@
                 <div class="icon"></div>
             </div>
             <div class="excise-menu last" data-toggle="modal" data-target=".menu-claimable">
-                <h3>Excisable Goods Claimable</h3>
+                <h3>Excisable Claimable</h3>
                 <p>
                     - Stamp Damage and Return (PBCK-4)<br>
                     - Refund from Production (PBCK-7)<br>
@@ -53,10 +53,15 @@
                 </p>
                 <div class="icon"></div>
             </div>
-            <div class="excise-menu small">
-                <h3>Master Data</h3>
-                <div class="icon"></div>
-            </div>
+            <a href="@Url.Action("Index","POA")">
+                <div class="excise-menu small">
+
+                    <h3>Master Data</h3>
+                    <div class="icon"></div>
+
+
+                </div>
+            </a>
             <div class="excise-menu small last">
                 <h3>Setting</h3>
                 <div class="icon"></div>
@@ -78,7 +83,7 @@
                             </a>
                         </div>
                         <div class="col-md-15">
-                            <a href="#" class="child-menu">
+                            <a href="@Url.Action("Index","CK5")" class="child-menu">
                                 CK-5
                             </a>
                         </div>

@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Contract
 {
     public interface IPlantBLL
     {
-        T1001W GetId(long id);
+        Plant GetId(long id);
+        List<Plant> GetAll();
+        void save(Plant plantT1001W,int userid);
 
-        List<T1001W> GetAll();
-        
+        string GetPlantWerksById(long id);
     }
 }

@@ -6,15 +6,22 @@ using Sampoerna.EMS.Contract;
 using System.Collections.Generic;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
     public class UserController : BaseController
     {
         private IUserBLL _bll;
-        public UserController(IUserBLL bll, IPageBLL pageBLL) : base(pageBLL, Enums.MenuList.USER)
+        private IChangesHistoryBLL _changesHistoryBll;
+        private Enums.MenuList _mainMenu;
+
+        public UserController(IUserBLL bll, IChangesHistoryBLL changesHistoryBll, IPageBLL pageBLL)
+            : base(pageBLL, Enums.MenuList.USER)
         {
             _bll = bll;
+            _changesHistoryBll = changesHistoryBll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -23,18 +30,31 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = new UserInput();
             List<USER> users = _bll.GetUsers(input);
-            var userViewModels = Mapper.Map<List<UserViewModel>>(users);
-            return View(userViewModels);
+            var model = new UserViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Details = Mapper.Map<List<UserItem>>(users)
+            };
+            return View(model);
         }
 
-        public ActionResult ViewDetail(int? id)
+        public ActionResult Detail(int? id)
         {
             if (!id.HasValue)
                 return RedirectToAction("Index");
-
+            
             var user = _bll.GetUserTreeByUserID(id.Value);
-            var userModel = Mapper.Map<UserViewModel>(user);
-            return View(userModel);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.USER);
+            var model = new UserItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<UserItem>(user), 
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList)
+            };
+
+            return View("Detail",model);
         }
-	}
+    }
 }

@@ -1,0 +1,191 @@
+﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
+@section scripts {
+
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script type="text/javascript">
+        $('#MenuPOA').addClass('active');
+        var poaDelete = function () {
+               window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
+           
+
+
+        };
+        var confirmDeletePOA = function () {
+            $('#btn-delete-poa').click();
+        };
+    </script>
+}
+@{
+    ViewBag.Title = "Detail POA (Power of Attorney)";
+}
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+                <h3>Detail POA</h3>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "POA")">
+                    <button class="btn btn-grey">Back</button>
+                </a>
+                @if (Model.Detail.Is_Deleted.Equals("No"))
+                {
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Delete</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                POA Detail
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <form class="form-excise" role="form">
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">ID Card</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">User Account</label>
+                                                            <div class="col-md-9">
+                                                                @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Manager</label>
+                                                            <div class="col-md-9">
+                                                                @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Printed Name</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+
+
+
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Phone</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Email</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Title</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Address</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--delete-->
+<input id="btn-delete-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poa" value="delete">
+<div class="modal main-menu-child fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Delete</h3>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="poaDelete();">Delete</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

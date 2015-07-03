@@ -36,7 +36,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             LoginNotMatch,
 
             [Description("The end date should be greater than start date")]
-            StartDateGreaterThanEndDate
+            StartDateGreaterThanEndDate,
+
+            [Description("BPPKBC data could not found")]
+            NppbkcNotFound
 
         }
 

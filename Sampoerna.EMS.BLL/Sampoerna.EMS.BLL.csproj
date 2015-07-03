@@ -61,21 +61,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLMapper.cs" />
+    <Compile Include="ChangesHistoryBLL.cs" />
+    <Compile Include="CK5BLL.cs" />
+    <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
+    <Compile Include="DocumentSequenceNumberBLL.cs" />
+    <Compile Include="HeaderFooterBLL.cs" />
+    <Compile Include="ExGroupType.cs" />
     <Compile Include="MasterDataBLL.cs" />
+    <Compile Include="MaterialBLL.cs" />
+    <Compile Include="MonthBLL.cs" />
     <Compile Include="PageBLL.cs" />
     <Compile Include="PBCK1BLL.cs" />
     <Compile Include="CK4C_BLL.cs" />
     <Compile Include="PlantBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StatusBLL.cs" />
-    <Compile Include="StatusGovBLL.cs" />
     <Compile Include="SupplierPortBLL.cs" />
     <Compile Include="UnitOfMeasurementBLL.cs" />
     <Compile Include="UserBLL.cs" />
     <Compile Include="VirtualMappingPlantBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
+    <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />
     <Compile Include="ZaidmExPOABLL.cs" />
     <Compile Include="ZaidmExPOAMapBLL.cs" />

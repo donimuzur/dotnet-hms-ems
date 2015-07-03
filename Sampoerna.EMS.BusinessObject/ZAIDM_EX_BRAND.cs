@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK3_7_ITEM = new HashSet<PBCK3_7_ITEM>();
             this.PBCK3_CK5_ITEM = new HashSet<PBCK3_CK5_ITEM>();
             this.PBCK4_ITEM = new HashSet<PBCK4_ITEM>();
+            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
         }
     
         public long BRAND_ID { get; set; }
@@ -41,11 +42,15 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> HJE_IDR { get; set; }
         public Nullable<decimal> TARIFF { get; set; }
         public Nullable<int> TARIFF_CURR { get; set; }
-        public int GOODTYP_ID { get; set; }
+        public Nullable<int> GOODTYP_ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<bool> IS_ACTIVE { get; set; }
+        public Nullable<bool> IS_FROM_SAP { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public string BRAND_CONTENT { get; set; }
+        public Nullable<decimal> CONVERSION { get; set; }
     
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
@@ -54,11 +59,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
         public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
-        public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
         public virtual ZAIDM_EX_PCODE ZAIDM_EX_PCODE { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
+        public virtual T1001W T1001W { get; set; }
+        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }

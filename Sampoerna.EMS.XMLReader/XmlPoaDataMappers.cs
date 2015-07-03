@@ -16,12 +16,14 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
        
-        public XmlPoaDataMapper()
+       
+        public XmlPoaDataMapper(string fileName)
         {
-            _xmlMapper = new XmlDataMapper("ZAIDM_EX_POA");
            
+             _xmlMapper = new XmlDataMapper(fileName);
+            
         }
-
+       
 
         public List<ZAIDM_EX_POA> Items
         {
@@ -33,16 +35,15 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_POA();
                     var poaCodeXml = xElement.Element("POA_ID").Value;
-
                     var exisitingPoa = GetExPoa(poaCodeXml);
-                    var podDateXml = DateTime.MinValue;
-                    DateTime.TryParse(xElement.Element("MODIFIED_DATE").Value, out podDateXml);
+                    var podDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     item.POA_CODE = poaCodeXml;
                     item.POA_ID_CARD = xElement.Element("POA_ID_CARD").Value;
                     item.POA_PRINTED_NAME = xElement.Element("POA_PRINTED_NAME").Value;
                     item.POA_PHONE = xElement.Element("POA_PHONE").Value;
                     item.POA_ADDRESS = xElement.Element("POA_ADDRESS").Value;
                     item.CREATED_DATE = DateTime.Now;
+                    item.IS_FROM_SAP = true;
                     if (exisitingPoa != null)
                     {
                         if (podDateXml > exisitingPoa.CREATED_DATE)
