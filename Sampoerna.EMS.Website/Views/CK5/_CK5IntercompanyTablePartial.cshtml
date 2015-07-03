@@ -16,27 +16,25 @@
     <thead class="filters">
         <tr>
             <th> Action</th>
-            <th>Document</th>
-            <th>Qty</th>
-            <th>POA</th>
-            <th>NPPBKC</th>
-            <th>Source Plant</th>
-            <th>Destination</th>
-            <th>Status</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @{
-            int rownum = 1;
-        }
+      
         @foreach (var item in Model.DetailList2)
         {
             <tr>
-                <td>
+                <td class="action">
                     <a href="@Url.Action("Detail", "POA", new { id = item.NPPBKC_ID })"><i class="fa fa-eye"></i></a>
                     <a href="@Url.Action("Edit", "POA", new { id = item.NPPBKC_ID })"> <i class="fa fa-pencil-square-o"></i></a>
                 </td>
-                <td>@rownum</td>
+               
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
                 <td>@Html.DisplayFor(model => item.Qty)</td>
                 <td>
@@ -49,7 +47,7 @@
                 <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
                 <td class="last">@Html.DisplayFor(model => item.Status)</td>
             </tr>
-            rownum++;
+           
         }
     </tbody>
 </table>

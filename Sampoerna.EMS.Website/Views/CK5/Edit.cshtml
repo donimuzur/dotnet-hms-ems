@@ -1,18 +1,20 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
 
 
-@using (Html.BeginForm("SaveCK5", "CK5"))
+@using (Html.BeginForm("Edit", "CK5"))
 {
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>@Model.Ck5Type.ToString()</h3>
-                <label class="status">Draft</label>
+                <label class="status">@Model.DocumentStatus</label>
                 <div class="action-button">
-                    @*<button class="btn btn-blue">Save</button>
-                        <button class="btn btn-grey">Print Preview</button>*@
+                   
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-grey" value="Print Preview" />
+                    
+                    <input type="button" class="btn btn-blue" value="Submit" />
                 </div>
             </div>
         </div>
@@ -30,12 +32,11 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                       
+                        @Html.HiddenFor(model=>model.Ck5Id);
 
-
-                        @Html.Partial("_CK5InformationCreate")
+                        @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
-                        @Html.Partial("_CK5UploadCreate")
+                        @Html.Partial("_CK5UploadEdit")
                         @Html.Partial("_CK5ChangeLog")
                     </div>
                 </div>

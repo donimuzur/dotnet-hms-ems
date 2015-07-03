@@ -1,0 +1,51 @@
+﻿
+@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
+
+<div role="tabpanel" class="tab-pane" id="upload">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <form id="ProdConv" action="@Url.Action("UploadFile", "CK5")" enctype="multipart/form-data" method="post">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Upload Excel File
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control">
+                                    <span class=" input-group-addon file-input btn btn-primary btn-file">
+                                        Browse <input type="file" name="itemExcelFile">
+                                    </span>
+                                </div>
+
+                                @*<div class="input-group">
+                                        <input type="file" class="form-control" name="itemExcelFile">
+                                    </div>*@
+                            </div>
+                            <div class="col-md-6">
+                                <input type="button" id="CK5UploadSubmitBtn" class="btn btn-grey generate" value="Generate" />
+                                <input type="button" class="btn btn-grey" id="CK5UploadSave" value="Save" />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="table-container" id="ProdConvContent">
+        @Html.Partial("_CK5UploadList", Model.UploadItemModels)
+    </div>
+
+</div>
+
+
+

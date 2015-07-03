@@ -170,6 +170,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DocumentStatus = Enums.DocumentStatus.Draft;
             model = InitCK5List(model);
 
+            //submission date
+            model.SubmissionDate = DateTime.Now;
+
             return model;
         }
 
@@ -259,41 +262,59 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
         }
 
+       
+
         [HttpPost]
         public ActionResult SaveCK5(CK5CreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                //CK5 dbCk5 = Mapper.Map<CK5>(model);
-                
+                //var dbCk5 = Mapper.Map<CK5>(model);
+                //todo : put it into mapper
                 CK5 dbCk5 = new CK5();
-                dbCk5.STATUS_ID = model.DocumentStatus;
                 dbCk5.CK5_TYPE = model.Ck5Type;
                 dbCk5.KPPBC_CITY = model.KppBcCity;
                 dbCk5.SUBMISSION_NUMBER = model.SubmissionNumber;
-                dbCk5.SUBMISSION_DATE = model.SubmissionDate;
+                dbCk5.REGISTRATION_NUMBER = model.RegistrationNumber;
                 dbCk5.EX_GOODS_TYPE_ID = model.GoodTypeId;
                 dbCk5.EX_SETTLEMENT_ID = model.ExciseSettlement;
                 dbCk5.EX_STATUS_ID = model.ExciseStatus;
                 dbCk5.REQUEST_TYPE_ID = model.RequestType;
-                dbCk5.REGISTRATION_NUMBER = model.RegistrationNumber;
+                //dbCk5.SUBMISSION_DATE = model.SubmissionDate;
                 dbCk5.SOURCE_PLANT_ID = model.SourcePlantId;
                 dbCk5.DEST_PLANT_ID = model.DestPlantId;
+                dbCk5.INVOICE_NUMBER = model.InvoiceNumber;
+                dbCk5.PBCK1_DECREE_ID = model.PbckDecreeId;
+                dbCk5.CARRIAGE_METHOD_ID = model.CarriageMethod;
+                dbCk5.GRAND_TOTAL_EX = model.GrandTotalEx;
+                dbCk5.INVOICE_DATE = model.InvoiceDate;
 
+                dbCk5.SUBMISSION_DATE = DateTime.Now;
+                dbCk5.STATUS_ID = Enums.DocumentStatus.Draft;
+                dbCk5.CREATED_DATE = DateTime.Now;
                 dbCk5.CREATED_BY = CurrentUser.USER_ID;
 
                 _ck5Bll.SaveCk5(dbCk5);
-            }
 
+                //success.. redirect to edit form
+                return RedirectToAction("Edit", "CK5", new {@id = dbCk5.CK5_ID});
+
+
+
+            }
+            if (model.KppBcCity == 0)
+            {
+                ModelState.AddModelError("KppBcCity", "KppBcCity is required");
+            }
             model = InitCK5List(model);
             
             return View("Create", model);
         }
 
         [HttpPost]
-        public PartialViewResult UploadFileCk5(HttpPostedFileBase ck5ItemExcelFile)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile)
         {
-            var data = (new ExcelReader()).ReadExcel(ck5ItemExcelFile);
+            var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5CreateViewModel();
             if (data != null)
             {
@@ -322,5 +343,83 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadList", model);
         }
 
+        private CK5EditViewModel GetInitEditData(CK5EditViewModel model)
+        {
+            
+            model.CeOfficeCode = _masterDataBll.GetCeOfficeCodeByKppbcId(model.KppBcCity);
+            
+            var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
+            model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+            model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
+            model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+            model.SourceAddress = dbPlant.ADDRESS;
+            //var model = Mapper.Map<CK5PlantModel>(dbPlant);
+
+            var dbDestPlant = _masterDataBll.GetPlantById(model.DestPlantId);
+            model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+            model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
+            model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+            model.DestAddress = dbDestPlant.ADDRESS;
+
+            return model;
+
+        }
+
+        private CK5EditViewModel InitEdit(CK5EditViewModel model)
+        {
+           
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+
+            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+            model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
+            model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
+            model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
+
+            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
+
+            return model;
+        }
+
+        public ActionResult Edit(long id)
+        {
+            var dbData = _ck5Bll.GetById(id);
+
+            var model = new CK5EditViewModel();
+            Mapper.Map(dbData, model);
+
+            model = InitEdit(model);
+            model = GetInitEditData(model);
+
+            //model.SubmissionNumber = dbData.SUBMISSION_NUMBER;
+            //model.SubmissionDate = dbData.SUBMISSION_DATE;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(CK5EditViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var dbData = _ck5Bll.GetById(model.Ck5Id);
+
+                Mapper.Map(model, dbData);
+
+                _ck5Bll.SaveCk5(dbData);
+                
+            }
+
+            model = InitEdit(model);
+            model = GetInitEditData(model);
+
+            return View(model);
+        }
     }
 }

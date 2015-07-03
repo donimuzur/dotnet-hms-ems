@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.CK5.CK5UploadViewModel>
 
 <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
     <thead>
@@ -21,7 +21,7 @@
     <tbody>
         @if (Model != null)
         {
-            foreach (var row in Model.UploadItemModels)
+            foreach (var row in Model)
             {
                 <tr>
                     <td style="display: none"></td>

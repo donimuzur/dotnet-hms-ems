@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
@@ -48,7 +48,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Submission Number</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SubmissionNumber, new { @class = "form-control", @disabled="disabled" })
+                                            @Html.TextBoxFor(model => model.SubmissionNumber, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -56,14 +56,14 @@
                                     <div class="row">
                                         <label class="col-md-4">Submission Date</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control" , @disabled="disabled" })
+                                            @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control", @disabled = "disabled" })
 
                                             @*<div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>*@
+                                                    @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>*@
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +155,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPWP</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SourceNpwp, new {@disabled="disabled", @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.SourceNpwp, new { @disabled = "disabled", @class = "form-control" })
                                             @*<input id="SourceNpwp" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
@@ -256,7 +256,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Address</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.DestAddress, new { @disabled = "disabled", @class = "form-control", @row="5" })
+                                            @Html.TextAreaFor(model => model.DestAddress, new { @disabled = "disabled", @class = "form-control", @row = "5" })
                                             @*<textarea id="DestCompanyAddress" class="form-control" rows="5" disabled></textarea>*@
                                         </div>
                                     </div>
@@ -377,7 +377,7 @@
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
                     <div class="panel-body">
                         @*<a href="#upload">*@
-                            <input type="button" class="btn btn-blue" value="Upload" id="btnUploadInfo" />
+                        <input type="button" class="btn btn-blue" value="Upload" id="btnUploadInfo" />
                         @*</a>*@
                         <div class="table-container">
                             <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
@@ -429,7 +429,7 @@
                                         <td> </td>
                                         <td> </td>
                                     </tr>
-                                 
+
                                 </tbody>
                             </table>
                         </div>
@@ -633,7 +633,7 @@
                 </div>
             </div>
         </div>
-        
+
 
     </div>
 </div>
@@ -641,7 +641,7 @@
 
 @section scripts {
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#btnUploadInfo').click(function () {
                 $('#upload-tab').addClass('active');
                 $('#home-tab').removeClass('active');
@@ -649,7 +649,7 @@
                 $('#information').removeClass('active');
                 $('#upload').removeClass('active');
             });
-            
+
         });
     </script>
-    }
+}

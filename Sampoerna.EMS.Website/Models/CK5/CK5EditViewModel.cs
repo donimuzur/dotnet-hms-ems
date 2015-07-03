@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
-    public class CK5CreateViewModel : BaseModel
+    public class CK5EditViewModel : BaseModel
     {
-        public CK5CreateViewModel()
+        public CK5EditViewModel()
         {
-            
+           // InfoViewModel = new CK5InformationViewModel();
             UploadItemModels = new List<CK5UploadViewModel>();
         }
-
+        
         //public CK5InformationViewModel InfoViewModel { get; set; }
+
+        public long Ck5Id { get; set; }
+
         public List<CK5UploadViewModel> UploadItemModels { get; set; }
 
         public Enums.DocumentStatus DocumentStatus { get; set; }
@@ -123,9 +128,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("FormatDateTime")]
         [Display(Name = "Unsealing Notification Date")]
         public DateTime? UnsealingNotifDate { get; set; }
-
-
-        
-
+         
     }
 }

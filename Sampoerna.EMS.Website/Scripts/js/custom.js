@@ -1,8 +1,11 @@
 $(document).ready(function() {
 	$('.input-group.date').datepicker({
 	    toggleActive: true,
-	    defaultViewDate: { year: 2015, month: 06, day: 28 }
+	    autoclose: true,
+	    format: "dd/M/yyyy",
+	    todayHighlight: true
 	});
+	$(".action a").tooltip();
 	$('#pbck-1').dataTable( {
 		"scrollY":        "220px",
 		"scrollCollapse": true,

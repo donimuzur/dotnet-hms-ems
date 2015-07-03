@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.BLL
                     NppbkcId = nppbkc
                 };
                 ck5.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(input);
-                ck5.CREATED_DATE = DateTime.Now;
+                //ck5.CREATED_DATE = DateTime.Now;
             }
           
             _repository.InsertOrUpdate(ck5);

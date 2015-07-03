@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
 
-<table id="ck5Table" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+<table id="ck5Table" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
             <th class="toggle-row"> Filter </th>
@@ -16,27 +16,24 @@
     <thead class="filters">
         <tr>
             <th> Action</th>
-            <th>Document</th>
-            <th>Qty</th>
-            <th>POA</th>
-            <th>NPPBKC</th>
-            <th>Source Plant</th>
-            <th>Destination</th>
-            <th>Status</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @{
-            int rownum = 1;
-        }
+       
         @foreach (var item in Model.DetailsList)
         {
             <tr>
-                <td>
-                    <a href="@Url.Action("Detail", "POA", new { id = item.NPPBKC_ID })"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "POA", new { id = item.NPPBKC_ID })"> <i class="fa fa-pencil-square-o"></i></a>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "CK5", new { id = item.Ck5Id })"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "CK5", new { id = item.Ck5Id })"> <i class="fa fa-pencil-square-o"></i></a>
                 </td>
-                <td>@rownum</td>
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
                 <td>@Html.DisplayFor(model => item.Qty)</td>
                 <td>
@@ -49,7 +46,7 @@
                 <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
                 <td class="last">@Html.DisplayFor(model => item.Status)</td>
             </tr>
-            rownum++;
+           
         }
     </tbody>
 </table>

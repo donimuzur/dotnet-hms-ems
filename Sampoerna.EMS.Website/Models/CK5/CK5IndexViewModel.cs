@@ -17,6 +17,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
             DetailsList = new List<CK5Item>();
 
         }
+
+        
+
         public CK5SearchViewModel SearchView { get; set; }
 
         public List<CK5Item> DetailsList { get; set; }
@@ -27,6 +30,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
     public class CK5Item
     {
+        public long Ck5Id { get; set; }
+
         public string DocumentNumber { get; set; }
 
         public decimal? Qty { get; set; }
