@@ -264,6 +264,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Delete(int id)
         {
             _headerFooterBll.Delete(id, CurrentUser.USER_ID);
+            TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
             return RedirectToAction("Index");
         }
 
