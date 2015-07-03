@@ -1,6 +1,8 @@
-﻿namespace Sampoerna.EMS.BusinessObject.Inputs
+﻿using Sampoerna.EMS.BusinessObject.Business;
+
+namespace Sampoerna.EMS.BusinessObject.Inputs
 {
-    public class PBCK1Input
+    public class Pbck1GetByParamInput
     {
         public string NPBCKID { get; set; }
         public int? POA { get; set;      }
@@ -15,4 +17,10 @@
         public string SortOrderColumn { get; set; }
 
     }
+
+    public class Pbck1SaveInput 
+    {
+        public Pbck1 Pbck1 { get; set; }
+    }
+
 }

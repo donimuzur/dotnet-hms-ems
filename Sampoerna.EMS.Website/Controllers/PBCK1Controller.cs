@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _prodTypeBll = prodTypeBll;
             _monthBll = monthBll;
             _plantBll = plantBll;
-            _mainMenu = Enums.MenuList.PBCK1;
+            _mainMenu = Enums.MenuList.ExcisableGoodsClaimable;
         }
 
         private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
@@ -183,8 +183,30 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return CreateInitial(new PBCK1ItemViewModel());
         }
+        
+        [HttpPost]
+        public ActionResult Create(PBCK1ItemViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return InitialCreate(model);
+            }
 
-        public ActionResult CreateInitial(PBCK1ItemViewModel model)
+            //process save
+            try
+            {
+                
+            }
+            catch (Exception exception)
+            {
+                throw;
+            }
+
+            return InitialCreate(model);
+
+        }
+
+        public ActionResult InitialCreate(PBCK1ItemViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.MainMenu = Enums.MenuList.ExcisableGoodsMovement;
@@ -216,20 +238,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var data = _plantBll.GetId(plantid);
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }
-
-        [HttpPost]
-        public ActionResult Save(PBCK1ItemViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return CreateInitial(model);
-            }
-
-            //process
-
-            return RedirectToAction("Create");
-
-        }
-
+        
     }
 }

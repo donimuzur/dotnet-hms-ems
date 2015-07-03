@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -18,7 +20,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private string includeTables = "";
+        private string includeTables = "PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -28,7 +30,7 @@ namespace Sampoerna.EMS.BLL
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
-        public List<PBCK1> GetPBCK1ByParam(PBCK1Input input)
+        public List<Pbck1> GetPBCK1ByParam(Pbck1GetByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
@@ -75,41 +77,48 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            return rc.ToList();
+            return Mapper.Map<List<Pbck1>>(rc.ToList());
         }
 
-        public PBCK1 GetById(long id)
+        public Pbck1 GetById(long id)
         {
-            return _repository.GetByID(id);
+            var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
+            return Mapper.Map<Pbck1>(dbData);
         }
 
-        public SavePBCK1Output Save(PBCK1 pbck1)
+        public SavePbck1Output Save(Pbck1 pbck1)
         {
-            if (pbck1.PBCK1_ID > 0)
+            PBCK1 dbData = null;
+            if (pbck1.Pbck1Id > 0)
             {
+
                 //update
-                _repository.Update(pbck1);
+                dbData = _repository.Get(c => c.PBCK1_ID == pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
+                Mapper.Map<Pbck1, PBCK1>(pbck1, dbData);
+
             }
             else
             {
                 //Insert
                 var input = new GenerateDocNumberInput()
                 {
-                    Year = pbck1.PERIOD_FROM.Value.Year,
-                    Month = pbck1.PERIOD_FROM.Value.Month,
-                    NppbkcId = pbck1.NPPBKC_ID.Value
+                    Year = pbck1.PeriodFrom.Year,
+                    Month = pbck1.PeriodFrom.Month,
+                    NppbkcId = pbck1.NppbkcId
                 };
-                pbck1.NUMBER = _docSeqNumBll.GenerateNumber(input);
-                _repository.Insert(pbck1);
+                
+                pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(input);
+                dbData = new PBCK1();
+                Mapper.Map<Pbck1, PBCK1>(pbck1, dbData);
             }
 
-            var output = new SavePBCK1Output();
-            
+            var output = new SavePbck1Output();
+
             try
             {
                 _uow.SaveChanges();
                 output.Success = true;
-                output.Id = pbck1.PBCK1_ID;
+                output.Id = pbck1.Pbck1Id;
             }
             catch (Exception exception)
             {
@@ -119,6 +128,7 @@ namespace Sampoerna.EMS.BLL
                 output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
             }
             return output;
+
         }
 
         public DeletePBCK1Output Delete(long id)
