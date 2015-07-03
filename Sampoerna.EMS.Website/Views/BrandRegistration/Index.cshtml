@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationIndexViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationIndexViewModel
 
 
 @section scripts {
@@ -26,8 +27,25 @@
                         .draw();
                 });
             });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
+            
+            @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
 
             $('#MenuMasterBrandRegistration').addClass('active');
         });
@@ -45,6 +63,9 @@
             <div class="action-button new">
                 <a href="@Url.Action("Create", "BrandRegistration")">
                     <button class="btn btn-blue">NEW</button>
+                </a>
+                <a data-toggle="modal" data-target=".menu-maping-type">
+
                 </a>
             </div>
         </div>
@@ -132,6 +153,22 @@
 
             </div>
 
+        </div>
+    </div>
+</div>
+<!--modal-->
+<input id="btn-brand-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-brand-message">
+
+            </div>
         </div>
     </div>
 </div>
