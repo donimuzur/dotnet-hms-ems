@@ -86,7 +86,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
-
+                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
             catch
