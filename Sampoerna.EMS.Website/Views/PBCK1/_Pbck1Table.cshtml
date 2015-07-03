@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ViewModel
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
 
 <table id="pbckTable" class="display" cellspacing="0" width="100%">
     <thead>
@@ -30,22 +30,22 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Details", "PBCK1", new { id = item.PBCK1_ID})"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "PBCK1", new { id = item.PBCK1_ID})"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("Details", "PBCK1", new { id = item.Pbck1Id})"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "PBCK1", new { id = item.Pbck1Id })"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
-                <td>@Html.DisplayFor(model => item.PBCK1_TYPEText)</td>
+                <td>@Html.DisplayFor(model => item.PbckTypeName)</td>
                 <td>@Html.DisplayFor(model => item.Year)
                 <td>
-                    @Html.DisplayFor(model => item.NPPBKC_NO)
+                    @Html.DisplayFor(model => item.NppbkcNo)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.NUMBER)
+                    @Html.DisplayFor(model => item.Pbck1Number)
             </td>
-            <td>@Html.DisplayFor(model => item.REQUEST_QTY)</td>
+            <td>@Html.DisplayFor(model => item.RequestQty)</td>
             <td>
-                @item.APPROVED_USERNAME
+                @item.ApprovedUsername
             </td>
-            <td class="last">@Html.DisplayFor(model => item.STATUS_NAME)</td>
+            <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
         </tr>
         }
     </tbody>

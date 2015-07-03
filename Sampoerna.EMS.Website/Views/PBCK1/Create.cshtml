@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ItemViewModel
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
     ViewBag.Title = "Create";
 }
@@ -11,7 +11,6 @@
             <h3>PBCK-1 Form</h3>
             <label class="status">Draft</label>
             <div class="action-button">
-                @*<button class="btn btn-blue">Save</button>*@
                 <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-blue" value="Save" />
                 <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-grey" value="Print Preview" />
             </div>
@@ -145,8 +144,8 @@
             $('#MenuPBCK1OpenListDocument').addClass('active');
         });
 
-        $('#Detail_NPPBKC_ID').change(function() {
-            if ($("#Detail_NPPBKC_ID").length) {
+        $('#Detail_NppbkcId').change(function () {
+            if ($("#Detail_NppbkcId").length) {
                 var nppbkcid = $(this).find("option:selected").val();
                 console.log(nppbkcid);
                 if (nppbkcid != '') {
@@ -157,7 +156,29 @@
             }
         });
 
-        function ajaxLoadNppbkcDetail(formData) {
+        function ajaxSelectNppbck(formData) {
+            if (formData.nppbkcId) {
+                //Load POA
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.SearchInput.PoaList;
+                        if (list.length > 0) {
+                            $('#SearchInput_POA').append('<option value="">All</option>');
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+                
+                //Load NppbkcDetai
+            }
+        }
+
+        function ajaxLoadCompany(formData) {
             if (formData.nppbkcid) {
                 $.ajax({
                     type: 'POST',
@@ -174,14 +195,14 @@
             }
         }
 
-        $("#Detail_SUPPLIER_PORT_ID").change(function() {
-            if ($("#Detail_SUPPLIER_PORT_ID").length) {
+        $("#Detail_SupplierPortId").change(function () {
+            if ($("#Detail_SupplierPortId").length) {
                 var port_id = $(this).find("option:selected").val();
                 console.log(port_id);
-                $('#Detail_SUPPLIER_PLANT').remove();
+                $('#Detail_SupplierPlant').remove();
                 if (port_id == '') {
                     //
-                    $('#supp-plant').html('<input class="form-control" id="Detail_SUPPLIER_PLANT" name="Detail.SUPPLIER_PLANT" type="text" />');
+                    $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
                     setSupplierPlantEmpty();
                 } else {
@@ -212,15 +233,15 @@
             var list = supplierData;
             if (list.length > 0) {
                 var htmlSelect = '';
-                htmlSelect += '<select class="form-control" id="Detail_SUPPLIER_PLANT" name="Detail.SUPPLIER_PLANT" onchange="supplierChange();">';
+                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" onchange="supplierChange();">';
                 for (var i = 0; i < list.length; i++) {
                     htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
                 }
                 htmlSelect += '</select>';
                 $('#supp-plant').html(htmlSelect);
                 //selected to 1
-                if ($("#Detail_SUPPLIER_PLANT").length) {
-                    var plant_id = $("#Detail_SUPPLIER_PLANT").find("option:selected").val();
+                if ($("#Detail_SupplierPlant").length) {
+                    var plant_id = $("#Detail_SupplierPlant").find("option:selected").val();
                     console.log(plant_id);
                     ajaxLoadDetailSupplierPlant({ plantid: plant_id });
                 }
@@ -248,8 +269,8 @@
         }
 
         function supplierChange() {
-            if ($("#Detail_SUPPLIER_PLANT").length) {
-                var plantid = $("#Detail_SUPPLIER_PLANT").find("option:selected").val();
+            if ($("#Detail_SupplierPlant").length) {
+                var plantid = $("#Detail_SupplierPlant").find("option:selected").val();
                 console.log(plantid);
                 ajaxLoadDetailSupplierPlant({ plantid: plantid });
             }

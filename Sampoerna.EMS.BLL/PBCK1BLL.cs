@@ -34,9 +34,9 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
-            if (!string.IsNullOrEmpty(input.NPBCKID))
+            if (input.NppbkcId.HasValue)
             {
-                queryFilter = queryFilter.And(c => c.ZAIDM_EX_NPPBKC.NPPBKC_NO.Contains(input.NPBCKID));
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID.Value == input.NppbkcId.Value);
             }
 
             if (input.Pbck1Type.HasValue)
@@ -44,9 +44,9 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK1_TYPE == input.Pbck1Type.Value);
             }
 
-            if (input.POA.HasValue)
+            if (input.Poa.HasValue)
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY.HasValue && c.APPROVED_BY.Value == input.POA.Value);
+                queryFilter = queryFilter.And(c => c.APPROVED_BY.HasValue && c.APPROVED_BY.Value == input.Poa.Value);
             }
 
             if (input.Creator.HasValue)
@@ -54,9 +54,9 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.CREATED_BY.HasValue && c.CREATED_BY.Value == input.Creator.Value);
             }
 
-            if (input.GoodType_ID.HasValue)
+            if (input.GoodTypeId.HasValue)
             {
-                queryFilter = queryFilter.And(c => c.GOODTYPE_ID.HasValue && c.GOODTYPE_ID.Value == input.GoodType_ID.Value);
+                queryFilter = queryFilter.And(c => c.GOODTYPE_ID.HasValue && c.GOODTYPE_ID.Value == input.GoodTypeId.Value);
             }
 
             if (input.Year.HasValue)

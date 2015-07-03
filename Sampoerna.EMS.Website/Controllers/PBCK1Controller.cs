@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Microsoft.Ajax.Utilities;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -19,12 +20,13 @@ namespace Sampoerna.EMS.Website.Controllers
 {
     public class PBCK1Controller : BaseController
     {
+
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IMonthBLL _monthBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
-        
+
         public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
@@ -32,77 +34,85 @@ namespace Sampoerna.EMS.Website.Controllers
             _prodTypeBll = prodTypeBll;
             _monthBll = monthBll;
             _plantBll = plantBll;
-            _mainMenu = Enums.MenuList.ExcisableGoodsClaimable;
+            _mainMenu = Enums.MenuList.PBCK1;
         }
 
-        private List<PBCK1Item> GetPBCKItems(PBCK1FilterViewModel filter = null)
+        private List<Pbck1Item> GetPbckItems(Pbck1FilterViewModel filter = null)
         {
             if (filter == null)
             {
                 //Get All
-                return Mapper.Map<List<PBCK1Item>>(_pbck1Bll.GetPBCK1ByParam(new PBCK1Input()));
+                return Mapper.Map<List<Pbck1Item>>(_pbck1Bll.GetPBCK1ByParam(new Pbck1GetByParamInput()));
             }
+
             //getbyparams
-            var input = Mapper.Map<PBCK1Input>(filter);
+            var input = Mapper.Map<Pbck1GetByParamInput>(filter);
             var dbData = _pbck1Bll.GetPBCK1ByParam(input);
-            return Mapper.Map<List<PBCK1Item>>(dbData);
+            return Mapper.Map<List<Pbck1Item>>(dbData);
         }
 
-        private SelectList GetYearList(List<PBCK1Item> pbck1Data)
+        private SelectList GetYearList(IEnumerable<Pbck1Item> pbck1Data)
         {
             var query = from x in pbck1Data
-                        where x.PERIOD_FROM.HasValue
                         select new SelectItemModel()
                         {
-                            ValueField = x.PERIOD_FROM.Value.Year,
-                            TextField = x.PERIOD_FROM.Value.Year.ToString()
+                            ValueField = x.Year,
+                            TextField = x.Year
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
-        
+
         //
         // GET: /PBCK/
         public ActionResult Index()
         {
-            return IndexInitial(new PBCK1ViewModel()
+            return IndexInitial(new Pbck1ViewModel()
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo
             });
         }
 
-        public ActionResult IndexInitial(PBCK1ViewModel model)
+        public ActionResult IndexInitial(Pbck1ViewModel model)
         {
-            model.SearchInput.NPPBKCIDList = GlobalFunctions.GetNppbkcAll();
+            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
-            model.SearchInput.POAList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
-            model.Details = GetPBCKItems();
+            model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
+            model.Details = GetPbckItems();
             model.SearchInput.YearList = GetYearList(model.Details);
             return View("Index", model);
         }
 
         public ActionResult Edit(long id)
         {
-            return View(new PBCK1ItemViewModel() { MainMenu = _mainMenu, CurrentMenu = PageInfo });
+            return View(new Pbck1ItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo
+            });
         }
 
         public ActionResult Details(long id)
         {
-            return View(new PBCK1ItemViewModel() { MainMenu = _mainMenu, CurrentMenu = PageInfo });
+            return View(new Pbck1ItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo
+            });
         }
 
         [HttpPost]
         public JsonResult PoaListPartial(string nppbkcId)
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var model = new PBCK1ViewModel { SearchInput = { POAList = listPoa } };
+            var model = new Pbck1ViewModel { SearchInput = { PoaList = listPoa } };
             return Json(model);
         }
 
         [HttpPost]
-        public PartialViewResult Filter(PBCK1ViewModel model)
+        public PartialViewResult Filter(Pbck1ViewModel model)
         {
-            model.Details = GetPBCKItems(model.SearchInput);
+            model.Details = GetPbckItems(model.SearchInput);
             return PartialView("_Pbck1Table", model);
         }
 
@@ -110,12 +120,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
-            var model = new PBCK1ItemViewModel();
+            var model = new Pbck1ItemViewModel();
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
                 {
-                    var prodConvModel = new PBCK1ProdConvModel();
+                    var prodConvModel = new Pbck1ProdConvModel();
 
                     try
                     {
@@ -145,12 +155,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
-            var model = new PBCK1ItemViewModel();
+            var model = new Pbck1ItemViewModel();
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
                 {
-                    var prodPlanModel = new PBCK1ProdPlanModel();
+                    var prodPlanModel = new Pbck1ProdPlanModel();
 
                     try
                     {
@@ -164,7 +174,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             prodPlanModel.ProductType = prodType.PRODUCT_TYPE;
                             prodPlanModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
                             prodPlanModel.Amount = Convert.ToDecimal(datarow[2]);
-                            prodPlanModel.BKCRequires = datarow[3];
+                            prodPlanModel.BkcRequires = datarow[3];
                             model.ProductPlans.Add(prodPlanModel);
                         }
                     }
@@ -181,41 +191,39 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            return CreateInitial(new PBCK1ItemViewModel());
+            return CreateInitial(new Pbck1ItemViewModel());
         }
-        
+
         [HttpPost]
-        public ActionResult Create(PBCK1ItemViewModel model)
+        public ActionResult Create(Pbck1ItemViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return InitialCreate(model);
+                return CreateInitial(model);
             }
 
             //process save
-            try
+            var dataToSave = Mapper.Map<Pbck1>(model.Detail);
+            var saveResult = _pbck1Bll.Save(dataToSave);
+            if (saveResult.Success)
             {
-                
+                return View("Index");
             }
-            catch (Exception exception)
-            {
-                throw;
-            }
-
-            return InitialCreate(model);
+            
+            return CreateInitial(model);
 
         }
 
-        public ActionResult InitialCreate(PBCK1ItemViewModel model)
+        public ActionResult CreateInitial(Pbck1ItemViewModel model)
         {
             model.MainMenu = _mainMenu;
-            model.MainMenu = Enums.MenuList.ExcisableGoodsMovement;
+            model.CurrentMenu = PageInfo;
             model.NppbkcList = GlobalFunctions.GetNppbkcAll();
             model.MonthList = GlobalFunctions.GetMonthList();
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
             model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
-            model.UOMList = GlobalFunctions.GetUomList();
+            model.UomList = GlobalFunctions.GetUomList();
             return View(model);
         }
 
@@ -238,6 +246,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var data = _plantBll.GetId(plantid);
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }
-        
+
     }
 }

@@ -1,100 +1,132 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.PBCK1
 {
-    public class PBCK1Item
+    public class Pbck1Item
     {
-        public long PBCK1_ID { get; set; }
-
+        public long Pbck1Id { get; set; }
         [Required, Display(Name = "PBCK-1 No")]
-        public string NUMBER { get; set; }
 
+        public string Pbck1Number { get; set; }
         [Required, Display(Name = "References")]
-        public long? PBCK1_REF { get; set; }
+        public long? Pbck1Reference { get; set; }
 
         [Required, Display(Name = "PBCK Type")]
-        public Enums.PBCK1Type PBCK1_TYPE { get; set; }
-        
-        public string PBCK1_TYPEText { get; set; }
+        public Enums.PBCK1Type Pbck1Type { get; set; }
+
+        public string PbckTypeName { get; set; }
 
         [Required, Display(Name = "Period From")]
-        public DateTime? PERIOD_FROM { get; set; }
+        public DateTime PeriodFrom { get; set; }
 
         [Required, Display(Name = "Period To")]
-        public DateTime? PERIOD_TO { get; set; }
+        public DateTime? PeriodTo { get; set; }
+
         public string Year { get; set; }
 
         [Required, Display(Name = "Reported On")]
-        public DateTime? REPORTED_ON { get; set; }
+        public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long? NPPBKC_ID { get; set; }
+        public long NppbkcId { get; set; }
 
         public string CompanyName { get; set; }
-        public string NPPBKC_NO { get; set; }
+
+        public string NppbkcNo { get; set; }
 
         [Required, Display(Name = "Exciseable Goods Description")]
-        public int? GOODTYPE_ID { get; set; }
+        public int? GoodTypeId { get; set; }
 
-        public string GOODTYPE_DESC { get; set; }
-        public string SUPPLIER_PLANT { get; set; }
+        public string GoodTypeDesc { get; set; }
 
-        [Required, Display(Name = "Supplier Port")]
-        public int? SUPPLIER_PORT_ID { get; set; }
+        [Required, Display(Name = "Supplier Plant")]
+        public string SupplierPlant { get; set; }
 
-        [Required, Display(Name = "Supplier Address")]
-        public string SUPPLIER_ADDRESS { get; set; }
+        [Display(Name = "Supplier Port")]
+        public int? SupplierPortId { get; set; }
 
-        [Required, Display(Name = "Supplier Phone")]
-        public string SUPPLIER_PHONE { get; set; }
+        public string SupplierPortName { get; set; }
+
+        [Display(Name = "Supplier Address")]
+        public string SupplierAddress { get; set; }
+
+        [Display(Name = "Supplier Phone")]
+        public string SupplierPhone { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
-        public DateTime? PLAN_PROD_FROM { get; set; }
+        public DateTime? PlanProdFrom { get; set; }
 
         [Required, Display(Name = "Plan Production To")]
-        public DateTime? PLAN_PROD_TO { get; set; }
+        public DateTime? PlanProdTo { get; set; }
 
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
-        public decimal? REQUEST_QTY { get; set; }
+        public decimal? RequestQty { get; set; }
 
         [Required]
-        public int? REQUEST_QTY_UOM { get; set; }
-        public string REQUEST_QTY_UOM_NAME { get; set; }
+        public int? RequestQtyUomId { get; set; }
+
+        public string RequestQtyUomName { get; set; }
 
         [Required, Display(Name = "LACK-1 From")]
-        public int? LACK1_FROM_MONTH_ID { get; set; }
+        public int? Lack1FromMonthId { get; set; }
 
-        public string LACK1_FROM_MONTH_NAME { get; set; }
+        public string Lack1FromMonthName { get; set; }
 
         [Required]
-        public int? LACK1_FROM_YEAR { get; set; }
+        public int? Lack1FormYear { get; set; }
 
         [Required, Display(Name = "LACK-1 To")]
-        public int? LACK1_TO_MONTH_ID { get; set; }
-        public string LACK1_TO_MONTH_NAME { get; set; }
-        public int? LACK1_TO_YEAR { get; set; }
-        public Enums.DocumentStatus STATUS { get; set; }
-        public string STATUS_NAME { get; set; }
-        public Enums.DocumentStatus STATUS_GOV { get; set; }
-        public string STATUS_GOV_NAME { get; set; }
+        public int? Lack1ToMonthId { get; set; }
+
+        public string Lack1ToMonthName { get; set; }
+
+        public int? Lack1ToYear { get; set; }
+
+        public Enums.DocumentStatus Status { get; set; }
+
+        public string StatusName { get; set; }
+
+        public Enums.DocumentStatus StatusGov { get; set; }
+
+        public string StatusGovName { get; set; }
+
         [UIHint("FormatQty")]
-        public decimal? QTY_APPROVED { get; set; }
-        public DateTime? DECREE_DATE { get; set; }
-        public DateTime? CREATED_DATE { get; set; }
-        public int? CREATED_BY { get; set; }
-        public string CREATED_USERNAME { get; set; }
-        public int? APPROVED_BY { get; set; }
-        public string APPROVED_USERNAME { get; set; }
-        public DateTime? APPROVED_DATE { get; set; }
-        public DateTime? MODIFIED_DATE { get; set; }
-        public decimal? LATEST_SALDO { get; set; }
-        public int? LATEST_SALDO_UOM { get; set; }
-        public string LATEST_SALDO_UOM_NAME { get; set; }
+        public decimal? QtyApproved { get; set; }
         
-        public string SUPPLIER_PORT_NAME { get; set; }
+        public DateTime? DecreeDate { get; set; }
+        
+        public DateTime? CreatedDate { get; set; }
+        
+        public int? CreatedById { get; set; }
+
+        public string CreatedUsername { get; set; }
+
+        public int? ApprovedById { get; set; }
+
+        public string ApprovedUsername { get; set; }
+
+        public DateTime? ApprovedDate { get; set; }
+
+        public DateTime? ModifiedDate { get; set; }
+
+        public decimal? LatestSaldo { get; set; }
+
+        public int? LatestSaldoUomId { get; set; }
+
+        public string LatestSaldoUomName { get; set; }
+
+        public List<Pbck1Item> Pbck1Childs { get; set; }
+
+        public Pbck1Item Pbck1Parent { get; set; }
+
+        public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
+
+        public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
         
     }
 }
