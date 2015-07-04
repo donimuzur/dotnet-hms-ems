@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BLL
     public class HeaderFooterBLL : IHeaderFooterBLL
     {
 
-       /* private IGenericRepository<HEADER_FOOTER> _repository;
+       private IGenericRepository<HEADER_FOOTER> _repository;
         private IGenericRepository<HEADER_FOOTER_FORM_MAP> _mapRepository;
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -46,7 +46,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<HeaderFooter>>(_repository.Get(null, null, includeTables).ToList());
         }
 
-        public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, int userId)
+        public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
             HEADER_FOOTER dbData = null;
             if (headerFooterData.HEADER_FOOTER_ID > 0)
@@ -116,7 +116,7 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public void Delete(int id, int userId)
+        public void Delete(int id, string userId)
         {
             var existingData = _repository.GetByID(id);
             existingData.IS_DELETED = true;
@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.BLL
             var changes = new CHANGES_HISTORY
             {
                 FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
-                FORM_ID = existingData.HEADER_FOOTER_ID,
+                FORM_ID = existingData.HEADER_FOOTER_ID.ToString(),
                 FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now,
@@ -137,10 +137,10 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        private void SetChanges(HEADER_FOOTER origin, HEADER_FOOTER data, int userId)
+        private void SetChanges(HEADER_FOOTER origin, HEADER_FOOTER data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("COMPANY_ID", origin.COMPANY_ID.Equals(data.COMPANY_ID));
+            changesData.Add("COMPANY_ID", origin.BUKRS.Equals(data.BUKRS));
             changesData.Add("HEADER_IMAGE_PATH", origin.HEADER_IMAGE_PATH.Equals(data.HEADER_IMAGE_PATH));
             changesData.Add("FOOTER_CONTENT", origin.FOOTER_CONTENT.Equals(data.FOOTER_CONTENT));
             changesData.Add("IS_ACTIVE", origin.IS_ACTIVE.Equals(data.IS_ACTIVE));
@@ -154,7 +154,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
-                        FORM_ID = data.HEADER_FOOTER_ID,
+                        FORM_ID = data.HEADER_FOOTER_ID.ToString(),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -162,8 +162,8 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "COMPANY_ID":
-                            changes.OLD_VALUE = origin.COMPANY_ID.HasValue ? origin.COMPANY_ID.Value.ToString() : "NULL";
-                            changes.NEW_VALUE = data.COMPANY_ID.HasValue ? data.COMPANY_ID.Value.ToString() : "NULL";
+                            changes.OLD_VALUE = string.IsNullOrEmpty(origin.BUKRS) ? origin.BUKRS : "NULL";
+                            changes.NEW_VALUE = string.IsNullOrEmpty(data.BUKRS)  ? data.BUKRS: "NULL";
                             break;
                         case "HEADER_IMAGE_PATH":
                             changes.OLD_VALUE = origin.HEADER_IMAGE_PATH;
@@ -185,7 +185,7 @@ namespace Sampoerna.EMS.BLL
                     _changesHistoryBll.AddHistory(changes);
                 }
             }
-        } */
+        } 
 
     }
 }

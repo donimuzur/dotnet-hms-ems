@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.BLL
 {
     public class DocumentSequenceNumberBLL : IDocumentSequenceNumberBLL
     {
-        /*private ILogger _logger;
+        private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<DOC_NUMBER_SEQ> _repository;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _nppbkcRepository;
@@ -45,12 +45,12 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.NppbkcNotFound);
             
             //generate number
-            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("00000") + "/" + nppbkcData.T1001.BUKRSTXT + "/" + nppbkcData.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("00000") + "/" + nppbkcData.T001.BUTXT + "/" + nppbkcData.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             _uow.SaveChanges();
 
             return rc;
 
-        }*/
+        }
     }
 }

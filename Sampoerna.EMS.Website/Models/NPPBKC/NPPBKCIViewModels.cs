@@ -22,10 +22,10 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public NppbkcFormModel()
         {
             Detail = new VirtualNppbckDetails();
-            Plant = new List<T1001W>();
+            Plant = new List<T001W>();
         }
         public VirtualNppbckDetails Detail { get; set; }
-        public List<T1001W> Plant { get; set; }
+        public List<T001W> Plant { get; set; }
     }
 
     public class VirtualNppbckDetails 
@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }
         public string AcountNumber { get; set; }
-        public C1LFA1 VENDOR { get; set; }
+        public LFA1 VENDOR { get; set; }
         public string Is_Deleted { get; set; }
     }
 

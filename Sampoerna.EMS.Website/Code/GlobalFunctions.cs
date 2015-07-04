@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Website.Code
     {
         public static SelectList GetPoaAll()
         {
-            IZaidmExPOABLL poaBll = MvcApplication.GetInstance<ZaidmExPOABLL>();
+            POABLL poaBll = MvcApplication.GetInstance<POABLL>();
             var poaList =  poaBll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(poaList);
             return new SelectList(selectItemSource, "ValueField", "TextField");

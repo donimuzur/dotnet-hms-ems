@@ -15,8 +15,8 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class CHANGES_HISTORY
     {
         public long CHANGES_HISTORY_ID { get; set; }
-        public int FORM_TYPE_ID { get; set; }
-        public Nullable<long> FORM_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.MenuList FORM_TYPE_ID { get; set; }
+        public string FORM_ID { get; set; }
         public string FIELD_NAME { get; set; }
         public string OLD_VALUE { get; set; }
         public string NEW_VALUE { get; set; }

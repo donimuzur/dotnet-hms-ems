@@ -9,7 +9,6 @@ namespace Sampoerna.EMS.BusinessObject.Business
         {
             //PLANT_RECEIVE_MATERIAL = new List<PLANT_RECEIVE_MATERIAL>();
         }
-        public long PLANT_ID { get; set; }
         public string WERKS { get; set; }
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
@@ -17,11 +16,10 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string PHONE { get; set; }
         public string ADDRESS { get; set; }
         public string SKEPTIS { get; set; }
-        public long? NPPBCK_ID { get; set; }
-        public string NPPBKC_NO { get; set; }
+        public string NPPBKC_ID { get; set; }
         public string KPPBC_NO { get; set; }
         public bool? IS_MAIN_PLANT { get; set; }
         public DateTime? CREATED_DATE { get; set; }
-        //public List<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
+        public List<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
     }
 }

@@ -83,6 +83,7 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         if (dateXml > existingMaterial.CREATED_DATE)
                         {
+                            item.CREATED_DATE = existingMaterial.CREATED_DATE;
                             item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }

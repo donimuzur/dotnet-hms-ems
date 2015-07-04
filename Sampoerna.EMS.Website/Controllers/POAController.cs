@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
 using AutoMapper;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -16,10 +17,10 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private IZaidmExPOAMapBLL _poaMapBll;
-        private IZaidmExPOABLL _poaBll;
-        private IUserBLL _userBll;
+        private POABLL _poaBll;
+        private IUserBLL  _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
-        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, IZaidmExPOABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
+        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
             )
             : base(pageBLL, Enums.MenuList.MasterData)
         {
@@ -60,8 +61,7 @@ namespace Sampoerna.EMS.Website.Controllers
            
                 try
                 {
-                    var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
-                    poa.IS_FROM_SAP = false;
+                    var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
                     _poaBll.Save(poa);
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
@@ -90,10 +90,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (poa.IS_DELETED == true)
-            {
-                return RedirectToAction("Detail", "POA", new {id = poa.POA_ID});
-            }
+            
             var model = new POAFormModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
@@ -104,17 +101,17 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Detail = detail;
             return View(model);
         }
-        private void SetChanges(POAViewDetailModel origin, ZAIDM_EX_POA poa)
+        private void SetChanges(POAViewDetailModel origin, POA poa)
         {
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("TITLE", (origin.Title == null ? true : origin.Title.Equals(poa.TITLE)));
-            changesData.Add("USER", (origin.UserId == null ? true : origin.UserId.Equals(poa.USER_ID)));
+            changesData.Add("USER", (origin.UserId == null ? true : origin.UserId.Equals(poa.LOGIN_AS)));
             changesData.Add("MANAGER", (origin.ManagerId == null ? true : origin.ManagerId.Equals(poa.MANAGER_ID)));
             changesData.Add("PHONE", (origin.PoaPhone == null ? true : origin.PoaPhone.Equals(poa.POA_PHONE)));
-            changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.EMAIL)));
+            changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.POA_EMAIL)));
             changesData.Add("ADDRESS", (origin.PoaAddress == null ? true : origin.PoaAddress.Equals(poa.POA_ADDRESS)));
-            changesData.Add("ID_CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.POA_ID_CARD))); ;
+            changesData.Add("ID_CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.ID_CARD))); ;
 
             foreach (var listChange in changesData)
             {
@@ -133,12 +130,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.NEW_VALUE = poa.TITLE;
                             break;
                         case "USER":
-                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(Convert.ToInt32(origin.UserId)).USERNAME;
-                            changes.NEW_VALUE = poa.USER_ID == null ? null : _userBll.GetUserById(Convert.ToInt32(poa.USER_ID)).USERNAME;
+                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USERNAME;
+                            changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : _userBll.GetUserById(poa.LOGIN_AS).USERNAME;
                             break;
                         case "MANAGER":
-                            changes.OLD_VALUE = origin.ManagerId == null ? null : _userBll.GetUserById(Convert.ToInt32(origin.ManagerId)).USERNAME;
-                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : _userBll.GetUserById(Convert.ToInt32(poa.MANAGER_ID)).USERNAME;
+                            changes.OLD_VALUE = origin.ManagerId == null ? null : _userBll.GetUserById(origin.ManagerId).USERNAME;
+                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : _userBll.GetUserById(poa.MANAGER_ID).USERNAME;
                             break;
                         case "PHONE":
                             changes.OLD_VALUE = origin.PoaPhone;
@@ -146,7 +143,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             break;
                         case "EMAIL":
                             changes.OLD_VALUE = origin.Email;
-                            changes.NEW_VALUE = poa.EMAIL;
+                            changes.NEW_VALUE = poa.POA_EMAIL;
                             break;
                         case "ADDRESS":
                             changes.OLD_VALUE = origin.PoaAddress;
@@ -154,7 +151,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             break;
                         case "ID_CARD":
                             changes.OLD_VALUE = origin.PoaIdCard;
-                            changes.NEW_VALUE = poa.POA_ID_CARD;
+                            changes.NEW_VALUE = poa.ID_CARD;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);

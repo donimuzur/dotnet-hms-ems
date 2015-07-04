@@ -84,7 +84,7 @@
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
     <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />
-    <Compile Include="ZaidmExPOABLL.cs" />
+    <Compile Include="POABLL.cs" />
     <Compile Include="ZaidmExPOAMapBLL.cs" />
     <Compile Include="ZaidmExProdTypeBLL.cs" />
   </ItemGroup>

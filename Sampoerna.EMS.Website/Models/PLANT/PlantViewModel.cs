@@ -29,8 +29,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
             ReceiveMaterials = new List<PlantReceiveMaterialItemModel>();
         }
 
-        public long PlantId { get; set; }
-
+       
                 [Display(Name = "Werks")]
         public string Werks { get; set; }
         public string Name1 { get; set; }

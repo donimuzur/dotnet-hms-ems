@@ -30,11 +30,12 @@ namespace Sampoerna.EMS.XMLReader
                     item.EXC_GOOD_TYP = Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value);
                     item.EXT_TYP_DESC = xElement.Element("EXT_TYP_DESC").Value;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                     var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
+                    var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
                     if (existingGoodsType != null)
                     {
                         if (dateXml > existingGoodsType.CREATED_DATE)
                         {
+                            item.CREATED_DATE = existingGoodsType.CREATED_DATE;
                             item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }

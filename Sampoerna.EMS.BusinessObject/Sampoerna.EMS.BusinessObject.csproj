@@ -116,6 +116,9 @@
     <Compile Include="PARAMATER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PLANT_RECEIVE_MATERIAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="POA.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -140,6 +143,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="USER_GROUP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VIRTUAL_PLANT_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">

@@ -97,7 +97,7 @@ namespace Sampoerna.EMS.BLL.Test
             _repository.Get().ReturnsForAnyArgs(users);
 
             //assert
-            var results = _bll.GetUserTree();
+            var results = _bll.GetUsers();
 
             //act
             Assert.AreEqual(users.Count(), results.Count);
@@ -107,13 +107,13 @@ namespace Sampoerna.EMS.BLL.Test
         public void GetUserTreeByUserID_WhenDataNotFound_ThrowExpcetion()
         {
             //arrange
-            var input = 0;
+            var input = "001";
             _repository.Get(c => c.USER_ID == input).Returns(n => null);
 
             try
             {
                 //act
-                _bll.GetUserTreeByUserID(input);
+                //_bll.GetUsers(input);
             }
             catch (BLLException ex)
             {

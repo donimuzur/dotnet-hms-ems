@@ -12,14 +12,12 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class HEADER_FOOTER_FORM_MAP
+    public partial class PLANT_RECEIVE_MATERIAL
     {
-        public int HEADER_FOOTER_FORM_MAP_ID { get; set; }
-        public int HEADER_FOOTER_ID { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
-        public Nullable<bool> IS_HEADER_SET { get; set; }
-        public Nullable<bool> IS_FOOTER_SET { get; set; }
+        public long PLANT_MATERIAL_ID { get; set; }
+        public string PLANT_ID { get; set; }
+        public Nullable<int> EXC_GOOD_TYP { get; set; }
     
-        public virtual HEADER_FOOTER HEADER_FOOTER { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
     }
 }
