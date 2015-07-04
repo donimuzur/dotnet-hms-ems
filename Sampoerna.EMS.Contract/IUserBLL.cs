@@ -7,15 +7,15 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IUserBLL
     {
-        List<USER> GetUsers(UserInput input);
+        //List<USER> GetUsers(UserInput input);
 
-        UserTree GetUserTreeByUserID(int userID);
+        //UserTree GetUserTreeByUserID(int userID);
 
-        List<UserTree> GetUserTree();
+        //List<UserTree> GetUserTree();
 
-        Login GetLogin(string userName);
+        //Login GetLogin(string userName);
 
-        USER GetUserById(int id);
+        //USER GetUserById(int id);
 
     }
 }

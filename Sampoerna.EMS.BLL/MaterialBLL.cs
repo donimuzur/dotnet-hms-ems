@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BLL
 {
     public class MaterialBLL : IMaterialBLL
     {
-        private IGenericRepository<ZAIDM_EX_MATERIAL> _repository;
+        /*private IGenericRepository<ZAIDM_EX_MATERIAL> _repository;
         
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.BLL
                     _changesHistoryBll.AddHistory(changes);
                 }
             }
-        } 
+        }*/ 
 
         
     }

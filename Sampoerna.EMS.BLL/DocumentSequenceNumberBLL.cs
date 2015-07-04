@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.BLL
 {
     public class DocumentSequenceNumberBLL : IDocumentSequenceNumberBLL
     {
-        private ILogger _logger;
+        /*private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<DOC_NUMBER_SEQ> _repository;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _nppbkcRepository;
@@ -51,6 +51,6 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
 
-        }
+        }*/
     }
 }

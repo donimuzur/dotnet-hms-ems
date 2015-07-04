@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         if (dateXml > existingPCode.CREATED_DATE)
                         {
+                            item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }
                         else
@@ -64,9 +65,7 @@ namespace Sampoerna.EMS.XMLReader
         public ZAIDM_EX_PCODE GetPCode(int? PCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PCODE>()
-                          .Get(p => p.PER_CODE == PCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(PCode);
             return exisitingPlant;
         }
 

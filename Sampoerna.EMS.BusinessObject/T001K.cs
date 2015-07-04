@@ -12,16 +12,14 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class EX_SETTLEMENT
+    public partial class T001K
     {
-        public EX_SETTLEMENT()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
+        public string BWKEY { get; set; }
+        public string BUKRS { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public int EX_SETTLEMENT_ID { get; set; }
-        public string EX_SETTLEMENT_NAME { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual T001 T001 { get; set; }
+        public virtual T001 T0011 { get; set; }
     }
 }

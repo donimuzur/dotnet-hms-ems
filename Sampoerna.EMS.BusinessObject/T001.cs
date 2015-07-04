@@ -12,27 +12,30 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class T1001
+    public partial class T001
     {
-        public T1001()
+        public T001()
         {
-            this.CK4C = new HashSet<CK4C>();
-            this.T1001K = new HashSet<T1001K>();
-            this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
+            this.T001K = new HashSet<T001K>();
+            this.T001K1 = new HashSet<T001K>();
             this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
+            this.ZAIDM_EX_NPPBKC1 = new HashSet<ZAIDM_EX_NPPBKC>();
         }
     
-        public long COMPANY_ID { get; set; }
         public string BUKRS { get; set; }
-        public string BUKRSTXT { get; set; }
+        public string BUTXT { get; set; }
+        public string ADRNR { get; set; }
         public string NPWP { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual ICollection<CK4C> CK4C { get; set; }
-        public virtual ICollection<T1001K> T1001K { get; set; }
-        public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual ICollection<T001K> T001K { get; set; }
+        public virtual ICollection<T001K> T001K1 { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
+        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC1 { get; set; }
     }
 }

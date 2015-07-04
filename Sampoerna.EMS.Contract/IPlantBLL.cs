@@ -6,10 +6,10 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IPlantBLL
     {
-        Plant GetId(long id);
-        List<Plant> GetAll();
-        void save(Plant plantT1001W,int userid);
+        //Plant GetId(long id);
+        //List<Plant> GetAll();
+        //void save(Plant plantT1001W,int userid);
 
-        string GetPlantWerksById(long id);
+        //string GetPlantWerksById(long id);
     }
 }

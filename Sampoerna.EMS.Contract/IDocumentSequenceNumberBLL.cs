@@ -4,6 +4,6 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IDocumentSequenceNumberBLL
     {
-        string GenerateNumber(GenerateDocNumberInput input);
+        //string GenerateNumber(GenerateDocNumberInput input);
     }
 }

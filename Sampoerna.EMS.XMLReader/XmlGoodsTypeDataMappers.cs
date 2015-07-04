@@ -29,13 +29,13 @@ namespace Sampoerna.EMS.XMLReader
                     var item = new ZAIDM_EX_GOODTYP();
                     item.EXC_GOOD_TYP = Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value);
                     item.EXT_TYP_DESC = xElement.Element("EXT_TYP_DESC").Value;
-                    item.CREATED_DATE = DateTime.Now;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                      var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
                     if (existingGoodsType != null)
                     {
                         if (dateXml > existingGoodsType.CREATED_DATE)
                         {
+                            item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }
                         else
@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -64,9 +65,7 @@ namespace Sampoerna.EMS.XMLReader
         public ZAIDM_EX_GOODTYP GetGoodsType(int? Code)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_GOODTYP>()
-                          .Get(p => p.EXC_GOOD_TYP == Code)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(Code);
             return exisitingPlant;
         }
 

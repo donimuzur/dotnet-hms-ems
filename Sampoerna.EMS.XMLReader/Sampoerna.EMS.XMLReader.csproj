@@ -76,9 +76,6 @@
     <Compile Include="XmlSeriesDataMappers.cs" />
     <Compile Include="XmlMarketDataMappers.cs" />
     <Compile Include="XmlUserDataMappers.cs" />
-    <Compile Include="XmlPoaDataMappers.cs" />
-    <Compile Include="XmlPoaMapDataMappers.cs" />
-    <Compile Include="XmlAreaDataMappers.cs" />
     <Compile Include="XmlDataMapper.cs" />
     <Compile Include="XmlCompanyDataMappers.cs" />
   </ItemGroup>

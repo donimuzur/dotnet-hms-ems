@@ -10,38 +10,38 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IMasterDataBLL
     {
-        List<string> GetDataCompany();
+        //List<string> GetDataCompany();
 
-        List<ZAIDM_EX_PCODE> GetDataPersonalization();
-        ZAIDM_EX_PCODE GetDataPersonalizationById(long id);
-        string GetPersonalizationDescById(long id);
+        //List<ZAIDM_EX_PCODE> GetDataPersonalization();
+        //ZAIDM_EX_PCODE GetDataPersonalizationById(long id);
+        //string GetPersonalizationDescById(long id);
 
-        List<ZAIDM_EX_SERIES> GetAllDataSeries();
-        ZAIDM_EX_SERIES GetDataSeriesById(long id);
-        string GetDataSeriesDescById(long id);
+        //List<ZAIDM_EX_SERIES> GetAllDataSeries();
+        //ZAIDM_EX_SERIES GetDataSeriesById(long id);
+        //string GetDataSeriesDescById(long id);
 
-        #region ZAIDM_EX_MARKET
+        //#region ZAIDM_EX_MARKET
 
-        List<ZAIDM_EX_MARKET> GetAllDataMarket();
-        ZAIDM_EX_MARKET GetDataMarketById(long id);
-        string GetMarketDescById(long id);
+        //List<ZAIDM_EX_MARKET> GetAllDataMarket();
+        //ZAIDM_EX_MARKET GetDataMarketById(long id);
+        //string GetMarketDescById(long id);
 
-        #endregion
+        //#endregion
 
-        #region COUNTRY
+        //#region COUNTRY
 
-        List<COUNTRY> GetAllDataCountry();
-        string GetCountryCodeById(int? id);
+        ////List<COUNTRY> GetAllDataCountry();
+        //string GetCountryCodeById(int? id);
         
-        #endregion
+        //#endregion
 
-        #region CURRENCY
+        //#region CURRENCY
 
-        List<CURRENCY> GetAllDataCurrency();
-        string GetCurrencyCodeById(int? id);
+        ////List<CURRENCY> GetAllDataCurrency();
+        //string GetCurrencyCodeById(int? id);
 
-        #endregion
+        //#endregion
 
-        string GetProductCodeTypeDescById(int? id);
+        //string GetProductCodeTypeDescById(int? id);
     }
 }

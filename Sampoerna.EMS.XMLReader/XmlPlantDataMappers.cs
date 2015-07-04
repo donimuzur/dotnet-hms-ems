@@ -18,25 +18,25 @@ namespace Sampoerna.EMS.XMLReader
         }
 
         
-        public List<T1001W> Items
+        public List<T001W> Items
         {
             get
             {
                 var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<T1001W>();
+                var items = new List<T001W>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T1001W();
+                    var item = new T001W();
                     item.WERKS = xElement.Element("WERKS").Value;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.ORT01 = xElement.Element("ORT01").Value;
-                    item.CREATED_DATE = DateTime.Now;
                     var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {
                         if (plantDateXml > exisitingPlant.CREATED_DATE)
                         {
+                            item.MODIFIED_DATE = plantDateXml;
                             items.Add(item);
                         }
                         else
@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -59,15 +60,13 @@ namespace Sampoerna.EMS.XMLReader
       
         public void InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T1001W>(Items);
+          _xmlMapper.InsertToDatabase<T001W>(Items);
         }
 
-        public T1001W GetPlant(string PlantId)
+        public T001W GetPlant(string PlantId)
         {
-            var exisitingPlant = _xmlMapper.uow.GetGenericRepository<T1001W>()
-                          .Get(p => p.WERKS == PlantId)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+            var exisitingPlant = _xmlMapper.uow.GetGenericRepository<T001W>()
+                .GetByID(PlantId);
             return exisitingPlant;
         }
 

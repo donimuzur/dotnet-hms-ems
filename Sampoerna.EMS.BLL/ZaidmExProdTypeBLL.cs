@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.BLL
         }
         public ZAIDM_EX_PRODTYP GetByCode(int Code)
         {
-            return _repository.Get(p=>p.PRODUCT_CODE == Code).OrderByDescending(x=>x.CREATED_DATE).FirstOrDefault();
+            return _repository.Get(p=>p.PROD_CODE == Code).OrderByDescending(x=>x.CREATED_DATE).FirstOrDefault();
         }
     }
 }

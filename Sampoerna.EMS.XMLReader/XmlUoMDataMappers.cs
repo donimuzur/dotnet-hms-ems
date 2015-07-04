@@ -34,16 +34,18 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new UOM();
-                    var uomCodeXml = xElement.Element("CODE").Value;
+                    var uomCodeXml = xElement.Element("UOM_DESC").Value;
+                    var uomId = Convert.ToInt32(xElement.Element("UOM_ID").Value);
 
-                    var existingUom = GetExUoM(uomCodeXml);
+                    var existingUom = GetExUoM(uomId);
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    item.UOM_NAME = uomCodeXml;
+                    item.UOM_ID = Convert.ToInt32(uomCodeXml);
                     item.CREATED_DATE = DateTime.Now;
                     if (existingUom != null)
                     {
                         if (dateXml > existingUom.CREATED_DATE)
                         {
+                            item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }
                         else
@@ -54,6 +56,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -70,15 +73,13 @@ namespace Sampoerna.EMS.XMLReader
        
         }
 
-        public UOM GetExUoM(string code)
+        public UOM GetExUoM(int code)
         {
             var existingUom = _xmlMapper.uow.GetGenericRepository<UOM>()
-                            .Get(p => p.UOM_NAME == code)
-                            .OrderByDescending(p => p.CREATED_DATE)
-                            .FirstOrDefault();
+                .GetByID(code);
             return existingUom;
         }
-
+        
 
 
     }

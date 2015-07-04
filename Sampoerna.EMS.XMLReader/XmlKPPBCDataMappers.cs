@@ -27,17 +27,18 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_KPPBC();
-                    item.KPPBC_NUMBER = xElement.Element("KPPBC_NUMBER").Value;
+                    item.KPPBC_ID = xElement.Element("KPPBC_ID").Value;
                     item.KPPBC_TYPE = xElement.Element("KPPBC_TYPE").Value;
                     item.CK1_KEP_FOOTER = xElement.Element("CK1_KEP_FOOTER").Value;
                     item.CK1_KEP_HEADER = xElement.Element("CK1_KEP_HEADER").Value;
                     item.MODIFIED_DATE = DateTime.Now;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); ;
-                    var existingKppbc = GetKPPBC(item.KPPBC_NUMBER);
+                    var existingKppbc = GetKPPBC(item.KPPBC_ID);
                     if (existingKppbc != null)
                     {
                         if (dateXml > existingKppbc.MODIFIED_DATE)
                         {
+                            item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }
                         else
@@ -48,6 +49,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -63,12 +65,10 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_KPPBC>(Items);
         }
 
-        public ZAIDM_EX_KPPBC GetKPPBC(string KppbcNumber)
+        public ZAIDM_EX_KPPBC GetKPPBC(string KppbcId)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_KPPBC>()
-                          .Get(p => p.KPPBC_NUMBER == KppbcNumber)
-                          .OrderByDescending(p => p.MODIFIED_DATE)
-                          .FirstOrDefault();
+                .GetByID(KppbcId);
             return exisitingPlant;
         }
 

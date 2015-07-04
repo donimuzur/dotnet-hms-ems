@@ -25,15 +25,7 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("POA-"))
-            {
-                return new XmlPoaDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("POAMAP"))
-            {
-                return new XmlPoaMapDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("COY"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }

@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BLL
     public class HeaderFooterBLL : IHeaderFooterBLL
     {
 
-        private IGenericRepository<HEADER_FOOTER> _repository;
+       /* private IGenericRepository<HEADER_FOOTER> _repository;
         private IGenericRepository<HEADER_FOOTER_FORM_MAP> _mapRepository;
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -185,7 +185,7 @@ namespace Sampoerna.EMS.BLL
                     _changesHistoryBll.AddHistory(changes);
                 }
             }
-        } 
+        } */
 
     }
 }

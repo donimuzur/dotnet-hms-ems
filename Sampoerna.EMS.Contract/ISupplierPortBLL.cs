@@ -5,7 +5,7 @@ namespace Sampoerna.EMS.Contract
 {
     public interface ISupplierPortBLL
     {
-        SUPPLIER_PORT GetById(int id);
-        List<SUPPLIER_PORT> GetAll();
+        //SUPPLIER_PORT GetById(int id);
+        //List<SUPPLIER_PORT> GetAll();
     }
 }

@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BLL
     public class ChangesHistoryBLL : IChangesHistoryBLL
     {
 
-        private IGenericRepository<CHANGES_HISTORY> _repository;
+        /*private IGenericRepository<CHANGES_HISTORY> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
         private string includeTables = "USER";
@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
         public List<CHANGES_HISTORY> GetByFormTypeAndFormId(Enums.MenuList formTypeId, long id)
         {
             return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, includeTables).ToList();
-        }
+        }*/
 
     }
 }

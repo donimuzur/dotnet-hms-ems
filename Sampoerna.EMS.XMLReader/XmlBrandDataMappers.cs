@@ -36,37 +36,37 @@ namespace Sampoerna.EMS.XMLReader
                     var pcodeCode = Convert.ToInt32(xElement.Element("PER_CODE").Value);
                     var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
                     if (pCode == null)
-                       throw  new Exception("no existing PCODE PER_ID " + pcodeCode);
-                    item.PER_ID = pCode.PER_ID;
+                       throw  new Exception("no existing PCODE PER_CODE " + pcodeCode);
+                    item.PER_CODE = pCode.PER_CODE;
                     var plantCode = xElement.Element("PLANT_ID").Value;
                     var plant = new XmlPlantDataMapper(null).GetPlant(plantCode);
                     if(plant == null)
                         throw  new Exception("no existing plant plant code " + plantCode);
-                    item.PLANT_ID = plant.PLANT_ID;
+                    item.WERKS = plant.WERKS;
                     var exGoodType = Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value);
                     var goodsType =
                         new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodType);
                     if(goodsType== null)
                         throw new Exception("no existing goods type " + exGoodType);
-                    item.GOODTYP_ID = goodsType.GOODTYPE_ID;
+                    item.EXC_GOOD_TYP = goodsType.EXC_GOOD_TYP;
                     var marketId = Convert.ToInt32(xElement.Element("MARKET_ID").Value);
                     var market =
                         new XmlMarketDataMapper(null).GetMarket(marketId);
                     if(market == null)
                         throw new Exception("no existing market  market id" + marketId);
                     item.MARKET_ID = market.MARKET_ID;
-                    var series_id = Convert.ToInt32(xElement.Element("SERIES_ID").Value);
+                    var series_id = Convert.ToInt32(xElement.Element("SERIES_CODE").Value);
                     var series =
                         new XmlSeriesDataMapper(null).GetSeries(series_id);
                     if(series == null)
                         throw new Exception("no existing series  series id" + series_id);
-                    item.SERIES_ID = series.SERIES_ID;
+                    item.SERIES_CODE = series.SERIES_CODE;
                     item.HJE_IDR = Convert.ToDecimal(xElement.Element("HJE_IDR").Value);
                     var prodCode = Convert.ToInt32(xElement.Element("PROD_CODE").Value);
                     var prodType = new XmlProdTypeDataMapper(null).GetProdType(prodCode);
                     if(prodType == null)
                         throw new Exception("no existing product code " + prodCode);
-                    item.PRODUCT_ID = prodType.PRODUCT_ID;
+                    item.PROD_CODE = prodType.PROD_CODE;
                     item.BRAND_CE = xElement.Element("BRAND_CE").Value;
                     item.SKEP_NP = xElement.Element("SKEP_NP").Value;
                     item.SKEP_DATE = Convert.ToDateTime(xElement.Element("SKEP_DATE").Value);
@@ -76,14 +76,14 @@ namespace Sampoerna.EMS.XMLReader
                     item.START_DATE = Convert.ToDateTime(xElement.Element("START_DATE").Value);
                     item.END_DATE = Convert.ToDateTime(xElement.Element("END_DATE").Value);
                     item.FA_CODE = xElement.Element("FA_CODE").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                   
+                    
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
-                    var existingMaterial = GetBrand(item.PLANT_ID, item.FA_CODE);
+                    var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
                     if (existingMaterial != null)
                     {
                         if (dateXml > existingMaterial.CREATED_DATE)
                         {
+                            item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }
                         else
@@ -94,6 +94,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -109,12 +110,10 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
         }
-        public ZAIDM_EX_BRAND GetBrand(long?plant_id, string fa_code)
+        public ZAIDM_EX_BRAND GetBrand(string plant_id, string fa_code)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                          .Get(p=>plant_id == plant_id && p.FA_CODE == fa_code)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(plant_id, fa_code);
             return existingData;
         }
         

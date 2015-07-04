@@ -10,17 +10,17 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IBrandRegistrationBLL
     {
-        List<BrandRegistrationOutput> GetAll();
+        //List<BrandRegistrationOutput> GetAll();
 
-        ZAIDM_EX_BRAND GetById(long id);
+        //ZAIDM_EX_BRAND GetById(long id);
 
-        ZAIDM_EX_BRAND GetByIdIncludeChild(long id);
+        //ZAIDM_EX_BRAND GetByIdIncludeChild(long id);
 
-        void Save(ZAIDM_EX_BRAND brandRegistration);
+        //void Save(ZAIDM_EX_BRAND brandRegistration);
 
-        List<ZAIDM_EX_BRAND> GetAllBrands();
+        //List<ZAIDM_EX_BRAND> GetAllBrands();
 
-        void Delete(long id);
+        //void Delete(long id);
     }
 
 }

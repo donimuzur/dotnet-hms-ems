@@ -1,12 +1,14 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Configuration;
+using Sampoerna.EMS.BusinessObject;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
@@ -54,24 +56,28 @@ namespace Sampoerna.EMS.XMLReader
 
             return _xmlData.Elements(elementName);
         }
-        public void InsertToDatabase<T>(List<T> items) where  T : class 
+       
+        public void InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
-
+            
             try
             {
                 foreach (var item in items)
                 {
-                    repo.Insert(item);
-
+                   
+                    repo.InsertOrUpdate(item);
+                   
                 }
+                uow.SaveChanges();
             }
+            
             catch (Exception ex)
             {
                 logger.Error(ex.Message);
                 uow.RevertChanges();
             }
-            uow.SaveChanges();
+         
             MoveFile();
         }
 

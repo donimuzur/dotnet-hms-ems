@@ -27,15 +27,15 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_PRODTYP();
-                    item.PRODUCT_CODE = Convert.ToInt32(xElement.Element("PRODUCT_CODE").Value);
+                    item.PROD_CODE = Convert.ToInt32(xElement.Element("PRODUCT_CODE").Value);
                     item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
-                    item.CREATED_DATE = DateTime.Now;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var existingProdType = GetProdType(item.PRODUCT_CODE);
+                    var existingProdType = GetProdType(item.PROD_CODE);
                     if (existingProdType != null)
                     {
                         if (dateXml > existingProdType.CREATED_DATE)
                         {
+                            item.MODIFIED_DATE = dateXml;
                             items.Add(item);
                         }
                         else
@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -64,9 +65,7 @@ namespace Sampoerna.EMS.XMLReader
         public ZAIDM_EX_PRODTYP GetProdType(int? ProdTypeCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PRODTYP>()
-                          .Get(p => p.PRODUCT_CODE == ProdTypeCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(ProdTypeCode);
             return exisitingPlant;
         }
 

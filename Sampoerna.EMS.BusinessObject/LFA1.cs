@@ -12,17 +12,19 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class REALISASI_PEMASUKAN
+    public partial class LFA1
     {
-        public long REALISASI_PEMASUKAN_ID { get; set; }
-        public Nullable<long> PBCK1_ID { get; set; }
-        public Nullable<int> MONTH_ID { get; set; }
-        public Nullable<int> PRODTYPE_ID { get; set; }
-        public Nullable<decimal> AMOUNT { get; set; }
-        public Nullable<decimal> BKC_REQUIRED { get; set; }
+        public LFA1()
+        {
+            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
+        }
     
-        public virtual MONTH MONTH { get; set; }
-        public virtual PBCK1 PBCK1 { get; set; }
-        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
+        public string LIFNR { get; set; }
+        public string NAME1 { get; set; }
+        public string NAME2 { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+    
+        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }

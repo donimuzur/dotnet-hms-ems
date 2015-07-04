@@ -6,12 +6,12 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IZaidmExNPPBKCBLL
     {
-        ZAIDM_EX_NPPBKC GetById(long id);
-        List<ZAIDM_EX_NPPBKC> GetAll();
-        void Save (ZAIDM_EX_NPPBKC nppbkc);
+        //ZAIDM_EX_NPPBKC GetById(long id);
+        //List<ZAIDM_EX_NPPBKC> GetAll();
+        //void Save (ZAIDM_EX_NPPBKC nppbkc);
 
-        void Update(ZAIDM_EX_NPPBKC nppbkc);
+        //void Update(ZAIDM_EX_NPPBKC nppbkc);
 
-        void Delete(int id);
+        //void Delete(int id);
     }
 }
