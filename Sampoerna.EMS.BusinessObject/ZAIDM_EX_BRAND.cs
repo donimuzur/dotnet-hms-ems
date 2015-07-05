@@ -43,8 +43,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string MODIFIED_BY { get; set; }
         public string CUT_FILLER_CODE { get; set; }
         public Nullable<decimal> PRINTING_PRICE { get; set; }
+        public Nullable<decimal> CONVERSION { get; set; }
     
-        public virtual T001W T001W { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
@@ -52,6 +52,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_PCODE ZAIDM_EX_PCODE { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
-        public virtual ZAIDM_EX_MATERIAL ZAIDM_EX_MATERIAL { get; set; }
+        public virtual T001W T001W { get; set; }
     }
 }

@@ -39,7 +39,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Plant Id</label>
                                                     <div class="col-md-9">
-                                                        @Html.HiddenFor(model => model.Detail.PlantId)
+                                                        
                                                         @Html.HiddenFor(model => model.Detail.Werks)
                                                         @Html.HiddenFor(model => model.Detail.Name1)
                                                         @Html.HiddenFor(model => model.Detail.PlantDescription)
@@ -51,9 +51,9 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">NPPBKC NO<span class="red">*</span></label>
+                                                    <label class="col-md-3">NPPBKC ID<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.NPPBCK_ID, Model.Nppbkc, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.Nppbkc, "Select", new { @class = "form-control" })
                                                     </div>
                                                 </div>
                                             </div>

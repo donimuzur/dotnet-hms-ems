@@ -18,7 +18,7 @@ using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    public class PBCK1Controller : BaseController
+    /*public class PBCK1Controller : BaseController
     {
         private IPBCK1BLL _pbck1Bll;
         private IZaidmExProdTypeBLL _prodTypeBll;
@@ -203,14 +203,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNppbkcDetail(long nppbkcid)
+        public JsonResult GetNppbkcDetail(string nppbkcid)
         {
             var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T1001));
+            return Json(Mapper.Map<CompanyDetail>(data.T001));
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlantDetail(long plantid)
+        public JsonResult GetSupplierPlantDetail(string plantid)
         {
             var data = _plantBll.GetId(plantid);
             return Json(Mapper.Map<DetailPlantT1001W>(data));
@@ -227,5 +227,5 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Create");
         }
 
-    }
+    }*/
 }

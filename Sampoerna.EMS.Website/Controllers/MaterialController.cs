@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Material/Details/5
-        public ActionResult Details(long id)
+        public ActionResult Details(string id)
         {
 
             var model = new MaterialDetailViewModel();
@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var data = _materialBll.getByID(id);
             Mapper.Map(data,model);
             
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id.ToString()));
             InitDetailModel(model);
             return View("Details",model);
         }
@@ -136,19 +136,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Material/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var data = _materialBll.getByID(id);
             
             
 
-            if (data.IS_FROM_SAP.HasValue && data.IS_FROM_SAP.Value)
+            if (data.IS_FROM_SAP)
             {
                 var model = Mapper.Map<MaterialDetailViewModel>(data);
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
-                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
-                model.MaterialId = id;
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
+                model.MaterialNumber = id;
                 //InitEditModel(model);
 
                 return View("Details", model);
@@ -157,8 +157,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 var model = Mapper.Map<MaterialEditViewModel>(data);
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
-                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
-                model.MaterialId = id;
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
+                model.MaterialNumber = id;
                 InitEditModel(model);
 
                 return View("Edit", model);
@@ -170,7 +170,7 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Material/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, MaterialEditViewModel model)
+        public ActionResult Edit(string id, MaterialEditViewModel model)
         {
             try
             {
@@ -192,15 +192,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     //data = Mapper.Map<ZAIDM_EX_MATERIAL>(model);
                     //data.MATERIAL_ID = id;
 
-                    if (!data.IS_FROM_SAP.Value) {
+                    if (!data.IS_FROM_SAP) {
                         data.MATERIAL_DESC = model.MaterialDesc;
-                        data.BASE_UOM = model.UomId;
-                        data.EX_GOODTYP = model.GoodTypeId;
+                        data.BASE_UOM_ID = model.UomId;
+                        data.EXC_GOOD_TYP = model.GoodTypeId;
                         data.ISSUE_STORANGE_LOC = model.IssueStorageLoc;
                         data.MATERIAL_DESC = model.MaterialDesc;
                         data.MATERIAL_GROUP = model.MaterialGroup;
-                        data.MATERIAL_NUMBER = model.MaterialNumber;
-                        data.PLANT_ID = model.PlantId;
+                        data.STICKER_CODE = model.MaterialNumber;
+                        data.WERKS = model.PlantId;
                         data.PURCHASING_GROUP = model.PurchasingGroup;
                         //data.CHANGED_BY = CurrentUser.USER_ID;
                         //data.CHANGED_DATE = DateTime.Now;
@@ -223,7 +223,7 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Material/Delete/5
         
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(string id, FormCollection collection)
         {
             try
             {

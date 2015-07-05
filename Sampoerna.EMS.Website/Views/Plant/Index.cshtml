@@ -52,11 +52,11 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "Plant", new { id = item.PlantId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "Plant", new { id = item.PlantId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "Plant", new { id = item.Werks })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Plant", new { id = item.Werks })"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.NPPBKC_NO)
+                                    @Html.DisplayFor(modelItem => item.NPPBKC_ID)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Werks)

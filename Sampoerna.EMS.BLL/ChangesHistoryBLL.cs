@@ -45,9 +45,9 @@ namespace Sampoerna.EMS.BLL
         }
 
        
-        public List<CHANGES_HISTORY> GetByFormTypeAndFormId(Enums.MenuList formTypeId, long id)
+        public List<CHANGES_HISTORY> GetByFormTypeAndFormId(Enums.MenuList formTypeId, string id)
         {
-            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID.Equals(id.ToString()), null, includeTables).ToList();
+            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, includeTables).ToList();
         }
 
     }

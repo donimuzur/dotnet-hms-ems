@@ -83,18 +83,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        public ActionResult Details(long id)
+        public ActionResult Details(int id)
         {
             var model = new VirtualMappingPlantDetailsViewModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id.ToString()));
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
             model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
-            model.CompanyName = dbVirtual.T1001.BUKRSTXT;
-            model.ImportPlanName = dbVirtual.T1001W.WERKS;
-            model.ExportPlanName = dbVirtual.T1001W1.WERKS;
+            model.CompanyName = dbVirtual.T001.BUTXT;
+            model.ImportPlanName = dbVirtual.T001W.WERKS;
+            model.ExportPlanName = dbVirtual.T001W1.WERKS;
             model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
             
 
@@ -128,11 +128,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     var modeldetail = new VirtualMappingPlantDetailsViewModel();
                     modeldetail.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
-                    if (dbVirtual.COMPANY_ID.HasValue)
-                        modeldetail.CompanyName = dbVirtual.T1001.BUKRSTXT;
+                    if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
+                        modeldetail.CompanyName = dbVirtual.T001.BUTXT;
 
-                    modeldetail.ImportPlanName = dbVirtual.T1001W.WERKS;
-                    modeldetail.ExportPlanName = dbVirtual.T1001W1.WERKS;
+                    modeldetail.ImportPlanName = dbVirtual.T001W.WERKS;
+                    modeldetail.ExportPlanName = dbVirtual.T001W1.WERKS;
 
                     
                     return View("Details",modeldetail);
@@ -140,11 +140,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 else {
                     model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
-                    if (dbVirtual.COMPANY_ID.HasValue)
-                        model.CompanyId = dbVirtual.COMPANY_ID.Value;
+                    if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
+                        model.CompanyId = dbVirtual.COMPANY_ID;
 
-                    model.ImportPlantId = dbVirtual.T1001W.PLANT_ID;
-                    model.ExportPlantId = dbVirtual.T1001W1.PLANT_ID;
+                    model.ImportPlantId = dbVirtual.T001W.WERKS;
+                    model.ExportPlantId = dbVirtual.T001W1.WERKS;
 
                     return View(model);
                 }

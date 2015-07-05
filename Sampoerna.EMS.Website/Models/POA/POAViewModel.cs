@@ -54,10 +54,10 @@ namespace Sampoerna.EMS.Website.Models.POA
         public string UserId { get; set; }
         [Required]
         public string ManagerId { get; set; }
-
+        [Required]
         public string PoaPrintedName { get; set; }
 
-       
+        [Required]
         public string PoaAddress { get; set; }
 
         [Display(Name = "Phone Number")]

@@ -62,6 +62,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
+                    poa.CREATED_BY = CurrentUser.USER_ID;
+                    poa.CREATED_DATE = DateTime.Now;
                     _poaBll.Save(poa);
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
@@ -111,7 +113,7 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("PHONE", (origin.PoaPhone == null ? true : origin.PoaPhone.Equals(poa.POA_PHONE)));
             changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.POA_EMAIL)));
             changesData.Add("ADDRESS", (origin.PoaAddress == null ? true : origin.PoaAddress.Equals(poa.POA_ADDRESS)));
-            changesData.Add("ID_CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.ID_CARD))); ;
+            changesData.Add("ID CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.ID_CARD))); ;
 
             foreach (var listChange in changesData)
             {
@@ -119,7 +121,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var changes = new CHANGES_HISTORY();
                     changes.FORM_TYPE_ID = Enums.MenuList.POA;
-                    changes.FORM_ID = poa.POA_ID;
+                    changes.FORM_ID = poa.POA_ID.ToString();
                     changes.FIELD_NAME = listChange.Key;
                     changes.MODIFIED_BY = CurrentUser.USER_ID;
                     changes.MODIFIED_DATE = DateTime.Now;
@@ -149,7 +151,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.PoaAddress;
                             changes.NEW_VALUE = poa.POA_ADDRESS;
                             break;
-                        case "ID_CARD":
+                        case "ID CARD":
                             changes.OLD_VALUE = origin.PoaIdCard;
                             changes.NEW_VALUE = poa.ID_CARD;
                             break;
@@ -223,8 +225,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetUser(string userId)
         {
-            var id = Convert.ToInt32(userId);
-            return Json(_userBll.GetUserById(id));
+           
+            return Json(_userBll.GetUserById(userId));
         }
 
        

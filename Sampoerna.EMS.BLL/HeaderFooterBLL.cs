@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<HEADER_FOOTER_FORM_MAP> _mapRepository;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "T1001, HEADER_FOOTER_FORM_MAP";
+        private string includeTables = "T001, HEADER_FOOTER_FORM_MAP";
         private IChangesHistoryBLL _changesHistoryBll;
         
         public HeaderFooterBLL(IUnitOfWork uow, ILogger logger)
@@ -81,6 +81,7 @@ namespace Sampoerna.EMS.BLL
                 //Insert
                 dbData = Mapper.Map<HEADER_FOOTER>(headerFooterData);
                 dbData.CREATED_DATE = DateTime.Now;
+                dbData.CREATED_BY = userId;
                 _repository.Insert(dbData);
             }
 

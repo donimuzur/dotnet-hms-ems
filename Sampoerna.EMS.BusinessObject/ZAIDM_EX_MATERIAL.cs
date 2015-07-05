@@ -14,16 +14,12 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class ZAIDM_EX_MATERIAL
     {
-        public ZAIDM_EX_MATERIAL()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-        }
-    
         public string STICKER_CODE { get; set; }
         public string MATERIAL_DESC { get; set; }
         public string MATERIAL_GROUP { get; set; }
         public string PURCHASING_GROUP { get; set; }
         public string WERKS { get; set; }
+        public Nullable<decimal> CONVERSION { get; set; }
         public int EXC_GOOD_TYP { get; set; }
         public string ISSUE_STORANGE_LOC { get; set; }
         public int BASE_UOM_ID { get; set; }
@@ -33,13 +29,11 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public Nullable<decimal> CONVERSION { get; set; }
     
-        public virtual T001W T001W { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual T001W T001W { get; set; }
     }
 }

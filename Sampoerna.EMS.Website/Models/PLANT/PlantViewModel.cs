@@ -49,11 +49,10 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         [Display(Name = "Skeptis")]
         public string Skeptis { get; set; }
 
-        public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }
 
         [Required]
-        public int? NPPBCK_ID { get; set; }
+        public string NPPBKC_ID { get; set; }
         public DateTime? CreatedDate { get; set; }
         
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }

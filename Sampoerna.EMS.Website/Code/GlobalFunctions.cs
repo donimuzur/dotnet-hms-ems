@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
-        public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
+        public static ZAIDM_EX_NPPBKC GetNppbkcById(string id)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
             return nppbkcbll.GetById(id);
@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetDataPersonalization();
-            return new SelectList(data, "PER_ID", "PER_CODE");
+            return new SelectList(data, "PER_CODE", "PER_DESC");
         }
 
         public static SelectList GetProductCodeList()
@@ -123,42 +123,42 @@ namespace Sampoerna.EMS.Website.Code
             IZaidmExProdTypeBLL productBll = MvcApplication.GetInstance<ZaidmExProdTypeBLL>();
             var data = productBll.GetAll();
             //var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(data, "PRODUCT_ID", "PRODUCT_CODE");
+            return new SelectList(data, "PROD_CODE", "PRODUCT_TYPE");
         }
 
         public static SelectList GetSeriesCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataSeries();
-            return new SelectList(data, "SERIES_ID", "SERIES_CODE");
+            return new SelectList(data, "SERIES_CODE", "SERIES_VALUE");
         }
 
         public static SelectList GetMarketCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataMarket();
-            return new SelectList(data, "MARKET_ID", "MARKET_CODE");
+            return new SelectList(data, "MARKET_ID", "MARKET_DESC");
         }
 
         public static SelectList GetCountryList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCountry();
-            return new SelectList(data, "COUNTRY_ID", "COUNTRY_NAME");
+            return new SelectList(data);
         }
 
         public static SelectList GetCurrencyList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCurrency();
-            return new SelectList(data, "CURRENCY_ID", "CURRENCY_CODE");
+            return new SelectList(data);
         }
 
         public static SelectList GetStickerCodeList()
         {
             IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
             var data = materialBll.getAll();
-            return new SelectList(data, "MATERIAL_NUMBER", "MATERIAL_NUMBER");
+            return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
     }
 }

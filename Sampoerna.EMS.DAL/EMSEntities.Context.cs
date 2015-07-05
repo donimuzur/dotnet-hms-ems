@@ -43,7 +43,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_MAP> POA_MAP { get; set; }
         public virtual DbSet<T001> T001 { get; set; }
         public virtual DbSet<T001K> T001K { get; set; }
-        public virtual DbSet<T001W> T001W { get; set; }
         public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
@@ -55,8 +54,10 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
-        public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
+        public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
+        public virtual DbSet<T001W> T001W { get; set; }
     }
 }

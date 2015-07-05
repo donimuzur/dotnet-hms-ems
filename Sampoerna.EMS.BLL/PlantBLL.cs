@@ -17,7 +17,9 @@ namespace Sampoerna.EMS.BLL
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
+        //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
+       private string includeTables = "ZAIDM_EX_NPPBKC";
+       
         private IZaidmExNPPBKCBLL _nppbkcbll;
 
         public PlantBLL(IUnitOfWork uow, ILogger logger)
@@ -39,6 +41,7 @@ namespace Sampoerna.EMS.BLL
         {
 
             return Mapper.Map<List<Plant>>(_repository.Get(null, null, includeTables).ToList());
+            //return Mapper.Map<List<Plant>>(_repository.Get().ToList());
 
         }
 
@@ -50,7 +53,7 @@ namespace Sampoerna.EMS.BLL
                 var origin =
                     _repository.Get(c => c.WERKS == plantT1001W.WERKS, null, includeTables).FirstOrDefault();
 
-                plantT1001W.NPPBKC_ID = _nppbkcbll.GetById(plantT1001W.WERKS).NPPBKC_ID;
+               // plantT1001W.NPPBKC_ID = _nppbkcbll.GetById(plantT1001W.WERKS).NPPBKC_ID;
 
                 SetChanges(origin, plantT1001W, userId);
 
@@ -66,7 +69,7 @@ namespace Sampoerna.EMS.BLL
 
                 Mapper.Map<Plant, T001W>(plantT1001W, origin);
               
-                origin.PLANT_RECEIVE_MATERIAL = plantT1001W.PLANT_RECEIVE_MATERIAL;
+                //origin.PLANT_RECEIVE_MATERIAL = plantT1001W.PLANT_RECEIVE_MATERIAL;
             }
             else
             {

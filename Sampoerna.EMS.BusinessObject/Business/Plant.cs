@@ -7,7 +7,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
     {
         public Plant()
         {
-            //PLANT_RECEIVE_MATERIAL = new List<PLANT_RECEIVE_MATERIAL>();
+            PLANT_RECEIVE_MATERIAL = new List<PLANT_RECEIVE_MATERIAL>();
         }
         public string WERKS { get; set; }
         public string NAME1 { get; set; }

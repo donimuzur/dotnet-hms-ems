@@ -48,17 +48,17 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Details(long id)
+        public ActionResult Details(string plant, string facode)
         {
             var model = new BrandRegistrationDetailsViewModel();
             
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(id);
+            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
 
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
 
             return View(model);
         }
@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult PersonalizationCodeDescription(long personalizationId)
+        public JsonResult PersonalizationCodeDescription(int personalizationId)
         {
             var personalizationCodeDescription = _masterBll.GetDataPersonalizationById(personalizationId);
             return Json(personalizationCodeDescription.PER_DESC);
@@ -107,14 +107,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult SeriesCodeDescription(long seriesId)
+        public JsonResult SeriesCodeDescription(int seriesId)
         {
             var seriesCodeDescription = _masterBll.GetDataSeriesById(seriesId);
             return Json(seriesCodeDescription.SERIES_VALUE);
         }
 
         [HttpPost]
-        public JsonResult MarketCodeDescription(long marketId)
+        public JsonResult MarketCodeDescription(int marketId)
         {
             var market = _masterBll.GetDataMarketById(marketId);
             return Json(market.MARKET_DESC);
@@ -170,16 +170,16 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        public ActionResult Edit(long id)
+        public ActionResult Edit(string plant, string facode)
         {
            
             var model = new BrandRegistrationEditViewModel();
 
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(id);
+            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
 
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
-                return RedirectToAction("Details", "BrandRegistration", new { id = dbBrand.BRAND_ID });
+                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });
 
             model = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
 
@@ -191,7 +191,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
-            var dbBrand = _brandRegistrationBll.GetById(model.BrandId);
+            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode);
             if (dbBrand == null)
             {
                 ModelState.AddModelError("BrandName", "Data Not Found");
@@ -223,8 +223,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (origin.IS_FROM_SAP.HasValue == false || origin.IS_FROM_SAP.Value == false)
             {
 
-                if (string.IsNullOrEmpty(origin.BRAND_CONTENT))
-                    origin.BRAND_CONTENT = "";
+              
                 if (string.IsNullOrEmpty(origin.STICKER_CODE))
                     origin.STICKER_CODE = "";
                 if (string.IsNullOrEmpty(origin.FA_CODE))
@@ -240,26 +239,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 changesData.Add("STICKER_CODE",origin.STICKER_CODE.Equals(updatedModel.StickerCode));
-                changesData.Add("PlantId", origin.PLANT_ID.Equals(updatedModel.PlantId));
+                changesData.Add("PlantId", origin.WERKS.Equals(updatedModel.PlantId));
                 changesData.Add("FACode", origin.FA_CODE.Equals(updatedModel.FaCode));
-                changesData.Add("PersonalizationCode", origin.PER_ID.Equals(updatedModel.PersonalizationCode));
+                changesData.Add("PersonalizationCode", origin.PER_CODE == updatedModel.PersonalizationCode);
                 changesData.Add("BrandName", origin.BRAND_CE.Equals(updatedModel.BrandName));
                 changesData.Add("SkepNo", origin.SKEP_NP.Equals(updatedModel.SkepNo));
                 changesData.Add("SkepDate", origin.SKEP_DATE.Equals(updatedModel.SkepDate));
-                changesData.Add("ProductCode", origin.PRODUCT_ID.Equals(updatedModel.ProductCode));
-                changesData.Add("SeriesId", origin.SERIES_ID.Equals(updatedModel.SeriesId));
-                changesData.Add("Content", origin.BRAND_CONTENT.Equals(updatedModel.Content));
-                changesData.Add("MarketId", origin.MARKET_ID.Equals(updatedModel.MarketId));
-                changesData.Add("CountryId", origin.COUNTRY_ID.Equals(updatedModel.CountryId));
+                changesData.Add("ProductCode", origin.PROD_CODE.Equals(updatedModel.ProductCode));
+                changesData.Add("SeriesId", origin.SERIES_CODE.Equals(updatedModel.SeriesId));
+                changesData.Add("Content", origin.BRAND_CONTENT == updatedModel.Content);
+                changesData.Add("MarketId", origin.MARKET_ID == updatedModel.MarketId);
+                changesData.Add("CountryId", origin.COUNTRY.Equals(updatedModel.CountryId));
                 changesData.Add("HjeValue", origin.HJE_IDR.Equals(updatedModel.HjeValue));
                 changesData.Add("HjeCurrency", origin.HJE_CURR.Equals(updatedModel.HjeCurrency));
                 changesData.Add("Tariff", origin.TARIFF.Equals(updatedModel.Tariff));
-                changesData.Add("TariffCurrency", origin.TARIFF_CURR.Equals(updatedModel.TariffCurrency));
+                changesData.Add("TariffCurrency", origin.TARIF_CURR.Equals(updatedModel.TariffCurrency));
                 changesData.Add("ColourName", origin.COLOUR.Equals(updatedModel.ColourName));
-                changesData.Add("GoodType", origin.GOODTYP_ID.Equals(updatedModel.GoodType));
+                changesData.Add("GoodType", origin.EXC_GOOD_TYP.Equals(updatedModel.GoodType));
                 changesData.Add("StartDate", origin.START_DATE.Equals(updatedModel.StartDate));
                 changesData.Add("EndDate", origin.END_DATE.Equals(updatedModel.EndDate));
-                changesData.Add("Status", origin.IS_ACTIVE.Equals(updatedModel.IsActive));
+                changesData.Add("Status", origin.STATUS.Equals(updatedModel.IsActive));
             }
 
             changesData.Add("Conversion", origin.CONVERSION.Equals(updatedModel.Conversion));
@@ -271,7 +270,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (listChange.Value) continue;
                 var changes = new CHANGES_HISTORY();
                 changes.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-                changes.FORM_ID = origin.BRAND_ID;
+                changes.FORM_ID = origin.WERKS + origin.FA_CODE;
                 changes.FIELD_NAME = listChange.Key;
                 changes.MODIFIED_BY = CurrentUser.USER_ID;
                 changes.MODIFIED_DATE = DateTime.Now;
@@ -282,7 +281,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.StickerCode ?? null;
                         break;
                     case "PlantId":
-                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(origin.PLANT_ID);
+                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(origin.WERKS);
                         changes.NEW_VALUE = _plantBll.GetPlantWerksById(updatedModel.PlantId);
                         break;
                     case "FACode":
@@ -290,7 +289,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.FaCode;
                         break;
                     case "PersonalizationCode":
-                        changes.OLD_VALUE = _masterBll.GetPersonalizationDescById(origin.PER_ID);
+                        changes.OLD_VALUE = _masterBll.GetPersonalizationDescById(origin.PER_CODE);
                         changes.NEW_VALUE =_masterBll.GetPersonalizationDescById(updatedModel.PersonalizationCode);
                         break;
                     case "BrandName":
@@ -302,28 +301,28 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.SkepNo;
                         break;
                     case "SkepDate":
-                        changes.OLD_VALUE = origin.SKEP_DATE.ToString("dd MMM yyyy");
+                        changes.OLD_VALUE = origin.SKEP_DATE == null ? string.Empty : Convert.ToDateTime(origin.SKEP_DATE).ToString("dd MMM yyyy");
                         changes.NEW_VALUE = updatedModel.SkepDate.ToString("dd MMM yyyy");
                         break;
                     case "ProductCode":
-                        changes.OLD_VALUE = _masterBll.GetProductCodeTypeDescById(origin.PRODUCT_ID);
+                        changes.OLD_VALUE = _masterBll.GetProductCodeTypeDescById(origin.PROD_CODE);
                         changes.NEW_VALUE = _masterBll.GetProductCodeTypeDescById(updatedModel.ProductCode);
                         break;
                     case "SeriesId":
-                        changes.OLD_VALUE = _masterBll.GetDataSeriesDescById(origin.SERIES_ID);
-                        changes.NEW_VALUE = _masterBll.GetDataSeriesDescById(updatedModel.SeriesId);
+                        changes.OLD_VALUE = _masterBll.GetDataSeriesDescById(origin.SERIES_CODE).ToString();
+                        changes.NEW_VALUE = _masterBll.GetDataSeriesDescById(updatedModel.SeriesId).ToString();
                         break;
                     case "Content":
-                        changes.OLD_VALUE = origin.BRAND_CONTENT;
-                        changes.NEW_VALUE = updatedModel.Content;
+                        changes.OLD_VALUE = origin.BRAND_CONTENT == null ? string.Empty : origin.BRAND_CONTENT.ToString();
+                        changes.NEW_VALUE = updatedModel.Content == null? string.Empty : updatedModel.Content.ToString();
                         break;
                     case "MarketId":
                         changes.OLD_VALUE = _masterBll.GetMarketDescById(origin.MARKET_ID);
                         changes.NEW_VALUE = _masterBll.GetMarketDescById(updatedModel.MarketId);
                         break;
                     case "CountryId":
-                        changes.OLD_VALUE = _masterBll.GetCountryCodeById(origin.COUNTRY_ID);
-                        changes.NEW_VALUE = _masterBll.GetCountryCodeById(updatedModel.CountryId);
+                        changes.OLD_VALUE = origin.COUNTRY;
+                        changes.NEW_VALUE = updatedModel.CountryId;
                         break;
                     case "HjeValue":
                         changes.OLD_VALUE = origin.HJE_IDR.ToString();
@@ -331,23 +330,23 @@ namespace Sampoerna.EMS.Website.Controllers
                         break;
 
                     case "HjeCurrency":
-                        changes.OLD_VALUE = _masterBll.GetCurrencyCodeById(origin.HJE_CURR);
-                        changes.NEW_VALUE = _masterBll.GetCurrencyCodeById(updatedModel.HjeCurrency);
+                        changes.OLD_VALUE = origin.HJE_CURR;
+                        changes.NEW_VALUE = updatedModel.HjeCurrency;
                         break;
                     case "Tariff":
                         changes.OLD_VALUE = origin.TARIFF.ToString();
                         changes.NEW_VALUE = updatedModel.Tariff.ToString();
                         break;
                     case "TariffCurrency":
-                        changes.OLD_VALUE = _masterBll.GetCurrencyCodeById(origin.TARIFF_CURR);
-                        changes.NEW_VALUE = _masterBll.GetCurrencyCodeById(updatedModel.TariffCurrency);
+                        changes.OLD_VALUE = origin.TARIF_CURR;
+                        changes.NEW_VALUE = updatedModel.TariffCurrency;
                         break;
                     case "ColourName":
                         changes.OLD_VALUE = origin.COLOUR;
                         changes.NEW_VALUE = updatedModel.ColourName;
                         break;
                     case "GoodType":
-                        changes.OLD_VALUE = _goodTypeBll.GetGoodTypeDescById(origin.GOODTYP_ID);
+                        changes.OLD_VALUE = _goodTypeBll.GetGoodTypeDescById(origin.EXC_GOOD_TYP);
                         changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(updatedModel.GoodType);
                         break;
                     case "StartDate":
@@ -367,7 +366,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.CutFilterCode;
                         break;
                     case "Status":
-                        changes.OLD_VALUE = origin.IS_ACTIVE.ToString();
+                        changes.OLD_VALUE = origin.STATUS.ToString();
                         changes.NEW_VALUE = updatedModel.IsActive.ToString();
                         break;
                     case "PRINTING_PRICE":
@@ -379,19 +378,19 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         } 
 
-        public ActionResult Delete(long id)
+        public ActionResult Delete(string plant, string facode)
         {
-            AddHistoryDelete(id);
-            _brandRegistrationBll.Delete(id);
+            AddHistoryDelete(plant, facode);
+            _brandRegistrationBll.Delete(plant, facode);
 
             return RedirectToAction("Index");
         }
 
-        private void AddHistoryDelete(long id)
+        private void AddHistoryDelete(string plant, string facode)
         {
             var history = new CHANGES_HISTORY();
             history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-            history.FORM_ID = id;
+            history.FORM_ID = plant + facode;
             history.FIELD_NAME = "IS_DELETED";
             history.OLD_VALUE = "false";
             history.NEW_VALUE = "true";

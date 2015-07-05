@@ -8,8 +8,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 {
     public class BrandRegistrationDetailsViewModel : BaseModel
     {
-        public long BrandId { get; set; }
-        public string StickerCode { get; set; }
+       public string StickerCode { get; set; }
         public string PlantName { get; set; }
         public string FaCode { get; set; }
         public string PersonalizationCode { get; set; }

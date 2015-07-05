@@ -7,6 +7,6 @@
         public string MANAGER_ID { get; set; }
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
-        public int? USER_GROUP_ID { get; set; }
+        public string USER_GROUP_ID { get; set; }
     }
 }

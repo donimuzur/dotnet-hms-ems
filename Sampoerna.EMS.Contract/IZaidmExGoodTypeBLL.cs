@@ -5,10 +5,10 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IZaidmExGoodTypeBLL
     {
-        //ZAIDM_EX_GOODTYP GetById(int id);
-        
-        //List<ZAIDM_EX_GOODTYP> GetAll();
+        ZAIDM_EX_GOODTYP GetById(int id);
 
-        //string GetGoodTypeDescById(int? id);
+        List<ZAIDM_EX_GOODTYP> GetAll();
+
+        string GetGoodTypeDescById(int? id);
     }
 }

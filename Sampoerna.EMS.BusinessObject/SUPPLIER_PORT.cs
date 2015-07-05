@@ -12,12 +12,9 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class PLANT_RECEIVE_MATERIAL
+    public partial class SUPPLIER_PORT
     {
-        public long PLANT_MATERIAL_ID { get; set; }
-        public string PLANT_ID { get; set; }
-        public int EXC_GOOD_TYP { get; set; }
-    
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public int SUPPLIER_PORT_ID { get; set; }
+        public string PORT_NAME { get; set; }
     }
 }

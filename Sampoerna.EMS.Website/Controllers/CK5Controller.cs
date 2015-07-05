@@ -14,7 +14,7 @@ using Sampoerna.EMS.Website.Models.CK5;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    public class CK5Controller : BaseController
+    /*public class CK5Controller : BaseController
     {
         private ICK5BLL _ck5Bll;
 
@@ -134,5 +134,5 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = CreateInitModel(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
             return View("CK5Import",model);
         }
-    }
+    }*/
 }

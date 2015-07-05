@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.BLL.Test
             try
             {
                 //act
-                _bll.GetUserTree();
+                //_bll.GetUserTree();
             }
             catch (BLLException ex)
             {

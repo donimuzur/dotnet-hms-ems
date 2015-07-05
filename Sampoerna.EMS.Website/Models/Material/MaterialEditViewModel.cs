@@ -9,8 +9,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialEditViewModel : BaseModel
     {
-        public long MaterialId { get; set; }
-
+       
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -26,18 +25,18 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         [Required, Display(Name = "Plant")]
-        public Nullable<int> PlantId { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
 
         [Required, Display(Name = "Excisable Good Type")]
-        public Nullable<int> GoodTypeId { get; set; }
+        public int GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
 
         [Required, Display(Name = "Issue Storace Loc")]
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public Nullable<int> UomId { get; set; }
+        public int UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
@@ -52,7 +51,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public Nullable<System.DateTime> ChangedDate { get; set; }
 
 
-        public Nullable<int> ChangedById { get; set; }
+        public string ChangedById { get; set; }
 
         [Display(Name = "Changed By"), Editable(false)]
         public string ChangedBy { get; set; }

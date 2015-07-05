@@ -15,17 +15,19 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class VIRTUAL_PLANT_MAP
     {
         public long VIRTUAL_PLANT_MAP_ID { get; set; }
+        public string COMPANY_ID { get; set; }
         public string IMPORT_PLANT_ID { get; set; }
         public string EXPORT_PLANT_ID { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     
         public virtual T001 T001 { get; set; }
-        public virtual T001W T001W { get; set; }
-        public virtual T001W T001W1 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
+        public virtual T001W T001W { get; set; }
+        public virtual T001W T001W1 { get; set; }
     }
 }

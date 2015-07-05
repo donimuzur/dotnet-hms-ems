@@ -84,7 +84,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         //ZAIDM_EX_SERIES
         public long SeriesIdZaimExSeries { get; set; }
         public int? SeriesCode { get; set; }
-        public string SeriesValue { get; set; }
+        public int? SeriesValue { get; set; }
         public DateTime CreateDateZaimExSeries { get; set; }
 
     }

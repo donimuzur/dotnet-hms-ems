@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        private string includeTables = "USER1, USER2, USER_GROUP";
+        private string includeTables = "USER_GROUP";
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -90,8 +90,8 @@ namespace Sampoerna.EMS.BLL
 
         public Login GetLogin(string userName)
         {
-            return Mapper.Map<Login>(_repository.Get(c => c.USERNAME == userName, null, null).FirstOrDefault());
-        }
+            return Mapper.Map<Login>(_repository.Get(c => c.USERNAME == userName).FirstOrDefault());
+        } 
 
 
 
