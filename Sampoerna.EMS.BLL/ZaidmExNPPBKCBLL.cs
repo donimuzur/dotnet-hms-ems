@@ -37,19 +37,20 @@ namespace Sampoerna.EMS.BLL
 
         public void Save(ZAIDM_EX_NPPBKC nppbkc)
         {
-            if (!string.IsNullOrEmpty(nppbkc.NPPBKC_ID))
-            {
-                //update
-                _repository.Update(nppbkc);
-            }
-            else
-            {
-                //Insert
-                _repository.Insert(nppbkc);
-            }
+            //if (!string.IsNullOrEmpty(nppbkc.NPPBKC_ID))
+            //{
+            //    //update
+            //    _repository.Update(nppbkc);
+            //}
+            //else
+            //{
+            //    //Insert
+            //    _repository.Insert(nppbkc);
+            //}
 
             try
             {
+                _repository.InsertOrUpdate(nppbkc);
                 _uow.SaveChanges();
 
             }
@@ -78,7 +79,7 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(nppbkc);
                 _uow.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _uow.RevertChanges();
                 throw;

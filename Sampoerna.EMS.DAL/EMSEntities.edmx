@@ -522,6 +522,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_POA_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
@@ -1052,6 +1064,10 @@
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="Self.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="Self.FK_POA_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
@@ -1387,11 +1403,6 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
-          <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
-          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
-          </AssociationSet>
           <EntitySet Name="ZAIDM_EX_MATERIAL" EntityType="EMSModel.ZAIDM_EX_MATERIAL" />
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
             <End Role="UOM" EntitySet="UOM" />
@@ -1410,7 +1421,16 @@
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <EntitySet Name="SUPPLIER_PORT" EntityType="EMSModel.SUPPLIER_PORT" />
+          <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
           <EntitySet Name="T001W" EntityType="EMSModel.T001W" />
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_T001W_MODIFIED_BY_USER" Association="EMSModel.FK_T001W_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="T001W" EntitySet="T001W" />
@@ -1435,7 +1455,7 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGov" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -1767,8 +1787,9 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
+          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -2279,7 +2300,7 @@
           <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" FromRole="VIRTUAL_PLANT_MAP" ToRole="T001W" />
           <NavigationProperty Name="T001W1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" FromRole="VIRTUAL_PLANT_MAP" ToRole="T001W" />
-        </EntityType>
+          </EntityType>
         <Association Name="FK_VIRTUAL_PLANT_MAP_T001">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
           <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
@@ -2313,27 +2334,6 @@
             </Principal>
             <Dependent Role="VIRTUAL_PLANT_MAP">
               <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="PLANT_RECEIVE_MATERIAL">
-          <Key>
-            <PropertyRef Name="PLANT_MATERIAL_ID" />
-          </Key>
-          <Property Name="PLANT_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="EXC_GOOD_TYP" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
-        </EntityType>
-        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T001W">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="PLANT_RECEIVE_MATERIAL">
-              <PropertyRef Name="EXC_GOOD_TYP" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2417,6 +2417,16 @@
           <Property Name="SUPPLIER_PORT_ID" Type="Int32" Nullable="false" />
           <Property Name="PORT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="PLANT_RECEIVE_MATERIAL">
+          <Key>
+            <PropertyRef Name="PLANT_MATERIAL_ID" />
+          </Key>
+          <Property Name="PLANT_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="EXC_GOOD_TYP" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
         <EntityType Name="T001W">
           <Key>
             <PropertyRef Name="WERKS" />
@@ -2439,6 +2449,30 @@
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T001W">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_T001W_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="*" />
@@ -2891,15 +2925,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PLANT_RECEIVE_MATERIAL">
-            <EntityTypeMapping TypeName="EMSModel.PLANT_RECEIVE_MATERIAL">
-              <MappingFragment StoreEntitySet="PLANT_RECEIVE_MATERIAL">
-                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="PLANT_MATERIAL_ID" ColumnName="PLANT_MATERIAL_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
@@ -2926,6 +2951,15 @@
               <MappingFragment StoreEntitySet="SUPPLIER_PORT">
                 <ScalarProperty Name="PORT_NAME" ColumnName="PORT_NAME" />
                 <ScalarProperty Name="SUPPLIER_PORT_ID" ColumnName="SUPPLIER_PORT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PLANT_RECEIVE_MATERIAL">
+            <EntityTypeMapping TypeName="EMSModel.PLANT_RECEIVE_MATERIAL">
+              <MappingFragment StoreEntitySet="PLANT_RECEIVE_MATERIAL">
+                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="PLANT_MATERIAL_ID" ColumnName="PLANT_MATERIAL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

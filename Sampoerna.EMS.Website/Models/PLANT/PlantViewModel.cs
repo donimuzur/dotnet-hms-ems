@@ -43,8 +43,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         [Display(Name = "Address")]
         public string Address { get; set; }
 
-        [Display(Name = "Plant City")]
-        public string City { get; set; }
+       
 
         [Display(Name = "Skeptis")]
         public string Skeptis { get; set; }

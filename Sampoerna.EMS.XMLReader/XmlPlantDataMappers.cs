@@ -30,6 +30,8 @@ namespace Sampoerna.EMS.XMLReader
                     item.WERKS = xElement.Element("WERKS").Value;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.ORT01 = xElement.Element("ORT01").Value;
+                    item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
+                    
                     var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)

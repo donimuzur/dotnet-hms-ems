@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
-       private string includeTables = "ZAIDM_EX_NPPBKC";
+        private string includeTables = "ZAIDM_EX_NPPBKC";
        
         private IZaidmExNPPBKCBLL _nppbkcbll;
 
@@ -92,8 +92,8 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(T001W origin, Plant data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("NPPBKC_ID", string.IsNullOrEmpty(origin.NPPBKC_ID) && origin.NPPBKC_ID.Equals(data.NPPBKC_ID));
-            changesData.Add("CITY", !string.IsNullOrEmpty(origin.ORT01) && !string.IsNullOrEmpty(data.CITY) ? origin.ORT01.Equals(data.CITY) : true);
+            changesData.Add("NPPBKC_ID", string.IsNullOrEmpty(origin.NPPBKC_ID)  && ! string.IsNullOrEmpty(data.NPPBKC_ID) ? origin.NPPBKC_ID.Equals(data.NPPBKC_ID) : true);
+            changesData.Add("CITY", !string.IsNullOrEmpty(origin.ORT01) && !string.IsNullOrEmpty(data.ORT01) ? origin.ORT01.Equals(data.ORT01) : true);
             changesData.Add("ADDRESS", !string.IsNullOrEmpty(origin.ADDRESS) && !string.IsNullOrEmpty(data.ADDRESS) ? origin.ADDRESS.Equals(data.ADDRESS) : true);
             changesData.Add("SKEPTIS", !string.IsNullOrEmpty(origin.SKEPTIS) && !string.IsNullOrEmpty(data.SKEPTIS) ? origin.SKEPTIS.Equals(data.SKEPTIS) : true);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT.Equals(data.IS_MAIN_PLANT));
@@ -118,7 +118,7 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "CITY":
                             changes.OLD_VALUE = origin.ORT01;
-                            changes.NEW_VALUE = data.CITY;
+                            changes.NEW_VALUE = data.ORT01;
                             break;
                         case "ADDRESS":
                             changes.OLD_VALUE = origin.ADDRESS;

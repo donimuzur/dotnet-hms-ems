@@ -114,6 +114,7 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.POA_EMAIL)));
             changesData.Add("ADDRESS", (origin.PoaAddress == null ? true : origin.PoaAddress.Equals(poa.POA_ADDRESS)));
             changesData.Add("ID CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.ID_CARD))); ;
+            changesData.Add("PRINTED NAME", (origin.PoaPrintedName == null ? true : origin.PoaPrintedName.Equals(poa.PRINTED_NAME))); ;
 
             foreach (var listChange in changesData)
             {
@@ -161,6 +162,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
             }
+            
 
 
 
@@ -177,7 +179,7 @@ namespace Sampoerna.EMS.Website.Controllers
                  AutoMapper.Mapper.Map(model.Detail, poa);
                  SetChanges(origin,poa);
               
-                _poaBll.Update(poa);
+                _poaBll.Save(poa);
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }

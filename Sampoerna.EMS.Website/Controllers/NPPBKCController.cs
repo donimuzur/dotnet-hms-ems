@@ -142,8 +142,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 var origin = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
                 AutoMapper.Mapper.Map(model.Detail, nppbkc);
                 SetChanges(origin, nppbkc);
-
-                _nppbkcBll.Update(nppbkc);
+                AutoMapper.Mapper.Map(model.Detail, nppbkc);
+                _nppbkcBll.Save(nppbkc);
+               
+               
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
 

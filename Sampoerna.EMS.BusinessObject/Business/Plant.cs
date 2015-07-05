@@ -12,7 +12,6 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string WERKS { get; set; }
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
-        public string CITY { get; set; }
         public string PHONE { get; set; }
         public string ADDRESS { get; set; }
         public string SKEPTIS { get; set; }

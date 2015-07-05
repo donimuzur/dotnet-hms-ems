@@ -71,22 +71,23 @@
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" />
-        <EntityTypeShape EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" Width="1.5" PointX="15.375" PointY="30.625" />
-        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_MATERIAL" Width="1.5" PointX="17.375" PointY="22" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" />
         <EntityTypeShape EntityType="EMSModel.SUPPLIER_PORT" Width="1.5" PointX="5.375" PointY="6.75" />
+        <EntityTypeShape EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" Width="1.5" PointX="15.375" PointY="30.625" />
         <EntityTypeShape EntityType="EMSModel.T001W" Width="1.5" PointX="9.75" PointY="14" />
+        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" />
+        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_T001W_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_T001W" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

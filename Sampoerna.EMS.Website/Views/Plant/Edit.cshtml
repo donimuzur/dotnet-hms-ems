@@ -43,7 +43,6 @@
                                                         @Html.HiddenFor(model => model.Detail.Werks)
                                                         @Html.HiddenFor(model => model.Detail.Name1)
                                                         @Html.HiddenFor(model => model.Detail.PlantDescription)
-                                                        @Html.HiddenFor(model => model.Detail.Ort01)
                                                         @Html.HiddenFor(model => model.Detail.CreatedDate)
                                                         @Html.TextBoxFor(model => model.Detail.Werks, new { @class = "form-control", @disabled = "disabled" })
                                                     </div>
@@ -81,7 +80,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Plant City</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @maxlength = "50" })
+                                                        @Html.TextBoxFor(model => model.Detail.Ort01, new { @class = "form-control", @maxlength = "50" })
                                                     </div>
                                                 </div>
                                             </div>

@@ -19,5 +19,6 @@ namespace Sampoerna.EMS.BusinessObject
         public int EXC_GOOD_TYP { get; set; }
     
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP1 { get; set; }
     }
 }

@@ -44,6 +44,7 @@
                                                             
                                                             @Html.TextBox("nppbkc_id", Model.Detail.VirtualNppbckId, new { @class = "form-control", disabled = "disabled" })
                                                             @Html.HiddenFor(model=>model.Detail.VirtualNppbckId)
+                                                          
                                                         </div>
                                                     </div>
                                                 </div>
@@ -51,7 +52,8 @@
                                                     <div class="row">
                                                         <label class="col-md-3">City</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", disabled = "disabled" })
+                                                            @Html.TextBox("city", Model.Detail.City, new { @class = "form-control", disabled = "disabled" })
+                                                            @Html.HiddenFor(model=>model.Detail.City)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -61,7 +63,8 @@
                                                     <div class="row">
                                                         <label class="col-md-3">Address 1</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextAreaFor(model => model.Detail.Address1, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                            @Html.TextArea("address1",Model.Detail.Address1, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                            @Html.HiddenFor(model => model.Detail.Address1)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -70,7 +73,7 @@
                                                         <label class="col-md-3 long">Region Office of DGCE<span class="red">*</span></label>
                                                         <div class="col-md-9">
                                                             @Html.TextAreaFor(model => model.Detail.RegionOfficeOfDGCE, new { @class = "form-control", rows = "5", maxlength = "20" })
-                                                            @*@Html.ValidationMessageFor(model => model.Detail.RegionOfficeOfDGCE)*@
+                                                          
                                                         </div>
                                                     </div>
                                                 </div>
@@ -80,7 +83,8 @@
                                                     <div class="row">
                                                         <label class="col-md-3">Address 2</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextAreaFor(model => model.Detail.Address2, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                            @Html.TextArea("address2", Model.Detail.Address2, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                            @Html.HiddenFor(model => model.Detail.Address2);
                                                         </div>
                                                     </div>
                                                 </div>
@@ -89,7 +93,7 @@
                                                         <label class="col-md-3">Text to<span class="red">*</span></label>
                                                         <div class="col-md-9">
                                                             @Html.TextAreaFor(model => model.Detail.TextTo, new { @class = "form-control", rows = "5", maxlength = "50" })
-                                                            @*@Html.ValidationMessageFor(model => model.Detail.TextTo)*@
+                                                           
                                                         </div>
                                                     </div>
                                                 </div>
@@ -99,7 +103,8 @@
                                                     <div class="row">
                                                         <label class="col-md-3">KPPBC ID</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.KppbcId, new { @class = "form-control", disabled = "disabled" })
+                                                            @Html.TextBox("kppbc_id", Model.Detail.KppbcId, new { @class = "form-control", disabled = "disabled" })
+                                                            @Html.HiddenFor(model=>model.Detail.KppbcId)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -108,7 +113,7 @@
                                                         <label class="col-md-3">City Alias<span class="red">*</span></label>
                                                         <div class="col-md-9">
                                                             @Html.TextBoxFor(model => model.Detail.CityAlias, new { @class = "form-control", maxlength = "15" })
-                                                            @*@Html.ValidationMessageFor(model => model.Detail.CityAlias)*@
+                                                           
                                                         </div>
                                                     </div>
                                                 </div>
@@ -139,12 +144,12 @@
                                                         <div class="col-md-9">
                                                             <div class="row">
                                                                 <div class="col-md-6">
-                                                                    @Html.TextBoxFor(model => model.Detail.StartDate, new { @class = "form-control", disabled = "disabled" })
-                                                                    @Html.ValidationMessageFor(model => model.Detail.StartDate)
+                                                                    @Html.TextBox("start_date",Model.Detail.StartDate, new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.HiddenFor(model=>model.Detail.StartDate)
                                                                 </div>
                                                                 <div class="col-md-6">
-                                                                    @Html.TextBoxFor(model => model.Detail.EndDate, new { @class = "form-control", disabled = "disabled" })
-                                                                    @Html.ValidationMessageFor(model => model.Detail.EndDate)
+                                                                    @Html.TextBox("end_date", Model.Detail.EndDate, new { @class = "form-control", disabled = "disabled" })
+                                                                   @Html.HiddenFor(model => model.Detail.EndDate)
                                                                 </div>
                                                             </div>
                                                         </div>

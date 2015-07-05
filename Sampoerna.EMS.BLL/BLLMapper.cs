@@ -49,8 +49,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Plant, T001W>().IgnoreAllNonExisting();
             Mapper.CreateMap<T001W, Plant>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.ORT01))
-                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
+                .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
+               .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
                 ;
 
         }

@@ -154,7 +154,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT.HasValue && src.IS_MAIN_PLANT.Value))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ADDRESS))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.CITY))
                 .ForMember(dest => dest.Name1, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PHONE))
                 .ForMember(dest => dest.Ort01, opt => opt.MapFrom(src => src.ORT01))
@@ -168,7 +167,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.Name1))
                 .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))
                 .ForMember(dest => dest.ADDRESS, opt => opt.MapFrom(src => src.Address))
-                .ForMember(dest => dest.CITY, opt => opt.MapFrom(src => src.City))
                 .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
                 .ForMember(dest => dest.PHONE, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.Ort01))
@@ -427,7 +425,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.REGION))
                 .ForMember(dest => dest.Address2, opt => opt.MapFrom(src => src.ADDR2))
                 .ForMember(dest => dest.TextTo, opt => opt.MapFrom(src => src.TEXT_TO))
-                .ForMember(dest => dest.KppbcId, opt => opt.MapFrom(src => src.ZAIDM_EX_KPPBC.KPPBC_ID))
+                .ForMember(dest => dest.KppbcId, opt => opt.MapFrom(src => src.KPPBC_ID))
                 .ForMember(dest => dest.CityAlias, opt => opt.MapFrom(src => src.CITY_ALIAS))
                 .ForMember(dest => dest.AcountNumber, opt => opt.MapFrom(src => src.LFA1.LIFNR))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
@@ -436,7 +434,9 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<VirtualNppbckDetails, ZAIDM_EX_NPPBKC>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.VirtualNppbckId))
+                .ForMember(dest => dest.KPPBC_ID, opt => opt.MapFrom(src => src.KppbcId))
                 .ForMember(dest => dest.REGION_DGCE, opt => opt.MapFrom(src => src.RegionOfficeOfDGCE))
+                .ForMember(dest => dest.REGION, opt => opt.MapFrom(src => src.Region))
                 .ForMember(dest => dest.TEXT_TO, opt => opt.MapFrom(src => src.TextTo))
                 .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias));
 

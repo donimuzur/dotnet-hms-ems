@@ -45,7 +45,7 @@ namespace Sampoerna.EMS.BLL
             try
             {
                 //Insert
-                _repository.Insert(poa);
+                _repository.InsertOrUpdate(poa);
 
                 _uow.SaveChanges();
 
