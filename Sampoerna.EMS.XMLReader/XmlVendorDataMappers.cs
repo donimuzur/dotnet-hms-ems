@@ -44,16 +44,10 @@ namespace Sampoerna.EMS.XMLReader
                     
                     if (exsitingVendor != null)
                     {
-                        if (dateXml > exsitingVendor.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-                            
-                        }
+                        item.CREATED_DATE = exsitingVendor.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                     
                     }
                     else
                     {

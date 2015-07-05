@@ -43,21 +43,15 @@ namespace Sampoerna.EMS.XMLReader
                         item.FIRST_NAME = xElement.Element("FIRST_NAME").Value;
                         item.LAST_NAME = xElement.Element("LAST_NAME").Value;
                         item.EMAIL = xElement.Element("EMAIL").Value;
-                        item.CREATED_DATE = DateTime.Now;
+                    
                         var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                         var exsitingUser = GetUser(item.USER_ID);
                         if (exsitingUser != null)
                         {
-                            if (dateXml > exsitingUser.CREATED_DATE)
-                            {
-                                item.MODIFIED_DATE = dateXml;
-                                items.Add(item);
-                            }
-                            else
-                            {
-                                continue;
-
-                            }
+                            
+                            item.MODIFIED_DATE = dateXml;
+                            items.Add(item);
+                          
                         }
                         else
                         {

@@ -62,6 +62,9 @@ namespace Sampoerna.EMS.XMLReader
                         throw new Exception("no existing series  series id" + series_id);
                     item.SERIES_CODE = series.SERIES_CODE;
                     item.HJE_IDR = Convert.ToDecimal(xElement.Element("HJE_IDR").Value);
+                    item.HJE_CURR = xElement.Element("HJE_CURR").Value;
+                    item.TARIFF = Convert.ToDecimal(xElement.Element("TARIFF").Value);
+                    item.TARIF_CURR = xElement.Element("TARIFF_CURR").Value;
                     var prodCode = Convert.ToInt32(xElement.Element("PROD_CODE").Value);
                     var prodType = new XmlProdTypeDataMapper(null).GetProdType(prodCode);
                     if(prodType == null)
@@ -76,7 +79,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.START_DATE = Convert.ToDateTime(xElement.Element("START_DATE").Value);
                     item.END_DATE = Convert.ToDateTime(xElement.Element("END_DATE").Value);
                     item.FA_CODE = xElement.Element("FA_CODE").Value;
-                    
+                    item.COUNTRY = xElement.Element("COUNTRY").Value;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
                     var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
                     if (existingMaterial != null)

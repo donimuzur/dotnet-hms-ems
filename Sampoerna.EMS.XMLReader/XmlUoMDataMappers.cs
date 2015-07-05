@@ -34,25 +34,20 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new UOM();
-                    var uomCodeXml = xElement.Element("UOM_DESC").Value;
-                    var uomId = Convert.ToInt32(xElement.Element("UOM_ID").Value);
+                    var uomCodeXml = Convert.ToInt32(xElement.Element("UOM_ID").Value);
+                    var desc = xElement.Element("UOM_DESC").Value;
 
-                    var existingUom = GetExUoM(uomId);
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    item.UOM_ID = Convert.ToInt32(uomCodeXml);
+                    var existingUom = GetExUoM(uomCodeXml);
+                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
+                    item.UOM_ID = uomCodeXml;
+                    item.UOM_DESC = desc;
                     item.CREATED_DATE = DateTime.Now;
                     if (existingUom != null)
                     {
-                        if (dateXml > existingUom.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-                            
-                        }
+                        item.CREATED_DATE = existingUom.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                       
                     }
                     else
                     {

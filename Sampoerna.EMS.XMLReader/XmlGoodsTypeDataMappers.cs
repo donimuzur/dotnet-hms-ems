@@ -33,17 +33,11 @@ namespace Sampoerna.EMS.XMLReader
                     var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
                     if (existingGoodsType != null)
                     {
-                        if (dateXml > existingGoodsType.CREATED_DATE)
-                        {
-                            item.CREATED_DATE = existingGoodsType.CREATED_DATE;
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        
+                        item.CREATED_DATE = existingGoodsType.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                       
                     }
                     else
                     {

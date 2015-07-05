@@ -34,24 +34,18 @@ namespace Sampoerna.EMS.XMLReader
                     var item = new ZAIDM_EX_MARKET();
                     item.MARKET_ID = Convert.ToInt32(xElement.Element("MARKET_ID").Value);
                     item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
-                    item.CREATED_DATE = DateTime.Now;
                     var exisitingMarket = GetMarket(item.MARKET_ID);
                     var marketDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                     if (exisitingMarket != null)
+                    if (exisitingMarket != null)
                     {
-                        if (marketDateXml > exisitingMarket.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = marketDateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-                            
-                        }
+                       item.CREATED_DATE = exisitingMarket.CREATED_DATE;
+                       item.MODIFIED_DATE = marketDateXml;
+                       items.Add(item);
+                       
                     }
                     else
-                    {
+                     {
+                         item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 

@@ -329,8 +329,8 @@
           </Key>
           <Property Name="MARKET_ID" Type="int" Nullable="false" />
           <Property Name="MARKET_DESC" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MATERIAL">
           <Key>
@@ -380,8 +380,8 @@
           </Key>
           <Property Name="PER_CODE" Type="int" Nullable="false" />
           <Property Name="PER_DESC" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PRODTYP">
           <Key>
@@ -1789,8 +1789,8 @@
           </Key>
           <Property Name="MARKET_ID" Type="Int32" Nullable="false" />
           <Property Name="MARKET_DESC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_MARKET" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
@@ -1828,8 +1828,8 @@
           </Key>
           <Property Name="PER_CODE" Type="Int32" Nullable="false" />
           <Property Name="PER_DESC" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_PCODE" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PRODTYP">

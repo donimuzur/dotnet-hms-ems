@@ -34,11 +34,12 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_MATERIAL();
                     item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
+                    item.MATERIAL_DESC = xElement.Element("MATERIAL_DESC").Value;
                     item.MATERIAL_GROUP = xElement.Element("MATERIAL_GROUP").Value;
                     item.PURCHASING_GROUP = xElement.Element("PURCHASING_GROUP").Value;
                     item.ISSUE_STORANGE_LOC = xElement.Element("ISSUE_STORANGE_LOC").Value;
-                   
-                    var exGoodTypCode = Convert.ToInt32(xElement.Element("EX_GOODTYP").Value);
+                    item.WERKS = xElement.Element("PLANT_ID").Value;
+                    var exGoodTypCode = Convert.ToInt32(xElement.Element("EX_GOOD_TYP").Value);
                     var exGoodType = new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodTypCode);
                     if(exGoodType == null)
                     {
@@ -55,22 +56,15 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     item.BASE_UOM_ID = baseUoM.UOM_ID;
                     item.CONVERSION = Convert.ToDecimal(xElement.Element("CONVERSION").Value);
-                    item.CREATED_DATE = DateTime.Now;
-
+                    
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
                     var existingMaterial = GetMaterial(item.STICKER_CODE);
                     if (existingMaterial != null)
                     {
-                        if (dateXml > existingMaterial.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = existingMaterial.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                        
                     }
                     else
                     {

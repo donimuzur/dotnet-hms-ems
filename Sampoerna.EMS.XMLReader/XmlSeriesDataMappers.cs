@@ -33,16 +33,10 @@ namespace Sampoerna.EMS.XMLReader
                     var existingSeries = GetSeries(item.SERIES_CODE);
                     if (existingSeries != null)
                     {
-                        if (dateXml > existingSeries.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = existingSeries.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                        
                     }
                     else
                     {

@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.XMLReader
                     var kppbc = new XmlKPPBCDataMapper(null
                         ).GetKPPBC(kppbcNo);
                     if(kppbc == null)
-                        throw new Exception("no existing KPPBC NO " + kppbcNo);
+                        throw new Exception("no existing KPPBC ID " + kppbcNo);
                     item.KPPBC_ID = kppbc.KPPBC_ID;
                     var companyCode = xElement.Element("BUKRS").Value;
                     
@@ -43,16 +43,10 @@ namespace Sampoerna.EMS.XMLReader
                     var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
                     if (exisitingNppbkc != null)
                     {
-                        if (dateXml > exisitingNppbkc.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                        
                     }
                     else
                     {

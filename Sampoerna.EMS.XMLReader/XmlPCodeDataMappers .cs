@@ -34,19 +34,14 @@ namespace Sampoerna.EMS.XMLReader
                     var existingPCode = GetPCode(item.PER_CODE);
                     if (existingPCode != null)
                     {
-                        if (dateXml > existingPCode.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = existingPCode.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                    
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 

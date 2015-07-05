@@ -34,16 +34,10 @@ namespace Sampoerna.EMS.XMLReader
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {
-                        if (plantDateXml > exisitingPlant.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = plantDateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = exisitingPlant.CREATED_DATE;
+                        item.MODIFIED_DATE = plantDateXml;
+                        items.Add(item);
+                       
                     }
                     else
                     {

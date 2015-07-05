@@ -27,22 +27,17 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_PRODTYP();
-                    item.PROD_CODE = Convert.ToInt32(xElement.Element("PRODUCT_CODE").Value);
+                    item.PROD_CODE = Convert.ToInt32(xElement.Element("PROD_CODE").Value);
                     item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
+                    item.PRODUCT_ALIAS = xElement.Element("PRODUCT_ALIAS").Value;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingProdType = GetProdType(item.PROD_CODE);
                     if (existingProdType != null)
                     {
-                        if (dateXml > existingProdType.CREATED_DATE)
-                        {
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = existingProdType.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                        
                     }
                     else
                     {

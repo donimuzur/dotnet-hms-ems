@@ -21,8 +21,8 @@ namespace Sampoerna.EMS.BusinessObject
     
         public int PER_CODE { get; set; }
         public string PER_DESC { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
-        public System.DateTime MODIFIED_DATE { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
