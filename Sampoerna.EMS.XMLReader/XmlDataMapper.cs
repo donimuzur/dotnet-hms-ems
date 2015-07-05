@@ -66,10 +66,6 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var item in items)
                 {
                    
-                    
-                    
-                    
-                    
                     repo.InsertOrUpdate(item);
                    
                 }
