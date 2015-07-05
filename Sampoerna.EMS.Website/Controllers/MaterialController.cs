@@ -114,8 +114,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                    //model.CREATED_BY = CurrentUser.USER_ID;
-                    //model.CREATED_DATE = DateTime.Now;
+                    model.CREATED_BY = CurrentUser.USER_ID;
+                    model.CREATED_DATE = DateTime.Now;
                     MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);
 
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;

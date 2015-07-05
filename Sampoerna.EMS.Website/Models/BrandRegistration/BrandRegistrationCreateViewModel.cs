@@ -57,12 +57,12 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string Content { get; set; }
 
         [Required]
-        public long MarketId { get; set; }
+        public int MarketId { get; set; }
         public SelectList MarketCodeList { get; set; }
         public string MarketDescription { get; set; }
 
         [Required]
-        public int CountryId { get; set; }
+        public string CountryId { get; set; }
         public SelectList CountryCodeList { get; set; }
 
         [Required]
@@ -70,7 +70,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public decimal? HjeValue { get; set; }
 
         [Required]
-        public int HjeCurrency { get; set; }
+        public string HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
         [Required]
@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public decimal? Tariff { get; set; }
 
         [Required]
-        public int TariffCurrency { get; set; }
+        public string TariffCurrency { get; set; }
         public SelectList TariffCurrencyList { get; set; }
 
         [Required]

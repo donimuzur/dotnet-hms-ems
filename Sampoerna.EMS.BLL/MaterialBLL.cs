@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.BLL
                 var dbData =
                     _repository.Get(c => c.STICKER_CODE == data.STICKER_CODE, null, includeTables)
                         .FirstOrDefault();
-
+                
                 var dataUpdated = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
 
                 SetChanges(dbData, dataUpdated, userId);

@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
     public class MaterialDetails {
       
-        public long PlantId { get; set; }
+        public string PlantId { get; set; }
 
         public string PlantName { get; set; }
 

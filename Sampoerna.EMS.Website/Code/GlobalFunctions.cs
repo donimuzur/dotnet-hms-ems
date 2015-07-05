@@ -85,14 +85,14 @@ namespace Sampoerna.EMS.Website.Code
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
             var data = uomBll.GetAll();
-            return new SelectList(data, "UOM_ID", "UOM_NAME");
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
         public static SelectList GetCompanyList()
         {
             ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
             var data = companyBll.GetAllData();
-            return new SelectList(data, "COMPANY_ID", "BUKRSTXT");
+            return new SelectList(data, "COMPANY_ID", "BUTXT");
         }
 
         public static SelectList GetVirtualPlantList()
