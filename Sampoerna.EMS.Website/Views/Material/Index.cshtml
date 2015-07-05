@@ -114,8 +114,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "Material", new { id = item.MaterialId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "Material", new { id = item.MaterialId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "Material", new { id = item.MaterialNumber })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Material", new { id = item.MaterialNumber })"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlantName)
