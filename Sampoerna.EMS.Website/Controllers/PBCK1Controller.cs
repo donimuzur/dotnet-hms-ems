@@ -42,7 +42,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                return Mapper.Map<List<Pbck1Item>>(_pbck1Bll.GetPBCK1ByParam(new Pbck1GetByParamInput()));
+                var pbck1Data = _pbck1Bll.GetPBCK1ByParam(new Pbck1GetByParamInput());
+                return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
 
             //getbyparams
@@ -60,6 +61,17 @@ namespace Sampoerna.EMS.Website.Controllers
                             TextField = x.Year
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
+        private SelectList CreateYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            for (int i = 0; i < 5; i++)
+            {
+                years.Add(new SelectItemModel(){ ValueField = currentYear - i, TextField = (currentYear - i).ToString()});
+            }
+            return new SelectList(years, "ValueField", "TextField");
         }
 
         //
@@ -197,6 +209,18 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(Pbck1ItemViewModel model)
         {
+
+            if (string.IsNullOrEmpty(model.Detail.SupplierKppbc))
+            {
+                model.Detail.SupplierKppbc = model.Detail.HiddenSupplierKppbc;
+            }
+
+            if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
+                !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
+            {
+                model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
+            }
+
             if (!ModelState.IsValid)
             {
                 return CreateInitial(model);
@@ -204,16 +228,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //process save
             var dataToSave = Mapper.Map<Pbck1>(model.Detail);
+            dataToSave.CreatedById = CurrentUser.USER_ID;
             var saveResult = _pbck1Bll.Save(dataToSave);
+
             if (saveResult.Success)
             {
-                return View("Index");
+                return RedirectToAction("Index");
             }
             
             return CreateInitial(model);
 
         }
-
+        
         public ActionResult CreateInitial(Pbck1ItemViewModel model)
         {
             model.MainMenu = _mainMenu;
@@ -224,6 +250,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.UomList = GlobalFunctions.GetUomList();
+            model.PbckReferenceList = new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number");
+            model.YearList = CreateYearList();
             return View(model);
         }
 

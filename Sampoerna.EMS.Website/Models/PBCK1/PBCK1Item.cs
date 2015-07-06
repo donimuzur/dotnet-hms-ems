@@ -9,10 +9,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
     public class Pbck1Item
     {
         public long Pbck1Id { get; set; }
-        [Required, Display(Name = "PBCK-1 No")]
 
+        [Display(Name = "PBCK-1 No")]
         public string Pbck1Number { get; set; }
-        [Required, Display(Name = "References")]
+
+        [Display(Name = "References")]
         public long? Pbck1Reference { get; set; }
 
         [Required, Display(Name = "PBCK Type")]
@@ -35,6 +36,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public long NppbkcId { get; set; }
 
         public string CompanyName { get; set; }
+        
+        public string PoaList { get; set; }
 
         public string NppbkcNo { get; set; }
 
@@ -45,17 +48,25 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [Required, Display(Name = "Supplier Plant")]
         public string SupplierPlant { get; set; }
-
+        
         [Display(Name = "Supplier Port")]
         public int? SupplierPortId { get; set; }
+
+        public string SupplierNppbkc { get; set; }
 
         public string SupplierPortName { get; set; }
 
         [Display(Name = "Supplier Address")]
         public string SupplierAddress { get; set; }
 
+        public string HiddendSupplierAddress { get; set; }
+
         [Display(Name = "Supplier Phone")]
         public string SupplierPhone { get; set; }
+
+        public string SupplierKppbc { get; set; }
+
+        public string HiddenSupplierKppbc { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
         public DateTime? PlanProdFrom { get; set; }
@@ -91,7 +102,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string StatusName { get; set; }
 
-        public Enums.DocumentStatus StatusGov { get; set; }
+        public Enums.DocumentStatusGov StatusGov { get; set; }
 
         public string StatusGovName { get; set; }
 

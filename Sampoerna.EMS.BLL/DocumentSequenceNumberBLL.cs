@@ -39,7 +39,8 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(lastSeqData);
             }
 
-            var nppbkcData = _nppbkcRepository.GetByID(input.NppbkcId);
+            //var nppbkcData = _nppbkcRepository.GetByID(input.NppbkcId);
+            var nppbkcData = _nppbkcRepository.Get(c => c.NPPBKC_ID == input.NppbkcId, null, "T1001").FirstOrDefault();
 
             if(nppbkcData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.NppbkcNotFound);

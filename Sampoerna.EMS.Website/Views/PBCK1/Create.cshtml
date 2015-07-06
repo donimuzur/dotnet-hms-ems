@@ -3,7 +3,7 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("Save", "PBCK1", new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Create", "PBCK1", new { @class = "form-excise", role = "form" }))
 {
 <div class="container-wrap title-page">
     <div class="row">
@@ -11,8 +11,8 @@
             <h3>PBCK-1 Form</h3>
             <label class="status">Draft</label>
             <div class="action-button">
-                <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-blue" value="Save" />
-                <input type="submit" id="SubmitType" name="SubmitType" class="btn btn-grey" value="Print Preview" />
+                <input type="submit" class="btn btn-blue" value="Save" />
+                <input type="button" class="btn btn-grey" value="Print Preview" />
             </div>
         </div>
     </div>
@@ -149,33 +149,44 @@
                 var nppbkcid = $(this).find("option:selected").val();
                 console.log(nppbkcid);
                 if (nppbkcid != '') {
-                    ajaxLoadNppbkcDetail({ nppbkcid: nppbkcid });
+                    ajaxSelectNppbck({ nppbkcid: nppbkcid });
                 } else {
-                    $('#tbxcompanyname').val('');
+                    $('#Detail_CompanyName').val('');
+                    $('#displayCompanyName').val('');
+                    $('#Detail_PoaList').val('');
+                    $('#displayPoaList').val('');
                 }
             }
         });
 
         function ajaxSelectNppbck(formData) {
-            if (formData.nppbkcId) {
+            if (formData.nppbkcid) {
                 //Load POA
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        var list = data.SearchInput.PoaList;
-                        if (list.length > 0) {
-                            $('#SearchInput_POA').append('<option value="">All</option>');
-                            for (var i = 0; i < list.length; i++) {
-                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
-                            }
-                        }
-                    }
-                });
+                ajaxLoadPoa(formData);
                 
-                //Load NppbkcDetai
+                //Load company
+                ajaxLoadCompany(formData);
             }
+        }
+        
+        function ajaxLoadPoa(formData) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PoaListPartial", "pbck1")',
+                data: formData,
+                success: function (data) {
+                    var list = data.SearchInput.PoaList;
+                    if (list.length > 0) {
+                        var poalist = '';
+                        for (var i = 0; i < list.length; i++) {
+                            poalist = poalist + ', ' + list[i].Text;
+                        }
+                        poalist = poalist.slice(2);
+                        $('#Detail_PoaList').val(poalist);
+                        $('#displayPoaList').val(poalist);
+                    }
+                }
+            });
         }
 
         function ajaxLoadCompany(formData) {
@@ -186,9 +197,11 @@
                     data: formData,
                     success: function(data) {
                         if (data != null) {
-                            $('#tbxcompanyname').val(data.DocumentBukrstxt);
+                            $('#Detail_CompanyName').val(data.DocumentBukrstxt);
+                            $('#displayCompanyName').val(data.DocumentBukrstxt);
                         } else {
-                            $('#tbxcompanyname').val('');
+                            $('#Detail_CompanyName').val('');
+                            $('#displayCompanyName').val('');
                         }
                     }
                 });
@@ -213,10 +226,9 @@
         });
 
         function disableSupplierFormInput(isDisable) {
-            $('#txtSupplierNppbkc').prop('disabled', isDisable);
-            $('#txtSupplierKppbc').prop('disabled', isDisable);
-            $('#txtSupplierAddress').prop('disabled', isDisable);
-            //$('#txtSupplierPhone').prop('disabled', isDisable);
+            $('#Detail_SupplierNppbkc').prop('disabled', isDisable);
+            $('#Detail_SupplierKppbc').prop('disabled', isDisable);
+            $('#Detail_SupplierAddress').prop('disabled', isDisable);
         }
 
         function ajaxLoadSupplierPlant() {
@@ -233,15 +245,16 @@
             var list = supplierData;
             if (list.length > 0) {
                 var htmlSelect = '';
-                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" onchange="supplierChange();">';
+                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange();">';
                 for (var i = 0; i < list.length; i++) {
                     htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
                 }
                 htmlSelect += '</select>';
+                htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
                 $('#supp-plant').html(htmlSelect);
                 //selected to 1
-                if ($("#Detail_SupplierPlant").length) {
-                    var plant_id = $("#Detail_SupplierPlant").find("option:selected").val();
+                if ($("#Detail_SupplierPlant_ddl").length) {
+                    var plant_id = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
                     console.log(plant_id);
                     ajaxLoadDetailSupplierPlant({ plantid: plant_id });
                 }
@@ -257,10 +270,13 @@
 
                     if (data != null) {
                         //load to form
-                        $('#txtSupplierNppbkc').val(data.NPPBKC_NO);
-                        $('#txtSupplierKppbc').val(data.KPPBC_NO);
-                        $('#txtSupplierPhone').val('');
-                        $('#txtSupplierAddress').val(data.Address);
+                        $('#Detail_SupplierNppbkc').val(data.NPPBKC_NO);
+                        $('#Detail_HiddenSupplierKppbc').val(data.KPPBC_NO);
+                        $('#Detail_SupplierKppbc').val(data.KPPBC_NO);
+                        $('#Detail_SupplierPhone').val('');
+                        $('#Detail_SupplierAddress').val(data.Address);
+                        $('#Detail_HiddendSupplierAddress').val(data.Address);
+                        $('#Detail_SupplierPlant').val(data.Name1);
                     } else {
                         setSupplierPlantEmpty();
                     }
@@ -269,18 +285,22 @@
         }
 
         function supplierChange() {
-            if ($("#Detail_SupplierPlant").length) {
-                var plantid = $("#Detail_SupplierPlant").find("option:selected").val();
+            if ($("#Detail_SupplierPlant_ddl").length) {
+                var plantid = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
                 console.log(plantid);
                 ajaxLoadDetailSupplierPlant({ plantid: plantid });
             }
         }
         
         function setSupplierPlantEmpty() {
-            $('#txtSupplierNppbkc').val('');
-            $('#txtSupplierKppbc').val('');
-            $('#txtSupplierPhone').val('');
-            $('#txtSupplierAddress').val('');
+            $('#Detail_SupplierNppbkc').val('');
+            $('#Detail_SupplierKppbc').val('');
+            $('#Detail_SupplierPhone').val('');
+            $('#Detail_SupplierAddress').val('');
+            $('#Detail_HiddendSupplierAddress').val('');
+            $('#Detail_HiddenSupplierKppbc').val('');
+            $('#Detail_SupplierPlant').val('');
+            
         }
 
     </script>

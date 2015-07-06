@@ -21,7 +21,8 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" placeholder="">
+                                            @*<input type="text" class="form-control" placeholder="" disabled />*@
+                                            @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -37,7 +38,7 @@
                                     <div class="row">
                                         <label class="col-md-3">References</label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" placeholder="">
+                                            @Html.DropDownListFor(model => model.Detail.Pbck1Reference, Model.PbckReferenceList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -46,6 +47,7 @@
                                         <label class="col-md-3">Reported On</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
+                                                @*@Html.HiddenFor(model => model.Detail.ReportedOn)*@
                                                 @Html.TextBoxFor(model => model.Detail.ReportedOn, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
@@ -72,6 +74,7 @@
                                         <label class="col-md-3">Period To</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
+                                                @*@Html.HiddenFor(model => model.Detail.PeriodTo)*@
                                                 @Html.TextBoxFor(model => model.Detail.PeriodTo, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
@@ -112,7 +115,8 @@
                                     <div class="row">
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control" value="POA 1, POA 2, POA 3">
+                                            @Html.HiddenFor(model => model.Detail.PoaList)
+                                            @Html.TextBoxFor(model => model.Detail.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +124,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
-                                            <input id="tbxcompanyname" name="tbxcompanyname" type="text" class="form-control" disabled="true" />
+                                            @Html.HiddenFor(model => model.Detail.CompanyName)
+                                            @Html.TextBoxFor(model => model.Detail.CompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
                                         </div>
                                     </div>
                                 </div>
@@ -138,7 +143,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier NPPBKC</label>
                                         <div class="col-md-8">
-                                            <input type="text" id="txtSupplierNppbkc" class="form-control">
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkc, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -156,7 +161,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier KPPBC</label>
                                         <div class="col-md-8">
-                                            <input type="text" id="txtSupplierKppbc" class="form-control">
+                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbc)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbc, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -164,7 +170,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Address</label>
                                         <div class="col-md-8">
-                                            <textarea class="form-control" rows="5" id="txtSupplierAddress"></textarea>
+                                            @Html.HiddenFor(model => model.Detail.HiddendSupplierAddress)
+                                            @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +179,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Phone</label>
                                         <div class="col-md-8">
-                                            <input type="text" id="txtSupplierPhone" class="form-control">
+                                            @Html.TextBoxFor(model => model.Detail.SupplierPhone, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -211,7 +218,7 @@
                                         <label class="col-md-4 long">Plan Produtcion From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -224,7 +231,7 @@
                                         <label class="col-md-4">Plan Production to</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -239,10 +246,7 @@
                                             @Html.DropDownListFor(model => model.Detail.Lack1FromMonthId, Model.MonthList, "", new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-control">
-                                                <option>2015</option>
-                                                <option>2016</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Detail.Lack1FormYear, Model.YearList, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -253,10 +257,7 @@
                                             @Html.DropDownListFor(model => model.Detail.Lack1ToMonthId, Model.MonthList, "", new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-control" id="Detail_LACK1_TO_YEAR" name="Detail.LACK1_TO_YEAR">
-                                                <option>2015</option>
-                                                <option>2016</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Detail.Lack1ToYear, Model.YearList, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -264,12 +265,10 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Qty</label>
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control">
+                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-control">
-                                                <option>Gram</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -277,12 +276,10 @@
                                     <div class="row">
                                         <label class="col-md-4">Latest Saldo</label>
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control">
+                                            @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-control">
-                                                <option>Stick</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Detail.LatestSaldoUomId, Model.UomList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -444,7 +441,6 @@
                                     <div class="row">
                                         <label class="col-md-4">Status Gov</label>
                                         <div class="col-md-8">
-                                            @*@Html.DropDownListFor(model => model.Detail.STATUS_GOV_ID, Model.StatusGovList, "Select", new { @class = "form-control"})*@
                                             @Html.EnumDropDownListFor(model => model.Detail.StatusGov, Model.StatusGovList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -454,7 +450,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -466,7 +462,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Qty Approved</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control">
+                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

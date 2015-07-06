@@ -125,8 +125,6 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LatestSaldo, opt => opt.MapFrom(src => src.LATEST_SALDO))
                 .ForMember(dest => dest.LatestSaldoUomId, opt => opt.MapFrom(src => src.LATEST_SALDO_UOM))
                 .ForMember(dest => dest.LatestSaldoUomName, opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_NAME : string.Empty))
-                .ForMember(dest => dest.Pbck1Childs, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1>>(src.PBCK11)))
-                .ForMember(dest => dest.Pbck1Parent, opt => opt.MapFrom(src => Mapper.Map<Pbck1>(src.PBCK12)))
                 .ForMember(dest => dest.Pbck1ProdConverter, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdConverter>>(src.PBCK1_PROD_CONVERTER)))
                 .ForMember(dest => dest.Pbck1ProdPlan, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdPlan>>(src.PBCK1_PROD_PLAN)))
                 ;

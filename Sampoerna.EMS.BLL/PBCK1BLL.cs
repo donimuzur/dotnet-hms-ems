@@ -11,6 +11,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -77,13 +78,22 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            return Mapper.Map<List<Pbck1>>(rc.ToList());
+            var mapResult = Mapper.Map<List<Pbck1>>(rc.ToList());
+
+            return mapResult;
+
         }
 
         public Pbck1 GetById(long id)
         {
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
-            return Mapper.Map<Pbck1>(dbData);
+            var mapResult = Mapper.Map<Pbck1>(dbData);
+            if (dbData != null)
+            {
+                mapResult.Pbck1Parent = Mapper.Map<Pbck1>(dbData.PBCK12);
+                mapResult.Pbck1Childs = Mapper.Map<List<Pbck1>>(dbData.PBCK11);
+            }
+            return mapResult;
         }
 
         public SavePbck1Output Save(Pbck1 pbck1)
@@ -108,8 +118,13 @@ namespace Sampoerna.EMS.BLL
                 };
                 
                 pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(input);
+                pbck1.Status = Enums.DocumentStatus.Draft;
+                pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
                 Mapper.Map<Pbck1, PBCK1>(pbck1, dbData);
+
+                _repository.Insert(dbData);
+
             }
 
             var output = new SavePbck1Output();
