@@ -91,7 +91,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Email<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
+                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35", disabled="disabled" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -154,5 +154,7 @@
                 }
             });
         }
+        
+
     </script>
 } 

@@ -128,7 +128,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Create By<span class="red">*</span></label>
+                                                        <label class="col-md-4">Create By</label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control", @disabled = "disabled" })
                                                             @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control" })
@@ -138,7 +138,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Changed By<span class="red">*</span></label>
+                                                        <label class="col-md-4">Changed By</label>
                                                         <div class="col-md-8">
 
                                                             @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
@@ -152,7 +152,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Created On<span class="red">*</span></label>
+                                                        <label class="col-md-4">Created On</label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.CreatedDate)*@
@@ -161,7 +161,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Last Change On<span class="red">*</span></label>
+                                                        <label class="col-md-4">Last Change On</label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.ChangedDate)*@
@@ -176,7 +176,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant Deletion</label>
                                                         <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "form-control checkbox" })
+                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "checkbox" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -186,7 +186,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Client Deletion</label>
                                                         <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "form-control checkbox" })
+                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "checkbox" })
                                                         </div>
                                                     </div>
                                                 </div>
