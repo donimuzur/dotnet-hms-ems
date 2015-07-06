@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var data = _materialBll.getByID(id);
             Mapper.Map(data,model);
             
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id.ToString()));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
             InitDetailModel(model);
             return View("Details",model);
         }

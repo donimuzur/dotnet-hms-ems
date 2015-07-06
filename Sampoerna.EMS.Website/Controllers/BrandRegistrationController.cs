@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IPlantBLL _plantBll;
-        
+        private Enums.MenuList _mainMenu;
 
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
@@ -39,12 +39,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new BrandRegistrationIndexViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var dbData = _brandRegistrationBll.GetAllBrands();
             model.Details = AutoMapper.Mapper.Map<List<BrandRegistrationDetail>>(dbData);
-
+            ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
 
@@ -154,7 +154,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private BrandRegistrationEditViewModel InitEdit(BrandRegistrationEditViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mai;
             model.CurrentMenu = PageInfo;
 
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
