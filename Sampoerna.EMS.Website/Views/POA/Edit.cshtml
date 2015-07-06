@@ -39,18 +39,18 @@
                                                 <div class="row">
                                                     <label class="col-md-3">ID Card<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.HiddenFor(x=>x.Detail.PoaId)
+                                                        @Html.HiddenFor(x => x.Detail.PoaId)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @maxlength = "22" })
-                                                      </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Login As<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new {  @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "selectpicker form-control" })
 
-                                                                                                    </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -69,7 +69,7 @@
                                                     <label class="col-md-3">Printed Name<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @maxlength = "50" })
-                                               </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -84,15 +84,16 @@
                                                     <label class="col-md-3">Phone<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "15" })
-                                                     </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Email<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
-                                                   </div>
+                                                        @Html.TextBox("email", Model.Detail.Email, new { @class = "form-control", @maxlength = "35", @disabled = "disabled" })
+                                                        @Html.HiddenFor(x => x.Detail.Email)
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -138,7 +139,7 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript">
-    $('#MenuPOA').addClass('active');
+        $('#MenuPOA').addClass('active');
     </script>
 
 }

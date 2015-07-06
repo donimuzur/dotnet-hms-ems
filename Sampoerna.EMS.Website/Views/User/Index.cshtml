@@ -80,8 +80,8 @@
                         @foreach (var item in Model.Details)
                         {
                             <tr>
-                                <td>
-                                    @Html.ActionLink("Detail", "Detail", new { id = item.USER_ID })
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "User", new { id = item.USER_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.USERNAME)
