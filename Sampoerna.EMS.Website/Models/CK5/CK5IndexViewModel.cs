@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string DocumentNumber { get; set; }
 
-        public decimal? Qty { get; set; }
+        public string Qty { get; set; }
 
         public string UOM { get; set; }
 

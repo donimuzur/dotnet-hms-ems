@@ -7,7 +7,6 @@
             <th>Document</th>
             <th>Qty - Type of Packaging</th>
             <th>POA</th>
-            <th>NPPBKC</th>
             <th>Source Plant</th>
             <th>Destination</th>
             <th>Status</th>
@@ -22,7 +21,6 @@
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -31,16 +29,13 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Detail", "CK5", new { id = item.Ck5Id })"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "CK5", new { id = item.Ck5Id })"> <i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("Details", "CK5", new { id = item.Ck5Id })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "CK5", new { id = item.Ck5Id })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
                 <td>@Html.DisplayFor(model => item.Qty)</td>
                 <td>
                     @Html.DisplayFor(model => item.POA)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.NPPBKC_ID)
                 </td>
                 <td>@Html.DisplayFor(model => item.SourcePlant)</td>
                 <td>@Html.DisplayFor(model => item.DestinationPlant)</td>

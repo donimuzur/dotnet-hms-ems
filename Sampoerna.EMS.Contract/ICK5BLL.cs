@@ -14,6 +14,8 @@ namespace Sampoerna.EMS.Contract
 
        CK5 GetById(long id);
 
+       CK5 GetByIdIncludeTables(long id);
+
        List<CK5> GetAll();
 
        List<CK5> GetCK5ByParam(CK5Input input);

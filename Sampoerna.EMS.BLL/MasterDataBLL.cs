@@ -51,15 +51,18 @@ namespace Sampoerna.EMS.BLL
             return _RequestTypeRepository.Get().ToList();
         }
 
-        public string GetCeOfficeCodeByKppbcId(long kppBcId)
-        {
-            var dbZaid = _ZaidExKppbkcRepository.GetByID(kppBcId);
-            if (dbZaid == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //use nppnkc get from ZAIDM_EX_NPPBKC
+        //public string GetCeOfficeCodeByKppbcId(long kppBcId)
+        //{
+        //    var dbZaid = _ZaidExKppbkcRepository.GetByID(kppBcId);
+        //    if (dbZaid == null)
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return dbZaid.KPPBC_NUMBER;
+        //    return dbZaid.KPPBC_NUMBER;
 
-        }
+        //}
+
+      
 
         public List<T1001W> GetAllSourcePlants()
         {

@@ -1,4 +1,7 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5DetailsViewModel
+
+@Html.HiddenFor(model=>model.SubmissionNumber)
+@Html.HiddenFor(model => model.SubmissionDate)
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
@@ -31,7 +34,7 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control selectpicker" })
+                                            @Html.TextBoxFor(model => model.KppBcCity, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -40,7 +43,6 @@
                                         <label class="col-md-4">CE Office Code</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.CeOfficeCode, new { @disabled = false, @class = "form-control" })
-                                            @*<input id="ceOfficeCode" type="text" class="form-control" placeholder="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -58,12 +60,7 @@
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control", @disabled = "disabled" })
 
-                                            @*<div class="input-group date">
-                                                    @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control" })
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                </div>*@
+                                          
                                         </div>
                                     </div>
                                 </div>
@@ -71,7 +68,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Number</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RegistrationNumber, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -79,12 +76,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.RegistrationDate, new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                           
+                                                @Html.TextBoxFor(model => model.RegistrationDate, new {@disabled = false, @class = "form-control" })
+                                               
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +86,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Goods Type Group</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.GoodTypeName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +94,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Settlement</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.ExciseSettlement, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +102,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Status</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.ExciseStatus, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +110,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RequestType, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +141,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.SourcePlantName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -156,7 +150,6 @@
                                         <label class="col-md-4">NPWP</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.SourceNpwp, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="SourceNpwp" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +158,6 @@
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.SourceNppbkcId, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="SourceNppbkcId" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +166,6 @@
                                         <label class="col-md-4">Company Name</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.SourceCompanyName, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="SourceCompanyName" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -183,7 +174,6 @@
                                         <label class="col-md-4">Address</label>
                                         <div class="col-md-8">
                                             @Html.TextAreaFor(model => model.SourceAddress, new { @row = "5", @disabled = "disabled", @class = "form-control" })
-                                            @*<textarea id="SourceCompanyAddress" class="form-control" rows="5" disabled></textarea>*@
                                         </div>
                                     </div>
                                 </div>
@@ -192,7 +182,6 @@
                                         <label class="col-md-4">KPPBC Name, Office ID</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.SourceKppbcName, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="SourceKppbcName" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -221,7 +210,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.DestPlantId, Model.DestPlantList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.DestPlantName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -230,7 +219,6 @@
                                         <label class="col-md-4">NPWP</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.DestNpwp, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="DestNpwp" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +227,6 @@
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.DestNppbkcId, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="DestNppbkcId" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -248,7 +235,6 @@
                                         <label class="col-md-4">Company Name</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.DestCompanyName, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="DestCompanyName" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +243,6 @@
                                         <label class="col-md-4">Address</label>
                                         <div class="col-md-8">
                                             @Html.TextAreaFor(model => model.DestAddress, new { @disabled = "disabled", @class = "form-control", @row = "5" })
-                                            @*<textarea id="DestCompanyAddress" class="form-control" rows="5" disabled></textarea>*@
                                         </div>
                                     </div>
                                 </div>
@@ -266,7 +251,6 @@
                                         <label class="col-md-4">KPPBC Name, Office ID</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.DestKppbcName, new { @disabled = "disabled", @class = "form-control" })
-                                            @*<input id="DestKppbcName" type="text" class="form-control" value="" disabled>*@
                                         </div>
                                     </div>
                                 </div>
@@ -296,7 +280,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Invoice Number</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.InvoiceNumber, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.InvoiceNumber, new { @disabled=false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -304,12 +288,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Invoice Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.InvoiceDate, new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                            
+                                                @Html.TextBoxFor(model => model.InvoiceDate, new { @disabled = false, @class = "form-control" })
+                                               
                                         </div>
                                     </div>
                                 </div>
@@ -317,10 +298,7 @@
                                     <div class="row">
                                         <label class="col-md-4 long">PBCK-1 Decree  Number</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })
-                                            @*<select class="form-control">
-                                                    <option>1.000.2</option>
-                                                </select>*@
+                                            @Html.TextBoxFor(model => model.PbckDecreeNumber, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -328,9 +306,9 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-1 Decree Date</label>
                                         <div class="col-md-8">
-
+                                            @Html.TextBoxFor(model => model.PbckDecreeDate, new { @disabled = false, @class = "form-control" })
                                             @*<input id="pbck1Date" type="text" class="form-control" disabled>*@
-                                            @Html.TextBoxFor(model => model.PbckDecreeDate, new { @id="pbck1Date",@disabled=false, @class = "form-control" })
+
 
                                         </div>
                                     </div>
@@ -339,7 +317,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.CarriageMethod, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -347,12 +325,13 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control" value="">
+                                            @Html.TextBoxFor(model => model.GrandTotalEx, new { @disabled = false, @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-control">
+                                            <input  type="text" class="form-control" disabled value="Box">
+                                            @*<select class="form-control">
                                                 <option>Box</option>
-                                            </select>
+                                            </select>*@
                                         </div>
                                     </div>
                                 </div>
@@ -549,12 +528,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control">
-                                                <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                    Browse <input type="file" multiple>
-                                                </span>
-                                            </div>
+                                            <input type="text" class="form-control" disabled="">
                                         </div>
                                     </div>
                                 </div>
@@ -562,7 +536,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Requisitioner</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control">
+                                            <input type="text" class="form-control" disabled="">
                                         </div>
                                     </div>
                                 </div>
@@ -653,3 +627,4 @@
         });
     </script>
 }
+

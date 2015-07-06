@@ -14,7 +14,7 @@
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-grey" value="Print Preview" />
                     
-                    <input type="button" class="btn btn-blue" value="Submit" />
+                    @*<input type="button" class="btn btn-blue" value="Submit" />*@
                 </div>
             </div>
         </div>
@@ -32,7 +32,9 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.HiddenFor(model=>model.Ck5Id);
+                        @Html.HiddenFor(model=>model.Ck5Id)
+                        @Html.HiddenFor(model => model.SubmissionNumber)
+                        @Html.HiddenFor(model => model.SubmissionDate)
 
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
@@ -50,7 +52,9 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
-
+        $(document).ready(function () {
+            $('#MenuCK5Domestic').addClass('active');
+        });
         //$(document).ready(function () {
         //    $('#CK5UploadSave').click(function () {
         //        var datarows = GetTableData($('#Ck5UploadTable'));

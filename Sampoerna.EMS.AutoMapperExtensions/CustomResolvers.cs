@@ -111,4 +111,24 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             
         }
     }
+
+    public class CK5ListIndexQtyResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 value)
+        {
+            string resultValue = "";
+            string resultUOM = "Boxes";
+
+            if (value.GRAND_TOTAL_EX.HasValue)
+                resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
+
+            if (value.PACKAGE_UOM_ID.HasValue)
+            {
+                if (value.UOM != null)
+                    resultUOM = value.UOM.UOM_NAME;
+            }
+
+            return resultValue + " " + resultUOM;
+        }
+    }
 }

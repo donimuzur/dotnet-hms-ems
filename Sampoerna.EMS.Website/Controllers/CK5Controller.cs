@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Management;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
@@ -36,20 +37,27 @@ namespace Sampoerna.EMS.Website.Controllers
         private List<CK5Item> GetCk5Items(Enums.CK5Type ck5Type,CK5SearchViewModel filter = null)
         {
             CK5Input input;
-
+            List<CK5> dbData;
             if (filter == null)
             {
                 //Get All
                 //input = new CK5Input { Ck5Type = ck5Type };
                 input = new CK5Input();
-                return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
+                input.Ck5Type = ck5Type;
+
+                dbData = _ck5Bll.GetCK5ByParam(input);
+                return Mapper.Map<List<CK5Item>>(dbData);
             }
 
             //getbyparams
 
             input = Mapper.Map<CK5Input>(filter);
             input.Ck5Type = ck5Type;
-            return Mapper.Map<List<CK5Item>>(_ck5Bll.GetCK5ByParam(input));
+           
+            dbData = _ck5Bll.GetCK5ByParam(input);
+
+
+            return Mapper.Map<List<CK5Item>>(dbData);
         }
 
         private CK5IndexViewModel CreateInitModelView(Enums.MenuList menulist, Enums.CK5Type ck5Type)
@@ -242,7 +250,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CeOfficeCodePartial(long kppBcCityId)
         {
-            var ceOfficeCode = _masterDataBll.GetCeOfficeCodeByKppbcId(kppBcCityId);
+            var ceOfficeCode = _nppbkcBll.GetCityByNppbkcId(kppBcCityId);
             return Json(ceOfficeCode);
         }
 
@@ -257,13 +265,23 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult Pbck1DatePartial(long pbck1Id)
         {
-            var pbck1 = _pbck1Bll.GetById(pbck1Id);
+            //var pbck1 = _pbck1Bll.GetById(pbck1Id);
             
-            return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
+            //return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
+            return Json(GetDatePbck1ByPbckId(pbck1Id));
         }
 
-       
+        private string GetDatePbck1ByPbckId(long? id)
+        {
+            if (id == null)
+                return string.Empty;
 
+            var pbck1 = _pbck1Bll.GetById(id.Value);
+            if (pbck1.DECREE_DATE.HasValue)
+                return pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy");
+
+            return string.Empty;
+        }
         [HttpPost]
         public ActionResult SaveCK5(CK5CreateViewModel model)
         {
@@ -298,7 +316,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //success.. redirect to edit form
                 return RedirectToAction("Edit", "CK5", new {@id = dbCk5.CK5_ID});
-
+                CurrentUser.USER_ID
 
 
             }
@@ -346,7 +364,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private CK5EditViewModel GetInitEditData(CK5EditViewModel model)
         {
             
-            model.CeOfficeCode = _masterDataBll.GetCeOfficeCodeByKppbcId(model.KppBcCity);
+            model.CeOfficeCode = _nppbkcBll.GetCityByNppbkcId(model.KppBcCity);
             
             var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
             model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
@@ -361,6 +379,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
             model.DestAddress = dbDestPlant.ADDRESS;
 
+            //pbck
+            if (model.PbckDecreeId.HasValue)
+                model.PbckDecreeDate = GetDatePbck1ByPbckId(model.PbckDecreeId);
+                
             return model;
 
         }
@@ -408,18 +430,83 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (ModelState.IsValid)
             {
-                var dbData = _ck5Bll.GetById(model.Ck5Id);
+                var dbData = _ck5Bll.GetByIdIncludeTables(model.Ck5Id);
 
-                Mapper.Map(model, dbData);
+                //Mapper.Map(model, dbData);
+                //todo : put it into mapper
+                dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+                dbData.CK5_TYPE = model.Ck5Type;
+                dbData.KPPBC_CITY = model.KppBcCity;
+                //dbData.SUBMISSION_NUMBER = model.SubmissionNumber;
+                //dbData.SUBMISSION_DATE = DateTime.Now;
+                dbData.REGISTRATION_NUMBER = model.RegistrationNumber;
+                dbData.EX_GOODS_TYPE_ID = model.GoodTypeId;
+                dbData.EX_SETTLEMENT_ID = model.ExciseSettlement;
+                dbData.EX_STATUS_ID = model.ExciseStatus;
+                dbData.REQUEST_TYPE_ID = model.RequestType;
+                
+                dbData.SOURCE_PLANT_ID = model.SourcePlantId;
+                dbData.DEST_PLANT_ID = model.DestPlantId;
+                dbData.INVOICE_NUMBER = model.InvoiceNumber;
+                dbData.PBCK1_DECREE_ID = model.PbckDecreeId;
+                dbData.CARRIAGE_METHOD_ID = model.CarriageMethod;
+                dbData.GRAND_TOTAL_EX = model.GrandTotalEx;
+                dbData.INVOICE_DATE = model.InvoiceDate;
+
+                
+               
+                dbData.MODIFIED_DATE = DateTime.Now;
+                //dbData.MODIFIED_DATE = CurrentUser.USER_ID;
 
                 _ck5Bll.SaveCk5(dbData);
-                
+              
             }
 
             model = InitEdit(model);
             model = GetInitEditData(model);
 
+           
             return View(model);
         }
+
+
+        private CK5DetailsViewModel GetInitDetailsData(CK5DetailsViewModel model)
+        {
+
+            model.CeOfficeCode = _nppbkcBll.GetCityByNppbkcId(model.KppBcCityId);
+            model.KppBcCity = _nppbkcBll.GetCityByNppbkcId(model.KppBcCityId);
+
+            var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
+            model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+            model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
+            model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+            model.SourceAddress = dbPlant.ADDRESS;
+            
+            var dbDestPlant = _masterDataBll.GetPlantById(model.DestPlantId);
+            model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+            model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
+            model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+            model.DestAddress = dbDestPlant.ADDRESS;
+       
+            return model;
+
+        }
+
+        public ActionResult Details(long id)
+        {
+            var dbData = _ck5Bll.GetByIdIncludeTables(id);
+
+            var model = new CK5DetailsViewModel();
+            Mapper.Map(dbData, model);
+
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+
+            model = GetInitDetailsData(model);
+          
+            return View(model);
+        }
+
+
     }
 }

@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Contract
 
         List<REQUEST_TYPE> GetAllRequestTypes();
 
-        string GetCeOfficeCodeByKppbcId(long kppBcId);
+        //string GetCeOfficeCodeByKppbcId(long kppBcId);
 
         List<T1001W> GetAllSourcePlants();
 

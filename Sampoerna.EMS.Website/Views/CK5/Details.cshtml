@@ -1,0 +1,51 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5DetailsViewModel
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@Model.Ck5Type.ToString()</h3>
+            <label class="status">@Model.DocumentStatus</label>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "CK5")">
+                    <button class="btn btn-blue">Back</button>
+                </a>
+
+                <input type="button" class="btn btn-grey" value="Print Preview" />
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    @Html.HiddenFor(model => model.Ck5Id);
+                    @Html.Partial("_CK5InformationDetails")
+                    @Html.Partial("_CK5Printout")
+                    @Html.Partial("_CK5ChangeLog")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MenuCK5Domestic').addClass('active');
+        });
+    </script>
+}

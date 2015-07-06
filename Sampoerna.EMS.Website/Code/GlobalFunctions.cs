@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.Website.Code
             var nppbkcList = nppbkcbll.GetAll();
                 
             //var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
-            return new SelectList(nppbkcList, "KPPBC_ID", "City");
+            return new SelectList(nppbkcList, "NPPBKC_ID", "City");
         }
 
         public static SelectList GetGoodTypeGroupList()
@@ -85,7 +85,8 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetSourcePlantList()
         {
             IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var sourcePlant = masterDataBll.GetAllSourcePlants();
+            List<T1001W> sourcePlant;
+            sourcePlant = masterDataBll.GetAllSourcePlants();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(sourcePlant);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 

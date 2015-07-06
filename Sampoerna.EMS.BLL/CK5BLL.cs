@@ -32,7 +32,21 @@ namespace Sampoerna.EMS.BLL
 
         public CK5 GetById(long id)
         {
-            return _repository.GetByID(id);
+            var dtData = _repository.GetByID(id);
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dtData;
+        }
+
+        public CK5 GetByIdIncludeTables(long id)
+        {
+            includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY";
+            var dtData = _repository.Get(c=>c.CK5_ID == id, null,includeTables).FirstOrDefault();
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dtData;
         }
         public List<CK5> GetAll()
         {
@@ -43,12 +57,14 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5> GetCK5ByType(Enums.CK5Type ck5Type)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
+            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
             return _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
         }
 
         public List<CK5> GetCK5ByParam(CK5Input input)
         {
+            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1,UOM";
+
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
             if (!string.IsNullOrEmpty(input.DocumentNumber))
@@ -68,18 +84,20 @@ namespace Sampoerna.EMS.BLL
 
             if (input.NPPBKCOrigin.HasValue)
             {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.HasValue && c.SOURCE_PLANT_ID.Value == input.NPPBKCOrigin.Value);
+                //queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.HasValue && c.SOURCE_PLANT_ID.Value == input.NPPBKCOrigin.Value);
+                queryFilter = queryFilter.And(c => c.T1001W.NPPBCK_ID == input.NPPBKCOrigin.Value);
+                
             }
 
             if (input.NPPBKCDestination.HasValue)
             {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.HasValue && c.DEST_PLANT_ID.Value == input.NPPBKCDestination.Value);
+                //queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.HasValue && c.DEST_PLANT_ID.Value == input.NPPBKCDestination.Value);
+                queryFilter = queryFilter.And(c => c.T1001W1.NPPBCK_ID == input.NPPBKCDestination.Value);
             }
 
-            if (input.Ck5Type != null)
-            {
-                queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
-            }
+
+            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
+            
 
             Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
             if (!string.IsNullOrEmpty(input.SortOrderColumn))

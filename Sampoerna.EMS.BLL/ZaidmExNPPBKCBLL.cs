@@ -3,6 +3,7 @@ using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -28,6 +29,27 @@ namespace Sampoerna.EMS.BLL
         public List<ZAIDM_EX_NPPBKC> GetAll()
         {
             return _repository.Get().ToList();
+        }
+
+        public string GetCityByNppbkcId(long nppBkcId)
+        {
+            var dbData = _repository.GetByID(nppBkcId);
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData.CITY;
+
+        }
+
+        public string GetCeOfficeCodeByNppbcId(long nppBkcId)
+        {
+
+            var dbData = _repository.Get(n => n.NPPBKC_ID == nppBkcId, null, "ZAIDM_EX_KPPBC").FirstOrDefault();
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData.ZAIDM_EX_KPPBC.KPPBC_NUMBER;
+
         }
     }
 }

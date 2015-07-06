@@ -244,6 +244,7 @@
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -698,6 +699,8 @@
     <Content Include="Views\CK5\Edit.cshtml" />
     <Content Include="Views\CK5\_CK5InformationEdit.cshtml" />
     <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
+    <Content Include="Views\CK5\Details.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
