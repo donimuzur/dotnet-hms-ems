@@ -38,27 +38,26 @@
                                     <div class="panel-body">
                                         <form class="form-excise" role="form">
                                             <div class="row">
-
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Stiker Code</label>
+                                                        <label class="col-md-4">Stiker Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Plant</label>
+                                                        <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">FA Code</label>
+                                                        <label class="col-md-4">FA Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.FaCode, new { @class = "form-control", @maxlength = "18" })
                                                         </div>
@@ -66,21 +65,22 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Personalization Code</label>
+                                                        <label class="col-md-4">Personalization Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Product Code</label>
+                                                        <label class="col-md-4">Product Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4 long">Personalization Code Description</label>
@@ -99,7 +99,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4 long">Brand Name Registration by CE Office</label>
+                                                        <label class="col-md-4 long">Brand Name Registration by KBBPC<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextAreaFor(model => model.BrandName, new { @rows = "5", @class = "form-control", @maxlength = "60" })
                                                         </div>
@@ -113,10 +113,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">SKEP No</label>
+                                                        <label class="col-md-4">SKEP No<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.SkepNo, new { @class = "form-control", @maxlength = "30" })
                                                         </div>
@@ -124,7 +123,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">SKEP Date</label>
+                                                        <label class="col-md-4">SKEP Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             <div class="input-group date">
                                                                 @Html.TextBoxFor(model => model.SkepDate, new { @class = "form-control" })
@@ -139,7 +138,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Series Code</label>
+                                                        <label class="col-md-4">Series Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.SeriesId, Model.SeriesList, "Select", new { @class = "form-control" })
                                                         </div>
@@ -155,7 +154,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Content</label>
+                                                        <label class="col-md-4">Content<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "50" })
                                                         </div>
@@ -165,7 +164,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Market Code</label>
+                                                        <label class="col-md-4">Market Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.MarketId, Model.MarketCodeList, "Select", new { @class = "form-control" })
                                                         </div>
@@ -181,9 +180,9 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Country Key</label>
+                                                        <label class="col-md-4">Country Key<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -191,7 +190,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">HJE</label>
+                                                        <label class="col-md-4">HJE<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.HjeValue, new { @class = "form-control" })
                                                         </div>
@@ -199,7 +198,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">HJE Currency</label>
+                                                        <label class="col-md-4">HJE Currency<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.HjeCurrency, Model.HjeCurrencyList, "Select", new { @class = "form-control" })
                                                         </div>
@@ -207,7 +206,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Tariff</label>
+                                                        <label class="col-md-4">Tariff<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.Tariff, new { @class = "form-control" })
                                                         </div>
@@ -215,7 +214,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Tariff Currency</label>
+                                                        <label class="col-md-4">Tariff Currency<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.TariffCurrency, Model.TariffCurrencyList, "Select", new { @class = "form-control" })
                                                         </div>
@@ -224,7 +223,7 @@
 
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Exciseable Goods Type</label>
+                                                        <label class="col-md-4">Exciseable Goods Type<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
                                                         </div>
@@ -232,7 +231,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Colour</label>
+                                                        <label class="col-md-4">Colour<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.ColourName, new { @class = "form-control", @maxlength = "70" })
                                                         </div>
@@ -249,7 +248,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Start Date</label>
+                                                        <label class="col-md-4">Start Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
@@ -265,7 +264,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">End Date</label>
+                                                        <label class="col-md-4">End Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
@@ -311,6 +310,11 @@
                                                     </div>
                                                 </div>
 
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <span class="red">*</span> ) This Field Required
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
