@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Update POA (Power of Attorney)";
 }
-@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form",enctype = "multipart/form-data"  }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -117,14 +117,21 @@
                                                 <div class="row">
                                                     <label class="col-md-3">SK</label>
                                                     <div class="col-md-8">
-                                                       @*@Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })*@
+                                                        @*@Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })*@
+                                                        <input id="Detail_PoaSKFile_0_" name="Detail.PoaSKFile[0]" type="file" >
                                                     </div>
                                                     <div>
+                                                        @{
+                                                            var poask = 0;
+                                                        }
                                                         @foreach (var sk in Model.Detail.PoaSk)
                                                         {
-
+                                                           
                                                             <p><a href="@Url.Content(sk.FILE_PATH)" width="150" />@sk.FILE_NAME</p>
-
+                                                            @Html.HiddenFor(m => m.Detail.PoaSk[poask].POA_SK_ID)
+                                                            @Html.HiddenFor(m=>m.Detail.PoaSk[poask].FILE_NAME)
+                                                            @Html.HiddenFor(m => m.Detail.PoaSk[poask].FILE_PATH)
+                                                            poask++;
                                                         }
                                                         
                                                     </div>

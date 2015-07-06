@@ -63,6 +63,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IZaidmExKPPBCBLL, ZaidmExKPPBCBLL>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
             container.Register<IMaterialBLL, MaterialBLL>();
+            container.Register<IPOASKBLL, POASKBLL>();
           
             // 3. Optionally verify the container's configuration.
             container.Verify();

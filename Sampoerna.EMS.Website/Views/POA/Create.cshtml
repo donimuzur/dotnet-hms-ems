@@ -116,13 +116,12 @@
                                                 </div>
                                                 <div class="row">
                                                     <label class="col-md-3">SK</label>
-                                                   
-                                                    <div id="file-sk-container" class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })
-                                                         <button type="button" onclick="removeUploadButton(0, $(this))">remove</button>
-                                                    </div>
-                                                    <div><button id="add-file-sk" type="button" class="btn-default">add file</button></div>
+                                                    <div class="col-md-1"><button id="add-file-sk" type="button" class="btn-default">+</button></div>
 
+                                                    <div id="file-sk-container" class="col-md-6">
+                                                        @Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })
+                                                       <button type="button" onclick="removeUploadButton(0, $(this))" class="btn-default">-</button>
+                                                   
                                                    
                                                 </div>
                                             </div>
@@ -182,7 +181,7 @@
                 $('#file-sk-container').html("");
                 for (var i = 0; i <= file_sk; i++) {
                     $('#file-sk-container').append('<input id="Detail_PoaSKFile_' + i +
-                        '_" name="Detail.PoaSKFile[' + i + ']" type="file" value=""><button type="button" onclick="removeUploadButton(' + i + ', $(this))">remove</button>');
+                        '_" name="Detail.PoaSKFile[' + i + ']" type="file" value=""><button type="button" class="btn-default" onclick="removeUploadButton(' + i + ', $(this))">-</button>');
 
                 }
             }

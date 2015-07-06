@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
@@ -22,16 +23,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private POABLL _poaBll;
         private IUserBLL  _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
-       
+        private IPOASKBLL _poaskbll;
         public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
-            )
+            ,IPOASKBLL poaskbll)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _poaMapBll = poadMapBll;
             _poaBll = poaBll;
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;
-           
+            _poaskbll = poaskbll;
         }
 
         //
@@ -73,10 +74,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         foreach (var sk in model.Detail.PoaSKFile)
                         {
-                            var poa_sk = new POA_SK();
-                            poa_sk.FILE_NAME = sk.FileName;
-                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
-                            poa.POA_SK.Add(poa_sk);
+                            if (sk != null)
+                            {
+                                var poa_sk = new POA_SK();
+                                poa_sk.FILE_NAME = sk.FileName;
+                                poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                                poa.POA_SK.Add(poa_sk);
+                              
+                            }
                         }
                     }
                     
@@ -197,10 +202,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     foreach (var sk in model.Detail.PoaSKFile)
                     {
-                        var poa_sk = new POA_SK();
-                        poa_sk.FILE_NAME = sk.FileName;
-                        poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
-                        poa.POA_SK.Add(poa_sk);
+                        if (sk != null)
+                        {
+                            var poa_sk = new POA_SK();
+                            poa_sk.FILE_NAME = sk.FileName;
+                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                            poa_sk.POA_ID = poaId;
+                            _poaskbll.Save(poa_sk);
+                        }
                     }
                 }
                 var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
