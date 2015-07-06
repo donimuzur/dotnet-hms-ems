@@ -316,7 +316,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //success.. redirect to edit form
                 return RedirectToAction("Edit", "CK5", new {@id = dbCk5.CK5_ID});
-                CurrentUser.USER_ID
+                
 
 
             }
