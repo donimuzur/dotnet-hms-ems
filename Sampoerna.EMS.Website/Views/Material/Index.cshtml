@@ -2,17 +2,16 @@
 @model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
+<script src="~/Scripts/js/custom.js"></script>
+   <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
-            $('.toggle-row').click(function () {
+            //$('.toggle-row').click(function () {
 
-                var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
+            //    var filter = $(".filters");
+            //    filter.slideToggle(100).promise().done(function () {
 
-                });
-            });
+            //    });
+            //});
 
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
@@ -81,7 +80,7 @@
         <div class="col-sm-12">
 
 
-            <div class="table-container">
+            <div id="contenttable" class="table-container">
 
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>
@@ -92,7 +91,7 @@
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
-                            <th> Deletion Status</th>
+                            <th> Deleted </th>
                         </tr>
 
                     </thead>
@@ -104,7 +103,7 @@
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
-                            <th> Deletion Status</th>
+                            <th> Deleted </th>
                         </tr>
                     </thead>
 
@@ -114,8 +113,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "Material", new { id = item.MaterialId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "Material", new { id = item.MaterialId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "Material", new { id = item.MaterialId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Material", new { id = item.MaterialId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlantName)
