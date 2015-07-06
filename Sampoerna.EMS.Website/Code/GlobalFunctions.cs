@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
             var data = companyBll.GetAllData();
-            return new SelectList(data, "COMPANY_ID", "BUTXT");
+            return new SelectList(data, "BUKRS", "BUTXT");
         }
 
         public static SelectList GetVirtualPlantList()

@@ -40,29 +40,29 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Company Name</label>
+                                                    <label class="col-md-2">Company Name<span class="red">*</span></label>
                                                     <div class="col-md-4">
                                                         @Html.DropDownListFor(model => model.CompanyId, Model.CompanyNameList, "Select", new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.CompanyId)
+                                                       
                                                         
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Import Virtual Plant</label>
+                                                    <label class="col-md-2">Import Virtual Plant<span class="red">*</span></label>
                                                     <div class="col-md-4">
                                                         @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "selectpicker form-control" })
-                                                        @Html.ValidationMessageFor(model => model.ImportPlantId)
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Export Virtual Plant</label>
+                                                    <label class="col-md-2">Export Virtual Plant<span class="red">*</span></label>
                                                     <div class="col-md-4">
                                                         @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "selectpicker form-control" })
-                                                        @Html.ValidationMessageFor(model => model.ExportPlantId)
+                                                       
                                                     </div>
                                                 </div>
                                             </div>

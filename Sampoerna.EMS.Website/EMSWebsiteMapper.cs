@@ -188,7 +188,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.POA_EMAIL))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE))
-                .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_ACTIVE == null ? "No" : "Yes"))
+                .ForMember(dest => dest.Is_Active, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Yes" : "No"))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.LOGIN_AS))
                 .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.MANAGER_ID));
              
@@ -248,12 +248,13 @@ namespace Sampoerna.EMS.Website
             #region VirtualMappingPlant
             //Virtual Mapping Plant
             Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.VirtualPlantMapId, opt => opt.MapFrom(src => src.VIRTUAL_PLANT_MAP_ID))
                 .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.T001.BUTXT))
                 .ForMember(dest => dest.ImportPlantId, opt => opt.MapFrom(src => src.IMPORT_PLANT_ID))
-                .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS))
+                .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS))
                 .ForMember(dest => dest.ExportPlantId, opt => opt.MapFrom(src => src.EXPORT_PLANT_ID))
-                .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS))
+                .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS))
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
 
             Mapper.CreateMap<Plant, SelectItemModelVirtualPlant>().IgnoreAllNonExisting()

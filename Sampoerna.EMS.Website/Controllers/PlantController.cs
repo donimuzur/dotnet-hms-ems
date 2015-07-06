@@ -128,28 +128,25 @@ namespace Sampoerna.EMS.Website.Controllers
         private List<PlantReceiveMaterialItemModel> GetPlantReceiveMaterial(DetailPlantT1001W plant)
         {
             var goodTypes = _goodTypeBll.GetAll();
-            var rc = (from x in goodTypes
-                select new PlantReceiveMaterialItemModel()
+
+            var planReceives = new List<PlantReceiveMaterialItemModel>();
+            
+                var recieve = _plantBll.GetReceiveMaterials(plant.Werks);
+                foreach (var goodType in goodTypes)
                 {
-                    PLANT_ID = plant.Werks,
-                    PLANT_MATERIAL_ID = 0,
-                    EXC_GOOD_TYP = x.EXC_GOOD_TYP, 
-                    GOODTYPE_ID = x.EXC_GOOD_TYP,
-                    EXT_TYP_DESC = x.EXT_TYP_DESC, 
-                    IsChecked = false
-                }).ToList();
-            if (plant.ReceiveMaterials != null && plant.ReceiveMaterials.Count > 0)
-            {
-                foreach (var plantReceiveMaterialItemModel in rc)
-                {
-                    var isFound = plant.ReceiveMaterials.FirstOrDefault(c => c.GOODTYPE_ID == plantReceiveMaterialItemModel.GOODTYPE_ID);
-                    if (isFound != null)
+                    var planReceive = new PlantReceiveMaterialItemModel();
+                    planReceive.EXC_GOOD_TYP = goodType.EXC_GOOD_TYP;
+                    planReceive.PLANT_ID = plant.Werks;
+                    planReceive.EXT_TYP_DESC = goodType.EXT_TYP_DESC;
+                    planReceive.IsChecked = false;
+                    if(recieve.Any(x => x.EXC_GOOD_TYP.Equals(goodType.EXC_GOOD_TYP)))
                     {
-                        plantReceiveMaterialItemModel.IsChecked = true;
+                        planReceive.IsChecked = true;
                     }
+                    planReceives.Add(planReceive);
                 }
-            }
-            return rc;
+            
+            return planReceives;
         }
         
     }

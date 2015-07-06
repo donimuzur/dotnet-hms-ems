@@ -11,5 +11,7 @@ namespace Sampoerna.EMS.Contract
         void save(Plant plantT1001W,string userid);
 
         string GetPlantWerksById(string id);
+
+        List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId);
     }
 }

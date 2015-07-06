@@ -66,9 +66,9 @@ namespace Sampoerna.EMS.BLL
                 {
                     _plantReceiveMaterialRepository.Delete(item);
                 }
-
-                Mapper.Map<Plant, T001W>(plantT1001W, origin);
               
+                Mapper.Map<Plant, T001W>(plantT1001W, origin);
+             
                 //origin.PLANT_RECEIVE_MATERIAL = plantT1001W.PLANT_RECEIVE_MATERIAL;
             }
             else
@@ -77,10 +77,15 @@ namespace Sampoerna.EMS.BLL
                 var origin = Mapper.Map<T001W>(plantT1001W);
                 origin.CREATED_DATE = DateTime.Now;
                 _repository.Insert(origin);
+                
             }
 
             try
             {
+                foreach (var plantReceiveMaterial in plantT1001W.PLANT_RECEIVE_MATERIAL)
+                {
+                    _plantReceiveMaterialRepository.Insert(plantReceiveMaterial);
+                }
                 _uow.SaveChanges();
             }
             catch (Exception exception)
@@ -142,6 +147,12 @@ namespace Sampoerna.EMS.BLL
         {
             var dbPlant = _repository.GetByID(id);
             return dbPlant == null ? string.Empty : dbPlant.WERKS;
+        }
+
+        public List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId)
+        {
+            return _plantReceiveMaterialRepository.Get(p => p.PLANT_ID == plantId).ToList();
+            
         }
     }
 }

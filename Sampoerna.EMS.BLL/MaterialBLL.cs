@@ -42,20 +42,15 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
+
+
         public MaterialOutput Save(ZAIDM_EX_MATERIAL data,string userId)
         {
 
 
             
-                _repository.Update(data);
-                var dbData =
-                    _repository.Get(c => c.STICKER_CODE == data.STICKER_CODE, null, includeTables)
-                        .FirstOrDefault();
-                
-                var dataUpdated = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-
-                SetChanges(dbData, dataUpdated, userId);
-                _repository.Update(data);
+             
+                _repository.InsertOrUpdate(data);
             
 
             
@@ -114,78 +109,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void SetChanges(ZAIDM_EX_MATERIAL origin, ZAIDM_EX_MATERIAL data, string userId)
-        {
-            var changesData = new Dictionary<string, bool>();
-            changesData.Add("MATERIAL_NUMBER", origin.STICKER_CODE.Equals(data.STICKER_CODE));
-            changesData.Add("PLANT_ID", origin.WERKS.Equals(data.WERKS));
-            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC.Equals(data.MATERIAL_DESC));
-            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP.Equals(data.PURCHASING_GROUP));
-            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP.Equals(data.MATERIAL_GROUP));
-            changesData.Add("BASE_UOM", origin.BASE_UOM_ID.Equals(data.BASE_UOM_ID));
-            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC.Equals(data.ISSUE_STORANGE_LOC));
-            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
-            
-            changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
-            //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
-
-            foreach (var listChange in changesData)
-            {
-                if (!listChange.Value)
-                {
-                    var changes = new CHANGES_HISTORY
-                    {
-                        FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
-                        FORM_ID = data.STICKER_CODE.ToString(),
-                        FIELD_NAME = listChange.Key,
-                        MODIFIED_BY = userId,
-                        MODIFIED_DATE = DateTime.Now
-                    };
-                    switch (listChange.Key)
-                    {
-                        case "MATERIAL_NUMBER":
-                            changes.OLD_VALUE = origin.STICKER_CODE;
-                            changes.NEW_VALUE = data.STICKER_CODE;
-                            break;
-                        case "PLANT_ID":
-                            changes.OLD_VALUE = origin.WERKS;
-                            changes.NEW_VALUE = data.WERKS;
-                            break;
-                        case "MATERIAL_DESC":
-                            changes.OLD_VALUE = origin.MATERIAL_DESC;
-                            changes.NEW_VALUE = data.MATERIAL_DESC;
-                            break;
-                        case "PURCHASING_GROUP":
-                            changes.OLD_VALUE = origin.PURCHASING_GROUP;
-                            changes.NEW_VALUE = data.PURCHASING_GROUP;
-                            break;
-                        case "MATERIAL_GROUP":
-                            changes.OLD_VALUE = origin.MATERIAL_GROUP;
-                            changes.NEW_VALUE = data.MATERIAL_GROUP;
-                            break;
-
-                        case "BASE_UOM":
-                            changes.OLD_VALUE = origin.BASE_UOM_ID.ToString();
-                            changes.NEW_VALUE = data.BASE_UOM_ID.ToString();
-                            break;
-                        case "ISSUE_STORANGE_LOC":
-                            changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
-                            changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
-                            break;
-                        case "EX_GOODTYP":
-                            changes.OLD_VALUE = origin.EXC_GOOD_TYP.ToString();
-                            changes.NEW_VALUE = data.EXC_GOOD_TYP.ToString();
-                            break;
-                        case "IS_DELETED":
-                            changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
-                            changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
-                            break;
-                    }
-                    _changesHistoryBll.AddHistory(changes);
-                }
-            }
-        }
-
+       
         
     }
 }

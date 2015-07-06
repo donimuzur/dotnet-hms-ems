@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.Get(null, null, "T001,T001W,T001W1").ToList();
         }
-
+        
         public VIRTUAL_PLANT_MAP Save(VIRTUAL_PLANT_MAP virtualPlant)
         {
             _repository.InsertOrUpdate(virtualPlant);

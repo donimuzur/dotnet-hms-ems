@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
+﻿@using Microsoft.Ajax.Utilities
+@model Sampoerna.EMS.Website.Models.POA.POAFormModel
 @section scripts {
 
     <script src="~/Scripts/js/scripts.min.js"></script>
@@ -26,10 +27,11 @@
                 <a href="@Url.Action("Index", "POA")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-                @if (Model.Detail.Is_Deleted.Equals("No"))
-                {
-                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Delete</a>
+                @{
+                    var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
                 }
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE": "ACTIVE")</a>
+                
             </div>
         </div>
     </div>
@@ -174,13 +176,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Delete</h3>
+                @if (Model.Detail.Is_Active == "Yes")
+                {
+                    <h3>Deactive</h3>
+                }
+                else
+                {
+                    <h3>Active</h3>
+                }
+                
             </div>
             <div class="modal-body">
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="poaDelete();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="poaDelete();">Yes</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>

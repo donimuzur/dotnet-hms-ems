@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.Website.Models.ChangesHistory
         public long CHANGES_HISTORY_ID { get; set; }
         public Core.Enums.FormType FORM_TYPE_ID { get; set; }
         public string FORM_TYPE_DESC { get; set; }
-        public long? FORM_ID { get; set; }
+        public string FORM_ID { get; set; }
         public string FIELD_NAME { get; set; }
         public string OLD_VALUE { get; set; }
         public string NEW_VALUE { get; set; }

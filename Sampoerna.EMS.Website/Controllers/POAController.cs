@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
                     poa.CREATED_BY = CurrentUser.USER_ID;
                     poa.CREATED_DATE = DateTime.Now;
+                    poa.IS_ACTIVE = true;
                     _poaBll.Save(poa);
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");

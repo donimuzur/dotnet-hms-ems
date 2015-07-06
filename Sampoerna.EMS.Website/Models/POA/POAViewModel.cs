@@ -73,6 +73,6 @@ namespace Sampoerna.EMS.Website.Models.POA
 
         public bool IsFromSAP { get; set; }
 
-        public string Is_Deleted { get; set; }
+        public string Is_Active { get; set; }
     }
 }
