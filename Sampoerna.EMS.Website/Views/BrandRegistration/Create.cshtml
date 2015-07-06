@@ -193,6 +193,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE</label>
                                                         <div class="col-md-8">
+                                                            <input type="text" onkeyup="this.value = ThausandSeperator($(this).val(), 2)" />
                                                             @Html.TextBoxFor(model => model.HjeValue, new { @class = "form-control" })
                                                         </div>
                                                     </div>
@@ -201,6 +202,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE Currency</label>
                                                         <div class="col-md-8">
+                                                           
                                                             @Html.DropDownListFor(model => model.HjeCurrency, Model.HjeCurrencyList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
@@ -326,23 +328,24 @@
 }
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('.input-group.date').datepicker({
                 dateFormat: 'dd mmm yyyy',
                 toggleActive: true,
                 defaultViewDate: { year: 2015, month: 06, day: 28 }
             });
-            
+
             $('#MenuMasterBrandRegistration').addClass('active');
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "BrandRegistration")';
             });
+
         });
 
 
-        $("#PersonalizationCode").change(function () {
+        $("#PersonalizationCode").change(function() {
             if ($("#PersonalizationCode").length) {
                 var personalizationCode = $(this).find("option:selected").val();
                 if (personalizationCode == '') {
@@ -360,14 +363,14 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#PersonalizationCodeDescription').val(data);
                     }
                 });
             }
         }
 
-        $("#ProductCode").change(function () {
+        $("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -386,7 +389,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#ProductType').val(data.PRODUCT_TYPE);
                         $('#ProductAlias').val(data.PRODUCT_ALIAS);
                     }
@@ -395,7 +398,7 @@
         }
 
 
-        $("#SeriesId").change(function () {
+        $("#SeriesId").change(function() {
             if ($("#SeriesId").length) {
                 var seriesCode = $(this).find("option:selected").val();
                 if (seriesCode == '') {
@@ -413,7 +416,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#SeriesValue').val(data);
                     }
                 });
@@ -421,7 +424,7 @@
         }
 
 
-        $("#MarketId").change(function () {
+        $("#MarketId").change(function() {
             if ($("#MarketId").length) {
                 var marketCode = $(this).find("option:selected").val();
                 if (marketCode == '') {
@@ -439,7 +442,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#MarketDescription').val(data);
                     }
                 });
@@ -447,7 +450,7 @@
 
         }
 
-        $("#GoodType").change(function () {
+        $("#GoodType").change(function() {
             if ($("#GoodType").length) {
                 var goodTypeCode = $(this).find("option:selected").val();
                 if (goodTypeCode == '') {
@@ -465,7 +468,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#GoodTypeDescription').val(data);
                     }
                 });
@@ -473,5 +476,100 @@
 
         }
 
+        function addThousandsSeparator(nStr) {
+            var retVal = x ? parseFloat(x.replace(/,/g, '')) : 0;
+            //console.log(retVal);
+            ////apply formatting
+
+            return retVal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            
+
+        }
+        function removeCharacter(v, ch) {
+            var tempValue = v + "";
+            var becontinue = true;
+            while (becontinue == true) {
+                var point = tempValue.indexOf(ch);
+                if (point >= 0) {
+                    var myLen = tempValue.length;
+                    tempValue = tempValue.substr(0, point) + tempValue.substr(point + 1, myLen);
+                    becontinue = true;
+                } else {
+                    becontinue = false;
+                }
+            }
+            return tempValue;
+        }
+
+        /*
+        *  using by function ThausandSeperator!!
+        */
+        function characterControl(value) {
+            var tempValue = "";
+            var len = value.length;
+            for (i = 0; i < len; i++) {
+                var chr = value.substr(i, 1);
+                if ((chr < '0' || chr > '9') && chr != '.' && chr != ',') {
+                    chr = '';
+                }
+
+                tempValue = tempValue + chr;
+            }
+            return tempValue;
+        }
+
+       
+        function ThausandSeperator(value, digit) {
+            var thausandSepCh = ",";
+            var decimalSepCh = ".";
+
+            var tempValue = "";
+            var realValue = value + "";
+            var devValue = "";
+            realValue = characterControl(realValue);
+            var comma = realValue.indexOf(decimalSepCh);
+            if (comma != -1) {
+                tempValue = realValue.substr(0, comma);
+                devValue = realValue.substr(comma);
+                devValue = removeCharacter(devValue, thausandSepCh);
+                devValue = removeCharacter(devValue, decimalSepCh);
+                devValue = decimalSepCh + devValue;
+                if (devValue.length > 3) {
+                    devValue = devValue.substr(0, 3);
+                }
+            } else {
+                tempValue = realValue;
+            }
+            tempValue = removeCharacter(tempValue, thausandSepCh);
+
+            var result = "";
+            var len = tempValue.length;
+            while (len > 3) {
+                result = thausandSepCh + tempValue.substr(len - 3, 3) + result;
+                len -= 3;
+            }
+            result = tempValue.substr(0, len) + result;
+            return result + devValue;
+        }
+
+       
+        function allCharsToUpper(value) {
+            var tempValue = "";
+            var len = value.length;
+            for (i = 0; i < len; i++) {
+                var chr = value.substr(i, 1);
+                chr = chr.toUpperCase();
+                if (chr == 'İ') { chr = 'I'; }
+                else if (chr == 'Ğ') { chr = 'G'; }
+                else if (chr == 'Ö') { chr = 'O'; }
+                else if (chr == 'Ü') { chr = 'U'; }
+                else if (chr == 'Ş') { chr = 'S'; }
+                else if (chr == 'Ç') { chr = 'C'; }
+
+                tempValue = tempValue + chr;
+            }
+            return tempValue;
+        }
+
     </script>
-}
+    }
