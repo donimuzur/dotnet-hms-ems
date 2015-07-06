@@ -102,80 +102,80 @@ namespace Sampoerna.EMS.Website.Controllers
             InitCreateModel(model);
             return View(model);
         }
-        //private void SetChanges(MaterialEditViewModel origin, ZAIDM_EX_MATERIAL data, string userId)
-        //{
-        //    var changesData = new Dictionary<string, bool>();
-        //    changesData.Add("MATERIAL_NUMBER", origin.MaterialNumber.Equals(data.STICKER_CODE));
-        //    changesData.Add("PLANT_ID", origin.PlantId.Equals(data.WERKS));
-        //    changesData.Add("MATERIAL_DESC", origin.MaterialDesc.Equals(data.MATERIAL_DESC));
-        //    changesData.Add("PURCHASING_GROUP", origin.PurchasingGroup.Equals(data.PURCHASING_GROUP));
-        //    changesData.Add("MATERIAL_GROUP", origin.MaterialGroup.Equals(data.MATERIAL_GROUP));
-        //   // changesData.Add("BASE_UOM", origin.BaseUOM.SelectedValue.Equals(data.BASE_UOM_ID));
-        //    changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
-        //   //changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
+        private void SetChanges(MaterialEditViewModel origin, ZAIDM_EX_MATERIAL data)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("MATERIAL_NUMBER", origin.MaterialNumber.Equals(data.STICKER_CODE));
+            changesData.Add("PLANT_ID", origin.PlantId.Equals(data.WERKS));
+            changesData.Add("MATERIAL_DESC", origin.MaterialDesc.Equals(data.MATERIAL_DESC));
+            changesData.Add("PURCHASING_GROUP", origin.PurchasingGroup.Equals(data.PURCHASING_GROUP));
+            changesData.Add("MATERIAL_GROUP", origin.MaterialGroup.Equals(data.MATERIAL_GROUP));
+            changesData.Add("BASE_UOM", origin.UomId.Equals(data.BASE_UOM_ID));
+            changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
+           //changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
 
-        //    //changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
-        //    //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
+            //changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
+            //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
 
-        //    foreach (var listChange in changesData)
-        //    {
-        //        if (!listChange.Value)
-        //        {
-        //            var changes = new CHANGES_HISTORY
-        //            {
-        //                FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
-        //                FORM_ID = data.STICKER_CODE.ToString(),
-        //                FIELD_NAME = listChange.Key,
-        //                MODIFIED_BY = userId,
-        //                MODIFIED_DATE = DateTime.Now
-        //            };
-        //            switch (listChange.Key)
-        //            {
-        //                case "MATERIAL_NUMBER":
-        //                    changes.OLD_VALUE = origin.STICKER_CODE;
-        //                    changes.NEW_VALUE = data.STICKER_CODE;
-        //                    break;
-        //                case "PLANT_ID":
-        //                    changes.OLD_VALUE = origin.WERKS;
-        //                    changes.NEW_VALUE = data.WERKS;
-        //                    break;
-        //                case "MATERIAL_DESC":
-        //                    changes.OLD_VALUE = origin.MATERIAL_DESC;
-        //                    changes.NEW_VALUE = data.MATERIAL_DESC;
-        //                    break;
-        //                case "PURCHASING_GROUP":
-        //                    changes.OLD_VALUE = origin.PURCHASING_GROUP;
-        //                    changes.NEW_VALUE = data.PURCHASING_GROUP;
-        //                    break;
-        //                case "MATERIAL_GROUP":
-        //                    changes.OLD_VALUE = origin.MATERIAL_GROUP;
-        //                    changes.NEW_VALUE = data.MATERIAL_GROUP;
-        //                    break;
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                        FORM_ID = data.STICKER_CODE,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = CurrentUser.USER_ID,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "MATERIAL_NUMBER":
+                            changes.OLD_VALUE = origin.MaterialNumber;
+                            changes.NEW_VALUE = data.STICKER_CODE;
+                            break;
+                        case "PLANT_ID":
+                            changes.OLD_VALUE = origin.PlantId;
+                            changes.NEW_VALUE = data.WERKS;
+                            break;
+                        case "MATERIAL_DESC":
+                            changes.OLD_VALUE = origin.MaterialDesc;
+                            changes.NEW_VALUE = data.MATERIAL_DESC;
+                            break;
+                        case "PURCHASING_GROUP":
+                            changes.OLD_VALUE = origin.PurchasingGroup;
+                            changes.NEW_VALUE = data.PURCHASING_GROUP;
+                            break;
+                        case "MATERIAL_GROUP":
+                            changes.OLD_VALUE = origin.MaterialGroup;
+                            changes.NEW_VALUE = data.MATERIAL_GROUP;
+                            break;
 
-        //                //case "BASE_UOM":
-        //                //    changes.OLD_VALUE = origin.BASE_UOM_ID.ToString();
-        //                //    changes.NEW_VALUE = data.BASE_UOM_ID.ToString();
-        //                //    break;
-        //                case "ISSUE_STORANGE_LOC":
-        //                    changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
-        //                    changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
-        //                    break;
-        //                case "EX_GOODTYP":
-        //                    changes.OLD_VALUE = origin.EXC_GOOD_TYP.ToString();
-        //                    changes.NEW_VALUE = data.EXC_GOOD_TYP.ToString();
-        //                    break;
-        //                case "IS_DELETED":
-        //                    changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
-        //                    changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
-        //                    break;
-        //            }
-        //            _changesHistoryBll.AddHistory(changes);
-        //        }
-        //    }
-        //}
+                        //case "BASE_UOM":
+                        //    changes.OLD_VALUE = origin.BASE_UOM_ID.ToString();
+                        //    changes.NEW_VALUE = data.BASE_UOM_ID.ToString();
+                        //    break;
+                        //case "ISSUE_STORANGE_LOC":
+                        //    changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
+                        //    changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
+                        //    break;
+                        //case "EX_GOODTYP":
+                        //    changes.OLD_VALUE = origin.EXC_GOOD_TYP.ToString();
+                        //    changes.NEW_VALUE = data.EXC_GOOD_TYP.ToString();
+                        //    break;
+                        //case "IS_DELETED":
+                        //    changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
+                        //    changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
+                        //    break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
 
-        //
-        // POST: /Material/Create
+        
+       //  POST: /Material/Create
         [HttpPost]
         public ActionResult Create(MaterialCreateViewModel data)
         {
@@ -215,14 +215,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (data.IS_FROM_SAP)
             {
-                var model = Mapper.Map<MaterialDetailViewModel>(data);
-                model.MainMenu = Enums.MenuList.MasterData;
-                model.CurrentMenu = PageInfo;
-                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
-                model.MaterialNumber = id;
-                //InitEditModel(model);
-
-                return View("Details", model);
+             
+                return RedirectToAction("Details", new {id=id});
             }
             else {
                 var model = Mapper.Map<MaterialEditViewModel>(data);
@@ -260,23 +254,14 @@ namespace Sampoerna.EMS.Website.Controllers
                         return View("Edit", model);
                     }
 
-                    //data = Mapper.Map<ZAIDM_EX_MATERIAL>(model);
-                    //data.MATERIAL_ID = id;
-
-                    if (!data.IS_FROM_SAP) {
-                        data.MATERIAL_DESC = model.MaterialDesc;
-                        data.BASE_UOM_ID = model.UomId;
-                        data.EXC_GOOD_TYP = model.GoodTypeId;
-                        data.ISSUE_STORANGE_LOC = model.IssueStorageLoc;
-                        data.MATERIAL_DESC = model.MaterialDesc;
-                        data.MATERIAL_GROUP = model.MaterialGroup;
-                        data.STICKER_CODE = model.MaterialNumber;
-                        data.WERKS = model.PlantId;
-                        data.PURCHASING_GROUP = model.PurchasingGroup;
-                        //data.CHANGED_BY = CurrentUser.USER_ID;
-                        //data.CHANGED_DATE = DateTime.Now;
-                    }
-                    
+                   
+                    var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
+                    AutoMapper.Mapper.Map(model, data);
+                    data.MODIFIED_BY = CurrentUser.USER_ID;
+                    data.MODIFIED_DATE = DateTime.Now;
+                    data.CREATED_DATE = origin.CreatedDate;
+                    data.CREATED_BY = origin.CreatedById;
+                    SetChanges(origin,data);
                     _materialBll.Save(data,CurrentUser.USER_ID);
                 }
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;

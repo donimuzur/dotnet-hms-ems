@@ -40,8 +40,8 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<int> CreatedById { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public string CreatedById { get; set; }
 
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
@@ -101,7 +101,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         }
 
         [Required, Display(Name = "Convertion")]
-        public object Convertion { get; set; }
+        public decimal Convertion { get; set; }
 
         // list for dropdown in the form
         public SelectList PlantList { get; set; }

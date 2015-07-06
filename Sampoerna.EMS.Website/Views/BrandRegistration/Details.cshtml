@@ -334,7 +334,7 @@
 
         var deleteBrand = function () {
             if (confirm('Are You Sure')) {
-                window.location = "@Url.Action("Delete", "BrandRegistration", new { id = @Model.BrandId })";
+                window.location = "@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode=@Model.FaCode })";
             }
 
         };

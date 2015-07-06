@@ -154,7 +154,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private BrandRegistrationEditViewModel InitEdit(BrandRegistrationEditViewModel model)
         {
-            model.MainMenu = _mai;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
