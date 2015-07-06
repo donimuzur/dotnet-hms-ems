@@ -52,7 +52,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public int SeriesValue { get; set; }
 
         [Required]
-        [StringLength(30)]
         public int? Content { get; set; }
 
         [Required]
