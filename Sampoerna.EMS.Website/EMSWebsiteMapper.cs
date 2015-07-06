@@ -49,6 +49,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGov)))
                 .ForMember(dest => dest.PbckTypeName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck1Type)))
                 .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.PeriodFrom.Year))
+                .ForMember(dest => dest.Pbck1ReferenceNumber, opt => opt.MapFrom(src => src.Pbck1Reference != null && src.Pbck1Parent != null ? src.Pbck1Parent.Pbck1Number : string.Empty))
             ;
 
             Mapper.CreateMap<Pbck1FilterViewModel, Pbck1GetByParamInput>().IgnoreAllNonExisting()

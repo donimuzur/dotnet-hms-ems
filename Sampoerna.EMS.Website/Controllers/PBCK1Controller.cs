@@ -11,6 +11,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Utility;
@@ -26,8 +27,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -35,6 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _monthBll = monthBll;
             _plantBll = plantBll;
             _mainMenu = Enums.MenuList.PBCK1;
+            _changesHistoryBll = changesHistoryBll;
         }
 
         private List<Pbck1Item> GetPbckItems(Pbck1FilterViewModel filter = null)
@@ -106,10 +109,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Details(long id)
         {
+            var pbck1Data = _pbck1Bll.GetById(id);
             return View(new Pbck1ItemViewModel()
             {
                 MainMenu = _mainMenu,
-                CurrentMenu = PageInfo
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
             });
         }
 

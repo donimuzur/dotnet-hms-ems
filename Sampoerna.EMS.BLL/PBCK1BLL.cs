@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private string includeTables = "PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN";
+        private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<Pbck1> GetPBCK1ByParam(Pbck1GetByParamInput input)
         {
+            
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
             if (input.NppbkcId.HasValue)
@@ -86,6 +87,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck1 GetById(long id)
         {
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
             var mapResult = Mapper.Map<Pbck1>(dbData);
             if (dbData != null)

@@ -15,6 +15,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [Display(Name = "References")]
         public long? Pbck1Reference { get; set; }
+        public string Pbck1ReferenceNumber { get; set; }
 
         [Required, Display(Name = "PBCK Type")]
         public Enums.PBCK1Type Pbck1Type { get; set; }
@@ -22,14 +23,17 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string PbckTypeName { get; set; }
 
         [Required, Display(Name = "Period From")]
+        [UIHint("FormatDateTime")]
         public DateTime PeriodFrom { get; set; }
 
         [Required, Display(Name = "Period To")]
+        [UIHint("FormatDateTime")]
         public DateTime? PeriodTo { get; set; }
 
         public string Year { get; set; }
 
         [Required, Display(Name = "Reported On")]
+        [UIHint("FormatDateTime")]
         public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
@@ -69,11 +73,13 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string HiddenSupplierKppbc { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
+        [UIHint("FormatDateTime")]
         public DateTime? PlanProdFrom { get; set; }
 
         [Required, Display(Name = "Plan Production To")]
+        [UIHint("FormatDateTime")]
         public DateTime? PlanProdTo { get; set; }
-
+        
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
         public decimal? RequestQty { get; set; }
@@ -109,6 +115,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [UIHint("FormatQty")]
         public decimal? QtyApproved { get; set; }
         
+        [UIHint("FormatDateTime")]
         public DateTime? DecreeDate { get; set; }
         
         public DateTime? CreatedDate { get; set; }
