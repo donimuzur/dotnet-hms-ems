@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 
@@ -30,7 +31,11 @@ namespace Sampoerna.EMS.Website.Models.POA
 
     public class POAViewDetailModel
     {
-
+        public POAViewDetailModel()
+        {
+            PoaSKFile = new List<HttpPostedFileBase>();
+            PoaSk = new List<POA_SK>();
+        }
 
         public int PoaId { get; set; }
 
@@ -74,5 +79,9 @@ namespace Sampoerna.EMS.Website.Models.POA
         public bool IsFromSAP { get; set; }
 
         public string Is_Active { get; set; }
+
+        public List<HttpPostedFileBase> PoaSKFile { get; set; }
+
+        public List<POA_SK> PoaSk { get; set; } 
     }
 }

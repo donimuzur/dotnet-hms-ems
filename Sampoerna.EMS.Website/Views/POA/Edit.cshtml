@@ -114,6 +114,22 @@
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <label class="col-md-3">SK</label>
+                                                    <div class="col-md-8">
+                                                       @*@Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })*@
+                                                    </div>
+                                                    <div>
+                                                        @foreach (var sk in Model.Detail.PoaSk)
+                                                        {
+
+                                                            <p><a href="@Url.Content(sk.FILE_PATH)" width="150" />@sk.FILE_NAME</p>
+
+                                                        }
+                                                        
+                                                    </div>
+
+                                                </div>
                                             </div>
 
                                         </div>

@@ -66,6 +66,7 @@
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="DocumentSequenceNumberBLL.cs" />
+    <Compile Include="FileUploadBLL.cs" />
     <Compile Include="HeaderFooterBLL.cs" />
     <Compile Include="ExGroupType.cs" />
     <Compile Include="MasterDataBLL.cs" />
