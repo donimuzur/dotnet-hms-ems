@@ -42,7 +42,7 @@
                                                         <label class="col-md-4">Stiker Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -50,7 +50,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -66,7 +66,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Personalization Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -74,7 +74,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Product Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -98,7 +98,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4 long">Brand Name Registration by CE Office<span class="red">*</span></label>
+                                                        <label class="col-md-4 long">Brand Name Registration by KBBPC<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextAreaFor(model => model.BrandName, new { @rows = "5", @class = "form-control", @maxlength = "60" })
                                                         </div>
@@ -140,7 +140,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Series Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.SeriesId, Model.SeriesList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.SeriesId, Model.SeriesList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -166,7 +166,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Market Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.MarketId, Model.MarketCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.MarketId, Model.MarketCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -182,7 +182,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Country Key<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -200,7 +200,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE Currency<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.HjeCurrency, Model.HjeCurrencyList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.HjeCurrency, Model.HjeCurrencyList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -216,7 +216,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Tariff Currency<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.TariffCurrency, Model.TariffCurrencyList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.TariffCurrency, Model.TariffCurrencyList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -224,7 +224,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Exciseable Goods Type<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>

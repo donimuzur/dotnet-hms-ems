@@ -86,7 +86,7 @@
                             <th>Sticker Code</th>
                             <th>Plant</th>
                             <th>FA Code</th>
-                            <th>Brand Name Registration<br>by CE Office C</th>
+                            <th>Brand Name Registration<br>by KBBPC</th>
                             <th>Series Value</th>
                             <th>Conversion</th>
                             <th>Printing Price</th>
@@ -116,8 +116,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "BrandRegistration", new { id = item.BrandId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "BrandRegistration", new { id = item.BrandId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "BrandRegistration", new { id = item.BrandId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "BrandRegistration", new { id = item.BrandId })"data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.StickerCode)
