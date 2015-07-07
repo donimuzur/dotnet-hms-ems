@@ -444,14 +444,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void SetWorkflowHistory(long id, Enums.ActionType actionType)
         {
-            var dbWorkflow = new WORKFLOW_HISTORY();
+            WORKFLOW_HISTORY dbWorkflow = _workflowHistoryBll.GetByActionAndFormId(actionType, id);
+            if (dbWorkflow == null)
+                dbWorkflow = new WORKFLOW_HISTORY();
+
             dbWorkflow.FORM_TYPE_ID = Enums.FormType.CK5;
             dbWorkflow.FORM_ID = id;
             dbWorkflow.ACTION = actionType;
             dbWorkflow.ACTION_BY = CurrentUser.USER_ID;
             dbWorkflow.ACTION_DATE = DateTime.Now;
 
-            _workflowHistoryBll.AddHistory(dbWorkflow);
+            _workflowHistoryBll.Save(dbWorkflow);
         }
 
         [HttpPost]
