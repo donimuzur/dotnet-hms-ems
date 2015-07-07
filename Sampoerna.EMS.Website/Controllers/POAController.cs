@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
@@ -20,14 +23,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private POABLL _poaBll;
         private IUserBLL  _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IPOASKBLL _poaskbll;
         public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
-            )
+            ,IPOASKBLL poaskbll)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _poaMapBll = poadMapBll;
             _poaBll = poaBll;
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;
+            _poaskbll = poaskbll;
         }
 
         //
@@ -65,7 +70,23 @@ namespace Sampoerna.EMS.Website.Controllers
                     poa.CREATED_BY = CurrentUser.USER_ID;
                     poa.CREATED_DATE = DateTime.Now;
                     poa.IS_ACTIVE = true;
+                    if (model.Detail.PoaSKFile != null)
+                    {
+                        foreach (var sk in model.Detail.PoaSKFile)
+                        {
+                            if (sk != null)
+                            {
+                                var poa_sk = new POA_SK();
+                                poa_sk.FILE_NAME = sk.FileName;
+                                poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                                poa.POA_SK.Add(poa_sk);
+                              
+                            }
+                        }
+                    }
+                    
                     _poaBll.Save(poa);
+                   
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
                 }
@@ -102,6 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Managers = detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(detail.Manager.USER_ID);
             model.Users = detail.User == null? GlobalFunctions.GetCreatorList(): GlobalFunctions.GetCreatorList(detail.User.USER_ID); 
             model.Detail = detail;
+            
             return View(model);
         }
         private void SetChanges(POAViewDetailModel origin, POA poa)
@@ -176,6 +198,20 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
+                if (model.Detail.PoaSKFile != null)
+                {
+                    foreach (var sk in model.Detail.PoaSKFile)
+                    {
+                        if (sk != null)
+                        {
+                            var poa_sk = new POA_SK();
+                            poa_sk.FILE_NAME = sk.FileName;
+                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                            poa_sk.POA_ID = poaId;
+                            _poaskbll.Save(poa_sk);
+                        }
+                    }
+                }
                 var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                  AutoMapper.Mapper.Map(model.Detail, poa);
                  SetChanges(origin,poa);
@@ -232,6 +268,25 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_userBll.GetUserById(userId));
         }
 
-       
+        private string SaveUploadedFile(HttpPostedFileBase file, string PoaIdCard)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+            //initialize folders in case deleted by an test publish profile
+            if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
+                Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
+
+            sFileName = Constans.MasterDataHeaderFooterFolder + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
     }
 }

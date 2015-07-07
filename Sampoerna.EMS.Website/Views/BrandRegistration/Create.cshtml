@@ -192,7 +192,8 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.HjeValue, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(m=>m.HjeValueStr, new { @id ="hje", @class = "decimal form-control" })
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -200,6 +201,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE Currency<span class="red">*</span></label>
                                                         <div class="col-md-8">
+                                                           
                                                             @Html.DropDownListFor(model => model.HjeCurrency, Model.HjeCurrencyList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
@@ -329,24 +331,27 @@
 
 }
 @section scripts {
+    <script src="~/Scripts/thousand-separator.js"></script>
+
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('.input-group.date').datepicker({
                 dateFormat: 'dd mmm yyyy',
                 toggleActive: true,
                 defaultViewDate: { year: 2015, month: 06, day: 28 }
             });
-            
+
             $('#MenuMasterBrandRegistration').addClass('active');
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "BrandRegistration")';
             });
+            
         });
 
 
-        $("#PersonalizationCode").change(function () {
+        $("#PersonalizationCode").change(function() {
             if ($("#PersonalizationCode").length) {
                 var personalizationCode = $(this).find("option:selected").val();
                 if (personalizationCode == '') {
@@ -364,14 +369,14 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#PersonalizationCodeDescription').val(data);
                     }
                 });
             }
         }
 
-        $("#ProductCode").change(function () {
+        $("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -390,7 +395,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#ProductType').val(data.PRODUCT_TYPE);
                         $('#ProductAlias').val(data.PRODUCT_ALIAS);
                     }
@@ -399,7 +404,7 @@
         }
 
 
-        $("#SeriesId").change(function () {
+        $("#SeriesId").change(function() {
             if ($("#SeriesId").length) {
                 var seriesCode = $(this).find("option:selected").val();
                 if (seriesCode == '') {
@@ -417,7 +422,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#SeriesValue').val(data);
                     }
                 });
@@ -425,7 +430,7 @@
         }
 
 
-        $("#MarketId").change(function () {
+        $("#MarketId").change(function() {
             if ($("#MarketId").length) {
                 var marketCode = $(this).find("option:selected").val();
                 if (marketCode == '') {
@@ -443,7 +448,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#MarketDescription').val(data);
                     }
                 });
@@ -451,7 +456,7 @@
 
         }
 
-        $("#GoodType").change(function () {
+        $("#GoodType").change(function() {
             if ($("#GoodType").length) {
                 var goodTypeCode = $(this).find("option:selected").val();
                 if (goodTypeCode == '') {
@@ -469,7 +474,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#GoodTypeDescription').val(data);
                     }
                 });

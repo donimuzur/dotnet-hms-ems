@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Add New POA (Power of Attorney)";
 }
-@using (Html.BeginForm("Create", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Create", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
      @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -114,9 +114,20 @@
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
                                                     </div>
                                                 </div>
+                                        <div class="row">
+                                            <label class="col-md-3">SK</label>
+                                            
+                                            <div class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control">
+                                                    <span class=" input-group-addon file-input btn btn-primary btn-file" data-toggle="modal" data-target=".upload-file">
+                                                        Browse
+                                                    </span>
+                                                </div>
                                             </div>
-                                       
+
                                         </div>
+                                                </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <span class="red">*</span> ) This Field Required
@@ -131,17 +142,14 @@
             </div>
         </div>
     </div>
-   
+   @Html.Partial("_FileUpload")
 }
 @section scripts
 {
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/poa/form.js"></script>
     <script type="text/javascript">
-        $('#MenuPOA').addClass('active');
-         $('#Detail_UserId').change(function () {
-            OnChangeUser($(this).find("option:selected").val());
-        });
 
         function OnChangeUser(id) {
             $.ajax({

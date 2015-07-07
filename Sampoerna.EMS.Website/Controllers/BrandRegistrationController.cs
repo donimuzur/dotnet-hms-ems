@@ -141,7 +141,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
                 dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.IS_FROM_SAP = false;
-                
+                dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
+      
                 _brandRegistrationBll.Save(dbBrand);
 
                 return RedirectToAction("Index");
@@ -167,7 +168,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
-
             return model;
         }
 
@@ -178,12 +178,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
-
+          
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
                 return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });
 
             model = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
-
+            model.HjeValueStr = model.HjeValue == null ? string.Empty : model.HjeValue.ToString();
+      
             model = InitEdit(model);
 
             return View(model);
@@ -211,7 +212,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else
                 Mapper.Map(model, dbBrand);
-
+            dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
+      
             _brandRegistrationBll.Save(dbBrand);
 
             return RedirectToAction("Index");

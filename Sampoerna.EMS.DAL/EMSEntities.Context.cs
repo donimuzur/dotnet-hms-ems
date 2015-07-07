@@ -59,5 +59,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual DbSet<T001W> T001W { get; set; }
+        public virtual DbSet<POA_SK> POA_SK { get; set; }
     }
 }

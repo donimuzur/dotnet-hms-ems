@@ -190,17 +190,19 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE))
                 .ForMember(dest => dest.Is_Active, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Yes" : "No"))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.LOGIN_AS))
-                .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.MANAGER_ID));
-             
+                .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.MANAGER_ID))
+                .ForMember(dest => dest.PoaSk, opt => opt.MapFrom(src => src.POA_SK));
+
             Mapper.CreateMap<POAViewDetailModel, POA>().IgnoreAllUnmapped()
-               .ForMember(dest => dest.ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
-               .ForMember(dest => dest.PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
-               .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
-               .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
-               .ForMember(dest => dest.POA_EMAIL, opt => opt.MapFrom(src => src.Email))
-               .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title))
-               .ForMember(dest => dest.MANAGER_ID, opt => opt.MapFrom(src => src.ManagerId))
-               .ForMember(dest => dest.LOGIN_AS, opt => opt.MapFrom(src => src.UserId));
+                .ForMember(dest => dest.ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
+                .ForMember(dest => dest.PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
+                .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
+                .ForMember(dest => dest.POA_ADDRESS, opt => opt.MapFrom(src => src.PoaAddress))
+                .ForMember(dest => dest.POA_EMAIL, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.TITLE, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.MANAGER_ID, opt => opt.MapFrom(src => src.ManagerId))
+                .ForMember(dest => dest.LOGIN_AS, opt => opt.MapFrom(src => src.UserId));
+             
 
             #endregion
 
@@ -302,7 +304,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.COUNTRY))
                 .ForMember(dest => dest.HjeValue, opt => opt.MapFrom(src => src.HJE_IDR))
                 .ForMember(dest => dest.HjeCurrency, opt => opt.MapFrom(src => src.HJE_CURR))
-                //todo check which one correct
                 .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
                 .ForMember(dest => dest.TariffCurrency, opt => opt.MapFrom(src => src.TARIF_CURR))
                 //todo check which one correct

@@ -172,6 +172,15 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
+        <EntityType Name="POA_SK">
+          <Key>
+            <PropertyRef Name="POA_SK_ID" />
+          </Key>
+          <Property Name="POA_SK_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="POA_ID" Type="int" Nullable="false" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
@@ -618,6 +627,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_POA_SK_POA">
+          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+          <End Role="POA_SK" Type="Self.POA_SK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_SK">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_POA_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
@@ -699,18 +720,6 @@
             </Principal>
             <Dependent Role="UOM">
               <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_USER_USER_GROUP">
-          <End Role="USER_GROUP" Type="Self.USER_GROUP" Multiplicity="0..1" />
-          <End Role="USER" Type="Self.USER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER_GROUP">
-              <PropertyRef Name="USER_GROUP_ID" />
-            </Principal>
-            <Dependent Role="USER">
-              <PropertyRef Name="USER_GROUP_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1007,6 +1016,7 @@
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="Self.SUPPLIER_PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001" EntityType="Self.T001" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001K" EntityType="Self.T001K" Schema="dbo" store:Type="Tables" />
@@ -1096,6 +1106,10 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
           </AssociationSet>
+          <AssociationSet Name="FK_POA_SK_POA" Association="Self.FK_POA_SK_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_SK" EntitySet="POA_SK" />
+          </AssociationSet>
           <AssociationSet Name="FK_POA_USER" Association="Self.FK_POA_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
@@ -1123,10 +1137,6 @@
           <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="Self.FK_UOM_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="UOM" EntitySet="UOM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_USER_USER_GROUP" Association="Self.FK_USER_USER_GROUP">
-            <End Role="USER_GROUP" EntitySet="USER_GROUP" />
-            <End Role="USER" EntitySet="USER" />
           </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" Association="Self.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -1455,6 +1465,11 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
+          <EntitySet Name="POA_SK" EntityType="EMSModel.POA_SK" />
+          <AssociationSet Name="FK_POA_SK_POA" Association="EMSModel.FK_POA_SK_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_SK" EntitySet="POA_SK" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -1626,6 +1641,7 @@
           <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="POA" ToRole="USER" />
           <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="POA_SK" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA" ToRole="POA_SK" />
         </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -2545,6 +2561,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="POA_SK">
+          <Key>
+            <PropertyRef Name="POA_SK_ID" />
+          </Key>
+          <Property Name="POA_SK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_ID" Type="Int32" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA_SK" ToRole="POA" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_POA_SK_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_SK" Role="POA_SK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_SK">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2977,6 +3015,16 @@
                 <ScalarProperty Name="ORT01" ColumnName="ORT01" />
                 <ScalarProperty Name="NAME1" ColumnName="NAME1" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_SK">
+            <EntityTypeMapping TypeName="EMSModel.POA_SK">
+              <MappingFragment StoreEntitySet="POA_SK">
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="POA_SK_ID" ColumnName="POA_SK_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

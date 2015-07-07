@@ -628,8 +628,10 @@
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\thousand-separator.js" />
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SqlServerTypes\readme.htm" />
@@ -726,6 +728,7 @@
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
     <Content Include="Views\NPPBKC\Edit.cshtml" />
     <Content Include="Views\NPPBKC\Detail.cshtml" />
+    <Content Include="Views\POA\_FileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Update POA (Power of Attorney)";
 }
-@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Edit", "POA", null, FormMethod.Post, new { @class = "form-excise", role = "form",enctype = "multipart/form-data"  }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -112,6 +112,18 @@
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <label class="col-md-3">SK</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control">
+                                                            <span class=" input-group-addon file-input btn btn-primary btn-file" data-toggle="modal" data-target=".upload-file">
+                                                                Browse
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                             </div>
 
                                         </div>
@@ -130,15 +142,30 @@
             </div>
         </div>
     </div>
+    @Html.Partial("_FileUpload")
 }
 
 @section scripts {
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    <script type="text/javascript">
+    <script src="~/Scripts/poa/form.js"></script>
+<script type="text/javascript">
         $('#MenuPOA').addClass('active');
-    </script>
 
+    function OnChangeUser(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetUser", "POA")',
+            data: { userId: id },
+            success: function (data) {
+                $('#Detail_PoaPhone').val(data.PHONE);
+                $('#Detail_Email').val(data.EMAIL);
+            }
+        });
+    }
+</script>
+}
+ 
 }
 
 

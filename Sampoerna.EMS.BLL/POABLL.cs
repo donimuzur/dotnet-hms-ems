@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repository;
-        private string includeTables = "POA_MAP, USER, USER1";
+        private string includeTables = "POA_MAP, USER, USER1, POA_SK";
         private IChangesHistoryBLL _changesHistoryBll;
         public POABLL(IUnitOfWork uow, ILogger logger, IChangesHistoryBLL changesHistoryBll)
         {
@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA>();
             _changesHistoryBll = changesHistoryBll;
+
         }
 
 
@@ -82,6 +83,7 @@ namespace Sampoerna.EMS.BLL
         {
             try
             {
+                
                 _repository.Update(poa);
                 _uow.SaveChanges();
             }
