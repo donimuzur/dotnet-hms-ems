@@ -26,10 +26,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
 
         public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
             IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
-            IChangesHistoryBLL changesHistoryBll)
+            IChangesHistoryBLL changesHistoryBll, IZaidmExGoodTypeBLL goodTypeBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -38,6 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll = pbckBll;
             _workflowHistoryBll = workflowHistoryBll;
             _changesHistoryBll = changesHistoryBll;
+            _goodTypeBll = goodTypeBll;
         }
 
         #region View Documents
@@ -519,6 +521,7 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER.Equals(updatedModel.RegistrationNumber));
 
             changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(updatedModel.GoodTypeId));
+            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(updatedModel.ExciseSettlement));
 
 
             foreach (var listChange in changesData)
@@ -533,10 +536,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 switch (listChange.Key)
                 {
                     case "KPPBC_CITY":
-                        changes.OLD_VALUE = _nppbkcBll.GetCityByNppbkcId(origin.KPPBC_CITY.Value);
+                        long city = 0;
+                        if (origin.KPPBC_CITY.HasValue)
+                            city = origin.KPPBC_CITY.Value;
+
+                        changes.OLD_VALUE = _nppbkcBll.GetCityByNppbkcId(city);
                         changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(updatedModel.KppBcCity);
                         break;
                     case "REGISTRATION_NUMBER":
+                        changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
+                        changes.NEW_VALUE = updatedModel.RegistrationNumber;
+                        break;
+                    case "EX_GOODS_TYPE_ID":
+                        changes.OLD_VALUE = _goodTypeBll.GetGoodTypeDescById(origin.EX_GOODS_TYPE_ID);
+                        changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(updatedModel.GoodTypeId);
+                        break;
+                    case "EX_SETTLEMENT_ID":
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
                         changes.NEW_VALUE = updatedModel.RegistrationNumber;
                         break;
