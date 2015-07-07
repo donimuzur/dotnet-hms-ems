@@ -28,5 +28,16 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.Get().ToList();
         }
+
+        public string GetUomNameById(int? id)
+        {
+            var dbData = _repository.GetByID(id);
+
+            if (dbData == null)
+                return string.Empty;
+
+            return dbData.UOM_NAME;
+
+        }
     }
 }

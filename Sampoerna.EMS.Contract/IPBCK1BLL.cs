@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         DeletePBCK1Output Delete(long id);
 
+        string GetPbckNumberById(long id);
+
     }
 }

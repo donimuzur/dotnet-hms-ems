@@ -7,5 +7,7 @@ namespace Sampoerna.EMS.Contract
     {
         UOM GetById(int id);
         List<UOM> GetAll();
+
+        string GetUomNameById(int? id);
     }
 }

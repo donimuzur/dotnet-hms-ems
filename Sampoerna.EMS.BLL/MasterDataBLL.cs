@@ -62,14 +62,44 @@ namespace Sampoerna.EMS.BLL
             return _ExSettlementRepository.Get().ToList();
         }
 
+        public string GetExSettlementsNameById(int? id)
+        {
+            var dbData = _ExSettlementRepository.GetByID(id);
+
+            if (dbData == null)
+                return string.Empty;
+
+            return dbData.EX_SETTLEMENT_NAME;
+        }
+
         public List<EX_STATUS> GetAllExciseStatus()
         {
             return _ExStatusRepository.Get().ToList();
         }
 
+        public string GetExStatusNameById(int? id)
+        {
+            var dbData = _ExStatusRepository.GetByID(id);
+
+            if (dbData == null)
+                return string.Empty;
+
+            return dbData.EX_STATUS_NAME;
+        }
+
         public List<REQUEST_TYPE> GetAllRequestTypes()
         {
             return _RequestTypeRepository.Get().ToList();
+        }
+
+        public string GetRequestTypeNameById(int? id)
+        {
+            var dbData = _RequestTypeRepository.GetByID(id);
+
+            if (dbData == null)
+                return string.Empty;
+
+            return dbData.REQUEST_TYPE_NAME;
         }
 
         //use nppnkc get from ZAIDM_EX_NPPBKC
@@ -105,6 +135,16 @@ namespace Sampoerna.EMS.BLL
         public List<CARRIAGE_METHOD> GetAllCarriageMethods()
         {
             return _CarriageMethodRepository.Get().ToList();
+        }
+
+        public string GetCarriageMethodeNameById(int? id)
+        {
+            var dbData = _CarriageMethodRepository.GetByID(id);
+
+            if (dbData == null)
+                return string.Empty;
+
+            return dbData.CARRIAGE_METHOD_NAME;
         }
 
         

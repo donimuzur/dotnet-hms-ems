@@ -17,10 +17,13 @@ namespace Sampoerna.EMS.Contract
         string GetPersonalizationDescById(long id);
 
         List<EX_SETTLEMENT> GetAllExciseExSettlements();
+        string GetExSettlementsNameById(int? id);
 
         List<EX_STATUS> GetAllExciseStatus();
+        string GetExStatusNameById(int? id);
 
         List<REQUEST_TYPE> GetAllRequestTypes();
+        string GetRequestTypeNameById(int? id);
 
         //string GetCeOfficeCodeByKppbcId(long kppBcId);
 
@@ -29,6 +32,7 @@ namespace Sampoerna.EMS.Contract
         T1001W GetPlantById(long plantId);
 
         List<CARRIAGE_METHOD> GetAllCarriageMethods();
+        string GetCarriageMethodeNameById(int? id);
 
         List<ZAIDM_EX_SERIES> GetAllDataSeries();
         ZAIDM_EX_SERIES GetDataSeriesById(long id);

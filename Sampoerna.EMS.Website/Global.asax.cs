@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
             container.Register<IMaterialBLL, MaterialBLL>();
             container.Register <IWorkflowHistoryBLL,WorkflowHistoryBLL>();
+            container.Register < IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
             // 3. Optionally verify the container's configuration.
             container.Verify();
 
