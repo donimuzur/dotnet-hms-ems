@@ -477,12 +477,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.KppBcCity = _nppbkcBll.GetCityByNppbkcId(model.KppBcCityId);
 
             var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
+            model.SourcePlantName = dbPlant.NAME1 + " - " + dbPlant.CITY;
             model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
             model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
             model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
             model.SourceAddress = dbPlant.ADDRESS;
             
             var dbDestPlant = _masterDataBll.GetPlantById(model.DestPlantId);
+            model.DestPlantName = dbDestPlant.NAME1 + " - " + dbDestPlant.CITY;
             model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
             model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
             model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;

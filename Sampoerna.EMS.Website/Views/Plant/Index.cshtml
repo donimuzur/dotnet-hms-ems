@@ -1,62 +1,21 @@
-﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantViewModel
-
-@section styles
-    {
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PLANT.PlantViewModel
     
-}
-
-@section scripts {
-    <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-
-            // Setup - add a text input to each footer cell
-            $('#mydata .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
-                    var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
-
-                }
-            });
-
-            // DataTable
-            var table = $('#mydata').DataTable();
-
-
-            // Apply the search
-
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
-            
-             @if (@ViewBag.Message != null)
-            {
-                @: alert('@ViewBag.Message');
-            }
-           
-            $('#MenuMasterPlant').addClass('active');
-
-        });
-    </script>
-}
-
 @{
     ViewBag.Title = "MASTER PLANT";
 }
+
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
+            <a data-toggle="modal" data-target=".menu-maping-type">
+
+            </a>
         </div>
     </div>
 </div>
+
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
@@ -65,67 +24,135 @@
                     <thead>
                         <tr>
                             <th class="toggle-row">Filter</th>
-                                <th> NPPBKC ID </th>
-                                <th> Plant ID </th>
-                                <th> Plant Description </th>
-                                <th> Main Plant </th>
-                                <th> Plant Address </th>
-                                <th> Plant City </th>
-                            </tr>
+                            <th> NPPBKC ID </th>
+                            <th> Plant ID </th>
+                            <th> Plant Description </th>
+                            <th> Main Plant </th>
+                            <th> Plant Address </th>
+                            <th> Plant City </th>
+                        </tr>
 
-                        </thead>
-                        <thead class="filters">
-                            <tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
                             <th>Action</th>
-                                <th> NPPBKC ID  </th>
-                                <th> Plant ID </th>
-                                <th> Plant Description </th>
-                                <th> Main Plant </th>
-                                <th> Plant Address </th>
-                                <th> Plant City </th>
+                            <th> NPPBKC ID  </th>
+                            <th> Plant ID </th>
+                            <th> Plant Description </th>
+                            <th> Main Plant </th>
+                            <th> Plant Address </th>
+                            <th> Plant City </th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "Plant", new { id = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Plant", new { id = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NPPBKC_NO)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Werks)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.City),
+                                    @Html.DisplayFor(modelItem => item.Name1)
+                                </td>
+                                <td>
+                                   @Html.CheckBoxFor(modelItem => item.IsMainPlant, new { @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.City)
+                                </td>
                             </tr>
+                        }
+                    </tbody>
 
-                        </thead>
+                </table>
+            </div>
 
-                        <tbody>
+        </div>
+    </div>
+</div>
 
-                            @foreach (var item in Model.Details)
-                            {
-                                <tr>
-                                    <td>
-                                        <a href="@Url.Action("Detail", "Plant", new {id = item.PLANT_ID})"><i class="fa fa-eye"></i></a>
-                                        <a href="@Url.Action("Edit", "Plant", new {id = item.PLANT_ID})"> <i class="fa fa-pencil-square-o"></i></a>
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ZAIDM_EX_NPPBKC.NPPBKC_NO)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.WERKS)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CITY),
-                                        @Html.DisplayFor(modelItem => item.NAME1)
+<!--modal-->
+<input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
-                                    </td>
-                                    <td>
-                                        @if (!item.IS_MAIN_PLANT.HasValue)
-                                        {
-                                            item.IS_MAIN_PLANT = false;
-                                        }
-                                        @Html.CheckBoxFor(modelItem => item.IS_MAIN_PLANT.Value)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ADDRESS)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CITY)
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-poa-message">
+
             </div>
         </div>
     </div>
+</div>
 
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+
+        // Setup - add a text input to each footer cell
+        $('#mydata .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+            }
+        });
+
+        // DataTable
+        var table = $('#mydata').DataTable();
+
+
+        // Apply the search
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+        $("#mydata_filter").hide();
+        $('#mydata_length').hide();
+
+        @if (TempData[Constans.SubmitType.Save] != null)
+            {
+               @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
+               @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+              @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
+               @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Update] = null;
+             }
+            @*else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
+                 @: $('#btn-poa-modal').click();
+               @:TempData[Constans.SubmitType.Delete] = null;
+            }*@
+
+        $('#MenuMasterPlant').addClass('active');
+
+    });
+    </script>
+}

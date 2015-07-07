@@ -1,5 +1,10 @@
 ﻿@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantCreateViewModel
 
+
+@{
+    ViewBag.Title = "Virtual Plant Mapping";
+}
+
 @using (Html.BeginForm("Create", "VirtualMappingPlant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
@@ -38,7 +43,7 @@
                                                     <label class="col-md-2">Company Name</label>
                                                     <div class="col-md-4">
                                                         @Html.DropDownListFor(model => model.CompanyId, Model.CompanyNameList, "Select", new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.CompanyId)
+                                                        @*@Html.ValidationMessageFor(model => model.CompanyId)*@
                                                         
                                                     </div>
                                                 </div>
@@ -47,8 +52,8 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Import Virtual Plant</label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.ImportPlantId)
+                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "selectpicker form-control" })
+                                                        @*@Html.ValidationMessageFor(model => model.ImportPlantId)*@
                                                     </div>
                                                 </div>
                                             </div>
@@ -56,8 +61,8 @@
                                                 <div class="row">
                                                     <label class="col-md-2">Export Virtual Plant</label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new {@class = "form-control"})
-                                                        @Html.ValidationMessageFor(model => model.ExportPlantId)
+                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "selectpicker form-control" })
+                                                        @*@Html.ValidationMessageFor(model => model.ExportPlantId)*@
                                                     </div>
                                                 </div>
                                             </div>
@@ -81,6 +86,12 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "VirtualMappingPlant")';
             });
+
+            @*$("#ImportPlantId").autocomplete({
+                    source: '@Url.Action("PlantList", "VirtualMappingPlant")',
+                    minLength: 1
+            });*@
+            
         });
 
     </script>

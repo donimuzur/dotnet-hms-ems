@@ -60,8 +60,9 @@ namespace Sampoerna.EMS.Website
             container.Register<IDocumentSequenceNumberBLL, DocumentSequenceNumberBLL>();
             container.Register<IHeaderFooterBLL, HeaderFooterBLL>();
             container.Register<IExGroupType, ExGroupType>();
+            container.Register<IZaidmExKPPBCBLL, ZaidmExKPPBCBLL>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
-
+            container.Register<IMaterialBLL, MaterialBLL>();
             // 3. Optionally verify the container's configuration.
             container.Verify();
 
@@ -72,6 +73,8 @@ namespace Sampoerna.EMS.Website
         
         protected void Application_Start()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -80,7 +83,7 @@ namespace Sampoerna.EMS.Website
             Bootstrap();
 
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
-
+            
         }
     }
 }

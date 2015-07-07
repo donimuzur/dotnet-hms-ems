@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
         public Nullable<long> BRAND_ID { get; set; }
+        public Nullable<decimal> CONVERSION { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual UOM UOM { get; set; }

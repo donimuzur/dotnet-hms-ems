@@ -1,13 +1,15 @@
-﻿@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.HeaderFooter.HeaderFooterViewModel
 
 @section styles
     {
 }
 
 @section scripts {
+<script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
-            
+
             // Setup - add a text input to each footer cell
             $('#headerfootertable .filters th').each(function () {
                 var idx = $(this).index();
@@ -28,10 +30,27 @@
                         .draw();
                 });
             });
+            
+             @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-headerfooter-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-headerfooter-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-headerfooter-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-headerfooter-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-headerfooter-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-headerfooter-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
 
-            $("#headerfootertable_filter").hide();
-            $('#headerfootertable_length').hide();
-            $('#headerfootertable_info').hide();
+         
             $('#MenuHeaderFooter').addClass('active');
         });
     </script>
@@ -48,6 +67,9 @@
             <h3>HEADER FOOTER</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "HeaderFooter")"><button class="btn btn-blue">NEW</button></a>
+                <a data-toggle="modal" data-target=".menu-maping-type">
+
+                </a>
             </div>
         </div>
     </div>
@@ -87,8 +109,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td class="last">@Html.DisplayFor(model => item.COMPANY_CODE)</td>
                                 <td>@Html.DisplayFor(model => item.COMPANY_NAME)
@@ -114,6 +136,22 @@
                 </table>
             </div>
 
+        </div>
+    </div>
+</div>
+<!--modal-->
+<input id="btn-headerfooter-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-headerfooter-message">
+
+            </div>
         </div>
     </div>
 </div>

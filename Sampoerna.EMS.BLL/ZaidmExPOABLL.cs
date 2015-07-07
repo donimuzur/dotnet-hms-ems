@@ -62,11 +62,20 @@ namespace Sampoerna.EMS.BLL
 
 
 
-       
+      
         public void Delete(int id)
         {
             var existingPoa = GetById(id);
-            existingPoa.IS_DELETED = true;
+
+            if (existingPoa.IS_DELETED == false)
+            {
+                existingPoa.IS_DELETED = true;
+            }
+            else
+            {
+                existingPoa.IS_DELETED = false;
+            }
+            //existingPoa.IS_DELETED = true;
             _repository.Update(existingPoa);
             _uow.SaveChanges();
         }
@@ -78,7 +87,7 @@ namespace Sampoerna.EMS.BLL
                  _repository.Update(poa);
                 _uow.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _uow.RevertChanges();
                 throw;

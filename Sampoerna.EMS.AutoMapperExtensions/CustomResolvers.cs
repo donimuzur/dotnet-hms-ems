@@ -92,7 +92,17 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
-    public class SourcePlantTextResolver : ValueResolver<T1001W, string>
+    public class NullableBooleanToStringDeletedResolver : ValueResolver<bool?, string>
+    {
+        protected override string ResolveCore(bool? value)
+        {
+            if (!value.HasValue)
+                return "No";
+            return value.Value ? "Yes" : "No";
+        }
+    }
+
+ public class SourcePlantTextResolver : ValueResolver<T1001W, string>
     {
         protected override string ResolveCore(T1001W value)
         {
@@ -102,6 +112,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             return value.NAME1 + " - " + value.CITY;
         }
     }
+
 
     public class PlantCityCodeResolver : ValueResolver<T1001W, string>
     {

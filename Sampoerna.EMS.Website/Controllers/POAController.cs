@@ -133,11 +133,11 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.NEW_VALUE = poa.TITLE;
                             break;
                         case "USER":
-                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USERNAME;
+                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(Convert.ToInt32(origin.UserId)).USERNAME;
                             changes.NEW_VALUE = poa.USER_ID == null ? null : _userBll.GetUserById(Convert.ToInt32(poa.USER_ID)).USERNAME;
                             break;
                         case "MANAGER":
-                            changes.OLD_VALUE = origin.ManagerId == null ? null : _userBll.GetUserById(origin.ManagerId).USERNAME;
+                            changes.OLD_VALUE = origin.ManagerId == null ? null : _userBll.GetUserById(Convert.ToInt32(origin.ManagerId)).USERNAME;
                             changes.NEW_VALUE = poa.MANAGER_ID == null ? null : _userBll.GetUserById(Convert.ToInt32(poa.MANAGER_ID)).USERNAME;
                             break;
                         case "PHONE":
@@ -177,9 +177,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                  AutoMapper.Mapper.Map(model.Detail, poa);
                  SetChanges(origin,poa);
-               
+              
                 _poaBll.Update(poa);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
 
@@ -215,7 +215,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 _poaBll.Delete(id);
-                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Updated;
             }
             catch (Exception ex)
             {

@@ -161,16 +161,17 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_EX_POA" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" />
-        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_POA" Width="1.5" PointX="10.5" PointY="64.125" />
+        <EntityTypeShape EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" Width="1.5" PointX="25.5" PointY="24.375" />
+        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W" />
+        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" />
+        <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_USER" />
+        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_POA" Width="1.5" PointX="10.5" PointY="64.25" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_ZAIDM_EX_POA" />
         <AssociationConnector Association="EMSModel.FK_PBCK7_ZAIDM_EX_POA" />
         <AssociationConnector Association="EMSModel.FK_PBCK4_POA" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER1" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
-        <EntityTypeShape EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" Width="1.5" PointX="25.5" PointY="24.375" />
-        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T1001W" />
-        <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

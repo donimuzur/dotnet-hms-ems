@@ -57,6 +57,8 @@
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
+    <Compile Include="Business\Material.cs" />
+    <Compile Include="Business\Plant.cs" />
     <Compile Include="C1LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -121,6 +123,7 @@
     </Compile>
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
+    <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
@@ -132,9 +135,11 @@
     <Compile Include="MONTH.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Outputs\AutoCompletePlant.cs" />
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
+    <Compile Include="Outputs\MaterialOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />

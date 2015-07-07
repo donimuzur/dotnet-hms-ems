@@ -1,120 +1,148 @@
 ﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
 
-@section scripts {
-    <script type="text/javascript">
-        $('#MenuMasterPlant').addClass('active');
-    </script>
-
-}
 @{
     ViewBag.Title = "Detail Master Plant";
-    var isCheckYes = Model.Detail.IsMainPlant ? new { @checked = "checked", disabled = "disabled" } : null;
-    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked", disabled = "disabled" };
+    var isCheckYes = Model.Detail.IsMainPlant ? new { @checked = "checked", @id = "radio1" } : null;
+    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked", @id = "radio2" };
 }
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>Update Master Plan</h3>
+            <h3> Master Plant</h3>
             <div class="action-button">
                 <a href="@Url.Action("Index", "Plant")" class="btn btn-grey">Back</a>
             </div>
         </div>
     </div>
 </div>
+
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Update Master Plant
-                                <i class="fa fa-caret-down"></i>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                        <div class="panel-body">
-                            <form class="form-excise" role="form">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Plant Id</label>
-                                            <div class="col-md-9">
-                                                @Html.DropDownListFor(model => model.Detail.WerksT1001W.PLANT_ID, Model.PlantIdListItems, "Select", new { @class = "form-control", @disabled = "disabled" })
-                                                @Html.ValidationMessageFor(model => model.Detail.PlantId)
-                                            </div>
-                                        </div>
+            <div role="tabpanel">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Details Master Plant
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">NPPBKC NO</label>
-                                            <div class="col-md-9">
-                                                @Html.DropDownListFor(model => model.Detail.NppbkcNo, Model.Nppbkc, "Select", new { @class = "form-control", @disabled = "disabled" })
-                                                @Html.ValidationMessageFor(model => model.Detail.NppbkcNo)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Plant Description</label>
-                                            <div class="col-md-9">
-                                                @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", @disabled = "disabled" })
-                                                @Html.ValidationMessageFor(model => model.Detail.PlantDescription)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Plant Address</label>
-                                            <div class="col-md-9">
-                                                @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5", @disabled = "disabled" })
-                                                @Html.ValidationMessageFor(model => model.Detail.Address)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Plant City</label>
-                                            <div class="col-md-9">
-                                                @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @disabled = "disabled" })
-                                                @Html.ValidationMessageFor(model => model.Detail.City)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">SKEPTIS</label>
-                                            <div class="col-md-9">
-                                                @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", @disabled = "disabled" })
-                                                @Html.ValidationMessageFor(model => model.Detail.Skeptis)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Main Plant</label>
-                                            <div class="col-md-2">
-                                                @*@Html.CheckBoxFor(model => model.Detail.IsMainPlant, new { @class = "form-control" })*@
-                                                @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, isCheckYes)Yes
-                                            </div>
-                                            <div class="col-md-2">
-                                                @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, isCheckNo)No
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Recieve Material</label>
-                                            <div class="col-md-9">
-                                                @Html.DropDownListFor(model => model.Detail.RecievedMaterialTypeId, Model.RecieveMaterialListItems, "Select", new { @class = "form-control", @disabled = "false" })
-                                                @Html.ValidationMessageFor(model => model.Detail.RecievedMaterialTypeId)
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Plant Id</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.Werks, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">NPPBKC NO</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.NPPBKC_NO, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Plant Description</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Plant Address</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Plant City</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">SKEPTIS</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Main Plant</label>
+                                                            <div class="col-md-2">
+                                                                @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, isCheckYes)Yes
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, isCheckNo)No
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Recieve Material</label>
+                                                            <div class="col-md-9">
+                                                                <div class="row">
+                                                                    @for (int i = 0; i < Model.Detail.ReceiveMaterials.Count; i++)
+                                                                    {
+
+                                                                        <div class="col-md-12">
+                                                                            @Html.EditorFor(x => x.Detail.ReceiveMaterials[i].IsChecked)
+                                                                            @Html.Label(Model.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
+                                                                        </div>
+
+                                                                    }
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Plant Id</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
                         </div>
                     </div>
                 </div>
@@ -123,7 +151,14 @@
     </div>
 </div>
 
+@section scripts {
+    <script type="text/javascript">
+        $('.check-box').attr('disabled', 'disabled');
+        $('#MenuMasterPlant').addClass('active');
+        $(document).ready(function () {
+            $('input:radio').attr('disabled', 'disabled');
+        });
 
+    </script>
 
-
-
+}
