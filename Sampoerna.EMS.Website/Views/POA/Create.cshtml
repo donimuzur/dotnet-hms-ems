@@ -114,19 +114,20 @@
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <label class="col-md-3">SK</label>
-                                                    <div class="col-md-1"><button id="add-file-sk" type="button" class="btn-default">+</button></div>
-
-                                                    <div id="file-sk-container" class="col-md-6">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })
-                                                       <button type="button" onclick="removeUploadButton(0, $(this))" class="btn-default">-</button>
-                                                   
-                                                   
+                                        <div class="row">
+                                            <label class="col-md-3">SK</label>
+                                            
+                                            <div class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control">
+                                                    <span class=" input-group-addon file-input btn btn-primary btn-file" data-toggle="modal" data-target=".upload-file">
+                                                        Browse
+                                                    </span>
                                                 </div>
                                             </div>
-                                       
+
                                         </div>
+                                                </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <span class="red">*</span> ) This Field Required
@@ -141,49 +142,25 @@
             </div>
         </div>
     </div>
-   
+   @Html.Partial("_FileUpload")
 }
 @section scripts
 {
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/poa/form.js"></script>
     <script type="text/javascript">
-        var file_sk = 0;
-        $('#MenuPOA').addClass('active');
-        $('#Detail_UserId').change(function() {
-            OnChangeUser($(this).find("option:selected").val());
-        });
-        $('#add-file-sk').click(function() {
-            file_sk++;
-            $('#file-sk-container').append('<input id="Detail_PoaSKFile_' + file_sk +
-                '_" name="Detail.PoaSKFile[' + file_sk + ']" type="file" value=""><button type="button" onclick="removeUploadButton(' + file_sk + ', $(this))">-</button>');
-        });
 
         function OnChangeUser(id) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetUser", "POA")',
                 data: { userId: id },
-                success: function(data) {
+                success: function (data) {
                     $('#Detail_PoaPhone').val(data.PHONE);
                     $('#Detail_Email').val(data.EMAIL);
                 }
             });
-        }
-
-        function removeUploadButton(index, obj) {
-            if (index > 0) {
-                file_sk--;
-                console.log(file_sk);
-                $('#Detail_PoaSKFile_' + index + '_').remove();
-                obj.remove();
-                $('#file-sk-container').html("");
-                for (var i = 0; i <= file_sk; i++) {
-                    $('#file-sk-container').append('<input id="Detail_PoaSKFile_' + i +
-                        '_" name="Detail.PoaSKFile[' + i + ']" type="file" value=""><button type="button" class="btn-default" onclick="removeUploadButton(' + i + ', $(this))">-</button>');
-
-                }
-            }
         }
     </script>
 } 

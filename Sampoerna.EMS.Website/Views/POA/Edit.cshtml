@@ -41,7 +41,7 @@
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(x=>x.Detail.PoaId)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @maxlength = "22" })
-                                                      </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -50,7 +50,7 @@
                                                     <div class="col-md-9">
                                                         @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new {  @class = "selectpicker form-control" })
 
-                                                                                                    </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -69,7 +69,7 @@
                                                     <label class="col-md-3">Printed Name<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @maxlength = "50" })
-                                               </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -84,7 +84,7 @@
                                                     <label class="col-md-3">Phone<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "15" })
-                                                     </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -92,7 +92,7 @@
                                                     <label class="col-md-3">Email<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
-                                                   </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -116,24 +116,13 @@
                                                 </div>
                                                 <div class="row">
                                                     <label class="col-md-3">SK</label>
-                                                    <div class="col-md-8">
-                                                        @*@Html.TextBoxFor(model => model.Detail.PoaSKFile[0], new { type = "file" })*@
-                                                        <input id="Detail_PoaSKFile_0_" name="Detail.PoaSKFile[0]" type="file" >
-                                                    </div>
-                                                    <div>
-                                                        @{
-                                                            var poask = 0;
-                                                        }
-                                                        @foreach (var sk in Model.Detail.PoaSk)
-                                                        {
-                                                           
-                                                            <p><a href="@Url.Content(sk.FILE_PATH)" width="150" />@sk.FILE_NAME</p>
-                                                            @Html.HiddenFor(m => m.Detail.PoaSk[poask].POA_SK_ID)
-                                                            @Html.HiddenFor(m=>m.Detail.PoaSk[poask].FILE_NAME)
-                                                            @Html.HiddenFor(m => m.Detail.PoaSk[poask].FILE_PATH)
-                                                            poask++;
-                                                        }
-                                                        
+                                                    <div class="col-md-9">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control">
+                                                            <span class=" input-group-addon file-input btn btn-primary btn-file" data-toggle="modal" data-target=".upload-file">
+                                                                Browse
+                                                            </span>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -155,15 +144,29 @@
             </div>
         </div>
     </div>
+    @Html.Partial("_FileUpload")
 }
 
 @section scripts {
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    <script type="text/javascript">
-    $('#MenuPOA').addClass('active');
-    </script>
+    <script src="~/Scripts/poa/form.js"></script>
+<script type="text/javascript">
 
+    function OnChangeUser(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetUser", "POA")',
+            data: { userId: id },
+            success: function (data) {
+                $('#Detail_PoaPhone').val(data.PHONE);
+                $('#Detail_Email').val(data.EMAIL);
+            }
+        });
+    }
+</script>
+}
+ 
 }
 
 
