@@ -347,12 +347,10 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control" value="">
+                                           @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-control">
-                                                <option>Box</option>
-                                            </select>
+                                           @Html.DropDownListFor(model => model.PackageUomId, Model.PackageUomList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

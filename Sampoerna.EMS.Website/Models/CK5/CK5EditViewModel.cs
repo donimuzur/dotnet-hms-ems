@@ -93,6 +93,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
 
+        public int? PackageUomId { get; set; }
+        public SelectList PackageUomList { get; set; }
 
         //additional information
         [Display(Name = "DN Number")]

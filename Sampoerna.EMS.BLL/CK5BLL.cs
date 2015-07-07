@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.BLL
 
         public CK5 GetByIdIncludeTables(long id)
         {
-            includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY";
+            includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
             var dtData = _repository.Get(c=>c.CK5_ID == id, null,includeTables).FirstOrDefault();
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

@@ -202,6 +202,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
             model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
+            model.PackageUomList = GlobalFunctions.GetUomList();
+
             return model;
         }
 
@@ -306,6 +308,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbCk5.CARRIAGE_METHOD_ID = model.CarriageMethod;
                 dbCk5.GRAND_TOTAL_EX = model.GrandTotalEx;
                 dbCk5.INVOICE_DATE = model.InvoiceDate;
+                dbCk5.PACKAGE_UOM_ID = model.PackageUomId;
 
                 dbCk5.SUBMISSION_DATE = DateTime.Now;
                 dbCk5.STATUS_ID = Enums.DocumentStatus.Draft;
@@ -405,6 +408,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
             model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
+            model.PackageUomList = GlobalFunctions.GetUomList();
+
             return model;
         }
 
@@ -452,7 +457,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbData.CARRIAGE_METHOD_ID = model.CarriageMethod;
                 dbData.GRAND_TOTAL_EX = model.GrandTotalEx;
                 dbData.INVOICE_DATE = model.InvoiceDate;
-
+                dbData.PACKAGE_UOM_ID = model.PackageUomId;
                 
                
                 dbData.MODIFIED_DATE = DateTime.Now;
