@@ -12,7 +12,11 @@ namespace Sampoerna.EMS.Contract
     {
         WORKFLOW_HISTORY GetById(long id);
 
+        WORKFLOW_HISTORY GetByActionAndFormId(Enums.ActionType actionType, long formId);
+
         void AddHistory(WORKFLOW_HISTORY history);
+
+        void Save(WORKFLOW_HISTORY history);
 
         List<WORKFLOW_HISTORY> GetByFormTypeAndFormId(Enums.FormType formTypeId, long id);
     }

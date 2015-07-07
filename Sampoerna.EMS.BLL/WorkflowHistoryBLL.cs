@@ -30,14 +30,19 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-        public WORKFLOW_HISTORY GetByParam(long formId)
+        public WORKFLOW_HISTORY GetByActionAndFormId(Enums.ActionType actionType, long formId)
         {
-            return _repository.Get(w=> w.FORM_ID == formId).FirstOrDefault();
+            return _repository.Get(w=> w.ACTION == actionType && w.FORM_ID == formId).FirstOrDefault();
         }
 
         public void AddHistory(WORKFLOW_HISTORY history)
         {
             _repository.Insert(history);
+        }
+
+        public void Save(WORKFLOW_HISTORY history)
+        {
+            _repository.InsertOrUpdate(history);
         }
 
         public List<WORKFLOW_HISTORY> GetByFormTypeAndFormId(Enums.FormType formTypeId, long id)
