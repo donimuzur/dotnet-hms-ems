@@ -454,7 +454,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GoodtypId, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
                 .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
-                .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC));
+                .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
+                .ForMember(dest => dest.IsDeleted, opt=> opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "yes" : "No"));
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialCreateViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.BASE_UOM_ID))

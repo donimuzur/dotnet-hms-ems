@@ -53,16 +53,16 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public string GoodTypeName { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public string IsDeleted { get; set; }
 
-        public string IsDeletedString
-        {
-            get
-            {
-                return IsDeleted ? "Yes" : "No";
-            }
+        //public string IsDeletedString
+        //{
+        //    get
+        //    {
+        //        return IsDeleted ==  ? "Yes" : "No";
+        //    }
 
-        }
+        //}
 
 
 

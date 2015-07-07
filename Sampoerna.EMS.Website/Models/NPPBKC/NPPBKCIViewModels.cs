@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string Region { get; set; }
         [Required(ErrorMessage = "please fill this field")]
         public string TextTo { get; set; }
+
+        //[DisplayFormat(DataFormatString = "{0:dd mmmm yyyy}")]
         public DateTime? CreateDate { get; set; }
        
         public DateTime? StartDate { get; set; }
