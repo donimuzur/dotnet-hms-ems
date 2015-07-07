@@ -1,6 +1,8 @@
-﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
+﻿@using System.Activities.Expressions
+@using System.Diagnostics.Eventing.Reader
+@model Sampoerna.EMS.Website.Models.POA.POAFormModel
 @section scripts {
-
+  
     <script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
         $('#MenuPOA').addClass('active');
@@ -13,6 +15,17 @@
         var confirmDeletePOA = function () {
             $('#btn-delete-poa').click();
         };
+
+        //active
+        var poaActive = function () {
+            window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
+           
+
+
+        };
+        var confirmActivePOA = function () {
+            $('#btn-active-poa').click();
+        };
     </script>
 }
 @{
@@ -21,14 +34,18 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-                <h3>Detail POA</h3>
+            <h3 class="desc">POA <span>(Power of Attorney)</span></h3>
             <div class="action-button">
                 <a href="@Url.Action("Index", "POA")">
                     <button class="btn btn-grey">Back</button>
                 </a>
                 @if (Model.Detail.Is_Deleted.Equals("No"))
                 {
-                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Delete</a>
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Deactive</a>
+                }
+                @if (Model.Detail.Is_Deleted.Equals("Yes"))
+                {
+                     <a href="javascript:void(0);" onclick="confirmActivePOA() " class="btn btn-blue">Active</a>
                 }
             </div>
         </div>
@@ -174,13 +191,32 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Delete</h3>
+                <h3>Deactive</h3>
             </div>
             <div class="modal-body">
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="poaDelete();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="poaDelete();">Deactive</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Active-->
+<input id="btn-active-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".active-modal.poa" value="delete">
+<div class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Active</h3>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue" onclick="poaActive();">Active</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>

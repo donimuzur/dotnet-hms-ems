@@ -19,12 +19,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IPlantBLL _plantBll;
+        private Enums.MenuList _mainMenu;
         
 
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
             IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll)
-            : base(pageBLL, Enums.MenuList.MasterData)
+            : base(pageBLL, Enums.MenuList.BrandRegistration)
         {
             _brandRegistrationBll = brandRegistrationBll;
             _masterBll = masterBll;
@@ -32,6 +33,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _goodTypeBll = goodTypeBll;
             _changesHistoryBll = changesHistoryBll;
             _plantBll = plantBll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -39,12 +41,13 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new BrandRegistrationIndexViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var dbData = _brandRegistrationBll.GetAllBrands();
             model.Details = AutoMapper.Mapper.Map<List<BrandRegistrationDetail>>(dbData);
 
+            ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
 
@@ -56,7 +59,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(id);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
 
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, id));
 
@@ -65,7 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private BrandRegistrationCreateViewModel InitCreate(BrandRegistrationCreateViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
@@ -143,6 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 _brandRegistrationBll.Save(dbBrand);
 
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
             }
 
@@ -154,7 +158,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private BrandRegistrationEditViewModel InitEdit(BrandRegistrationEditViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
@@ -213,6 +217,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _brandRegistrationBll.Save(dbBrand);
 
+            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
             return RedirectToAction("Index");
           
         }
@@ -381,10 +386,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(long id)
         {
-            AddHistoryDelete(id);
+            
             _brandRegistrationBll.Delete(id);
 
+            TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
             return RedirectToAction("Index");
+           
         }
 
         private void AddHistoryDelete(long id)

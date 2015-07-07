@@ -189,7 +189,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PoaAddress, opt => opt.MapFrom(src => src.POA_ADDRESS))
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EMAIL))
                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.TITLE))
-               .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED == null ? "No" : "Yes"))
+               .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED == null ? "No" : MappingExpressionExtensions.BoolToString(src.IS_DELETED)))
                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
                .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.MANAGER_ID))
                .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP.HasValue && src.IS_FROM_SAP.Value));
@@ -553,6 +553,17 @@ namespace Sampoerna.EMS.Website
 
 
             #endregion
+        }
+    }
+
+    public static class MappingExpressionExtensions
+    {
+        public static string BoolToString(bool? param)
+        {
+            if (param == true)
+                return "Yes";
+
+            return "No";
         }
     }
 }

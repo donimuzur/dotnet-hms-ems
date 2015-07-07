@@ -215,7 +215,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 _poaBll.Delete(id);
-                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Updated;
             }
             catch (Exception ex)
             {
