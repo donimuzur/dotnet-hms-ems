@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="1LFA1">
           <Key>
             <PropertyRef Name="VENDOR_ID" />
@@ -50,8 +50,8 @@
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="bigint" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
-          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="50" />
-          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="50" />
+          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
+          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="int" />
         </EntityType>
@@ -579,11 +579,12 @@
           <Key>
             <PropertyRef Name="WORKFLOW_HISTORY_ID" />
           </Key>
-          <Property Name="WORKFLOW_HISTORY_ID" Type="bigint" Nullable="false" />
+          <Property Name="WORKFLOW_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
+          <Property Name="FORM_ID" Type="bigint" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
-          <Property Name="ACTION" Type="nvarchar" MaxLength="15" />
-          <Property Name="ACTION_BY" Type="int" />
+          <Property Name="ACTION" Type="int" Nullable="false" />
+          <Property Name="ACTION_BY" Type="int" Nullable="false" />
           <Property Name="ACTION_DATE" Type="datetime" />
           <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -660,9 +661,7 @@
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="30" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="30" />
-          <Property Name="BRAND_ID" Type="bigint" />
           <Property Name="PLANT_ID" Type="bigint" />
-          <Property Name="CONVERSION" Type="decimal" Precision="18" Scale="2" />
           <Property Name="EX_GOODTYP" Type="int" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="30" />
           <Property Name="BASE_UOM" Type="int" />
@@ -670,6 +669,9 @@
           <Property Name="IS_FROM_SAP" Type="bit" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="BRAND_ID" Type="bigint" />
+          <Property Name="IS_DELETE" Type="bit" />
+          <Property Name="CONVERSION" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -1746,7 +1748,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WORKFLOW_HISTORY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="WORKFLOW_HISTORY" Type="Self.WORKFLOW_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
@@ -2539,7 +2541,6 @@
             <End Role="PBCK11" EntitySet="PBCK1" />
           </AssociationSet>
           <EntitySet Name="FILE_UPLOAD" EntityType="EMSModel.FILE_UPLOAD" />
-          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
           <EntitySet Name="C1LFA1" EntityType="EMSModel.C1LFA1" />
           <EntitySet Name="BACK1" EntityType="EMSModel.BACK1" />
           <EntitySet Name="BACK3_CK2" EntityType="EMSModel.BACK3_CK2" />
@@ -2788,10 +2789,6 @@
             <End Role="USER_GROUP" EntitySet="USER_GROUP" />
             <End Role="USER" EntitySet="USER" />
           </AssociationSet>
-          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_KPPBC_USER" Association="EMSModel.FK_ZAIDM_EX_KPPBC_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
@@ -3016,6 +3013,11 @@
             <End Role="ZAIDM_EX_POA" EntitySet="ZAIDM_EX_POA" />
             <End Role="ZAIDM_POA_MAP" EntitySet="ZAIDM_POA_MAP" />
           </AssociationSet>
+          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="CK5">
           <Key>
@@ -3172,19 +3174,6 @@
           <Property Name="FORM_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="FILE_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UPLOAD_DATE" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="WORKFLOW_HISTORY">
-          <Key>
-            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
-          </Key>
-          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION_BY" Type="Int32" />
-          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
-          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
         </EntityType>
         <EntityType Name="C1LFA1">
           <Key>
@@ -3655,7 +3644,6 @@
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_USER_USER" FromRole="USER" ToRole="USER1" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_USER_USER" FromRole="USER1" ToRole="USER" />
           <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
-          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_KPPBC_USER" FromRole="USER" ToRole="ZAIDM_EX_KPPBC" />
           <Property Name="PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
@@ -3663,6 +3651,7 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_POA" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER" FromRole="USER" ToRole="ZAIDM_EX_POA" />
           <NavigationProperty Name="ZAIDM_EX_POA1" Relationship="EMSModel.FK_ZAIDM_EX_POA_USER1" FromRole="USER" ToRole="ZAIDM_EX_POA" />
+          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -4374,18 +4363,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_WORKFLOW_HISTORY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="WORKFLOW_HISTORY">
-              <PropertyRef Name="ACTION_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_KPPBC_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="*" />
@@ -4534,7 +4511,8 @@
           <Property Name="BRAND_ID" Type="Int64" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
-          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IS_DELETE" Type="Boolean" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -5266,6 +5244,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WORKFLOW_HISTORY">
+          <Key>
+            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
+          </Key>
+          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
+          <Property Name="FORM_ID" Type="Int64" Nullable="false" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
+          <Property Name="ACTION_BY" Type="Int32" Nullable="false" />
+          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_HISTORY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="ActionType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ActionType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5368,19 +5373,6 @@
                 <ScalarProperty Name="FORM_NO" ColumnName="FORM_NO" />
                 <ScalarProperty Name="FORM_TYEP_ID" ColumnName="FORM_TYEP_ID" />
                 <ScalarProperty Name="FILE_ID" ColumnName="FILE_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WORKFLOW_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
-              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
-                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
-                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
-                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
-                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
-                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
-                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
-                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5956,6 +5948,7 @@
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+                <ScalarProperty Name="IS_DELETE" ColumnName="IS_DELETE" />
                 <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
                 <ScalarProperty Name="BRAND_ID" ColumnName="BRAND_ID" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
@@ -6073,6 +6066,20 @@
                 <ScalarProperty Name="POA_ID_CARD" ColumnName="POA_ID_CARD" />
                 <ScalarProperty Name="POA_CODE" ColumnName="POA_CODE" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_HISTORY">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
+              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
+                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
+                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
+                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
