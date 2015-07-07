@@ -11,7 +11,7 @@ using Sampoerna.EMS.Website.Models.GOODSTYPE;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    /*public class GoodsTypeGroupController : BaseController
+    public class GoodsTypeGroupController : BaseController
     {
 
         private IZaidmExGoodTypeBLL _zaidmExGoodTypeBll;
@@ -202,5 +202,5 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Edit", model);
         }
-    }*/
+    }
 }
