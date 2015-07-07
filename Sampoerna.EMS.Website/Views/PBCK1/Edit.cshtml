@@ -32,6 +32,9 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                        @Html.HiddenFor(model => model.Detail.Status)
+                        @Html.HiddenFor(model => model.Detail.CreatedDate)
+                        @Html.HiddenFor(model => model.Detail.CreatedById)
                         @Html.Partial("_HomeEdit")
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ProdPlanUpload")

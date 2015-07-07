@@ -14,6 +14,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 
 
@@ -28,8 +29,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
 
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -38,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _plantBll = plantBll;
             _mainMenu = Enums.MenuList.PBCK1;
             _changesHistoryBll = changesHistoryBll;
+            _workflowHistoryBll = workflowHistoryBll;
         }
 
         private List<Pbck1Item> GetPbckItems(Pbck1FilterViewModel filter = null)
@@ -77,6 +80,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(years, "ValueField", "TextField");
         }
 
+        #region ------- index ---------
+
         //
         // GET: /PBCK/
         public ActionResult Index()
@@ -98,16 +103,24 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
+        #endregion
+
+        #region ----- Edit -----
+
         public ActionResult Edit(long id)
         {
             var pbck1Data = _pbck1Bll.GetById(id);
             var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id));
+
             return EditInitial(new Pbck1ItemViewModel()
             {
                 ChangesHistoryList = changeHistory,
-                Detail = Mapper.Map<Pbck1Item>(pbck1Data)
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
+                WorkflowHistory = workflowHistory
             });
         }
 
@@ -140,6 +153,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Edit", ModelInitial(model));
         }
 
+        #endregion
+
+        #region ------ details ----
+
         public ActionResult Details(long id)
         {
             var pbck1Data = _pbck1Bll.GetById(id);
@@ -152,6 +169,47 @@ namespace Sampoerna.EMS.Website.Controllers
             });
         }
 
+        #endregion
+
+        #region ----- create -----
+
+        public ActionResult Create()
+        {
+            return CreateInitial(new Pbck1ItemViewModel());
+        }
+
+        [HttpPost]
+        public ActionResult Create(Pbck1ItemViewModel model)
+        {
+
+            model = CleanSupplierInfo(model);
+
+            if (!ModelState.IsValid)
+            {
+                return CreateInitial(model);
+            }
+
+            //process save
+            var dataToSave = Mapper.Map<Pbck1>(model.Detail);
+            dataToSave.CreatedById = CurrentUser.USER_ID;
+            var saveResult = _pbck1Bll.Save(dataToSave);
+
+            if (saveResult.Success)
+            {
+                return RedirectToAction("Index");
+            }
+            
+            return CreateInitial(model);
+
+        }
+        
+        public ActionResult CreateInitial(Pbck1ItemViewModel model)
+        {
+            return View("Create", ModelInitial(model));
+        }
+
+        #endregion
+        
         [HttpPost]
         public JsonResult PoaListPartial(string nppbkcId)
         {
@@ -238,41 +296,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             return PartialView("_ProdPlanList", model);
-        }
-
-        public ActionResult Create()
-        {
-            return CreateInitial(new Pbck1ItemViewModel());
-        }
-
-        [HttpPost]
-        public ActionResult Create(Pbck1ItemViewModel model)
-        {
-
-            model = CleanSupplierInfo(model);
-
-            if (!ModelState.IsValid)
-            {
-                return CreateInitial(model);
-            }
-
-            //process save
-            var dataToSave = Mapper.Map<Pbck1>(model.Detail);
-            dataToSave.CreatedById = CurrentUser.USER_ID;
-            var saveResult = _pbck1Bll.Save(dataToSave);
-
-            if (saveResult.Success)
-            {
-                return RedirectToAction("Index");
-            }
-            
-            return CreateInitial(model);
-
-        }
-        
-        public ActionResult CreateInitial(Pbck1ItemViewModel model)
-        {
-            return View("Create", ModelInitial(model));
         }
 
         private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
