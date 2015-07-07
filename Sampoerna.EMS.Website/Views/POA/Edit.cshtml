@@ -33,7 +33,6 @@
                             </div>
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
-                                    <form class="form-excise" role="form">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
@@ -120,12 +119,14 @@
                                             <div class="col-md-6">
                                                 <label class="col-md-3">SK</label>
 
-                                                <div class="col-md-9">
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control">
-                                                        <span class=" input-group-addon file-input btn btn-primary btn-file" data-toggle="modal" data-target=".upload-file">
-                                                            Browse
-                                                        </span>
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <button type="button" class="btn btn-grey full" data-toggle="modal" data-target=".view-files">View Files</button>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -139,7 +140,7 @@
                                             </div>
                                         </div>
 
-                                    </form>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -148,7 +149,39 @@
             </div>
         </div>
     </div>
-    @Html.Partial("_FileUpload")
+    @Html.Partial("_FileUpload", Model)
+    <div class="modal fade in view-files ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">SK Doc Files</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @if (Model.Detail.PoaSk != null)
+                            {
+                                foreach (var file in Model.Detail.PoaSk)
+                                {
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <i class="fa fa-file"></i>
+                                            <a href="@file.FILE_PATH">@file.FILE_NAME</a>
+                                        </div>
+
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @section scripts {
