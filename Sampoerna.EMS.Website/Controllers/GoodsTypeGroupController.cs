@@ -103,7 +103,7 @@ namespace Sampoerna.EMS.Website.Controllers
                    
                     var groupType = new EX_GROUP_TYPE();
                     groupType.GROUP_NAME = model.GroupName;
-                    groupType.EX_GOODTYP_ID = detail.GoodTypeId;
+                    groupType.EX_GROUP_TYPE_ID = detail.GoodTypeId;
                     listGroup.Add(groupType);
                 }
 
@@ -159,7 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 foreach (var exGroupType in realChild)
                 {
-                    if (details.GoodTypeId == exGroupType.EX_GOODTYP_ID)
+                    if (details.GoodTypeId == exGroupType.EX_GROUP_TYPE_ID)
                         details.IsChecked = true;
                 }
             }
@@ -181,7 +181,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var groupType = new EX_GROUP_TYPE();
                     groupType.GROUP_NAME = model.GroupName;
-                    groupType.EX_GOODTYP_ID = detail.GoodTypeId;
+                    groupType.EX_GROUP_TYPE_ID = detail.GoodTypeId;
                     
                     listGroup.Add(groupType);
                 }
