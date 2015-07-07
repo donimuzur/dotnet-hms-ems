@@ -287,8 +287,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 return string.Empty;
 
             var pbck1 = _pbck1Bll.GetById(id.Value);
-            if (pbck1.DECREE_DATE.HasValue)
-                return pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy");
+            if (pbck1.DecreeDate.HasValue)
+                return pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
 
             return string.Empty;
         }

@@ -141,7 +141,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPbck1CompletedList()
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
-            var input = new PBCK1Input();
+            var input = new Pbck1GetByParamInput();
             var data = pbck1.GetPBCK1ByParam(input);
             return new SelectList(data, "PBCK1_ID", "NUMBER");
         }

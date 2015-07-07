@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ItemViewModel
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+
 <div role="tabpanel" class="tab-pane" id="messages">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <form id="FormProdPlan" action="@Url.Action("UploadFilePlan", "PBCK1")" enctype="multipart/form-data" method="post">
@@ -35,7 +36,7 @@
         @Html.Partial("_ProdPlanList", Model)
     </div>
     <div>
-        <button class="button" id="prod-plan-save">Save</button>
+        <button type="button" class="btn btn-grey generate" id="prod-plan-save">Save</button>
     </div>
 </div>
 

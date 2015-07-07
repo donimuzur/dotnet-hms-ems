@@ -733,6 +733,9 @@
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
     <Content Include="Views\NPPBKC\Edit.cshtml" />
     <Content Include="Views\NPPBKC\Detail.cshtml" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
     <Content Include="Views\CK5\_CK5UploadList.cshtml" />
     <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
