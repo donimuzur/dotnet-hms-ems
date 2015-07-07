@@ -21,8 +21,8 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
-                                            @*<input type="text" class="form-control" placeholder="" disabled />*@
-                                            @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.HiddenFor(model => model.Detail.Pbck1Number)
+                                            @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled", @id = "pbck1-number-display" })
                                         </div>
                                     </div>
                                 </div>
@@ -47,7 +47,6 @@
                                         <label class="col-md-3">Reported On</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @*@Html.HiddenFor(model => model.Detail.ReportedOn)*@
                                                 @Html.TextBoxFor(model => model.Detail.ReportedOn, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
@@ -74,7 +73,6 @@
                                         <label class="col-md-3">Period To</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @*@Html.HiddenFor(model => model.Detail.PeriodTo)*@
                                                 @Html.TextBoxFor(model => model.Detail.PeriodTo, new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
@@ -152,7 +150,15 @@
                                         <label class="col-md-4">Supplier Plant</label>
                                         <div class="col-md-8">
                                             <div id="supp-plant">
-                                                @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
+                                                @*@if (Model.Detail.SupplierPortId.HasValue)
+                                                {
+                                                    //load supplier
+                                                    @Html.DropDownListFor(model => model.Detail.SupplierPlant)
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
+                                                }*@
                                             </div>
                                         </div>
                                     </div>

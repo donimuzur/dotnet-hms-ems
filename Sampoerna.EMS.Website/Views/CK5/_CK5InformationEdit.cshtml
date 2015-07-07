@@ -31,7 +31,7 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control selectpicker" })
+                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -586,7 +586,7 @@
                     <div class="panel-body">
                         <div class="table-container">
                             
-                            @Html.Partial("_WorkflowHistory", Model.WorkflowHistory)
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
 
                         </div>
                     </div>
