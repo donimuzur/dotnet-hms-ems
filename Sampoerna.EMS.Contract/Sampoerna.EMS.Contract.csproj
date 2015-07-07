@@ -62,6 +62,7 @@
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IVirtualMappingPlantBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
+    <Compile Include="IWorkflowHistoryBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
     <Compile Include="IZaidmExGoodTypeBLL.cs" />

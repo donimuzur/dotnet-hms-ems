@@ -1,4 +1,6 @@
 ﻿
+using Sampoerna.EMS.Core;
+
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
     public class CK5Input
@@ -15,6 +17,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string SortOrderColumn { get; set; }
 
-        public int? Ck5Type { get; set; }
+        public Enums.CK5Type Ck5Type { get; set; }
     }
 }
