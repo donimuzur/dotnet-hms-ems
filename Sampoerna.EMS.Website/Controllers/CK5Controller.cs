@@ -442,7 +442,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private void SetWorkflowHistory(long id, string actionType)
+        private void SetWorkflowHistory(long id, Enums.ActionType actionType)
         {
             var dbWorkflow = new WORKFLOW_HISTORY();
             dbWorkflow.FORM_TYPE_ID = Enums.FormType.CK5;
@@ -491,7 +491,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
 
                 //workflowhistory
-                SetWorkflowHistory(dbData.CK5_ID, Enums.ActionType.Save.ToString());
+                SetWorkflowHistory(dbData.CK5_ID, Enums.ActionType.Save);
 
                 _ck5Bll.SaveCk5(dbData);
               
@@ -565,6 +565,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DestAddress = dbDestPlant.ADDRESS;
 
             model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
 
             return model;
 

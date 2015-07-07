@@ -23,13 +23,13 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK3_71 = new HashSet<PBCK3_7>();
             this.PBCK3_72 = new HashSet<PBCK3_7>();
             this.USER1 = new HashSet<USER>();
-            this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
             this.ZAIDM_EX_KPPBC = new HashSet<ZAIDM_EX_KPPBC>();
             this.CHANGES_HISTORY = new HashSet<CHANGES_HISTORY>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.ZAIDM_EX_POA = new HashSet<ZAIDM_EX_POA>();
             this.ZAIDM_EX_POA1 = new HashSet<ZAIDM_EX_POA>();
+            this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
         }
     
         public int USER_ID { get; set; }
@@ -52,12 +52,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<USER> USER1 { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER_GROUP USER_GROUP { get; set; }
-        public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual ICollection<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
         public virtual ICollection<ZAIDM_EX_POA> ZAIDM_EX_POA1 { get; set; }
+        public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
     }
 }

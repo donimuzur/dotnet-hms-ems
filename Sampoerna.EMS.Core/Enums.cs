@@ -89,5 +89,17 @@ namespace Sampoerna.EMS.Core
             PBKC3 = 4
         }
 
+        public enum ActionType
+        {
+            [Description("Save")]
+            Save,
+            [Description("Submit")]
+            Submit,
+            [Description("Approve")]
+            Approve,
+            [Description("Reject")]
+            Reject
+        }
+
     }
 }
