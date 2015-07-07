@@ -14,6 +14,9 @@ namespace Sampoerna.EMS.Contract
 
         WORKFLOW_HISTORY GetByActionAndFormId(Enums.ActionType actionType, long formId);
 
+        WORKFLOW_HISTORY GetSpecificWorkflowHistory(Enums.FormType formType, long formId,
+            Enums.ActionType actionType);
+
         void AddHistory(WORKFLOW_HISTORY history);
 
         void Save(WORKFLOW_HISTORY history);

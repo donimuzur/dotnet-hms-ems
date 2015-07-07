@@ -234,7 +234,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Qty</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.TextBoxFor(model => model.Detail.RequestQtyUomName, new { @class = "form-control", @disabled = "disabled" })
@@ -361,7 +361,7 @@
                 <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
                     <div class="panel-body">
                         <div class="table-container">
-                            @Html.Partial("_WorkflowHistoryTable")
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
                         </div>
                     </div>
                 </div>

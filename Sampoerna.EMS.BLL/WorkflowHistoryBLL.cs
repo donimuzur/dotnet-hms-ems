@@ -35,6 +35,14 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(w=> w.ACTION == actionType && w.FORM_ID == formId).FirstOrDefault();
         }
 
+        public WORKFLOW_HISTORY GetSpecificWorkflowHistory(Enums.FormType formType, long formId,
+            Enums.ActionType actionType)
+        {
+            return
+                _repository.Get(c => c.FORM_TYPE_ID == formType && c.FORM_ID == formId && c.ACTION == actionType)
+                    .FirstOrDefault();
+        }
+
         public void AddHistory(WORKFLOW_HISTORY history)
         {
             _repository.Insert(history);

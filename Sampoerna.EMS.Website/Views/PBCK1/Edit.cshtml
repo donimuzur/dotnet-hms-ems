@@ -32,6 +32,9 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                        @Html.HiddenFor(model => model.Detail.Status)
+                        @Html.HiddenFor(model => model.Detail.CreatedDate)
+                        @Html.HiddenFor(model => model.Detail.CreatedById)
                         @Html.Partial("_HomeEdit")
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ProdPlanUpload")
@@ -148,10 +151,16 @@
             
             $('#MenuPBCK1OpenListDocument').addClass('active');
             
+            $("#Detail_Pbck1Type").change(function () {
+                pbck1TypeOnchange();
+            });
+            
             //load nppbkc detail
             nppbkcIdOnChange();
             
             ajaxLoadSupplierPlant();
+            
+            pbck1TypeOnchange();
 
         });
 
@@ -170,6 +179,17 @@
                     $('#displayCompanyName').val('');
                     $('#Detail_PoaList').val('');
                     $('#displayPoaList').val('');
+                }
+            }
+        }
+        
+        function pbck1TypeOnchange() {
+            if ($("#Detail_Pbck1Type").length) {
+                var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
+                if (pbck1Type == '' || pbck1Type.toLowerCase() == 'new') {
+                    $('#Detail_Pbck1Reference').prop('disabled', true);
+                } else {
+                    $('#Detail_Pbck1Reference').prop('disabled', false);
                 }
             }
         }

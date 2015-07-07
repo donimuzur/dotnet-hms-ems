@@ -34,9 +34,9 @@ namespace Sampoerna.EMS.Core
         public enum PBCK1Type
         {
             [Description("New")]
-            New,
+            New = 1,
             [Description("Additional")]
-            Additional
+            Additional = 2
         }
 
         public enum CK5Type
@@ -92,13 +92,13 @@ namespace Sampoerna.EMS.Core
         public enum ActionType
         {
             [Description("Save")]
-            Save,
+            Save = 1,
             [Description("Submit")]
-            Submit,
+            Submit = 2,
             [Description("Approve")]
-            Approve,
+            Approve = 3,
             [Description("Reject")]
-            Reject
+            Reject = 4
         }
 
     }

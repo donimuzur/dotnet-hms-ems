@@ -2,7 +2,7 @@
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
 
 @{
-    ViewBag.Title = "PBCK 1";
+    ViewBag.Title = "PBCK-1";
 }
 
 <div class="container-wrap title-page">
@@ -76,9 +76,14 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-
-                                <input type="submit" class="btn btn-blue full" value="FILTER" />
-
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -95,9 +100,11 @@
     
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
-        
-        function setupDataTables() {
 
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                location.href = '@Url.Action("Index", "PBCK1")';
+            });
             // DataTable
             var table = null;
             if ($.fn.dataTable.isDataTable('#pbckTable')) {
@@ -115,7 +122,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#pbckTable .filters th').each(function () {
+            $('#pbckTable .filters th').each(function() {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -123,8 +130,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -132,14 +139,10 @@
                 });
             });
 
-            $("#pbckTable_filter").hide();
-            $('#pbckTable_length').hide();
-            $('#pbckTable_info').hide();
-
             $('#MenuPBCK1OpenListDocument').addClass('active');
         }
 
-        $("#SearchInput_NppbkcId").change(function () {
+        $("#SearchInput_NppbkcId").change(function() {
             if ($("#SearchInput_NppbkcId").length) {
                 var nbck = $(this).find("option:selected").text();
                 $('#SearchInput_POA option').remove();
@@ -153,7 +156,7 @@
 
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             setupDataTables();
         });
 
@@ -163,7 +166,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.SearchInput.PoaList;
                         if (list.length > 0) {
                             $('#SearchInput_POA').append('<option value="">All</option>');
@@ -177,6 +180,13 @@
         }
 
         function ReloadDataTables() {
+            $('.toggle-row').click(function() {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function() {
+
+                });
+            });
             setupDataTables();
         }
 

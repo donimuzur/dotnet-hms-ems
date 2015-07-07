@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.PBCK1
 {
@@ -40,6 +41,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public List<Pbck1ProdConvModel> ProductConversions { get; set; }
         public List<Pbck1ProdPlanModel> ProductPlans { get; set; }
+
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
     }
 }
