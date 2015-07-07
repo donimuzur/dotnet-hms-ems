@@ -4,13 +4,12 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="98" >
+      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="147" >
         <EntityTypeShape EntityType="EMSModel.CK5" Width="3.75" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="2.75" PointX="1.125" PointY="13.5" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PBCK1" />
         <EntityTypeShape EntityType="EMSModel.FILE_UPLOAD" Width="1.5" PointX="5.375" PointY="4.75" />
-        <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="7.375" PointY="4.75" />
         <EntityTypeShape EntityType="EMSModel.C1LFA1" Width="1.5" PointX="10.5" PointY="50.25" />
         <EntityTypeShape EntityType="EMSModel.BACK1" Width="1.5" PointX="15.25" PointY="53.125" />
         <EntityTypeShape EntityType="EMSModel.BACK3_CK2" Width="1.5" PointX="26.125" PointY="5.125" />
@@ -106,7 +105,6 @@
         <AssociationConnector Association="EMSModel.FK_T1001K_T1001" />
         <AssociationConnector Association="EMSModel.FK_USER_USER" />
         <AssociationConnector Association="EMSModel.FK_USER_USER_GROUP" />
-        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_KPPBC_USER" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="8.25" PointY="26.125" />
         <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" />
@@ -172,6 +170,8 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_POA_USER1" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="10.5" PointY="26.25" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
