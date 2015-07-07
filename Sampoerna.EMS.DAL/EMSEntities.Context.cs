@@ -47,7 +47,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual DbSet<ZAIDM_EX_MARKET> ZAIDM_EX_MARKET { get; set; }
         public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
@@ -62,5 +61,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
         public virtual DbSet<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
+        public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
     }
 }

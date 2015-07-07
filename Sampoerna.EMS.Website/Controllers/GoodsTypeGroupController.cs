@@ -104,11 +104,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     var groupType = new EX_GROUP_TYPE();
                     groupType.GROUP_NAME = model.GroupName;
                     groupType.EX_GROUP_TYPE_ID = detail.GoodTypeId;
+                    
                     listGroup.Add(groupType);
                 }
 
                 if (listGroup.Count > 0)
                 {
+                    
                     _exGroupTypeBll.SaveGroup(listGroup);
 
                     return RedirectToAction("Index");
