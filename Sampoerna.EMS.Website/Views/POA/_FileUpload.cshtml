@@ -1,9 +1,10 @@
-﻿<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
+<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Decree Doc</h4>
+                <h4 class="modal-title">SK Doc</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -16,9 +17,9 @@
                         <div class="row">
                             <div class="col-sm-9">
                                 <input type="file" id="Detail_PoaSKFile_0_" name="Detail.PoaSKFile[0]" class="form-control">
-                            </div>
+                               </div>
                             <div class="col-sm-3">
-                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0, $(this))">Remove</button>
+                                <button type="button" class="btn btn-danger full">Remove</button>
                             </div>
                         </div>
                     </div>
@@ -30,4 +31,7 @@
         </div>
     </div>
 </div>
+
+    
+
 

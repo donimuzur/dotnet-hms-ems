@@ -11,17 +11,6 @@ $('#file-sk-container').on('click', '.add-files', (function () {
                              '</div></div>');
 }));
 
-function OnChangeUser(id) {
-    $.ajax({
-        type: 'POST',
-        url: '@Url.Action("GetUser", "POA")',
-        data: { userId: id },
-        success: function (data) {
-            $('#Detail_PoaPhone').val(data.PHONE);
-            $('#Detail_Email').val(data.EMAIL);
-        }
-    });
-}
 
 function removeUploadButton(index, obj) {
     if (index > 0) {

@@ -34,7 +34,7 @@
                             </div>
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
-                                    <form class="form-excise" role="form">
+                                  
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
@@ -48,8 +48,9 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Login As<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select",new { @class = "selectpicker form-control" })
 
+                                                       
                                                     </div>
                                                 </div>
                                             </div>
@@ -75,11 +76,7 @@
                                         </div>
 
                                         <div class="row">
-
-                                     
-
-                                        
-                                            <div class="col-md-6">
+                                                  <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Phone<span class="red">*</span></label>
                                                     <div class="col-md-9">
@@ -97,7 +94,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                       
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Title<span class="red">*</span></label>
@@ -106,7 +103,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                       
+
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Address<span class="red">*</span></label>
@@ -114,26 +111,31 @@
                                                         @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
                                                     </div>
                                                 </div>
-                                        <div class="row">
-                                            <label class="col-md-3">SK</label>
-                                            
-                                            <div class="col-md-9">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control">
-                                                    <span class=" input-group-addon file-input btn btn-primary btn-file" data-toggle="modal" data-target=".upload-file">
-                                                        Browse
-                                                    </span>
-                                                </div>
                                             </div>
-
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="col-md-3">SK</label>
+
+                                                <div class="col-md-9">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
+                                            </div>
+                                            </div>
+                                                
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <span class="red">*</span> ) This Field Required
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -142,7 +144,7 @@
             </div>
         </div>
     </div>
-   @Html.Partial("_FileUpload")
+   @Html.Partial("_FileUpload", Model)
 }
 @section scripts
 {
@@ -150,13 +152,17 @@
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/poa/form.js"></script>
     <script type="text/javascript">
-
+        $('#Detail_UserId').click(function () {
+            $(this).addClass('selectpicker');
+            $(this).selectpicker();
+        });
         function OnChangeUser(id) {
+           
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetUser", "POA")',
                 data: { userId: id },
-                success: function (data) {
+                success: function(data) {
                     $('#Detail_PoaPhone').val(data.PHONE);
                     $('#Detail_Email').val(data.EMAIL);
                 }
