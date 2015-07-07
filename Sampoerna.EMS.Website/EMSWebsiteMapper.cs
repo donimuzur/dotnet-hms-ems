@@ -21,6 +21,7 @@ using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website
 {
@@ -691,7 +692,15 @@ namespace Sampoerna.EMS.Website
             //todo Requisitioner
 
             #endregion
-            
+
+            #region Workflow History
+
+            Mapper.CreateMap<WORKFLOW_HISTORY, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER.USERNAME))
+                .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
+                .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));
+
+            #endregion
         }
     }
 

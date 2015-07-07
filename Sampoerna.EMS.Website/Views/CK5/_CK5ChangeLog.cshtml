@@ -1,4 +1,5 @@
-﻿
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
+
 <div role="tabpanel" class="tab-pane" id="changes">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
@@ -18,7 +19,7 @@
                                     <div class="row">
                                         <label class="col-md-5">CK-5 No</label>
                                         <div class="col-md-7">
-                                            <input type="text" class="form-control" placeholder="">
+                                           @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
                                         </div>
                                     </div>
                                 </div>
@@ -27,6 +28,7 @@
                                         <label class="col-md-3">Date</label>
                                         <div class="col-md-9">
                                             <input type="text" class="form-control" placeholder="">
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -53,46 +55,6 @@
         </div>
     </div>
     <div class="table-container">
-        <table class="table table-bordered table-striped js-options-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Field</th>
-                    <th>Old Value</th>
-                    <th>New Value</th>
-                    <th>User</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-            </tbody>
-        </table>
+        @Html.Partial("_ChangesHistoryTable")
     </div>
 </div>

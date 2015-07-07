@@ -10,7 +10,9 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 
 
@@ -22,14 +24,20 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IMasterDataBLL _masterDataBll;
         private IPBCK1BLL _pbck1Bll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll, IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll)
+        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
+            IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
+            IChangesHistoryBLL changesHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
             _nppbkcBll = nppbkcBll;
             _masterDataBll = masterDataBll;
             _pbck1Bll = pbckBll;
+            _workflowHistoryBll = workflowHistoryBll;
+            _changesHistoryBll = changesHistoryBll;
         }
 
         #region View Documents
@@ -385,7 +393,12 @@ namespace Sampoerna.EMS.Website.Controllers
             //pbck
             if (model.PbckDecreeId.HasValue)
                 model.PbckDecreeDate = GetDatePbck1ByPbckId(model.PbckDecreeId);
-                
+
+
+            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
+
+
             return model;
 
         }
@@ -429,6 +442,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
+        private void SetWorkflowHistory(long id, string actionType)
+        {
+            var dbWorkflow = new WORKFLOW_HISTORY();
+            dbWorkflow.FORM_TYPE_ID = Enums.FormType.CK5;
+            dbWorkflow.FORM_ID = id;
+            dbWorkflow.ACTION = actionType;
+            dbWorkflow.ACTION_BY = CurrentUser.USER_ID;
+            dbWorkflow.ACTION_DATE = DateTime.Now;
+
+            _workflowHistoryBll.AddHistory(dbWorkflow);
+        }
+
         [HttpPost]
         public ActionResult Edit(CK5EditViewModel model)
         {
@@ -436,6 +461,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (ModelState.IsValid)
             {
                 var dbData = _ck5Bll.GetByIdIncludeTables(model.Ck5Id);
+
+                SetChangesLog(dbData, model);
 
                 //Mapper.Map(model, dbData);
                 //todo : put it into mapper
@@ -461,7 +488,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                
                 dbData.MODIFIED_DATE = DateTime.Now;
-                //dbData.MODIFIED_DATE = CurrentUser.USER_ID;
+                
+
+                //workflowhistory
+                SetWorkflowHistory(dbData.CK5_ID, Enums.ActionType.Save.ToString());
 
                 _ck5Bll.SaveCk5(dbData);
               
@@ -472,6 +502,45 @@ namespace Sampoerna.EMS.Website.Controllers
 
            
             return View(model);
+        }
+
+
+        private void SetChangesLog(CK5 origin, CK5EditViewModel updatedModel)
+        {
+            var changesData = new Dictionary<string, bool>();
+
+            if (string.IsNullOrEmpty(origin.REGISTRATION_NUMBER))
+                origin.REGISTRATION_NUMBER = "";
+
+            changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(updatedModel.KppBcCity));
+            changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER.Equals(updatedModel.RegistrationNumber));
+
+            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(updatedModel.GoodTypeId));
+
+
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value) continue;
+                var changes = new CHANGES_HISTORY();
+                changes.FORM_TYPE_ID = Enums.MenuList.CK5;
+                changes.FORM_ID = origin.CK5_ID;
+                changes.FIELD_NAME = listChange.Key;
+                changes.MODIFIED_BY = CurrentUser.USER_ID;
+                changes.MODIFIED_DATE = DateTime.Now;
+                switch (listChange.Key)
+                {
+                    case "KPPBC_CITY":
+                        changes.OLD_VALUE = _nppbkcBll.GetCityByNppbkcId(origin.KPPBC_CITY.Value);
+                        changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(updatedModel.KppBcCity);
+                        break;
+                    case "REGISTRATION_NUMBER":
+                        changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
+                        changes.NEW_VALUE = updatedModel.RegistrationNumber;
+                        break;
+
+                }
+                _changesHistoryBll.AddHistory(changes);
+            }
         }
 
 
@@ -494,7 +563,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
             model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
             model.DestAddress = dbDestPlant.ADDRESS;
-       
+
+            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
+
             return model;
 
         }
@@ -510,7 +581,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model = GetInitDetailsData(model);
-          
+
+            
+
             return View(model);
         }
 

@@ -251,7 +251,7 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
-     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
+    <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
@@ -289,6 +289,7 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
+    <Compile Include="Models\WorkflowHistory\WorkflowHistoryViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
@@ -732,8 +733,8 @@
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
     <Content Include="Views\NPPBKC\Edit.cshtml" />
     <Content Include="Views\NPPBKC\Detail.cshtml" />
-        <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
-    <Content Include="Views\CK5\_CK5UploadList.cshtml" />    
+    <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadList.cshtml" />
     <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
     <Content Include="Views\CK5\_CK5Printout.cshtml" />
     <Content Include="Views\CK5\_CK5ChangeLog.cshtml" />
@@ -742,6 +743,7 @@
     <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
     <Content Include="Views\CK5\Details.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
+    <Content Include="Views\Shared\_WorkflowHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

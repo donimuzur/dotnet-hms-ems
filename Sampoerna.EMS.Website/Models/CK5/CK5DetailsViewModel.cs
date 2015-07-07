@@ -5,14 +5,21 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
     public class CK5DetailsViewModel : BaseModel
     {
-      
+
+        public CK5DetailsViewModel()
+        {
+            WorkflowHistory = new List<WorkflowHistoryViewModel>();
+        }
 
         public long Ck5Id { get; set; }
+
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
         public string DocumentStatus { get; set; }
 

@@ -558,47 +558,7 @@
                 <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
                     <div class="panel-body">
                         <div class="table-container">
-                            <table class="table table-bordered table-striped js-options-table">
-                                <thead>
-                                    <tr>
-                                        <th>Account Name</th>
-                                        <th>Role</th>
-                                        <th>Action</th>
-                                        <th>Date</th>
-                                        <th>Comment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            @Html.Partial("_WorkflowHistory", Model.WorkflowHistory)
                         </div>
                     </div>
                 </div>

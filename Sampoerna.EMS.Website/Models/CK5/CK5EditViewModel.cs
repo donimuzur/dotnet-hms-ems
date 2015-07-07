@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -14,6 +15,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         {
            // InfoViewModel = new CK5InformationViewModel();
             UploadItemModels = new List<CK5UploadViewModel>();
+            WorkflowHistory = new List<WorkflowHistoryViewModel>();
         }
         
         //public CK5InformationViewModel InfoViewModel { get; set; }
@@ -21,6 +23,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public long Ck5Id { get; set; }
 
         public List<CK5UploadViewModel> UploadItemModels { get; set; }
+        
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
         public string DocumentStatus { get; set; }
 
@@ -28,7 +32,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public Enums.CK5Type Ck5Type { get; set; }
 
         [Required(ErrorMessage = "KPPBC City field is required")]
-        public int KppBcCity { get; set; }
+        public long KppBcCity { get; set; }
         public SelectList KppBcCityList { get; set; }
         public string CeOfficeCode { get; set; }
 
@@ -131,6 +135,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("FormatDateTime")]
         [Display(Name = "Unsealing Notification Date")]
         public DateTime? UnsealingNotifDate { get; set; }
+
+        
          
     }
 }
