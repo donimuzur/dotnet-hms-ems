@@ -44,6 +44,21 @@
           <Property Name="BODY" Type="nvarchar(max)" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="EX_GOODTYP_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="EX_GROUP_TYPE_DETAILS">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_DETAIL_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_DETAIL_ID" Type="int" Nullable="false" />
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" />
+        </EntityType>
         <EntityType Name="FILE_UPLOAD">
           <Key>
             <PropertyRef Name="FILE_ID" />
@@ -432,6 +447,30 @@
             </Principal>
             <Dependent Role="DOC_NUMBER_SEQ">
               <PropertyRef Name="MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="0..1" />
+          <End Role="EX_GROUP_TYPE_DETAILS" Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE_DETAILS">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1004,6 +1043,8 @@
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMAIL_TEMPLATE" EntityType="Self.EMAIL_TEMPLATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="Self.EX_GROUP_TYPE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="Self.EX_GROUP_TYPE_DETAILS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER_FORM_MAP" EntityType="Self.HEADER_FOOTER_FORM_MAP" Schema="dbo" store:Type="Tables" />
@@ -1041,6 +1082,14 @@
           <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="Self.FK_DOC_NUMBER_SEQ_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="Self.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" Association="Self.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_CREATED_BY_USER" Association="Self.FK_HEADER_FOOTER_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -1470,6 +1519,16 @@
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_SK" EntitySet="POA_SK" />
           </AssociationSet>
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="EMSModel.EX_GROUP_TYPE" />
+          <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="EMSModel.EX_GROUP_TYPE_DETAILS" />
+          <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -1806,6 +1865,7 @@
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
           <NavigationProperty Name="PLANT_RECEIVE_MATERIAL1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
+          <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="EX_GROUP_TYPE" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -2583,6 +2643,48 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EX_GOODTYP_ID" Type="Int32" />
+          <NavigationProperty Name="EX_GROUP_TYPE_DETAILS" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" FromRole="EX_GROUP_TYPE" ToRole="EX_GROUP_TYPE_DETAILS" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" FromRole="EX_GROUP_TYPE" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
+        <EntityType Name="EX_GROUP_TYPE_DETAILS">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_DETAIL_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_DETAIL_ID" Type="Int32" Nullable="false" />
+          <Property Name="EX_GROUP_TYPE_ID" Type="Int32" />
+          <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" FromRole="EX_GROUP_TYPE_DETAILS" ToRole="EX_GROUP_TYPE" />
+        </EntityType>
+        <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+          <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="0..1" />
+          <End Type="EMSModel.EX_GROUP_TYPE_DETAILS" Role="EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE_DETAILS">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3025,6 +3127,23 @@
                 <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
                 <ScalarProperty Name="POA_SK_ID" ColumnName="POA_SK_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EX_GROUP_TYPE">
+            <EntityTypeMapping TypeName="EMSModel.EX_GROUP_TYPE">
+              <MappingFragment StoreEntitySet="EX_GROUP_TYPE">
+                <ScalarProperty Name="EX_GOODTYP_ID" ColumnName="EX_GOODTYP_ID" />
+                <ScalarProperty Name="GROUP_NAME" ColumnName="GROUP_NAME" />
+                <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EX_GROUP_TYPE_DETAILS">
+            <EntityTypeMapping TypeName="EMSModel.EX_GROUP_TYPE_DETAILS">
+              <MappingFragment StoreEntitySet="EX_GROUP_TYPE_DETAILS">
+                <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
+                <ScalarProperty Name="EX_GROUP_TYPE_DETAIL_ID" ColumnName="EX_GROUP_TYPE_DETAIL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

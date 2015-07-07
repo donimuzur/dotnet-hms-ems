@@ -89,6 +89,10 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" />
         <EntityTypeShape EntityType="EMSModel.POA_SK" Width="1.5" PointX="7.5" PointY="26" />
         <AssociationConnector Association="EMSModel.FK_POA_SK_POA" />
+        <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="15.375" PointY="33.75" />
+        <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE_DETAILS" Width="1.5" PointX="17.625" PointY="34" />
+        <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" />
+        <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

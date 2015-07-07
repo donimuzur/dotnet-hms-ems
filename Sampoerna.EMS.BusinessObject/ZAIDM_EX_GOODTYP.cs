@@ -31,5 +31,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL1 { get; set; }
+        public virtual EX_GROUP_TYPE EX_GROUP_TYPE { get; set; }
     }
 }
