@@ -70,6 +70,7 @@ namespace Sampoerna.EMS.Website.Helpers
             var values = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
             IEnumerable<SelectListItem> items;
 
+            //todo : remove this section .. no need use languange ..?
             if (values.ToString().Contains("Languages"))
             {
                 items = from value in values

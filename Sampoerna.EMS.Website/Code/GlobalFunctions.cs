@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
@@ -44,10 +45,59 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
-        public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
+        public static SelectList GetKppBcCityList()
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            return nppbkcbll.GetById(id);
+            var nppbkcList = nppbkcbll.GetAll();
+                
+            //var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
+            return new SelectList(nppbkcList, "NPPBKC_ID", "City");
+        }
+
+        public static SelectList GetGoodTypeGroupList()
+        {
+            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            var goodTypes = goodTypeBll.GetAll();
+            return new SelectList(goodTypes, "GOODTYPE_ID", "EXT_TYP_DESC");
+        }
+
+        public static SelectList GetExciseSettlementList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var exciseSettlements = masterDataBll.GetAllExciseExSettlements();
+            return new SelectList(exciseSettlements, "EX_SETTLEMENT_ID", "EX_SETTLEMENT_NAME");
+        }
+
+        public static SelectList GetExciseStatusList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var exciseStatus = masterDataBll.GetAllExciseStatus();
+            return new SelectList(exciseStatus, "EX_STATUS_ID", "EX_STATUS_NAME");
+        }
+
+        public static SelectList GetRequestTypeList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var requestType = masterDataBll.GetAllRequestTypes();
+            return new SelectList(requestType, "REQUEST_TYPE_ID", "REQUEST_TYPE_NAME");
+        }
+
+        public static SelectList GetSourcePlantList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            List<T1001W> sourcePlant;
+            sourcePlant = masterDataBll.GetAllSourcePlants();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(sourcePlant);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
+        }
+
+        public static SelectList GetCarriageMethodList()
+        {
+            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var carriageMethod = masterDataBll.GetAllCarriageMethods();
+            return new SelectList(carriageMethod, "CARRIAGE_METHOD_ID", "CARRIAGE_METHOD_NAME");
         }
 
         public static SelectList GetSupplierPortList()
@@ -88,6 +138,22 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "UOM_ID", "UOM_NAME");
         }
 
+        public static SelectList GetPbck1CompletedList()
+        {
+            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
+            var input = new PBCK1Input();
+            var data = pbck1.GetPBCK1ByParam(input);
+            return new SelectList(data, "PBCK1_ID", "NUMBER");
+        }
+        
+        public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            return nppbkcbll.GetById(id);
+            
+        }
+        
+        
         public static SelectList GetCompanyList()
         {
             ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();

@@ -31,7 +31,9 @@ namespace Sampoerna.EMS.Website
                       ));
 
             bundles.Add(new ScriptBundle("~/bundles/customjs").Include(
-                      "~/Scripts/js/scripts.min.js"
+                      "~/Scripts/js/scripts.min.js",
+                      "~/Scripts/js/custom.js",
+                      "~/Scripts/js/_scripts.js"
                       ));
 
             bundles.Add(new ScriptBundle("~/bundles/fixedheadertable").Include(

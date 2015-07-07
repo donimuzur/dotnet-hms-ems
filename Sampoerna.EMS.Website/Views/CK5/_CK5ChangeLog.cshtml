@@ -1,0 +1,60 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
+
+<div role="tabpanel" class="tab-pane" id="changes">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Changes Log
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="form-excise " role="form">
+                            <div class="last-form">
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-5">CK-5 No</label>
+                                        <div class="col-md-7">
+                                           @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-3">Date</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-3">User</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        @*<div class="col-md-12">
+                                                <button class="btn btn-blue full">Export to xls</button>
+                                            </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        @Html.Partial("_ChangesHistoryTable")
+    </div>
+</div>
