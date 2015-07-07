@@ -28,9 +28,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string MarketCode { get; set; }
         public string MarketDescription { get; set; }
         public string CountryCode { get; set; }
-        public string HjeValue { get; set; }
+        public decimal HjeValue { get; set; }
         public string HjeCurrency { get; set; }
-        public string Tariff { get; set; }
+        public decimal Tariff { get; set; }
         public string TariffCurrency { get; set; }
         public string ColourName { get; set; }
         public string GoodType { get; set; }
