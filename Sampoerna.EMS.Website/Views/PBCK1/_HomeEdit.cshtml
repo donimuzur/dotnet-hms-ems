@@ -21,7 +21,8 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
-                                            @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.HiddenFor(model => model.Detail.Pbck1Number)
+                                            @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled", @id = "pbck1-number-display" })
                                         </div>
                                     </div>
                                 </div>
