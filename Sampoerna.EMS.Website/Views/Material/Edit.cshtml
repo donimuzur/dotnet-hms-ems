@@ -40,7 +40,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Material Number<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", maxlength = "18" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
                                                         </div>
                                                     </div>
@@ -49,7 +49,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Material Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialGroup)*@
                                                         </div>
                                                     </div>
@@ -60,7 +60,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4 long">Material Description<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control" })
+                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
                                                         </div>
                                                     </div>
@@ -69,7 +69,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Purchasing Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control" })
+                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
 
                                                         </div>
                                                     </div>
@@ -108,7 +108,7 @@
                                                         <label class="col-md-4">Issue Storage Loc<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
-                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
 
 
                                                         </div>

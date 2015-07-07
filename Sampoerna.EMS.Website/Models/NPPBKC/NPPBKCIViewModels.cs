@@ -43,11 +43,14 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         [Required(ErrorMessage = "please fill this field")]
         public string TextTo { get; set; }
 
-        //[DisplayFormat(DataFormatString = "{0:dd mmmm yyyy}")]
+        [Required(ErrorMessage = "Enter the Issued date.")]
+      
         public DateTime? CreateDate { get; set; }
-       
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StartDate { get; set; }
-        
+
         public DateTime? EndDate { get; set; }
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }
