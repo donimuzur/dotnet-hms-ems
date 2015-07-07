@@ -78,7 +78,12 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
-        public decimal? Tariff { get; set; }
+        public decimal? Tariff
+        {
+            get { return Convert.ToDecimal(TariffValueStr); }
+            set { value = Tariff; }
+        }
+        public string TariffValueStr { get; set; }
 
         [Required]
         public string TariffCurrency { get; set; }
