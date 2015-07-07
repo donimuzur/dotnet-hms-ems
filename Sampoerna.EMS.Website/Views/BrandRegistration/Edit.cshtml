@@ -202,8 +202,8 @@
                                                         <div class="row">
                                                             <label class="col-md-4">HJE</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBox("hje", null, new { @id = "hje", @class = "decimal form-control" })
-                                                                @Html.HiddenFor(model => model.HjeValue)
+                                                                @Html.TextBoxFor(m=>m.HjeValueStr, new {  @class = "decimal form-control" })
+                                                               
 
                                                             </div>
                                                         </div>
@@ -352,13 +352,10 @@
         $('#btnCancel').click(function (e) {
             location.href = '@Url.Action("Index", "BrandRegistration")';
         });
-        $('.decimal').val(ThausandSeperator($('#HjeValue').val(), 2));
+            $('#HjeValueStr').val(ThausandSeperator($('#HjeValueStr').val(), 2));
      
     });
-        $('#hje').keyup(function () {
-            var val = $(this).val();
-            $('#HjeValue').val(parseFloat(val.replace(/,/g, '')));
-        });
+        
 
     </script>
 }

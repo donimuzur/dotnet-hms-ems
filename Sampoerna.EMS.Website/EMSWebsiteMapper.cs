@@ -304,7 +304,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.COUNTRY))
                 .ForMember(dest => dest.HjeValue, opt => opt.MapFrom(src => src.HJE_IDR))
                 .ForMember(dest => dest.HjeCurrency, opt => opt.MapFrom(src => src.HJE_CURR))
-                //todo check which one correct
                 .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
                 .ForMember(dest => dest.TariffCurrency, opt => opt.MapFrom(src => src.TARIF_CURR))
                 //todo check which one correct

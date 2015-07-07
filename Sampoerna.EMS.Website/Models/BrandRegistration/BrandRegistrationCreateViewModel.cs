@@ -37,7 +37,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string SkepNo { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
         public DateTime? SkepDate { get; set; }
 
         [Required]
@@ -65,16 +64,20 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string CountryId { get; set; }
         public SelectList CountryCodeList { get; set; }
 
+
+        public decimal? HjeValue
+        {
+            get { return Convert.ToDecimal(HjeValueStr); }
+            set { value = HjeValue; }
+        }
+
         [Required]
-        [UIHint("FormatDecimal")]
-        public decimal? HjeValue { get; set; }
+        public string HjeValueStr { get; set; }
 
         [Required]
         public string HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
-        [Required]
-        [UIHint("FormatDecimal")]
         public decimal? Tariff { get; set; }
 
         [Required]
@@ -91,17 +94,13 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string GoodTypeDescription { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
         public DateTime? StartDate { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
         public DateTime? EndDate { get; set; }
 
-        [UIHint("FormatDecimal")]
         public decimal? Conversion { get; set; }
 
-        [UIHint("FormatDecimal")]
         public decimal? PrintingPrice { get; set; }
 
         [StringLength(25)]

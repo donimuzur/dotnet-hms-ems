@@ -64,15 +64,20 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public SelectList CountryCodeList { get; set; }
 
         [Required]
-        [UIHint("FormatDecimal")]
-        public decimal? HjeValue { get; set; }
+        public string HjeValueStr
+        {
+            get; set;
+        }
 
+        public decimal? HjeValue
+        {
+            get; set;
+        }
         [Required]
         public string HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
         [Required]
-        [UIHint("FormatDecimal")]
         public decimal? Tariff { get; set; }
 
         [Required]

@@ -193,8 +193,8 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBox("hje", null, new { @id ="hje", @class = "decimal form-control" })
-                                                            @Html.HiddenFor(model=>model.HjeValue)
+                                                            @Html.TextBoxFor(m=>m.HjeValueStr, new { @id ="hje", @class = "decimal form-control" })
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -477,11 +477,6 @@
             }
 
         }
-
-        $('#hje').keyup(function () {
-            var val = $(this).val();
-            $('#HjeValue').val(parseFloat(val.replace(/,/g, '')));
-        });
 
     </script>
 }
