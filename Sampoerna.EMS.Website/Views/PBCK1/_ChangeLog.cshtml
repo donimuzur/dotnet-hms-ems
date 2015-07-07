@@ -28,7 +28,7 @@
                                     <div class="row">
                                         <label class="col-md-3">Date</label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" value="@{ DateTime.Now.ToString("dd MMM yyyy"); }" disabled />
+                                            <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy")" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
                                 <div class="col-md-3">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <button class="btn btn-blue full">Export to xls</button>
+                                            <button type="button" id="btn-changelog-export-xls" class="btn btn-blue full">Export to xls</button>
                                         </div>
                                     </div>
                                 </div>

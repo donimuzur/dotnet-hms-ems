@@ -100,11 +100,44 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(long id)
         {
-            return View(new Pbck1ItemViewModel()
+            var pbck1Data = _pbck1Bll.GetById(id);
+            var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
+            return EditInitial(new Pbck1ItemViewModel()
             {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo
+                ChangesHistoryList = changeHistory,
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data)
             });
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Pbck1ItemViewModel model)
+        {
+
+            model = CleanSupplierInfo(model);
+
+            if (!ModelState.IsValid)
+            {
+                return CreateInitial(model);
+            }
+
+            //process save
+            var dataToSave = Mapper.Map<Pbck1>(model.Detail);
+            dataToSave.CreatedById = CurrentUser.USER_ID;
+            var saveResult = _pbck1Bll.Save(dataToSave);
+
+            if (saveResult.Success)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return EditInitial(model);
+        }
+
+        public ActionResult EditInitial(Pbck1ItemViewModel model)
+        {
+            return View("Edit", ModelInitial(model));
         }
 
         public ActionResult Details(long id)
@@ -216,16 +249,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create(Pbck1ItemViewModel model)
         {
 
-            if (string.IsNullOrEmpty(model.Detail.SupplierKppbc))
-            {
-                model.Detail.SupplierKppbc = model.Detail.HiddenSupplierKppbc;
-            }
-
-            if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
-                !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
-            {
-                model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
-            }
+            model = CleanSupplierInfo(model);
 
             if (!ModelState.IsValid)
             {
@@ -248,6 +272,11 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public ActionResult CreateInitial(Pbck1ItemViewModel model)
         {
+            return View("Create", ModelInitial(model));
+        }
+
+        private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
+        {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkcList = GlobalFunctions.GetNppbkcAll();
@@ -258,7 +287,29 @@ namespace Sampoerna.EMS.Website.Controllers
             model.UomList = GlobalFunctions.GetUomList();
             model.PbckReferenceList = new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number");
             model.YearList = CreateYearList();
-            return View(model);
+            return model;
+        }
+
+        private Pbck1ItemViewModel CleanSupplierInfo(Pbck1ItemViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Detail.SupplierKppbc)
+                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierKppbc))
+            {
+                model.Detail.SupplierKppbc = model.Detail.HiddenSupplierKppbc;
+            }
+
+            if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
+                !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
+            {
+                model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
+            }
+
+            if (string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkc)
+                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkc))
+            {
+                model.Detail.SupplierNppbkc = model.Detail.HiddenSupplierNppbkc;
+            }
+            return model;
         }
 
         [HttpPost]

@@ -13,6 +13,7 @@
             <div class="action-button">
                 <input type="submit" class="btn btn-blue" value="Save" />
                 <input type="button" class="btn btn-grey" value="Print Preview" />
+                <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
             </div>
         </div>
     </div>
@@ -48,7 +49,12 @@
     <script type="text/javascript">
 
         var supplierData;
-        $(document).ready(function() {
+        $(document).ready(function () {
+            
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "Pbck1")';
+            });
+            
             $('#prod-conv-save').click(function() {
                 var datarows = GetTableData($('#prod-conv-table'));
                 var columnLength = $('#pbck1-prod-conv-item').find("thead tr:first th").length;

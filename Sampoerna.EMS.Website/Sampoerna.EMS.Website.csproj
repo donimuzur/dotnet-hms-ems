@@ -728,6 +728,7 @@
     <Content Include="Views\NPPBKC\Detail.cshtml" />
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -58,6 +58,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string SupplierNppbkc { get; set; }
 
+        public string HiddenSupplierNppbkc { get; set; }
+
         public string SupplierPortName { get; set; }
 
         [Display(Name = "Supplier Address")]

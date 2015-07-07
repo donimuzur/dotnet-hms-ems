@@ -43,11 +43,15 @@
         $(document).ready(function() {
             $('#MenuPBCK1OpenListDocument').addClass('active');
             $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("Index", "HeaderFooter")';
+                location.href = '@Url.Action("Index", "Pbck1")';
             });
 
-            $('#MenuHeaderFooter').addClass('active');
-        
+            $('#MenuPBCK1OpenListDocument').addClass('active');
+
+            $('#btn-changelog-export-xls').click(function () {
+                alert('export on progress');
+            });
+
         });
 
     </script>
