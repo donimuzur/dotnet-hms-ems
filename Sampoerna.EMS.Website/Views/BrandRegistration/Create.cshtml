@@ -335,7 +335,10 @@
 
     <script type="text/javascript" language="javascript">
         $(document).ready(function() {
-
+            $('.datepicker').datepicker({
+                format: 'dd mmm yyyy'
+              
+            });
             $('.input-group.date').datepicker({
                 dateFormat: 'dd mmm yyyy',
                 toggleActive: true,
