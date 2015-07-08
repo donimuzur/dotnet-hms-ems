@@ -60,20 +60,31 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var detail = new DetailsGoodsTypGroup();
                     detail.GroupName = dd;
-                    foreach (var d in detailFromDb)
+                    var concatName = string.Empty;
+                    var dataFilterByNames = detailFromDb.Where(x => x.GroupName.Equals(dd)).ToList();
+                    foreach (var d in dataFilterByNames)
                     {
 
-
+                        concatName = string.Empty;
                         var names = _exGroupTypeBll.GetGoodTypeByGroup(d.GoodsTypeId);
-                        var concatName = string.Empty;
+                        int nameIndex = 0;
                         foreach (var name in names)
                         {
-                            concatName += name;
+                            if (nameIndex > 0)
+                            {
+                                concatName += " , " + name;
+                            }
+                            else
+                            {
+                                concatName += name;
+                            }
+                            nameIndex++;
                         }
-                        detail.GroupTypeName = concatName;
-
+                        
                         detail.GoodsTypeId = d.GoodsTypeId;
                     }
+                    detail.GroupTypeName = concatName;
+
                     distinctDetail.Add(detail);
                 }
             
@@ -111,7 +122,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (ModelState.IsValid)
             {
-
+                
                 if (_exGroupTypeBll.IsGroupNameExist(model.GroupName))
                 {
                     ModelState.AddModelError("GroupName", "Group name already exist");
