@@ -242,7 +242,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     detailGroupType.GOODTYPE_ID = detail.GoodTypeId;
                     detailGroupType.EX_GROUP_TYPE_ID = realChild.EX_GROUP_TYPE_ID;
-                    _exGroupTypeBll.InsertDetail(detailGroupType);
+                     _exGroupTypeBll.InsertDetail(detailGroupType);
 
                 }
                 
