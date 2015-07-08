@@ -162,20 +162,30 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        public ActionResult Details(string groupName)
+        public ActionResult Details(int id)
         {
-            var model = new GoodsTypeGroupDetailsViewModel();
+            var model = new GoodsTypeGroupEditViewModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-            model.GroupName = groupName;
+            // model.GroupName = groupName;
 
-            var childDetails = _exGroupTypeBll.GetGroupTypesByName(groupName);
+            var realChild = _exGroupTypeBll.GetById(id);
+            model.GroupName = realChild.GROUP_NAME;
+            var childDetails = _zaidmExGoodTypeBll.GetAll();
 
             model.Details = Mapper.Map<List<GoodsTypeDetails>>(childDetails).ToList();
 
             foreach (var details in model.Details)
             {
-                details.IsChecked = true;
+                foreach (var gt in realChild.EX_GROUP_TYPE_DETAILS)
+                {
+                    if (details.GoodTypeId == gt.GOODTYPE_ID)
+                    {
+                        details.IsChecked = true;
+                    }
+                }
+
+
             }
             return View(model);
         }
