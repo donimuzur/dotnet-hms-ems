@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = Mapper.Map<UomDetailViewModel>(data);
             model.CurrentMenu = PageInfo;
-            model.MainMenu = _menuList;
+            model.MainMenu = _mainMenu;
 
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.Uom, id.ToString()));
             

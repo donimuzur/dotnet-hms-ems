@@ -59,11 +59,12 @@ namespace Sampoerna.EMS.Website
             container.Register<IMonthBLL, MonthBLL>();
             container.Register<IDocumentSequenceNumberBLL, DocumentSequenceNumberBLL>();
             container.Register<IHeaderFooterBLL, HeaderFooterBLL>();
-            container.Register<IExGroupType, ExGroupType>();
+            container.Register<IExGroupTypeBLL, ExGroupTypeBLL>();
             container.Register<IZaidmExKPPBCBLL, ZaidmExKPPBCBLL>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
             container.Register<IMaterialBLL, MaterialBLL>();
             container.Register<IPOASKBLL, POASKBLL>();
+            container.Register<IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
           
             // 3. Optionally verify the container's configuration.
             container.Verify();

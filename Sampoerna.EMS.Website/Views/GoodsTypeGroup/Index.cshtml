@@ -85,8 +85,8 @@
                             <tr>
                                 @*<td></td>*@
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "GoodsTypeGroup", new { groupName = item.GroupName })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "GoodsTypeGroup", new { groupName = item.GroupName })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "GoodsTypeGroup", new { id = item.GoodsTypeId })"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "GoodsTypeGroup", new { id = item.GoodsTypeId })"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.GroupName)
