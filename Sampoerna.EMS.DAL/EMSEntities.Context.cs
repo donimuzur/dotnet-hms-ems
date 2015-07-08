@@ -59,8 +59,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual DbSet<T001W> T001W { get; set; }
         public virtual DbSet<POA_SK> POA_SK { get; set; }
-        public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
         public virtual DbSet<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
+        public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
     }
 }
