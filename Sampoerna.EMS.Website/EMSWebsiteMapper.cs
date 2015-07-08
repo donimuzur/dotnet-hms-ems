@@ -18,6 +18,7 @@ using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
+using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 
@@ -559,6 +560,12 @@ namespace Sampoerna.EMS.Website
             
             
 
+            #endregion
+
+            #region UOM
+            Mapper.CreateMap<UOM, UomDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
             #endregion
         }
     }

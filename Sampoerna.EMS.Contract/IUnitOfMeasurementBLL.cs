@@ -7,5 +7,6 @@ namespace Sampoerna.EMS.Contract
     {
         UOM GetById(int id);
         List<UOM> GetAll();
+        void Save(UOM uom,string userid);
     }
 }

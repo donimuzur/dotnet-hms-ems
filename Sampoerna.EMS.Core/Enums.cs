@@ -29,7 +29,8 @@ namespace Sampoerna.EMS.Core
             BrandRegistration = 22,
             VirtualMappingPlant = 23,
             MaterialMaster = 24,
-            MasterPlant = 25
+            MasterPlant = 25,
+            Uom = 26
         }
         public enum PBCK1Type
         {

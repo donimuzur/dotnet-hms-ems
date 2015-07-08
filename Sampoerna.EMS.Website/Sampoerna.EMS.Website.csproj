@@ -234,6 +234,7 @@
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
@@ -278,6 +279,8 @@
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
+    <Compile Include="Models\UOM\UomDetailViewModel.cs" />
+    <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
@@ -729,6 +732,10 @@
     <Content Include="Views\NPPBKC\Edit.cshtml" />
     <Content Include="Views\NPPBKC\Detail.cshtml" />
     <Content Include="Views\POA\_FileUpload.cshtml" />
+    <Content Include="Views\Uom\Create.cshtml" />
+    <Content Include="Views\Uom\Details.cshtml" />
+    <Content Include="Views\Uom\Edit.cshtml" />
+    <Content Include="Views\Uom\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
