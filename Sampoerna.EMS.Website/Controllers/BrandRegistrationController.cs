@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
             IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll)
-            : base(pageBLL, Enums.MenuList.MasterData)
+            : base(pageBLL, Enums.MenuList.BrandRegistration)
         {
             _brandRegistrationBll = brandRegistrationBll;
             _masterBll = masterBll;
@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _goodTypeBll = goodTypeBll;
             _changesHistoryBll = changesHistoryBll;
             _plantBll = plantBll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -65,7 +66,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private BrandRegistrationCreateViewModel InitCreate(BrandRegistrationCreateViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.StickerCodeList = GlobalFunctions.GetStickerCodeList();

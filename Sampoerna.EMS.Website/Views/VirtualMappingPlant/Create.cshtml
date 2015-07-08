@@ -50,7 +50,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Import Virtual Plant<span class="red">*</span></label>
+                                                    <label class="col-md-2">Import Virtual Plant</label>
                                                     <div class="col-md-4">
                                                         @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "selectpicker form-control" })
                                                         
@@ -59,12 +59,17 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Export Virtual Plant<span class="red">*</span></label>
+                                                    <label class="col-md-2">Export Virtual Plant</label>
                                                     <div class="col-md-4">
                                                         @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "selectpicker form-control" })
                                                        
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <span class="red">*</span> ) This Field Required
                                             </div>
                                         </div>
                                     </form>

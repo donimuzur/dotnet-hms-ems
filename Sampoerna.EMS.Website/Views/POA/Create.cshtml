@@ -9,7 +9,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Create New POA</h3>
+                <h3 class="desc">POA <span>(Power of Attorney)</span></h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save">
                     <a href="@Url.Action("Index", "POA")" class="btn btn-grey">Cancel</a>
@@ -80,7 +80,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Phone<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "15" })
+                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "30" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -88,7 +88,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Email<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35" })
+                                                        @Html.TextBoxFor(model => model.Detail.Email, new { @class = "form-control", @maxlength = "35", disabled="disabled" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -168,5 +168,7 @@
                 }
             });
         }
+        
+
     </script>
 } 

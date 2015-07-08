@@ -52,7 +52,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">NPPBKC ID<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.Nppbkc, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.Nppbkc, "Select", new { @class = "selectpicker form-control" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -68,7 +68,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Plant Address</label>
+                                                    <label class="col-md-3">Plant Address<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5" })
                                                     </div>
@@ -78,7 +78,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Plant City</label>
+                                                    <label class="col-md-3">Plant City<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Ort01, new { @class = "form-control", @maxlength = "50" })
                                                     </div>
@@ -107,7 +107,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Recieve Material</label>
+                                                    <label class="col-md-3">Recieve Material<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         <div class="row">
                                                             @for (int i = 0; i < Model.Detail.ReceiveMaterials.Count; i++)

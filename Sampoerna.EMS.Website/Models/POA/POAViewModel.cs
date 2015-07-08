@@ -74,6 +74,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         public string Title { get; set; }
 
         [Required]
+        [RegularExpression(@"^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$")]
         public string Email { get; set; }
 
         public bool IsFromSAP { get; set; }

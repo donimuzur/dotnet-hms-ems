@@ -44,6 +44,21 @@
           <Property Name="BODY" Type="nvarchar(max)" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="EX_GROUP_TYPE_DETAILS">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_DETAIL_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EX_GROUP_TYPE_ID" Type="int" />
+          <Property Name="GOODTYPE_ID" Type="int" />
+        </EntityType>
         <EntityType Name="FILE_UPLOAD">
           <Key>
             <PropertyRef Name="FILE_ID" />
@@ -432,6 +447,30 @@
             </Principal>
             <Dependent Role="DOC_NUMBER_SEQ">
               <PropertyRef Name="MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="0..1" />
+          <End Role="EX_GROUP_TYPE_DETAILS" Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE_DETAILS">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Role="EX_GROUP_TYPE_DETAILS" Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE_DETAILS">
+              <PropertyRef Name="GOODTYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1004,6 +1043,8 @@
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMAIL_TEMPLATE" EntityType="Self.EMAIL_TEMPLATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="Self.EX_GROUP_TYPE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="Self.EX_GROUP_TYPE_DETAILS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER_FORM_MAP" EntityType="Self.HEADER_FOOTER_FORM_MAP" Schema="dbo" store:Type="Tables" />
@@ -1041,6 +1082,14 @@
           <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="Self.FK_DOC_NUMBER_SEQ_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="Self.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" Association="Self.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_CREATED_BY_USER" Association="Self.FK_HEADER_FOOTER_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -1257,7 +1306,6 @@
           <EntitySet Name="USER" EntityType="EMSModel.USER" />
           <EntitySet Name="USER_GROUP" EntityType="EMSModel.USER_GROUP" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
-          <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="EMSModel.ZAIDM_EX_KPPBC" />
           <EntitySet Name="ZAIDM_EX_MARKET" EntityType="EMSModel.ZAIDM_EX_MARKET" />
           <EntitySet Name="ZAIDM_EX_NPPBKC" EntityType="EMSModel.ZAIDM_EX_NPPBKC" />
@@ -1376,10 +1424,6 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
@@ -1426,21 +1470,9 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
           <EntitySet Name="SUPPLIER_PORT" EntityType="EMSModel.SUPPLIER_PORT" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
           <EntitySet Name="T001W" EntityType="EMSModel.T001W" />
-          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
-          </AssociationSet>
           <AssociationSet Name="FK_T001W_MODIFIED_BY_USER" Association="EMSModel.FK_T001W_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="T001W" EntitySet="T001W" />
@@ -1469,6 +1501,33 @@
           <AssociationSet Name="FK_POA_SK_POA" Association="EMSModel.FK_POA_SK_POA">
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_SK" EntitySet="POA_SK" />
+          </AssociationSet>
+          <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="EMSModel.EX_GROUP_TYPE_DETAILS" />
+          <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
+          <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <EntitySet Name="EX_GROUP_TYPE" EntityType="EMSModel.EX_GROUP_TYPE" />
+          <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -1784,7 +1843,6 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MARKET" />
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
@@ -1793,19 +1851,7 @@
           <Property Name="PRINTING_PRICE" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="CONVERSION" Type="Decimal" Precision="15" Scale="2" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
-        </EntityType>
-        <EntityType Name="ZAIDM_EX_GOODTYP">
-          <Key>
-            <PropertyRef Name="EXC_GOOD_TYP" />
-          </Key>
-          <Property Name="EXC_GOOD_TYP" Type="Int32" Nullable="false" />
-          <Property Name="EXT_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
-          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_GOODTYP" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
@@ -2226,18 +2272,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -2375,8 +2409,8 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
@@ -2414,18 +2448,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
@@ -2442,7 +2464,7 @@
           <Property Name="EXC_GOOD_TYP" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="T001W">
           <Key>
             <PropertyRef Name="WERKS" />
@@ -2465,30 +2487,6 @@
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
-        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T001W">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="PLANT_RECEIVE_MATERIAL">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="PLANT_RECEIVE_MATERIAL">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_T001W_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="*" />
@@ -2580,6 +2578,110 @@
             </Principal>
             <Dependent Role="POA_SK">
               <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EX_GROUP_TYPE_DETAILS">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_DETAIL_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_DETAIL_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EX_GROUP_TYPE_ID" Type="Int32" />
+          <Property Name="GOODTYPE_ID" Type="Int32" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" FromRole="EX_GROUP_TYPE_DETAILS" ToRole="ZAIDM_EX_GOODTYP" />
+          <NavigationProperty Name="EX_GROUP_TYPE" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" FromRole="EX_GROUP_TYPE_DETAILS" ToRole="EX_GROUP_TYPE" />
+        </EntityType>
+        <EntityType Name="ZAIDM_EX_GOODTYP">
+          <Key>
+            <PropertyRef Name="EXC_GOOD_TYP" />
+          </Key>
+          <Property Name="EXC_GOOD_TYP" Type="Int32" Nullable="false" />
+          <Property Name="EXT_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EX_GROUP_TYPE_DETAILS" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="EX_GROUP_TYPE_DETAILS" />
+          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
+          <NavigationProperty Name="PLANT_RECEIVE_MATERIAL1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="PLANT_RECEIVE_MATERIAL" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.EX_GROUP_TYPE_DETAILS" Role="EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE_DETAILS">
+              <PropertyRef Name="GOODTYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_T001W">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="PLANT_RECEIVE_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EX_GROUP_TYPE">
+          <Key>
+            <PropertyRef Name="EX_GROUP_TYPE_ID" />
+          </Key>
+          <Property Name="EX_GROUP_TYPE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EX_GROUP_TYPE_DETAILS" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" FromRole="EX_GROUP_TYPE" ToRole="EX_GROUP_TYPE_DETAILS" />
+        </EntityType>
+        <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
+          <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="0..1" />
+          <End Type="EMSModel.EX_GROUP_TYPE_DETAILS" Role="EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Principal>
+            <Dependent Role="EX_GROUP_TYPE_DETAILS">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2861,16 +2963,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_EX_GOODTYP">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_GOODTYP">
-              <MappingFragment StoreEntitySet="ZAIDM_EX_GOODTYP">
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="EXT_TYP_DESC" ColumnName="EXT_TYP_DESC" />
-                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_KPPBC">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_KPPBC">
               <MappingFragment StoreEntitySet="ZAIDM_EX_KPPBC">
@@ -3025,6 +3117,33 @@
                 <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
                 <ScalarProperty Name="POA_SK_ID" ColumnName="POA_SK_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EX_GROUP_TYPE_DETAILS">
+            <EntityTypeMapping TypeName="EMSModel.EX_GROUP_TYPE_DETAILS">
+              <MappingFragment StoreEntitySet="EX_GROUP_TYPE_DETAILS">
+                <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
+                <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
+                <ScalarProperty Name="EX_GROUP_TYPE_DETAIL_ID" ColumnName="EX_GROUP_TYPE_DETAIL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_GOODTYP">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_GOODTYP">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_GOODTYP">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="EXT_TYP_DESC" ColumnName="EXT_TYP_DESC" />
+                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EX_GROUP_TYPE">
+            <EntityTypeMapping TypeName="EMSModel.EX_GROUP_TYPE">
+              <MappingFragment StoreEntitySet="EX_GROUP_TYPE">
+                <ScalarProperty Name="GROUP_NAME" ColumnName="GROUP_NAME" />
+                <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

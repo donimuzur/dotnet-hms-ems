@@ -7,6 +7,7 @@
 }
 
 @section scripts {
+<script src="~/Scripts/js/custom.js"></script>
    <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
 
@@ -69,7 +70,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>@ViewBag.Title</h3>
+            <h3 class="desc">NPPBKC <span>(Nomor Pokok Pengusaha Barang Kena Cukai)</span></h3>
 
         </div>
     </div>
@@ -112,8 +113,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"><i class=" fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })"><i class=" fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"data-toggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.VirtualNppbckId)

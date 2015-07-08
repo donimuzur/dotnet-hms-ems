@@ -30,10 +30,11 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         }
 
        
-                [Display(Name = "Werks")]
+        [Display(Name = "Werks")]
         public string Werks { get; set; }
         public string Name1 { get; set; }
         public string PlantDescription { get; set; }
+        [Required]
         public string Ort01 { get; set; }
 
         public bool IsMainPlant { get; set; }
@@ -41,6 +42,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public bool IsNo { get; set; }
 
         [Display(Name = "Address")]
+        [Required]
         public string Address { get; set; }
 
        
@@ -55,7 +57,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public DateTime? CreatedDate { get; set; }
         
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }
-
+        [Required]
         public string Phone { get; set; }
     }
 

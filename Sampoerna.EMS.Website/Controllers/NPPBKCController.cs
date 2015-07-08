@@ -146,7 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 _nppbkcBll.Save(nppbkc);
                
                
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
 
             }

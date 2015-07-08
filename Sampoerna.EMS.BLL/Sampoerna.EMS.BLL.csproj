@@ -69,7 +69,7 @@
     <Compile Include="DocumentSequenceNumberBLL.cs" />
     <Compile Include="FileUploadBLL.cs" />
     <Compile Include="HeaderFooterBLL.cs" />
-    <Compile Include="ExGroupType.cs" />
+    <Compile Include="ExGroupTypeBLL.cs" />
     <Compile Include="MasterDataBLL.cs" />
     <Compile Include="MaterialBLL.cs" />
     <Compile Include="MonthBLL.cs" />

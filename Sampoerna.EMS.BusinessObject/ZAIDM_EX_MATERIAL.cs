@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual T001W T001W { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
     }
 }
