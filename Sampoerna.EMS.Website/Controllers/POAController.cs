@@ -24,15 +24,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUserBLL  _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IPOASKBLL _poaskbll;
+        private Enums.MenuList _mainMenu;
         public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
             ,IPOASKBLL poaskbll)
-            : base(pageBLL, Enums.MenuList.MasterData)
+            : base(pageBLL, Enums.MenuList.POA)
         {
             _poaMapBll = poadMapBll;
             _poaBll = poaBll;
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;
             _poaskbll = poaskbll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -41,7 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var poa = new POAViewModel
             {
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<POAViewDetailModel>>(_poaBll.GetAll())
             };
@@ -54,7 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var poa = new POAFormModel();
-            poa.MainMenu = Enums.MenuList.MasterData;
+            poa.MainMenu = _mainMenu;
             poa.CurrentMenu = PageInfo;
             poa.Users = GlobalFunctions.GetCreatorList();
             return View(poa);
@@ -116,7 +118,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             
             var model = new POAFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
             
@@ -238,7 +240,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.POA);
            
             var model = new POAFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
             model.Users = GlobalFunctions.GetCreatorList();

@@ -18,6 +18,7 @@ using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
+using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 
@@ -558,6 +559,24 @@ namespace Sampoerna.EMS.Website
                 //.ForMember(dest => dest.isPlantDeleteTemp, opt => opt.MapFrom(src => src.));
             
             
+
+            #endregion
+
+            #region UOM
+            Mapper.CreateMap<UOM, UomDetailViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
+
+            Mapper.CreateMap<UOM, UomDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
+
+            Mapper.CreateMap<UomDetailViewModel, UOM>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
+               .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UomName));
+            
+            
+
 
             #endregion
         }

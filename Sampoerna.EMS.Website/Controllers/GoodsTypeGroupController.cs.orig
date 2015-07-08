@@ -20,8 +20,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMasterDataBLL _masterDataBll;
         private IExGroupTypeBLL _exGroupTypeBll;
 
-        public GoodsTypeGroupController(IZaidmExGoodTypeBLL zaidmExGoodTypeBll, IMasterDataBLL masterData, IExGroupTypeBLL exGroupTypeBll,
-            IPageBLL pageBLL)
+<<<<<<< HEAD
+        public GoodsTypeGroupController(IZaidmExGoodTypeBLL zaidmExGoodTypeBll, IMasterDataBLL masterData,
+            IPageBLL pageBLL, IExGroupTypeBLL exGroupTypeBll)
+=======
+        public GoodsTypeGroupController(IZaidmExGoodTypeBLL zaidmExGoodTypeBll, IMasterDataBLL masterData, IPageBLL pageBLL, IExGroupTypeBLL exGroupTypeBll)
+>>>>>>> story/database-design
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _zaidmExGoodTypeBll = zaidmExGoodTypeBll;
@@ -50,6 +54,15 @@ namespace Sampoerna.EMS.Website.Controllers
             var goodsTypeGroup = new GoodsTypeGroupViewModel();
             goodsTypeGroup.MainMenu = Enums.MenuList.MasterData;
             goodsTypeGroup.CurrentMenu = PageInfo;
+<<<<<<< HEAD
+            var detailFromDb = Mapper.Map<List<DetailsGoodsTypGroup>>(data);
+            var distinctDetail = new List<DetailsGoodsTypGroup>();
+            if (detailFromDb.Count > 0)
+            {
+                var groupnames = data.GroupBy(x => x.GROUP_NAME).Select(x => x.Key);
+
+
+=======
             var detailFromDb =Mapper.Map<List<DetailsGoodsTypGroup>>(data);
             var distinctDetail = new List<DetailsGoodsTypGroup>();
             if (detailFromDb.Count > 0)
@@ -57,6 +70,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var groupnames = data.GroupBy(x => x.GROUP_NAME).Select(x=>x.Key);
                 
                
+>>>>>>> story/database-design
                 foreach (var dd in groupnames)
                 {
                     var detail = new DetailsGoodsTypGroup();
@@ -81,16 +95,26 @@ namespace Sampoerna.EMS.Website.Controllers
                             }
                             nameIndex++;
                         }
+<<<<<<< HEAD
+
+=======
                         
+>>>>>>> story/database-design
                         detail.GoodsTypeId = d.GoodsTypeId;
                     }
                     detail.GroupTypeName = concatName;
 
                     distinctDetail.Add(detail);
                 }
+<<<<<<< HEAD
+
+
+            }
+=======
             
 
         }
+>>>>>>> story/database-design
 
             goodsTypeGroup.Details = distinctDetail;
             return View("Index", goodsTypeGroup);
@@ -113,7 +137,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var childDetails = _zaidmExGoodTypeBll.GetAll();
 
             model.Details = Mapper.Map<List<GoodsTypeDetails>>(childDetails).ToList();
+<<<<<<< HEAD
 
+=======
+           
+>>>>>>> story/database-design
             return View(model);
         }
 
@@ -123,7 +151,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (ModelState.IsValid)
             {
+<<<<<<< HEAD
+
+=======
                 
+>>>>>>> story/database-design
                 if (_exGroupTypeBll.IsGroupNameExist(model.GroupName))
                 {
                     ModelState.AddModelError("GroupName", "Group name already exist");
@@ -133,10 +165,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var listGroup = new List<EX_GROUP_TYPE>();
+<<<<<<< HEAD
 
                 foreach (var detail in model.Details.Where(detail => detail.IsChecked))
                 {
 
+=======
+                
+                foreach (var detail in model.Details.Where(detail => detail.IsChecked))
+                {
+                   
+>>>>>>> story/database-design
                     var groupType = new EX_GROUP_TYPE();
                     groupType.GROUP_NAME = model.GroupName;
                     var detailGroupType = new EX_GROUP_TYPE_DETAILS();
@@ -147,7 +186,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (listGroup.Count > 0)
                 {
+<<<<<<< HEAD
 
+=======
+                    
+>>>>>>> story/database-design
                     _exGroupTypeBll.SaveGroup(listGroup);
 
                     return RedirectToAction("Index");
@@ -196,7 +239,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new GoodsTypeGroupEditViewModel();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
+<<<<<<< HEAD
+            // model.GroupName = groupName;
+=======
            // model.GroupName = groupName;
+>>>>>>> story/database-design
 
             var realChild = _exGroupTypeBll.GetById(id);
             model.GroupName = realChild.GROUP_NAME;
@@ -207,6 +254,16 @@ namespace Sampoerna.EMS.Website.Controllers
             foreach (var details in model.Details)
             {
                 foreach (var gt in realChild.EX_GROUP_TYPE_DETAILS)
+<<<<<<< HEAD
+                {
+                    if (details.GoodTypeId == gt.GOODTYPE_ID)
+                    {
+                        details.IsChecked = true;
+                    }
+                }
+
+
+=======
                     {
                         if (details.GoodTypeId == gt.GOODTYPE_ID)
                         {
@@ -215,6 +272,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                       
                 
+>>>>>>> story/database-design
             }
             return View(model);
         }
@@ -223,18 +281,30 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(GoodsTypeGroupEditViewModel model)
         {
 
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> story/database-design
             if (ModelState.IsValid)
             {
                 var realChild = _exGroupTypeBll.GetById(model.Id);
                 var listDetail = new List<EX_GROUP_TYPE_DETAILS>(realChild.EX_GROUP_TYPE_DETAILS);
 
                 foreach (var groupType in listDetail)
+<<<<<<< HEAD
+                {
+                    _exGroupTypeBll.DeleteDetails(groupType);
+                }
+
+
+=======
                     {
                         _exGroupTypeBll.DeleteDetails(groupType);
                     }
                     
                 
+>>>>>>> story/database-design
                 var listGroup = new List<EX_GROUP_TYPE>();
                 foreach (var detail in model.Details.Where(detail => detail.IsChecked))
                 {
@@ -242,18 +312,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     detailGroupType.GOODTYPE_ID = detail.GoodTypeId;
                     detailGroupType.EX_GROUP_TYPE_ID = realChild.EX_GROUP_TYPE_ID;
-                     _exGroupTypeBll.InsertDetail(detailGroupType);
+                    _exGroupTypeBll.InsertDetail(detailGroupType);
 
                 }
-                
-                
+<<<<<<< HEAD
+
+
                 return RedirectToAction("Index");
+
+=======
                 
+                
+                    return RedirectToAction("Index");
+                
+>>>>>>> story/database-design
 
                 ModelState.AddModelError("Details", "Choose at least one type");
             }
 
+<<<<<<< HEAD
             // InitCreateModel(model);
+=======
+           // InitCreateModel(model);
+>>>>>>> story/database-design
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
 

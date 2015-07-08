@@ -83,6 +83,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
+
+                if (checkIfExist != null)
+                {
+                    TempData[Constans.SubmitType.DataExist] = Constans.SubmitMessage.DataExist;
+                    return InitialEdit(model);
+                }
+
+
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
