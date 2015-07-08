@@ -329,7 +329,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbCk5.STATUS_ID = Enums.DocumentStatus.Draft;
                 dbCk5.CREATED_DATE = DateTime.Now;
                 dbCk5.CREATED_BY = CurrentUser.USER_ID;
-
+               
                 _ck5Bll.SaveCk5(dbCk5);
 
                 //success.. redirect to edit form
@@ -347,8 +347,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
+     
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, long plantId)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5CreateViewModel();
@@ -364,7 +365,12 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Qty = datarow[1];
                         uploadItem.Uom = datarow[2];
                         uploadItem.Convertion = datarow[3];
-
+                        uploadItem.ConvertedUom = datarow[4];
+                        uploadItem.UsdValue = datarow[5];
+                        if (datarow.Count > 6)
+                            uploadItem.Note = datarow[6];
+                        
+                    
                         model.UploadItemModels.Add(uploadItem);
 
                     }
@@ -376,7 +382,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
             }
-            return PartialView("_CK5UploadList", model);
+
+            var input = Mapper.Map<List<CK5MaterialInput>>(model.UploadItemModels);
+
+            var outputResult = _ck5Bll.CK5MaterialProcess(input);
+
+            model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
+
+            return PartialView("_CK5UploadList", model.UploadItemModels);
         }
 
         private CK5EditViewModel GetInitEditData(CK5EditViewModel model)

@@ -37,7 +37,12 @@ namespace Sampoerna.EMS.BLL
                 return string.Empty;
 
             return dbData.UOM_NAME;
+        }
 
+        public bool IsUomNameExist(string name)
+        {
+            var dbData = _repository.Get(u => u.UOM_NAME.Equals(name)).FirstOrDefault();
+            return dbData != null;
         }
     }
 }

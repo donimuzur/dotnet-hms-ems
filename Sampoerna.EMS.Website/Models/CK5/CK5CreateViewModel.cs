@@ -14,9 +14,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
             UploadItemModels = new List<CK5UploadViewModel>();
         }
 
-        //public CK5InformationViewModel InfoViewModel { get; set; }
+       
         public List<CK5UploadViewModel> UploadItemModels { get; set; }
-
+       
         public Enums.DocumentStatus DocumentStatus { get; set; }
 
         //DETAIL INFORMATION
