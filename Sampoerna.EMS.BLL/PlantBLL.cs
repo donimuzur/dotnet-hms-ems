@@ -5,6 +5,7 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -14,6 +15,7 @@ namespace Sampoerna.EMS.BLL
 
         private IGenericRepository<T001W> _repository;
         private IGenericRepository<PLANT_RECEIVE_MATERIAL> _plantReceiveMaterialRepository;
+        private IGenericRepository<T001W> _t001WRepository; 
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -28,8 +30,27 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<T001W>();
             _plantReceiveMaterialRepository = _uow.GetGenericRepository<PLANT_RECEIVE_MATERIAL>();
+            _t001WRepository = _uow.GetGenericRepository<T001W>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger, _changesHistoryBll);
+        }
+
+        public T001W GetT001W(string NppbkcId, bool IsPlant)
+        {
+            var query = PredicateHelper.True<T001W>();
+
+            query = query.And(p => p.NPPBKC_ID == NppbkcId);
+
+            if (IsPlant == false)
+            {
+                query = query.And(p => p.IS_MAIN_PLANT == IsPlant || p.IS_MAIN_PLANT == null);
+            }
+            else
+            {
+                query = query.And(p => p.IS_MAIN_PLANT == IsPlant);    
+            }
+
+            return _t001WRepository.Get(query).FirstOrDefault();
         }
 
         public Plant GetId(string id)
@@ -66,7 +87,8 @@ namespace Sampoerna.EMS.BLL
                 {
                     _plantReceiveMaterialRepository.Delete(item);
                 }
-              
+
+                //todo automapper for update data ???
                 Mapper.Map<Plant, T001W>(plantT1001W, origin);
              
                 //origin.PLANT_RECEIVE_MATERIAL = plantT1001W.PLANT_RECEIVE_MATERIAL;
