@@ -78,7 +78,14 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public SelectList HjeCurrencyList { get; set; }
 
         [Required]
+        public string TariffValueStr
+        {
+            get;
+            set;
+        }
         public decimal? Tariff { get; set; }
+       
+      
 
         [Required]
         public string TariffCurrency { get; set; }
@@ -101,10 +108,13 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [UIHint("FormatDateTime")]
         public DateTime? EndDate { get; set; }
 
-        [UIHint("FormatDecimal")]
+        
         public decimal? Conversion { get; set; }
 
-        [UIHint("FormatDecimal")]
+        [Required]
+        public string ConversionValueStr { get; set; }
+
+      
         public decimal? PrintingPrice { get; set; }
 
         [StringLength(25)]

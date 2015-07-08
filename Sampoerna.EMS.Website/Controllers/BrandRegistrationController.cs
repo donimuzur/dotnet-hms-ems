@@ -142,7 +142,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.IS_FROM_SAP = false;
                 dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
-      
+                dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
+                dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
+                dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+
                 _brandRegistrationBll.Save(dbBrand);
 
                 return RedirectToAction("Index");
@@ -184,7 +187,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
             model.HjeValueStr = model.HjeValue == null ? string.Empty : model.HjeValue.ToString();
-      
+            model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model = InitEdit(model);
 
             return View(model);
