@@ -28,7 +28,6 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual EX_GROUP_TYPE EX_GROUP_TYPE { get; set; }
         public virtual ICollection<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL1 { get; set; }

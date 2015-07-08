@@ -33,19 +33,26 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get().ToList();
         }
 
-        public void Save(UOM uom,string userid) {
-            if (uom.UOM_ID == 0)
+        public void Save(UOM uom,string userid, bool IsEdit) 
+        {
+            
+            if (IsEdit)
             {
-                uom.CREATED_DATE = DateTime.Now;
-                _repository.Insert(uom);
-            }
-            else {
+
                 UOM data = _repository.GetByID(uom.UOM_ID);
                 SetChanges(data, uom, userid);
                 data.UOM_DESC = uom.UOM_DESC;
+
                 _repository.Update(data);
-                
+
             }
+            else
+            {
+                 uom.CREATED_DATE = DateTime.Now;
+                 _repository.InsertOrUpdate(uom);
+            }
+               
+              
             
             _uow.SaveChanges();
         }

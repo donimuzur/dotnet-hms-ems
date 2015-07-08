@@ -42,8 +42,8 @@
                                             <div class="row">
                                                 <label class="col-md-2">UOM Id</label>
                                                 <div class="col-md-4">
-                                                    @Html.TextBoxFor(model => model.UomId, new { @class = "form-control", @disabled="disabled" })
-                                                    @*@Html.ValidationMessageFor(model => model.CompanyId)*@
+                                                    @Html.TextBox("uom_id", Model.UomId, new { @class = "form-control", @disabled="disabled" })
+                                                   @Html.HiddenFor(x=>x.UomId)
 
                                                 </div>
                                             </div>
@@ -53,7 +53,7 @@
                                                 <label class="col-md-2">UOM Name</label>
                                                 <div class="col-md-4">
                                                     @Html.TextBoxFor(model => model.UomName, new { @class = "form-control" })
-                                                    @*@Html.ValidationMessageFor(model => model.CompanyId)*@
+                                                 
 
                                                 </div>
                                             </div>
@@ -74,7 +74,7 @@
 @section scripts {
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
-            $('#MenuMasterVirtualMappingPlant').addClass('active');
+            $('#MenuUOM').addClass('active');
 
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Uom")';
@@ -84,7 +84,8 @@
                     source: '@Url.Action("PlantList", "VirtualMappingPlant")',
                     minLength: 1
             });*@
-
+            
+          
         });
 
     </script>

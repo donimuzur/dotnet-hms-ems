@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             _uomBLL = uomBLL;
             _changeHistoryBll = changeHistorybll;
-            _mainMenu = Enums.MenuList.Uom;
+            _mainMenu = Enums.MenuList.MasterData;
         }
         //
         // GET: /Uom/
@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             UomDetailViewModel model = new UomDetailViewModel();
             model.CurrentMenu = PageInfo;
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
 
             return View("Create",model);
         }
@@ -75,7 +75,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add insert logic here
                 var data = Mapper.Map<UOM>(model);
-                _uomBLL.Save(data,CurrentUser.USER_ID);
+                _uomBLL.Save(data,CurrentUser.USER_ID,false);
+
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
             }
@@ -90,7 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int id)
         {
             UomDetailViewModel model = new UomDetailViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             var data = _uomBLL.GetById(id);
 
@@ -101,14 +102,14 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Uom/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, UomDetailViewModel model)
+        public ActionResult Edit(UomDetailViewModel model)
         {
             try
             {
                 // TODO: Add update logic here
                 var data = Mapper.Map<UOM>(model);
-                data.UOM_ID = id;
-                _uomBLL.Save(data,CurrentUser.USER_ID);
+             
+                _uomBLL.Save(data,CurrentUser.USER_ID, true);
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }

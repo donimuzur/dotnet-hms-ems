@@ -84,16 +84,15 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" />
         <EntityTypeShape EntityType="EMSModel.POA_SK" Width="1.5" PointX="7.5" PointY="26" />
         <AssociationConnector Association="EMSModel.FK_POA_SK_POA" />
-        <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="12" PointY="29.625" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE_DETAILS" Width="1.5" PointX="14.25" PointY="26.75" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_GOODTYP" Width="1.5" PointX="9.75" PointY="24" />
-        <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" />
-        <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" />
         <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" />
+        <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="7.375" PointY="3.75" />
+        <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

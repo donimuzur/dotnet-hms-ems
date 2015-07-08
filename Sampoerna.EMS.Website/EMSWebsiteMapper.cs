@@ -235,15 +235,19 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.HeaderFooterMapList,
                     opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HeaderFooterMapList)))
                     .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
-            
+
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, GoodsTypeDetails>().IgnoreAllNonExisting()
-               .ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
+                .ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
                .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.EXT_TYP_DESC));
+            ;
+
 
             Mapper.CreateMap<EX_GROUP_TYPE, DetailsGoodsTypGroup>().IgnoreAllNonExisting()
-                 .ForMember(dest => dest.GoodsTypeId, opt => opt.MapFrom(src => src.EX_GROUP_TYPE_ID))
-                 .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.GROUP_NAME));
-
+                .ForMember(dest => dest.GoodsTypeId, opt => opt.MapFrom(src => src.EX_GROUP_TYPE_ID))
+                .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.GROUP_NAME));
+             
+           
+        
             #region VirtualMappingPlant
             //Virtual Mapping Plant
             Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetail>().IgnoreAllNonExisting()
@@ -559,9 +563,21 @@ namespace Sampoerna.EMS.Website
             #endregion
 
             #region UOM
+            Mapper.CreateMap<UOM, UomDetailViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
+
             Mapper.CreateMap<UOM, UomDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
                 .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
+
+            Mapper.CreateMap<UomDetailViewModel, UOM>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
+               .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UomName));
+            
+            
+
+
             #endregion
         }
     }
