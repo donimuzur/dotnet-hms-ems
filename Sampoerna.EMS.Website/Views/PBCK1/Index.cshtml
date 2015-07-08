@@ -103,7 +103,7 @@
 
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
-                location.href = '@Url.Action("Index", "PBCK1")';
+                $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
             var table = null;

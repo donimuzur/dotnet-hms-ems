@@ -350,6 +350,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
         {
+
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkcList = GlobalFunctions.GetNppbkcAll();
@@ -358,7 +359,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.UomList = GlobalFunctions.GetUomList();
-            model.PbckReferenceList = new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number");
+
+            model.PbckReferenceList = model.Detail.Pbck1Reference.HasValue ? new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number") : 
+                new SelectList(GetPbckItems().Where(c => model.Detail.Pbck1Reference != null 
+                    && c.Pbck1Id != model.Detail.Pbck1Reference.Value), "Pbck1Id", "Pbck1Number");
+            
             model.YearList = CreateYearList();
             return model;
         }
