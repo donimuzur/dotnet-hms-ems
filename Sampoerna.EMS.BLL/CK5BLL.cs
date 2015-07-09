@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.BLL
                 var output = AutoMapper.Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
 
                 //validate
-                var dbBrand = _brandRegistrationBll.GetByFaCode(ck5MaterialInput.Brand);
+                var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
                 if (dbBrand == null)
                     messageList.Add("Brand Not Exist");
 

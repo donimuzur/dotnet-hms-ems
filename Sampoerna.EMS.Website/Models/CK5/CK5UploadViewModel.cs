@@ -7,7 +7,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 {
     public class CK5UploadViewModel
     {
-        public string Plant { get; set; }
+        public long Plant { get; set; }
         public string Brand { get; set; }
         public string Qty { get; set; }
         public string Uom { get; set; }

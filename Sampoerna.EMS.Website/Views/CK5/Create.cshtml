@@ -131,7 +131,7 @@
             var file = document.getElementById("itemExcelFile").files[i];
 
             formData.append("itemExcelFile", file);
-            formData.append("plantId",12);
+            formData.append("plantId", $('#SourcePlantId').val());
         }
         $.ajax({
             type: "POST",
