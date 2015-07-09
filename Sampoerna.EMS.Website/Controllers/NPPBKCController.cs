@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Plant = Mapper.Map<List<T001W>>(_plantBll.GetAll());
 
 
-            ;
+            
 
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
 

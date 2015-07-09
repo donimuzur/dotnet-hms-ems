@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string SeriesValue { get; set; }
 
         [Required]
-        [StringLength(30)]
+        [RegularExpression("([1-9][0-9]*)")]
         public string Content { get; set; }
 
         [Required]
@@ -108,7 +108,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public decimal? Conversion
         {
             get { return Convert.ToDecimal(ConversionValueStr); }
-            set { value = Tariff; }
+            set { value = Conversion; }
         }
         [Required]
         public string ConversionValueStr

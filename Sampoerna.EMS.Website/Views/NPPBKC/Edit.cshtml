@@ -144,7 +144,7 @@
                                                         <div class="col-md-9">
                                                             <div class="row">
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("start_date", Model.Detail.StartDate, new { @class = "form-control", disabled = "disabled"})
+                                                                    @Html.TextBox("start_date", Model.Detail.StartDate, "{0:dd MMMM yyyy}", new { @class = "form-control", disabled = "disabled"})
                                                                     @Html.HiddenFor(model => model.Detail.StartDate)
                                                                 </div>
                                                             </div>
@@ -159,7 +159,7 @@
                                                         <div class="col-md-9">
                                                             <div class="row">
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("end_date", Model.Detail.EndDate, new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.TextBox("end_date", Model.Detail.EndDate,"{0:dd MMMM yyyy}", new { @class = "form-control", disabled = "disabled" })
                                                                     @Html.HiddenFor(model => model.Detail.EndDate)
                                                                 </div>
                                                             </div>

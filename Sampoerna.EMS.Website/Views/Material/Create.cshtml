@@ -119,7 +119,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Convertion<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.Convertion)*@
                                                         </div>
                                                     </div>
@@ -209,7 +209,10 @@
     </div>
 }
 @section scripts{
+<script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuMasterMaterial').addClass('active');
+        
+        $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
     </script>
 }
