@@ -22,28 +22,38 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_PRODTYP");
                 var items = new List<ZAIDM_EX_PRODTYP>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_PRODTYP();
-                    item.PROD_CODE = xElement.Element("PROD_CODE").Value;
-                    item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
-                    item.PRODUCT_ALIAS = xElement.Element("PRODUCT_ALIAS").Value;
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var existingProdType = GetProdType(item.PROD_CODE);
-                    if (existingProdType != null)
+                    try
                     {
-                        item.CREATED_DATE = existingProdType.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
-                        items.Add(item);
+                        var item = new ZAIDM_EX_PRODTYP();
+                        item.PROD_CODE = xElement.Element("PROD_CODE").Value;
+                        item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE") == null ? string.Empty : xElement.Element("PRODUCT_TYPE").Value;
+                        item.PRODUCT_ALIAS = xElement.Element("PRODUCT_ALIAS").Value;
+                        //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        var existingProdType = GetProdType(item.PROD_CODE);
+                        if (existingProdType != null)
+                        {
+                            item.CREATED_DATE = existingProdType.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
                         
+                        throw;
                     }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
+                 
 
                 }
                 return items;

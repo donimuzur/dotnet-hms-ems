@@ -10,7 +10,6 @@ namespace Sampoerna.EMS.XMLReader
     public class XmlKPPBCDataMapper : IXmlDataReader 
     {
         private XmlDataMapper _xmlMapper = null;
-
         public XmlKPPBCDataMapper(string filename)
         {
             _xmlMapper = new XmlDataMapper(filename);
@@ -51,7 +50,8 @@ namespace Sampoerna.EMS.XMLReader
                 }
                 return items;
             }
-             
+            set { value = Items; }
+
         }
 
       

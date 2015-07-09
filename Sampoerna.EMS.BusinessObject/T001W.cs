@@ -35,10 +35,10 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_MAIN_PLANT { get; set; }
     
         public virtual USER USER { get; set; }
-        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
     }
 }

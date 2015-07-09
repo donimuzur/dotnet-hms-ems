@@ -22,7 +22,8 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_PCODE");
                 var items = new List<ZAIDM_EX_PCODE>();
                 foreach (var xElement in xmlItems)
                 {
@@ -30,12 +31,12 @@ namespace Sampoerna.EMS.XMLReader
                     item.PER_CODE = xElement.Element("PER_CODE").Value;
                     item.PER_DESC = xElement.Element("PER_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    //var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingPCode = GetPCode(item.PER_CODE);
                     if (existingPCode != null)
                     {
                         item.CREATED_DATE = existingPCode.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                     
                     }

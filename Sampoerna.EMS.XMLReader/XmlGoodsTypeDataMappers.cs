@@ -19,23 +19,26 @@ namespace Sampoerna.EMS.XMLReader
 
 
         public List<ZAIDM_EX_GOODTYP> Items
+
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                
+                var xmlItems = xmlRoot.Elements("Z1A_GOODTYP");
                 var items = new List<ZAIDM_EX_GOODTYP>();
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_GOODTYP();
                     item.EXC_GOOD_TYP = xElement.Element("EXC_GOOD_TYP").Value;
-                    item.EXT_TYP_DESC = xElement.Element("EXT_TYP_DESC").Value;
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    item.EXT_TYP_DESC = xElement.Element("EXC_TYP_DESC").Value;
+                    //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
                     if (existingGoodsType != null)
                     {
                         
                         item.CREATED_DATE = existingGoodsType.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                        
                     }
