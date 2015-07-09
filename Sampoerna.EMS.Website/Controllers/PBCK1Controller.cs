@@ -75,7 +75,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var currentYear = DateTime.Now.Year;
             for (int i = 0; i < 5; i++)
             {
-                years.Add(new SelectItemModel(){ ValueField = currentYear - i, TextField = (currentYear - i).ToString()});
+                years.Add(new SelectItemModel() { ValueField = currentYear - i, TextField = (currentYear - i).ToString() });
             }
             return new SelectList(years, "ValueField", "TextField");
         }
@@ -157,7 +157,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dataToSave.CreatedById = CurrentUser.USER_ID;
             var input = new Pbck1SaveInput()
             {
-                Pbck1 = dataToSave, UserId =  CurrentUser.USER_ID, WorkflowActionType = Enums.ActionType.Save
+                Pbck1 = dataToSave,
+                UserId = CurrentUser.USER_ID,
+                WorkflowActionType = Enums.ActionType.Save
             };
             var saveResult = _pbck1Bll.Save(input);
 
@@ -195,7 +197,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
-            
+
             return View(new Pbck1ItemViewModel()
             {
                 MainMenu = _mainMenu,
@@ -230,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return CreateInitial(model);
             }
-            
+
             //process save
             var dataToSave = Mapper.Map<Pbck1>(model.Detail);
             dataToSave.CreatedById = CurrentUser.USER_ID;
@@ -248,18 +250,18 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
+
             return CreateInitial(model);
 
         }
-        
+
         public ActionResult CreateInitial(Pbck1ItemViewModel model)
         {
             return View("Create", ModelInitial(model));
         }
 
         #endregion
-        
+
         [HttpPost]
         public JsonResult PoaListPartial(string nppbkcId)
         {
@@ -360,10 +362,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.UomList = GlobalFunctions.GetUomList();
 
-            model.PbckReferenceList = model.Detail.Pbck1Reference.HasValue ? new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number") : 
-                new SelectList(GetPbckItems().Where(c => model.Detail.Pbck1Reference != null 
-                    && c.Pbck1Id != model.Detail.Pbck1Reference.Value), "Pbck1Id", "Pbck1Number");
-            
+            model.PbckReferenceList = model.Detail != null && model.Detail.Pbck1Reference.HasValue ?
+                new SelectList(GetPbckItems().Where(c => model.Detail.Pbck1Reference != null
+                    && c.Pbck1Id != model.Detail.Pbck1Reference.Value), "Pbck1Id", "Pbck1Number") : new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number");
+
             model.YearList = CreateYearList();
             return model;
         }

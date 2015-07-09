@@ -21,7 +21,6 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
-                                            @*<input type="text" class="form-control" placeholder="" disabled />*@
                                             @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
@@ -302,7 +301,9 @@
                 </div>
                 <div id="collapse6" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading6">
                     <div class="panel-body">
-                        <a href="#upload" id="btn-prod-conv-upload"><button class="btn btn-blue">Upload</button></a>
+                        <a href="#upload" id="btn-prod-conv-upload">
+                            <input type="button" class="btn btn-blue" value="Upload" />
+                        </a>
                         <div class="table-container">
                             <table id="pbck1-prod-conv-item" class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -365,7 +366,10 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading5">
                     <div class="panel-body">
-                        <a href="#messages" id="btn-prod-plan-upload"><button class="btn btn-blue">Upload</button></a>
+                        @*<a href="#messages" id="btn-prod-plan-upload">
+                            
+                        </a>*@
+                        <input id="btn-prod-plan-upload" type="button" class="btn btn-blue" value="Upload" />
                         <div class="table-container">
                             <table id="pbck1-prod-plan-item" class="table table-bordered table-striped js-options-table">
                                 <thead>

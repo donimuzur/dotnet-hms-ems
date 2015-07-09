@@ -76,6 +76,7 @@
                 $('#home').addClass('active');
                 $('#upload').removeClass('active');
             });
+            
             $('#prod-plan-save').click(function () {
                 var datarows = GetTableData($('#prod-plan-table'));
                 var columnLength = $('#pbck1-prod-plan-item').find("thead tr:first th").length;
@@ -97,6 +98,7 @@
                 $('#home-tab').addClass('active');
                 $('#home').addClass('active');
                 $('#messages').removeClass('active');
+                $('#collapse5').addClass("in");
             });
 
             $('#ProdConvSubmitBtn').click(function () {
@@ -107,10 +109,30 @@
                     alert('Please browse a correct excel file to upload');
                     return false;
                 }
-                $('#FormProdConv').ajaxSubmit(function (data) {
-                    $('#ProdConvContent').html("");
-                    $('#ProdConvContent').html(data);
+                var formData = new FormData();
+                var totalFiles = document.getElementById("ProdConvExcelfile").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("ProdConvExcelfile").files[i];
+                    formData.append("prodConvExcelFile", file);
+                }
 
+                $.ajax({
+                    url: '@Url.Action("UploadFileConversion", "PBCK1")',
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    dataType: 'html',
+                    processData: false, // Don't process the files
+                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                    success: function (response) {
+                        $('#ProdConvContent').html("");
+                        $('#ProdConvContent').html(response);
+                    },
+                    error: function (error) {
+                        // Handle errors here
+                        console.log('ERRORS: ' + error);
+                        // STOP LOADING SPINNER
+                    }
                 });
                 return false;
             });
@@ -122,10 +144,31 @@
                     alert('Please browse a correct excel file to upload');
                     return false;
                 }
-                $('#FormProdPlan').ajaxSubmit(function (data) {
-                    $('#ProdPlanContent').html("");
-                    $('#ProdPlanContent').html(data);
+                
+                var formData = new FormData();
+                var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("ProdPlanExcelfile").files[i];
+                    formData.append("prodPlanExcelFile", file);
+                }
 
+                $.ajax({
+                    url: '@Url.Action("UploadFilePlan", "PBCK1")',
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    dataType: 'html',
+                    processData: false, // Don't process the files
+                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                    success: function (response) {
+                        $('#ProdPlanContent').html("");
+                        $('#ProdPlanContent').html(response);
+                    },
+                    error: function (error) {
+                        // Handle errors here
+                        console.log('ERRORS: ' + error);
+                        // STOP LOADING SPINNER
+                    }
                 });
                 return false;
             });
