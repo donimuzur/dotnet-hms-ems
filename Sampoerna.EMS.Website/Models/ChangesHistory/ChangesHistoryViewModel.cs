@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Website.Models.ChangesHistory
         public string FIELD_NAME { get; set; }
         public string OLD_VALUE { get; set; }
         public string NEW_VALUE { get; set; }
-        [UIHint("FormatDateTime")]
+     
         public DateTime? MODIFIED_DATE { get; set; }
         public int? MODIFIED_BY { get; set; }
         public string USERNAME { get; set; }
