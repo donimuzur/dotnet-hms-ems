@@ -62,5 +62,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
+        public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
     }
 }

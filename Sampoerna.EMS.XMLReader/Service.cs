@@ -29,54 +29,54 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("NPPBKC"))
-            {
-                return new XmlNPPBKCDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("KPPBC"))
-            {
-               return  new XmlKPPBCDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("VENDOR"))
-            {
-                return  new XmlVendorDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("UOM"))
-            {
-                return  new XmlUoMDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("MARKET"))
-            {
-                return  new XmlMarketDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("PRODTYP"))
-            {
-                return new XmlProdTypeDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("PCODE"))
-            {
-                return new XmlPCodeDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("SERIES"))
-            {
-                return new XmlSeriesDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("PLANT-"))
-            {
-                return new XmlPlantDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("GOODT"))
-            {
-                return new XmlGoodsTypeDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("BRANDREG"))
-            {
-                return  new XmlBrandDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("MATERIAL"))
-            {
-                return new XmlMaterialDataMapper(xmlfile);
-            }
+            //else if (xmlfile.Contains("NPPBKC"))
+            //{
+            //    return new XmlNPPBKCDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("KPPBC"))
+            //{
+            //   return  new XmlKPPBCDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("VENDOR"))
+            //{
+            //    return  new XmlVendorDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("UOM"))
+            //{
+            //    return  new XmlUoMDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("MARKET"))
+            //{
+            //    return  new XmlMarketDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("PRODTYP"))
+            //{
+            //    return new XmlProdTypeDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("PCODE"))
+            //{
+            //    return new XmlPCodeDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("SERIES"))
+            //{
+            //    return new XmlSeriesDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("PLANT-"))
+            //{
+            //    return new XmlPlantDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("GOODT"))
+            //{
+            //    return new XmlGoodsTypeDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("BRANDREG"))
+            //{
+            //    return  new XmlBrandDataMapper(xmlfile);
+            //}
+            //else if (xmlfile.Contains("MATERIAL"))
+            //{
+            //    return new XmlMaterialDataMapper(xmlfile);
+            //}
             return null;
         }
 

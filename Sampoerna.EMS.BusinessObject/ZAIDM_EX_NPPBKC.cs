@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.POA_MAP = new HashSet<POA_MAP>();
             this.T001W = new HashSet<T001W>();
+            this.PBCK1 = new HashSet<PBCK1>();
         }
     
         public string NPPBKC_ID { get; set; }
@@ -45,5 +46,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER { get; set; }
         public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
         public virtual ICollection<T001W> T001W { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
     }
 }

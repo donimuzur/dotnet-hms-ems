@@ -122,6 +122,15 @@
     <Compile Include="PARAMATER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PBCK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK1_PROD_CONVERTER.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK1_PROD_PLAN.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="PLANT_RECEIVE_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
