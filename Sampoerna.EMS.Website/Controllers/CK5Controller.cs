@@ -225,6 +225,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CreateDomestic()
         {
             var model = InitCreateCK5(Enums.CK5Type.Domestic);
+            //AddMessageInfo("Create domestic.", Enums.MessageInfoType.Info);
             return View("Create", model);
         }
 
@@ -330,13 +331,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbCk5.CREATED_DATE = DateTime.Now;
                 dbCk5.CREATED_BY = CurrentUser.USER_ID;
                
-                _ck5Bll.SaveCk5(dbCk5);
+               // _ck5Bll.SaveCk5(dbCk5);
 
                 //success.. redirect to edit form
                 return RedirectToAction("Edit", "CK5", new {@id = dbCk5.CK5_ID});
-                
 
-
+            }
+            else
+            {
+                AddMessageInfo("Error message", Enums.MessageInfoType.Error);
             }
             if (model.KppBcCity == 0)
             {

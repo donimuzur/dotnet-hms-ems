@@ -101,5 +101,16 @@ namespace Sampoerna.EMS.Core
             Reject
         }
 
+        /// <summary>
+        /// message popup type
+        /// </summary>
+        public enum MessageInfoType
+        {
+            Success,
+            Error,
+            Warning,
+            Info
+        }
+
     }
 }

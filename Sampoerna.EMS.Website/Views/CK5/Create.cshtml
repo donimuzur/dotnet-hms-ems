@@ -3,7 +3,7 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("SaveCK5", "CK5", new {@class = "form-excise", role = "form"}))
+@using (Html.BeginForm("SaveCK5", "CK5"))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -57,12 +57,13 @@
     $(document).ready(function () {
         
         $('#btnUploadInfo').click(function () {
-
-            $('#home-tab').removeClass('active');
-            $('#home').removeClass('active');
             
+            $('#home-tab').removeClass('active');
             $('#upload-tab').addClass('active');
+            
+            $('#information').removeClass('active');
             $('#upload').addClass('active');
+           
         });
 
         
@@ -85,6 +86,7 @@
                     data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
                     data += '<td> <input name="UploadItemModels[' + i + '].UsdValue " type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                     data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
                 }
                 data += '</tr>';
                 $('#ck5TableItem tbody').append(data);
@@ -96,13 +98,23 @@
 
             $('#information').addClass('active');
             $('#upload').removeClass('active');
-            
-            $('#collapseOne').addClass('collapsed');
-            $('#collapse5').removeClass('collapsed');
+           
+            $('#collapse5').addClass('in');
         });
     });
 
+    function IsValidDataUpload() {
+        
+        var datarows = GetTableData($('#Ck5UploadTable'));
+        
+        for (var i = 0; i < datarows.length; i++) {
+            if (datarows[i][12].length > 0)
+                return false;
+               
+        }
 
+        return true;
+    }
     $('#CK5UploadSubmitBtn').click(function () {
 
         var fileName = $('[name="itemExcelFile"]').val().trim();
@@ -112,19 +124,14 @@
             alert('Please browse a correct excel file to upload');
             return false;
         }
-        //$('#ProdConv').ajaxSubmit(function (data) {
-        //    $('#ProdConvContent').html("");
-        //    $('#ProdConvContent').html(data);
-
-        //});
-        //return false;
+     
         var formData = new FormData();
         var totalFiles = document.getElementById("itemExcelFile").files.length;
         for (var i = 0; i < totalFiles; i++) {
             var file = document.getElementById("itemExcelFile").files[i];
 
             formData.append("itemExcelFile", file);
-            formData.append("plantId", $('#SourcePlantId').val());
+            formData.append("plantId",12);
         }
         $.ajax({
             type: "POST",
@@ -136,35 +143,15 @@
             success: function (response) {
                     $('#ProdConvContent').html("");
                     $('#ProdConvContent').html(response);
+                    if (IsValidDataUpload())
+                        $('#CK5UploadSave').enable();
             },
             error: function (error) {
                 alert("errror " + error);
             }
         });
     });
-
-    //$('#btn-prod-plan-upload').click(function () {
-    //    $('#home-tab').removeClass('active');
-    //    $('#home').removeClass('active');
-    //    $('#upload-tab').addClass('active');
-    //    $('#messages').addClass('active');
-    //});
-
-    //$('.input-group.date').datepicker({
-    //    toggleActive: true,
-    //    defaultViewDate: { year: 2015, month: 06, day: 28 }
-    //});
-
-    //$('#btnUploadInfo').click(function () {
-    //    $('#upload-tab').addClass('active');
-    //    $('#home-tab').removeClass('active');
-
-    //    $('#information').removeClass('active');
-    //    $('#upload').addClass('active');
-    //});
-
-    //from here
-
+        
     function ajaxCallSave(url, formData) {
             if (formData.model) {
                 $.ajax({
@@ -235,15 +222,31 @@
             }
         }
 
+        function RemoveTable() {
+            
+            $('#ck5TableItem tbody').html('');
+            $('#Ck5UploadTable tbody').html('');
+
+        }
         $("#SourcePlantId").change(function () {
             if ($("#SourcePlantId").length) {
                 var sourcePlant = $(this).find("option:selected").val();
+
+                //remove table
+                RemoveTable();
+                
                 if (sourcePlant == '') {
                     $('#SourceNpwp').val('');
                     $('#SourceNppbkcId').val('');
                     $('#SourceCompanyName').val('');
                     $('#SourceAddress').val('');
                     $('#SourceKppbcName').val('');
+                    
+                    //enable upload
+                    $('#btnUploadInfo').enable(false);
+                    $('#CK5UploadSubmitBtn').enable(false);
+
+                   
                 } else {
                     ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
                 }
@@ -262,6 +265,11 @@
                         $('#SourceCompanyName').val(data.CompanyName);
                         $('#SourceAddress').val(data.CompanyAddress);
                         $('#SourceKppbcName').val(data.KppBcName);
+                        
+                        //enable upload
+                        $('#btnUploadInfo').enable();
+                        $('#CK5UploadSubmitBtn').enable();
+                        
                     }
                 });
             }

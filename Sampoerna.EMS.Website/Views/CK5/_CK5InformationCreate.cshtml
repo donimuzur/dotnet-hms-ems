@@ -2,6 +2,7 @@
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
+        
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingOne">
@@ -351,7 +352,7 @@
                                             @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                           @Html.DropDownListFor(model => model.PackageUomId, Model.PackageUomList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.PackageUomId, Model.PackageUomList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -375,8 +376,8 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
                     <div class="panel-body">
-                        @*<a href="#upload">*@
-                            <input type="button" class="btn btn-blue" value="Upload" id="btnUploadInfo" />
+                        @*<a href="#upload" >*@
+                            <input type="button" class="btn btn-blue" id="btnUploadInfo"  value="Upload" disabled />
                         @*</a>*@
                         <div class="table-container">
                             <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
@@ -394,6 +395,7 @@
                                         <th>Excise Value</th>
                                         <th>USD Value</th>
                                         <th>Note</th>
+                                        <th>Message</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -577,17 +579,3 @@
 </div>
 
 
-@section scripts {
-    <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function() {
-            $('#btnUploadInfo').click(function () {
-                $('#upload-tab').addClass('active');
-                $('#home-tab').removeClass('active');
-
-                $('#information').removeClass('active');
-                $('#upload').removeClass('active');
-            });
-            
-        });
-    </script>
-    }

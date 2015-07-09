@@ -218,6 +218,7 @@
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
     <Compile Include="Code\IFormsAuthenticationService.cs" />
+    <Compile Include="Code\MessageInfo.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
@@ -746,6 +748,7 @@
     <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
     <Content Include="Views\CK5\Details.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
+    <Content Include="Views\Shared\_MessageInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
