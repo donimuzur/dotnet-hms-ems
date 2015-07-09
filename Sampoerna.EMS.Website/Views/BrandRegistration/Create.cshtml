@@ -126,7 +126,7 @@
                                                         <label class="col-md-4">SKEP Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.SkepDate, new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.SkepDate,"{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -210,7 +210,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Tariff<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Tariff, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.TariffValueStr, new { @id="tariff", @class = "decimal form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -254,7 +254,7 @@
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.StartDate,"{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -270,7 +270,7 @@
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.EndDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -283,7 +283,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Printing Price</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.PrintingPrice, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.PrintingPriceValueStr, new { @class = "decimal form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -291,7 +291,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Convertion</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Conversion, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -350,7 +350,11 @@
             $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "BrandRegistration")';
             });
-            
+            $('#HjeValueStr').val(ThausandSeperator($('#HjeValueStr').val(), 2));
+            $('#TariffValueStr').val(ThausandSeperator($('#TariffValueStr').val(), 2));
+            $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
+            $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
+            $('#PrintingPriceValueStr').val(ThausandSeperator($('#PrintingPriceValueStr').val(), 2));
         });
 
 

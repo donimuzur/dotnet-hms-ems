@@ -188,7 +188,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.CREATED_BY = CurrentUser.USER_ID;
                     model.CREATED_DATE = DateTime.Now;
                     MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);
-
+                    model.CONVERSION = data.ConversionValueStr == null ? 0 : Convert.ToDecimal(data.ConversionValueStr);
+                   
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");    
                 }
@@ -224,6 +225,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
                 model.MaterialNumber = id;
+                model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
+
                 InitEditModel(model);
 
                 return View("Edit", model);
@@ -263,6 +266,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     data.CREATED_BY = origin.CreatedById;
                     SetChanges(origin,data);
                     _materialBll.Save(data,CurrentUser.USER_ID);
+                    data.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
+                    
                 }
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");

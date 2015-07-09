@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string SeriesValue { get; set; }
 
         [Required]
-        [StringLength(30)]
+        [RegularExpression("([1-9][0-9]*)")]
         public string Content { get; set; }
 
         [Required]
@@ -83,6 +83,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get { return Convert.ToDecimal(TariffValueStr); }
             set { value = Tariff; }
         }
+        [Required]
         public string TariffValueStr { get; set; }
 
         [Required]
@@ -104,9 +105,25 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [Required]
         public DateTime? EndDate { get; set; }
 
-        public decimal? Conversion { get; set; }
-
-        public decimal? PrintingPrice { get; set; }
+        public decimal? Conversion
+        {
+            get { return Convert.ToDecimal(ConversionValueStr); }
+            set { value = Conversion; }
+        }
+        [Required]
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
+        
+        public decimal? PrintingPrice
+        {
+            get { return Convert.ToDecimal(PrintingPriceValueStr); } 
+            set { value = PrintingPrice; }
+        }
+        [Required]
+        public string PrintingPriceValueStr { get; set; }
 
         [StringLength(25)]
         public string CutFilterCode { get; set; }

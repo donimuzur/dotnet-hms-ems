@@ -90,10 +90,11 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Uom/Edit/5
         public ActionResult Edit(int id)
         {
-            UomDetailViewModel model = new UomDetailViewModel();
+            var data = _uomBLL.GetById(id);
+            var model = new UomDetailViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            var data = _uomBLL.GetById(id);
+          
 
             model = Mapper.Map<UomDetailViewModel>(data);
             return View("Edit",model);
