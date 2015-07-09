@@ -19,15 +19,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMasterDataBLL _masterDataBll;
         private IChangesHistoryBLL _changesHistoryBLL;
         //private List<AutoCompletePlant> _plantList;
+        private Enums.MenuList _mainMenu;
        
 
         public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
-            : base(pageBLL, Enums.MenuList.MasterData)
+            : base(pageBLL, Enums.MenuList.VirtualMappingPlant)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
             _masterDataBll = masterData;
             _changesHistoryBLL = changeLogHistoryBLL;
             //_plantList = _masterDataBll.get;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -35,7 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new VirtualMappingPlantIndexViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var dbData = _virtualMappingPlanBll.GetAll();
@@ -46,7 +48,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private VirtualMappingPlantCreateViewModel InitCreateModel(VirtualMappingPlantCreateViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
@@ -128,7 +130,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Details(int id)
         {
             var model = new VirtualMappingPlantDetailsViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id.ToString()));
 
@@ -148,7 +150,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private VirtualMappingPlantEditViewModel InitEditModel(VirtualMappingPlantEditViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
