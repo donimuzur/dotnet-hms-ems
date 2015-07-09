@@ -22,19 +22,20 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_SERIES");
                 var items = new List<ZAIDM_EX_SERIES>();
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_SERIES();
                     item.SERIES_CODE = xElement.Element("SERIES_CODE").Value;
                     item.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                   // var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingSeries = GetSeries(item.SERIES_CODE);
                     if (existingSeries != null)
                     {
                         item.CREATED_DATE = existingSeries.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                         
                     }

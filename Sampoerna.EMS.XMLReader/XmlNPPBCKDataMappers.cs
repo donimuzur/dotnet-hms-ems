@@ -22,8 +22,10 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_NPPBKC");
                 var items = new List<ZAIDM_EX_NPPBKC>();
+               
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_NPPBKC();
@@ -31,20 +33,27 @@ namespace Sampoerna.EMS.XMLReader
                     item.ADDR1 = xElement.Element("ADDR1").Value;
                     item.ADDR2 = xElement.Element("ADDR2").Value;
                     item.CITY = xElement.Element("CITY").Value;
+                    item.REGION = xElement.Element("REGION").Value;
                     var kppbcNo = xElement.Element("KPPBC_ID").Value;
                     var kppbc = new XmlKPPBCDataMapper(null
                         ).GetKPPBC(kppbcNo);
-                    if(kppbc == null)
-                        throw new Exception("no existing KPPBC ID " + kppbcNo);
-                    item.KPPBC_ID = kppbc.KPPBC_ID;
-                    var companyCode = xElement.Element("BUKRS").Value;
+                    if (kppbc == null)
+                    {
+                        //insert kppbc
+                        var kppbcItem = new ZAIDM_EX_KPPBC();
+                        kppbcItem.KPPBC_ID = kppbcNo;
+                        kppbcItem.CREATED_DATE = DateTime.Now;
+                        _xmlMapper.InsertToDatabase(kppbcItem);
+                    }
+                    item.KPPBC_ID = new XmlKPPBCDataMapper(null
+                        ).GetKPPBC(kppbcNo).KPPBC_ID;
                     
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
                     if (exisitingNppbkc != null)
                     {
                         item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                         
                     }

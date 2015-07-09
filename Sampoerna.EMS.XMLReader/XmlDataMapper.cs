@@ -80,7 +80,27 @@ namespace Sampoerna.EMS.XMLReader
          
             MoveFile();
         }
+        public void InsertToDatabase<T>(T data) where T : class
+        {
+            var repo = uow.GetGenericRepository<T>();
 
+            try
+            {
+                
+                    repo.InsertOrUpdate(data);
+
+                
+                uow.SaveChanges();
+            }
+
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                uow.RevertChanges();
+            }
+
+            MoveFile();
+        }
         private void MoveFile()
         {
             try
