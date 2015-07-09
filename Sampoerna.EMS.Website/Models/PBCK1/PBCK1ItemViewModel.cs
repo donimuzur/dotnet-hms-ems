@@ -4,19 +4,19 @@ using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.PBCK1
 {
-    public class PBCK1ItemViewModel : BaseModel
+    public class Pbck1ItemViewModel : BaseModel
     {
-        public PBCK1ItemViewModel()
+        public Pbck1ItemViewModel()
         {
-            ProductConversions = new List<PBCK1ProdConvModel>();
-            ProductPlans = new List<PBCK1ProdPlanModel>();
+            ProductConversions = new List<Pbck1ProdConvModel>();
+            ProductPlans = new List<Pbck1ProdPlanModel>();
         }
 
         public string SubmitType { get; set; }
 
-        public PBCK1Item Detail { get; set; }
+        public Pbck1Item Detail { get; set; }
 
-        public Enums.PBCK1Type PBCK1Types { get; set; }
+        public Enums.PBCK1Type Pbck1Types { get; set; }
 
         public SelectList PbckReferenceList { get; set; }
 
@@ -34,12 +34,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public SelectList YearList { get; set; }
 
-        public SelectList UOMList { get; set; }
+        public SelectList UomList { get; set; }
 
         public Enums.DocumentStatusGov StatusGovList { get; set; }
 
-        public List<PBCK1ProdConvModel> ProductConversions { get; set; }
-        public List<PBCK1ProdPlanModel> ProductPlans { get; set; }
+        public List<Pbck1ProdConvModel> ProductConversions { get; set; }
+        public List<Pbck1ProdPlanModel> ProductPlans { get; set; }
 
     }
 }
