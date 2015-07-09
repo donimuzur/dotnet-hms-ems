@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string PlantName { get; set; }
 
         [Required, Display(Name = "Excisable Good Type")]
-        public Nullable<int> GoodTypeId { get; set; }
+        public string GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
 
         [Required, Display(Name = "Issue Storace Loc")]

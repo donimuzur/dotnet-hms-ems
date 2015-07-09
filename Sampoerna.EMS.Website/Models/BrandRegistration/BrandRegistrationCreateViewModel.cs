@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string ColourName { get; set; }
 
         [Required]
-        public int GoodType { get; set; }
+        public string GoodType { get; set; }
         public SelectList GoodTypeList { get; set; }
         public string GoodTypeDescription { get; set; }
 
