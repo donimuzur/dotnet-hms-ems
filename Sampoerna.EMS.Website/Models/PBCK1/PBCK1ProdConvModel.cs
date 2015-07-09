@@ -1,6 +1,6 @@
 ﻿namespace Sampoerna.EMS.Website.Models.PBCK1
 {
-    public class PBCK1ProdConvModel
+    public class Pbck1ProdConvModel
     {
         public int? ProductCode { get; set; }
         public string ProductTypeAlias { get; set; }
