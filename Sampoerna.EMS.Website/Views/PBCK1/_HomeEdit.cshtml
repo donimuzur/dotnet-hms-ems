@@ -47,7 +47,7 @@
                                         <label class="col-md-3">Reported On</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -60,7 +60,7 @@
                                         <label class="col-md-3">Period From</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -73,7 +73,7 @@
                                         <label class="col-md-3">Period To</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -150,15 +150,6 @@
                                         <label class="col-md-4">Supplier Plant</label>
                                         <div class="col-md-8">
                                             <div id="supp-plant">
-                                                @*@if (Model.Detail.SupplierPortId.HasValue)
-                                                {
-                                                    //load supplier
-                                                    @Html.DropDownListFor(model => model.Detail.SupplierPlant)
-                                                }
-                                                else
-                                                {
-                                                    @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
-                                                }*@
                                             </div>
                                         </div>
                                     </div>
@@ -224,7 +215,7 @@
                                         <label class="col-md-4 long">Plan Produtcion From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -237,7 +228,7 @@
                                         <label class="col-md-4">Plan Production to</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -271,7 +262,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Qty</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control .decimal" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control" })
@@ -282,7 +273,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Latest Saldo</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control .decimal" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.DropDownListFor(model => model.Detail.LatestSaldoUomId, Model.UomList, "Select", new { @class = "form-control" })
@@ -456,7 +447,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -468,7 +459,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Qty Approved</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "form-control .decimal" })
                                         </div>
                                     </div>
                                 </div>
@@ -505,7 +496,7 @@
                 <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
                     <div class="panel-body">
                         <div class="table-container">
-                            @Html.Partial("_WorkflowHistoryTable")
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
                         </div>
                     </div>
                 </div>

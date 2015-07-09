@@ -51,8 +51,30 @@
             $('#btn-changelog-export-xls').click(function () {
                 alert('export on progress');
             });
+            
+            var nppbkcid = $('#Detail_NppbkcNo').val();
+            ajaxLoadPoa({ nppbkcId: nppbkcid });
 
         });
+        
+        function ajaxLoadPoa(formData) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PoaListPartial", "pbck1")',
+                data: formData,
+                success: function (data) {
+                    var list = data.SearchInput.PoaList;
+                    if (list.length > 0) {
+                        var poalist = '';
+                        for (var i = 0; i < list.length; i++) {
+                            poalist = poalist + ', ' + list[i].Text;
+                        }
+                        poalist = poalist.slice(2);
+                        $('#displayPoaList').val(poalist);
+                    }
+                }
+            });
+        }
 
     </script>
 }

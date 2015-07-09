@@ -418,7 +418,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.PbckDecreeDate = GetDatePbck1ByPbckId(model.PbckDecreeId);
 
 
-            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
+            //model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
 
 
@@ -467,17 +467,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void SetWorkflowHistory(long id, Enums.ActionType actionType)
         {
-            WORKFLOW_HISTORY dbWorkflow = _workflowHistoryBll.GetByActionAndFormId(actionType, id);
-            if (dbWorkflow == null)
-                dbWorkflow = new WORKFLOW_HISTORY();
+            //WORKFLOW_HISTORY dbWorkflow = _workflowHistoryBll.GetByActionAndFormId(actionType, id);
+            //if (dbWorkflow == null)
+            //    dbWorkflow = new WORKFLOW_HISTORY();
 
-            dbWorkflow.FORM_TYPE_ID = Enums.FormType.CK5;
-            dbWorkflow.FORM_ID = id;
-            dbWorkflow.ACTION = actionType;
-            dbWorkflow.ACTION_BY = CurrentUser.USER_ID;
-            dbWorkflow.ACTION_DATE = DateTime.Now;
+            //dbWorkflow.FORM_TYPE_ID = Enums.FormType.CK5;
+            //dbWorkflow.FORM_ID = id;
+            //dbWorkflow.ACTION = actionType;
+            //dbWorkflow.ACTION_BY = CurrentUser.USER_ID;
+            //dbWorkflow.ACTION_DATE = DateTime.Now;
 
-            _workflowHistoryBll.Save(dbWorkflow);
+            //_workflowHistoryBll.Save(dbWorkflow);
         }
 
         [HttpPost]
@@ -668,7 +668,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
             model.DestAddress = dbDestPlant.ADDRESS;
 
-            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
+            //model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
 
             return model;

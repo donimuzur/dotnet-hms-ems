@@ -5,13 +5,13 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
-using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -21,7 +21,10 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER";
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IChangesHistoryBLL _changesHistoryBll;
+
+        private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER, ZAIDM_EX_NPPBKC.T1001";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -29,6 +32,8 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<PBCK1>();
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
         public List<Pbck1> GetPBCK1ByParam(Pbck1GetByParamInput input)
@@ -98,32 +103,37 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public SavePbck1Output Save(Pbck1 pbck1)
+        public SavePbck1Output Save(Pbck1SaveInput input)
         {
             PBCK1 dbData = null;
-            if (pbck1.Pbck1Id > 0)
+            if (input.Pbck1.Pbck1Id > 0)
             {
 
                 //update
-                dbData = _repository.Get(c => c.PBCK1_ID == pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
-                Mapper.Map<Pbck1, PBCK1>(pbck1, dbData);
+                dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
+
+                //set changes history
+                var origin = Mapper.Map<Pbck1>(dbData);
+                SetChangesHistory(origin, input.Pbck1, input.UserId);
+
+                Mapper.Map<Pbck1, PBCK1>(input.Pbck1, dbData);
 
             }
             else
             {
                 //Insert
-                var input = new GenerateDocNumberInput()
+                var generateNumberInput = new GenerateDocNumberInput()
                 {
-                    Year = pbck1.PeriodFrom.Year,
-                    Month = pbck1.PeriodFrom.Month,
-                    NppbkcId = pbck1.NppbkcId
+                    Year = input.Pbck1.PeriodFrom.Year,
+                    Month = input.Pbck1.PeriodFrom.Month,
+                    NppbkcId = input.Pbck1.NppbkcId
                 };
-                
-                pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(input);
-                pbck1.Status = Enums.DocumentStatus.Draft;
-                pbck1.CreatedDate = DateTime.Now;
+
+                input.Pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
+                input.Pbck1.Status = Core.Enums.DocumentStatus.Draft;
+                input.Pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
-                Mapper.Map<Pbck1, PBCK1>(pbck1, dbData);
+                Mapper.Map<Pbck1, PBCK1>(input.Pbck1, dbData);
 
                 _repository.Insert(dbData);
 
@@ -135,7 +145,13 @@ namespace Sampoerna.EMS.BLL
             {
                 _uow.SaveChanges();
                 output.Success = true;
-                output.Id = pbck1.Pbck1Id;
+                if (dbData != null) output.Id = dbData.PBCK1_ID;
+
+                //set workflow history
+                AddWorkflowHistory(output.Id, input.WorkflowActionType, input.UserId);
+
+                _uow.SaveChanges();
+
             }
             catch (Exception exception)
             {
@@ -175,6 +191,195 @@ namespace Sampoerna.EMS.BLL
                 output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
             }
             return output;
+        }
+
+        private void SetChangesHistory(Pbck1 origin, Pbck1 data, int userId)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("PBCK1_REF", origin.Pbck1Reference.Equals(data.Pbck1Reference));
+            changesData.Add("PBCK1_TYPE", origin.Pbck1Type.Equals(data.Pbck1Type));
+            changesData.Add("PERIOD_FROM", origin.PeriodFrom.Equals(data.PeriodFrom));
+            changesData.Add("PERIOD_TO", origin.PeriodTo.HasValue ? origin.PeriodTo.Equals(data.PeriodTo) : false);
+            changesData.Add("REPORTED_ON", origin.ReportedOn.HasValue ? origin.ReportedOn.Equals(data.ReportedOn) : false);
+            changesData.Add("NPPBKC_ID", origin.NppbkcId.Equals(data.NppbkcId));
+            changesData.Add("GOODTYPE_ID", origin.GoodTypeId.HasValue ? origin.GoodTypeId.Equals(data.GoodTypeId) : false);
+            changesData.Add("SUPPLIER_PLANT", !string.IsNullOrEmpty(origin.SupplierPlant) ? origin.SupplierPlant.Equals(data.SupplierPlant) : (!string.IsNullOrEmpty(data.SupplierPlant) ? false : true));
+            changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId.HasValue ? origin.SupplierPortId.Equals(data.SupplierPortId) : (data.SupplierPortId.HasValue ? false : true));
+            changesData.Add("SUPPLIER_ADDRESS", !string.IsNullOrEmpty(origin.SupplierAddress) ? origin.SupplierAddress.Equals(data.SupplierAddress) : (!string.IsNullOrEmpty(data.SupplierAddress) ? false : true));
+            changesData.Add("SUPPLIER_PHONE", !string.IsNullOrEmpty(origin.SupplierPhone) ? origin.SupplierPhone.Equals(data.SupplierPhone) : (!string.IsNullOrEmpty(data.SupplierPhone) ? false : true));
+            changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Equals(data.PlanProdFrom) : false);
+            changesData.Add("PLAN_PROD_TO", origin.PlanProdTo.HasValue ? origin.PlanProdTo.Equals(data.PlanProdTo) : false);
+            changesData.Add("REQUEST_QTY", origin.RequestQty.HasValue ? origin.RequestQty.Equals(data.RequestQty) : false);
+            changesData.Add("REQUEST_QTY_UOM", origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomId.Equals(data.RequestQtyUomId) : false);
+            changesData.Add("LACK1_FROM_MONTH", origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthId.Equals(data.Lack1FromMonthId) : false);
+            changesData.Add("LACK1_FROM_YEAR", origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Equals(data.Lack1FormYear) : false);
+            changesData.Add("LACK1_TO_MONTH", origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthId.Equals(data.Lack1ToMonthId) : false);
+            changesData.Add("LACK1_TO_YEAR", origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Equals(data.Lack1ToYear) : false);
+            changesData.Add("STATUS", origin.Status.Equals(data.Status));
+            changesData.Add("STATUS_GOV", origin.StatusGov.Equals(data.StatusGov));
+            changesData.Add("QTY_APPROVED", origin.QtyApproved.HasValue ? origin.QtyApproved.Equals(data.QtyApproved) : false);
+            changesData.Add("DECREE_DATE", origin.DecreeDate.HasValue ? origin.DecreeDate.Equals(data.DecreeDate) : false);
+            changesData.Add("LATEST_SALDO", origin.LatestSaldo.HasValue ? origin.LatestSaldo.Equals(data.LatestSaldo) : false);
+            changesData.Add("LATEST_SALDO_UOM", origin.LatestSaldoUomId.HasValue ? origin.LatestSaldoUomId.Equals(data.LatestSaldoUomId) : false);
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.PBCK1,
+                        FORM_ID = data.Pbck1Id,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "PBCK1_REF":
+                            changes.OLD_VALUE = origin.Pbck1Reference.HasValue && origin.Pbck1Parent != null
+                                ? origin.Pbck1Parent.Pbck1Number
+                                : "NULL";
+                            changes.NEW_VALUE = data.Pbck1Reference.HasValue && data.Pbck1Parent != null
+                                ? data.Pbck1Parent.Pbck1Number
+                                : "NULL";
+                            break;
+                        case "PBCK1_TYPE":
+                            changes.OLD_VALUE = EnumHelper.GetDescription(origin.Pbck1Type);
+                            changes.NEW_VALUE = EnumHelper.GetDescription(data.Pbck1Type);
+                            break;
+                        case "PERIOD_FROM":
+                            changes.OLD_VALUE = origin.PeriodFrom.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = data.PeriodFrom.ToString("dd MMM yyyy");
+                            break;
+                        case "PERIOD_TO":
+                            changes.OLD_VALUE = origin.PeriodTo.HasValue
+                                ? origin.PeriodTo.Value.ToString("dd MMM yyyy")
+                                : "NULL";
+                            changes.NEW_VALUE = data.PeriodTo.HasValue
+                                ? data.PeriodTo.Value.ToString("dd MMM yyyy")
+                                : "NULL";
+                            break;
+                        case "REPORTED_ON":
+                            changes.OLD_VALUE = origin.ReportedOn.HasValue
+                                ? origin.ReportedOn.Value.ToString("dd MMM yyyy")
+                                : "NULL";
+                            changes.NEW_VALUE = data.ReportedOn.HasValue
+                                ? data.ReportedOn.Value.ToString("dd MMM yyyy")
+                                : "NULL";
+                            break;
+                        case "NPPBKC_ID":
+                            changes.OLD_VALUE = origin.NppbkcNo;
+                            changes.NEW_VALUE = data.NppbkcNo;
+                            break;
+                        case "GOODTYPE_ID":
+                            changes.OLD_VALUE = origin.GoodTypeDesc;
+                            changes.NEW_VALUE = data.GoodTypeDesc;
+                            break;
+                        case "SUPPLIER_PLANT":
+                            changes.OLD_VALUE = origin.SupplierPlant;
+                            changes.NEW_VALUE = data.SupplierPlant;
+                            break;
+                        case "SUPPLIER_PORT_ID":
+                            changes.OLD_VALUE = origin.SupplierPortName;
+                            changes.NEW_VALUE = data.SupplierPortName;
+                            break;
+                        case "SUPPLIER_ADDRESS":
+                            changes.OLD_VALUE = origin.SupplierAddress;
+                            changes.NEW_VALUE = data.SupplierAddress;
+                            break;
+                        case "SUPPLIER_PHONE":
+                            changes.OLD_VALUE = origin.SupplierPhone;
+                            changes.NEW_VALUE = data.SupplierPhone;
+                            break;
+                        case "PLAN_PROD_FROM":
+                            changes.OLD_VALUE = origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
+                            changes.NEW_VALUE = data.PlanProdFrom.HasValue ? data.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
+                            break;
+                        case "PLAN_PROD_TO":
+                            changes.OLD_VALUE = origin.PlanProdTo.HasValue ? origin.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
+                            changes.NEW_VALUE = data.PlanProdTo.HasValue ? data.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
+                            break;
+                        case "REQUEST_QTY":
+                            changes.OLD_VALUE = origin.RequestQty.HasValue ? origin.RequestQty.Value.ToString("N0") : "NULL";
+                            changes.NEW_VALUE = data.RequestQty.HasValue ? data.RequestQty.Value.ToString("N0") : "NULL";
+                            break;
+                        case "REQUEST_QTY_UOM":
+                            changes.OLD_VALUE = origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomName : "NULL";
+                            changes.NEW_VALUE = data.RequestQtyUomName;
+                            break;
+                        case "LACK1_FROM_MONTH":
+                            changes.OLD_VALUE = origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthName : "NULL";
+                            changes.NEW_VALUE = data.Lack1FromMonthName;
+                            break;
+                        case "LACK1_FROM_YEAR":
+                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString("N0") : "NULL";
+                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString("N0");
+                            break;
+                        case "LACK1_TO_MONTH":
+                            changes.OLD_VALUE = origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthName : "NULL";
+                            changes.NEW_VALUE = data.Lack1ToMonthName;
+                            break;
+                        case "LACK1_TO_YEAR":
+                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString("N0") : "NULL";
+                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString("N0");
+                            break;
+                        case "STATUS":
+                            changes.OLD_VALUE = EnumHelper.GetDescription(origin.Status);
+                            changes.NEW_VALUE = EnumHelper.GetDescription(data.Status);
+                            break;
+                        case "STATUS_GOV":
+                            changes.OLD_VALUE = EnumHelper.GetDescription(origin.StatusGov);
+                            changes.NEW_VALUE = EnumHelper.GetDescription(data.StatusGov);
+                            break;
+                        case "QTY_APPROVED":
+                            changes.OLD_VALUE = origin.QtyApproved.HasValue
+                                ? origin.QtyApproved.Value.ToString("N0")
+                                : "NULL";
+                            changes.NEW_VALUE = data.QtyApproved.Value.ToString("N0");
+                            break;
+                        case "DECREE_DATE":
+                            changes.OLD_VALUE = origin.DecreeDate.HasValue
+                                ? origin.DecreeDate.Value.ToString("dd MMM yyyy")
+                                : "NULL";
+                            changes.NEW_VALUE = data.DecreeDate.HasValue
+                                ? data.DecreeDate.Value.ToString("dd MMM yyyy")
+                                : "NULL";
+                            break;
+                        case "LATEST_SALDO":
+                            changes.OLD_VALUE = origin.LatestSaldo.HasValue
+                                ? origin.LatestSaldo.Value.ToString("N0")
+                                : "NULL";
+                            changes.NEW_VALUE = data.LatestSaldo.HasValue
+                                ? data.LatestSaldo.Value.ToString("N0")
+                                : "NULL";
+                            break;
+                        case "LATEST_SALDO_UOM":
+                            changes.OLD_VALUE = origin.LatestSaldoUomId.HasValue
+                                ? origin.LatestSaldoUomName
+                                : "NULL";
+                            changes.NEW_VALUE = data.LatestSaldoUomName;
+                            break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
+
+        private void AddWorkflowHistory(long id, Core.Enums.ActionType actionType, int userId)
+        {
+            var dbData = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput());
+
+            if (dbData == null)
+            {
+                dbData = new WorkflowHistoryDto()
+                {
+                    ACTION =  actionType, FORM_ID =  id, FORM_TYPE_ID = Core.Enums.FormType.PBKC1
+                };
+            }
+            dbData.ACTION_BY = userId;
+            dbData.ACTION_DATE = DateTime.Now;
+            _workflowHistoryBll.Save(dbData);
         }
         
         public string GetPbckNumberById(long id)
