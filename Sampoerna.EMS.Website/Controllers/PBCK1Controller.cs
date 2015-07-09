@@ -126,13 +126,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id.Value));
+            //var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id.Value));
 
             return EditInitial(new Pbck1ItemViewModel()
             {
                 ChangesHistoryList = changeHistory,
-                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
-                WorkflowHistory = workflowHistory
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data)
+                //WorkflowHistory = workflowHistory
             });
         }
 
@@ -193,7 +193,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id.Value));
+            //var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id.Value));
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
@@ -203,8 +203,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Detail = Mapper.Map<Pbck1Item>(pbck1Data),
-                ChangesHistoryList = changesHistory,
-                WorkflowHistory = workflowHistory
+                ChangesHistoryList = changesHistory
             });
         }
 

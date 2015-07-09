@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -367,11 +368,11 @@ namespace Sampoerna.EMS.BLL
 
         private void AddWorkflowHistory(long id, Core.Enums.ActionType actionType, int userId)
         {
-            var dbData = _workflowHistoryBll.GetSpecificWorkflowHistory(Core.Enums.FormType.PBKC1, id, actionType);
+            var dbData = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput());
 
             if (dbData == null)
             {
-                dbData = new WORKFLOW_HISTORY()
+                dbData = new WorkflowHistoryDto()
                 {
                     ACTION =  actionType, FORM_ID =  id, FORM_TYPE_ID = Core.Enums.FormType.PBKC1
                 };
