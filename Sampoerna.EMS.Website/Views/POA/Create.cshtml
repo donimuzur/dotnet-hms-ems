@@ -89,6 +89,7 @@
                                                     <label class="col-md-3">Email<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBox("email",null, new { @class = "form-control", @maxlength = "35", disabled="disabled" })
+                                                        @Html.HiddenFor(x=>x.Detail.Email)
                                                     </div>
                                                 </div>
                                             </div>
