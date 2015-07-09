@@ -26,10 +26,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
+        private IPlantBLL _plantBll;
+        private IUnitOfMeasurementBLL _uomBll;
 
         public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
             IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
-            IChangesHistoryBLL changesHistoryBll)
+            IChangesHistoryBLL changesHistoryBll, IZaidmExGoodTypeBLL goodTypeBll,
+            IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -38,6 +42,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll = pbckBll;
             _workflowHistoryBll = workflowHistoryBll;
             _changesHistoryBll = changesHistoryBll;
+            _goodTypeBll = goodTypeBll;
+            _plantBll = plantBll;
+            _uomBll = uomBll;
         }
 
         #region View Documents
@@ -218,6 +225,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CreateDomestic()
         {
             var model = InitCreateCK5(Enums.CK5Type.Domestic);
+            //AddMessageInfo("Create domestic.", Enums.MessageInfoType.Info);
             return View("Create", model);
         }
 
@@ -322,14 +330,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbCk5.STATUS_ID = Enums.DocumentStatus.Draft;
                 dbCk5.CREATED_DATE = DateTime.Now;
                 dbCk5.CREATED_BY = CurrentUser.USER_ID;
-
-                _ck5Bll.SaveCk5(dbCk5);
+               
+               // _ck5Bll.SaveCk5(dbCk5);
 
                 //success.. redirect to edit form
                 return RedirectToAction("Edit", "CK5", new {@id = dbCk5.CK5_ID});
-                
 
-
+            }
+            else
+            {
+                AddMessageInfo("Error message", Enums.MessageInfoType.Error);
             }
             if (model.KppBcCity == 0)
             {
@@ -340,8 +350,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
+     
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, long plantId)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5CreateViewModel();
@@ -357,7 +368,12 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Qty = datarow[1];
                         uploadItem.Uom = datarow[2];
                         uploadItem.Convertion = datarow[3];
-
+                        uploadItem.ConvertedUom = datarow[4];
+                        uploadItem.UsdValue = datarow[5];
+                        if (datarow.Count > 6)
+                            uploadItem.Note = datarow[6];
+                        
+                    
                         model.UploadItemModels.Add(uploadItem);
 
                     }
@@ -369,7 +385,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
             }
-            return PartialView("_CK5UploadList", model);
+
+            var input = Mapper.Map<List<CK5MaterialInput>>(model.UploadItemModels);
+
+            var outputResult = _ck5Bll.CK5MaterialProcess(input);
+
+            model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
+
+            return PartialView("_CK5UploadList", model.UploadItemModels);
         }
 
         private CK5EditViewModel GetInitEditData(CK5EditViewModel model)
@@ -507,19 +530,28 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-
         private void SetChangesLog(CK5 origin, CK5EditViewModel updatedModel)
         {
             var changesData = new Dictionary<string, bool>();
-
-            if (string.IsNullOrEmpty(origin.REGISTRATION_NUMBER))
-                origin.REGISTRATION_NUMBER = "";
-
+          
             changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(updatedModel.KppBcCity));
-            changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER.Equals(updatedModel.RegistrationNumber));
+            changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == updatedModel.RegistrationNumber);
 
             changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(updatedModel.GoodTypeId));
+            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(updatedModel.ExciseSettlement));
+            changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(updatedModel.ExciseStatus));
+            changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(updatedModel.RequestType));
+            changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID.Equals(updatedModel.SourcePlantId));
+            changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID.Equals(updatedModel.DestPlantId));
 
+            changesData.Add("INVOICE_NUMBER", origin.INVOICE_NUMBER == updatedModel.InvoiceNumber);
+            changesData.Add("INVOICE_DATE", origin.INVOICE_DATE.Equals(updatedModel.InvoiceDate));
+
+            changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID.Equals(updatedModel.PbckDecreeId));
+            changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(updatedModel.CarriageMethod));
+
+            changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(updatedModel.GrandTotalEx));
+            changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID.Equals(updatedModel.PackageUomId));
 
             foreach (var listChange in changesData)
             {
@@ -533,19 +565,88 @@ namespace Sampoerna.EMS.Website.Controllers
                 switch (listChange.Key)
                 {
                     case "KPPBC_CITY":
-                        changes.OLD_VALUE = _nppbkcBll.GetCityByNppbkcId(origin.KPPBC_CITY.Value);
+                        long city = 0;
+                        if (origin.KPPBC_CITY.HasValue)
+                            city = origin.KPPBC_CITY.Value;
+
+                        changes.OLD_VALUE = _nppbkcBll.GetCityByNppbkcId(city);
                         changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(updatedModel.KppBcCity);
                         break;
                     case "REGISTRATION_NUMBER":
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
                         changes.NEW_VALUE = updatedModel.RegistrationNumber;
                         break;
+                    case "EX_GOODS_TYPE_ID":
+                        changes.OLD_VALUE = _goodTypeBll.GetGoodTypeDescById(origin.EX_GOODS_TYPE_ID);
+                        changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(updatedModel.GoodTypeId);
+                        break;
+                    case "EX_SETTLEMENT_ID":
+                        changes.OLD_VALUE = _masterDataBll.GetExSettlementsNameById(origin.EX_SETTLEMENT_ID);
+                        changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(updatedModel.ExciseSettlement);
+                        break;
+                    case "EX_STATUS_ID":
+                        changes.OLD_VALUE = _masterDataBll.GetExStatusNameById(origin.EX_STATUS_ID);
+                        changes.NEW_VALUE = _masterDataBll.GetExStatusNameById(updatedModel.ExciseStatus);
+                        break;
+                    case "REQUEST_TYPE_ID":
+                        changes.OLD_VALUE = _masterDataBll.GetRequestTypeNameById(origin.REQUEST_TYPE_ID);
+                        changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(updatedModel.ExciseStatus);
+                        break;
+                    case "SOURCE_PLANT_ID":
+                        long sourcePlant = 0;
+                        if (origin.SOURCE_PLANT_ID.HasValue)
+                            sourcePlant = origin.SOURCE_PLANT_ID.Value;
+                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(sourcePlant);
+                        changes.NEW_VALUE = _plantBll.GetPlantWerksById(updatedModel.SourcePlantId);
+                        break;
+                    case "DEST_PLANT_ID":
+                        long destPlant = 0;
+                        if (origin.DEST_PLANT_ID.HasValue)
+                            destPlant = origin.DEST_PLANT_ID.Value;
+                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(destPlant);
+                        changes.NEW_VALUE = _plantBll.GetPlantWerksById(updatedModel.DestPlantId);
+                        break;
+                    case "INVOICE_NUMBER":
+                        changes.OLD_VALUE = origin.INVOICE_NUMBER;
+                        changes.NEW_VALUE = updatedModel.InvoiceNumber;
+                        break;
+                    case "INVOICE_DATE":
+                        changes.OLD_VALUE = origin.INVOICE_DATE != null? origin.INVOICE_DATE.Value.ToString("dd MMM yyyy"): string.Empty;
+                        changes.NEW_VALUE = updatedModel.InvoiceDate != null? updatedModel.InvoiceDate.Value.ToString("dd MMM yyyy"): string.Empty;
+                        break;
+                    case "PBCK1_DECREE_ID":
+                         long pbckNumber = 0;
+                        if (origin.PBCK1_DECREE_ID.HasValue)
+                            pbckNumber = origin.PBCK1_DECREE_ID.Value;
+                        changes.OLD_VALUE = _pbck1Bll.GetPbckNumberById(pbckNumber);
+
+                        long updateNumber = 0;
+                        if (updatedModel.PbckDecreeId.HasValue)
+                            updateNumber = updatedModel.PbckDecreeId.Value;
+
+                        changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(updateNumber);
+                        break;
+
+                    case "CARRIAGE_METHOD_ID":
+                        changes.OLD_VALUE = _masterDataBll.GetCarriageMethodeNameById(origin.CARRIAGE_METHOD_ID);
+                        changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(updatedModel.CarriageMethod);
+                        break;
+
+                    case "GRAND_TOTAL_EX":
+                        changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
+                        changes.NEW_VALUE = updatedModel.GrandTotalEx.ToString();
+                        break;
+
+                    case "PACKAGE_UOM_ID":
+                        changes.OLD_VALUE = _uomBll.GetUomNameById(origin.PACKAGE_UOM_ID);
+                        changes.NEW_VALUE = _uomBll.GetUomNameById(updatedModel.PackageUomId);
+                        break;
+
 
                 }
                 _changesHistoryBll.AddHistory(changes);
             }
         }
-
 
         private CK5DetailsViewModel GetInitDetailsData(CK5DetailsViewModel model)
         {

@@ -40,5 +40,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("UnAuthorize", "Error");
 
         }
+
+        public ActionResult MessageInfo()
+        {
+            var model = GetListMessageInfo();
+            return PartialView("_MessageInfo", model);
+        }
 	}
 }

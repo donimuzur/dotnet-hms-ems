@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
@@ -20,14 +21,20 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "";
         private IDocumentSequenceNumberBLL _docSeqNumBll;
         private IMasterDataBLL _masterDataBll;
+        private IBrandRegistrationBLL _brandRegistrationBll;
+        private IUnitOfMeasurementBLL _uomBll;
 
-        public CK5BLL(IUnitOfWork uow, ILogger logger, IDocumentSequenceNumberBLL docSeqNumBll, IMasterDataBLL masterDataBll)
+        public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
-            _docSeqNumBll = docSeqNumBll;
-            _masterDataBll = masterDataBll;
+
             _repository = _uow.GetGenericRepository<CK5>();
+
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _masterDataBll = new MasterDataBLL(_uow);
+            _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
+            _uomBll = new UnitOfMeasurementBLL(_uow,_logger);
         }
 
         public CK5 GetById(long id)
@@ -143,6 +150,82 @@ namespace Sampoerna.EMS.BLL
           
             _repository.InsertOrUpdate(ck5);
             _uow.SaveChanges();
+        }
+
+        private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5MaterialOutput>();
+
+            foreach (var ck5MaterialInput in inputs)
+            {
+                messageList.Clear();
+
+                //var output = new CK5MaterialOutput();
+                var output = AutoMapper.Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
+
+                //validate
+                var dbBrand = _brandRegistrationBll.GetByFaCode(ck5MaterialInput.Brand);
+                if (dbBrand == null)
+                    messageList.Add("Brand Not Exist");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
+                    messageList.Add("Qty not valid");
+
+                if (!_uomBll.IsUomNameExist(ck5MaterialInput.Uom))
+                    messageList.Add("UOM not exist");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                    messageList.Add("Convertion not valid");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.ConvertedUom))
+                    messageList.Add("ConvertedUom not valid");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
+                    messageList.Add("UsdValue not valid");
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+            //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
+            return outputList;
+        }
+
+        public List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs)
+        {
+            var outputList = ValidateCk5Material(inputs);
+
+            if (!outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid))
+                return outputList;
+
+            foreach (var output in outputList)
+            {
+                output.ConvertedQty = Convert.ToInt32(output.Qty)*Convert.ToInt32(output.Convertion);
+
+                var dbBrand = _brandRegistrationBll.GetByFaCode(output.Brand);
+
+                output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+
+                output.ExciseValue = output.ConvertedQty*output.Tariff;
+
+            }
+
+            return outputList;
         }
     }
 }

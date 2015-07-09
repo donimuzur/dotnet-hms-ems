@@ -380,6 +380,11 @@ namespace Sampoerna.EMS.BLL
             dbData.ACTION_DATE = DateTime.Now;
             _workflowHistoryBll.Save(dbData);
         }
-
+        
+        public string GetPbckNumberById(long id)
+        {
+            var dbData = _repository.GetByID(id);
+            return dbData == null ? string.Empty : dbData.NUMBER;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -7,6 +8,8 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -124,5 +127,48 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
         }
+
+        #region MessageInfo
+        private List<MessageInfo> ListMessageInfo { get; set; }
+
+        private void AddMessage(MessageInfo messageInfo)
+        {
+            ListMessageInfo = (List<MessageInfo>)TempData["MessageInfo"] ?? new List<MessageInfo>();
+            ListMessageInfo.Add(messageInfo);
+
+            TempData["MessageInfo"] = ListMessageInfo;
+        }
+
+        public void AddMessageInfo(MessageInfo messageinfo)
+        {
+            AddMessage(messageinfo);
+        }
+
+        public void AddMessageInfo(List<string> message, Enums.MessageInfoType messageinfotype)
+        {
+            AddMessage(new MessageInfo(message, messageinfotype));
+        }
+
+        public void AddMessageInfo(string message, Enums.MessageInfoType messageinfotype)
+        {
+            AddMessage(new MessageInfo(new List<string> { message }, messageinfotype));
+        }
+
+
+        public List<BaseModel> GetListMessageInfo()
+        {
+            var lsModel = new List<BaseModel>();
+            ListMessageInfo = (List<MessageInfo>)TempData["MessageInfo"];
+
+            if (ListMessageInfo != null)
+                lsModel.AddRange(ListMessageInfo.Select(messageInfo => new BaseModel()
+                {
+                    MessageTitle =messageInfo.MessageInfoType.ToString(),// EnumsHelper.GetResourceDisplayEnums(messageInfo.MessageInfoType),
+                    MessageBody = messageInfo.MessageText
+                }));
+
+            return lsModel;
+        }
+        #endregion
     }
 }

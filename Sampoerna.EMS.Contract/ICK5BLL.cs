@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract
@@ -23,5 +24,7 @@ namespace Sampoerna.EMS.Contract
        void SaveCk5(CK5 ck5);
 
        List<CK5> GetCK5ByType(Enums.CK5Type ck5Type);
+
+       List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs);
    }
 }
