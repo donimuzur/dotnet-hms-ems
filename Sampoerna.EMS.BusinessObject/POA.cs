@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER1 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual USER USER2 { get; set; }
-        public virtual USER USER3 { get; set; }
         public virtual ICollection<POA_SK> POA_SK { get; set; }
+        public virtual USER USER3 { get; set; }
     }
 }

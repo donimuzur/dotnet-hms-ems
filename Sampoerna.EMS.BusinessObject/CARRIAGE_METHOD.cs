@@ -14,7 +14,14 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class CARRIAGE_METHOD
     {
+        public CARRIAGE_METHOD()
+        {
+            this.CK5 = new HashSet<CK5>();
+        }
+    
         public int CARRIAGE_METHOD_ID { get; set; }
         public string CARRIAGE_METHOD_NAME { get; set; }
+    
+        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }

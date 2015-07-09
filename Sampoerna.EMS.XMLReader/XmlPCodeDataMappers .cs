@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_PCODE();
-                    item.PER_CODE = Convert.ToInt32(xElement.Element("PER_CODE").Value);
+                    item.PER_CODE = xElement.Element("PER_CODE").Value;
                     item.PER_DESC = xElement.Element("PER_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;
                     var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
@@ -57,7 +57,7 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_PCODE>(Items);
         }
 
-        public ZAIDM_EX_PCODE GetPCode(int? PCode)
+        public ZAIDM_EX_PCODE GetPCode(string PCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PCODE>()
                 .GetByID(PCode);

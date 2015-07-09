@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_MARKET();
-                    item.MARKET_ID = Convert.ToInt32(xElement.Element("MARKET_ID").Value);
+                    item.MARKET_ID = xElement.Element("MARKET_ID").Value;
                     item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
                     var exisitingMarket = GetMarket(item.MARKET_ID);
                     var marketDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.XMLReader
        
         }
 
-        public ZAIDM_EX_MARKET GetMarket(int? MarketId)
+        public ZAIDM_EX_MARKET GetMarket(string MarketId)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MARKET>()
                 .GetByID(MarketId);

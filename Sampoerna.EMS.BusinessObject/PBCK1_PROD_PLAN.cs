@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public long PBCK1_PROD_PLAN_ID { get; set; }
         public Nullable<int> PBCK1_ID { get; set; }
-        public Nullable<int> PROD_CODE { get; set; }
+        public string PROD_CODE { get; set; }
         public Nullable<decimal> AMOUNT { get; set; }
         public string BKC_REQUIRED { get; set; }
         public Nullable<int> MONTH { get; set; }

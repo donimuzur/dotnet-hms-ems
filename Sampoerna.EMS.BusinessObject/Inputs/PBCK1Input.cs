@@ -6,7 +6,7 @@
         public string POA { get; set;      }
         public Core.Enums.PBCK1Type? Pbck1Type { get; set; }
 
-        public int? GoodType_ID { get; set; }
+        public string GoodType_ID { get; set; }
         public string  Creator { get; set; }
         public int? Year { get; set; }
         /// <summary>

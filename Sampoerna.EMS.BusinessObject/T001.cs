@@ -19,9 +19,9 @@ namespace Sampoerna.EMS.BusinessObject
             this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
             this.T001K = new HashSet<T001K>();
             this.T001K1 = new HashSet<T001K>();
+            this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
             this.ZAIDM_EX_NPPBKC1 = new HashSet<ZAIDM_EX_NPPBKC>();
-            this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
         }
     
         public string BUKRS { get; set; }
@@ -36,8 +36,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER { get; set; }
         public virtual ICollection<T001K> T001K { get; set; }
         public virtual ICollection<T001K> T001K1 { get; set; }
+        public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC1 { get; set; }
-        public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
     }
 }

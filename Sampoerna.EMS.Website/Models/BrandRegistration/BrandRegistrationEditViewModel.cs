@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string FaCode { get; set; }
 
         [Required]
-        public int PersonalizationCode { get; set; }
+        public string PersonalizationCode { get; set; }
         public SelectList PersonalizationCodeList { get; set; }
         public string PersonalizationCodeDescription { get; set; }
 
@@ -40,22 +40,22 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public DateTime SkepDate { get; set; }
 
         [Required]
-        public int ProductCode { get; set; }
+        public string ProductCode { get; set; }
         public SelectList ProductCodeList { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }
 
         [Required]
-        public int SeriesId { get; set; }
+        public string SeriesId { get; set; }
         public SelectList SeriesList { get; set; }
         public int SeriesCode { get; set; }
         public int SeriesValue { get; set; }
 
         [Required]
-        public int? Content { get; set; }
+        public string Content { get; set; }
 
         [Required]
-        public int MarketId { get; set; }
+        public string MarketId { get; set; }
         public SelectList MarketCodeList { get; set; }
         public string MarketDescription { get; set; }
 
@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string ColourName { get; set; }
 
         [Required]
-        public int GoodType { get; set; }
+        public string GoodType { get; set; }
         public SelectList GoodTypeList { get; set; }
         public string GoodTypeDescription { get; set; }
 

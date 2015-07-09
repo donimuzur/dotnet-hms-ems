@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.Website.Models.GOODSTYPE
         {
             GoodTypeName = string.Empty;
         }
-        public int GoodTypeId { get; set; }
+        public string GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
         public bool IsChecked { get; set; }
         

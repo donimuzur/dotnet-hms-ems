@@ -50,9 +50,9 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.CREATED_BY  == input.Creator);
             }
 
-            if (input.GoodType_ID.HasValue)
+            if (!string.IsNullOrEmpty(input.GoodType_ID))
             {
-                queryFilter = queryFilter.And(c => c.EXC_GOOD_TYP.HasValue && c.EXC_GOOD_TYP.Value == input.GoodType_ID.Value);
+                queryFilter = queryFilter.And(c => c.EXC_GOOD_TYP == input.GoodType_ID);
             }
 
             if (input.Year.HasValue)

@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK1()
         {
+            this.CK5 = new HashSet<CK5>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
@@ -29,7 +30,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> PERIOD_TO { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public string NPPBKC_ID { get; set; }
-        public Nullable<int> EXC_GOOD_TYP { get; set; }
+        public string EXC_GOOD_TYP { get; set; }
         public string SUPPLIER_PLANT { get; set; }
         public Nullable<int> SUPPLIER_PORT_ID { get; set; }
         public string SUPPLIER_ADDRESS { get; set; }
@@ -54,6 +55,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
+        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
         public virtual USER USER { get; set; }

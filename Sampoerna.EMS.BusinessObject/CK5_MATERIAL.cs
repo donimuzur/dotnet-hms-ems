@@ -12,16 +12,16 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class PBCK1_PROD_CONVERTER
+    public partial class CK5_MATERIAL
     {
-        public long PBCK1_PROD_COV_ID { get; set; }
-        public Nullable<int> PBCK1_ID { get; set; }
-        public string PROD_CODE { get; set; }
-        public Nullable<decimal> CONVERTER_OUTPUT { get; set; }
-        public Nullable<int> CONVERTER_UOM_ID { get; set; }
+        public long CK5_MATERIAL_ID { get; set; }
+        public Nullable<long> CK5_ID { get; set; }
+        public Nullable<long> MATERIAL_ID { get; set; }
+        public Nullable<int> LINE_ITEM { get; set; }
+        public Nullable<decimal> QTY { get; set; }
+        public Nullable<decimal> CONVERTED_QTY { get; set; }
+        public Nullable<int> CONVERTED_UOM_ID { get; set; }
     
-        public virtual PBCK1 PBCK1 { get; set; }
-        public virtual UOM UOM { get; set; }
-        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
+        public virtual CK5 CK5 { get; set; }
     }
 }

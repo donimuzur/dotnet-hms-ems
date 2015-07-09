@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.PURCHASING_GROUP = xElement.Element("PURCHASING_GROUP").Value;
                     item.ISSUE_STORANGE_LOC = xElement.Element("ISSUE_STORANGE_LOC").Value;
                     item.WERKS = xElement.Element("PLANT_ID").Value;
-                    var exGoodTypCode = Convert.ToInt32(xElement.Element("EX_GOOD_TYP").Value);
+                    var exGoodTypCode = xElement.Element("EX_GOOD_TYP").Value;
                     var exGoodType = new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodTypCode);
                     if(exGoodType == null)
                     {

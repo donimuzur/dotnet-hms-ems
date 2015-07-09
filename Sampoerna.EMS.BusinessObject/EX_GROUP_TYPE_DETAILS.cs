@@ -16,9 +16,9 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public int EX_GROUP_TYPE_DETAIL_ID { get; set; }
         public Nullable<int> EX_GROUP_TYPE_ID { get; set; }
-        public Nullable<int> GOODTYPE_ID { get; set; }
+        public string GOODTYPE_ID { get; set; }
     
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual EX_GROUP_TYPE EX_GROUP_TYPE { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
     }
 }

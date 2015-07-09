@@ -43,12 +43,12 @@ namespace Sampoerna.EMS.BLL
             return _repositoryPersonalization.Get().ToList();
         }
 
-        public ZAIDM_EX_PCODE GetDataPersonalizationById(int id)
+        public ZAIDM_EX_PCODE GetDataPersonalizationById(string id)
         {
             return _repositoryPersonalization.GetByID(id);
         }
 
-        public string GetPersonalizationDescById(int id)
+        public string GetPersonalizationDescById(string id)
         {
             var dbData = _repositoryPersonalization.GetByID(id);
             return dbData == null ? string.Empty : dbData.PER_DESC;
@@ -63,15 +63,15 @@ namespace Sampoerna.EMS.BLL
             return _repositorySeries.Get().ToList();
         }
 
-        public ZAIDM_EX_SERIES GetDataSeriesById(int id)
+        public ZAIDM_EX_SERIES GetDataSeriesById(string id)
         {
             return _repositorySeries.GetByID(id);
         }
 
-        public int? GetDataSeriesDescById(int? id)
+        public string GetDataSeriesDescById(string id)
         {
             var dbData = _repositorySeries.GetByID(id);
-            return dbData == null ? 0 : dbData.SERIES_VALUE;
+            return dbData == null ? null: dbData.SERIES_VALUE;
         }
 
         #endregion
@@ -83,12 +83,12 @@ namespace Sampoerna.EMS.BLL
             return _repositoryMarket.Get().ToList();
         }
 
-        public ZAIDM_EX_MARKET GetDataMarketById(int id)
+        public ZAIDM_EX_MARKET GetDataMarketById(string id)
         {
             return _repositoryMarket.GetByID(id);
         }
 
-        public string GetMarketDescById(int? id)
+        public string GetMarketDescById(string id)
         {
             var dbData = _repositoryMarket.GetByID(id);
             return dbData == null ? string.Empty : dbData.MARKET_DESC;
@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
-        public string GetProductCodeTypeDescById(int id)
+        public string GetProductCodeTypeDescById(string id)
         {
             var dbData = _repositoryProduct.GetByID(id);
             return dbData == null ? string.Empty : dbData.PROD_CODE + " - " + dbData.PRODUCT_TYPE;
