@@ -35,9 +35,9 @@ namespace Sampoerna.EMS.XMLReader
                     item.BUKRS = bukrs;
                     if (exisitingCompany != null)
                     {
-                                item.CREATED_DATE = exisitingCompany.CREATED_DATE;
-                                item.MODIFIED_DATE = companyDateXml;
-                                items.Add(item);
+                        item.CREATED_DATE = exisitingCompany.CREATED_DATE;
+                        item.MODIFIED_DATE = companyDateXml;
+                        items.Add(item);
                         
                     }
                     else

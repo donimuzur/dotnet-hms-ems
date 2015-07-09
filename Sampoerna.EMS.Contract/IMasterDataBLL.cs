@@ -13,18 +13,18 @@ namespace Sampoerna.EMS.Contract
         List<string> GetDataCompany();
 
         List<ZAIDM_EX_PCODE> GetDataPersonalization();
-        ZAIDM_EX_PCODE GetDataPersonalizationById(int id);
-        string GetPersonalizationDescById(int id);
+        ZAIDM_EX_PCODE GetDataPersonalizationById(string id);
+        string GetPersonalizationDescById(string id);
 
         List<ZAIDM_EX_SERIES> GetAllDataSeries();
-        ZAIDM_EX_SERIES GetDataSeriesById(int id);
-        int? GetDataSeriesDescById(int? id);
+        ZAIDM_EX_SERIES GetDataSeriesById(string id);
+        string GetDataSeriesDescById(string id);
 
         #region ZAIDM_EX_MARKET
 
         List<ZAIDM_EX_MARKET> GetAllDataMarket();
-        ZAIDM_EX_MARKET GetDataMarketById(int id);
-        string GetMarketDescById(int? id);
+        ZAIDM_EX_MARKET GetDataMarketById(string id);
+        string GetMarketDescById(string id);
 
         #endregion
 
@@ -38,6 +38,6 @@ namespace Sampoerna.EMS.Contract
         List<string> GetAllDataCurrency();
         #endregion
 
-        string GetProductCodeTypeDescById(int id);
+        string GetProductCodeTypeDescById(string id);
     }
 }

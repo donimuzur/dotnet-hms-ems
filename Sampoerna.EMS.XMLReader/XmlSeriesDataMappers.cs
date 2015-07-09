@@ -27,8 +27,8 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_SERIES();
-                    item.SERIES_CODE = Convert.ToInt32(xElement.Element("SERIES_CODE").Value);
-                    item.SERIES_VALUE = Convert.ToInt32(xElement.Element("SERIES_VALUE").Value);
+                    item.SERIES_CODE = xElement.Element("SERIES_CODE").Value;
+                    item.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
                     var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingSeries = GetSeries(item.SERIES_CODE);
                     if (existingSeries != null)
@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_SERIES>(Items);
         }
 
-        public ZAIDM_EX_SERIES GetSeries(int? SeriesCode)
+        public ZAIDM_EX_SERIES GetSeries(string SeriesCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_SERIES>()
                 .GetByID(SeriesCode);

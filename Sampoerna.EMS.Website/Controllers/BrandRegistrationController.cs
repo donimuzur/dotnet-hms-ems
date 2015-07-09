@@ -94,28 +94,28 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult PersonalizationCodeDescription(int personalizationId)
+        public JsonResult PersonalizationCodeDescription(string personalizationId)
         {
             var personalizationCodeDescription = _masterBll.GetDataPersonalizationById(personalizationId);
             return Json(personalizationCodeDescription.PER_DESC);
         }
 
         [HttpPost]
-        public JsonResult ProductCodeDetail(long productId)
+        public JsonResult ProductCodeDetail(string productId)
         {
             var product = _productBll.GetById(productId);
             return Json(product);
         }
 
         [HttpPost]
-        public JsonResult SeriesCodeDescription(int seriesId)
+        public JsonResult SeriesCodeDescription(string seriesId)
         {
             var seriesCodeDescription = _masterBll.GetDataSeriesById(seriesId);
             return Json(seriesCodeDescription.SERIES_VALUE);
         }
 
         [HttpPost]
-        public JsonResult MarketCodeDescription(int marketId)
+        public JsonResult MarketCodeDescription(string marketId)
         {
             var market = _masterBll.GetDataMarketById(marketId);
             return Json(market.MARKET_DESC);

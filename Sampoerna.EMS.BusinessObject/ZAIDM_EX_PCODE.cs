@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
         }
     
-        public int PER_CODE { get; set; }
+        public string PER_CODE { get; set; }
         public string PER_DESC { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }

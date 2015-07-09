@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_BRAND();
                     item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
-                    var pcodeCode = Convert.ToInt32(xElement.Element("PER_CODE").Value);
+                    var pcodeCode = xElement.Element("PER_CODE").Value;
                     var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
                     if (pCode == null)
                        throw  new Exception("no existing PCODE PER_CODE " + pcodeCode);
@@ -43,19 +43,19 @@ namespace Sampoerna.EMS.XMLReader
                     if(plant == null)
                         throw  new Exception("no existing plant plant code " + plantCode);
                     item.WERKS = plant.WERKS;
-                    var exGoodType = Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value);
+                    var exGoodType = xElement.Element("EXC_GOOD_TYP").Value;
                     var goodsType =
                         new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodType);
                     if(goodsType== null)
                         throw new Exception("no existing goods type " + exGoodType);
                     item.EXC_GOOD_TYP = goodsType.EXC_GOOD_TYP;
-                    var marketId = Convert.ToInt32(xElement.Element("MARKET_ID").Value);
+                    var marketId = xElement.Element("MARKET_ID").Value;
                     var market =
                         new XmlMarketDataMapper(null).GetMarket(marketId);
                     if(market == null)
                         throw new Exception("no existing market  market id" + marketId);
                     item.MARKET_ID = market.MARKET_ID;
-                    var series_id = Convert.ToInt32(xElement.Element("SERIES_CODE").Value);
+                    var series_id = xElement.Element("SERIES_CODE").Value;
                     var series =
                         new XmlSeriesDataMapper(null).GetSeries(series_id);
                     if(series == null)
@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.HJE_CURR = xElement.Element("HJE_CURR").Value;
                     item.TARIFF = Convert.ToDecimal(xElement.Element("TARIFF").Value);
                     item.TARIF_CURR = xElement.Element("TARIFF_CURR").Value;
-                    var prodCode = Convert.ToInt32(xElement.Element("PROD_CODE").Value);
+                    var prodCode = xElement.Element("PROD_CODE").Value;
                     var prodType = new XmlProdTypeDataMapper(null).GetProdType(prodCode);
                     if(prodType == null)
                         throw new Exception("no existing product code " + prodCode);
