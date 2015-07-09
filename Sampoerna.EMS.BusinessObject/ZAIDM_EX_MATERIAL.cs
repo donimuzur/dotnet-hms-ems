@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class ZAIDM_EX_MATERIAL
     {
+        public ZAIDM_EX_MATERIAL()
+        {
+            this.MATERIAL_UOM = new HashSet<MATERIAL_UOM>();
+        }
+    
         public string STICKER_CODE { get; set; }
         public string MATERIAL_DESC { get; set; }
         public string MATERIAL_GROUP { get; set; }
@@ -30,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
+        public virtual ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
         public virtual T001W T001W { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }

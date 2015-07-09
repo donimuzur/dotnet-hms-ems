@@ -105,6 +105,9 @@
     <Compile Include="LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="MATERIAL_UOM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="MENGETAHUI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

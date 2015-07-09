@@ -166,6 +166,17 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
+        <EntityType Name="MATERIAL_UOM">
+          <Key>
+            <PropertyRef Name="MATERIAL_UOM_ID" />
+          </Key>
+          <Property Name="MATERIAL_UOM_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
+          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+        </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
             <PropertyRef Name="MENGETAHUI_ID" />
@@ -478,6 +489,7 @@
         <EntityType Name="ZAIDM_EX_MATERIAL">
           <Key>
             <PropertyRef Name="STICKER_CODE" />
+            <PropertyRef Name="WERKS" />
           </Key>
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -710,6 +722,32 @@
             </Principal>
             <Dependent Role="HEADER_FOOTER">
               <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MATERIAL_UOM_MATERIAL_UOM">
+          <End Role="MATERIAL_UOM" Type="Self.MATERIAL_UOM" Multiplicity="1" />
+          <End Role="MATERIAL_UOM1" Type="Self.MATERIAL_UOM" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="MATERIAL_UOM">
+              <PropertyRef Name="MATERIAL_UOM_ID" />
+            </Principal>
+            <Dependent Role="MATERIAL_UOM1">
+              <PropertyRef Name="MATERIAL_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Role="MATERIAL_UOM" Type="Self.MATERIAL_UOM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="MATERIAL_UOM">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1434,6 +1472,7 @@
           <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER_FORM_MAP" EntityType="Self.HEADER_FOOTER_FORM_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LFA1" EntityType="Self.LFA1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MATERIAL_UOM" EntityType="Self.MATERIAL_UOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MENGETAHUI" EntityType="Self.MENGETAHUI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MONTH" EntityType="Self.MONTH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAGE" EntityType="Self.PAGE" Schema="dbo" store:Type="Tables" />
@@ -1518,6 +1557,14 @@
           <AssociationSet Name="FK_HEADER_FOOTER_MODIFIED_BY_USER" Association="Self.FK_HEADER_FOOTER_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MATERIAL_UOM_MATERIAL_UOM" Association="Self.FK_MATERIAL_UOM_MATERIAL_UOM">
+            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
+            <End Role="MATERIAL_UOM1" EntitySet="MATERIAL_UOM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="Self.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="Self.FK_PAGE_MAP_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
@@ -1796,7 +1843,6 @@
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
           <EntitySet Name="ZAIDM_EX_MARKET" EntityType="EMSModel.ZAIDM_EX_MARKET" />
-          <EntitySet Name="ZAIDM_EX_MATERIAL" EntityType="EMSModel.ZAIDM_EX_MATERIAL" />
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="EMSModel.ZAIDM_EX_PCODE" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="EMSModel.ZAIDM_EX_PRODTYP" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="EMSModel.ZAIDM_EX_SERIES" />
@@ -1996,17 +2042,9 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
           <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="EMSModel.FK_UOM_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="UOM" EntitySet="UOM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_USER_USER_GROUP" Association="EMSModel.FK_USER_USER_GROUP">
             <End Role="USER_GROUP" EntitySet="USER_GROUP" />
@@ -2028,14 +2066,6 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
@@ -2055,10 +2085,6 @@
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="EMSModel.ZAIDM_EX_KPPBC" />
           <EntitySet Name="ZAIDM_EX_NPPBKC" EntityType="EMSModel.ZAIDM_EX_NPPBKC" />
@@ -2093,6 +2119,36 @@
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <EntitySet Name="MATERIAL_UOM" EntityType="EMSModel.MATERIAL_UOM" />
+          <AssociationSet Name="FK_MATERIAL_UOM_MATERIAL_UOM" Association="EMSModel.FK_MATERIAL_UOM_MATERIAL_UOM">
+            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
+            <End Role="MATERIAL_UOM1" EntitySet="MATERIAL_UOM" />
+          </AssociationSet>
+          <EntitySet Name="ZAIDM_EX_MATERIAL" EntityType="EMSModel.ZAIDM_EX_MATERIAL" />
+          <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
         </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2527,8 +2583,8 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" FromRole="T001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" FromRole="T001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="T001W" ToRole="ZAIDM_EX_NPPBKC" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -2582,9 +2638,9 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="USER" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="USER" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -2685,31 +2741,6 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_MARKET" ToRole="ZAIDM_EX_BRAND" />
-        </EntityType>
-        <EntityType Name="ZAIDM_EX_MATERIAL">
-          <Key>
-            <PropertyRef Name="STICKER_CODE" />
-          </Key>
-          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="MATERIAL_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MATERIAL_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PURCHASING_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="CONVERSION" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="ISSUE_STORANGE_LOC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BASE_UOM_ID" Type="Int32" Nullable="false" />
-          <Property Name="IS_FROM_SAP" Type="Boolean" Nullable="false" />
-          <Property Name="IS_DELETED" Type="Boolean" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -3332,18 +3363,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
-          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T001W">
-              <PropertyRef Name="WERKS" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_UOM_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="*" />
@@ -3353,18 +3372,6 @@
             </Principal>
             <Dependent Role="UOM">
               <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="BASE_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3428,30 +3435,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
           <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -3509,18 +3492,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="SERIES_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="EXC_GOOD_TYP" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3660,6 +3631,133 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="KPPBC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="MATERIAL_UOM">
+          <Key>
+            <PropertyRef Name="MATERIAL_UOM_ID" />
+          </Key>
+          <Property Name="MATERIAL_UOM_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="MEINH" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="UMREZ" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="MATERIAL_UOM1" Relationship="EMSModel.FK_MATERIAL_UOM_MATERIAL_UOM" FromRole="MATERIAL_UOM" ToRole="MATERIAL_UOM1" />
+          <NavigationProperty Name="MATERIAL_UOM2" Relationship="EMSModel.FK_MATERIAL_UOM_MATERIAL_UOM" FromRole="MATERIAL_UOM1" ToRole="MATERIAL_UOM" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="MATERIAL_UOM" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_MATERIAL_UOM_MATERIAL_UOM">
+          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM" Multiplicity="1" />
+          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="MATERIAL_UOM">
+              <PropertyRef Name="MATERIAL_UOM_ID" />
+            </Principal>
+            <Dependent Role="MATERIAL_UOM1">
+              <PropertyRef Name="MATERIAL_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ZAIDM_EX_MATERIAL">
+          <Key>
+            <PropertyRef Name="STICKER_CODE" />
+            <PropertyRef Name="WERKS" />
+          </Key>
+          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="MATERIAL_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MATERIAL_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PURCHASING_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="ISSUE_STORANGE_LOC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BASE_UOM_ID" Type="Int32" Nullable="false" />
+          <Property Name="IS_FROM_SAP" Type="Boolean" Nullable="false" />
+          <Property Name="IS_DELETED" Type="Boolean" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="MATERIAL_UOM" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="MATERIAL_UOM" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+        </EntityType>
+        <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="MATERIAL_UOM">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="BASE_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_GOODTYP">
+              <PropertyRef Name="EXC_GOOD_TYP" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="EXC_GOOD_TYP" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4161,27 +4259,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
-              <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
-                <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
-                <ScalarProperty Name="BASE_UOM_ID" ColumnName="BASE_UOM_ID" />
-                <ScalarProperty Name="ISSUE_STORANGE_LOC" ColumnName="ISSUE_STORANGE_LOC" />
-                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
-                <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="PURCHASING_GROUP" ColumnName="PURCHASING_GROUP" />
-                <ScalarProperty Name="MATERIAL_GROUP" ColumnName="MATERIAL_GROUP" />
-                <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
-                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_PCODE">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_PCODE">
               <MappingFragment StoreEntitySet="ZAIDM_EX_PCODE">
@@ -4246,6 +4323,39 @@
                 <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
                 <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MATERIAL_UOM">
+            <EntityTypeMapping TypeName="EMSModel.MATERIAL_UOM">
+              <MappingFragment StoreEntitySet="MATERIAL_UOM">
+                <ScalarProperty Name="UMREN" ColumnName="UMREN" />
+                <ScalarProperty Name="UMREZ" ColumnName="UMREZ" />
+                <ScalarProperty Name="MEINH" ColumnName="MEINH" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
+                <ScalarProperty Name="MATERIAL_UOM_ID" ColumnName="MATERIAL_UOM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
+                <ScalarProperty Name="BASE_UOM_ID" ColumnName="BASE_UOM_ID" />
+                <ScalarProperty Name="ISSUE_STORANGE_LOC" ColumnName="ISSUE_STORANGE_LOC" />
+                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+                <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="PURCHASING_GROUP" ColumnName="PURCHASING_GROUP" />
+                <ScalarProperty Name="MATERIAL_GROUP" ColumnName="MATERIAL_GROUP" />
+                <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
+                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

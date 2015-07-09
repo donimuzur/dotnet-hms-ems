@@ -36,9 +36,9 @@ namespace Sampoerna.EMS.BusinessObject
             this.VIRTUAL_PLANT_MAP1 = new HashSet<VIRTUAL_PLANT_MAP>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
+            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.ZAIDM_EX_MATERIAL1 = new HashSet<ZAIDM_EX_MATERIAL>();
-            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
         }
     
         public string USER_ID { get; set; }
@@ -74,8 +74,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
+        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL1 { get; set; }
-        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }
