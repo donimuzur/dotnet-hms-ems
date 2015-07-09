@@ -2,6 +2,7 @@
 {
     public class Pbck1ProdConvModel
     {
+        public int Pbck1Id { get; set; }
         public int? ProductCode { get; set; }
         public string ProductTypeAlias { get; set; }
         public string ProductType { get; set; }

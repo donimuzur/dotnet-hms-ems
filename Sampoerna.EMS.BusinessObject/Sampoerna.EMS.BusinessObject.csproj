@@ -58,9 +58,6 @@
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
     <Compile Include="Business\Material.cs" />
-    <Compile Include="Business\Pbck1.cs" />
-    <Compile Include="Business\Pbck1ProdConverter.cs" />
-    <Compile Include="Business\Pbck1ProdPlan.cs" />
     <Compile Include="Business\Plant.cs" />
     <Compile Include="C1LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
@@ -98,6 +95,9 @@
     <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="DTOs\Pbck1Dto.cs" />
+    <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
+    <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>

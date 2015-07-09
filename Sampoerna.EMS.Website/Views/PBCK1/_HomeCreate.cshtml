@@ -47,7 +47,7 @@
                                         <div class="col-md-9">
                                             <div class="input-group date">
                                                 @*@Html.HiddenFor(model => model.Detail.ReportedOn)*@
-                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -60,7 +60,7 @@
                                         <label class="col-md-3">Period From</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -74,7 +74,7 @@
                                         <div class="col-md-9">
                                             <div class="input-group date">
                                                 @*@Html.HiddenFor(model => model.Detail.PeriodTo)*@
-                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -217,7 +217,7 @@
                                         <label class="col-md-4 long">Plan Produtcion From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -230,7 +230,7 @@
                                         <label class="col-md-4">Plan Production to</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -305,7 +305,7 @@
                             <input type="button" class="btn btn-blue" value="Upload" />
                         </a>
                         <div class="table-container">
-                            <table id="pbck1-prod-conv-item" class="table table-bordered table-striped js-options-table">
+                            <table id="Detail_Pbck1ProdConverter" name="Detail.Pbck1ProdConverter" class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
                                         <th style="display: none">Product Id</th>
@@ -371,7 +371,7 @@
                         </a>*@
                         <input id="btn-prod-plan-upload" type="button" class="btn btn-blue" value="Upload" />
                         <div class="table-container">
-                            <table id="pbck1-prod-plan-item" class="table table-bordered table-striped js-options-table">
+                            <table id="Detail_Pbck1ProdPlan" name="Detail.Pbck1ProdPlan" class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
                                         <th style="display: none">Product Id</th>
@@ -454,7 +454,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>

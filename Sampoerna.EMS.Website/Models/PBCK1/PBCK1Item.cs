@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Validations;
 
@@ -9,6 +8,17 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1Item
     {
+        public Pbck1Item()
+        {
+            Pbck1ProdConverter = new List<Pbck1ProdConvModel>();
+            Pbck1ProdPlan = new List<Pbck1ProdPlanModel>();
+            PeriodFrom = DateTime.Now;
+            PeriodTo = DateTime.Now;
+            ReportedOn = DateTime.Now;
+            PlanProdFrom = DateTime.Now;
+            PlanProdTo = DateTime.Now;
+            DecreeDate = DateTime.Now;
+        }
         public long Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
@@ -146,9 +156,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public Pbck1Item Pbck1Parent { get; set; }
 
-        public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
+        public List<Pbck1ProdConvModel> Pbck1ProdConverter { get; set; }
 
-        public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
+        public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
         
     }
 }

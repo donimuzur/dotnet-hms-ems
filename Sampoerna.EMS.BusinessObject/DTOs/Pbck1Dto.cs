@@ -2,19 +2,10 @@
 using System.Collections.Generic;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.BusinessObject.Business
+namespace Sampoerna.EMS.BusinessObject.DTOs
 {
-    public class Pbck1
+    public class Pbck1Dto
     {
-
-        //public Pbck1()
-        //{
-        //    Pbck1Parent = new Pbck1();
-        //    Pbck1Childs = new List<Pbck1>();
-        //    Pbck1ProdConverter = new List<Pbck1ProdConverter>();
-        //    Pbck1ProdPlan = new List<Pbck1ProdPlan>();
-        //}
-
         public long Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
         public long? Pbck1Reference { get; set; }
@@ -58,11 +49,10 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public int? LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
 
-        public List<Pbck1> Pbck1Childs { get; set; }
-        public Pbck1 Pbck1Parent { get; set; }
+        public List<Pbck1Dto> Pbck1Childs { get; set; }
+        public Pbck1Dto Pbck1Parent { get; set; }
 
-        public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
-        public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
-        
+        public List<Pbck1ProdConverterDto> Pbck1ProdConverter { get; set; }
+        public List<Pbck1ProdPlanDto> Pbck1ProdPlan { get; set; }
     }
 }

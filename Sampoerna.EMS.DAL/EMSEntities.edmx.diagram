@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="147" >
+      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="45" >
         <EntityTypeShape EntityType="EMSModel.CK5" Width="3.75" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="2.75" PointX="1.125" PointY="13.5" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
@@ -30,7 +30,6 @@
         <EntityTypeShape EntityType="EMSModel.PAGE" Width="1.5" PointX="24.125" PointY="5.375" />
         <EntityTypeShape EntityType="EMSModel.PAGE_MAP" Width="1.5" PointX="26.375" PointY="13.25" />
         <EntityTypeShape EntityType="EMSModel.PARAMATER" Width="1.5" PointX="26.125" PointY="16.125" />
-        <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_CONVERTER" Width="1.5" PointX="20" PointY="22" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_PLAN" Width="1.5" PointX="17" PointY="27.75" />
         <EntityTypeShape EntityType="EMSModel.PBCK3_7" Width="1.5" PointX="19.5" PointY="3.375" />
         <EntityTypeShape EntityType="EMSModel.PBCK3_7_ITEM" Width="1.5" PointX="23.75" PointY="11" />
@@ -82,7 +81,6 @@
         <AssociationConnector Association="EMSModel.FK_PAGE_MAP_PAGE" />
         <AssociationConnector Association="EMSModel.FK_PAGE_PAGE" />
         <AssociationConnector Association="EMSModel.FK_PAGE_MAP_USER_GROUP" />
-        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_SUPPLIER_PORT" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_UOM" />
@@ -91,7 +89,6 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_REALISASI_PEMASUKAN_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_RENCANA_PRODUKSI_PBCK1" />
-        <AssociationConnector Association="EMSModel.FK_PBCK1_ITEM_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_7_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_7_USER1" />
@@ -172,6 +169,10 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_POA_MAP_ZAIDM_EX_POA" />
         <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="10.5" PointY="26.25" />
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
+        <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_CONVERTER" Width="1.5" PointX="18.5" PointY="18.25" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_ITEM_ZAIDM_EX_PRODTYP" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_ZAIDM_EX_PRODTYP" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

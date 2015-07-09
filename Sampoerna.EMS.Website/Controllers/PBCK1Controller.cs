@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Microsoft.Ajax.Utilities;
-using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -48,14 +48,14 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetPBCK1ByParam(new Pbck1GetByParamInput());
-                return Mapper.Map<List<Pbck1Item>>(pbck1Data);
+                var pbck1Data = _pbck1Bll.Pbck1GetByParam(new Pbck1GetByParamInput());
+                return Mapper.Map<List<Pbck1Item>>(pbck1Data.Data);
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetByParamInput>(filter);
-            var dbData = _pbck1Bll.GetPBCK1ByParam(input);
-            return Mapper.Map<List<Pbck1Item>>(dbData);
+            var dbData = _pbck1Bll.Pbck1GetByParam(input);
+            return Mapper.Map<List<Pbck1Item>>(dbData.Data);
         }
 
         private SelectList GetYearList(IEnumerable<Pbck1Item> pbck1Data)
@@ -126,13 +126,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
 
-            //var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id.Value));
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
+            {
+                FormId = id.Value,
+                FormType = Enums.FormType.PBKC1
+            }));
 
             return EditInitial(new Pbck1ItemViewModel()
             {
                 ChangesHistoryList = changeHistory,
-                Detail = Mapper.Map<Pbck1Item>(pbck1Data)
-                //WorkflowHistory = workflowHistory
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
+                WorkflowHistory = workflowHistory
             });
         }
 
@@ -142,18 +146,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = CleanSupplierInfo(model);
 
-            //if (model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && !model.Detail.Pbck1Reference.HasValue)
-            //{
-            //    ModelState.AddModelError("Detail.Pbck1Reference", "PBCK-1 Reference is required.");
-            //}
-
             if (!ModelState.IsValid)
             {
                 return CreateInitial(model);
             }
 
             //process save
-            var dataToSave = Mapper.Map<Pbck1>(model.Detail);
+            var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
             dataToSave.CreatedById = CurrentUser.USER_ID;
             var input = new Pbck1SaveInput()
             {
@@ -193,7 +192,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            //var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBKC1, id.Value));
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput() { FormId = id.Value, FormType = Enums.FormType.PBKC1 }));
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
@@ -203,7 +202,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Detail = Mapper.Map<Pbck1Item>(pbck1Data),
-                ChangesHistoryList = changesHistory
+                ChangesHistoryList = changesHistory,
+                WorkflowHistory = workflowHistory
             });
         }
 
@@ -213,7 +213,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            return CreateInitial(new Pbck1ItemViewModel());
+            return CreateInitial(new Pbck1ItemViewModel()
+            {
+                Detail = new Pbck1Item()
+            });
         }
 
         [HttpPost]
@@ -233,7 +236,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             //process save
-            var dataToSave = Mapper.Map<Pbck1>(model.Detail);
+            var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
             dataToSave.CreatedById = CurrentUser.USER_ID;
 
             var input = new Pbck1SaveInput()
@@ -280,7 +283,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
-            var model = new Pbck1ItemViewModel();
+            var model = new Pbck1ItemViewModel()
+            {
+                Detail = new Pbck1Item() { Pbck1ProdConverter = new List<Pbck1ProdConvModel>(), Pbck1ProdPlan = new List<Pbck1ProdPlanModel>() }
+            };
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -298,7 +304,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             prodConvModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
                             prodConvModel.ConverterOutput = Convert.ToDecimal(datarow[1]);
                             prodConvModel.ConverterUom = datarow[2];
-                            model.ProductConversions.Add(prodConvModel);
+                            model.Detail.Pbck1ProdConverter.Add(prodConvModel);
                         }
                     }
                     catch (Exception)
@@ -315,7 +321,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
-            var model = new Pbck1ItemViewModel();
+            var model = new Pbck1ItemViewModel()
+            {
+                Detail = new Pbck1Item() { Pbck1ProdConverter = new List<Pbck1ProdConvModel>(), Pbck1ProdPlan = new List<Pbck1ProdPlanModel>() }
+            };
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -335,7 +344,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             prodPlanModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
                             prodPlanModel.Amount = Convert.ToDecimal(datarow[2]);
                             prodPlanModel.BkcRequires = datarow[3];
-                            model.ProductPlans.Add(prodPlanModel);
+                            model.Detail.Pbck1ProdPlan.Add(prodPlanModel);
                         }
                     }
                     catch (Exception)

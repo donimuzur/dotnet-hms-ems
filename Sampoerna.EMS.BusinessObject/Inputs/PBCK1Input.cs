@@ -1,4 +1,4 @@
-﻿using Sampoerna.EMS.BusinessObject.Business;
+﻿using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Pbck1SaveInput 
     {
-        public Pbck1 Pbck1 { get; set; }
+        public Pbck1Dto Pbck1 { get; set; }
         public int UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
     }

@@ -11,7 +11,7 @@
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "PBCK1")">
-                    <button class="btn btn-blue">NEW</button>
+                    <input type="button" class="btn btn-blue" value="NEW" />
                 </a>
             </div>
         </div>
@@ -36,7 +36,7 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <div class="row">
                                 <label class="col-md-4">Type</label>
                                 <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control" })
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                             <div class="row">
                                 <label class="col-md-4">Year</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
                                             <option value="">All</option>
                                         </select>
                                     </div>
@@ -71,7 +71,7 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control" })
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
                                     </div>
                                 </div>
                             </div>

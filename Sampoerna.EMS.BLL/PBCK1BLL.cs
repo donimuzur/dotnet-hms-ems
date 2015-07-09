@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -36,9 +35,8 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
-        public List<Pbck1> GetPBCK1ByParam(Pbck1GetByParamInput input)
+        public Pbck1GetByParamOutput Pbck1GetByParam(Pbck1GetByParamInput input)
         {
-            
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
             if (input.NppbkcId.HasValue)
@@ -78,27 +76,39 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
             }
 
-            var rc = _repository.Get(queryFilter, orderBy, includeTables);
-            if (rc == null)
+            var rc = new Pbck1GetByParamOutput()
             {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+
+            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+            if (dbData == null)
+            {
+                var exception = new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                rc.Data = null;
+                rc.ErrorCode = exception.Code;
+                rc.ErrorMessage = exception.Message;
             }
 
-            var mapResult = Mapper.Map<List<Pbck1>>(rc.ToList());
+            var mapResult = Mapper.Map<List<Pbck1Dto>>(dbData.ToList());
 
-            return mapResult;
+            rc.Data = mapResult;
+
+            return rc;
 
         }
 
-        public Pbck1 GetById(long id)
+        public Pbck1Dto GetById(long id)
         {
-            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN";
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.ZAIDM_EX_PRODTYP, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_CONVERTER.UOM, PBCK1_PROD_CONVERTER.ZAIDM_EX_PRODTYP";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
-            var mapResult = Mapper.Map<Pbck1>(dbData);
+            var mapResult = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData != null)
             {
-                mapResult.Pbck1Parent = Mapper.Map<Pbck1>(dbData.PBCK12);
-                mapResult.Pbck1Childs = Mapper.Map<List<Pbck1>>(dbData.PBCK11);
+                mapResult.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
+                mapResult.Pbck1Childs = Mapper.Map<List<Pbck1Dto>>(dbData.PBCK11);
             }
             return mapResult;
         }
@@ -113,10 +123,10 @@ namespace Sampoerna.EMS.BLL
                 dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
 
                 //set changes history
-                var origin = Mapper.Map<Pbck1>(dbData);
+                var origin = Mapper.Map<Pbck1Dto>(dbData);
                 SetChangesHistory(origin, input.Pbck1, input.UserId);
 
-                Mapper.Map<Pbck1, PBCK1>(input.Pbck1, dbData);
+                Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
 
             }
             else
@@ -133,7 +143,7 @@ namespace Sampoerna.EMS.BLL
                 input.Pbck1.Status = Core.Enums.DocumentStatus.Draft;
                 input.Pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
-                Mapper.Map<Pbck1, PBCK1>(input.Pbck1, dbData);
+                Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
 
                 _repository.Insert(dbData);
 
@@ -145,10 +155,14 @@ namespace Sampoerna.EMS.BLL
             {
                 _uow.SaveChanges();
                 output.Success = true;
-                if (dbData != null) output.Id = dbData.PBCK1_ID;
+                if (dbData != null)
+                {
+                    output.Id = dbData.PBCK1_ID;
+                    output.Pbck1Number = dbData.NUMBER;
+                }
 
                 //set workflow history
-                AddWorkflowHistory(output.Id, input.WorkflowActionType, input.UserId);
+                AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
 
                 _uow.SaveChanges();
 
@@ -164,9 +178,9 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public DeletePBCK1Output Delete(long id)
+        public DeletePbck1Output Delete(long id)
         {
-            var output = new DeletePBCK1Output();
+            var output = new DeletePbck1Output();
             try
             {
                 var dbData = _repository.GetByID(id);
@@ -181,7 +195,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     _repository.Delete(dbData);
                     _uow.SaveChanges();
-                    output.Success = true;    
+                    output.Success = true;
                 }
             }
             catch (Exception exception)
@@ -193,7 +207,7 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        private void SetChangesHistory(Pbck1 origin, Pbck1 data, int userId)
+        private void SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, int userId)
         {
             var changesData = new Dictionary<string, bool>();
             changesData.Add("PBCK1_REF", origin.Pbck1Reference.Equals(data.Pbck1Reference));
@@ -366,22 +380,25 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void AddWorkflowHistory(long id, Core.Enums.ActionType actionType, int userId)
+        private void AddWorkflowHistory(long id, string formNumber, Core.Enums.ActionType actionType, int userId)
         {
-            var dbData = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput());
+            var dbData = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput(){ FormNumber = formNumber, ActionType = actionType});
 
             if (dbData == null)
             {
                 dbData = new WorkflowHistoryDto()
                 {
-                    ACTION =  actionType, FORM_ID =  id, FORM_TYPE_ID = Core.Enums.FormType.PBKC1
+                    ACTION = actionType,
+                    FORM_ID = id,
+                    FORM_TYPE_ID = Core.Enums.FormType.PBKC1,
+                    FORM_NUMBER = formNumber
                 };
             }
             dbData.ACTION_BY = userId;
             dbData.ACTION_DATE = DateTime.Now;
             _workflowHistoryBll.Save(dbData);
         }
-        
+
         public string GetPbckNumberById(long id)
         {
             var dbData = _repository.GetByID(id);

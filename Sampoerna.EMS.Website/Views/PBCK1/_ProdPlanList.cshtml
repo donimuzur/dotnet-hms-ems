@@ -14,7 +14,7 @@
     <tbody>
         @if (Model != null)
             {
-                foreach (var row in Model.ProductPlans)
+                foreach (var row in Model.Detail.Pbck1ProdPlan)
                 {
                     <tr>
                         <td style="display: none">@row.MonthId</td>

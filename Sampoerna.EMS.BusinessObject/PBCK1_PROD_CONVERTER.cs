@@ -15,12 +15,13 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class PBCK1_PROD_CONVERTER
     {
         public long PBCK1_PROD_COV_ID { get; set; }
-        public Nullable<long> PBCK1_ID { get; set; }
-        public Nullable<int> PROD_TYPE_ID { get; set; }
+        public long PBCK1_ID { get; set; }
+        public int PROD_TYPE_ID { get; set; }
         public Nullable<decimal> CONVERTER_OUTPUT { get; set; }
-        public Nullable<int> CONVERTER_UOM_ID { get; set; }
+        public int CONVERTER_UOM_ID { get; set; }
     
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
     }
 }
