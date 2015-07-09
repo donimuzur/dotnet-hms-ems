@@ -159,7 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
                     return RedirectToAction("Index");
                 }
 

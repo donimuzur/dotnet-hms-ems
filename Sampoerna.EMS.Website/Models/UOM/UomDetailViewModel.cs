@@ -8,7 +8,8 @@ namespace Sampoerna.EMS.Website.Models.UOM
 {
     public class UomDetailViewModel : BaseModel
     {
-        public int UomId { get; set; }
+        [Required]
+        public int? UomId { get; set; }
 
         [Required]
         public string UomName { get; set; }

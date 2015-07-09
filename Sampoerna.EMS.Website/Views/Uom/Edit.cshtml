@@ -40,17 +40,17 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <label class="col-md-2">UOM Id</label>
+                                                <label class="col-md-2">UOM Id<span class="red">*</span></label>
                                                 <div class="col-md-4">
                                                     @Html.TextBox("uom_id", Model.UomId, new { @class = "form-control", @disabled="disabled" })
-                                                   @Html.HiddenFor(x=>x.UomId)
+                                                    @Html.HiddenFor(x=>x.UomId)
 
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <label class="col-md-2">UOM Name</label>
+                                                <label class="col-md-2">UOM Name<span class="red">*</span></label>
                                                 <div class="col-md-4">
                                                     @Html.TextBoxFor(model => model.UomName, new { @class = "form-control" })
                                                  
@@ -59,6 +59,11 @@
                                             </div>
                                         </div>
 
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
                                     </div>
                                 </form>
                             </div>

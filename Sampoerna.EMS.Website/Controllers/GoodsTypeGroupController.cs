@@ -152,6 +152,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     _exGroupTypeBll.SaveGroup(listGroup);
 
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
                 }
 
@@ -248,7 +249,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
 
-
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
 
 

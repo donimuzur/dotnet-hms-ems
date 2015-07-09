@@ -148,6 +148,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 _brandRegistrationBll.Save(dbBrand);
 
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
             }
 
@@ -224,6 +225,7 @@ namespace Sampoerna.EMS.Website.Controllers
       
             _brandRegistrationBll.Save(dbBrand);
 
+            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
             return RedirectToAction("Index");
           
         }
@@ -394,6 +396,7 @@ namespace Sampoerna.EMS.Website.Controllers
             AddHistoryDelete(plant, facode);
             _brandRegistrationBll.Delete(plant, facode);
 
+            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
             return RedirectToAction("Index");
         }
 
