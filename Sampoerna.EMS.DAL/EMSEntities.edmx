@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CARRIAGE_METHOD">
+          <Key>
+            <PropertyRef Name="CARRIAGE_METHOD_ID" />
+          </Key>
+          <Property Name="CARRIAGE_METHOD_ID" Type="int" Nullable="false" />
+          <Property Name="CARRIAGE_METHOD_NAME" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="CHANGES_HISTORY">
           <Key>
             <PropertyRef Name="CHANGES_HISTORY_ID" />
@@ -420,6 +427,18 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
+        <EntityType Name="WORKFLOW_HISTORY">
+          <Key>
+            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
+          </Key>
+          <Property Name="WORKFLOW_HISTORY_ID" Type="bigint" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
+          <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="ACTION" Type="nvarchar" MaxLength="15" />
+          <Property Name="ACTION_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="ACTION_DATE" Type="datetime" />
+          <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
             <PropertyRef Name="WERKS" />
@@ -578,6 +597,18 @@
             </Principal>
             <Dependent Role="CK5">
               <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_CARRIAGE_METHOD">
+          <End Role="CARRIAGE_METHOD" Type="Self.CARRIAGE_METHOD" Multiplicity="0..1" />
+          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CARRIAGE_METHOD">
+              <PropertyRef Name="CARRIAGE_METHOD_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="CARRIAGE_METHOD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1183,6 +1214,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="WORKFLOW_HISTORY" Type="Self.WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1400,6 +1443,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="EMSModelStoreContainer">
+          <EntitySet Name="CARRIAGE_METHOD" EntityType="Self.CARRIAGE_METHOD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_MATERIAL" EntityType="Self.CK5_MATERIAL" Schema="dbo" store:Type="Tables" />
@@ -1432,6 +1476,7 @@
           <EntitySet Name="USER" EntityType="Self.USER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USER_GROUP" EntityType="Self.USER_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
@@ -1447,6 +1492,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_CK5_APPROVED_BY_USER" Association="Self.FK_CK5_APPROVED_BY_USER">
             <End Role="USER" EntitySet="USER" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_CARRIAGE_METHOD" Association="Self.FK_CK5_CARRIAGE_METHOD">
+            <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
             <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_CREATED_BY_USER" Association="Self.FK_CK5_CREATED_BY_USER">
@@ -1648,6 +1697,10 @@
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T001" Association="Self.FK_VIRTUAL_PLANT_MAP_T001">
             <End Role="T001" EntitySet="T001" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY" Association="Self.FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -2052,6 +2105,16 @@
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
+          <EntitySet Name="CARRIAGE_METHOD" EntityType="EMSModel.CARRIAGE_METHOD" />
+          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
+          <AssociationSet Name="FK_CK5_CARRIAGE_METHOD" Association="EMSModel.FK_CK5_CARRIAGE_METHOD">
+            <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY" Association="EMSModel.FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2390,6 +2453,7 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -3291,6 +3355,7 @@
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
+          <NavigationProperty Name="CARRIAGE_METHOD" Relationship="EMSModel.FK_CK5_CARRIAGE_METHOD" FromRole="CK5" ToRole="CARRIAGE_METHOD" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
@@ -3604,6 +3669,51 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="SERIES_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CARRIAGE_METHOD">
+          <Key>
+            <PropertyRef Name="CARRIAGE_METHOD_ID" />
+          </Key>
+          <Property Name="CARRIAGE_METHOD_ID" Type="Int32" Nullable="false" />
+          <Property Name="CARRIAGE_METHOD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_CARRIAGE_METHOD" FromRole="CARRIAGE_METHOD" ToRole="CK5" />
+        </EntityType>
+        <EntityType Name="WORKFLOW_HISTORY">
+          <Key>
+            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
+          </Key>
+          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_CK5_CARRIAGE_METHOD">
+          <End Type="EMSModel.CARRIAGE_METHOD" Role="CARRIAGE_METHOD" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CARRIAGE_METHOD">
+              <PropertyRef Name="CARRIAGE_METHOD_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="CARRIAGE_METHOD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4201,6 +4311,27 @@
                 <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CARRIAGE_METHOD">
+            <EntityTypeMapping TypeName="EMSModel.CARRIAGE_METHOD">
+              <MappingFragment StoreEntitySet="CARRIAGE_METHOD">
+                <ScalarProperty Name="CARRIAGE_METHOD_NAME" ColumnName="CARRIAGE_METHOD_NAME" />
+                <ScalarProperty Name="CARRIAGE_METHOD_ID" ColumnName="CARRIAGE_METHOD_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_HISTORY">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
+              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
+                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
+                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
+                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
+                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

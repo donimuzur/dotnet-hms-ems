@@ -69,5 +69,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
     }
 }
