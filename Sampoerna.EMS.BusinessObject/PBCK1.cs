@@ -31,7 +31,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public string NPPBKC_ID { get; set; }
         public string EXC_GOOD_TYP { get; set; }
-        public string EXC_GOOD_TYP_DESC { get; set; }
         public string SUPPLIER_PLANT { get; set; }
         public Nullable<int> SUPPLIER_PORT_ID { get; set; }
         public string SUPPLIER_ADDRESS { get; set; }
@@ -63,9 +62,11 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
-        public virtual UOM UOM { get; set; }
-        public virtual UOM UOM1 { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
+        public virtual UOM UOM { get; set; }
+        public virtual UOM UOM1 { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
     }
 }

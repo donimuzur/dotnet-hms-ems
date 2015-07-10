@@ -43,6 +43,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PAGE> PAGE { get; set; }
         public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual DbSet<PARAMATER> PARAMATER { get; set; }
+        public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual DbSet<POA> POA { get; set; }
         public virtual DbSet<POA_MAP> POA_MAP { get; set; }
@@ -65,8 +68,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual DbSet<MATERIAL_UOM> MATERIAL_UOM { get; set; }
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
-        public virtual DbSet<PBCK1> PBCK1 { get; set; }
-        public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
-        public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
     }
 }

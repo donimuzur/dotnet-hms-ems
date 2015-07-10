@@ -21,6 +21,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK51 = new HashSet<CK5>();
             this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
             this.HEADER_FOOTER1 = new HashSet<HEADER_FOOTER>();
+            this.PBCK1 = new HashSet<PBCK1>();
+            this.PBCK11 = new HashSet<PBCK1>();
             this.POA = new HashSet<POA>();
             this.POA1 = new HashSet<POA>();
             this.POA2 = new HashSet<POA>();
@@ -37,8 +39,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.ZAIDM_EX_MATERIAL1 = new HashSet<ZAIDM_EX_MATERIAL>();
-            this.PBCK1 = new HashSet<PBCK1>();
-            this.PBCK11 = new HashSet<PBCK1>();
         }
     
         public string USER_ID { get; set; }
@@ -58,6 +58,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK5> CK51 { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER1 { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
+        public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<POA> POA { get; set; }
         public virtual ICollection<POA> POA1 { get; set; }
         public virtual ICollection<POA> POA2 { get; set; }
@@ -75,7 +77,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL1 { get; set; }
-        public virtual ICollection<PBCK1> PBCK1 { get; set; }
-        public virtual ICollection<PBCK1> PBCK11 { get; set; }
     }
 }

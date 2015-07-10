@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_NPPBKC()
         {
+            this.PBCK1 = new HashSet<PBCK1>();
             this.POA_MAP = new HashSet<POA_MAP>();
             this.T001W = new HashSet<T001W>();
         }
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_DELETED { get; set; }
     
         public virtual LFA1 LFA1 { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual T001 T001 { get; set; }
         public virtual T001 T0011 { get; set; }
