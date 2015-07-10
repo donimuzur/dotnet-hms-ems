@@ -16,31 +16,30 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_MATERIAL()
         {
-            this.CK5_MATERIAL = new HashSet<CK5_MATERIAL>();
+            this.MATERIAL_UOM = new HashSet<MATERIAL_UOM>();
         }
     
-        public long MATERIAL_ID { get; set; }
-        public string MATERIAL_NUMBER { get; set; }
+        public string STICKER_CODE { get; set; }
         public string MATERIAL_DESC { get; set; }
         public string MATERIAL_GROUP { get; set; }
         public string PURCHASING_GROUP { get; set; }
-        public Nullable<long> PLANT_ID { get; set; }
-        public Nullable<int> EX_GOODTYP { get; set; }
-        public string ISSUE_STORANGE_LOC { get; set; }
-        public Nullable<int> BASE_UOM { get; set; }
-        public Nullable<int> CREATED_BY { get; set; }
-        public Nullable<bool> IS_FROM_SAP { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
-        public Nullable<bool> IS_DELETED { get; set; }
-        public Nullable<long> BRAND_ID { get; set; }
+        public string WERKS { get; set; }
         public Nullable<decimal> CONVERSION { get; set; }
-        public Nullable<bool> IS_DELETE { get; set; }
+        public string EXC_GOOD_TYP { get; set; }
+        public string ISSUE_STORANGE_LOC { get; set; }
+        public string BASE_UOM_ID { get; set; }
+        public bool IS_FROM_SAP { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
-        public virtual UOM UOM { get; set; }
+        public virtual ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
+        public virtual T001W T001W { get; set; }
         public virtual USER USER { get; set; }
-        public virtual T1001W T1001W { get; set; }
-        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }
+        public virtual USER USER1 { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual UOM UOM { get; set; }
     }
 }

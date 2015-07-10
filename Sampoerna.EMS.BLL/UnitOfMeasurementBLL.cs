@@ -3,6 +3,7 @@ using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
+using System;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -12,14 +13,17 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<UOM> _repository;
+        private ChangesHistoryBLL _changeBLL;
         
         public UnitOfMeasurementBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<UOM>();
+            _changeBLL = new ChangesHistoryBLL(uow, logger);
+            
         }
-        public UOM GetById(int id)
+        public UOM GetById(string id)
         {
             return _repository.GetByID(id);
         }
@@ -29,25 +33,66 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get().ToList();
         }
 
-        public string GetUomNameById(int? id)
+        public void Save(UOM uom,string userid, bool IsEdit) 
         {
-            var dbData = _repository.GetByID(id);
+            
+            if (IsEdit)
+            {
 
-            if (dbData == null)
-                return string.Empty;
+                UOM data = _repository.GetByID(uom.UOM_ID);
+                SetChanges(data, uom, userid);
+                data.UOM_DESC = uom.UOM_DESC;
 
-            return dbData.UOM_NAME;
+                _repository.Update(data);
+
+            }
+            else
+            {
+                 uom.CREATED_DATE = DateTime.Now;
+                 _repository.InsertOrUpdate(uom);
+            }
+               
+              
+            
+            _uow.SaveChanges();
         }
 
-        public bool IsUomNameExist(string name)
-        {
-            var dbData = _repository.Get(u => u.UOM_NAME.Equals(name)).FirstOrDefault();
-            return dbData != null;
-        }
 
-        public UOM GetUomByName(string name)
+        private void SetChanges(UOM origin, UOM data, string userId)
         {
-            return _repository.Get(c => c.UOM_NAME == name, null, null).FirstOrDefault();
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("UOM_ID", origin.UOM_ID == data.UOM_ID);
+            changesData.Add("UOM_DESC", origin.UOM_DESC == data.UOM_DESC);
+            
+            //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.Uom,
+                        FORM_ID = data.UOM_ID.ToString(),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "UOM_ID":
+                            changes.OLD_VALUE = origin.UOM_ID.ToString();
+                            changes.NEW_VALUE = data.UOM_ID.ToString();
+                            break;
+                        case "UOM_DESC":
+                            changes.OLD_VALUE = origin.UOM_DESC;
+                            changes.NEW_VALUE = data.UOM_DESC;
+                            break;
+                        default: break;
+                    }
+                    _changeBLL.AddHistory(changes);
+                }
+            }
         }
     }
 }

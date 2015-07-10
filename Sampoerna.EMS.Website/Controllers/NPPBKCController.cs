@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult Edit(long id)
+        public ActionResult Edit(string id)
         {
             var nppbkc = _nppbkcBll.GetById(id);
 
@@ -66,10 +66,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Plant = Mapper.Map<List<T1001W>>(_plantBll.GetAll());
+            model.Plant = Mapper.Map<List<T001W>>(_plantBll.GetAll());
 
 
-            ;
+            
 
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
 
@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("REGION_OFFICE_DGCE", (origin.RegionOfficeOfDGCE == null ? true : origin.RegionOfficeOfDGCE.Equals(nppbkc.REGION_OFFICE_DGCE)));
+            changesData.Add("REGION_OFFICE_DGCE", (origin.RegionOfficeOfDGCE == null ? true : origin.RegionOfficeOfDGCE.Equals(nppbkc.REGION_DGCE)));
             changesData.Add("CITY_ALIAS", (origin.CityAlias == null ? true : origin.CityAlias.Equals(nppbkc.CITY_ALIAS)));
             changesData.Add("TEXT_TO", (origin.TextTo == null ? true : origin.TextTo.Equals(nppbkc.TEXT_TO)));
 
@@ -99,7 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         case "REGION_OFFICE_DGCE":
                             changes.OLD_VALUE = origin.RegionOfficeOfDGCE;
-                            changes.NEW_VALUE = nppbkc.REGION_OFFICE_DGCE;
+                            changes.NEW_VALUE = nppbkc.REGION_DGCE;
                             break;
 
                         case "CITY_ALIAS":
@@ -142,19 +142,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 var origin = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
                 AutoMapper.Mapper.Map(model.Detail, nppbkc);
                 SetChanges(origin, nppbkc);
-
-                _nppbkcBll.Update(nppbkc);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                AutoMapper.Mapper.Map(model.Detail, nppbkc);
+                _nppbkcBll.Save(nppbkc);
+               
+               
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
 
             }
-            catch
+            catch(Exception ex)
             {
                 return View();
             }
 
         }
-        public ActionResult Detail(long id)
+        public ActionResult Detail(string id)
         {
             var nppbkc = _nppbkcBll.GetById(id);
             if (nppbkc == null)
@@ -173,7 +175,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
 
         }
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             try
             {

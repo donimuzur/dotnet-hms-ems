@@ -15,7 +15,8 @@
             });
             // DataTable
             $('#employeeTable').DataTable();
-            $('#MenuMasterUser').addClass("active");
+            
+            $('#MenuMasterUser').addClass('active');
         });
 
     </script>
@@ -61,7 +62,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">User Id</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.USER_ID, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(m => m.Detail.USER_ID, new { @class = "form-control", @disabled = "disaled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -69,7 +70,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Username</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.USERNAME, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(m => m.Detail.USERNAME, new { @class = "form-control", @disabled = "disaled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -80,7 +81,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">First Name</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.FIRST_NAME, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(m => m.Detail.FIRST_NAME, new { @class = "form-control", @disabled = "disaled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -88,7 +89,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Last Name</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.LAST_NAME, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(m => m.Detail.LAST_NAME, new { @class = "form-control", @disabled = "disaled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -98,7 +99,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Phone</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.PHONE, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(m => m.Detail.PHONE, new { @class = "form-control", @disabled = "disaled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -106,21 +107,12 @@
                                             <div class="row">
                                                 <label class="col-md-3">Email</label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.EMAIL, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(m => m.Detail.EMAIL, new { @class = "form-control", @disabled = "disaled" })
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Group</label>
-                                                <div class="col-md-9">
-                                                    @Html.TextBoxFor(m => m.Detail.USER_GROUP.GROUP_NAME, new { @class = "form-control", @disabled = "disabled" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </form>
                             </div>
                         </div>

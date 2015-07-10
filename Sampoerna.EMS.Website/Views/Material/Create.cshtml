@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Create";
 }
+
 @using (Html.BeginForm("Create", "Material", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -27,7 +28,7 @@
                                 <div class="panel-heading" role="tab" id="headingOne">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Master Material
+                                            Create Master Material
                                             <i class="fa fa-caret-down"></i>
                                         </a>
                                     </h4>
@@ -35,46 +36,48 @@
                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                     <div class="panel-body">
                                         <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Material Number<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", maxlength = "18" })
+                                                        @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Material Group<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
+                                                        @*@Html.ValidationMessageFor(model => model.MaterialGroup)*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Material Number</label>
+                                                        <label class="col-md-4 long">Material Description<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Material Group</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialGroup)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Material Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control" })
+                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Purchasing Group</label>
+                                                        <label class="col-md-4">Purchasing Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control" })
+                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
                                                             @*@Html.ValidationMessageFor(model => model.PurchasingGroup)*@
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Plant</label>
+                                                        <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "select", new { @class = "selectpicker form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.PlantId)*@
@@ -83,7 +86,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Base UOM</label>
+                                                        <label class="col-md-4">Base UOM<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.UomId)*@
@@ -92,7 +95,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Excisable Good Type</label>
+                                                        <label class="col-md-4">Excisable Good Type<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
                                                             @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
@@ -103,10 +106,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Issue Storage Loc</label>
+                                                        <label class="col-md-4">Issue Storage Loc<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
-                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
                                                             @*@Html.ValidationMessageFor(model => model.IssueStorageLoc)*@
 
                                                         </div>
@@ -114,9 +117,9 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Conversion</label>
+                                                        <label class="col-md-4">Convertion<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.Convertion)*@
                                                         </div>
                                                     </div>
@@ -167,12 +170,13 @@
                                                 </div>
                                             </div>
 
+
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Plant Deletion</label>
                                                         <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "form-control checkbox" })
+                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "checkbox" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -182,11 +186,17 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Client Deletion</label>
                                                         <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "form-control checkbox" })
+                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "checkbox" })
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <span class="red">*</span> ) This Field Required
+                                                </div>
+                                            </div>
+
                                         </form>
                                     </div>
                                 </div>
@@ -199,7 +209,10 @@
     </div>
 }
 @section scripts{
+<script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuMasterMaterial').addClass('active');
+        
+        $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
     </script>
 }

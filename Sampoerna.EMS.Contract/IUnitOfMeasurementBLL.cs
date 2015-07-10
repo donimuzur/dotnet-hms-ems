@@ -5,14 +5,8 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IUnitOfMeasurementBLL
     {
-        UOM GetById(int id);
+        UOM GetById(string  id);
         List<UOM> GetAll();
-
-        string GetUomNameById(int? id);
-
-        bool IsUomNameExist(string name);
-
-        UOM GetUomByName(string name);
-
+        void Save(UOM uom,string userid,bool isEdit);
     }
 }

@@ -8,8 +8,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 {
     public class BrandRegistrationDetailsViewModel : BaseModel
     {
-        public long BrandId { get; set; }
-        public string StickerCode { get; set; }
+       public string StickerCode { get; set; }
         public string PlantName { get; set; }
         public string FaCode { get; set; }
         public string PersonalizationCode { get; set; }
@@ -29,28 +28,26 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string MarketCode { get; set; }
         public string MarketDescription { get; set; }
         public string CountryCode { get; set; }
-        public string HjeValue { get; set; }
+        public decimal HjeValue { get; set; }
+        [Required]
+        public string HjeValueStr { get; set; }
         public string HjeCurrency { get; set; }
-        public string Tariff { get; set; }
+        public decimal Tariff { get; set; }
         public string TariffCurrency { get; set; }
         public string ColourName { get; set; }
         public string GoodType { get; set; }
         public string GoodTypeDescription { get; set; }
 
-        [UIHint("FormatDateTime")]
         public DateTime? StartDate { get; set; }
 
-        [UIHint("FormatDateTime")]
         public DateTime? EndDate { get; set; }
 
         public string Status { get; set; }
-        [Required]
+
         public decimal? Conversion { get; set; }
         
-        [UIHint("FormatDecimal")]
-        [Required]
+        
         public decimal? PrintingPrice { get; set; }
-        [Required]
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
 

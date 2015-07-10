@@ -22,30 +22,27 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_PCODE");
                 var items = new List<ZAIDM_EX_PCODE>();
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_PCODE();
-                    item.PER_CODE = Convert.ToInt32(xElement.Element("PER_CODE").Value);
+                    item.PER_CODE = xElement.Element("PER_CODE").Value;
                     item.PER_DESC = xElement.Element("PER_DESC").Value;
                     item.CREATED_DATE = DateTime.Now;
-                    var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    //var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingPCode = GetPCode(item.PER_CODE);
                     if (existingPCode != null)
                     {
-                        if (dateXml > existingPCode.CREATED_DATE)
-                        {
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-
-                        }
+                        item.CREATED_DATE = existingPCode.CREATED_DATE;
+                        item.MODIFIED_DATE = DateTime.Now;
+                        items.Add(item);
+                    
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -61,12 +58,10 @@ namespace Sampoerna.EMS.XMLReader
             _xmlMapper.InsertToDatabase<ZAIDM_EX_PCODE>(Items);
         }
 
-        public ZAIDM_EX_PCODE GetPCode(int? PCode)
+        public ZAIDM_EX_PCODE GetPCode(string PCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PCODE>()
-                          .Get(p => p.PER_CODE == PCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(PCode);
             return exisitingPlant;
         }
 

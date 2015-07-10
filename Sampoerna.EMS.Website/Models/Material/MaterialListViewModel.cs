@@ -18,9 +18,8 @@ namespace Sampoerna.EMS.Website.Models.Material
     }
 
     public class MaterialDetails {
-        public long MaterialId { get; set; }
-
-        public long PlantId { get; set; }
+      
+        public string PlantId { get; set; }
 
         public string PlantName { get; set; }
 
@@ -54,16 +53,16 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public string GoodTypeName { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public string IsDeleted { get; set; }
 
-        public string IsDeletedString
-        {
-            get
-            {
-                return IsDeleted ? "Yes" : "No";
-            }
+        //public string IsDeletedString
+        //{
+        //    get
+        //    {
+        //        return IsDeleted ==  ? "Yes" : "No";
+        //    }
 
-        }
+        //}
 
 
 

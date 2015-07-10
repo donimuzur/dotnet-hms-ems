@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.BusinessObject;
+﻿using System.Data.Entity;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using System;
 using System.Collections.Generic;
@@ -74,6 +75,9 @@ namespace Sampoerna.EMS.DAL
             //overwrite the existing context with a new, fresh one to revert all the changes
             _context = new EMSEntities();
         }
+
+       
+
 
         /// <summary>
         /// Logs the entity validation errors.

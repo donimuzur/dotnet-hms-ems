@@ -102,23 +102,23 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
- public class SourcePlantTextResolver : ValueResolver<T1001W, string>
+ public class SourcePlantTextResolver : ValueResolver<T001W, string>
     {
-        protected override string ResolveCore(T1001W value)
+     protected override string ResolveCore(T001W value)
         {
-            if (string.IsNullOrEmpty(value.CITY))
+            if (string.IsNullOrEmpty(value.ORT01))
                 return value.NAME1;
 
-            return value.NAME1 + " - " + value.CITY;
+            return value.NAME1 + " - " + value.ORT01;
         }
     }
 
 
-    public class PlantCityCodeResolver : ValueResolver<T1001W, string>
+    public class PlantCityCodeResolver : ValueResolver<T001W, string>
     {
-        protected override string ResolveCore(T1001W value)
+        protected override string ResolveCore(T001W value)
         {
-            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER; 
+            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_ID; 
             
         }
     }
@@ -133,10 +133,10 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             if (value.GRAND_TOTAL_EX.HasValue)
                 resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
 
-            if (value.PACKAGE_UOM_ID.HasValue)
+            if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
             {
                 if (value.UOM != null)
-                    resultUOM = value.UOM.UOM_NAME;
+                    resultUOM = value.UOM.UOM_DESC;
             }
 
             return resultValue + " " + resultUOM;

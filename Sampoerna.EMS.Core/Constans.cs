@@ -3,6 +3,8 @@
     public class Constans
     {
         public const string MasterDataHeaderFooterFolder = "~/Content/upload/header/";
+        public const string PoaSK = "~/Content/upload/poa_sk/";
+        
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
         /// <summary>
@@ -38,12 +40,14 @@
             public const string Update = "Update";
             public const string PrintPreview = "PrintPreview";
             public const string Delete = "Delete";
+            public const string DataExist = "DataExist";
         }
         public class SubmitMessage
         {
             public const string Saved = "Save Succefully";
             public const string Updated = "Update Succefully";
             public const string Deleted = "Delete Succefully";
+            public const string DataExist = "Data Already Exist";
         }
 
     }

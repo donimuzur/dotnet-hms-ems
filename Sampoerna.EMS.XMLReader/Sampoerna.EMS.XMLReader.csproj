@@ -69,16 +69,12 @@
     <Compile Include="XmlGoodsTypeDataMappers.cs" />
     <Compile Include="XmlNPPBCKDataMappers.cs" />
     <Compile Include="XmlPlantDataMappers.cs" />
-    <Compile Include="XmlUoMDataMappers.cs" />
     <Compile Include="XmlVendorDataMappers.cs" />
     <Compile Include="XmlProdTypeDataMappers.cs" />
     <Compile Include="XmlKPPBCDataMappers.cs" />
     <Compile Include="XmlSeriesDataMappers.cs" />
     <Compile Include="XmlMarketDataMappers.cs" />
     <Compile Include="XmlUserDataMappers.cs" />
-    <Compile Include="XmlPoaDataMappers.cs" />
-    <Compile Include="XmlPoaMapDataMappers.cs" />
-    <Compile Include="XmlAreaDataMappers.cs" />
     <Compile Include="XmlDataMapper.cs" />
     <Compile Include="XmlCompanyDataMappers.cs" />
   </ItemGroup>

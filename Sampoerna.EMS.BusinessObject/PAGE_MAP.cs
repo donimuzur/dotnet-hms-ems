@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public int PAGE_MAP_ID { get; set; }
         public Nullable<int> PAGE_ID { get; set; }
-        public Nullable<int> USER_GROUP_ID { get; set; }
+        public string USER_GROUP_ID { get; set; }
     
         public virtual PAGE PAGE { get; set; }
         public virtual USER_GROUP USER_GROUP { get; set; }

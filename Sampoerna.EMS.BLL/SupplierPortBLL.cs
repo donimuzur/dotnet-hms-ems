@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<SUPPLIER_PORT> _repository;
-        
+
         public SupplierPortBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
