@@ -45,9 +45,9 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
-            if (input.NppbkcId.HasValue)
+            if (!string.IsNullOrEmpty(input.NppbkcId))
             {
-                queryFilter = queryFilter.And(c => c.NPPBKC_ID.Value == input.NppbkcId.Value);
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
             }
 
             if (input.Pbck1Type.HasValue)
@@ -55,19 +55,19 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK1_TYPE == input.Pbck1Type.Value);
             }
 
-            if (input.Poa.HasValue)
+            if (!string.IsNullOrEmpty(input.Poa))
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY.HasValue && c.APPROVED_BY.Value == input.Poa.Value);
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
 
-            if (input.Creator.HasValue)
+            if (!string.IsNullOrEmpty(input.Creator))
             {
-                queryFilter = queryFilter.And(c => c.CREATED_BY.HasValue && c.CREATED_BY.Value == input.Creator.Value);
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
             }
 
-            if (input.GoodTypeId.HasValue)
+            if (!string.IsNullOrEmpty(input.GoodTypeId))
             {
-                queryFilter = queryFilter.And(c => c.GOODTYPE_ID.HasValue && c.GOODTYPE_ID.Value == input.GoodTypeId.Value);
+                queryFilter = queryFilter.And(c => c.EXC_GOOD_TYP == input.GoodTypeId);
             }
 
             if (input.Year.HasValue)
@@ -213,7 +213,7 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        private void SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, int userId)
+        private void SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
             changesData.Add("PBCK1_REF", origin.Pbck1Reference.Equals(data.Pbck1Reference));
@@ -222,7 +222,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PERIOD_TO", origin.PeriodTo.HasValue ? origin.PeriodTo.Equals(data.PeriodTo) : false);
             changesData.Add("REPORTED_ON", origin.ReportedOn.HasValue ? origin.ReportedOn.Equals(data.ReportedOn) : false);
             changesData.Add("NPPBKC_ID", origin.NppbkcId.Equals(data.NppbkcId));
-            changesData.Add("GOODTYPE_ID", origin.GoodTypeId.HasValue ? origin.GoodTypeId.Equals(data.GoodTypeId) : false);
+            //changesData.Add("GOODTYPE_ID", origin.GoodTypeId.HasValue ? origin.GoodTypeId.Equals(data.GoodTypeId) : false);
             changesData.Add("SUPPLIER_PLANT", !string.IsNullOrEmpty(origin.SupplierPlant) ? origin.SupplierPlant.Equals(data.SupplierPlant) : (!string.IsNullOrEmpty(data.SupplierPlant) ? false : true));
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId.HasValue ? origin.SupplierPortId.Equals(data.SupplierPortId) : (data.SupplierPortId.HasValue ? false : true));
             changesData.Add("SUPPLIER_ADDRESS", !string.IsNullOrEmpty(origin.SupplierAddress) ? origin.SupplierAddress.Equals(data.SupplierAddress) : (!string.IsNullOrEmpty(data.SupplierAddress) ? false : true));
@@ -230,7 +230,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Equals(data.PlanProdFrom) : false);
             changesData.Add("PLAN_PROD_TO", origin.PlanProdTo.HasValue ? origin.PlanProdTo.Equals(data.PlanProdTo) : false);
             changesData.Add("REQUEST_QTY", origin.RequestQty.HasValue ? origin.RequestQty.Equals(data.RequestQty) : false);
-            changesData.Add("REQUEST_QTY_UOM", origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomId.Equals(data.RequestQtyUomId) : false);
+            //changesData.Add("REQUEST_QTY_UOM", origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomId.Equals(data.RequestQtyUomId) : false);
             changesData.Add("LACK1_FROM_MONTH", origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthId.Equals(data.Lack1FromMonthId) : false);
             changesData.Add("LACK1_FROM_YEAR", origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Equals(data.Lack1FormYear) : false);
             changesData.Add("LACK1_TO_MONTH", origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthId.Equals(data.Lack1ToMonthId) : false);
@@ -240,7 +240,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("QTY_APPROVED", origin.QtyApproved.HasValue ? origin.QtyApproved.Equals(data.QtyApproved) : false);
             changesData.Add("DECREE_DATE", origin.DecreeDate.HasValue ? origin.DecreeDate.Equals(data.DecreeDate) : false);
             changesData.Add("LATEST_SALDO", origin.LatestSaldo.HasValue ? origin.LatestSaldo.Equals(data.LatestSaldo) : false);
-            changesData.Add("LATEST_SALDO_UOM", origin.LatestSaldoUomId.HasValue ? origin.LatestSaldoUomId.Equals(data.LatestSaldoUomId) : false);
+            //changesData.Add("LATEST_SALDO_UOM", origin.LatestSaldoUomId.HasValue ? origin.LatestSaldoUomId.Equals(data.LatestSaldoUomId) : false);
 
             foreach (var listChange in changesData)
             {
@@ -249,7 +249,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.PBCK1,
-                        FORM_ID = data.Pbck1Id,
+                        FORM_ID = data.Pbck1Id.ToString(),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -289,8 +289,8 @@ namespace Sampoerna.EMS.BLL
                                 : "NULL";
                             break;
                         case "NPPBKC_ID":
-                            changes.OLD_VALUE = origin.NppbkcNo;
-                            changes.NEW_VALUE = data.NppbkcNo;
+                            changes.OLD_VALUE = origin.NppbkcId;
+                            changes.NEW_VALUE = data.NppbkcId;
                             break;
                         case "GOODTYPE_ID":
                             changes.OLD_VALUE = origin.GoodTypeDesc;
@@ -324,10 +324,10 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.RequestQty.HasValue ? origin.RequestQty.Value.ToString("N0") : "NULL";
                             changes.NEW_VALUE = data.RequestQty.HasValue ? data.RequestQty.Value.ToString("N0") : "NULL";
                             break;
-                        case "REQUEST_QTY_UOM":
-                            changes.OLD_VALUE = origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomName : "NULL";
-                            changes.NEW_VALUE = data.RequestQtyUomName;
-                            break;
+                        //case "REQUEST_QTY_UOM":
+                        //    changes.OLD_VALUE = origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomName : "NULL";
+                        //    changes.NEW_VALUE = data.RequestQtyUomName;
+                        //    break;
                         case "LACK1_FROM_MONTH":
                             changes.OLD_VALUE = origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthName : "NULL";
                             changes.NEW_VALUE = data.Lack1FromMonthName;
@@ -374,19 +374,19 @@ namespace Sampoerna.EMS.BLL
                                 ? data.LatestSaldo.Value.ToString("N0")
                                 : "NULL";
                             break;
-                        case "LATEST_SALDO_UOM":
-                            changes.OLD_VALUE = origin.LatestSaldoUomId.HasValue
-                                ? origin.LatestSaldoUomName
-                                : "NULL";
-                            changes.NEW_VALUE = data.LatestSaldoUomName;
-                            break;
+                        //case "LATEST_SALDO_UOM":
+                        //    changes.OLD_VALUE = origin.LatestSaldoUomId.HasValue
+                        //        ? origin.LatestSaldoUomName
+                        //        : "NULL";
+                        //    changes.NEW_VALUE = data.LatestSaldoUomName;
+                        //    break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }
             }
         }
 
-        private void AddWorkflowHistory(long id, string formNumber, Core.Enums.ActionType actionType, int userId)
+        private void AddWorkflowHistory(long id, string formNumber, Core.Enums.ActionType actionType, string userId)
         {
             var dbData = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput(){ FormNumber = formNumber, ActionType = actionType});
 
@@ -427,7 +427,7 @@ namespace Sampoerna.EMS.BLL
                 ZAIDM_EX_PRODTYP prodTypeData = null;
                 if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
                 {
-                    output.ProductId = prodTypeData.PRODUCT_ID;
+                    output.ProductCode = prodTypeData.PROD_CODE;
                     output.ProdTypeAlias = prodTypeData.PRODUCT_ALIAS;
                     output.ProdTypeName = prodTypeData.PRODUCT_TYPE;
                 }
@@ -505,7 +505,7 @@ namespace Sampoerna.EMS.BLL
                 ZAIDM_EX_PRODTYP prodTypeData = null;
                 if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
                 {
-                    output.ProductId = prodTypeData.PRODUCT_ID;
+                    output.ProductCode = prodTypeData.PROD_CODE;
                     output.ProdTypeAlias = prodTypeData.PRODUCT_ALIAS;
                     output.ProdTypeName = prodTypeData.PRODUCT_TYPE;
                 }
@@ -586,22 +586,14 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrWhiteSpace(productCode))
             {
 
-                int prodTypeCode;
-                if (int.TryParse(productCode, out prodTypeCode))
+                productData = _prodTypeBll.GetByCode(productCode);
+                if (productData == null)
                 {
-                    productData = _prodTypeBll.GetByCode(prodTypeCode);
-                    if (productData == null)
-                    {
-                        messageList.Add("ProductCode not valid");
-                    }
-                    else
-                    {
-                        valResult = true;
-                    }
+                    messageList.Add("ProductCode not valid");
                 }
                 else
                 {
-                    messageList.Add("ProductCode is not number");
+                    valResult = true;
                 }
             }
             else
@@ -691,16 +683,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrWhiteSpace(uom))
             {
-                var uomData = _uomBll.GetUomByName(uom);
-                if (uomData != null)
-                {
-                    uomId = uomData.UOM_ID;
-                    valResult = true;
-                }
-                else
-                {
-                    messageList.Add("UOM is not valid");
-                }
+                valResult = true;
             }
             else
             {

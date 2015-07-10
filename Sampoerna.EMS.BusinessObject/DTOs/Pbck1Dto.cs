@@ -13,10 +13,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime PeriodFrom { get; set; }
         public DateTime? PeriodTo { get; set; }
         public DateTime? ReportedOn { get; set; }
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
+        public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
-        public string NppbkcNo { get; set; }
-        public int? GoodTypeId { get; set; }
+        public string GoodTypeId { get; set; }
         public string GoodTypeDesc { get; set; }
         public string SupplierPlant { get; set; }
         public int? SupplierPortId { get; set; }
@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? PlanProdFrom { get; set; }
         public DateTime? PlanProdTo { get; set; }
         public decimal? RequestQty { get; set; }
-        public int? RequestQtyUomId { get; set; }
+        public string RequestQtyUomId { get; set; }
         public string RequestQtyUomName { get; set; }
         public int? Lack1FromMonthId { get; set; }
         public string Lack1FromMonthName { get; set; }
@@ -41,12 +41,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? CreatedDate { get; set; }
         public int? CreatedById { get; set; }
         public string CreatedUsername { get; set; }
-        public int? ApprovedById { get; set; }
+        public string ApprovedById { get; set; }
         public string ApprovedUsername { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public decimal? LatestSaldo { get; set; }
-        public int? LatestSaldoUomId { get; set; }
+        public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
 
         public List<Pbck1Dto> Pbck1Childs { get; set; }

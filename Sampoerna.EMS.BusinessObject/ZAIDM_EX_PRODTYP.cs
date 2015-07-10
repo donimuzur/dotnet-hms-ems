@@ -18,7 +18,6 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
         }
     
         public string PROD_CODE { get; set; }
@@ -29,6 +28,5 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
     }
 }

@@ -104,8 +104,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.FIRST_NAME + ' ' + src.LAST_NAME)));
 
        
-            Mapper.CreateMap<T1001W, SelectItemModel>().IgnoreAllNonExisting()
-            .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.PLANT_ID))
+            Mapper.CreateMap<T001W, SelectItemModel>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
             .ForMember(dest => dest.TextField, opt => opt.ResolveUsing<SourcePlantTextResolver>().FromMember(src => src));
             //    .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
             //    ;
@@ -597,18 +597,19 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<CK5ListIndexQtyResolver>().FromMember(src => src))
                 .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.APPROVED_BY))
-                .ForMember(dest => dest.SourcePlant,opt => opt.MapFrom(src => src.T1001W.WERKS + " - " + src.T1001W.NAME1))
-                .ForMember(dest => dest.DestinationPlant,opt => opt.MapFrom(src => src.T1001W1.WERKS + " - " + src.T1001W1.NAME1))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
+                //.ForMember(dest => dest.SourcePlant,opt => opt.MapFrom(src => src.T1001W.WERKS + " - " + src.T1001W.NAME1))
+                //.ForMember(dest => dest.DestinationPlant,opt => opt.MapFrom(src => src.T1001W1.WERKS + " - " + src.T1001W1.NAME1))
+                //.ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
+                ;
 
             Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
 
 
-            Mapper.CreateMap<T1001W, CK5PlantModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
-                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.NPWP))
-                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBCK_ID))
-                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT))
+            Mapper.CreateMap<T001W, CK5PlantModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.NPWP))
+                //.ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBCK_ID))
+                //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.BUKRSTXT))
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ADDRESS));
             //TODO : ASK .ForMember(dest => dest.KppBcName, opt => opt.ResolveUsing<PlantCityCodeResolver>().FromMember(src => src));
 
@@ -635,7 +636,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5, CK5EditViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
-                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
+                //.ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
                 .ForMember(dest => dest.KppBcCity, opt => opt.MapFrom(src => src.KPPBC_CITY))
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
@@ -700,16 +701,16 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5, CK5DetailsViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
-                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
+                //.ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
                 .ForMember(dest => dest.KppBcCityId, opt => opt.MapFrom(src => src.KPPBC_CITY))
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
-                .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
-                .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => src.EX_SETTLEMENT.EX_SETTLEMENT_NAME))
-                .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => src.EX_STATUS.EX_STATUS_NAME))
-                .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.REQUEST_TYPE.REQUEST_TYPE_NAME))
+                //.ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+                //.ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => src.EX_SETTLEMENT.EX_SETTLEMENT_NAME))
+                //.ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => src.EX_STATUS.EX_STATUS_NAME))
+                //.ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.REQUEST_TYPE.REQUEST_TYPE_NAME))
                 .ForMember(dest => dest.SourcePlantId, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
                 .ForMember(dest => dest.DestPlantId, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
@@ -717,7 +718,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
                 .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => src.CARRIAGE_METHOD.CARRIAGE_METHOD_NAME))
                 .ForMember(dest => dest.GrandTotalEx, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
-                .ForMember(dest => dest.PackageUom, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
+                //.ForMember(dest => dest.PackageUom, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
                 .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
                 .ForMember(dest => dest.StoSenderNumber, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
                 .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))

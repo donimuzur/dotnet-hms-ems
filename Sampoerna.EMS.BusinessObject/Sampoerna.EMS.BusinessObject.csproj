@@ -56,6 +56,9 @@
     <Compile Include="Business\Pbck1ProdConverter.cs" />
     <Compile Include="Business\Pbck1ProdPlan.cs" />
     <Compile Include="Business\Plant.cs" />
+    <Compile Include="CARRIAGE_METHOD.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -187,6 +190,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WORKFLOW_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">

@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
             {
@@ -154,7 +154,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //process save
             var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-            dataToSave.CreatedById = CurrentUser.USER_ID;
+            //dataToSave.CreatedById = CurrentUser.USER_ID;
             var input = new Pbck1SaveInput()
             {
                 Pbck1 = dataToSave,
@@ -196,7 +196,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput() { FormId = id.Value, FormType = Enums.FormType.PBKC1 }));
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value));
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
 
             return View(new Pbck1ItemViewModel()
             {
@@ -238,7 +238,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //process save
             var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-            dataToSave.CreatedById = CurrentUser.USER_ID;
+            //dataToSave.CreatedById = CurrentUser.USER_ID;
 
             var input = new Pbck1SaveInput()
             {
@@ -402,14 +402,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNppbkcDetail(long nppbkcid)
+        public JsonResult GetNppbkcDetail(string nppbkcid)
         {
             var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T1001));
+            return Json(Mapper.Map<CompanyDetail>(data.T001));
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlantDetail(long plantid)
+        public JsonResult GetSupplierPlantDetail(string plantid)
         {
             var data = _plantBll.GetId(plantid);
             return Json(Mapper.Map<DetailPlantT1001W>(data));

@@ -12,17 +12,16 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class WORKFLOW_HISTORY
+    public partial class CARRIAGE_METHOD
     {
-        public long WORKFLOW_HISTORY_ID { get; set; }
-        public Sampoerna.EMS.Core.Enums.FormType FORM_TYPE_ID { get; set; }
-        public long FORM_ID { get; set; }
-        public string FORM_NUMBER { get; set; }
-        public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
-        public string ACTION_BY { get; set; }
-        public Nullable<System.DateTime> ACTION_DATE { get; set; }
-        public string COMMENT { get; set; }
+        public CARRIAGE_METHOD()
+        {
+            this.CK5 = new HashSet<CK5>();
+        }
     
-        public virtual USER USER { get; set; }
+        public int CARRIAGE_METHOD_ID { get; set; }
+        public string CARRIAGE_METHOD_NAME { get; set; }
+    
+        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }
