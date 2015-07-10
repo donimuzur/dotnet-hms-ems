@@ -1,37 +1,54 @@
-﻿@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationIndexViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationIndexViewModel
 
 
 @section scripts {
 <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#mydata .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
-                    var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+    $(document).ready(function () {
+        // Setup - add a text input to each footer cell
+        $('#mydata .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                var title = $('#mydata thead th').eq($(this).index()).text();
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
-                }
-            });
-
-            // DataTable
-            var table = $('#mydata').DataTable();
-
-            // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
-
-            $('#MenuMasterBrandRegistration').addClass('active');
+            }
         });
+
+        // DataTable
+        var table = $('#mydata').DataTable();
+
+        // Apply the search
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+         @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
+
+        $('#MenuMasterBrandRegistration').addClass('active');
+    });
     </script>
 }
 
@@ -66,7 +83,7 @@
                             <th>Sticker Code</th>
                             <th>Plant</th>
                             <th>FA Code</th>
-                            <th>Brand Name Registration<br>by CE Office C</th>
+                            <th>Brand Name Registration<br>by KPPBC</th>
                             <th>Series Value</th>
                             <th>Conversion</th>
                             <th>Printing Price</th>
@@ -136,7 +153,22 @@
         </div>
     </div>
 </div>
+<!--modal-->
+<input id="btn-brand-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
+<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Success</h3>
+            </div>
+            <div class="modal-body" id="modal-brand-message">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

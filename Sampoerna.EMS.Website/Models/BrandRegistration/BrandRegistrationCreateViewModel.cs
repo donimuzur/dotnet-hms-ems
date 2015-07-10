@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string FaCode { get; set; }
 
         [Required]
-        public int PersonalizationCode { get; set; }
+        public string PersonalizationCode { get; set; }
         public SelectList PersonalizationCodeList { get; set; }
         public string PersonalizationCodeDescription { get; set; }
 
@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string Content { get; set; }
 
         [Required]
-        public int MarketId { get; set; }
+        public string MarketId { get; set; }
         public SelectList MarketCodeList { get; set; }
         public string MarketDescription { get; set; }
 
@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string ColourName { get; set; }
 
         [Required]
-        public int GoodType { get; set; }
+        public string GoodType { get; set; }
         public SelectList GoodTypeList { get; set; }
         public string GoodTypeDescription { get; set; }
 
