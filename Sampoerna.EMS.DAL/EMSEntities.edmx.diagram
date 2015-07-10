@@ -117,6 +117,10 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" />
+        <EntityTypeShape EntityType="EMSModel.CARRIAGE_METHOD" Width="1.5" PointX="18.5" PointY="36.5" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="5.25" PointY="24.25" />
+        <AssociationConnector Association="EMSModel.FK_CK5_CARRIAGE_METHOD" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

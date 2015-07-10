@@ -16,19 +16,19 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T001W> _repositoryT1001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
         private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
-        private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProduct;
+       private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProduct;
 
         private IUnitOfWork _uow;
 
         public MasterDataBLL(IUnitOfWork uow)
         {
             _uow = uow;
-            repositoryT1001 = uow.GetGenericRepository<T001>();
-            repositoryT1001W = uow.GetGenericRepository<T001W>();
-            repositoryPersonalization = uow.GetGenericRepository<ZAIDM_EX_PCODE>();
-            repositorySeries = uow.GetGenericRepository<ZAIDM_EX_SERIES>();
-            repositoryMarket = uow.GetGenericRepository<ZAIDM_EX_MARKET>();
-            repositoryProduct = uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
+            _repositoryT1001 = _uow.GetGenericRepository<T001>();
+            _repositoryT1001W = _uow.GetGenericRepository<T001W>();
+            _repositoryPersonalization = _uow.GetGenericRepository<ZAIDM_EX_PCODE>();
+            _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
+            _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
+           _repositoryProduct = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
         }
 
         public List<string> GetDataCompany()
@@ -71,7 +71,7 @@ namespace Sampoerna.EMS.BLL
         public string GetDataSeriesDescById(string id)
         {
             var dbData = _repositorySeries.GetByID(id);
-            return dbData == null ? null : dbData.SERIES_VALUE;
+            return dbData == null ? null: dbData.SERIES_VALUE;
         }
 
         #endregion
@@ -121,7 +121,7 @@ namespace Sampoerna.EMS.BLL
 
         #region CURRENCY
 
-
+        
 
         #endregion
 
@@ -132,6 +132,6 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-
+        
     }
 }
