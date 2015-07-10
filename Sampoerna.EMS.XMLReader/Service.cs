@@ -25,10 +25,10 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            //if (xmlfile.Contains("COY"))
-            //{
-            //    return new XmlCompanyDataMapper(xmlfile);
-            //}
+            if (xmlfile.Contains("COY"))
+            {
+                return new XmlCompanyDataMapper(xmlfile);
+            }
             if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
@@ -58,10 +58,10 @@ namespace Sampoerna.EMS.XMLReader
              {
                  return new XmlSeriesDataMapper(xmlfile);
              }
-            //else if (xmlfile.Contains("PLANT-"))
-            //{
-            //    return new XmlPlantDataMapper(xmlfile);
-            //}
+            else if (xmlfile.Contains("PLANT-"))
+            {
+                return new XmlPlantDataMapper(xmlfile);
+            }
              else if (xmlfile.Contains("GOODTYP"))
              {
                  return new XmlGoodsTypeDataMapper(xmlfile);
