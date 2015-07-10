@@ -19,9 +19,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string PROD_CODE { get; set; }
         public Nullable<decimal> CONVERTER_OUTPUT { get; set; }
         public Nullable<int> CONVERTER_UOM_ID { get; set; }
+        public string PRODUCT_TYPE { get; set; }
+        public string PRODUCT_ALIAS { get; set; }
     
-        public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
     }
 }
