@@ -30,8 +30,8 @@ namespace Sampoerna.EMS.Core
             VirtualMappingPlant = 23,
             MaterialMaster = 24,
             MasterPlant = 25,
-            Uom = 26,
-            GoodsTypeGroup =27
+            Uom = 27,
+            GoodsTypeGroup =26
         }
         public enum PBCK1Type
         {

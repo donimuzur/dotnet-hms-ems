@@ -67,9 +67,9 @@ namespace Sampoerna.EMS.XMLReader
                 {
                    
                     repo.InsertOrUpdate(item);
-                   
+                    uow.SaveChanges();
                 }
-                uow.SaveChanges();
+                
             }
             
             catch (Exception ex)

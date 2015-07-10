@@ -33,19 +33,16 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }
-            //else if (xmlfile.Contains("KPPBC"))
-            //{
-            //   return  new XmlKPPBCDataMapper(xmlfile);
-            //}
-            //else if (xmlfile.Contains("VENDOR"))
-            //{
-            //    return  new XmlVendorDataMapper(xmlfile);
-            //}
-             //if (xmlfile.Contains("UOM"))
-             //{
-             //    return new XmlUoMDataMapper(xmlfile);
-             //}
-             if (xmlfile.Contains("MARKET"))
+            else if (xmlfile.Contains("KPPBC"))
+            {
+                return new XmlKPPBCDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("VENDOR"))
+            {
+                return new XmlVendorDataMapper(xmlfile);
+            }
+           
+            else if (xmlfile.Contains("MARKET"))
             {
                 return  new XmlMarketDataMapper(xmlfile);
             }
