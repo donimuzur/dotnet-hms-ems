@@ -8,7 +8,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1Item
     {
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
         public string Pbck1Number { get; set; }
@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
 
         public string CompanyName { get; set; }
 

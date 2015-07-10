@@ -16,10 +16,10 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK1()
         {
-            this.CK5 = new HashSet<CK5>();
             this.PBCK11 = new HashSet<PBCK1>();
-            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
+            this.CK5 = new HashSet<CK5>();
+            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -41,9 +41,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> PLAN_PROD_FROM { get; set; }
         public Nullable<System.DateTime> PLAN_PROD_TO { get; set; }
         public Nullable<decimal> REQUEST_QTY { get; set; }
-        public Nullable<int> REQUEST_QTY_UOM { get; set; }
+        public string REQUEST_QTY_UOM { get; set; }
         public Nullable<decimal> LATEST_SALDO { get; set; }
-        public Nullable<int> LATEST_SALDO_UOM { get; set; }
+        public string LATEST_SALDO_UOM { get; set; }
         public Nullable<int> LACK1_FROM_MONTH { get; set; }
         public Nullable<int> LACK1_FROM_YEAR { get; set; }
         public Nullable<int> LACK1_TO_MONTH { get; set; }
@@ -58,16 +58,16 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
-        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
+        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
+        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
     }
 }
