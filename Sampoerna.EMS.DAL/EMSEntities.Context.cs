@@ -26,7 +26,6 @@ namespace Sampoerna.EMS.BusinessObject
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
         public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
         public virtual DbSet<C1LFA1> C1LFA1 { get; set; }
@@ -59,7 +58,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual DbSet<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
         public virtual DbSet<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
-        public virtual DbSet<REQUEST_TYPE> REQUEST_TYPE { get; set; }
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<T1001> T1001 { get; set; }
         public virtual DbSet<T1001K> T1001K { get; set; }
@@ -86,5 +84,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual DbSet<ZAIDM_EX_POA> ZAIDM_EX_POA { get; set; }
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
+        public virtual DbSet<REQUEST_TYPE> REQUEST_TYPE { get; set; }
+        public virtual DbSet<CK5> CK5 { get; set; }
     }
 }

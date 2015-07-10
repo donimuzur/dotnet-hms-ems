@@ -1,5 +1,5 @@
 ﻿@using Sampoerna.EMS.Core
-@model Sampoerna.EMS.Website.Models.CK5.CK5EditViewModel
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 
 @using (Html.BeginForm("Edit", "CK5"))
@@ -35,7 +35,7 @@
                         @Html.HiddenFor(model=>model.Ck5Id)
                         @Html.HiddenFor(model => model.SubmissionNumber)
                         @Html.HiddenFor(model => model.SubmissionDate)
-
+                        @Html.HiddenFor(model => model.DocumentStatus)
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5UploadEdit")

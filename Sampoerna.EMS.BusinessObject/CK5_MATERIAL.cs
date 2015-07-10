@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> CONVERTED_QTY { get; set; }
         public Nullable<int> CONVERTED_UOM_ID { get; set; }
     
-        public virtual CK5 CK5 { get; set; }
         public virtual ZAIDM_EX_MATERIAL ZAIDM_EX_MATERIAL { get; set; }
+        public virtual CK5 CK5 { get; set; }
     }
 }

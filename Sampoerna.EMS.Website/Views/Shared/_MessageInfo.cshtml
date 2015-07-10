@@ -3,20 +3,21 @@
     {
         foreach (var item in Model)
         {
-            <div class="message-popup" style='padding: 10px 20px; background: #fff; overflow: hidden;' title="@item.MessageTitle">
-                <p>
-                    @foreach(var msg in item.MessageBody)
-                    {
-                        @(new HtmlString(msg))
-                    }
-                </p>
-            </div>
-        
-            @*<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" title="@item.MessageTitle">
+            @*<div class="message-popup" style='padding: 10px 20px; background: #fff; overflow: hidden;' title="@item.MessageTitle">
+                    <p>
+                        @foreach(var msg in item.MessageBody)
+                        {
+                            @(new HtmlString(msg))
+                        }
+                    </p>
+                </div>*@
+
+            <div id="mymodal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
-                            @item.MessageTitle
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title"> @item.MessageTitle</h4>
                         </div>
                         <div class="modal-body">
                             <p>
@@ -25,23 +26,28 @@
                                     @(new HtmlString(msg))
                                 }
                             </p>
-                            CK-5 Data Successfully Added
+
                         </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
 
 
         }
 
-      
+
 
         <script type="text/javascript">
-            $(function () {
-                $('.message-popup').dialog({
-                    resizable: false
+            //$(function () {
+            //    $('.message-popup').dialog({
+            //        resizable: false
 
-                });
+            //    });
+            //});
+
+            $(document).ready(function () {
+                $('#mymodal').modal('show');
             });
+
         </script>
     }

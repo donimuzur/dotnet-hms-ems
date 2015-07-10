@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 @{
     ViewBag.Title = "Create";
 }
@@ -66,7 +66,7 @@
            
         });
 
-        
+        var total = 0;
         $('#CK5UploadSave').click(function () {
             var datarows = GetTableData($('#Ck5UploadTable'));
             var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
@@ -87,12 +87,16 @@
                     data += '<td> <input name="UploadItemModels[' + i + '].UsdValue " type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                     data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
                     data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+
+                    total += parseFloat(datarows[i][5]);
                 }
                 data += '</tr>';
                 $('#ck5TableItem tbody').append(data);
             }
 
-            //$('#GrandTotalEx').val($('#GrandTotalList').val());
+
+            $('#GrandTotalEx').val(total.toFixed(2));
+            
             $('#upload-tab').removeClass('active');
             $('#home-tab').addClass('active');
 
@@ -276,20 +280,20 @@
         }
 
 
-        $("#KppBcCity").change(function () {
-            if ($("#KppBcCity").length) {
-                var kppBcCity = $(this).find("option:selected").val();
-                if (kppBcCity == '') {
+        $("#KppBcCityId").change(function () {
+            if ($("#KppBcCityId").length) {
+                var nppBkcCity = $(this).find("option:selected").val();
+                if (nppBkcCity == '') {
                     $('#CeOfficeCode').val('');
                 } else {
-                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { kppBcCityId: kppBcCity });
+                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });
                 }
             }
 
         });
 
         function ajaxGetCeOfficeCode(url, formData) {
-            if (formData.kppBcCityId) {
+            if (formData.nppBkcCityId) {
                 $.ajax({
                     type: 'POST',
                     url: url,

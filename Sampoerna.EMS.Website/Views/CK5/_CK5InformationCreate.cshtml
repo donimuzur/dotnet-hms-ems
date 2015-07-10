@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
@@ -32,7 +32,7 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.KppBcCityId, Model.KppBcCityList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -101,7 +101,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Settlement</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.ExciseSettlementId, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -109,7 +109,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Status</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.ExciseStatusId, Model.ExciseStatusList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.RequestTypeId, Model.RequestTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +340,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.CarriageMethodId, Model.CarriageMethodList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

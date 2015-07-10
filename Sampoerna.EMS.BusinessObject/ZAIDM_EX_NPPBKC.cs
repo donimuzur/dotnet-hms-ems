@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
             this.PBCK4 = new HashSet<PBCK4>();
             this.T1001W = new HashSet<T1001W>();
+            this.CK5 = new HashSet<CK5>();
         }
     
         public long NPPBKC_ID { get; set; }
@@ -50,5 +51,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual T1001 T1001 { get; set; }
         public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
         public virtual ICollection<T1001W> T1001W { get; set; }
+        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }

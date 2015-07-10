@@ -6,6 +6,7 @@ using System.Web.Management;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -51,13 +52,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private List<CK5Item> GetCk5Items(Enums.CK5Type ck5Type,CK5SearchViewModel filter = null)
         {
-            CK5Input input;
-            List<CK5> dbData;
+            CK5GetByParamInput input;
+            List<CK5Dto> dbData;
             if (filter == null)
             {
                 //Get All
                 //input = new CK5Input { Ck5Type = ck5Type };
-                input = new CK5Input();
+                input = new CK5GetByParamInput();
                 input.Ck5Type = ck5Type;
 
                 dbData = _ck5Bll.GetCK5ByParam(input);
@@ -66,12 +67,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
 
-            input = Mapper.Map<CK5Input>(filter);
+            input = Mapper.Map<CK5GetByParamInput>(filter);
             input.Ck5Type = ck5Type;
            
             dbData = _ck5Bll.GetCK5ByParam(input);
-
-
             return Mapper.Map<List<CK5Item>>(dbData);
         }
 
@@ -83,17 +82,21 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
 
-            var dbCk5 = _ck5Bll.GetAll();
-            model.SearchView.DocumentNumberList = new SelectList(dbCk5, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+            var listCk5Dto = _ck5Bll.GetAll();
+            model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
             model.SearchView.POAList = GlobalFunctions.GetPoaAll();
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
             //null ?
-            var sourcePlant = dbCk5.Select(c => c.T1001W.ZAIDM_EX_NPPBKC).ToList().Distinct();
-            var destinationPlant = dbCk5.Select(c => c.T1001W1.ZAIDM_EX_NPPBKC).ToList().Distinct();
+            //var sourcePlant = dbCk5.Select(c => c.T1001W.ZAIDM_EX_NPPBKC).ToList().Distinct();
+            //var destinationPlant = dbCk5.Select(c => c.T1001W1.ZAIDM_EX_NPPBKC).ToList().Distinct();
 
-            model.SearchView.NPPBKCOriginList = new SelectList(sourcePlant, "NPPBKC_ID", "NPPBKC_NO");
-            model.SearchView.NPPBKCDestinationList = new SelectList(destinationPlant, "NPPBKC_ID", "NPPBKC_NO");
+            //model.SearchView.NPPBKCOriginList = new SelectList(sourcePlant, "NPPBKC_ID", "NPPBKC_NO");
+            //model.SearchView.NPPBKCDestinationList = new SelectList(destinationPlant, "NPPBKC_ID", "NPPBKC_NO");
+
+            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll();
+            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll();
+
 
            //list table
             model.DetailsList = GetCk5Items(ck5Type);
@@ -173,7 +176,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create(string ck5Type)
         {
-            var model = new CK5CreateViewModel();
+            var model = new CK5FormViewModel();
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
             if (ck5Type == Enums.CK5Type.Domestic.ToString())
@@ -184,9 +187,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private CK5CreateViewModel InitCreateCK5(Enums.CK5Type ck5Type)
+        private CK5FormViewModel InitCreateCK5(Enums.CK5Type ck5Type)
         {
-            var model = new CK5CreateViewModel();
+            var model = new CK5FormViewModel();
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
@@ -199,7 +202,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        private CK5CreateViewModel InitCK5List(CK5CreateViewModel model )
+        private CK5FormViewModel InitCK5List(CK5FormViewModel model)
         {
           
             model.MainMenu = Enums.MenuList.CK5;
@@ -266,9 +269,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult CeOfficeCodePartial(long kppBcCityId)
+        public JsonResult CeOfficeCodePartial(long nppBkcCityId)
         {
-            var ceOfficeCode = _nppbkcBll.GetCityByNppbkcId(kppBcCityId);
+            var ceOfficeCode = _nppbkcBll.GetCeOfficeCodeByNppbcId(nppBkcCityId);
             return Json(ceOfficeCode);
         }
 
@@ -301,50 +304,43 @@ namespace Sampoerna.EMS.Website.Controllers
             return string.Empty;
         }
         [HttpPost]
-        public ActionResult SaveCK5(CK5CreateViewModel model)
+        public ActionResult SaveCK5(CK5FormViewModel model)
         {
             if (ModelState.IsValid)
             {
-                //var dbCk5 = Mapper.Map<CK5>(model);
-                //todo : put it into mapper
-                CK5 dbCk5 = new CK5();
-                dbCk5.CK5_TYPE = model.Ck5Type;
-                dbCk5.KPPBC_CITY = model.KppBcCity;
-                dbCk5.SUBMISSION_NUMBER = model.SubmissionNumber;
-                dbCk5.REGISTRATION_NUMBER = model.RegistrationNumber;
-                dbCk5.EX_GOODS_TYPE_ID = model.GoodTypeId;
-                dbCk5.EX_SETTLEMENT_ID = model.ExciseSettlement;
-                dbCk5.EX_STATUS_ID = model.ExciseStatus;
-                dbCk5.REQUEST_TYPE_ID = model.RequestType;
-                //dbCk5.SUBMISSION_DATE = model.SubmissionDate;
-                dbCk5.SOURCE_PLANT_ID = model.SourcePlantId;
-                dbCk5.DEST_PLANT_ID = model.DestPlantId;
-                dbCk5.INVOICE_NUMBER = model.InvoiceNumber;
-                dbCk5.PBCK1_DECREE_ID = model.PbckDecreeId;
-                dbCk5.CARRIAGE_METHOD_ID = model.CarriageMethod;
-                dbCk5.GRAND_TOTAL_EX = model.GrandTotalEx;
-                dbCk5.INVOICE_DATE = model.InvoiceDate;
-                dbCk5.PACKAGE_UOM_ID = model.PackageUomId;
+                if (model.UploadItemModels.Count > 0)
+                {
+                    //process save
+                    var dataToSave = Mapper.Map<CK5Dto>(model);
+                    dataToSave.CREATED_BY = CurrentUser.USER_ID;
 
-                dbCk5.SUBMISSION_DATE = DateTime.Now;
-                dbCk5.STATUS_ID = Enums.DocumentStatus.Draft;
-                dbCk5.CREATED_DATE = DateTime.Now;
-                dbCk5.CREATED_BY = CurrentUser.USER_ID;
-               
-               // _ck5Bll.SaveCk5(dbCk5);
+                    var input = new CK5SaveInput()
+                    {
+                        Ck5Dto = dataToSave,
+                        UserId = CurrentUser.USER_ID,
+                        WorkflowActionType = Enums.ActionType.Save,
+                        Ck5Material = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels)
+                    };
 
-                //success.. redirect to edit form
-                return RedirectToAction("Edit", "CK5", new {@id = dbCk5.CK5_ID});
+                    var saveResult = _ck5Bll.SaveCk5(input);
 
+                    if (saveResult.Success)
+                    {
+                        //success.. redirect to edit form
+                        return RedirectToAction("Edit", "CK5", new {@id = saveResult.Id});
+                    }
+
+                    AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
+
+                }
+
+                AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
             }
             else
             {
                 AddMessageInfo("Error message", Enums.MessageInfoType.Error);
             }
-            if (model.KppBcCity == 0)
-            {
-                ModelState.AddModelError("KppBcCity", "KppBcCity is required");
-            }
+         
             model = InitCK5List(model);
             
             return View("Create", model);
@@ -355,7 +351,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, long plantId)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
-            var model = new CK5CreateViewModel();
+            var model = new CK5FormViewModel();
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -372,8 +368,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.UsdValue = datarow[5];
                         if (datarow.Count > 6)
                             uploadItem.Note = datarow[6];
-                        
-                    
+
+                        uploadItem.Plant = plantId;
+
                         model.UploadItemModels.Add(uploadItem);
 
                     }
@@ -395,38 +392,38 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadList", model.UploadItemModels);
         }
 
-        private CK5EditViewModel GetInitEditData(CK5EditViewModel model)
-        {
+        //private CK5FormViewModel GetInitEditData(CK5FormViewModel model)
+        //{
             
-            model.CeOfficeCode = _nppbkcBll.GetCityByNppbkcId(model.KppBcCity);
+        //    model.CeOfficeCode = _nppbkcBll.GetCityByNppbkcId(model.KppBcCityId);
             
-            var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
-            model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
-            model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
-            model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
-            model.SourceAddress = dbPlant.ADDRESS;
-            //var model = Mapper.Map<CK5PlantModel>(dbPlant);
+        //    var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
+        //    model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+        //    model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
+        //    model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+        //    model.SourceAddress = dbPlant.ADDRESS;
+        //    //var model = Mapper.Map<CK5PlantModel>(dbPlant);
 
-            var dbDestPlant = _masterDataBll.GetPlantById(model.DestPlantId);
-            model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
-            model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
-            model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
-            model.DestAddress = dbDestPlant.ADDRESS;
+        //    var dbDestPlant = _masterDataBll.GetPlantById(model.DestPlantId);
+        //    model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+        //    model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
+        //    model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+        //    model.DestAddress = dbDestPlant.ADDRESS;
 
-            //pbck
-            if (model.PbckDecreeId.HasValue)
-                model.PbckDecreeDate = GetDatePbck1ByPbckId(model.PbckDecreeId);
-
-
-            //model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
+        //    //pbck
+        //    if (model.PbckDecreeId.HasValue)
+        //        model.PbckDecreeDate = GetDatePbck1ByPbckId(model.PbckDecreeId);
 
 
-            return model;
+        //    //model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
+        //    model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
 
-        }
 
-        private CK5EditViewModel InitEdit(CK5EditViewModel model)
+        //    return model;
+
+        //}
+
+        private CK5FormViewModel InitEdit(CK5FormViewModel model)
         {
            
             model.MainMenu = Enums.MenuList.CK5;
@@ -451,241 +448,164 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(long id)
         {
-            var dbData = _ck5Bll.GetById(id);
+            var ck5Details = _ck5Bll.GetDetailsCk5(id);
 
-            var model = new CK5EditViewModel();
-            Mapper.Map(dbData, model);
+            var model = new CK5FormViewModel();
+           
+            Mapper.Map(ck5Details.Ck5Dto, model);
+
+            model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
 
             model = InitEdit(model);
-            model = GetInitEditData(model);
+           // model = GetInitDetailsData(model);
 
-            //model.SubmissionNumber = dbData.SUBMISSION_NUMBER;
-            //model.SubmissionDate = dbData.SUBMISSION_DATE;
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
+            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
 
             return View(model);
         }
 
-        private void SetWorkflowHistory(long id, Enums.ActionType actionType)
-        {
-            //WORKFLOW_HISTORY dbWorkflow = _workflowHistoryBll.GetByActionAndFormId(actionType, id);
-            //if (dbWorkflow == null)
-            //    dbWorkflow = new WORKFLOW_HISTORY();
-
-            //dbWorkflow.FORM_TYPE_ID = Enums.FormType.CK5;
-            //dbWorkflow.FORM_ID = id;
-            //dbWorkflow.ACTION = actionType;
-            //dbWorkflow.ACTION_BY = CurrentUser.USER_ID;
-            //dbWorkflow.ACTION_DATE = DateTime.Now;
-
-            //_workflowHistoryBll.Save(dbWorkflow);
-        }
-
         [HttpPost]
-        public ActionResult Edit(CK5EditViewModel model)
+        public ActionResult Edit(CK5FormViewModel model)
         {
 
             if (ModelState.IsValid)
             {
-                var dbData = _ck5Bll.GetByIdIncludeTables(model.Ck5Id);
+                //var dbData = _ck5Bll.GetByIdIncludeTables(model.Ck5Id);
 
-                SetChangesLog(dbData, model);
+                //SetChangesLog(dbData, model);
 
-                //Mapper.Map(model, dbData);
-                //todo : put it into mapper
-                dbData.STATUS_ID = Enums.DocumentStatus.Draft;
-                dbData.CK5_TYPE = model.Ck5Type;
-                dbData.KPPBC_CITY = model.KppBcCity;
-                //dbData.SUBMISSION_NUMBER = model.SubmissionNumber;
-                //dbData.SUBMISSION_DATE = DateTime.Now;
-                dbData.REGISTRATION_NUMBER = model.RegistrationNumber;
-                dbData.EX_GOODS_TYPE_ID = model.GoodTypeId;
-                dbData.EX_SETTLEMENT_ID = model.ExciseSettlement;
-                dbData.EX_STATUS_ID = model.ExciseStatus;
-                dbData.REQUEST_TYPE_ID = model.RequestType;
+                ////Mapper.Map(model, dbData);
+                ////todo : put it into mapper
+                //dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+                //dbData.CK5_TYPE = model.Ck5Type;
+                //dbData.KPPBC_CITY = model.KppBcCity;
+                ////dbData.SUBMISSION_NUMBER = model.SubmissionNumber;
+                ////dbData.SUBMISSION_DATE = DateTime.Now;
+                //dbData.REGISTRATION_NUMBER = model.RegistrationNumber;
+                //dbData.EX_GOODS_TYPE_ID = model.GoodTypeId;
+                //dbData.EX_SETTLEMENT_ID = model.ExciseSettlement;
+                //dbData.EX_STATUS_ID = model.ExciseStatus;
+                //dbData.REQUEST_TYPE_ID = model.RequestType;
                 
-                dbData.SOURCE_PLANT_ID = model.SourcePlantId;
-                dbData.DEST_PLANT_ID = model.DestPlantId;
-                dbData.INVOICE_NUMBER = model.InvoiceNumber;
-                dbData.PBCK1_DECREE_ID = model.PbckDecreeId;
-                dbData.CARRIAGE_METHOD_ID = model.CarriageMethod;
-                dbData.GRAND_TOTAL_EX = model.GrandTotalEx;
-                dbData.INVOICE_DATE = model.InvoiceDate;
-                dbData.PACKAGE_UOM_ID = model.PackageUomId;
+                //dbData.SOURCE_PLANT_ID = model.SourcePlantId;
+                //dbData.DEST_PLANT_ID = model.DestPlantId;
+                //dbData.INVOICE_NUMBER = model.InvoiceNumber;
+                //dbData.PBCK1_DECREE_ID = model.PbckDecreeId;
+                //dbData.CARRIAGE_METHOD_ID = model.CarriageMethod;
+                //dbData.GRAND_TOTAL_EX = model.GrandTotalEx;
+                //dbData.INVOICE_DATE = model.InvoiceDate;
+                //dbData.PACKAGE_UOM_ID = model.PackageUomId;
                 
                
-                dbData.MODIFIED_DATE = DateTime.Now;
+                //dbData.MODIFIED_DATE = DateTime.Now;
                 
 
-                //workflowhistory
-                SetWorkflowHistory(dbData.CK5_ID, Enums.ActionType.Save);
+                ////workflowhistory
+                //SetWorkflowHistory(dbData.CK5_ID, Enums.ActionType.Save);
 
-                _ck5Bll.SaveCk5(dbData);
-              
+                //_ck5Bll.SaveCk5(dbData);
+
+                //process save
+                var dataToSave = Mapper.Map<CK5Dto>(model);
+                dataToSave.CREATED_BY = CurrentUser.USER_ID;
+                var input = new CK5SaveInput()
+                {
+                    Ck5Dto = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    WorkflowActionType = Enums.ActionType.Save
+                };
+                var saveResult = _ck5Bll.SaveCk5(input);
+
+               if (!saveResult.Success)
+                   AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
+
+                //return RedirectToAction()
             }
+            else
+                AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
 
             model = InitEdit(model);
-            model = GetInitEditData(model);
-
-           
+            model = GetHistorys(model);
+            
             return View(model);
         }
 
-        private void SetChangesLog(CK5 origin, CK5EditViewModel updatedModel)
+        private CK5FormViewModel GetHistorys(CK5FormViewModel model)
         {
-            var changesData = new Dictionary<string, bool>();
-          
-            changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(updatedModel.KppBcCity));
-            changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == updatedModel.RegistrationNumber);
+            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(model.SubmissionNumber));
 
-            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(updatedModel.GoodTypeId));
-            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(updatedModel.ExciseSettlement));
-            changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(updatedModel.ExciseStatus));
-            changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(updatedModel.RequestType));
-            changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID.Equals(updatedModel.SourcePlantId));
-            changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID.Equals(updatedModel.DestPlantId));
-
-            changesData.Add("INVOICE_NUMBER", origin.INVOICE_NUMBER == updatedModel.InvoiceNumber);
-            changesData.Add("INVOICE_DATE", origin.INVOICE_DATE.Equals(updatedModel.InvoiceDate));
-
-            changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID.Equals(updatedModel.PbckDecreeId));
-            changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(updatedModel.CarriageMethod));
-
-            changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(updatedModel.GrandTotalEx));
-            changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID.Equals(updatedModel.PackageUomId));
-
-            foreach (var listChange in changesData)
-            {
-                if (listChange.Value) continue;
-                var changes = new CHANGES_HISTORY();
-                changes.FORM_TYPE_ID = Enums.MenuList.CK5;
-                changes.FORM_ID = origin.CK5_ID;
-                changes.FIELD_NAME = listChange.Key;
-                changes.MODIFIED_BY = CurrentUser.USER_ID;
-                changes.MODIFIED_DATE = DateTime.Now;
-                switch (listChange.Key)
-                {
-                    case "KPPBC_CITY":
-                        long city = 0;
-                        if (origin.KPPBC_CITY.HasValue)
-                            city = origin.KPPBC_CITY.Value;
-
-                        changes.OLD_VALUE = _nppbkcBll.GetCityByNppbkcId(city);
-                        changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(updatedModel.KppBcCity);
-                        break;
-                    case "REGISTRATION_NUMBER":
-                        changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
-                        changes.NEW_VALUE = updatedModel.RegistrationNumber;
-                        break;
-                    case "EX_GOODS_TYPE_ID":
-                        changes.OLD_VALUE = _goodTypeBll.GetGoodTypeDescById(origin.EX_GOODS_TYPE_ID);
-                        changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(updatedModel.GoodTypeId);
-                        break;
-                    case "EX_SETTLEMENT_ID":
-                        changes.OLD_VALUE = _masterDataBll.GetExSettlementsNameById(origin.EX_SETTLEMENT_ID);
-                        changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(updatedModel.ExciseSettlement);
-                        break;
-                    case "EX_STATUS_ID":
-                        changes.OLD_VALUE = _masterDataBll.GetExStatusNameById(origin.EX_STATUS_ID);
-                        changes.NEW_VALUE = _masterDataBll.GetExStatusNameById(updatedModel.ExciseStatus);
-                        break;
-                    case "REQUEST_TYPE_ID":
-                        changes.OLD_VALUE = _masterDataBll.GetRequestTypeNameById(origin.REQUEST_TYPE_ID);
-                        changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(updatedModel.ExciseStatus);
-                        break;
-                    case "SOURCE_PLANT_ID":
-                        long sourcePlant = 0;
-                        if (origin.SOURCE_PLANT_ID.HasValue)
-                            sourcePlant = origin.SOURCE_PLANT_ID.Value;
-                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(sourcePlant);
-                        changes.NEW_VALUE = _plantBll.GetPlantWerksById(updatedModel.SourcePlantId);
-                        break;
-                    case "DEST_PLANT_ID":
-                        long destPlant = 0;
-                        if (origin.DEST_PLANT_ID.HasValue)
-                            destPlant = origin.DEST_PLANT_ID.Value;
-                        changes.OLD_VALUE = _plantBll.GetPlantWerksById(destPlant);
-                        changes.NEW_VALUE = _plantBll.GetPlantWerksById(updatedModel.DestPlantId);
-                        break;
-                    case "INVOICE_NUMBER":
-                        changes.OLD_VALUE = origin.INVOICE_NUMBER;
-                        changes.NEW_VALUE = updatedModel.InvoiceNumber;
-                        break;
-                    case "INVOICE_DATE":
-                        changes.OLD_VALUE = origin.INVOICE_DATE != null? origin.INVOICE_DATE.Value.ToString("dd MMM yyyy"): string.Empty;
-                        changes.NEW_VALUE = updatedModel.InvoiceDate != null? updatedModel.InvoiceDate.Value.ToString("dd MMM yyyy"): string.Empty;
-                        break;
-                    case "PBCK1_DECREE_ID":
-                         long pbckNumber = 0;
-                        if (origin.PBCK1_DECREE_ID.HasValue)
-                            pbckNumber = origin.PBCK1_DECREE_ID.Value;
-                        changes.OLD_VALUE = _pbck1Bll.GetPbckNumberById(pbckNumber);
-
-                        long updateNumber = 0;
-                        if (updatedModel.PbckDecreeId.HasValue)
-                            updateNumber = updatedModel.PbckDecreeId.Value;
-
-                        changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(updateNumber);
-                        break;
-
-                    case "CARRIAGE_METHOD_ID":
-                        changes.OLD_VALUE = _masterDataBll.GetCarriageMethodeNameById(origin.CARRIAGE_METHOD_ID);
-                        changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(updatedModel.CarriageMethod);
-                        break;
-
-                    case "GRAND_TOTAL_EX":
-                        changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-                        changes.NEW_VALUE = updatedModel.GrandTotalEx.ToString();
-                        break;
-
-                    case "PACKAGE_UOM_ID":
-                        changes.OLD_VALUE = _uomBll.GetUomNameById(origin.PACKAGE_UOM_ID);
-                        changes.NEW_VALUE = _uomBll.GetUomNameById(updatedModel.PackageUomId);
-                        break;
-
-
-                }
-                _changesHistoryBll.AddHistory(changes);
-            }
-        }
-
-        private CK5DetailsViewModel GetInitDetailsData(CK5DetailsViewModel model)
-        {
-
-            model.CeOfficeCode = _nppbkcBll.GetCityByNppbkcId(model.KppBcCityId);
-            model.KppBcCity = _nppbkcBll.GetCityByNppbkcId(model.KppBcCityId);
-
-            var dbPlant = _masterDataBll.GetPlantById(model.SourcePlantId);
-            model.SourcePlantName = dbPlant.NAME1 + " - " + dbPlant.CITY;
-            model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
-            model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
-            model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
-            model.SourceAddress = dbPlant.ADDRESS;
-            
-            var dbDestPlant = _masterDataBll.GetPlantById(model.DestPlantId);
-            model.DestPlantName = dbDestPlant.NAME1 + " - " + dbDestPlant.CITY;
-            model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
-            model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
-            model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
-            model.DestAddress = dbDestPlant.ADDRESS;
-
-            //model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, model.Ck5Id));
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
 
             return model;
-
         }
+
+        ///// <summary>
+        ///// todo : remove this function should be got info in mapper
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <param name="isNeedGetData"></param>
+        ///// <returns></returns>
+        //private CK5FormViewModel GetInitDetailsData(CK5FormViewModel model, bool isNeedGetData = false)
+        //{
+
+        //    //long city = 0;
+        //    //if (model.KppBcCityId.HasValue)
+        //    //    city = model.KppBcCityId.Value;
+
+        //    //model.CeOfficeCode = _nppbkcBll.GetCityByNppbkcId(city);
+        //    //model.KppBcCityName = _nppbkcBll.GetCityByNppbkcId(city);
+
+        //    //long sourcePlant = 0;
+        //    //if (model.SourcePlantId.HasValue)
+        //    //    sourcePlant = model.SourcePlantId.Value;
+
+        //    //var dbPlant = _masterDataBll.GetPlantById(sourcePlant);
+
+        //    //model.SourcePlantName = dbPlant.NAME1 + " - " + dbPlant.CITY;
+        //    //model.SourceNpwp = dbPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+        //    //model.SourceNppbkcId = dbPlant.NPPBCK_ID.ToString();
+        //    //model.SourceCompanyName = dbPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+        //    //model.SourceAddress = dbPlant.ADDRESS;
+
+        //    //long destPlant = 0;
+        //    //if (model.DestPlantId.HasValue)
+        //    //    destPlant = model.DestPlantId.Value;
+
+        //    //var dbDestPlant = _masterDataBll.GetPlantById(destPlant);
+        //    //model.DestPlantName = dbDestPlant.NAME1 + " - " + dbDestPlant.CITY;
+        //    //model.DestNpwp = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.NPWP;
+        //    //model.DestNppbkcId = dbDestPlant.NPPBCK_ID.ToString();
+        //    //model.DestCompanyName = dbDestPlant.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT;
+        //    //model.DestAddress = dbDestPlant.ADDRESS;
+
+        //    if (isNeedGetData)
+        //    {
+        //        model.WorkflowHistory =Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(model.SubmissionNumber));
+
+        //        model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, model.Ck5Id));
+
+        //    }
+          
+            
+        //    return model;
+
+        //}
 
         public ActionResult Details(long id)
         {
-            var dbData = _ck5Bll.GetByIdIncludeTables(id);
+            var ck5Details = _ck5Bll.GetDetailsCk5(id);
 
-            var model = new CK5DetailsViewModel();
-            Mapper.Map(dbData, model);
+            var model = new CK5FormViewModel();
+            Mapper.Map(ck5Details.Ck5Dto, model);
 
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model = GetInitDetailsData(model);
+           // model = GetInitDetailsData(model);
+            model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
+            model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
 
             
 

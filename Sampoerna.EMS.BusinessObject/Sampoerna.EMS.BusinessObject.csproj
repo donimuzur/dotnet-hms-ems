@@ -98,6 +98,9 @@
     <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="DTOs\ChangeHistoryDto.cs" />
+    <Compile Include="DTOs\CK5Dto.cs" />
+    <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
@@ -145,6 +148,7 @@
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
+    <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\MaterialOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />

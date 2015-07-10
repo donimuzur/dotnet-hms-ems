@@ -14,7 +14,9 @@ namespace Sampoerna.EMS.Contract
         void Update(ZAIDM_EX_NPPBKC nppbkc);
         
         string GetCityByNppbkcId(long nppBkcId);
-               
+
+        string GetCeOfficeCodeByNppbcId(long nppBkcId);
+
         void Delete(int id);
     }
 }
