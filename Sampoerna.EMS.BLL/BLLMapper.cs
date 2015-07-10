@@ -192,6 +192,13 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<WorkflowHistoryDto, WORKFLOW_HISTORY>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Pbck1ProdConv
+
+            Mapper.CreateMap<Pbck1ProdConverterInput, Pbck1ProdConverterOutput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdPlanInput, Pbck1ProdPlanInput>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

@@ -11,5 +11,8 @@ namespace Sampoerna.EMS.Contract
         string GetUomNameById(int? id);
 
         bool IsUomNameExist(string name);
+
+        UOM GetUomByName(string name);
+
     }
 }

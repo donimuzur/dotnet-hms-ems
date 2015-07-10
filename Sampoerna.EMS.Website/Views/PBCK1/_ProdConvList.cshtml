@@ -8,6 +8,7 @@
             <th>Product Type</th>
             <th>Converted Output</th>
             <th>Converted Uom</th>
+            <th>Message Error</th>
         </tr>
     </thead>
     <tbody>
@@ -17,10 +18,11 @@
             {
                 <tr>
                     <td style="display: none">@row.ProductCode</td>
-                    <td>@row.ProductTypeAlias</td>
-                    <td>@row.ProductType</td>
+                    <td>@row.ProdTypeAlias</td>
+                    <td>@row.ProdTypeName</td>
                     <td>@row.ConverterOutput</td>
                     <td>@row.ConverterUom</td>
+                    <td>@row.Message</td>
                 </tr>
             }
         }

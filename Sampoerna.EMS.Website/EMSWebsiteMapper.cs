@@ -64,17 +64,11 @@ namespace Sampoerna.EMS.Website
                 ;
 
             Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterDto>().IgnoreAllNonExisting();
-            Mapper.CreateMap<Pbck1ProdConverterDto, Pbck1ProdConvModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProdTypeCode))
-                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ProdTypeName))
-                .ForMember(dest => dest.ProductTypeAlias, opt => opt.MapFrom(src => src.ProdAlias));
+            Mapper.CreateMap<Pbck1ProdConverterDto, Pbck1ProdConvModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Pbck1ProdPlanModel, Pbck1ProdPlanDto>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<Pbck1ProdPlanDto, Pbck1ProdPlanModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProdTypeCode))
-                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ProdTypeName))
-                .ForMember(dest => dest.ProductTypeAlias, opt => opt.MapFrom(src => src.ProdAlias));
+            Mapper.CreateMap<Pbck1ProdPlanDto, Pbck1ProdPlanModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Pbck1Item, Pbck1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1ProdConverter,
@@ -721,6 +715,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));
 
             #endregion
+
+            Mapper.CreateMap<Pbck1ProdPlanModel, Pbck1ProdPlanInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdPlanOutput, Pbck1ProdPlanModel>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdConverterOutput, Pbck1ProdConvModel>().IgnoreAllNonExisting();
         }
     }
 

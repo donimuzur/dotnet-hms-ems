@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.BusinessObject.DTOs;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 
@@ -16,6 +17,9 @@ namespace Sampoerna.EMS.Contract
         DeletePbck1Output Delete(long id);
 
         string GetPbckNumberById(long id);
+
+        List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs);
+        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
 
     }
 }

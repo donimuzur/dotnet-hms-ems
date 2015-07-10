@@ -4,6 +4,7 @@ using System.Web;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -283,37 +284,35 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
-            var model = new Pbck1ItemViewModel()
-            {
-                Detail = new Pbck1Item() { Pbck1ProdConverter = new List<Pbck1ProdConvModel>(), Pbck1ProdPlan = new List<Pbck1ProdPlanModel>() }
-            };
+            var model = new Pbck1ItemViewModel();
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
                 {
-                    var prodConvModel = new Pbck1ProdConvModel();
+                    var uploadItem = new Pbck1ProdConvModel();
 
                     try
                     {
-                        var prodCodeFromFile = Convert.ToInt32(datarow[0]);
-                        var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
-                        if (prodType != null)
-                        {
-                            prodConvModel.ProductCode = prodType.PRODUCT_CODE;
-                            prodConvModel.ProductType = prodType.PRODUCT_TYPE;
-                            prodConvModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
-                            prodConvModel.ConverterOutput = Convert.ToDecimal(datarow[1]);
-                            prodConvModel.ConverterUom = datarow[2];
-                            model.Detail.Pbck1ProdConverter.Add(prodConvModel);
-                        }
+                        uploadItem.ProductCode = datarow[0];
+                        uploadItem.ConverterOutput = datarow[1];
+                        uploadItem.ConverterUom = datarow[2];
+
+                        model.Detail.Pbck1ProdConverter.Add(uploadItem);
+
                     }
                     catch (Exception)
                     {
                         continue;
-                    }
 
+                    }
                 }
             }
+
+            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
+
+            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
+
             return PartialView("_ProdConvList", model);
         }
 
@@ -321,40 +320,36 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
-            var model = new Pbck1ItemViewModel()
-            {
-                Detail = new Pbck1Item() { Pbck1ProdConverter = new List<Pbck1ProdConvModel>(), Pbck1ProdPlan = new List<Pbck1ProdPlanModel>() }
-            };
+            var model = new Pbck1ItemViewModel();
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
                 {
-                    var prodPlanModel = new Pbck1ProdPlanModel();
+                    var uploadItem = new Pbck1ProdPlanModel();
 
                     try
                     {
-                        var month = _monthBll.GetMonth(Convert.ToInt32(datarow[0]));
-                        var prodCodeFromFile = Convert.ToInt32(datarow[1]);
-                        var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
-                        if (prodType != null)
-                        {
-                            prodPlanModel.MonthName = month.MONTH_NAME_IND;
-                            prodPlanModel.ProductCode = prodType.PRODUCT_CODE;
-                            prodPlanModel.ProductType = prodType.PRODUCT_TYPE;
-                            prodPlanModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
-                            prodPlanModel.Amount = Convert.ToDecimal(datarow[2]);
-                            prodPlanModel.BkcRequires = datarow[3];
-                            model.Detail.Pbck1ProdPlan.Add(prodPlanModel);
-                        }
+                        uploadItem.Month = datarow[0];
+                        uploadItem.ProductCode = datarow[1];
+                        uploadItem.Amount = datarow[2];
+                        uploadItem.BkcRequired = datarow[3];
+
+                        model.Detail.Pbck1ProdPlan.Add(uploadItem);
+
                     }
                     catch (Exception)
                     {
                         continue;
 
                     }
-
                 }
             }
+
+            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
+
+            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
+
             return PartialView("_ProdPlanList", model);
         }
 

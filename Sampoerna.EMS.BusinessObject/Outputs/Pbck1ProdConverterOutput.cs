@@ -1,6 +1,6 @@
-﻿namespace Sampoerna.EMS.Website.Models.PBCK1
+﻿namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public class Pbck1ProdConvModel
+    public class Pbck1ProdConverterOutput
     {
         public long Pbck1ProdConvId { get; set; }
         public long Pbck1Id { get; set; }

@@ -62,7 +62,7 @@
                 for (var i = 0; i < datarows.length; i++) {
                     var data = '<tr>';
                     if (columnLength > 0) {
-                        data += '<td><input name="Detail.Pbck1ProdConverter[' + i + '].ProductTypeAlias" type="hidden" value = "' + datarows[i][0] + '" />' + datarows[i][0] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdConverter[' + i + '].ProductTypeAlias" type="hidden" value = "' + datarows[i][0] + '" />' + datarows[i][0] + '</td>';
                         data += '<td>' + datarows[i][1] + '</td>';
                         data += '<td>' + datarows[i][2] + '</td>';
                         data += '<td>' + datarows[i][3] + '</td>';

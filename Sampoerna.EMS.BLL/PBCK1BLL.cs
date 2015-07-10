@@ -22,6 +22,9 @@ namespace Sampoerna.EMS.BLL
         private IDocumentSequenceNumberBLL _docSeqNumBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IZaidmExProdTypeBLL _prodTypeBll;
+        private IUnitOfMeasurementBLL _uomBll;
+        private IMonthBLL _monthBll;
 
         private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER, ZAIDM_EX_NPPBKC.T1001";
 
@@ -33,6 +36,9 @@ namespace Sampoerna.EMS.BLL
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _prodTypeBll = new ZaidmExProdTypeBLL(_uow, _logger);
+            _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
+            _monthBll = new MonthBLL(_uow, _logger);
         }
 
         public Pbck1GetByParamOutput Pbck1GetByParam(Pbck1GetByParamInput input)
@@ -404,5 +410,307 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.GetByID(id);
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
+        
+        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<Pbck1ProdConverterOutput>();
+            foreach (var inputItem in inputs)
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<Pbck1ProdConverterOutput>(inputItem);
+
+                //Product Code Validation
+                #region -------------- Product Code Validation --------------
+                List<string> messages;
+                ZAIDM_EX_PRODTYP prodTypeData = null;
+                if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
+                {
+                    output.ProductId = prodTypeData.PRODUCT_ID;
+                    output.ProdTypeAlias = prodTypeData.PRODUCT_ALIAS;
+                    output.ProdTypeName = prodTypeData.PRODUCT_TYPE;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                //Converted UOM Validation
+                #region -------------------- Converted UOM Validation ------------
+
+                if (!ValidateDecimal(output.ConverterOutput, "Converted Output", out messages))
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                //UOM Validation
+                #region -------------- UOM Validation --------------------
+
+                int uomId;
+                if (!ValidateUom(output.ConverterUom, out messages, out uomId))
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+                else
+                {
+                    output.ConverterUomId = uomId;
+                }
+
+                #endregion
+
+                #region -------------- Set Message Info if exists ---------------
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                #endregion
+
+                outputList.Add(output);
+
+            }
+            return outputList;
+        }
+
+        public List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<Pbck1ProdPlanOutput>();
+            foreach (var inputItem in inputs) //   <--- go back to here --------+
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<Pbck1ProdPlanOutput>(inputItem);
+
+                #region ------------- Product Code Validation ----------
+                List<string> messages;
+                ZAIDM_EX_PRODTYP prodTypeData = null;
+                if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
+                {
+                    output.ProductId = prodTypeData.PRODUCT_ID;
+                    output.ProdTypeAlias = prodTypeData.PRODUCT_ALIAS;
+                    output.ProdTypeName = prodTypeData.PRODUCT_TYPE;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+                
+                #region -------------- Month Validation -----------
+
+                string monthName;
+
+                if (ValidateMonth(output.Month, out messages, out monthName))
+                {
+                    output.MonthName = monthName;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                #region --------------- Amount Validation -----------
+
+                if (!ValidateDecimal(output.Amount, "Amount", out messages))
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                #region ------------------ BKC Required -------
+
+                if (string.IsNullOrWhiteSpace(output.BkcRequired))
+                {
+                    output.IsValid = false;
+                    messageList.Add("BKC Required is empty");
+                }
+
+                #endregion
+
+                #region -------------- Set Message Info if exists ---------------
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                #endregion
+
+                outputList.Add(output);
+
+            }
+            return outputList;
+        }
+
+        private bool ValidateProductCode(string productCode, out List<string> message, out ZAIDM_EX_PRODTYP productData)
+        {
+            productData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+            #region ------------Product Code Validation-------------
+            if (!string.IsNullOrWhiteSpace(productCode))
+            {
+
+                int prodTypeCode;
+                if (int.TryParse(productCode, out prodTypeCode))
+                {
+                    productData = _prodTypeBll.GetByCode(prodTypeCode);
+                    if (productData == null)
+                    {
+                        messageList.Add("ProductCode not valid");
+                    }
+                    else
+                    {
+                        valResult = true;
+                    }
+                }
+                else
+                {
+                    messageList.Add("ProductCode is not number");
+                }
+            }
+            else
+            {
+                messageList.Add("ProductCode is empty");
+            }
+
+            #endregion
+            
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateMonth(string month, out List<string> message, out string monthName)
+        {
+            monthName = string.Empty;
+            var valResult = false;
+            var messageList = new List<string>();
+            
+            if (string.IsNullOrEmpty(month))
+            {
+                messageList.Add("Month is empty");
+            }
+            else
+            {
+                int monthNumber = 0;
+                if (!int.TryParse(month, out monthNumber))
+                {
+                    //not valid
+                    messageList.Add("Month is not valid");
+                }
+                else
+                {
+                    //valid, get month name
+                    var monthData = _monthBll.GetMonth(monthNumber);
+                    if (monthData == null)
+                    {
+                        messageList.Add("Month is not valid");
+                    }
+                    else
+                    {
+                        valResult = true;
+                        monthName = monthData.MONTH_NAME_ENG;
+                    }
+                }
+            }
+
+            message = messageList;
+
+            return valResult;
+
+        }
+
+        private bool ValidateDecimal(string nominal, string fieldMessage, out List<string> message)
+        {
+            var valResult = false;
+            var messageList = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(nominal))
+            {
+                decimal amountConvert;
+                if (!decimal.TryParse(nominal, out amountConvert))
+                {
+                    messageList.Add(string.Format("{0} is not valid", fieldMessage));
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add(string.Format("{0} is empty", fieldMessage));
+            }
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateUom(string uom, out List<string> message, out int uomId)
+        {
+            var valResult = false;
+            var messageList = new List<string>();
+            uomId = 0;
+
+            if (!string.IsNullOrWhiteSpace(uom))
+            {
+                var uomData = _uomBll.GetUomByName(uom);
+                if (uomData != null)
+                {
+                    uomId = uomData.UOM_ID;
+                    valResult = true;
+                }
+                else
+                {
+                    messageList.Add("UOM is not valid");
+                }
+            }
+            else
+            {
+                messageList.Add("UOM is empty");
+            }
+            
+            message = messageList;
+
+            return valResult;
+        }
+
     }
 }

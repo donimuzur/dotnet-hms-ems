@@ -44,5 +44,10 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.Get(u => u.UOM_NAME.Equals(name)).FirstOrDefault();
             return dbData != null;
         }
+
+        public UOM GetUomByName(string name)
+        {
+            return _repository.Get(c => c.UOM_NAME == name, null, null).FirstOrDefault();
+        }
     }
 }
