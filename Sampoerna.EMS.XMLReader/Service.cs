@@ -66,10 +66,10 @@ namespace Sampoerna.EMS.XMLReader
              {
                  return new XmlGoodsTypeDataMapper(xmlfile);
              }
-            //else if (xmlfile.Contains("BRANDREG"))
-            //{
-            //    return  new XmlBrandDataMapper(xmlfile);
-            //}
+            else if (xmlfile.Contains("BRANDREG"))
+            {
+                return new XmlBrandDataMapper(xmlfile);
+            }
             //else if (xmlfile.Contains("MATERIAL"))
             //{
             //    return new XmlMaterialDataMapper(xmlfile);

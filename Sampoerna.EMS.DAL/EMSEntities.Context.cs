@@ -52,7 +52,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
-        public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_MARKET> ZAIDM_EX_MARKET { get; set; }
         public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
@@ -67,5 +66,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
 }

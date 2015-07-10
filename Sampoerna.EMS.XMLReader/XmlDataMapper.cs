@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.XMLReader
                     repo.InsertOrUpdate(item);
                     uow.SaveChanges();
                 }
-                
+                MoveFile();
             }
             
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.XMLReader
                 uow.RevertChanges();
             }
          
-            MoveFile();
+           
         }
         public void InsertToDatabase<T>(T data) where T : class
         {
@@ -120,6 +120,18 @@ namespace Sampoerna.EMS.XMLReader
                 throw;
             }
           
+        }
+
+        public DateTime? GetDate(string valueStr)
+        {
+            if (valueStr.Length == 8)
+            {
+                var year = Convert.ToInt32(valueStr.Substring(0, 4));
+                var month = Convert.ToInt32(valueStr.Substring(4, 2));
+                var date = Convert.ToInt32(valueStr.Substring(6, 2));
+                return new DateTime(year, month, date);
+            }
+            return null;
         }
 
 

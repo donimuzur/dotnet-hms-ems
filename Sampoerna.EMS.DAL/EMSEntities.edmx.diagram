@@ -31,7 +31,6 @@
         <EntityTypeShape EntityType="EMSModel.USER" Width="1.5" PointX="3" PointY="32.5" />
         <EntityTypeShape EntityType="EMSModel.USER_GROUP" Width="1.5" PointX="0.75" PointY="35.25" />
         <EntityTypeShape EntityType="EMSModel.VIRTUAL_PLANT_MAP" Width="1.5" PointX="10.5" PointY="55" />
-        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_BRAND" Width="1.5" PointX="18" PointY="35" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_GOODTYP" Width="1.5" PointX="8.25" PointY="63" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_MARKET" Width="1.75" PointX="15.75" PointY="38.125" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_PCODE" Width="1.5" PointX="15.75" PointY="35.5" />
@@ -67,17 +66,9 @@
         <AssociationConnector Association="EMSModel.FK_T001W_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_T001W" />
         <AssociationConnector Association="EMSModel.FK_USER_USER_GROUP" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_KPPBC" Width="1.5" PointX="11.25" PointY="73.625" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_NPPBKC" Width="1.5" PointX="13.5" PointY="49" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_LFA1" />
@@ -117,6 +108,15 @@
         <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_CONVERTER" Width="1.5" PointX="15.75" PointY="31.875" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" />
+        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_BRAND" Width="1.5" PointX="23.25" PointY="40" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_T001W" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
