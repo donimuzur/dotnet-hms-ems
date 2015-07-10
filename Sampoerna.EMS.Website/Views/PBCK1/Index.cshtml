@@ -2,7 +2,7 @@
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
 
 @{
-    ViewBag.Title = "PBCK 1";
+    ViewBag.Title = "PBCK-1";
 }
 
 <div class="container-wrap title-page">
@@ -76,9 +76,14 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-
-                                <input type="submit" class="btn btn-blue full" value="FILTER" />
-
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -97,7 +102,9 @@
     <script type="text/javascript" language="javascript">
 
         function setupDataTables() {
-
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
             // DataTable
             var table = null;
             if ($.fn.dataTable.isDataTable('#pbckTable')) {
@@ -131,10 +138,6 @@
                         .draw();
                 });
             });
-
-            $("#pbckTable_filter").hide();
-            $('#pbckTable_length').hide();
-            $('#pbckTable_info').hide();
 
             $('#MenuPBCK1OpenListDocument').addClass('active');
         }
@@ -177,9 +180,15 @@
         }
 
         function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
             setupDataTables();
         }
 
     </script>
-
 }

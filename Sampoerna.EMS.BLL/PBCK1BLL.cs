@@ -21,7 +21,8 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER";
+       // private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER";
+        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
