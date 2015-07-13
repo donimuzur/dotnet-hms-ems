@@ -24,7 +24,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string PRODUCT_ALIAS { get; set; }
     
         public virtual MONTH MONTH1 { get; set; }
-        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
     }
 }

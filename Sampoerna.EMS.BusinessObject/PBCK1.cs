@@ -57,6 +57,10 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string SUPPLIER_PORT_NAME { get; set; }
+        public string SUPPLIER_NPPBKC_ID { get; set; }
+        public string SUPPLIER_KPPBC_ID { get; set; }
+        public string SUPPLIER_PLANT_WERKS { get; set; }
     
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
