@@ -16,8 +16,9 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public long WORKFLOW_HISTORY_ID { get; set; }
         public int FORM_TYPE_ID { get; set; }
+        public long FORM_ID { get; set; }
         public string FORM_NUMBER { get; set; }
-        public string ACTION { get; set; }
+        public int ACTION { get; set; }
         public string ACTION_BY { get; set; }
         public Nullable<System.DateTime> ACTION_DATE { get; set; }
         public string COMMENT { get; set; }

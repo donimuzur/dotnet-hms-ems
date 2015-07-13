@@ -48,7 +48,6 @@
         <AssociationConnector Association="EMSModel.FK_PAGE_MAP_PAGE" />
         <AssociationConnector Association="EMSModel.FK_PAGE_PAGE" />
         <AssociationConnector Association="EMSModel.FK_PAGE_MAP_USER_GROUP" />
-        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" />
         <AssociationConnector Association="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_POA_CREATED_BY_USER" />
@@ -118,9 +117,9 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" />
         <EntityTypeShape EntityType="EMSModel.CARRIAGE_METHOD" Width="1.5" PointX="18.5" PointY="36.5" />
-        <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="5.25" PointY="24.25" />
         <AssociationConnector Association="EMSModel.FK_CK5_CARRIAGE_METHOD" />
-        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_WORKFLOW_HISTORY" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="5.25" PointY="24.125" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
