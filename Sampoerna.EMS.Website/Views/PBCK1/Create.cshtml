@@ -59,18 +59,32 @@
                 var datarows = GetTableData($('#prod-conv-table'));
                 var columnLength = $('#Detail_Pbck1ProdConverter').find("thead tr:first th").length;
                 $('#Detail_Pbck1ProdConverter tbody').html('');
+                var total = 0;
                 for (var i = 0; i < datarows.length; i++) {
                     var data = '<tr>';
                     if (columnLength > 0) {
-                        data += '<td style="display:none"><input name="Detail.Pbck1ProdConverter[' + i + '].ProductTypeAlias" type="hidden" value = "' + datarows[i][0] + '" />' + datarows[i][0] + '</td>';
-                        data += '<td>' + datarows[i][1] + '</td>';
-                        data += '<td>' + datarows[i][2] + '</td>';
-                        data += '<td>' + datarows[i][3] + '</td>';
-                        data += '<td>' + datarows[i][4] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdConverter[' + i
+                            + '].ProductCode" type="hidden" value = "' + datarows[i][0] + '" />' + datarows[i][0] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdConverter[' + i
+                            + '].ConverterUomId" type="hidden" value = "' + datarows[i][1] + '" />' + datarows[i][1] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdConverter[' + i
+                            + '].ProdTypeAlias" type="hidden" value = "' + datarows[i][2] + '" />' + datarows[i][2] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdConverter[' + i
+                            + '].ProdTypeName" type="hidden" value = "' + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdConverter[' + i
+                            + '].ConverterOutput" type="hidden" value = "' + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdConverter[' + i
+                            + '].ConverterUom" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
+
+                        total += parseFloat(datarows[i][4]);
+                        
                     }
                     data += '</tr>';
                     $('#Detail_Pbck1ProdConverter tbody').append(data);
                 }
+
+                $('#Detail_RequestQty').val(total);
+
                 $('#prod-conv-upload-tab').removeClass('active');
                 $('#home-tab').addClass('active');
                 $('#home').addClass('active');
@@ -81,15 +95,25 @@
                 var datarows = GetTableData($('#prod-plan-table'));
                 var columnLength = $('#Detail_Pbck1ProdPlan').find("thead tr:first th").length;
                 $('#Detail_Pbck1ProdPlan tbody').html('');
+                
                 for (var i = 0; i < datarows.length; i++) {
                     var data = '<tr>';
                     if (columnLength > 0) {
-                        data += '<td style="display:none">' + datarows[i][0] + '</td>';
-                        data += '<td style="display:none">' + datarows[i][1] + '</td>';
-                        data += '<td>' + datarows[i][2] + '</td>';
-                        data += '<td>' + datarows[i][3] + '</td>';
-                        data += '<td>' + datarows[i][4] + '</td>';
-                        data += '<td>' + datarows[i][5] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdPlan[' + i + '].ProductCode" type="hidden" value = "'
+                            + datarows[i][0] + '" />' + datarows[i][0] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdPlan[' + i + '].ProdTypeName" type="hidden" value = "'
+                            + datarows[i][1] + '" />' + datarows[i][1] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdPlan[' + i + '].Month" type="hidden" value = "'
+                            + datarows[i][2] + '" />' + datarows[i][2] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].MonthName" type="hidden" value = "'
+                            + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].ProdTypeAlias" type="hidden" value = "'
+                            + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].Amount" type="hidden" value = "'
+                            + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
+                        data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
+                            + datarows[i][6] + '" />' + datarows[i][6] + '</td>';
+                        
                     }
                     data += '</tr>';
                     $('#Detail_Pbck1ProdPlan tbody').append(data);
@@ -127,6 +151,13 @@
                     success: function(response) {
                         $('#ProdConvContent').html("");
                         $('#ProdConvContent').html(response);
+                        if (IsProdConverterValid()) {
+                            //valid generated
+                            $('#prod-conv-save').removeAttr('disabled');
+                        } else {
+                            //invalid generated
+                            $('#prod-conv-save').attr('disabled', 'disabled');
+                        }
                     },
                     error: function(error) {
                         // Handle errors here
@@ -163,6 +194,13 @@
                     success: function(response) {
                         $('#ProdPlanContent').html("");
                         $('#ProdPlanContent').html(response);
+                        if (IsProdPlanValid()) {
+                            //valid generated
+                            $('#prod-plan-save').removeAttr('disabled');
+                        } else {
+                            //invalid generated
+                            $('#prod-plan-save').attr('disabled', 'disabled');
+                        }
                     },
                     error: function(error) {
                         // Handle errors here
@@ -398,6 +436,30 @@
                 $('#Detail_GoodTypeDesc').val(goodTypeName);
             }
             
+        }
+        
+        function IsProdPlanValid() {
+
+            var datarows = GetTableData($('#prod-plan-table'));
+
+            for (var i = 0; i < datarows.length; i++) {
+                if (datarows[i][8].length > 0)
+                    return false;
+            }
+
+            return true;
+        }
+        
+        function IsProdConverterValid() {
+
+            var datarows = GetTableData($('#prod-conv-table'));
+
+            for (var i = 0; i < datarows.length; i++) {
+                if (datarows[i][7].length > 0)
+                    return false;
+            }
+
+            return true;
         }
 
     </script>

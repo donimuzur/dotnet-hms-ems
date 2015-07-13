@@ -7,7 +7,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1ItemViewModel : BaseModel
     {
-        
         public string SubmitType { get; set; }
 
         public Pbck1Item Detail { get; set; }
@@ -35,6 +34,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public Enums.DocumentStatusGov StatusGovList { get; set; }
         
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
+
+        public bool IsProdConvCanSave { get; set; }
 
     }
 }

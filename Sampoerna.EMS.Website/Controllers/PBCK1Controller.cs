@@ -305,6 +305,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
             var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
 
+            var inValidData = outputResult.Where(c => !c.IsValid).ToList();
+            model.IsProdConvCanSave = inValidData.Count <= 0;
+
             model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
 
             return PartialView("_ProdConvList", model);
@@ -314,7 +317,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
-            var model = new Pbck1ItemViewModel();
+            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item()};
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)

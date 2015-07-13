@@ -4,7 +4,6 @@
     {
         public long Pbck1ProdPlanId { get; set; }
         public long Pbck1Id { get; set; }
-        public int ProductId { get; set; }
         public string ProductCode { get; set; }
         public string ProdTypeName { get; set; }
         public string ProdTypeAlias { get; set; }

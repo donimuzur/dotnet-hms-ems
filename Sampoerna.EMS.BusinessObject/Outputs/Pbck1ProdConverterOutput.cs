@@ -8,7 +8,7 @@
         public string ProdTypeName { get; set; }
         public string ProdTypeAlias { get; set; }
         public string ConverterOutput { get; set; }
-        public int ConverterUomId { get; set; }
+        public string ConverterUomId { get; set; }
         public string ConverterUom { get; set; }
         public string Message { get; set; }
         public bool IsValid { get; set; }

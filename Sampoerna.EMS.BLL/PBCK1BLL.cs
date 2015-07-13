@@ -453,7 +453,7 @@ namespace Sampoerna.EMS.BLL
                 //UOM Validation
                 #region -------------- UOM Validation --------------------
 
-                int uomId;
+                string uomId;
                 if (!ValidateUom(output.ConverterUom, out messages, out uomId))
                 {
                     output.IsValid = false;
@@ -675,15 +675,19 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateUom(string uom, out List<string> message, out int uomId)
+        private bool ValidateUom(string uom, out List<string> message, out string uomId)
         {
             var valResult = false;
             var messageList = new List<string>();
-            uomId = 0;
-
+            uomId = string.Empty;
             if (!string.IsNullOrWhiteSpace(uom))
             {
-                valResult = true;
+                var uomData = _uomBll.GetById(uom);
+                if (uomData != null)
+                {
+                    uomId = uomData.UOM_ID;
+                    valResult = true;
+                }
             }
             else
             {
