@@ -3688,10 +3688,10 @@
             <PropertyRef Name="WORKFLOW_HISTORY_ID" />
           </Key>
           <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION" Type="Int32" Nullable="false" />
+          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
           <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
           <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3709,6 +3709,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="ActionType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ActionType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

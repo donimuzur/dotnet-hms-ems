@@ -91,5 +91,28 @@ namespace Sampoerna.EMS.Core
             PBKC3 = 4
         }
 
+        public enum ActionType
+        {
+            [Description("Save")]
+            Save = 1,
+            [Description("Submit")]
+            Submit = 2,
+            [Description("Approve")]
+            Approve = 3,
+            [Description("Reject")]
+            Reject = 4
+        }
+
+        /// <summary>
+        /// message popup type
+        /// </summary>
+        public enum MessageInfoType
+        {
+            Success,
+            Error,
+            Warning,
+            Info
+        }
+
     }
 }
