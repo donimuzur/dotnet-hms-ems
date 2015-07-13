@@ -49,13 +49,13 @@
     <script type="text/javascript">
 
         var supplierData;
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
 
-            $('#prod-conv-save').click(function () {
+            $('#prod-conv-save').click(function() {
                 var datarows = GetTableData($('#prod-conv-table'));
                 var columnLength = $('#Detail_Pbck1ProdConverter').find("thead tr:first th").length;
                 $('#Detail_Pbck1ProdConverter tbody').html('');
@@ -76,8 +76,8 @@
                 $('#home').addClass('active');
                 $('#upload').removeClass('active');
             });
-            
-            $('#prod-plan-save').click(function () {
+
+            $('#prod-plan-save').click(function() {
                 var datarows = GetTableData($('#prod-plan-table'));
                 var columnLength = $('#Detail_Pbck1ProdPlan').find("thead tr:first th").length;
                 $('#Detail_Pbck1ProdPlan tbody').html('');
@@ -101,7 +101,7 @@
                 $('#collapse5').addClass("in");
             });
 
-            $('#ProdConvSubmitBtn').click(function () {
+            $('#ProdConvSubmitBtn').click(function() {
                 var fileName = $('[name="ProdConvExcelfile"]').val().trim();
                 var pos = fileName.lastIndexOf('.');
                 var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -124,11 +124,11 @@
                     dataType: 'html',
                     processData: false, // Don't process the files
                     contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                    success: function (response) {
+                    success: function(response) {
                         $('#ProdConvContent').html("");
                         $('#ProdConvContent').html(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         // Handle errors here
                         console.log('ERRORS: ' + error);
                         // STOP LOADING SPINNER
@@ -136,7 +136,7 @@
                 });
                 return false;
             });
-            $('#ProdPlanSubmitBtn').click(function () {
+            $('#ProdPlanSubmitBtn').click(function() {
                 var fileName = $('[name="ProdPlanExcelfile"]').val().trim();
                 var pos = fileName.lastIndexOf('.');
                 var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -144,7 +144,7 @@
                     alert('Please browse a correct excel file to upload');
                     return false;
                 }
-                
+
                 var formData = new FormData();
                 var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
                 for (var i = 0; i < totalFiles; i++) {
@@ -160,11 +160,11 @@
                     dataType: 'html',
                     processData: false, // Don't process the files
                     contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                    success: function (response) {
+                    success: function(response) {
                         $('#ProdPlanContent').html("");
                         $('#ProdPlanContent').html(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         // Handle errors here
                         console.log('ERRORS: ' + error);
                         // STOP LOADING SPINNER
@@ -173,23 +173,23 @@
                 return false;
             });
 
-            $('#btn-prod-conv-upload').click(function () {
+            $('#btn-prod-conv-upload').click(function() {
                 $('#home-tab').removeClass('active');
                 $('#home').removeClass('active');
                 $('#prod-conv-upload-tab').addClass('active');
                 $('#upload').addClass('active');
             });
 
-            $('#btn-prod-plan-upload').click(function () {
+            $('#btn-prod-plan-upload').click(function() {
                 $('#home-tab').removeClass('active');
                 $('#home').removeClass('active');
                 $('#prod-plan-upload-tab').addClass('active');
                 $('#messages').addClass('active');
             });
-            
+
             $('#MenuPBCK1OpenListDocument').addClass('active');
-            
-            $("#Detail_Pbck1Type").change(function () {
+
+            $("#Detail_Pbck1Type").change(function() {
                 pbck1TypeOnchange();
             });
 
@@ -197,15 +197,19 @@
             nppbkcIdOnChange();
 
             ajaxLoadSupplierPlant();
-            
+
             pbck1TypeOnchange();
 
+            $('#Detail_GoodType').change(function() {
+                goodTypeOnChange();
+            });
+
         });
 
-        $('#Detail_NppbkcId').change(function () {
+        $('#Detail_NppbkcId').change(function() {
             nppbkcIdOnChange();
         });
-        
+
         function pbck1TypeOnchange() {
             if ($("#Detail_Pbck1Type").length) {
                 var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
@@ -224,7 +228,8 @@
                 if (nppbkcid != '') {
                     ajaxSelectNppbck({ nppbkcid: nppbkcid });
                 } else {
-                    $('#Detail_CompanyName').val('');
+                    $('#Detail_NppbkcCompanyName').val('');
+                    $('#Detail_NppbkcCompanyCode').val('');
                     $('#displayCompanyName').val('');
                     $('#Detail_PoaList').val('');
                     $('#displayPoaList').val('');
@@ -247,7 +252,7 @@
                 type: 'POST',
                 url: '@Url.Action("PoaListPartial", "pbck1")',
                 data: formData,
-                success: function (data) {
+                success: function(data) {
                     var list = data.SearchInput.PoaList;
                     if (list.length > 0) {
                         var poalist = '';
@@ -268,12 +273,14 @@
                     type: 'POST',
                     url: '@Url.Action("GetNppbkcDetail", "PBCK1")',
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         if (data != null) {
-                            $('#Detail_CompanyName').val(data.DocumentBukrstxt);
+                            $('#Detail_NppbkcCompanyName').val(data.DocumentBukrstxt);
+                            $('#Detail_NppbkcCompanyCode').val(data.DocumentBukrs);
                             $('#displayCompanyName').val(data.DocumentBukrstxt);
                         } else {
-                            $('#Detail_CompanyName').val('');
+                            $('#Detail_NppbkcCompanyName').val('');
+                            $('#Detail_NppbkcCompanyCode').val('');
                             $('#displayCompanyName').val('');
                         }
                     }
@@ -281,13 +288,14 @@
             }
         }
 
-        $("#Detail_SupplierPortId").change(function () {
+        $("#Detail_SupplierPortId").change(function() {
             supplierPortOnChange();
         });
 
         function supplierPortOnChange() {
             if ($("#Detail_SupplierPortId").length) {
                 var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if (port_id == '') {
@@ -296,6 +304,7 @@
                     disableSupplierFormInput(false);
                     setSupplierPlantEmpty();
                 } else {
+                    $('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();
                     disableSupplierFormInput(true);
                 }
@@ -303,8 +312,8 @@
         }
 
         function disableSupplierFormInput(isDisable) {
-            $('#Detail_SupplierNppbkc').prop('disabled', isDisable);
-            $('#Detail_SupplierKppbc').prop('disabled', isDisable);
+            $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
+            $('#Detail_SupplierKppbcId').prop('disabled', isDisable);
             $('#Detail_SupplierAddress').prop('disabled', isDisable);
         }
 
@@ -312,7 +321,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetSupplierPlant", "PBCK1")',
-                success: function (data) {
+                success: function(data) {
                     supplierData = data;
                     //load supplier plant
                     supplierPortOnChange();
@@ -341,13 +350,15 @@
                 type: 'POST',
                 data: formData,
                 url: '@Url.Action("GetSupplierPlantDetail", "PBCK1")',
-                success: function (data) {
+                success: function(data) {
 
                     if (data != null) {
                         //load to form
-                        $('#Detail_SupplierNppbkc').val(data.NPPBKC_NO);
-                        $('#Detail_HiddenSupplierKppbc').val(data.KPPBC_NO);
-                        $('#Detail_SupplierKppbc').val(data.KPPBC_NO);
+                        $('#Detail_SupplierPlantWerks').val(data.Werks);
+                        $('#Detail_SupplierNppbkcId').val(data.NPPBKC_ID);
+                        $('#Detail_HiddenSupplierNppbkcId').val(data.NPPBKC_ID);
+                        $('#Detail_HiddenSupplierKppbcId').val(data.KPPBC_NO);
+                        $('#Detail_SupplierKppbcId').val(data.KPPBC_NO);
                         $('#Detail_SupplierPhone').val('');
                         $('#Detail_SupplierAddress').val(data.Address);
                         $('#Detail_HiddendSupplierAddress').val(data.Address);
@@ -368,14 +379,25 @@
         }
 
         function setSupplierPlantEmpty() {
-            $('#Detail_SupplierNppbkc').val('');
-            $('#Detail_SupplierKppbc').val('');
+            $('#Detail_SupplierPortName').val('');
+            $('#Detail_SupplierNppbkcId').val('');
+            $('#Detail_SupplierKppbcId').val('');
             $('#Detail_SupplierPhone').val('');
             $('#Detail_SupplierAddress').val('');
             $('#Detail_HiddendSupplierAddress').val('');
-            $('#Detail_HiddenSupplierKppbc').val('');
+            $('#Detail_HiddenSupplierKppbcId').val('');
+            $('#Detail_HiddenSupplierNppbkcId').val('');
             $('#Detail_SupplierPlant').val('');
+            $('#Detail_SupplierPlantWerks').val('');
 
+        }
+
+        function goodTypeOnChange() {
+            if ($("#Detail_Pbck1Type").length) {
+                var goodTypeName = $("#Detail_GoodType").find("option:selected").text();
+                $('#Detail_GoodTypeDesc').val(goodTypeName);
+            }
+            
         }
 
     </script>

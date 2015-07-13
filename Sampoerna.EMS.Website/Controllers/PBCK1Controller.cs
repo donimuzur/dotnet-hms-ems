@@ -4,7 +4,6 @@ using System.Web;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -225,12 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             model = CleanSupplierInfo(model);
-
-            //if (model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && !model.Detail.Pbck1Reference.HasValue)
-            //{
-            //    ModelState.AddModelError("Detail.Pbck1Reference", "PBCK-1 Reference is required.");
-            //}
-
+            
             if (!ModelState.IsValid)
             {
                 return CreateInitial(model);
@@ -238,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //process save
             var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-            //dataToSave.CreatedById = CurrentUser.USER_ID;
+            dataToSave.CreatedById = CurrentUser.USER_ID;
 
             var input = new Pbck1SaveInput()
             {
@@ -251,7 +245,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (saveResult.Success)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit", new { id = saveResult.Id });
             }
 
             return CreateInitial(model);
@@ -380,14 +374,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Detail.SupplierKppbcId = model.Detail.HiddenSupplierKppbcId;
             }
-
             if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
                 !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
             {
                 model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
             }
-
-            if (string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId)
+            if (string.IsNullOrEmpty(model.Detail.SupplierNppbkcId)
                 && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId))
             {
                 model.Detail.SupplierNppbkcId = model.Detail.HiddenSupplierNppbkcId;
