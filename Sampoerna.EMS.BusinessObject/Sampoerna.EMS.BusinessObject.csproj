@@ -105,6 +105,9 @@
     <Compile Include="LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="MATERIAL_UOM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="MENGETAHUI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -176,6 +179,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WORKFLOW_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">

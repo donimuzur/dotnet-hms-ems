@@ -287,6 +287,7 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
@@ -736,9 +737,13 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
+    <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\WorkflowHistory\" />
     <Folder Include="Views\AspxReportViewer\" />
   </ItemGroup>
   <ItemGroup>

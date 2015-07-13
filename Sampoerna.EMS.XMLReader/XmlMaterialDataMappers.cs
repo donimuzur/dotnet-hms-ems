@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.XMLReader
 {
     public class XmlMaterialDataMapper : IXmlDataReader 
     {
-        private XmlDataMapper _xmlMapper = null;
+        /*private XmlDataMapper _xmlMapper = null;
 
         public XmlMaterialDataMapper(string fileName)
         {
@@ -76,22 +76,22 @@ namespace Sampoerna.EMS.XMLReader
                 return items;
             }
 
-        }
+        }*/
 
 
         public void InsertToDatabase()
         {
             
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
+           // _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
             
 
         }
-        public ZAIDM_EX_MATERIAL GetMaterial(string materialNumber)
-        {
-            var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL>()
-                .GetByID(materialNumber);
-            return existingData;
-        }
+        //public ZAIDM_EX_MATERIAL GetMaterial(string materialNumber)
+        //{
+        //    var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL>()
+        //        .GetByID(materialNumber);
+        //    return existingData;
+        //}
         
 
 

@@ -12,19 +12,17 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_PRODTYP
+    public partial class WORKFLOW_HISTORY
     {
-        public ZAIDM_EX_PRODTYP()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-        }
+        public long WORKFLOW_HISTORY_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.FormType FORM_TYPE_ID { get; set; }
+        public long FORM_ID { get; set; }
+        public string FORM_NUMBER { get; set; }
+        public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
+        public string ACTION_BY { get; set; }
+        public Nullable<System.DateTime> ACTION_DATE { get; set; }
+        public string COMMENT { get; set; }
     
-        public string PROD_CODE { get; set; }
-        public string PRODUCT_TYPE { get; set; }
-        public string PRODUCT_ALIAS { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

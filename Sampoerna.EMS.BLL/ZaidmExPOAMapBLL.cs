@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA_MAP> _repository;
-        private string includeTables = "ZAIDM_EX_POA";
+        private string includeTables = "POA";
 
         public ZaidmExPOAMapBLL(IUnitOfWork uow, ILogger logger)
         {

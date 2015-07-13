@@ -30,8 +30,8 @@ namespace Sampoerna.EMS.Core
             VirtualMappingPlant = 23,
             MaterialMaster = 24,
             MasterPlant = 25,
-            Uom = 26,
-            GoodsTypeGroup =27
+            Uom = 27,
+            GoodsTypeGroup =26
         }
         public enum PBCK1Type
         {
@@ -89,6 +89,29 @@ namespace Sampoerna.EMS.Core
             PBKC4 = 3,
             [Description("PBCK-3")]
             PBKC3 = 4
+        }
+
+        public enum ActionType
+        {
+            [Description("Save")]
+            Save = 1,
+            [Description("Submit")]
+            Submit = 2,
+            [Description("Approve")]
+            Approve = 3,
+            [Description("Reject")]
+            Reject = 4
+        }
+
+        /// <summary>
+        /// message popup type
+        /// </summary>
+        public enum MessageInfoType
+        {
+            Success,
+            Error,
+            Warning,
+            Info
         }
 
     }

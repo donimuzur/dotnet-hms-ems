@@ -21,7 +21,8 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_KPPBC");
                 var items = new List<ZAIDM_EX_KPPBC>();
 
                 foreach (var xElement in xmlItems)
@@ -29,15 +30,16 @@ namespace Sampoerna.EMS.XMLReader
                     var item = new ZAIDM_EX_KPPBC();
                     item.KPPBC_ID = xElement.Element("KPPBC_ID").Value;
                     item.KPPBC_TYPE = xElement.Element("KPPBC_TYPE").Value;
+                    item.MENGETAHUI = xElement.Element("MENGETAHUI").Value;
                     item.CK1_KEP_FOOTER = xElement.Element("CK1_KEP_FOOTER").Value;
                     item.CK1_KEP_HEADER = xElement.Element("CK1_KEP_HEADER").Value;
-                    item.MODIFIED_DATE = DateTime.Now;
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); ;
+                    //item.MODIFIED_DATE = DateTime.Now;
+                   // var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); ;
                     var existingKppbc = GetKPPBC(item.KPPBC_ID);
                     if (existingKppbc != null)
                     {
                         item.CREATED_DATE = existingKppbc.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                       
                     }

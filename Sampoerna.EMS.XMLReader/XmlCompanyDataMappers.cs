@@ -22,21 +22,22 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_COMPANY");
                 var items = new List<T001>();
                 foreach (var xElement in xmlItems)
                 {
                     var item = new T001();
                     var bukrs = xElement.Element("BUKRS").Value;
                     item.BUTXT = xElement.Element("BUTXT").Value;
-                    var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
+                    //var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
                     var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
                         .GetByID(bukrs);
                     item.BUKRS = bukrs;
                     if (exisitingCompany != null)
                     {
                         item.CREATED_DATE = exisitingCompany.CREATED_DATE;
-                        item.MODIFIED_DATE = companyDateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                         
                     }

@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.BLL
             _changeBLL = new ChangesHistoryBLL(uow, logger);
             
         }
-        public UOM GetById(int id)
+        public UOM GetById(string id)
         {
             return _repository.GetByID(id);
         }
@@ -84,7 +84,7 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.UOM_ID.ToString();
                             changes.NEW_VALUE = data.UOM_ID.ToString();
                             break;
-                        case "UOM_NAME":
+                        case "UOM_DESC":
                             changes.OLD_VALUE = origin.UOM_DESC;
                             changes.NEW_VALUE = data.UOM_DESC;
                             break;

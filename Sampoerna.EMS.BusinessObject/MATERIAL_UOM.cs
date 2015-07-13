@@ -12,19 +12,17 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class ZAIDM_EX_PRODTYP
+    public partial class MATERIAL_UOM
     {
-        public ZAIDM_EX_PRODTYP()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-        }
+        public int MATERIAL_UOM_ID { get; set; }
+        public string STICKER_CODE { get; set; }
+        public string WERKS { get; set; }
+        public string MEINH { get; set; }
+        public Nullable<decimal> UMREZ { get; set; }
+        public Nullable<decimal> UMREN { get; set; }
     
-        public string PROD_CODE { get; set; }
-        public string PRODUCT_TYPE { get; set; }
-        public string PRODUCT_ALIAS { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual MATERIAL_UOM MATERIAL_UOM1 { get; set; }
+        public virtual MATERIAL_UOM MATERIAL_UOM2 { get; set; }
+        public virtual ZAIDM_EX_MATERIAL ZAIDM_EX_MATERIAL { get; set; }
     }
 }

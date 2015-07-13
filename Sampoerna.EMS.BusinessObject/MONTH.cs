@@ -17,9 +17,9 @@ namespace Sampoerna.EMS.BusinessObject
         public MONTH()
         {
             this.DOC_NUMBER_SEQ = new HashSet<DOC_NUMBER_SEQ>();
+            this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
-            this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
         }
     
         public int MONTH_ID { get; set; }
@@ -27,8 +27,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string MONTH_NAME_ENG { get; set; }
     
         public virtual ICollection<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
+        public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
-        public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
     }
 }

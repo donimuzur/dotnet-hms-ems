@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Website.Models.UOM
 
     public class UomDetails
     {
-        public int UomId { get; set; }
+        public string UomId { get; set; }
        
         public string UomName { get; set; }
     }

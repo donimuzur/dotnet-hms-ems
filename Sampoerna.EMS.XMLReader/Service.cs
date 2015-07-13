@@ -25,27 +25,24 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            //if (xmlfile.Contains("COY"))
-            //{
-            //    return new XmlCompanyDataMapper(xmlfile);
-            //}
+            if (xmlfile.Contains("COY"))
+            {
+                return new XmlCompanyDataMapper(xmlfile);
+            }
             if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }
-            //else if (xmlfile.Contains("KPPBC"))
-            //{
-            //   return  new XmlKPPBCDataMapper(xmlfile);
-            //}
-            //else if (xmlfile.Contains("VENDOR"))
-            //{
-            //    return  new XmlVendorDataMapper(xmlfile);
-            //}
-             //if (xmlfile.Contains("UOM"))
-             //{
-             //    return new XmlUoMDataMapper(xmlfile);
-             //}
-             if (xmlfile.Contains("MARKET"))
+            else if (xmlfile.Contains("KPPBC"))
+            {
+                return new XmlKPPBCDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("VENDOR"))
+            {
+                return new XmlVendorDataMapper(xmlfile);
+            }
+           
+            else if (xmlfile.Contains("MARKET"))
             {
                 return  new XmlMarketDataMapper(xmlfile);
             }
@@ -61,18 +58,18 @@ namespace Sampoerna.EMS.XMLReader
              {
                  return new XmlSeriesDataMapper(xmlfile);
              }
-            //else if (xmlfile.Contains("PLANT-"))
-            //{
-            //    return new XmlPlantDataMapper(xmlfile);
-            //}
+            else if (xmlfile.Contains("PLANT-"))
+            {
+                return new XmlPlantDataMapper(xmlfile);
+            }
              else if (xmlfile.Contains("GOODTYP"))
              {
                  return new XmlGoodsTypeDataMapper(xmlfile);
              }
-            //else if (xmlfile.Contains("BRANDREG"))
-            //{
-            //    return  new XmlBrandDataMapper(xmlfile);
-            //}
+            else if (xmlfile.Contains("BRANDREG"))
+            {
+                return new XmlBrandDataMapper(xmlfile);
+            }
             //else if (xmlfile.Contains("MATERIAL"))
             //{
             //    return new XmlMaterialDataMapper(xmlfile);

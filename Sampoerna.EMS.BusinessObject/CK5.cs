@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> PBCK1_DECREE_ID { get; set; }
         public Nullable<int> CARRIAGE_METHOD_ID { get; set; }
         public Nullable<decimal> GRAND_TOTAL_EX { get; set; }
-        public Nullable<int> PACKAGE_UOM_ID { get; set; }
+        public string PACKAGE_UOM_ID { get; set; }
         public Nullable<int> DEST_COUNTRY_ID { get; set; }
         public string HARBOUR { get; set; }
         public string OFFICE_HARBOUR { get; set; }
@@ -64,11 +64,11 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
     }
 }
