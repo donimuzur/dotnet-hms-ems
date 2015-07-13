@@ -90,7 +90,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.NppbkcNo, new { @class = "form-control", @disabled="disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.NppbkcId, new { @class = "form-control", @disabled="disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -106,7 +106,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.CompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
+                                            @Html.TextBoxFor(model => model.Detail.NppbkcCompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier NPPBKC</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkc, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier KPPBC</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbc, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>

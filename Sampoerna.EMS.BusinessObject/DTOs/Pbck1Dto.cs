@@ -20,9 +20,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string GoodTypeDesc { get; set; }
         public string SupplierPlant { get; set; }
         public int? SupplierPortId { get; set; }
-        //public string SupplierPortName { get; set; }
+        public string SupplierPortName { get; set; }
         public string SupplierAddress { get; set; }
         public string SupplierPhone { get; set; }
+        public string SupplierNppbkcId { get; set; }
+        public string SupplierKppbcId { get; set; }
+        public string SupplierPlantWerks { get; set; }
         public DateTime? PlanProdFrom { get; set; }
         public DateTime? PlanProdTo { get; set; }
         public decimal? RequestQty { get; set; }

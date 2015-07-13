@@ -375,10 +375,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1ItemViewModel CleanSupplierInfo(Pbck1ItemViewModel model)
         {
-            if (string.IsNullOrEmpty(model.Detail.SupplierKppbc)
-                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierKppbc))
+            if (string.IsNullOrEmpty(model.Detail.SupplierKppbcId)
+                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierKppbcId))
             {
-                model.Detail.SupplierKppbc = model.Detail.HiddenSupplierKppbc;
+                model.Detail.SupplierKppbcId = model.Detail.HiddenSupplierKppbcId;
             }
 
             if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
@@ -387,10 +387,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
             }
 
-            if (string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkc)
-                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkc))
+            if (string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId)
+                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId))
             {
-                model.Detail.SupplierNppbkc = model.Detail.HiddenSupplierNppbkc;
+                model.Detail.SupplierNppbkcId = model.Detail.HiddenSupplierNppbkcId;
             }
             return model;
         }

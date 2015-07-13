@@ -61,15 +61,17 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [Required, Display(Name = "Supplier Plant")]
         public string SupplierPlant { get; set; }
+
+        public string SupplierPlantWerks { get; set; }
         
         [Display(Name = "Supplier Port")]
         public int? SupplierPortId { get; set; }
 
-        public string SupplierNppbkc { get; set; }
+        public string SupplierNppbkcId { get; set; }
 
-        public string HiddenSupplierNppbkc { get; set; }
+        public string HiddenSupplierNppbkcId { get; set; }
 
-        //public string SupplierPortName { get; set; }
+        public string SupplierPortName { get; set; }
 
         [Display(Name = "Supplier Address")]
         public string SupplierAddress { get; set; }
@@ -79,9 +81,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [Display(Name = "Supplier Phone")]
         public string SupplierPhone { get; set; }
 
-        public string SupplierKppbc { get; set; }
+        public string SupplierKppbcId { get; set; }
 
-        public string HiddenSupplierKppbc { get; set; }
+        public string HiddenSupplierKppbcId { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
         [UIHint("FormatDateTime")]
@@ -96,7 +98,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public decimal RequestQty { get; set; }
 
         [Required]
-        public int RequestQtyUomId { get; set; }
+        public string RequestQtyUomId { get; set; }
 
         public string RequestQtyUomName { get; set; }
 
@@ -146,7 +148,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public decimal LatestSaldo { get; set; }
 
-        public int LatestSaldoUomId { get; set; }
+        public string LatestSaldoUomId { get; set; }
 
         public string LatestSaldoUomName { get; set; }
 
