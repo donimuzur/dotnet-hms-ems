@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public int UomId { get; set; }
+        public string UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]

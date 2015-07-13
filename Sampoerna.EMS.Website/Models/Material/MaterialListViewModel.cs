@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
 
-        public int BaseUom { get; set; }
+        public string BaseUom { get; set; }
 
         public string UomName { get; set; }
 

@@ -5,6 +5,7 @@
 }
 
 @section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
 
@@ -58,7 +59,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>UOM</h3>
+            <h3 class="desc">UOM<span>Out Of Measurement </span></h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "Uom")"><button class="btn btn-blue">NEW</button></a>
                 <a data-toggle="modal" data-target=".menu-maping-type">
@@ -77,7 +78,7 @@
                     <thead>
                         <tr>
                             <th class="toggle-row">Filter</th>
-                            <th>Uom ID</th>
+                            <th>Uom Code</th>
                             <th>Uom Description</th>
 
                         </tr>
@@ -99,8 +100,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "Uom", new { id = item.UomId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "Uom", new { id = item.UomId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "Uom", new { id = item.UomId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Uom", new { id = item.UomId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td class="last">@Html.DisplayFor(model => item.UomId)</td>
                                 <td>@Html.DisplayFor(model => item.UomName)</td>
