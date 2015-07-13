@@ -14,13 +14,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? PeriodTo { get; set; }
         public DateTime? ReportedOn { get; set; }
         public string NppbkcId { get; set; }
-        public string CompanyCode { get; set; }
-        public string CompanyName { get; set; }
-        public string GoodTypeId { get; set; }
+        public string NppbkcCompanyCode { get; set; }
+        public string NppbkcCompanyName { get; set; }
+        public string GoodType { get; set; }
         public string GoodTypeDesc { get; set; }
         public string SupplierPlant { get; set; }
         public int? SupplierPortId { get; set; }
-        public string SupplierPortName { get; set; }
+        //public string SupplierPortName { get; set; }
         public string SupplierAddress { get; set; }
         public string SupplierPhone { get; set; }
         public DateTime? PlanProdFrom { get; set; }
@@ -38,8 +38,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.DocumentStatusGov StatusGov { get; set; }
         public decimal? QtyApproved { get; set; }
         public DateTime? DecreeDate { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public int? CreatedById { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string CreatedById { get; set; }
         public string CreatedUsername { get; set; }
         public string ApprovedById { get; set; }
         public string ApprovedUsername { get; set; }

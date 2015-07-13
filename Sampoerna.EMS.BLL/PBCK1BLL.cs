@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfMeasurementBLL _uomBll;
         private IMonthBLL _monthBll;
 
-        private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER, ZAIDM_EX_NPPBKC.T1001";
+        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -108,7 +108,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck1Dto GetById(long id)
         {
-            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.ZAIDM_EX_PRODTYP, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_CONVERTER.UOM, PBCK1_PROD_CONVERTER.ZAIDM_EX_PRODTYP";
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_CONVERTER.UOM";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
             var mapResult = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData != null)
@@ -222,7 +222,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PERIOD_TO", origin.PeriodTo.HasValue ? origin.PeriodTo.Equals(data.PeriodTo) : false);
             changesData.Add("REPORTED_ON", origin.ReportedOn.HasValue ? origin.ReportedOn.Equals(data.ReportedOn) : false);
             changesData.Add("NPPBKC_ID", origin.NppbkcId.Equals(data.NppbkcId));
-            //changesData.Add("GOODTYPE_ID", origin.GoodTypeId.HasValue ? origin.GoodTypeId.Equals(data.GoodTypeId) : false);
+            changesData.Add("EXC_GOOD_TYP", !string.IsNullOrEmpty(origin.GoodType) ? origin.GoodType.Equals(data.GoodType) : false);
             changesData.Add("SUPPLIER_PLANT", !string.IsNullOrEmpty(origin.SupplierPlant) ? origin.SupplierPlant.Equals(data.SupplierPlant) : (!string.IsNullOrEmpty(data.SupplierPlant) ? false : true));
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId.HasValue ? origin.SupplierPortId.Equals(data.SupplierPortId) : (data.SupplierPortId.HasValue ? false : true));
             changesData.Add("SUPPLIER_ADDRESS", !string.IsNullOrEmpty(origin.SupplierAddress) ? origin.SupplierAddress.Equals(data.SupplierAddress) : (!string.IsNullOrEmpty(data.SupplierAddress) ? false : true));
@@ -230,7 +230,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Equals(data.PlanProdFrom) : false);
             changesData.Add("PLAN_PROD_TO", origin.PlanProdTo.HasValue ? origin.PlanProdTo.Equals(data.PlanProdTo) : false);
             changesData.Add("REQUEST_QTY", origin.RequestQty.HasValue ? origin.RequestQty.Equals(data.RequestQty) : false);
-            //changesData.Add("REQUEST_QTY_UOM", origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomId.Equals(data.RequestQtyUomId) : false);
+            changesData.Add("REQUEST_QTY_UOM", !string.IsNullOrEmpty(origin.RequestQtyUomId) ? origin.RequestQtyUomId.Equals(data.RequestQtyUomId) : false);
             changesData.Add("LACK1_FROM_MONTH", origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthId.Equals(data.Lack1FromMonthId) : false);
             changesData.Add("LACK1_FROM_YEAR", origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Equals(data.Lack1FormYear) : false);
             changesData.Add("LACK1_TO_MONTH", origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthId.Equals(data.Lack1ToMonthId) : false);
@@ -240,7 +240,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("QTY_APPROVED", origin.QtyApproved.HasValue ? origin.QtyApproved.Equals(data.QtyApproved) : false);
             changesData.Add("DECREE_DATE", origin.DecreeDate.HasValue ? origin.DecreeDate.Equals(data.DecreeDate) : false);
             changesData.Add("LATEST_SALDO", origin.LatestSaldo.HasValue ? origin.LatestSaldo.Equals(data.LatestSaldo) : false);
-            //changesData.Add("LATEST_SALDO_UOM", origin.LatestSaldoUomId.HasValue ? origin.LatestSaldoUomId.Equals(data.LatestSaldoUomId) : false);
+            changesData.Add("LATEST_SALDO_UOM", !string.IsNullOrEmpty(origin.LatestSaldoUomId) ? origin.LatestSaldoUomId.Equals(data.LatestSaldoUomId) : false);
 
             foreach (var listChange in changesData)
             {
@@ -300,10 +300,10 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.SupplierPlant;
                             changes.NEW_VALUE = data.SupplierPlant;
                             break;
-                        case "SUPPLIER_PORT_ID":
-                            changes.OLD_VALUE = origin.SupplierPortName;
-                            changes.NEW_VALUE = data.SupplierPortName;
-                            break;
+                        //case "SUPPLIER_PORT_ID":
+                        //    changes.OLD_VALUE = origin.SupplierPortName;
+                        //    changes.NEW_VALUE = data.SupplierPortName;
+                        //    break;
                         case "SUPPLIER_ADDRESS":
                             changes.OLD_VALUE = origin.SupplierAddress;
                             changes.NEW_VALUE = data.SupplierAddress;

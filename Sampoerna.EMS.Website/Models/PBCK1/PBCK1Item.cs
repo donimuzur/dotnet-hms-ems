@@ -48,17 +48,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public DateTime ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
 
-        public string CompanyName { get; set; }
+        public string NppbkcCompanyCode { get; set; }
+        public string NppbkcCompanyName { get; set; }
         
         public string PoaList { get; set; }
 
-        public string NppbkcNo { get; set; }
-
         [Required, Display(Name = "Exciseable Goods Description")]
-        public int GoodTypeId { get; set; }
-
+        public string GoodType { get; set; }
         public string GoodTypeDesc { get; set; }
 
         [Required, Display(Name = "Supplier Plant")]
@@ -71,7 +69,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string HiddenSupplierNppbkc { get; set; }
 
-        public string SupplierPortName { get; set; }
+        //public string SupplierPortName { get; set; }
 
         [Display(Name = "Supplier Address")]
         public string SupplierAddress { get; set; }
