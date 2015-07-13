@@ -7,10 +7,10 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public class CK5SaveOutput : BLLBaseOutput
-    {
-        public long Id { get; set; }
-    }
+    //public class CK5SaveOutput : BLLBaseOutput
+    //{
+    //    public long Id { get; set; }
+    //}
 
     public class CK5DetailsOutput : BLLBaseOutput
     {

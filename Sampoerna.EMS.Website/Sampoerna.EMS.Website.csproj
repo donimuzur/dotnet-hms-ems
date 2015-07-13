@@ -80,6 +80,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SimpleInjector.Integration.Web.Mvc.2.6.1\lib\net40\SimpleInjector.Integration.Web.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="SpreadsheetLight">
+      <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
@@ -408,6 +411,7 @@
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
     <Content Include="Content\css\main.min.css.map" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
@@ -747,6 +751,7 @@
     <Content Include="Views\CK5\Details.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

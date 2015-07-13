@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 <div role="tabpanel" class="tab-pane" id="changes">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -19,7 +20,7 @@
                                     <div class="row">
                                         <label class="col-md-5">CK-5 No</label>
                                         <div class="col-md-7">
-                                           @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
+                                            @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
                                         </div>
                                     </div>
                                 </div>
@@ -27,8 +28,8 @@
                                     <div class="row">
                                         <label class="col-md-3">Date</label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" placeholder="">
-                                            
+                                            <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy")" disabled />
+
                                         </div>
                                     </div>
                                 </div>
@@ -36,15 +37,18 @@
                                     <div class="row">
                                         <label class="col-md-3">User</label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" placeholder="">
+                                            <input type="text" class="form-control" value="@Html.UserName()" disabled />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="row">
-                                        @*<div class="col-md-12">
-                                                <button class="btn btn-blue full">Export to xls</button>
-                                            </div>*@
+                                        <div class="col-md-12">
+                                            <a href="@Url.Action("ExportClientsListToExcel", "CK5", new { @ck5Id = @Model.Ck5Id })">
+                                                <input type="button" class="btn btn-blue full" value="Export to xls"/>
+                                            </a>
+                                            @*<input type="button" class="btn btn-blue full" value="Export to xls" />*@
+                                        </div>
                                     </div>
                                 </div>
                             </div>

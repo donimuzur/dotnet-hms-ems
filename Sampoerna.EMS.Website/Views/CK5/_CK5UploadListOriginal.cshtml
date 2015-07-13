@@ -1,0 +1,58 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+
+    <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
+        <thead>
+            <tr>
+                <th>Brand</th>
+                <th>QTY</th>
+                <th>UOM</th>
+                <th>Convertion</th>
+                <th>Description</th>
+                <th>Converted QTY</th>
+                <th>Converted UOM</th>
+                <th>HJE</th>
+                <th>Tariff</th>
+                <th>Excise Value</th>
+                <th>USD Value</th>
+                <th>Note</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (int i = 0; i < Model.UploadItemModels.Count(); i++)
+            {
+                @Html.HiddenFor(model => model.UploadItemModels[i].Brand)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Qty)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Uom)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Convertion)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Description)
+                @Html.HiddenFor(model => model.UploadItemModels[i].ConvertedQty)
+                @Html.HiddenFor(model => model.UploadItemModels[i].ConvertedUom)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Hje)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Tariff)
+                @Html.HiddenFor(model => model.UploadItemModels[i].ExciseValue)
+                @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
+                @Html.HiddenFor(model => model.UploadItemModels[i].Note)
+                <tr>
+                    @*<td style="display: none"></td>*@
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Qty)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Uom)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Convertion)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Description)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedQty)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedUom)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Hje)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Tariff)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
+                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
+                    <td style="display: none">@Html.DisplayFor(model => model.UploadItemModels[i].Total)</td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>

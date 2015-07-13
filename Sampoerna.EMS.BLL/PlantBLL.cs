@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<T1001W>();
             _plantReceiveMaterialRepository = _uow.GetGenericRepository<PLANT_RECEIVE_MATERIAL>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
-            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger, _changesHistoryBll);
+            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
         }
 
         public Plant GetId(long id)
@@ -140,6 +140,12 @@ namespace Sampoerna.EMS.BLL
         {
             var dbPlant = _repository.GetByID(id);
             return dbPlant == null ? string.Empty : dbPlant.WERKS;
+        }
+
+        public string GetPlantNameById(long id)
+        {
+            var dbPlant = _repository.GetByID(id);
+            return dbPlant == null ? string.Empty : dbPlant.NAME1;
         }
     }
 }

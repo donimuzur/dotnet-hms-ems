@@ -11,5 +11,7 @@ namespace Sampoerna.EMS.Contract
         void save(Plant plantT1001W,int userid);
 
         string GetPlantWerksById(long id);
+
+        string GetPlantNameById(long id);
     }
 }

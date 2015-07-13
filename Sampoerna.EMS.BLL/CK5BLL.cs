@@ -28,6 +28,10 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfMeasurementBLL _uomBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IZaidmExNPPBKCBLL _nppbkcBll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
+        private IPlantBLL _plantBll;
+        private IPBCK1BLL _pbck1Bll;
 
         private string includeTables = "CK5_MATERIAL, ZAIDM_EX_NPPBKC.T1001,ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC, ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,T1001W, T1001W1, PBCK1,CARRIAGE_METHOD,COUNTRY, UOM, USER, CK5_MATERIAL";
 
@@ -45,7 +49,10 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(_uow,_logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
-
+            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _goodTypeBll = new ZaidmExGoodTypeBLL(_uow,_logger);
+            _plantBll = new PlantBLL(_uow, _logger);
+            _pbck1Bll = new PBCK1BLL(_uow,_logger);
         }
 
         public CK5Dto GetById(long id)
@@ -160,21 +167,16 @@ namespace Sampoerna.EMS.BLL
             
         }
 
-        public CK5SaveOutput SaveCk5(CK5SaveInput input)
+        public CK5Dto SaveCk5(CK5SaveInput input)
         {
-            var output = new CK5SaveOutput();
             CK5 dbData = null;
             if (input.Ck5Dto.CK5_ID > 0)
             {
                  //update
                 dbData = _repository.Get(c => c.CK5_ID == input.Ck5Dto.CK5_ID, null, includeTables).FirstOrDefault();
                 if (dbData == null)
-                {
-                    output.Success = false;
-                    output.ErrorCode = ExceptionCodes.BLLExceptions.DataNotFound.ToString();
-                    output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.DataNotFound);
-                    return output;
-                }
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                
 
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
@@ -204,7 +206,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.PACKAGE_UOM_ID = input.Ck5Dto.PACKAGE_UOM_ID;
 
                 //delete child first
-                foreach (var ck5Material in dbData.CK5_MATERIAL)
+                foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
                 {
                     _repositoryCK5Material.Delete(ck5Material);
                 }
@@ -277,54 +279,13 @@ namespace Sampoerna.EMS.BLL
             //workflowhistory
             AddWorkflowHistory(dbData.CK5_ID, input.WorkflowActionType, input.UserId, input.Ck5Dto.SUBMISSION_NUMBER);
 
-          
 
-            try
-            {
-                _uow.SaveChanges();
-                output.Success = true;
-                output.Id = dbData.CK5_ID;
+            _uow.SaveChanges();
 
+            return Mapper.Map<CK5Dto>(dbData);
+           
 
-                ////set workflow history
-                //AddWorkflowHistory(output.Id, input.WorkflowActionType, input.UserId, input.Ck5Dto.SUBMISSION_NUMBER);
-
-                //_uow.SaveChanges();
-
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(exception);
-                output.Success = false;
-                output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-            }
-            return output;
-
-            //if (ck5.CK5_ID <= 0)
-            //{
-            //    //insert
-            //    long plantId = 0;
-            //    if (ck5.SOURCE_PLANT_ID.HasValue)
-            //        plantId = ck5.SOURCE_PLANT_ID.Value;
-
-            //    var plant = _masterDataBll.GetPlantById(plantId);
-            //    long nppbkc = 0;
-            //    if (plant.NPPBCK_ID.HasValue)
-            //        nppbkc = plant.NPPBCK_ID.Value;
-
-            //    var input = new GenerateDocNumberInput()
-            //    {
-            //        Year = DateTime.Now.Year,
-            //        Month = DateTime.Now.Month,
-            //        NppbkcId = nppbkc
-            //    };
-            //    ck5.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(input);
-            //    //ck5.CREATED_DATE = DateTime.Now;
-            //}
-          
-            //_repository.InsertOrUpdate(ck5);
-            //_uow.SaveChanges();
+           
         }
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs)
@@ -438,8 +399,12 @@ namespace Sampoerna.EMS.BLL
                 switch (listChange.Key)
                 {
                     case "KPPBC_CITY":
+                        long city = 0;
+                        if (data.KPPBC_CITY.HasValue)
+                            city = data.KPPBC_CITY.Value;
+
                         changes.OLD_VALUE = origin.KppbcCityName;
-                        changes.NEW_VALUE = data.KppbcCityName;
+                        changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(city);
                         break;
                     case "REGISTRATION_NUMBER":
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
@@ -447,27 +412,35 @@ namespace Sampoerna.EMS.BLL
                         break;
                     case "EX_GOODS_TYPE_ID":
                         changes.OLD_VALUE = origin.GoodTypeDesc;
-                        changes.NEW_VALUE = data.GoodTypeDesc;
+                        changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(data.EX_GOODS_TYPE_ID);
                         break;
                     case "EX_SETTLEMENT_ID":
                         changes.OLD_VALUE = origin.ExSettlementName;
-                        changes.NEW_VALUE = data.ExSettlementName;
+                        changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_SETTLEMENT_ID);
                         break;
                     case "EX_STATUS_ID":
                         changes.OLD_VALUE = origin.ExStatusName;
-                        changes.NEW_VALUE = data.ExStatusName;
+                        changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_STATUS_ID);
                         break;
                     case "REQUEST_TYPE_ID":
                         changes.OLD_VALUE = origin.RequestTypeName;
-                        changes.NEW_VALUE = data.RequestTypeName;
+                        changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(data.REQUEST_TYPE_ID);
                         break;
                     case "SOURCE_PLANT_ID":
+                        long sourcePlant = 0;
+                        if (data.SOURCE_PLANT_ID.HasValue)
+                            sourcePlant = data.SOURCE_PLANT_ID.Value;
+
                         changes.OLD_VALUE = origin.SourcePlantName;
-                        changes.NEW_VALUE = data.SourcePlantName;
+                        changes.NEW_VALUE = _plantBll.GetPlantNameById(sourcePlant);
                         break;
                     case "DEST_PLANT_ID":
+                        long destPlant = 0;
+                        if (data.DEST_PLANT_ID.HasValue)
+                            destPlant = data.DEST_PLANT_ID.Value;
+
                         changes.OLD_VALUE = origin.DestPlantName;
-                        changes.NEW_VALUE = data.DestPlantName;
+                        changes.NEW_VALUE = _plantBll.GetPlantNameById(destPlant);
                         break;
                     case "INVOICE_NUMBER":
                         changes.OLD_VALUE = origin.INVOICE_NUMBER;
@@ -478,13 +451,17 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.INVOICE_DATE != null ? data.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         break;
                     case "PBCK1_DECREE_ID":
+                        long pbck1 = 0;
+                        if (data.PBCK1_DECREE_ID.HasValue)
+                            pbck1 = data.PBCK1_DECREE_ID.Value;
+
                         changes.OLD_VALUE = origin.PbckNumber;
-                        changes.NEW_VALUE = data.PbckNumber;
+                        changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(pbck1);
                         break;
 
                     case "CARRIAGE_METHOD_ID":
                         changes.OLD_VALUE = origin.CarriageMethodName;
-                        changes.NEW_VALUE = data.CarriageMethodName;
+                        changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(data.CARRIAGE_METHOD_ID);
                         break;
 
                     case "GRAND_TOTAL_EX":
@@ -494,7 +471,7 @@ namespace Sampoerna.EMS.BLL
 
                     case "PACKAGE_UOM_ID":
                         changes.OLD_VALUE = origin.PackageUomName;
-                        changes.NEW_VALUE = data.PackageUomName;
+                        changes.NEW_VALUE = _uomBll.GetUomNameById(data.PACKAGE_UOM_ID);
                         break;
 
 
@@ -526,7 +503,7 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll.Save(dbData);
         }
 
-        public CK5DetailsOutput GetDetailsCk5(long id)
+        public CK5DetailsOutput GetDetailsCK5(long id)
         {
             var output = new CK5DetailsOutput();
 
@@ -549,5 +526,14 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
+        public List<CK5MaterialDto> GetCK5MaterialByCK5Id(long id)
+        {
+            var result = _repositoryCK5Material.Get(c => c.CK5_ID == id);
+
+            if (result == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<List<CK5MaterialDto>>(result);
+        }
     }
 }

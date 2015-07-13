@@ -22,12 +22,14 @@ namespace Sampoerna.EMS.Contract
 
        List<CK5Dto> GetCK5ByParam(CK5GetByParamInput input);
 
-       CK5SaveOutput SaveCk5(CK5SaveInput input);
+       CK5Dto SaveCk5(CK5SaveInput input);
 
        List<CK5> GetCK5ByType(Enums.CK5Type ck5Type);
 
        List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs);
 
-       CK5DetailsOutput GetDetailsCk5(long id);
+       CK5DetailsOutput GetDetailsCK5(long id);
+
+       List<CK5MaterialDto> GetCK5MaterialByCK5Id(long id);
    }
 }
