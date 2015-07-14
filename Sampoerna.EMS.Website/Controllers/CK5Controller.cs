@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Management;
 using System.Web.Mvc;
 using System.Web.UI;
 using AutoMapper;
-using Sampoerna.EMS.BusinessObject;
+using NLog.LayoutRenderers;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -17,7 +17,6 @@ using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
-using Sampoerna.EMS.BusinessObject.Outputs;
 using SpreadsheetLight;
 
 
@@ -31,14 +30,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
-        private IZaidmExGoodTypeBLL _goodTypeBll;
-        private IPlantBLL _plantBll;
-        private IUnitOfMeasurementBLL _uomBll;
-
+        private IWorkflowBLL _workflowBll;
         public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
             IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
-            IChangesHistoryBLL changesHistoryBll, IZaidmExGoodTypeBLL goodTypeBll,
-            IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll)
+            IChangesHistoryBLL changesHistoryBll, IWorkflowBLL workflowBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -47,9 +42,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll = pbckBll;
             _workflowHistoryBll = workflowHistoryBll;
             _changesHistoryBll = changesHistoryBll;
-            _goodTypeBll = goodTypeBll;
-            _plantBll = plantBll;
-            _uomBll = uomBll;
+            _workflowBll = workflowBll;
         }
 
         #region View Documents
@@ -421,10 +414,14 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
-                
+
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
                 model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
+
+                //validate
+                if (!_workflowBll.CanEditDocument(model.DocumentStatus))
+                    RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
 
                 model = InitEdit(model);
                
@@ -451,9 +448,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
-                        SaveCk5ToDatabase(model);
+                        //validate
+                        if (_workflowBll.CanEditDocument(model.DocumentStatus))
+                        {
 
-                        AddMessageInfo("Success", Enums.MessageInfoType.Success);
+                            SaveCk5ToDatabase(model);
+
+                            AddMessageInfo("Success", Enums.MessageInfoType.Success);
+                        }
+                        else 
+                            AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
 
                     }
                     else
@@ -658,6 +662,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             Response.End();
 
+        }
+
+        public ActionResult SubmitDocuments(long id)
+        {
+            try
+            {
+                _ck5Bll.SubmitDocument(id);
+               return RedirectToAction("Details", "CK5", new {id});
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Edit", "CK5", new { id });
         }
     }
 }

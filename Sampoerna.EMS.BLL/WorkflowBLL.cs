@@ -1,5 +1,6 @@
 ﻿using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -13,6 +14,10 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
         }
-        
+
+        public bool CanEditDocument(Enums.DocumentStatus status)
+        {
+            return status == Enums.DocumentStatus.Draft;
+        }
     }
 }

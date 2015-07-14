@@ -178,6 +178,7 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
                 
 
+                
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
                 
@@ -534,6 +535,22 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             return Mapper.Map<List<CK5MaterialDto>>(result);
+        }
+
+        public void SubmitDocument(long id)
+        {
+            var dbData = _repository.GetByID(id);
+
+            if (dbData == null)
+                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApproval;
+
+            _uow.SaveChanges();
+            
         }
     }
 }

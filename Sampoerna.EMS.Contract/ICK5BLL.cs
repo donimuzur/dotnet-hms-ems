@@ -31,5 +31,7 @@ namespace Sampoerna.EMS.Contract
        CK5DetailsOutput GetDetailsCK5(long id);
 
        List<CK5MaterialDto> GetCK5MaterialByCK5Id(long id);
+
+       void SubmitDocument(long id);
    }
 }
