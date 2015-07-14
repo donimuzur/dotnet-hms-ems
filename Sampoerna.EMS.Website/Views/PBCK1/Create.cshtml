@@ -89,6 +89,8 @@
                 $('#home-tab').addClass('active');
                 $('#home').addClass('active');
                 $('#upload').removeClass('active');
+                $('#collapse6').addClass("in");
+                
             });
 
             $('#prod-plan-save').click(function() {
@@ -443,7 +445,7 @@
             var datarows = GetTableData($('#prod-plan-table'));
 
             for (var i = 0; i < datarows.length; i++) {
-                if (datarows[i][8].length > 0)
+                if (datarows[i][7].length > 0)
                     return false;
             }
 
@@ -455,7 +457,7 @@
             var datarows = GetTableData($('#prod-conv-table'));
 
             for (var i = 0; i < datarows.length; i++) {
-                if (datarows[i][7].length > 0)
+                if (datarows[i][6].length > 0)
                     return false;
             }
 

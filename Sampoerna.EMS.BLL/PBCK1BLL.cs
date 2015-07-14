@@ -157,29 +157,19 @@ namespace Sampoerna.EMS.BLL
 
             var output = new SavePbck1Output();
 
-            try
+            _uow.SaveChanges();
+            output.Success = true;
+            if (dbData != null)
             {
-                _uow.SaveChanges();
-                output.Success = true;
-                if (dbData != null)
-                {
-                    output.Id = dbData.PBCK1_ID;
-                    output.Pbck1Number = dbData.NUMBER;
-                }
-
-                //set workflow history
-                AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
-
-                _uow.SaveChanges();
-
+                output.Id = dbData.PBCK1_ID;
+                output.Pbck1Number = dbData.NUMBER;
             }
-            catch (Exception exception)
-            {
-                _logger.Error(exception);
-                output.Success = false;
-                output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-            }
+
+            //set workflow history
+            AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
+
+            _uow.SaveChanges();
+
             return output;
 
         }
@@ -300,10 +290,10 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.SupplierPlant;
                             changes.NEW_VALUE = data.SupplierPlant;
                             break;
-                        //case "SUPPLIER_PORT_ID":
-                        //    changes.OLD_VALUE = origin.SupplierPortName;
-                        //    changes.NEW_VALUE = data.SupplierPortName;
-                        //    break;
+                        case "SUPPLIER_PORT_ID":
+                            changes.OLD_VALUE = origin.SupplierPortName;
+                            changes.NEW_VALUE = data.SupplierPortName;
+                            break;
                         case "SUPPLIER_ADDRESS":
                             changes.OLD_VALUE = origin.SupplierAddress;
                             changes.NEW_VALUE = data.SupplierAddress;
@@ -324,10 +314,10 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.RequestQty.HasValue ? origin.RequestQty.Value.ToString("N0") : "NULL";
                             changes.NEW_VALUE = data.RequestQty.HasValue ? data.RequestQty.Value.ToString("N0") : "NULL";
                             break;
-                        //case "REQUEST_QTY_UOM":
-                        //    changes.OLD_VALUE = origin.RequestQtyUomId.HasValue ? origin.RequestQtyUomName : "NULL";
-                        //    changes.NEW_VALUE = data.RequestQtyUomName;
-                        //    break;
+                        case "REQUEST_QTY_UOM":
+                            changes.OLD_VALUE = !string.IsNullOrEmpty(origin.RequestQtyUomId) ? origin.RequestQtyUomName : "NULL";
+                            changes.NEW_VALUE = data.RequestQtyUomName;
+                            break;
                         case "LACK1_FROM_MONTH":
                             changes.OLD_VALUE = origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthName : "NULL";
                             changes.NEW_VALUE = data.Lack1FromMonthName;
@@ -374,12 +364,12 @@ namespace Sampoerna.EMS.BLL
                                 ? data.LatestSaldo.Value.ToString("N0")
                                 : "NULL";
                             break;
-                        //case "LATEST_SALDO_UOM":
-                        //    changes.OLD_VALUE = origin.LatestSaldoUomId.HasValue
-                        //        ? origin.LatestSaldoUomName
-                        //        : "NULL";
-                        //    changes.NEW_VALUE = data.LatestSaldoUomName;
-                        //    break;
+                        case "LATEST_SALDO_UOM":
+                            changes.OLD_VALUE = !string.IsNullOrEmpty(origin.LatestSaldoUomId)
+                                ? origin.LatestSaldoUomName
+                                : "NULL";
+                            changes.NEW_VALUE = data.LatestSaldoUomName;
+                            break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }
@@ -420,6 +410,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Clear();
 
                 var output = Mapper.Map<Pbck1ProdConverterOutput>(inputItem);
+                output.IsValid = true;
 
                 //Product Code Validation
                 #region -------------- Product Code Validation --------------
@@ -499,6 +490,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Clear();
 
                 var output = Mapper.Map<Pbck1ProdPlanOutput>(inputItem);
+                output.IsValid = true;
 
                 #region ------------- Product Code Validation ----------
                 List<string> messages;

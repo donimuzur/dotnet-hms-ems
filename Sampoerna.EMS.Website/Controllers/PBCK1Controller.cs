@@ -222,30 +222,37 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(Pbck1ItemViewModel model)
         {
-
-            model = CleanSupplierInfo(model);
-            
-            if (!ModelState.IsValid)
+            try
             {
-                return CreateInitial(model);
+                model = CleanSupplierInfo(model);
+
+                if (!ModelState.IsValid)
+                {
+                    return CreateInitial(model);
+                }
+
+                //process save
+                var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
+                dataToSave.CreatedById = CurrentUser.USER_ID;
+
+                var input = new Pbck1SaveInput()
+                {
+                    Pbck1 = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    WorkflowActionType = Enums.ActionType.Save
+                };
+
+                var saveResult = _pbck1Bll.Save(input);
+
+                if (saveResult.Success)
+                {
+                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                }
+                
             }
-
-            //process save
-            var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-            dataToSave.CreatedById = CurrentUser.USER_ID;
-
-            var input = new Pbck1SaveInput()
+            catch (Exception exception)
             {
-                Pbck1 = dataToSave,
-                UserId = CurrentUser.USER_ID,
-                WorkflowActionType = Enums.ActionType.Save
-            };
-
-            var saveResult = _pbck1Bll.Save(input);
-
-            if (saveResult.Success)
-            {
-                return RedirectToAction("Edit", new { id = saveResult.Id });
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
             }
 
             return CreateInitial(model);
@@ -278,7 +285,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
-            var model = new Pbck1ItemViewModel();
+            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item()};
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -302,13 +309,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
-
-            var inValidData = outputResult.Where(c => !c.IsValid).ToList();
-            model.IsProdConvCanSave = inValidData.Count <= 0;
-
-            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
+            var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input);
+            
+            model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
 
             return PartialView("_ProdConvList", model);
         }

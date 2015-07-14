@@ -92,6 +92,22 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    /// <summary>
+    /// Resolve String as CultureInfo.InvariantCulture to a nullable DateTime
+    /// </summary>
+    public class StringToNullableDecimalResolver : ValueResolver<object, decimal?>
+    {
+        protected override decimal? ResolveCore(object value)
+        {
+            string InputAsString = value.ToNullSafeString();
+
+            if (string.IsNullOrWhiteSpace(InputAsString))
+                return null;
+
+            return decimal.Parse(InputAsString);
+        }
+    }
+
     public class NullableBooleanToStringDeletedResolver : ValueResolver<bool?, string>
     {
         protected override string ResolveCore(bool? value)

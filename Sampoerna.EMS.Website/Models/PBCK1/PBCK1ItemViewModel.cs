@@ -34,8 +34,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public Enums.DocumentStatusGov StatusGovList { get; set; }
         
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
-
-        public bool IsProdConvCanSave { get; set; }
-
+        
     }
 }

@@ -211,7 +211,7 @@ namespace Sampoerna.EMS.BLL
             #region Pbck1ProdConv
 
             Mapper.CreateMap<Pbck1ProdConverterInput, Pbck1ProdConverterOutput>().IgnoreAllNonExisting();
-            Mapper.CreateMap<Pbck1ProdPlanInput, Pbck1ProdPlanInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdPlanInput, Pbck1ProdPlanOutput>().IgnoreAllNonExisting();
 
             #endregion
         }
