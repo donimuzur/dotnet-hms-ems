@@ -109,6 +109,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                
                 model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Domestic);
+                //AddMessageInfo("User role : " + CurrentUser.UserRole, Enums.MessageInfoType.Info);
             }
             catch (Exception ex)
             {
@@ -316,6 +317,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         var saveResult = SaveCk5ToDatabase(model);
 
+                        AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+
                         return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
                     }
 
@@ -421,7 +424,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //validate
                 if (!_workflowBll.CanEditDocument(model.DocumentStatus))
-                    RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
+                   return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
 
                 model = InitEdit(model);
                
@@ -433,8 +436,9 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                model.MainMenu = Enums.MenuList.CK5;
-                model.CurrentMenu = PageInfo;
+                //model.MainMenu = Enums.MenuList.CK5;
+                //model.CurrentMenu = PageInfo;
+                model = InitEdit(model);
             }
             return View(model);
         }
@@ -515,7 +519,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
 
-               
+
+                var input = new WorkflowIsAllowedInput();
+                input.DocumentStatus = model.DocumentStatus;
+                input.FormView = Enums.FormViewType.Detail;
+                input.UserRole = CurrentUser.UserRole;
+
+                model.IsAllowed = _workflowBll.IsAllowed(input);
+
             }
             catch (Exception ex)
             {
@@ -664,11 +675,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult SubmitDocuments(long id)
+        
+        public ActionResult SubmitDocument(long id)
         {
             try
             {
                 _ck5Bll.SubmitDocument(id);
+                AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
                return RedirectToAction("Details", "CK5", new {id});
             }
             catch (Exception ex)

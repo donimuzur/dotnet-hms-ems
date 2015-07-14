@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.Core;
+﻿using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -7,5 +8,7 @@ namespace Sampoerna.EMS.Contract
         //List<UserTree> GetUserTree();
         //UserTree GetUserTreeByUserID(int userID);
         bool CanEditDocument(Enums.DocumentStatus status);
+
+        bool IsAllowed(WorkflowIsAllowedInput input);
     }
 }

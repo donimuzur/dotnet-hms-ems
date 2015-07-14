@@ -10,6 +10,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -103,6 +104,26 @@ namespace Sampoerna.EMS.BLL
         public USER GetUserById(int id)
         {
             return _repository.Get(p => p.USER_ID == id).FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// todo : get user role
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Enums.UserRole GetUserRole(int id)
+        {
+            var user = _repository.GetByID(id);
+
+            if (user.FIRST_NAME.ToLower().Contains("dev"))
+                return Enums.UserRole.POA;
+            
+            if (user.FIRST_NAME.ToLower().Contains("user"))
+                return Enums.UserRole.User;
+            
+            return Enums.UserRole.Manager;
+
         }
     }
 }

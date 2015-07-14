@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h3>@Model.Ck5Type.ToString()</h3>
-                <label class="status">@Model.DocumentStatus</label>
+                <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
                    
                     <input type="submit" class="btn btn-blue" value="Save" />
@@ -50,8 +50,6 @@
                         @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
                         
-                       
-                        
                         @Html.HiddenFor(model => model.DnNumber)
                         @Html.HiddenFor(model => model.StoSenderNumber)
                         @Html.HiddenFor(model => model.DnDate)
@@ -77,6 +75,24 @@
         </div>
     </div>
 }
+
+<div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes"/>
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No"/>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -162,159 +178,15 @@
         });
         
         $("#btnSubmitDocument").click(function () {
-            var r = confirm("Submit Documents ?");
+            $('#Ck5Modal').modal('show');
+            @*var r = confirm("Submit Documents ?");
             if (r == true) {
                 window.location = "@Url.Action("Delete", "CK5", new {id = @Model.Ck5Id})";
-            }
+            }*@
         });
 
-    @*
-        $('#CK5UploadSubmitBtn').click(function () {
-
-            var fileName = $('[name="itemExcelFile"]').val().trim();
-            var pos = fileName.lastIndexOf('.');
-            var extension = (pos <= 0) ? '' : fileName.substring(pos);
-            if (extension != '.xlsx') {
-                alert('Please browse a correct excel file to upload');
-                return false;
-            }
-            $('#ProdConv').ajaxSubmit(function (data) {
-                $('#ProdConvContent').html("");
-                $('#ProdConvContent').html(data);
-
-            });
-            return false;
+        $("#btnSubmitConfirm").click(function() {
+            window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
         });
-
-
-
-        function ajaxCallSave(url, formData) {
-            if (formData.model) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#pbck1Date').val(data);
-                    }
-                });
-            }
-        }
-
-        $("#PbckDecreeId").change(function () {
-            if ($("#PbckDecreeId").length) {
-                var pbck1 = $(this).find("option:selected").val();
-                if (pbck1 == '') {
-                    $('#pbck1Date').val('');
-                } else {
-                    ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
-                }
-            }
-
-        });
-
-        function ajaxGetPbck1Date(url, formData) {
-            if (formData.pbck1Id) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#pbck1Date').val(data);
-                    }
-                });
-            }
-        }
-
-        $("#DestPlantId").change(function () {
-            if ($("#DestPlantId").length) {
-                var destPlant = $(this).find("option:selected").val();
-                if (destPlant == '') {
-                    $('#DestNpwp').val('');
-                    $('#DestNppbkcId').val('');
-                    $('#DestCompanyName').val('');
-                    $('#DestAddress').val('');
-                    $('#DestKppbcName').val('');
-                } else {
-                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
-                }
-            }
-        });
-
-        function ajaxGetDestPlantDetails(url, formData) {
-            if (formData.plantId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#DestNpwp').val(data.PlantNpwp);
-                        $('#DestNppbkcId').val(data.NPPBCK_ID);
-                        $('#DestCompanyName').val(data.CompanyName);
-                        $('#DestAddress').val(data.CompanyAddress);
-                        $('#DestKppbcName').val(data.KppBcName);
-                    }
-                });
-            }
-        }
-
-        $("#SourcePlantId").change(function () {
-            if ($("#SourcePlantId").length) {
-                var sourcePlant = $(this).find("option:selected").val();
-                if (sourcePlant == '') {
-                    $('#SourceNpwp').val('');
-                    $('#SourceNppbkcId').val('');
-                    $('#SourceCompanyName').val('');
-                    $('#SourceAddress').val('');
-                    $('#SourceKppbcName').val('');
-                } else {
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
-                }
-            }
-        });
-
-        function ajaxGetPlantDetails(url, formData) {
-            if (formData.plantId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#SourceNpwp').val(data.PlantNpwp);
-                        $('#SourceNppbkcId').val(data.NPPBCK_ID);
-                        $('#SourceCompanyName').val(data.CompanyName);
-                        $('#SourceAddress').val(data.CompanyAddress);
-                        $('#SourceKppbcName').val(data.KppBcName);
-                    }
-                });
-            }
-        }
-
-
-        $("#KppBcCity").change(function () {
-            if ($("#KppBcCity").length) {
-                var kppBcCity = $(this).find("option:selected").val();
-                if (kppBcCity == '') {
-                    $('#CeOfficeCode').val('');
-                } else {
-                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { kppBcCityId: kppBcCity });
-                }
-            }
-
-        });
-
-        function ajaxGetCeOfficeCode(url, formData) {
-            if (formData.kppBcCityId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#CeOfficeCode').val(data);
-                    }
-                });
-            }
-        }
-            *@
 </script>
 }

@@ -24,17 +24,23 @@ function OnReadyFunction() {
                 data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Description" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].UsdValue " type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
 
-                total += parseFloat(datarows[i][5]);
+                total += parseFloat(datarows[i][1]); //Qty
+                if (i == 0) {
+                    $("#PackageUomId option").each(function () {
+                        if ($(this).text().toLowerCase() == datarows[i][5].toLowerCase()) {
+                            $(this).attr('selected', 'selected');
+                        }
+                    });
+                }
             }
             data += '</tr>';
             $('#ck5TableItem tbody').append(data);
@@ -58,7 +64,7 @@ function IsValidDataUpload() {
     var datarows = GetTableData($('#Ck5UploadTable'));
 
     for (var i = 0; i < datarows.length; i++) {
-        if (datarows[i][12].length > 0)
+        if (datarows[i][11].length > 0)
             return false;
     }
 
@@ -210,4 +216,8 @@ function ChangeBackSourceMaterial(plantId) {
             }
         });
     }
+}
+
+function OnSubmitWorkflow(id) {
+    
 }

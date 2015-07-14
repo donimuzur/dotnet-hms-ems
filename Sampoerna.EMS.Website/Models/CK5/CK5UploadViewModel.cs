@@ -12,7 +12,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Qty { get; set; }
         public string Uom { get; set; }
         public string Convertion { get; set; }
-        public string Description { get; set; }
         public string ConvertedQty { get; set; }
         public string ConvertedUom { get; set; }
         public string Hje { get; set; }

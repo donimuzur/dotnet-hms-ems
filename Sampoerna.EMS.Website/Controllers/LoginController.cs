@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (loginResult != null)
             {
                 CurrentUser = loginResult;
-                
+                CurrentUser.UserRole = _userBll.GetUserRole(loginResult.USER_ID);
                 return RedirectToAction("Index", "Home");
             }
 

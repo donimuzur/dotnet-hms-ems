@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
             WorkflowHistory = new List<WorkflowHistoryViewModel>();
         }
 
+        public bool IsAllowed { get; set; }
 
         public long Ck5Id { get; set; }
 
@@ -24,7 +25,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
         public Enums.DocumentStatus DocumentStatus { get; set; }
-
+        public string DocumentStatusDescription { get; set; }
         //DETAIL INFORMATION
         public Enums.CK5Type Ck5Type { get; set; }
 

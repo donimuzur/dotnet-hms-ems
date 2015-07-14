@@ -2,6 +2,7 @@
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -17,5 +18,6 @@ namespace Sampoerna.EMS.Contract
 
         USER GetUserById(int id);
 
+        Enums.UserRole GetUserRole(int id);
     }
 }

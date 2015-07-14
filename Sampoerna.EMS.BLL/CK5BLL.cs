@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IPBCK1BLL _pbck1Bll;
 
-        private string includeTables = "CK5_MATERIAL, ZAIDM_EX_NPPBKC.T1001,ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC, ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,T1001W, T1001W1, PBCK1,CARRIAGE_METHOD,COUNTRY, UOM, USER, CK5_MATERIAL";
+        private string includeTables = "T1001W.ZAIDM_EX_NPPBKC.T1001,CK5_MATERIAL, ZAIDM_EX_NPPBKC.T1001,ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC, ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,T1001W, T1001W1, PBCK1,CARRIAGE_METHOD,COUNTRY, UOM, USER, CK5_MATERIAL";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -271,6 +271,7 @@ namespace Sampoerna.EMS.BLL
             foreach (var ck5Item in input.Ck5Material)
             {
                 var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
 
@@ -299,7 +300,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Clear();
 
                 //var output = new CK5MaterialOutput();
-                var output = AutoMapper.Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
+                var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
 
                 //validate
                 var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
@@ -315,7 +316,7 @@ namespace Sampoerna.EMS.BLL
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
                     messageList.Add("Convertion not valid");
 
-                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.ConvertedUom))
+                if (!_uomBll.IsUomNameExist(ck5MaterialInput.ConvertedUom))
                     messageList.Add("ConvertedUom not valid");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
@@ -351,6 +352,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var output in outputList)
             {
+                
                 output.ConvertedQty = Convert.ToInt32(output.Qty)*Convert.ToInt32(output.Convertion);
 
                 var dbBrand = _brandRegistrationBll.GetByFaCode(output.Brand);
