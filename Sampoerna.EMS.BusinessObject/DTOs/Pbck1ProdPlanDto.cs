@@ -8,7 +8,9 @@
         public string ProdTypeName { get; set; }
         public string ProdAlias { get; set; }
         public decimal? Amount { get; set; }
-        public string BkcRequired { get; set; }
+        public decimal? BkcRequired { get; set; }
+        public string BkcRequiredUomId { get; set; }
+        public string BkcRequiredUomName { get; set; }
         public int MonthId { get; set; }
         public string MonthName { get; set; }
         

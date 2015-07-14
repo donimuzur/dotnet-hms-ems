@@ -228,6 +228,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
@@ -334,6 +335,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.ProductCode = datarow[1];
                         uploadItem.Amount = datarow[2];
                         uploadItem.BkcRequired = datarow[3];
+                        uploadItem.BkcRequiredUomId = datarow[4];
 
                         model.Detail.Pbck1ProdPlan.Add(uploadItem);
 

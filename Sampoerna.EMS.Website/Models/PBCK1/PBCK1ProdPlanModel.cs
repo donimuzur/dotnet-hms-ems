@@ -9,6 +9,8 @@
         public string ProdTypeAlias { get; set; }
         public string Amount { get; set; }
         public string BkcRequired { get; set; }
+        public string BkcRequiredUomId { get; set; }
+        public string BkcRequiredUomName { get; set; }
         public string Month { get; set; }
         public string MonthName { get; set; }
         public string Message { get; set; }

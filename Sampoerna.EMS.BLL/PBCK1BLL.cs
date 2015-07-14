@@ -108,7 +108,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck1Dto GetById(long id)
         {
-            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_CONVERTER.UOM";
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
             var mapResult = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData != null)
@@ -444,15 +444,16 @@ namespace Sampoerna.EMS.BLL
                 //UOM Validation
                 #region -------------- UOM Validation --------------------
 
-                string uomId;
-                if (!ValidateUom(output.ConverterUom, out messages, out uomId))
+                string uomName;
+                if (!ValidateUom(output.ConverterUom, out messages, out uomName))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
                 }
                 else
                 {
-                    output.ConverterUomId = uomId;
+                    output.ConverterUom = uomName;
+                    output.ConverterUomId = output.ConverterUom;
                 }
 
                 #endregion
@@ -537,10 +538,25 @@ namespace Sampoerna.EMS.BLL
 
                 #region ------------------ BKC Required -------
 
-                if (string.IsNullOrWhiteSpace(output.BkcRequired))
+                if (!ValidateDecimal(output.BkcRequired, "BKCRequired", out messages))
                 {
                     output.IsValid = false;
-                    messageList.Add("BKC Required is empty");
+                    messageList.AddRange(messages);
+                }
+                
+                #endregion
+
+                #region ------------------ BKC Required UOM -------
+
+                string uomName;
+                if (!ValidateUom(output.BkcRequiredUomId, out messages, out uomName))
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+                else
+                {
+                    output.BkcRequiredUomName = uomName;
                 }
 
                 #endregion
@@ -667,17 +683,17 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateUom(string uom, out List<string> message, out string uomId)
+        private bool ValidateUom(string uom, out List<string> message, out string uomName)
         {
             var valResult = false;
             var messageList = new List<string>();
-            uomId = string.Empty;
+            uomName = string.Empty;
             if (!string.IsNullOrWhiteSpace(uom))
             {
                 var uomData = _uomBll.GetById(uom);
                 if (uomData != null)
                 {
-                    uomId = uomData.UOM_ID;
+                    uomName = uomData.UOM_DESC;
                     valResult = true;
                 }
             }

@@ -115,7 +115,10 @@
                             + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
                         data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
                             + datarows[i][6] + '" />' + datarows[i][6] + '</td>';
-                        
+                        data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomId" type="hidden" value = "'
+                            + datarows[i][7] + '" />' + datarows[i][7] + '</td>';
+                        data += '<td style="display:none"><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomName" type="hidden" value = "'
+                            + datarows[i][8] + '" />' + datarows[i][8] + '</td>';
                     }
                     data += '</tr>';
                     $('#Detail_Pbck1ProdPlan tbody').append(data);
@@ -445,7 +448,7 @@
             var datarows = GetTableData($('#prod-plan-table'));
 
             for (var i = 0; i < datarows.length; i++) {
-                if (datarows[i][7].length > 0)
+                if (datarows[i][9].length > 0)
                     return false;
             }
 

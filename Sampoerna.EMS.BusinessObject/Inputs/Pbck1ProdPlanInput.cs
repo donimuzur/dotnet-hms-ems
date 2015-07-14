@@ -6,5 +6,6 @@
         public string ProductCode { get; set; }
         public string Amount { get; set; }
         public string BkcRequired { get; set; }
+        public string BkcRequiredUomId { get; set; }
     }
 }

@@ -10,6 +10,8 @@
             <th>Product Type Alias</th>
             <th>Amount</th>
             <th>BKC Required</th>
+            <th>BKC Required Uom</th>
+            <th style="display: none"></th>
             <th>Message Error</th>
         </tr>
     </thead>
@@ -26,6 +28,8 @@
                         <td>@row.ProdTypeAlias</td>
                         <td>@row.Amount</td>
                         <td>@row.BkcRequired</td>
+                        <td>@row.BkcRequiredUomId</td>
+                        <td style="display: none">@row.BkcRequiredUomName</td>
                         <td>@row.Message</td>
                     </tr>
                 }
