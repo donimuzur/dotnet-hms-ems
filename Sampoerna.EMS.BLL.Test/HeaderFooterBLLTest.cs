@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL.Test
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = Enums.FormType.PBKC1,
+                    FORM_TYPE_ID = Enums.FormType.PBCK1,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = false
                 },
@@ -88,7 +88,7 @@ namespace Sampoerna.EMS.BLL.Test
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = Enums.FormType.PBKC1,
+                    FORM_TYPE_ID = Enums.FormType.PBCK1,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = false
                 },
