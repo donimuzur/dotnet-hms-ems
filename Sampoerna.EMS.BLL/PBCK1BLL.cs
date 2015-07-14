@@ -452,8 +452,8 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
-                    output.ConverterUom = uomName;
                     output.ConverterUomId = output.ConverterUom;
+                    output.ConverterUom = uomName;
                 }
 
                 #endregion

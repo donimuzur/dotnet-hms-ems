@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core;
+using System.Data.Entity.Validation;
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
@@ -109,7 +111,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(long? id)
         {
-
+            
             if (!id.HasValue)
             {
                 return HttpNotFound();
@@ -122,59 +124,72 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var changeHistory =
+            var model = new Pbck1ItemViewModel();
+            model = ModelInitial(model);
+
+            try
+            {
+                
+                var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-            {
-                FormId = id.Value,
-                FormType = Enums.FormType.PBCK1
-            }));
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
+                {
+                    FormId = id.Value,
+                    FormType = Enums.FormType.PBCK1
+                }));
+                model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
+                model.WorkflowHistory = workflowHistory;
+                model.ChangesHistoryList = changeHistory;
 
-            return EditInitial(new Pbck1ItemViewModel()
+            }
+            catch (Exception exception)
             {
-                ChangesHistoryList = changeHistory,
-                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
-                WorkflowHistory = workflowHistory
-            });
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+            }
+            
+            return View(model);
         }
 
         [HttpPost]
         public ActionResult Edit(Pbck1ItemViewModel model)
         {
-
-            model = CleanSupplierInfo(model);
-
-            if (!ModelState.IsValid)
+            try
             {
-                return CreateInitial(model);
+                if (!ModelState.IsValid)
+                {
+                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    return View(ModelInitial(model));
+                }
+
+                model = CleanSupplierInfo(model);
+
+                //process save
+                var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
+                //dataToSave.CreatedById = CurrentUser.USER_ID;
+                var input = new Pbck1SaveInput()
+                {
+                    Pbck1 = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    WorkflowActionType = Enums.ActionType.Save
+                };
+                var saveResult = _pbck1Bll.Save(input);
+
+                if (saveResult.Success)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                
             }
-
-            //process save
-            var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-            //dataToSave.CreatedById = CurrentUser.USER_ID;
-            var input = new Pbck1SaveInput()
+            catch (Exception exception)
             {
-                Pbck1 = dataToSave,
-                UserId = CurrentUser.USER_ID,
-                WorkflowActionType = Enums.ActionType.Save
-            };
-            var saveResult = _pbck1Bll.Save(input);
-
-            if (saveResult.Success)
-            {
-                return RedirectToAction("Index");
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
             }
-
-            return EditInitial(model);
+            return View(ModelInitial(model));
         }
-
-        public ActionResult EditInitial(Pbck1ItemViewModel model)
-        {
-            return View("Edit", ModelInitial(model));
-        }
-
+        
         #endregion
 
         #region ------ details ----
@@ -224,13 +239,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                model = CleanSupplierInfo(model);
-
                 if (!ModelState.IsValid)
                 {
                     AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
+
+                model = CleanSupplierInfo(model);
 
                 //process save
                 var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
@@ -247,10 +262,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveResult.Success)
                 {
-                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                    return RedirectToAction("Edit", new {id = saveResult.Id});
                 }
-                
+
             }
+            //catch (DbEntityValidationException e)
+            //{
+            //    foreach (var eve in e.EntityValidationErrors)
+            //    {
+            //        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+            //            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+            //        foreach (var ve in eve.ValidationErrors)
+            //        {
+            //            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+            //                ve.PropertyName, ve.ErrorMessage);
+            //        }
+            //    }
+            //    throw;
+            //}
             catch (Exception exception)
             {
                 AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
@@ -378,20 +407,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1ItemViewModel CleanSupplierInfo(Pbck1ItemViewModel model)
         {
-            if (string.IsNullOrEmpty(model.Detail.SupplierKppbcId)
+            if (model != null && model.Detail != null)
+            {
+                if (string.IsNullOrEmpty(model.Detail.SupplierKppbcId)
                 && !string.IsNullOrEmpty(model.Detail.HiddenSupplierKppbcId))
-            {
-                model.Detail.SupplierKppbcId = model.Detail.HiddenSupplierKppbcId;
-            }
-            if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
-                !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
-            {
-                model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
-            }
-            if (string.IsNullOrEmpty(model.Detail.SupplierNppbkcId)
-                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId))
-            {
-                model.Detail.SupplierNppbkcId = model.Detail.HiddenSupplierNppbkcId;
+                {
+                    model.Detail.SupplierKppbcId = model.Detail.HiddenSupplierKppbcId;
+                }
+                if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
+                    !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
+                {
+                    model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
+                }
+                if (string.IsNullOrEmpty(model.Detail.SupplierNppbkcId)
+                    && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId))
+                {
+                    model.Detail.SupplierNppbkcId = model.Detail.HiddenSupplierNppbkcId;
+                }
             }
             return model;
         }

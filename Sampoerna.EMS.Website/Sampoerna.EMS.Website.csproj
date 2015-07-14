@@ -639,6 +639,7 @@
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -646,6 +647,8 @@
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -745,12 +748,8 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
-    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
-    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
-    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
-    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
     <Content Include="Views\CK5\_CK5UploadList.cshtml" />
     <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
