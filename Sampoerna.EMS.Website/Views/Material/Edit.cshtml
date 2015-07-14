@@ -40,7 +40,8 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Material Number<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", maxlength = "18" })
+                                                            @Html.HiddenFor(model=> model.MaterialNumber)
+                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", maxlength = "18", disabled="disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
                                                         </div>
                                                     </div>
@@ -153,7 +154,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Created On</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.CreatedDate,"{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.CreatedDate)*@
                                                         </div>
                                                     </div>
@@ -162,7 +163,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Last Change On</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.ChangedDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.ChangedDate)*@
                                                         </div>
                                                     </div>

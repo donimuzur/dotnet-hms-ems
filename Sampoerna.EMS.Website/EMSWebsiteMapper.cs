@@ -474,6 +474,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PurchasingGroup, opt => opt.MapFrom(src => src.PURCHASING_GROUP))
                 .ForMember(dest => dest.IssueStorageLoc, opt => opt.MapFrom(src => src.ISSUE_STORANGE_LOC))
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
+                .ForMember(dest => dest.Conversion_UOM, opt => opt.MapFrom(src => src.CONVERSION_UOM))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => false));
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialEditViewModel>().IgnoreAllNonExisting()
@@ -493,6 +494,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP));
+
             Mapper.CreateMap<MaterialEditViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()
               .ForMember(dest => dest.BASE_UOM_ID, opt => opt.MapFrom(src => src.UomId))
 
@@ -525,6 +527,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedById))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
+                .ForMember(dest => dest.CONVERSION_UOM, opt => opt.MapFrom(src => src.Conversion_UOM))
                 .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => false));
 
             Mapper.CreateMap<MaterialEditViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()

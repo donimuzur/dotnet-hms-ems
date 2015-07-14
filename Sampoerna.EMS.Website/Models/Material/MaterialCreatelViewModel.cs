@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialCreateViewModel : BaseModel
     {
-      
+        
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -111,11 +112,14 @@ namespace Sampoerna.EMS.Website.Models.Material
             set;
         }
 
+        [Required]
+        public string Conversion_UOM { get; set; }
+
         // list for dropdown in the form
         public SelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
 
-        
+        public List<ZAIDM_EX_MATERIAL> MateriaList { get; set; }       
     }
 }
