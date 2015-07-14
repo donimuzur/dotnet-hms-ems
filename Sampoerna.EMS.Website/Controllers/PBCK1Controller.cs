@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
             {
                 FormId = id.Value,
-                FormType = Enums.FormType.PBKC1
+                FormType = Enums.FormType.PBCK1
             }));
 
             return EditInitial(new Pbck1ItemViewModel()
@@ -192,7 +192,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput() { FormId = id.Value, FormType = Enums.FormType.PBKC1 }));
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput() { FormId = id.Value, FormType = Enums.FormType.PBCK1 }));
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));

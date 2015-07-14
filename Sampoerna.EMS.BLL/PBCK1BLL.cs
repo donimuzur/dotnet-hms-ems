@@ -386,7 +386,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     ACTION = actionType,
                     FORM_ID = id,
-                    FORM_TYPE_ID = Core.Enums.FormType.PBKC1,
+                    FORM_TYPE_ID = Core.Enums.FormType.PBCK1,
                     FORM_NUMBER = formNumber
                 };
             }

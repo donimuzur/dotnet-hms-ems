@@ -82,13 +82,13 @@ namespace Sampoerna.EMS.Core
         public enum FormType
         {
             [Description("PBCK-1")]
-            PBKC1 = 1,
+            PBCK1 = 1,
             [Description("CK-5")]
             CK5 = 2,
             [Description("PBCK-4")]
-            PBKC4 = 3,
+            PBCK4 = 3,
             [Description("PBCK-3")]
-            PBKC3 = 4
+            PBCK3 = 4
         }
 
         public enum ActionType
