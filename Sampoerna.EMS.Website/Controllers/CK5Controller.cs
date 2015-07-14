@@ -554,32 +554,65 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadListOriginal", model);
         }
 
-        //private void CreateXlsFile(long ck5Id)
-        //{
-        //    var slDocument = new SLDocument();
+        public void ExportXls(long ck5Id)
+        {
+           // return File(CreateXlsFile(ck5Id), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            var pathFile = CreateXlsFile(ck5Id);
+            var newFile = new FileInfo(pathFile);
 
-        //    var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id);
+            var fileName = Path.GetFileName(pathFile);// "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
 
-        //    var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+        private string CreateXlsFile(long ck5Id)
+        {
+            var slDocument = new SLDocument();
 
-        //    int iRow = 1;
-        //    foreach (var changesHistoryItemModel in model)
-        //    {
-        //        slDocument.SetCellValue(iRow, 1, changesHistoryItemModel.FIELD_NAME);
-        //        slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.OLD_VALUE);
-        //        slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.NEW_VALUE);
-        //    }
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id);
 
-        //    //var outpu = new 
-        //    slDocument.Save();
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+            
+            int iRow = 1;
 
-        //    var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-        //    Response.ClearContent();
-        //    Response.Buffer = true;
-        //    Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-        //    Response.ContentType = "application/vnd.ms-excel";
+            //create header
+            slDocument.SetCellValue(iRow, 1, "DATE");
+            slDocument.SetCellValue(iRow, 2, "FIELD");
+            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
+            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
+            slDocument.SetCellValue(iRow, 5, "USER");
 
-        //}
+            iRow++;
+            
+            foreach (var changesHistoryItemModel in model)
+            {
+                slDocument.SetCellValue(iRow, 1,
+                    changesHistoryItemModel.MODIFIED_DATE.HasValue
+                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
+                        : string.Empty);
+                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
+                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
+                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
+                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+                
+                iRow++;
+            }
+            var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath("~/Content/upload/"),fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
 
         public void ExportClientsListToExcel(long ck5Id)
         {
