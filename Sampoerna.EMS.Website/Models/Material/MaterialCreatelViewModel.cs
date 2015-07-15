@@ -112,13 +112,14 @@ namespace Sampoerna.EMS.Website.Models.Material
             set;
         }
 
-        [Required]
-        public string Conversion_UOM { get; set; }
+       
+        
 
         // list for dropdown in the form
         public SelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
+        public SelectList Conversion_UOM { get; set; }
 
         public List<ZAIDM_EX_MATERIAL> MateriaList { get; set; }       
     }

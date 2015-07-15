@@ -160,5 +160,12 @@ namespace Sampoerna.EMS.Website.Code
             var data = materialBll.getAll();
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
+
+        public static SelectList GetConversionUomList()
+        {
+            IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
+            var data = uomBll.GetAll();
+            return new SelectList(data, "UOM_ID","UOM_ID");
+        }
     }
 }

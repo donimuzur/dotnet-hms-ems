@@ -184,11 +184,90 @@
                                                 </div>
                                             </div>
 
+                                            <div class="action-button">
+                                                <input type="submit" class="btn btn-blue" value="Save" />
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Converted UOM<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(model => model.Conversion_UOM, Model.Conversion_UOM, "select", new { @class = "form-control" })
+                                                            @*@Html.ValidationMessageFor(model => model.Convertion)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Convertion<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
+                                                            @*@Html.ValidationMessageFor(model => model.Convertion)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <span class="red">*</span> ) This Field Required
                                                 </div>
                                             </div>
+                                           
+                                            <div class="container-wrap">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div id="contenttable" class="table-container">
+                                                            <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row"> Filter </th>
+                                                                        <th> Converted UOM </th>
+                                                                        <th> Conversion </th>
+
+                                                                    </tr>
+
+                                                                </thead>
+                                                                <thead class="filters">
+                                                                    <tr>
+                                                                        <th> Action </th>
+                                                                        <th> Converted UOM </th>
+                                                                        <th> Conversion </th>
+
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody>
+                                                                    @foreach (var item in Model.MateriaList)
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="action">
+                                                                                <button type="button" id="EditPopUp" class="fa fa-pencil-square-o" data-toggle="modal" data-target=".upload-file"></button>
+                                                                            </td>
+
+                                                                            <td>
+                                                                                @Html.HiddenFor(modelItem => item.STICKER_CODE, new { id="key" })
+                                                                                <span id="field1">@Html.DisplayFor(modelItem => item.CONVERSION_UOM)</span>
+                                                                                
+                                                                            </td>
+                                                                            <td>
+                                                                                <span id="field2">@Html.DisplayFor(modelItem => item.CONVERSION)</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+
+                                                            </table>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
                                         </form>
                                     </div>
                                 </div>
@@ -199,95 +278,12 @@
             </div>
         </div>
     </div>
+     @Html.Partial("_EditConvertionList", Model)
 }
-<div class="container-wrap">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="white-wrapper">
-                <div class="scroll">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
-                                        Convertion List
-                                        <i class="fa fa-caret-down"></i>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <form class="form-excise" role="form">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Converted UOM<span class="red">*</span></label>
-                                                    <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.Conversion_UOM, new { @class = "form-control" })
-                                                        @*@Html.ValidationMessageFor(model => model.Convertion)*@
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Convertion<span class="red">*</span></label>
-                                                    <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
-                                                        @*@Html.ValidationMessageFor(model => model.Convertion)*@
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="action-button">
-                                            <input type="submit" class="btn btn-blue" value="Save" />
-
-                                        </div>
-                                        <div class="container-wrap">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div id="contenttable" class="table-container">
-                                                        <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="toggle-row"> Filter </th>
-                                                                    <th> Converted UOM </th>
-                                                                    <th> Conversion </th>
-
-                                                                </tr>
-
-                                                            </thead>
-                                                            <thead class="filters">
-                                                                <tr>
-                                                                    <th> Action </th>
-                                                                    <th> Converted UOM </th>
-                                                                    <th> Conversion </th>
-
-                                                                </tr>
-                                                            </thead>
-
-                                                            <tbody></tbody>
-
-                                                        </table>
-                                                    </div>
-                                                    
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@section scripts{
+@section scripts
+    {
+    <script src="~/Scripts/js/custom.js"></script>
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
@@ -319,5 +315,44 @@
         $('#MenuMasterMaterial').addClass('active');
 
         $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
+        
+        
+        $('#EditPopUp').click(function () {
+            var data = $('#field1').text();
+            $('#ddlConversion_UOM').val(data);
+            var convertion = $('#field2').text();
+            $('#ddlConversion').val(convertion);
+
+            var key = $('#key').val();
+            $('#ddlkey').val(key);
+            //console.log(key);
+        });
+
+        
+        $('#btnsave').click(function () {
+            var data = {
+                Id: $('#ddlkey').val(),
+                ConversionUom: $('#ddlConversion_UOM').val(),
+                Conversion: $('#ddlConversion').val()
+                
+            };
+            window.location.reload();
+            var json = JSON.stringify(data);
+
+            $.ajax({
+                url: '/Material/Save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: json,
+                dataType: 'json',
+                success: function() {
+                   return window.location.reload();
+                  }
+        });
+
+            console.log(data);
+            console.log(json);
+        });
+       
     </script>
 }
