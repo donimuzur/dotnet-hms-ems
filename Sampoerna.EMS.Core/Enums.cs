@@ -71,8 +71,32 @@ namespace Sampoerna.EMS.Core
             GovRejected = 8,
             [Description("Government Canceled")]
             GovCanceled = 9,
+            [Description("STO Created")]
+            STOCreated = 10,
+            [Description("STO Failed")]
+            STOFailed = 11,
+            [Description("Outbound Delivery Created")]
+            ODCreated = 12,
+            [Description("Good Received Created")]
+            GRCreated = 13,
+            [Description("Good Received Partial")]
+            GRPartial = 14,
+            [Description("Good Received Completed")]
+            GRCompleted = 15,
+            [Description("Good Received Reversal")]
+            GRReversal = 16,
+            [Description("Good Issue Created")]
+            GICreated = 17,
+            [Description("Good Issue Partial")]
+            GIPartial = 18,
+            [Description("Good Issue Completed")]
+            GICompleted = 19,
+            [Description("Good Issue Reversal")]
+            GIReversal = 20,
+            [Description("Cancelled")]
+            Cancelled = 21,
             [Description("Completed")]
-            Completed = 10
+            Completed = 22
         }
 
         public enum DocumentStatusGov
