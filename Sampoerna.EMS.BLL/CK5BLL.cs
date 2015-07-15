@@ -259,12 +259,11 @@ namespace Sampoerna.EMS.BLL
                 dbData.PACKAGE_UOM_ID = input.Ck5Dto.PACKAGE_UOM_ID;
 
                 dbData.STATUS_ID = Enums.DocumentStatus.Draft;
-
-                dbData.CREATED_DATE = DateTime.Now;
-                dbData.CREATED_BY = input.UserId;
-
                
             }
+
+            dbData.CREATED_DATE = DateTime.Now;
+            dbData.CREATED_BY = input.UserId;
 
             //insert child
             //insert the data
@@ -278,8 +277,16 @@ namespace Sampoerna.EMS.BLL
 
             _repository.InsertOrUpdate(dbData);
 
+
             //workflowhistory
-            AddWorkflowHistory(dbData.CK5_ID, input.WorkflowActionType, input.UserId, input.Ck5Dto.SUBMISSION_NUMBER);
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = dbData.CK5_ID;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.Save;
+
+            AddWorkflowHistory(inputWorkflowHistory);
 
 
             _uow.SaveChanges();
@@ -483,26 +490,38 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void AddWorkflowHistory(long id, Core.Enums.ActionType actionType, int userId, string formNumber)
+        private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
         {
             var inputWorkflowHistory = new GetByActionAndFormNumberInput();
-            inputWorkflowHistory.ActionType = actionType;
-            inputWorkflowHistory.FormNumber = formNumber;
+            inputWorkflowHistory.ActionType = input.ActionType;
+            inputWorkflowHistory.FormNumber = input.DocumentNumber;
 
-            var dbData = _workflowHistoryBll.GetByActionAndFormNumber(inputWorkflowHistory);
+            WorkflowHistoryDto dbData = null;
+
+
+            //only save can be update, else insert new one
+            if (input.ActionType == Enums.ActionType.Save)
+                dbData = _workflowHistoryBll.GetByActionAndFormNumber(inputWorkflowHistory);
+
 
             if (dbData == null)
             {
                 dbData = new WorkflowHistoryDto()
                 {
-                    ACTION = actionType,
-                    FORM_NUMBER = formNumber,
+                    ACTION = input.ActionType,
+                    FORM_NUMBER = input.DocumentNumber,
                     FORM_TYPE_ID = Core.Enums.FormType.CK5
                 };
             }
-            dbData.FORM_ID = id;
-            dbData.ACTION_BY = userId;
+            dbData.FORM_ID = input.DocumentId;
+            if (!string.IsNullOrEmpty(input.Comment))
+                dbData.COMMENT = input.Comment;
+
+
+            dbData.ACTION_BY = input.UserId;
+            dbData.ROLE = input.UserRole;
             dbData.ACTION_DATE = DateTime.Now;
+
             _workflowHistoryBll.Save(dbData);
         }
 
@@ -539,9 +558,9 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5MaterialDto>>(result);
         }
 
-        public void SubmitDocument(long id)
+        public void SubmitDocument(CK5WorkflowDocumentInput input)
         {
-            var dbData = _repository.GetByID(id);
+            var dbData = _repository.GetByID(input.DocumentId);
 
             if (dbData == null)
                 throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -551,8 +570,73 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApproval;
 
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = input.DocumentId;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.Submit;
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
             _uow.SaveChanges();
+        }
+
+        public void ApproveDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Approved;
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = input.DocumentId;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.Approve;
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+            _uow.SaveChanges();
+        }
+
+        public void RejectDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //change back to draft
+            dbData.STATUS_ID = Enums.DocumentStatus.Draft;
             
+
+            //todo ask
+            dbData.APPROVED_BY = null;
+            dbData.APPROVED_DATE = null;
+
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = input.DocumentId;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.Reject;
+            inputWorkflowHistory.Comment = input.Comment;
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+            _uow.SaveChanges();
         }
     }
 }

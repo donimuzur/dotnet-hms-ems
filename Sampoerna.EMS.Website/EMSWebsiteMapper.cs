@@ -667,12 +667,14 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<WORKFLOW_HISTORY, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.ACTION)))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.ROLE.ToString()))
                 .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER.USERNAME))
                 .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
                 .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));
 
             Mapper.CreateMap<WorkflowHistoryDto, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.ACTION)))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.ROLE.ToString()))
                 .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER.USERNAME))
                 .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
                 .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));

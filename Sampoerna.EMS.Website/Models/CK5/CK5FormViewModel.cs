@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         }
 
         public bool IsAllowed { get; set; }
-
+        public string Comment { get; set; }
         public long Ck5Id { get; set; }
 
         public List<CK5UploadViewModel> UploadItemModels { get; set; }

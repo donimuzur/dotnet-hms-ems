@@ -26,7 +26,26 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public CK5Dto Ck5Dto { get; set; }
         public int UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; } 
         public Enums.ActionType WorkflowActionType { get; set; }
         public List<CK5MaterialDto> Ck5Material { get; set; } 
+    }
+
+    public class CK5WorkflowDocumentInput
+    {
+        public long DocumentId { get; set; }
+        public int UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+    }
+
+    public class CK5WorkflowHistoryInput
+    {
+        public long DocumentId { get; set; }
+        public string DocumentNumber { get; set; }
+        public int UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string Comment { get; set; }
     }
 }

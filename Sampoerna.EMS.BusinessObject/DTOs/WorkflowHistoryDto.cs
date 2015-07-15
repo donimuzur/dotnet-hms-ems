@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int ACTION_BY { get; set; }
         public DateTime? ACTION_DATE { get; set; }
         public string COMMENT { get; set; }
-
+        public Nullable<Sampoerna.EMS.Core.Enums.UserRole> ROLE { get; set; }
         public USER USER { get; set; }
     }
 }

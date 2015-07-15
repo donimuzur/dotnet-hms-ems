@@ -36,7 +36,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK3> CK3 { get; set; }
         public virtual DbSet<CK4C> CK4C { get; set; }
         public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
-        public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<COUNTRY> COUNTRY { get; set; }
         public virtual DbSet<CURRENCY> CURRENCY { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
@@ -86,5 +85,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<REQUEST_TYPE> REQUEST_TYPE { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
+        public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
     }
 }

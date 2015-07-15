@@ -32,6 +32,10 @@ namespace Sampoerna.EMS.Contract
 
        List<CK5MaterialDto> GetCK5MaterialByCK5Id(long id);
 
-       void SubmitDocument(long id);
+       void SubmitDocument(CK5WorkflowDocumentInput input);
+
+       void ApproveDocument(CK5WorkflowDocumentInput input);
+
+       void RejectDocument(CK5WorkflowDocumentInput input);
    }
 }

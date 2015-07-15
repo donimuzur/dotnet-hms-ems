@@ -7,8 +7,8 @@ namespace Sampoerna.EMS.Contract
     {
         //List<UserTree> GetUserTree();
         //UserTree GetUserTreeByUserID(int userID);
-        bool CanEditDocument(Enums.DocumentStatus status);
+        bool IsAllowEditDocument(Enums.DocumentStatus status);
 
-        bool IsAllowed(WorkflowIsAllowedInput input);
+        bool AllowApproveAndReject(WorkflowIsAllowedInput input);
     }
 }

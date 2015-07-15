@@ -423,7 +423,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
 
                 //validate
-                if (!_workflowBll.CanEditDocument(model.DocumentStatus))
+                if (!_workflowBll.IsAllowEditDocument(model.DocumentStatus))
                    return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
 
                 model = InitEdit(model);
@@ -453,7 +453,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.UploadItemModels.Count > 0)
                     {
                         //validate
-                        if (_workflowBll.CanEditDocument(model.DocumentStatus))
+                        if (_workflowBll.IsAllowEditDocument(model.DocumentStatus))
                         {
 
                             SaveCk5ToDatabase(model);
@@ -525,7 +525,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.FormView = Enums.FormViewType.Detail;
                 input.UserRole = CurrentUser.UserRole;
 
-                model.IsAllowed = _workflowBll.IsAllowed(input);
+                //workflow
+                model.IsAllowed = _workflowBll.AllowApproveAndReject(input);
 
             }
             catch (Exception ex)
@@ -543,12 +544,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //process save
             var dataToSave = Mapper.Map<CK5Dto>(model);
-            dataToSave.CREATED_BY = CurrentUser.USER_ID;
-
+          
             var input = new CK5SaveInput()
             {
                 Ck5Dto = dataToSave,
                 UserId = CurrentUser.USER_ID,
+                UserRole = CurrentUser.UserRole,
                 WorkflowActionType = Enums.ActionType.Save,
                 Ck5Material = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels)
             };
@@ -680,15 +681,58 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                _ck5Bll.SubmitDocument(id);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                _ck5Bll.SubmitDocument(input);
                 AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
-               return RedirectToAction("Details", "CK5", new {id});
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("Edit", "CK5", new { id });
+            return RedirectToAction("Details", "CK5", new { id });
+        }
+
+        public ActionResult ApproveDocument(long id)
+        {
+            try
+            {
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                _ck5Bll.ApproveDocument(input);
+                AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id });
+        }
+
+        public ActionResult RejectDocument(CK5FormViewModel model)
+        {
+            try
+            {
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.Comment = model.Comment;
+
+                _ck5Bll.RejectDocument(input);
+                AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new {id = model.Ck5Id });
         }
     }
 }

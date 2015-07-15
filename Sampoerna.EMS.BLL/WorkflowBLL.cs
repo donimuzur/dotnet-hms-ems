@@ -17,12 +17,18 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
         }
 
-        public bool CanEditDocument(Enums.DocumentStatus status)
+        public bool IsAllowEditDocument(Enums.DocumentStatus status)
         {
             return status == Enums.DocumentStatus.Draft;
         }
 
-        public bool IsAllowed(WorkflowIsAllowedInput input)
+
+        /// <summary>
+        /// allow to approve and rejected
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public bool AllowApproveAndReject(WorkflowIsAllowedInput input)
         {
             if (input.DocumentStatus == Enums.DocumentStatus.Draft)
                 return false;

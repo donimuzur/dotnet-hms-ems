@@ -16,7 +16,6 @@
         <EntityTypeShape EntityType="EMSModel.CK3" Width="1.5" PointX="17.25" PointY="50" />
         <EntityTypeShape EntityType="EMSModel.CK4C" Width="1.5" PointX="10.5" PointY="0.75" />
         <EntityTypeShape EntityType="EMSModel.CK4C_ITEM" Width="1.5" PointX="21.75" PointY="7.625" />
-        <EntityTypeShape EntityType="EMSModel.CK5_MATERIAL" Width="1.5" PointX="20.75" PointY="11.625" />
         <EntityTypeShape EntityType="EMSModel.COUNTRY" Width="1.5" PointX="5.25" PointY="10.25" />
         <EntityTypeShape EntityType="EMSModel.CURRENCY" Width="1.5" PointX="16.25" PointY="31.625" />
         <EntityTypeShape EntityType="EMSModel.DOC_NUMBER_SEQ" Width="1.5" PointX="10.5" PointY="60.5" />
@@ -106,7 +105,6 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_1LFA11" />
         <AssociationConnector Association="EMSModel.FK_CHANGES_HISTORY_USER" />
         <AssociationConnector Association="EMSModel.FK_CK4C_ZAIDM_EX_NPPBKC" />
-        <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" />
         <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" />
         <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_T1001" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_ZAIDM_EX_NPPBKC" />
@@ -163,7 +161,6 @@
         <AssociationConnector Association="EMSModel.FK_CK5_DOMESTIC_EX_SETTLEMENT" />
         <AssociationConnector Association="EMSModel.FK_CK5_DOMESTIC_EX_STATUS" />
         <AssociationConnector Association="EMSModel.FK_CK5_DOMESTIC_ZAIDM_EX_GOODTYP" />
-        <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_CK5_REQUEST_TYPE" />
         <AssociationConnector Association="EMSModel.FK_CK5_T1001W" />
@@ -172,6 +169,9 @@
         <AssociationConnector Association="EMSModel.FK_CK5_USER" />
         <AssociationConnector Association="EMSModel.FK_CK5_USER1" />
         <AssociationConnector Association="EMSModel.FK_CK5_ZAIDM_EX_NPPBKC" />
+        <EntityTypeShape EntityType="EMSModel.CK5_MATERIAL" Width="1.5" PointX="30.625" PointY="23.375" />
+        <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
+        <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_ZAIDM_EX_MATERIAL" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
