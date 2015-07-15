@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         [Display(Name = "Changed On"), Editable(false)]
         public Nullable<System.DateTime> ChangedDate { get; set; }
-
+       
 
         public Nullable<int> ChangedById { get; set; }
 
@@ -113,12 +113,12 @@ namespace Sampoerna.EMS.Website.Models.Material
         }
 
        
-        
-
         // list for dropdown in the form
         public SelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
+        
+        [Required]
         public SelectList Conversion_UOM { get; set; }
 
         public List<ZAIDM_EX_MATERIAL> MateriaList { get; set; }       

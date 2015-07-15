@@ -7,14 +7,14 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 <h4 class="modal-title">Edit Convertion List </h4>
             </div>
-            <div class="modal-body">
-             
+            <div class="modal-body form-excise">
+
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-10">
                         <div class="row">
                             <label class="col-md-4">Converted UOM<span class="red">*</span></label>
                             <div class="col-md-8">
-                                @Html.HiddenFor(model => model.MaterialNumber, new {id="ddlkey"})
+                                @Html.HiddenFor(model => model.MaterialNumber, new { id = "ddlkey" })
                                 @Html.DropDownListFor(model => model.Conversion_UOM, Model.Conversion_UOM, "select", new { @class = "form-control", id = "ddlConversion_UOM" })
                                 @*@Html.ValidationMessageFor(model => model.Convertion)*@
                             </div>
@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-10">
                         <div class="row">
                             <label class="col-md-4">Convertion<span class="red">*</span></label>
                             <div class="col-md-8">
@@ -36,7 +36,7 @@
                 <div class="col-md-12">
                     <span class="red">*</span> ) This Field Required
                 </div>
-              
+
             </div>
             <div class="modal-footer">
                 <input type="submit" class="btn btn-blue" value="Save" id="btnsave" />

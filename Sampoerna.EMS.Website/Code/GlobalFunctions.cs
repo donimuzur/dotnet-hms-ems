@@ -165,7 +165,9 @@ namespace Sampoerna.EMS.Website.Code
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
             var data = uomBll.GetAll();
-            return new SelectList(data, "UOM_ID","UOM_ID");
+            return new SelectList(data, "UOM_ID", "UOM_ID");
+
+           
         }
     }
 }

@@ -91,6 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.Conversion_UOM = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -103,6 +104,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.Convertion_UOM = GlobalFunctions.GetConversionUomList();
+           
             return model;
         }
 
@@ -235,7 +238,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Details", new {id=id});
             }
             else {
+
                 var model = Mapper.Map<MaterialEditViewModel>(data);
+                model.MateriaList = Mapper.Map<List<ZAIDM_EX_MATERIAL>>(_materialBll.getAll());
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
