@@ -180,14 +180,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     return RedirectToAction("Index");
                 }
-
                 
             }
             catch (Exception exception)
             {
                 AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
             }
+
+            var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, model.Detail.Pbck1Id.ToString()));
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
+            {
+                FormId = model.Detail.Pbck1Id,
+                FormType = Enums.FormType.PBCK1
+            }));
+            model.WorkflowHistory = workflowHistory;
+            model.ChangesHistoryList = changeHistory;
+
             return View(ModelInitial(model));
+
         }
         
         #endregion
