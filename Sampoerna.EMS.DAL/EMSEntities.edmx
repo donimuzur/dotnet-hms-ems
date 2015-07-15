@@ -2141,7 +2141,7 @@
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
-        <EnumType Name="DocumentStatusGov" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="DocumentStatusGov" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGov" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="PBCK1Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.PBCK1Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="FormType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.FormType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="MenuList" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.MenuList" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3192,8 +3192,8 @@
           <Property Name="LACK1_FROM_YEAR" Type="Int32" />
           <Property Name="LACK1_TO_MONTH" Type="Int32" />
           <Property Name="LACK1_TO_YEAR" Type="Int32" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
-          <Property Name="STATUS_GOV" Type="Int32" Nullable="false" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
+          <Property Name="STATUS_GOV" Type="EMSModel.DocumentStatusGov" Nullable="false" />
           <Property Name="QTY_APPROVED" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
