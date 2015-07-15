@@ -582,6 +582,8 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
+#region workflow
+
         public void ApproveDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -592,7 +594,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.Approved;
+            dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
@@ -638,5 +640,91 @@ namespace Sampoerna.EMS.BLL
 
             _uow.SaveChanges();
         }
+
+        public void GovApproveDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = input.DocumentId;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.Completed;
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+            _uow.SaveChanges();
+        }
+
+        public void GovRejectedDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = input.DocumentId;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.GovReject;
+            inputWorkflowHistory.Comment = input.Comment;
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+            _uow.SaveChanges();
+        }
+
+        public void GovCancelledDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+            //dbData.APPROVED_BY = input.UserId;
+            //dbData.APPROVED_DATE = DateTime.Now;
+
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+            inputWorkflowHistory.DocumentId = input.DocumentId;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+            inputWorkflowHistory.ActionType = Enums.ActionType.GovCancel;
+            inputWorkflowHistory.Comment = input.Comment;
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+            _uow.SaveChanges();
+        }
+
+#endregion
+
     }
 }

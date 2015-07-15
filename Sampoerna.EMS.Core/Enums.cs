@@ -63,8 +63,16 @@ namespace Sampoerna.EMS.Core
             Approved = 4,
             [Description("Rejected")]
             Rejected = 5,
+            [Description("Waiting for Government Approval")]
+            WaitingGovApproval = 6,
+            [Description("Government Approved")]
+            GovApproved = 7,
+            [Description("Government Rejected")]
+            GovRejected = 8,
+            [Description("Government Canceled")]
+            GovCanceled = 9,
             [Description("Completed")]
-            Completed = 6
+            Completed = 10
         }
 
         public enum DocumentStatusGov
@@ -98,7 +106,15 @@ namespace Sampoerna.EMS.Core
             [Description("Approve")]
             Approve = 3,
             [Description("Reject")]
-            Reject = 4
+            Reject = 4,
+            [Description("GovApprove")]
+            GovApprove = 5,
+            [Description("GovReject")]
+            GovReject = 6,
+            [Description("GovCancel")]
+            GovCancel = 7,
+            [Description("Completed")]
+            Completed = 8,
         }
 
         /// <summary>

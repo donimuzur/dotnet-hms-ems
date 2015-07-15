@@ -21,12 +21,15 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
         private string includeTables = "USER1, USER2, USER_GROUP";
+        private IZaidmExPOABLL _zaidmExPoabll;
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER>();
+
+            _zaidmExPoabll = new ZaidmExPOABLL(_uow, _logger);
         }
 
         public List<USER> GetUsers(UserInput input)
@@ -107,23 +110,6 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        /// <summary>
-        /// todo : get user role
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Enums.UserRole GetUserRole(int id)
-        {
-            var user = _repository.GetByID(id);
-
-            if (user.FIRST_NAME.ToLower().Contains("dev"))
-                return Enums.UserRole.POA;
-            
-            if (user.FIRST_NAME.ToLower().Contains("user"))
-                return Enums.UserRole.User;
-            
-            return Enums.UserRole.Manager;
-
-        }
+      
     }
 }

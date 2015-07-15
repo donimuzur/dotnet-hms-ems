@@ -8,11 +8,13 @@ namespace Sampoerna.EMS.Website.Controllers
     public class LoginController : BaseController
     {
         private IUserBLL _userBll;
+        private IZaidmExPOABLL _zaidmExPoabll;
 
-        public LoginController( IUserBLL userBll, IPageBLL pageBll) : base(pageBll, Enums.MenuList.USER)
+        public LoginController(IUserBLL userBll, IPageBLL pageBll, IZaidmExPOABLL zaidmExPoabll)
+            : base(pageBll, Enums.MenuList.USER)
         {
             _userBll = userBll;
-
+            _zaidmExPoabll = zaidmExPoabll;
         }
 
         //
@@ -33,7 +35,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (loginResult != null)
             {
                 CurrentUser = loginResult;
-                CurrentUser.UserRole = _userBll.GetUserRole(loginResult.USER_ID);
+                CurrentUser.UserRole = _zaidmExPoabll.GetUserRole(loginResult.USER_ID);
                 return RedirectToAction("Index", "Home");
             }
 

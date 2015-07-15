@@ -17,7 +17,6 @@ namespace Sampoerna.EMS.Contract
         Login GetLogin(string userName);
 
         USER GetUserById(int id);
-
-        Enums.UserRole GetUserRole(int id);
+        
     }
 }

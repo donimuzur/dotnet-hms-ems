@@ -37,5 +37,11 @@ namespace Sampoerna.EMS.Contract
        void ApproveDocument(CK5WorkflowDocumentInput input);
 
        void RejectDocument(CK5WorkflowDocumentInput input);
+
+       void GovApproveDocument(CK5WorkflowDocumentInput input);
+
+       void GovRejectedDocument(CK5WorkflowDocumentInput input);
+
+       void GovCancelledDocument(CK5WorkflowDocumentInput input);
    }
 }

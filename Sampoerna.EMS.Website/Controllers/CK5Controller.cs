@@ -8,6 +8,7 @@ using System.Web.UI;
 using AutoMapper;
 using NLog.LayoutRenderers;
 using Sampoerna.EMS.BLL;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -175,6 +176,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region Save Edit
 
         public ActionResult Create(string ck5Type)
         {
@@ -423,7 +425,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
 
                 //validate
-                if (!_workflowBll.IsAllowEditDocument(model.DocumentStatus))
+                //only allow edit/submit when current_user = createdby and document = draft
+                var input = new WorkflowAllowEditAndSubmitInput();
+                input.DocumentStatus = model.DocumentStatus;
+                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
+                input.CurrentUser = CurrentUser.USER_ID;
+                if (!_workflowBll.AllowEditDocument(input))
                    return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
 
                 model = InitEdit(model);
@@ -453,15 +460,22 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.UploadItemModels.Count > 0)
                     {
                         //validate
-                        if (_workflowBll.IsAllowEditDocument(model.DocumentStatus))
+                        var input = new WorkflowAllowEditAndSubmitInput();
+                        input.DocumentStatus = model.DocumentStatus;
+                        input.CreatedUser = model.CreatedBy;
+                        input.CurrentUser = CurrentUser.USER_ID;
+                        if (_workflowBll.AllowEditDocument(input))
                         {
 
                             SaveCk5ToDatabase(model);
 
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
                         }
-                        else 
+                        else
+                        {
                             AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
+                        }
 
                     }
                     else
@@ -520,13 +534,25 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
 
 
-                var input = new WorkflowIsAllowedInput();
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput();
                 input.DocumentStatus = model.DocumentStatus;
                 input.FormView = Enums.FormViewType.Detail;
                 input.UserRole = CurrentUser.UserRole;
+                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY.HasValue ? ck5Details.Ck5Dto.CREATED_BY.Value : 0;
+                input.CurrentUser = CurrentUser.USER_ID;
+                input.CurrentUserGroup = CurrentUser.USER_GROUP_ID.HasValue ? CurrentUser.USER_GROUP_ID.Value : 0;
 
                 //workflow
-                model.IsAllowed = _workflowBll.AllowApproveAndReject(input);
+                var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+                model.AllowApproveAndReject = allowApproveAndReject;
+
+
+                if (!allowApproveAndReject) 
+                {
+                    model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                }
+               
 
             }
             catch (Exception ex)
@@ -569,6 +595,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return PartialView("_CK5UploadListOriginal", model);
         }
+
+        #endregion
+
+        #region export xls
 
         public void ExportXls(long ck5Id)
         {
@@ -676,7 +706,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        
+        #endregion
+
+        #region Workflow
+
+        private CK5WorkflowDocumentInput InitInputWorkflow(long id)
+        {
+            var input = new CK5WorkflowDocumentInput();
+            input.DocumentId = id;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
+            return input;
+        }
         public ActionResult SubmitDocument(long id)
         {
             try
@@ -700,10 +742,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                var input = new CK5WorkflowDocumentInput();
-                input.DocumentId = id;
-                input.UserId = CurrentUser.USER_ID;
-                input.UserRole = CurrentUser.UserRole;
+               var input =  InitInputWorkflow(id);
 
                 _ck5Bll.ApproveDocument(input);
                 AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
@@ -719,10 +758,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                var input = new CK5WorkflowDocumentInput();
-                input.DocumentId = model.Ck5Id;
-                input.UserId = CurrentUser.USER_ID;
-                input.UserRole = CurrentUser.UserRole;
+                var input = InitInputWorkflow(model.Ck5Id);
+
                 input.Comment = model.Comment;
 
                 _ck5Bll.RejectDocument(input);
@@ -734,5 +771,24 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return RedirectToAction("Details", "CK5", new {id = model.Ck5Id });
         }
+
+        public ActionResult GovApproveDocument(long id)
+        {
+            try
+            {
+                var input = InitInputWorkflow(id);
+
+                _ck5Bll.GovApproveDocument(input);
+                AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id });
+        }
+
+        #endregion
+
     }
 }

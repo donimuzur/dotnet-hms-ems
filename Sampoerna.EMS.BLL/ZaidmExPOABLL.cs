@@ -17,13 +17,13 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_POA> _repository;
         private string includeTables = "ZAIDM_POA_MAP, USER, USER1";
-        private IChangesHistoryBLL _changesHistoryBll ;
-        public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger, IChangesHistoryBLL changesHistoryBll)
+        
+        public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_POA>();
-            _changesHistoryBll = changesHistoryBll;
+            
         }
 
 
@@ -93,6 +93,20 @@ namespace Sampoerna.EMS.BLL
                 throw;
             }
           
+        }
+
+        public Enums.UserRole GetUserRole(int id)
+        {
+            var poa = GetAll();
+
+            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID == id))
+                return Enums.UserRole.Manager;
+           
+            if (poa.Any(zaidmExPoa => zaidmExPoa.USER_ID == id))
+                return Enums.UserRole.POA;
+          
+
+            return Enums.UserRole.User;
         }
     }
 }
