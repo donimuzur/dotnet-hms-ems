@@ -21,5 +21,7 @@ namespace Sampoerna.EMS.Contract
         List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs);
         List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
 
+        List<Pbck1Dto> GetByDocumentStatus(Pbck1GetByDocumentStatusParam input);
+
     }
 }

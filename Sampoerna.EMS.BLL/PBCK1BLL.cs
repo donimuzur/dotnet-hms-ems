@@ -760,10 +760,15 @@ namespace Sampoerna.EMS.BLL
                     || (c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year == input.Year.Value));
             }
 
-            //if (input.DocumentStatus.HasValue)
-            //{
-            //    queryFilter = queryFilter.And(c => c.STATUS == input.DocumentStatus.Value);
-            //}
+            if (input.DocumentStatus.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == input.DocumentStatus.Value);
+            }
+
+            if (input.DocumentStatusGov.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS_GOV == input.DocumentStatusGov.Value);
+            }
 
             Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
@@ -771,22 +776,9 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
             }
             
-            //var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            //if (dbData == null)
-            //{
-            //    var exception = new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            //    rc.Data = null;
-            //    rc.ErrorCode = exception.Code;
-            //    rc.ErrorMessage = exception.Message;
-            //}
-
-            //var mapResult = Mapper.Map<List<Pbck1Dto>>(dbData.ToList());
-
-            //rc.Data = mapResult;
-
-            //return rc;
-
-            return null;
+            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+            var rc = Mapper.Map<List<Pbck1Dto>>(dbData);
+            return rc;
         }
 
     }

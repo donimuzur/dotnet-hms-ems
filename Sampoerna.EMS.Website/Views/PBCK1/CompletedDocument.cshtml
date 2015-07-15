@@ -1,0 +1,191 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
+
+@{
+    ViewBag.Title = "Completed Document";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterCompletedDocument", "PBCK1",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables"
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">NPPBKC ID</label>
+                                <div class="col-md-8">
+                                    @Html.HiddenFor(model => model.SearchInput.DocumentStatus)
+                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Type</label>
+                                <div class="col-md-8">
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control selectreset" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Year</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control selectreset" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div id="divPoaList" class="col-md-8 ui-widget">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_Pbck1CompletedDocumentTable")
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#pbckTable')) {
+                table = $('#pbckTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#pbckTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            // Setup - add a text input to each footer cell
+            $('#pbckTable .filters th').each(function() {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+            $('#MenuPBCK1CompletedListDocument').addClass('active');
+        }
+
+        $("#SearchInput_NppbkcId").change(function() {
+            if ($("#SearchInput_NppbkcId").length) {
+                var nbck = $(this).find("option:selected").text();
+                $('#SearchInput_POA option').remove();
+                console.log(nbck);
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_POA').append('<option value="">All</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+                }
+            }
+
+        });
+
+        $(document).ready(function() {
+            setupDataTables();
+        });
+
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.SearchInput.PoaList;
+                        if (list.length > 0) {
+                            $('#SearchInput_POA').append('<option value="">All</option>');
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function ReloadDataTables() {
+            $('.toggle-row').click(function() {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function() {
+
+                });
+            });
+            setupDataTables();
+        }
+
+    </script>
+
+}

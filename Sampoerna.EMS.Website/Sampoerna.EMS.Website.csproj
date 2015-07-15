@@ -761,6 +761,8 @@
     <Content Include="Views\CK5\Details.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

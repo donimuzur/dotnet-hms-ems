@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
     ViewBag.Title = "Create";
 }
@@ -8,7 +9,12 @@
             <h3>PBCK-1 Form</h3>
             <label class="status">Draft</label>
             <div class="action-button">
-                <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed) {
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
+                }
+                else {
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
+                }
             </div>
         </div>
     </div>
@@ -42,8 +48,11 @@
 
         $(document).ready(function() {
             $('#MenuPBCK1OpenListDocument').addClass('active');
-            $('#btnCancel').click(function (e) {
+            $('#btn-back-open-doc').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
+            });
+            $('#btn-back-completed-doc').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "Pbck1")';
             });
             $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
