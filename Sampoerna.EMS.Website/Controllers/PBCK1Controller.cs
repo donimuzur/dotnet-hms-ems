@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI;
 using AutoMapper;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -461,5 +463,50 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }
 
+        public void ExportClientsListToExcel(long id)
+        {
+            
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            var grid = new System.Web.UI.WebControls.GridView
+            {
+                DataSource = from d in model
+                    select new
+                    {
+                        Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty,
+                        FieldName = d.FIELD_NAME,
+                        OldValue = d.OLD_VALUE,
+                        NewValue = d.NEW_VALUE,
+                        User = d.USERNAME
+
+                    }
+            };
+            
+            grid.DataBind();
+
+            var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+
+        }
+        
     }
 }

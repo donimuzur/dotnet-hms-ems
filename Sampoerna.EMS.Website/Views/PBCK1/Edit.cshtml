@@ -58,6 +58,10 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
+            
+            $('#btn-changelog-export-xls').click(function () {
+                href.location = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
+            });
 
             $('#prod-conv-save').click(function () {
                 prodConvSaveClick();
@@ -67,11 +71,11 @@
             });
 
             $('#ProdConvSubmitBtn').click(function () {
-                prodConvGenerateClick();
+                prodConvGenerateClick('@Url.Action("UploadFileConversion", "PBCK1")');
             });
 
             $('#ProdPlanSubmitBtn').click(function () {
-                prodPlanGenerateClick();
+                prodPlanGenerateClick('@Url.Action("UploadFilePlan", "PBCK1")');
             });
 
             $('#btn-prod-conv-upload').click(function () {

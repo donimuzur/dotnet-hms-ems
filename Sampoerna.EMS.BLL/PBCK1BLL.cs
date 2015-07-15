@@ -25,6 +25,8 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IMonthBLL _monthBll;
+        private IPbck1ProdConverterBLL _prodConverterBll;
+        private IPbck1ProdPlanBLL _prodPlanBll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
@@ -39,6 +41,8 @@ namespace Sampoerna.EMS.BLL
             _prodTypeBll = new ZaidmExProdTypeBLL(_uow, _logger);
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+            _prodPlanBll = new Pbck1ProdPlanBLL(_uow, _logger);
+            _prodConverterBll = new Pbck1ProdConverterBLL(_uow, _logger);
         }
 
         public Pbck1GetByParamOutput Pbck1GetByParam(Pbck1GetByParamInput input)
@@ -128,11 +132,20 @@ namespace Sampoerna.EMS.BLL
                 //update
                 dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
 
+                //delete first
+                _prodConverterBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
+                _prodPlanBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
+
                 //set changes history
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
                 SetChangesHistory(origin, input.Pbck1, input.UserId);
 
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
+                dbData.PBCK1_PROD_CONVERTER = null;
+                dbData.PBCK1_PROD_PLAN = null;
+
+                dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
+                dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
 
             }
             else
@@ -445,14 +458,15 @@ namespace Sampoerna.EMS.BLL
                 #region -------------- UOM Validation --------------------
 
                 string uomName;
-                if (!ValidateUom(output.ConverterUom, out messages, out uomName))
+                string uomId;
+                if (!ValidateUom(output.ConverterUom, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
                 }
                 else
                 {
-                    output.ConverterUomId = output.ConverterUom;
+                    output.ConverterUomId = uomId;
                     output.ConverterUom = uomName;
                 }
 
@@ -549,7 +563,8 @@ namespace Sampoerna.EMS.BLL
                 #region ------------------ BKC Required UOM -------
 
                 string uomName;
-                if (!ValidateUom(output.BkcRequiredUomId, out messages, out uomName))
+                string uomId;
+                if (!ValidateUom(output.BkcRequiredUomId, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -557,6 +572,7 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     output.BkcRequiredUomName = uomName;
+                    output.BkcRequiredUomId = uomId;
                 }
 
                 #endregion
@@ -683,17 +699,19 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateUom(string uom, out List<string> message, out string uomName)
+        private bool ValidateUom(string uom, out List<string> message, out string uomName, out string uomId)
         {
             var valResult = false;
             var messageList = new List<string>();
             uomName = string.Empty;
+            uomId = string.Empty;
             if (!string.IsNullOrWhiteSpace(uom))
             {
                 var uomData = _uomBll.GetById(uom);
                 if (uomData != null)
                 {
                     uomName = uomData.UOM_DESC;
+                    uomId = uomData.UOM_ID;
                     valResult = true;
                 }
             }

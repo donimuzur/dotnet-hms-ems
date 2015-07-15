@@ -45,6 +45,9 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
+            });
 
             $('#MenuPBCK1OpenListDocument').addClass('active');
 

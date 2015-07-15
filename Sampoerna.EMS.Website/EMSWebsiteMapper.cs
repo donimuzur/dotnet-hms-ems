@@ -93,7 +93,11 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.BkcRequired, opt => opt.MapFrom(src => src.BkcRequired))
                 ;
 
-            Mapper.CreateMap<Pbck1ProdPlanDto, Pbck1ProdPlanModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdPlanDto, Pbck1ProdPlanModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProdTypeCode))
+                .ForMember(dest => dest.Month, opt => opt.MapFrom(src => src.MonthId))
+                .ForMember(dest => dest.ProdTypeAlias, opt => opt.MapFrom(src => src.ProdAlias))
+                ;
 
             Mapper.CreateMap<Pbck1Item, Pbck1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1ProdConverter,
