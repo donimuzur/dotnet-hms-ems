@@ -200,33 +200,20 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public DeletePbck1Output Delete(long id)
+        public void Delete(long id)
         {
-            var output = new DeletePbck1Output();
-            try
-            {
-                var dbData = _repository.GetByID(id);
+            var dbData = _repository.GetByID(id);
 
-                if (dbData == null)
-                {
-                    _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
-                    output.ErrorCode = ExceptionCodes.BLLExceptions.DataNotFound.ToString();
-                    output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.DataNotFound);
-                }
-                else
-                {
-                    _repository.Delete(dbData);
-                    _uow.SaveChanges();
-                    output.Success = true;
-                }
-            }
-            catch (Exception exception)
+            if (dbData == null)
             {
-                _logger.Error(exception);
-                output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-                output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
+                _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
+                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return output;
+            else
+            {
+                _repository.Delete(dbData);
+                _uow.SaveChanges();
+            }
         }
 
         private void SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, string userId)

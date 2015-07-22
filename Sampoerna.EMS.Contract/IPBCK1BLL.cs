@@ -13,8 +13,8 @@ namespace Sampoerna.EMS.Contract
         Pbck1Dto GetById(long id);
 
         SavePbck1Output Save(Pbck1SaveInput input);
-        
-        DeletePbck1Output Delete(long id);
+
+        void Delete(long id);
 
         string GetPbckNumberById(long id);
 
