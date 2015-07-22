@@ -98,12 +98,24 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public Nullable<bool> IsDeleted;
 
+        public decimal? Conversion
+        {
+            get;
+            set;
+        }
+        [Required]
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
         // list for dropdown in the form
         public SelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
 
-        public SelectList Convertion_UOM { get; set; }
+        public string ConversionUom { get; set; }
+        public SelectList ConversionUomList { get; set; }
         
     }
 }

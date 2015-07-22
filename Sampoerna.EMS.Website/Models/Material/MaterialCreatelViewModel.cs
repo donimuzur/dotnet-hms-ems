@@ -117,9 +117,10 @@ namespace Sampoerna.EMS.Website.Models.Material
         public SelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
-        
+
+        public string ConversionUom { get; set; }
         [Required]
-        public SelectList Conversion_UOM { get; set; }
+        public SelectList ConversionUomList { get; set; }
 
         public List<ZAIDM_EX_MATERIAL> MateriaList { get; set; }       
     }

@@ -45,7 +45,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
-            model.Conversion_UOM = GlobalFunctions.GetConversionUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -77,6 +77,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Mapper.Map(data,model);
             
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
+            model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             InitDetailModel(model);
             return View("Details",model);
         }
@@ -91,7 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
-            model.Conversion_UOM = GlobalFunctions.GetConversionUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -104,7 +105,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
-            model.Convertion_UOM = GlobalFunctions.GetConversionUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
            
             return model;
         }
