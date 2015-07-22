@@ -1,0 +1,123 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Models.Settings
+@model Sampoerna.EMS.Website.Models.Settings.GlobalSettingModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section scripts {
+    <script type="text/javascript" language="javascript">
+        var isMB = false;
+        function changebase(){
+            var selection = $("#FileSizeType").val();
+            var sizeval = Number($("#UploadFileSize").val());
+            if (selection == "MB") {
+               
+                //var i = parseInt(Math.floor(Math.log(sizeval) / Math.log(1024)));
+                var mbSize = Math.round(sizeval / 1024, 2);
+                $("#UploadFileSize").val(mbSize);
+                isMB = true;
+            } else if( selection == "KB"){
+                if (isMB) {
+                    //var sizeval = Number($("#UploadFileSize").val());
+                    //var i = parseInt(Math.floor(Math.log(sizeval) / Math.log(1024)));
+                    var mbSize = Math.round(sizeval * 1024, 2);
+                    $("#UploadFileSize").val(mbSize);
+                    isMB = false;
+                }
+            }
+        }
+
+
+    </script>
+}
+
+
+    @using (Html.BeginForm("Index", "GlobalSettings", null, System.Web.Mvc.FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    <div class="container-wrap title-page">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Settings</h3>
+                    <div class="action-button">
+                        <button class="btn btn-blue">Save</button>
+                        <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="container-wrap">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="white-wrapper">
+                        <div class="scroll">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Global Settings
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <form class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <label class="col-md-2">File Upload Size</label>
+                                                            <div class="col-md-2">
+                                                                @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
+                                                                @Html.TextBoxFor(model => model.UploadFileSize, new { @class = "form-control" })
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
+                                                                @Html.DropDownListFor(model => model.FileSizeType, Model.SizeType, new { @class = "form-control", @onchange = "changebase();" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-6">
+                                                                <span>
+                                                                    Maximum file size allowed to be uploaded by EMS System.
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                               <div class="row">
+
+                                                   <div class="col-md-12">
+                                                       <div class="row">
+                                                           <label class="col-md-2">Use Back Date</label>
+                                                           <div class="col-md-8">
+                                                               @Html.CheckBoxFor(model => model.UseBackDate, new { @class = "check-box" })
+                                                           </div>
+                                                       </div>
+                                                       <div class="row">
+                                                           <div class="col-md-2"></div>
+                                                           <div class="col-md-6">
+                                                               <span>
+                                                                   All transaction date can be picked from past date.
+                                                               </span>
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+
