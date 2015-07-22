@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUBMISSION_NUMBER { get; set; }
         public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
-        public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
+        public string EX_GOODS_TYPE_DESC { get; set; }
         public Sampoerna.EMS.Core.Enums.ExciseSettlement EX_SETTLEMENT_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.ExciseStatus EX_STATUS_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.RequestType REQUEST_TYPE_ID { get; set; }
@@ -78,8 +78,8 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
+        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
-        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
     }
 }
