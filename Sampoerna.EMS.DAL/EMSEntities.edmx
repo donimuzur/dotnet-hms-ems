@@ -408,8 +408,9 @@
           </Key>
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="ADRNR" Type="nvarchar" MaxLength="200" />
           <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
+          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -2580,7 +2581,6 @@
           </Key>
           <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="ADRNR" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -2592,6 +2592,8 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -4331,11 +4333,12 @@
           <EntitySetMapping Name="T001">
             <EntityTypeMapping TypeName="EMSModel.T001">
               <MappingFragment StoreEntitySet="T001">
+                <ScalarProperty Name="SPRAS" ColumnName="SPRAS" />
+                <ScalarProperty Name="ORT01" ColumnName="ORT01" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="NPWP" ColumnName="NPWP" />
-                <ScalarProperty Name="ADRNR" ColumnName="ADRNR" />
                 <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
                 <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
               </MappingFragment>

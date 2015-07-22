@@ -225,6 +225,7 @@
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\GlobalSettingsController.cs" />
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -280,6 +281,7 @@
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
+    <Compile Include="Models\Settings\GlobalSettingModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
@@ -289,6 +291,7 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\WorkflowSetting\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
@@ -743,6 +746,7 @@
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
+    <Content Include="Views\GlobalSettings\Index.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
     <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
@@ -751,6 +755,8 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\WorkflowHistory\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\SettingsGlobal\" />
+    <Folder Include="Views\Settings\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
