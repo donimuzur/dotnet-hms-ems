@@ -767,6 +767,17 @@
     <Content Include="Views\GlobalSettings\Index.cshtml" />
     <Content Include="Views\EmailTemplate\Index.cshtml" />
     <Content Include="Views\EmailTemplate\Details.cshtml" />
+    <Content Include="Views\CK5\_CK5ChangeLog.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5Printout.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadList.cshtml" />
+    <Content Include="Views\CK5\Create.cshtml" />
+    <Content Include="Views\CK5\Details.cshtml" />
+    <Content Include="Views\CK5\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

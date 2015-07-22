@@ -223,8 +223,8 @@ namespace Sampoerna.EMS.BLL
                 //create new ck5 documents
 
                 long plantId = 0;
-                if (input.Ck5Dto.SOURCE_PLANT_ID.HasValue)
-                    plantId = input.Ck5Dto.SOURCE_PLANT_ID.Value;
+                //if (input.Ck5Dto.SOURCE_PLANT_ID.HasValue)
+                //    plantId = input.Ck5Dto.SOURCE_PLANT_ID.Value;
 
                 //todo check it
                 //var plant = _masterDataBll.GetPlantById(plantId);
@@ -433,15 +433,15 @@ namespace Sampoerna.EMS.BLL
                         //changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(data.EX_GOODS_TYPE_ID);
                         break;
                     case "EX_SETTLEMENT_ID":
-                        changes.OLD_VALUE = origin.ExSettlementName;
+                        //changes.OLD_VALUE = origin.ExSettlementName;
                         //changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_SETTLEMENT_ID);
                         break;
                     case "EX_STATUS_ID":
-                        changes.OLD_VALUE = origin.ExStatusName;
+                        //changes.OLD_VALUE = origin.ExStatusName;
                         //changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_STATUS_ID);
                         break;
                     case "REQUEST_TYPE_ID":
-                        changes.OLD_VALUE = origin.RequestTypeName;
+                        //changes.OLD_VALUE = origin.RequestTypeName;
                         //changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(data.REQUEST_TYPE_ID);
                         break;
                     case "SOURCE_PLANT_ID":
@@ -474,7 +474,7 @@ namespace Sampoerna.EMS.BLL
                             pbck1 = data.PBCK1_DECREE_ID.Value;
 
                         changes.OLD_VALUE = origin.PbckNumber;
-                        changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(pbck1);
+                        //changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(pbck1);
                         break;
 
                     case "CARRIAGE_METHOD_ID":

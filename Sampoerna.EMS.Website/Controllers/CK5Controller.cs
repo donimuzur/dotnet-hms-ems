@@ -116,7 +116,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                
                 model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Domestic);
-                //AddMessageInfo("User role : " + CurrentUser.UserRole, Enums.MessageInfoType.Info);
+                
             }
             catch (Exception ex)
             {
@@ -444,8 +444,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
-
-                model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
+                //TODO CHECK
+                //model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
 
                 //validate
                 //only allow edit/submit when current_user = createdby and document = draft
