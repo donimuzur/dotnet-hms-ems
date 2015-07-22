@@ -486,7 +486,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             grid.DataBind();
 
-            var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
