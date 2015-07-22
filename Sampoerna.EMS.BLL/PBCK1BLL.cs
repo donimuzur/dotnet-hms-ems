@@ -725,5 +725,61 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
+        public List<Pbck1Dto> GetByDocumentStatus(Pbck1GetByDocumentStatusParam input)
+        {
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
+
+            if (input.Pbck1Type.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.PBCK1_TYPE == input.Pbck1Type.Value);
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
+            if (!string.IsNullOrEmpty(input.GoodTypeId))
+            {
+                queryFilter = queryFilter.And(c => c.EXC_GOOD_TYP == input.GoodTypeId);
+            }
+
+            if (input.Year.HasValue)
+            {
+                queryFilter = queryFilter.And(c => (c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year == input.Year.Value)
+                    || (c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year == input.Year.Value));
+            }
+
+            if (input.DocumentStatus.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == input.DocumentStatus.Value);
+            }
+
+            if (input.DocumentStatusGov.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS_GOV == input.DocumentStatusGov.Value);
+            }
+
+            Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
+            if (!string.IsNullOrEmpty(input.SortOrderColumn))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
+            }
+            
+            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+            var rc = Mapper.Map<List<Pbck1Dto>>(dbData);
+            return rc;
+        }
+
     }
 }

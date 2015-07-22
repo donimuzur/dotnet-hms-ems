@@ -32,6 +32,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public SelectList UomList { get; set; }
 
         public Enums.DocumentStatusGov StatusGovList { get; set; }
+
+        public Enums.DocumentStatus? DocStatus { get; set; }
         
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
         

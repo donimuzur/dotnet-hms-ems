@@ -26,4 +26,22 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType WorkflowActionType { get; set; }
     }
 
+    public class Pbck1GetByDocumentStatusParam
+    {
+        public string NppbkcId { get; set; }
+        public string Poa { get; set; }
+        public Enums.PBCK1Type? Pbck1Type { get; set; }
+
+        public string GoodTypeId { get; set; }
+        public string Creator { get; set; }
+        public int? Year { get; set; }
+        public Enums.DocumentStatus? DocumentStatus { get; set; }
+        public Enums.DocumentStatusGov? DocumentStatusGov { get; set; }
+
+        /// <summary>
+        /// optional if want to sorting from query
+        /// </summary>
+        public string SortOrderColumn { get; set; }
+    }
+
 }
