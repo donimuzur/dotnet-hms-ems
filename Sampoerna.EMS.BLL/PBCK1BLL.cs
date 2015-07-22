@@ -27,6 +27,8 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IPbck1ProdConverterBLL _prodConverterBll;
         private IPbck1ProdPlanBLL _prodPlanBll;
+        private IPOABLL _poaBll;
+
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
@@ -43,6 +45,7 @@ namespace Sampoerna.EMS.BLL
             _monthBll = new MonthBLL(_uow, _logger);
             _prodPlanBll = new Pbck1ProdPlanBLL(_uow, _logger);
             _prodConverterBll = new Pbck1ProdConverterBLL(_uow, _logger);
+            _poaBll = new POABLL(_uow, _logger);
         }
 
         public Pbck1GetByParamOutput Pbck1GetByParam(Pbck1GetByParamInput input)
@@ -171,15 +174,25 @@ namespace Sampoerna.EMS.BLL
             var output = new SavePbck1Output();
 
             _uow.SaveChanges();
+
             output.Success = true;
-            if (dbData != null)
-            {
-                output.Id = dbData.PBCK1_ID;
-                output.Pbck1Number = dbData.NUMBER;
-            }
+            output.Id = dbData.PBCK1_ID;
+            output.Pbck1Number = dbData.NUMBER;
 
             //set workflow history
-            AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
+            //AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+            
+            var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = output.Id,
+                DocumentNumber = output.Pbck1Number,
+                ActionType = input.WorkflowActionType,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            };
+
+            AddWorkflowHistory(inputAddWorkflowHistory);
 
             _uow.SaveChanges();
 
@@ -387,25 +400,6 @@ namespace Sampoerna.EMS.BLL
                     _changesHistoryBll.AddHistory(changes);
                 }
             }
-        }
-
-        private void AddWorkflowHistory(long id, string formNumber, Core.Enums.ActionType actionType, string userId)
-        {
-            var dbData = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput(){ FormNumber = formNumber, ActionType = actionType});
-
-            if (dbData == null)
-            {
-                dbData = new WorkflowHistoryDto()
-                {
-                    ACTION = actionType,
-                    FORM_ID = id,
-                    FORM_TYPE_ID = Core.Enums.FormType.PBCK1,
-                    FORM_NUMBER = formNumber
-                };
-            }
-            dbData.ACTION_BY = userId;
-            dbData.ACTION_DATE = DateTime.Now;
-            _workflowHistoryBll.Save(dbData);
         }
 
         public string GetPbckNumberById(long id)
@@ -814,18 +808,19 @@ namespace Sampoerna.EMS.BLL
 
         private void AddWorkflowHistory(Pbck1WorkflowDocumentInput input)
         {
-            var dbData = new WorkflowHistoryDto();
+            var dbData = new WorkflowHistoryDto
+            {
+                ACTION = input.ActionType,
+                FORM_NUMBER = input.DocumentNumber,
+                FORM_TYPE_ID = Core.Enums.FormType.CK5,
+                FORM_ID = input.DocumentId
+            };
 
-            dbData.ACTION = input.ActionType;
-            dbData.FORM_NUMBER = input.DocumentNumber;
-            dbData.FORM_TYPE_ID = Core.Enums.FormType.CK5;
-
-            dbData.FORM_ID = input.DocumentId;
             if (!string.IsNullOrEmpty(input.Comment))
                 dbData.COMMENT = input.Comment;
 
             dbData.ACTION_BY = input.UserId;
-            //dbData.ROLE = input.UserRole;
+            dbData.ROLE = input.UserRole;
             dbData.ACTION_DATE = DateTime.Now;
 
             _workflowHistoryBll.Save(dbData);
@@ -915,6 +910,28 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private void GovPartialApproveDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
+            dbData.STATUS_GOV = Core.Enums.DocumentStatusGov.PartialApproved;
+
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            input.ActionType = Core.Enums.ActionType.Completed;
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+        }
+
         private void GovRejectedDocument(Pbck1WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -948,8 +965,8 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS = Core.Enums.DocumentStatus.Completed;
 
-            //dbData.APPROVED_BY = input.UserId;
-            //dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
 
             input.DocumentNumber = dbData.NUMBER;
 
