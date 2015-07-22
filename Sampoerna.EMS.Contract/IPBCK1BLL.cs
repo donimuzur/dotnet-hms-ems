@@ -23,5 +23,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1Dto> GetByDocumentStatus(Pbck1GetByDocumentStatusParam input);
 
+        void Pbck1Workflow(Pbck1WorkflowDocumentInput input);
+
     }
 }

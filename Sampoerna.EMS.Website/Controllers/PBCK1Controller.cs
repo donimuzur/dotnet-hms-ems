@@ -173,7 +173,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     Pbck1 = dataToSave,
                     UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Save
+                    WorkflowActionType = Enums.ActionType.Modified
                 };
                 var saveResult = _pbck1Bll.Save(input);
 
@@ -270,7 +270,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     Pbck1 = dataToSave,
                     UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Save
+                    WorkflowActionType = Enums.ActionType.Created
                 };
 
                 var saveResult = _pbck1Bll.Save(input);

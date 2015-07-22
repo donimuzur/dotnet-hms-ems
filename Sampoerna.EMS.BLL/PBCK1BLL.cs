@@ -781,5 +781,182 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
+        public void Pbck1Workflow(Pbck1WorkflowDocumentInput input)
+        {
+            switch (input.ActionType)
+            {
+                case Core.Enums.ActionType.Submit:
+                    SubmitDocument(input);
+                    break;
+                case Core.Enums.ActionType.Approve:
+                    ApproveDocument(input);
+                    break;
+                case Core.Enums.ActionType.Reject:
+                    RejectDocument(input);
+                    break;
+                case Core.Enums.ActionType.GovApprove:
+                    GovApproveDocument(input);
+                    break;
+                case Core.Enums.ActionType.GovReject:
+                    GovRejectedDocument(input);
+                    break;
+                case Core.Enums.ActionType.GovCancel:
+                    GovCancelledDocument(input);
+                    break;
+            }
+
+            //todo sent mail
+
+            _uow.SaveChanges();
+        }
+        
+        #region workflow
+
+        private void AddWorkflowHistory(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = new WorkflowHistoryDto();
+
+            dbData.ACTION = input.ActionType;
+            dbData.FORM_NUMBER = input.DocumentNumber;
+            dbData.FORM_TYPE_ID = Core.Enums.FormType.CK5;
+
+            dbData.FORM_ID = input.DocumentId;
+            if (!string.IsNullOrEmpty(input.Comment))
+                dbData.COMMENT = input.Comment;
+
+            dbData.ACTION_BY = input.UserId;
+            //dbData.ROLE = input.UserRole;
+            dbData.ACTION_DATE = DateTime.Now;
+
+            _workflowHistoryBll.Save(dbData);
+        }
+
+        private void SubmitDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.Draft)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS = Core.Enums.DocumentStatus.WaitingForApproval;
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void ApproveDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingForApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS = Core.Enums.DocumentStatus.WaitingGovApproval;
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void RejectDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingForApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //change back to draft
+            dbData.STATUS = Core.Enums.DocumentStatus.Draft;
+
+            //todo ask
+            dbData.APPROVED_BY = null;
+            dbData.APPROVED_DATE = null;
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void GovApproveDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
+
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            input.ActionType = Core.Enums.ActionType.Completed;
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+
+        }
+
+        private void GovRejectedDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS = Core.Enums.DocumentStatus.Draft;
+
+            dbData.APPROVED_BY = input.UserId;
+            dbData.APPROVED_DATE = DateTime.Now;
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void GovCancelledDocument(Pbck1WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
+
+            //dbData.APPROVED_BY = input.UserId;
+            //dbData.APPROVED_DATE = DateTime.Now;
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+        }
+
+        #endregion
+
     }
 }
