@@ -61,9 +61,10 @@ namespace Sampoerna.EMS.BLL
                 if (input.UserRole == Enums.UserRole.Manager) //manager need one group
                     return IsOneGroup(input.CreatedUser, input.CurrentUserGroup);
 
-                //if created user = poa , false
+               //if user = poa , should only approve that created by user
                 if (input.UserRole == Enums.UserRole.POA)
                 {
+                    //if created user = poa , false
                     if (_zaidmExPoabll.GetUserRole(input.CreatedUser) == Enums.UserRole.POA)
                         return false;
 

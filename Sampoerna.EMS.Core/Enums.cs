@@ -56,47 +56,47 @@ namespace Sampoerna.EMS.Core
             [Description("Draft")]
             Draft = 1,
             [Description("Revised")]
-            Revised = 2,
+            Revised = 5,
             [Description("Waiting for Approval")]
-            WaitingForApproval = 3,
+            WaitingForApproval = 10,
             [Description("Approved")]
-            Approved = 4,
+            Approved = 15,
             [Description("Rejected")]
-            Rejected = 5,
+            Rejected = 20,
             [Description("Waiting for Government Approval")]
-            WaitingGovApproval = 6,
+            WaitingGovApproval = 25,
             [Description("Government Approved")]
-            GovApproved = 7,
+            GovApproved = 30,
             [Description("Government Rejected")]
-            GovRejected = 8,
+            GovRejected = 35,
             [Description("Government Canceled")]
-            GovCanceled = 9,
+            GovCanceled = 40,
             [Description("STO Created")]
-            STOCreated = 10,
+            STOCreated = 45,
             [Description("STO Failed")]
-            STOFailed = 11,
+            STOFailed = 50,
             [Description("Outbound Delivery Created")]
-            ODCreated = 12,
+            ODCreated = 55,
             [Description("Good Received Created")]
-            GRCreated = 13,
+            GRCreated = 60,
             [Description("Good Received Partial")]
-            GRPartial = 14,
+            GRPartial = 65,
             [Description("Good Received Completed")]
-            GRCompleted = 15,
+            GRCompleted = 70,
             [Description("Good Received Reversal")]
-            GRReversal = 16,
+            GRReversal = 75,
             [Description("Good Issue Created")]
-            GICreated = 17,
+            GICreated = 80,
             [Description("Good Issue Partial")]
-            GIPartial = 18,
+            GIPartial = 85,
             [Description("Good Issue Completed")]
-            GICompleted = 19,
+            GICompleted = 90,
             [Description("Good Issue Reversal")]
-            GIReversal = 20,
+            GIReversal = 95,
             [Description("Cancelled")]
-            Cancelled = 21,
+            Cancelled = 100,
             [Description("Completed")]
-            Completed = 22
+            Completed = 105
         }
 
         public enum DocumentStatusGov
@@ -123,22 +123,24 @@ namespace Sampoerna.EMS.Core
 
         public enum ActionType
         {
-            [Description("Save")]
-            Save = 1,
+            [Description("Created")]
+            Created = 1,
+            [Description("Modified")]
+            Modified = 5,
             [Description("Submit")]
-            Submit = 2,
+            Submit = 10,
             [Description("Approve")]
-            Approve = 3,
+            Approve = 15,
             [Description("Reject")]
-            Reject = 4,
+            Reject = 20,
             [Description("GovApprove")]
-            GovApprove = 5,
+            GovApprove = 25,
             [Description("GovReject")]
-            GovReject = 6,
+            GovReject = 30,
             [Description("GovCancel")]
-            GovCancel = 7,
+            GovCancel = 35,
             [Description("Completed")]
-            Completed = 8,
+            Completed = 40,
         }
 
         /// <summary>

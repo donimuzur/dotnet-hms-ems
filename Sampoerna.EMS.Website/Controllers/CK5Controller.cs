@@ -576,7 +576,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Ck5Dto = dataToSave,
                 UserId = CurrentUser.USER_ID,
                 UserRole = CurrentUser.UserRole,
-                WorkflowActionType = Enums.ActionType.Save,
+                //WorkflowActionType = Enums.ActionType.Save,
                 Ck5Material = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels)
             };
 
@@ -710,25 +710,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Workflow
 
-        private CK5WorkflowDocumentInput InitInputWorkflow(long id)
+        private void CK5Workflow(long id, Enums.ActionType actionType, string comment)
         {
             var input = new CK5WorkflowDocumentInput();
             input.DocumentId = id;
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ActionType = actionType;
+            input.Comment = comment;
 
-            return input;
+            _ck5Bll.CK5Workflow(input);
         }
         public ActionResult SubmitDocument(long id)
         {
             try
             {
-                var input = new CK5WorkflowDocumentInput();
-                input.DocumentId = id;
-                input.UserId = CurrentUser.USER_ID;
-                input.UserRole = CurrentUser.UserRole;
-
-                _ck5Bll.SubmitDocument(input);
+                CK5Workflow(id, Enums.ActionType.Submit,string.Empty);
                 AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
@@ -742,9 +739,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-               var input =  InitInputWorkflow(id);
-
-                _ck5Bll.ApproveDocument(input);
+                CK5Workflow(id, Enums.ActionType.Approve, string.Empty);
                 AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
@@ -758,11 +753,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                var input = InitInputWorkflow(model.Ck5Id);
-
-                input.Comment = model.Comment;
-
-                _ck5Bll.RejectDocument(input);
+                CK5Workflow(model.Ck5Id, Enums.ActionType.Reject, model.Comment);
                 AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
@@ -776,9 +767,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                var input = InitInputWorkflow(id);
-
-                _ck5Bll.GovApproveDocument(input);
+                CK5Workflow(id, Enums.ActionType.GovApprove, "");
                 AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
@@ -786,6 +775,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("Details", "CK5", new { id });
+        }
+
+        public ActionResult GovRejectDocument(CK5FormViewModel model)
+        {
+            try
+            {
+                CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
+                AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        public ActionResult GovCancelDocument(CK5FormViewModel model)
+        {
+            try
+            {
+                CK5Workflow(model.Ck5Id, Enums.ActionType.GovCancel, model.Comment);
+                AddMessageInfo("Success GovCancel Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
         #endregion

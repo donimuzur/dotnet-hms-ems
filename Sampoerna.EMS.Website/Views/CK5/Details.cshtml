@@ -48,7 +48,7 @@
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    @Html.HiddenFor(model => model.Ck5Id);
+                    @Html.HiddenFor(model => model.Ck5Id)
                     @Html.Partial("_CK5InformationDetails")
                     @Html.Partial("_CK5Printout")
                     @Html.Partial("_CK5ChangeLog")
@@ -112,6 +112,67 @@
 </div>
 
 
+<div id="Ck5ModalGovReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Government Reject document</h4>
+            </div>
+            @using (Html.BeginForm("GovRejectDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmGovReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div id="Ck5ModalGovCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Government Cancel document</h4>
+            </div>
+            @using (Html.BeginForm("GovCancelDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmGovCancel" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 
 @section scripts {
     <script type="text/javascript">
@@ -130,22 +191,46 @@
 
         });
 
-        $("#btnReject").click(function () {
-            $('#Ck5ModalReject').modal('show');
-
-        });
+        
 
         $("#btnConfirm").click(function () {
             window.location = "@Url.Action("ApproveDocument", "CK5", new { id = @Model.Ck5Id })";
         });
 
 
+        $("#btnReject").click(function () {
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+            
+            $('#Comment').val('');
+            
+            $('#Ck5ModalReject').modal('show');
+
+        });
+        
         $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmReject').attr('disabled', 'disabled');
-
+            $('#btnConfirmGovReject').attr('disabled', 'disabled');
+            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            
             if (this.value.length) {
                 $('#btnConfirmReject').removeAttr('disabled');
+                $('#btnConfirmGovReject').removeAttr('disabled');
+                $('#btnConfirmGovCancel').removeAttr('disabled');
+            }
+        });
+
+        $('.GovCancel').bind('input propertychange', function () {
+            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            if (this.value.length) {
+                $('#btnConfirmGovCancel').removeAttr('disabled');
+            }
+        });
+        
+        $('.GovReject').bind('input propertychange', function () {
+            $('#btnConfirmGovReject').attr('disabled', 'disabled');
+            if (this.value.length) {
+                $('#btnConfirmGovReject').removeAttr('disabled');
             }
         });
 
@@ -162,6 +247,24 @@
         $("#btnConfirmGovApprove").click(function () {
             window.location = "@Url.Action("GovApproveDocument", "CK5", new { id = @Model.Ck5Id })";
         });
+        
+
+        $("#btnGovReject").click(function () {
+            $('#btnConfirmGovReject').attr('disabled', 'disabled');
+            $('.GovReject').val('');
+            $('#Ck5ModalGovReject').modal('show');
+
+        });
+        
+        $("#btnGovCancel").click(function () {
+            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            $('.GovCancel').val('');
+            $('#Ck5ModalGovCancel').modal('show');
+
+        });
+
+      
+        
         
     </script>
 }
