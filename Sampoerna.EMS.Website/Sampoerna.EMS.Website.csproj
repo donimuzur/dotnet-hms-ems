@@ -255,8 +255,13 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
+    <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
+    <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
