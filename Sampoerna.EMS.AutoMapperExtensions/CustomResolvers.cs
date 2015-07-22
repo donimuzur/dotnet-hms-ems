@@ -134,7 +134,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             if (value.GRAND_TOTAL_EX.HasValue)
                resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
         
-            if (!string.IsNullOrEmpty(value.PackageUomName))
+            if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
                 resultUOM = value.PackageUomName;
 
             return resultValue + " " + resultUOM;

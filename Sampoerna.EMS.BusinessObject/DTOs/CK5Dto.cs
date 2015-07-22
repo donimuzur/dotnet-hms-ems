@@ -30,11 +30,18 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DEST_PLANT_ID { get; set; }
         public string INVOICE_NUMBER { get; set; }
         public Nullable<System.DateTime> INVOICE_DATE { get; set; }
-        public Nullable<int> PBCK1_DECREE_ID { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.CarriageMethod> CARRIAGE_METHOD_ID { get; set; }
+        
+       public Nullable<int> PBCK1_DECREE_ID { get; set; }
+       public string PbckNumber { get; set; }
+       public DateTime? PbckDecreeDate { get; set; }
+
+       public Nullable<Sampoerna.EMS.Core.Enums.CarriageMethod> CARRIAGE_METHOD_ID { get; set; }
         public Nullable<decimal> GRAND_TOTAL_EX { get; set; }
-        public string PACKAGE_UOM_ID { get; set; }
-        public Nullable<int> DEST_COUNTRY_ID { get; set; }
+        
+       public string PACKAGE_UOM_ID { get; set; }
+       public string PackageUomName { get; set; }
+       
+       public Nullable<int> DEST_COUNTRY_ID { get; set; }
         public string HARBOUR { get; set; }
         public string OFFICE_HARBOUR { get; set; }
         public string LAST_SHELTER_HARBOUR { get; set; }

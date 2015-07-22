@@ -78,8 +78,8 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
     }
 }
