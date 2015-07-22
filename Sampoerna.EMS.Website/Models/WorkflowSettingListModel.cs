@@ -9,8 +9,10 @@ namespace Sampoerna.EMS.Website.Models.WorkflowSetting
     {
         public WorkflowSettingListModel() {
             Details = new List<WorkflowDetails>();
+            
         }
         public List<WorkflowDetails> Details { get; set; }
+        
     }
 
     public class WorkflowDetails {
@@ -23,5 +25,7 @@ namespace Sampoerna.EMS.Website.Models.WorkflowSetting
 
     public class WorkflowMappingDetails {
         public string State { get; set; }
+
+        public int EmailTemplateId { get; set; }
     }
 }

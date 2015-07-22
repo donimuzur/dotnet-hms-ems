@@ -7,11 +7,17 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.Settings;
 using System.Configuration;
 using System.Web.Configuration;
+using Sampoerna.EMS.Contract;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
     public class GlobalSettingsController : BaseController
     {
+
+        public GlobalSettingsController(IPageBLL pageBLL) : base(pageBLL,Enums.MenuList.Settings){
+
+
+        }
         //
         // GET: /GlobalSettings/
         public ActionResult Index()

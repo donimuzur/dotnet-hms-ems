@@ -66,6 +66,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IPOASKBLL, POASKBLL>();
             container.Register<IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
             container.Register<IWorkflowHistoryBLL,WorkflowHistoryBLL>();
+            container.Register<IEmailTemplateBLL, EmailTemplateBLL>();
             container.Register<IPbck1ProdConverterBLL, Pbck1ProdConverterBLL>();
             container.Register<IPbck1ProdPlanBLL, Pbck1ProdPlanBLL>();
           
