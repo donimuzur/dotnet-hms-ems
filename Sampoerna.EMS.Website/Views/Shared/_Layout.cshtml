@@ -251,7 +251,62 @@
                         </div>
                             break;
 
-
+                        case Enums.MenuList.Settings:
+                        <div class="collapse-menu active open">
+                            <a href="#" class="list-group-item list-parent">
+                                <i class="fa fa-clipboard"></i>
+                                <span>Master Data</span>
+                                <i class="down fa fa-caret-down"></i>
+                            </a>
+                            <ul class="child list">
+                                <li>
+                                    <a id="MenuWorkflowSetting" href="@Url.Action("Index", "WorkflowSetting")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Workflow
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuEmailTemplate" href="@Url.Action("Index", "EmailTemplate")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Email Templates
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuDocumentSequence" href="@Url.Action("Index", "DocumentSequence")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Document Sequence
+                                    </a>
+                                </li>
+                                <li>
+                                   
+                                    <a id="MenuGlobalSetting" href="@Url.Action("Index", "GlobalSetting")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Global Settings
+                                    </a>
+                                </li>
+                                
+                                
+                            </ul>
+                        </div>
+                        <div class="other">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-th"></i>
+                                <span>Other Modules</span>
+                            </a>
+                            <ul class="child other-menu">
+                                <li><a href="list.html"><i class="fa fa-angle-right"></i> PBCK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                            </ul>
+                        </div>
+                            
+                            break;
                     }
                 }
             </div>
