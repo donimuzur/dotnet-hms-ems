@@ -16,14 +16,13 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public UOM()
         {
-            this.CK5 = new HashSet<CK5>();
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.LACK1 = new HashSet<LACK1>();
             this.LACK11 = new HashSet<LACK1>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.CK5 = new HashSet<CK5>();
         }
     
         public string UOM_ID { get; set; }
@@ -32,7 +31,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
     
-        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual USER USER { get; set; }
@@ -40,6 +38,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<LACK1> LACK1 { get; set; }
         public virtual ICollection<LACK1> LACK11 { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }

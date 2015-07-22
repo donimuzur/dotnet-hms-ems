@@ -21,6 +21,7 @@ using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
+using Sampoerna.EMS.Website.Models.EmailTemplate;
 
 namespace Sampoerna.EMS.Website
 {
@@ -580,6 +581,29 @@ namespace Sampoerna.EMS.Website
             
 
 
+            #endregion
+
+            #region Email Template
+            Mapper.CreateMap<EMAIL_TEMPLATE, EmailTemplateModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EmailTemplateId,
+                    opt => opt.MapFrom(src => src.EMAIL_TEMPLATE_ID))
+                .ForMember(dest => dest.EmailTemplateName,
+                    opt => opt.MapFrom(src => src.TEMPLATE_NAME))
+                .ForMember(dest => dest.EmailTemplateSubject,
+                    opt => opt.MapFrom(src => src.SUBJECT))
+                .ForMember(dest => dest.EmailTemplateBody,
+                    opt => opt.MapFrom(src => src.BODY));
+                //.ForMember(dest => dest.;
+
+            Mapper.CreateMap<EmailTemplateModel,EMAIL_TEMPLATE>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EMAIL_TEMPLATE_ID,
+                    opt => opt.MapFrom(src => src.EmailTemplateId))
+                .ForMember(dest => dest.TEMPLATE_NAME,
+                    opt => opt.MapFrom(src => src.EmailTemplateName))
+                .ForMember(dest => dest.SUBJECT,
+                    opt => opt.MapFrom(src => src.EmailTemplateSubject))
+                .ForMember(dest => dest.BODY,
+                    opt => opt.MapFrom(src => src.EmailTemplateBody));
             #endregion
         }
     }
