@@ -11,9 +11,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string POA { get; set; }
 
-        public int? NPPBKCOrigin { get; set; }
+        public string NPPBKCOrigin { get; set; }
 
-        public int? NPPBKCDestination { get; set; }
+        public string NPPBKCDestination { get; set; }
 
         public string Creator { get; set; }
 
