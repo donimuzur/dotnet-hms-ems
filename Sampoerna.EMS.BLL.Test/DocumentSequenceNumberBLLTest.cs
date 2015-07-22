@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.BLL.Test
 
             var input = new GenerateDocNumberInput()
             {
-                Month = 1, Year = 1, NppbkcId = 1
+                Month = 1, Year = 1, NppbkcId = "1"
             };
 
             _repository.Get().ReturnsForAnyArgs(new List<DOC_NUMBER_SEQ>() { docNumberSeq });

@@ -30,9 +30,9 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(c => c.NPPBKC_ID == id, null, includeTables).FirstOrDefault();
         }
 
-        public ZAIDM_EX_NPPBKC GetDetailsById(long id)
+        public ZAIDM_EX_NPPBKC GetDetailsById(string id)
         {
-            return _repository.Get(c => c.NPPBKC_ID == id, null, "T1001, ZAIDM_EX_KPPBC").FirstOrDefault();
+            return _repository.Get(c => c.NPPBKC_ID == id, null, "T001, ZAIDM_EX_KPPBC").FirstOrDefault();
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()
@@ -101,14 +101,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public string GetCeOfficeCodeByNppbcId(long nppBkcId)
+        public string GetCeOfficeCodeByNppbcId(string nppBkcId)
         {
 
             var dbData = _repository.Get(n => n.NPPBKC_ID == nppBkcId, null, "ZAIDM_EX_KPPBC").FirstOrDefault();
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return dbData.ZAIDM_EX_KPPBC.KPPBC_NUMBER;
+            return dbData.ZAIDM_EX_KPPBC.KPPBC_ID;
 
         }
     }

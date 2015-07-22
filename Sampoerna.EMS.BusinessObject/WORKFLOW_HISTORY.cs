@@ -22,7 +22,5 @@ namespace Sampoerna.EMS.BusinessObject
         public string ACTION_BY { get; set; }
         public Nullable<System.DateTime> ACTION_DATE { get; set; }
         public string COMMENT { get; set; }
-    
-        public virtual USER USER { get; set; }
     }
 }
