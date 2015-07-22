@@ -37,13 +37,13 @@ namespace Sampoerna.EMS.XMLReader
                     var item = new ZAIDM_EX_MATERIAL();
                     item.STICKER_CODE = xElement.Element("MATNR").Value;
                     item.MATERIAL_DESC = string.Empty;
-                    item.ISSUE_STORANGE_LOC = string.Empty;
                     item.BASE_UOM_ID = xElement.Element("MEINS").Value;
                     item.MATERIAL_GROUP = xElement.Element("MATKL").Value;
                     var E1MARCM = xElement.Element("E1MARCM");
                     if (E1MARCM != null)
                     {
                         item.WERKS = E1MARCM.Element("WERKS").Value;
+                        item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? null : E1MARCM.Element("LGPRO").Value;
                         var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
                         if (exGoodType != null)
                         {
