@@ -14,10 +14,5 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     {
         
     }
-
-    public class Pbck1GetByParamOutput : BLLBaseOutput
-    {
-        public List<Pbck1Dto> Data { get; set; }
-    }
-
+    
 }

@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public SelectList CreatorList { get; set; }
         public SelectList YearList { get; set; }
 
-        public Enums.DocumentStatus? DocumentStatus { get; set; }
-        public Enums.DocumentStatusGov? DocumentStatusGov { get; set; }
+        public Enums.Pbck1DocumentType DocumentType { get; set; }
+
     }
 }

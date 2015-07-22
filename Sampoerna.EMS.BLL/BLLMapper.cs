@@ -54,6 +54,8 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
                 ;
 
+            #region PBCK1
+
             Mapper.CreateMap<PBCK1_PROD_CONVERTER, Pbck1ProdConverterDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1ProdConvId, opt => opt.MapFrom(src => src.PBCK1_PROD_COV_ID))
                 .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
@@ -194,6 +196,17 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PBCK1_PROD_PLAN, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_PLAN>>(src.Pbck1ProdPlan)))
                 ;
 
+            Mapper.CreateMap<Pbck1WorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))
+                .ForMember(dest => dest.FORM_NUMBER, opt => opt.MapFrom(src => src.DocumentNumber))
+                .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dest => dest.COMMENT, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
+                ;
+
+            #endregion
+
             #region CK5
 
             Mapper.CreateMap<CK5MaterialInput, CK5MaterialOutput>().IgnoreAllNonExisting();
@@ -215,6 +228,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Pbck1ProdPlanInput, Pbck1ProdPlanOutput>().IgnoreAllNonExisting();
 
             #endregion
+
+
         }
     }
 }

@@ -7,8 +7,11 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IPBCK1BLL
     {
+        List<Pbck1Dto> GetCompletedDocumentByParam(Pbck1GetCompletedDocumentByParamInput input);
 
-        Pbck1GetByParamOutput Pbck1GetByParam(Pbck1GetByParamInput input);
+        List<Pbck1Dto> GetOpenDocumentByParam(Pbck1GetOpenDocumentByParamInput input);
+        
+        List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input);
 
         Pbck1Dto GetById(long id);
 
@@ -19,9 +22,8 @@ namespace Sampoerna.EMS.Contract
         string GetPbckNumberById(long id);
 
         List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs);
-        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
 
-        List<Pbck1Dto> GetByDocumentStatus(Pbck1GetByDocumentStatusParam input);
+        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
 
         void Pbck1Workflow(Pbck1WorkflowDocumentInput input);
 

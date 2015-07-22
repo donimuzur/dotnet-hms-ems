@@ -11,6 +11,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -48,7 +49,34 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow, _logger);
         }
 
-        public Pbck1GetByParamOutput Pbck1GetByParam(Pbck1GetByParamInput input)
+        public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
+        {
+            var queryFilter = ProcessQueryFilter(input);
+
+            return GetPbck1Data(queryFilter, input.SortOrderColumn);
+        }
+
+        public List<Pbck1Dto> GetOpenDocumentByParam(Pbck1GetOpenDocumentByParamInput input)
+        {
+
+            var queryFilter = ProcessQueryFilter(input);
+
+            queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+
+            return GetPbck1Data(queryFilter, input.SortOrderColumn);
+
+        }
+
+        public List<Pbck1Dto> GetCompletedDocumentByParam(Pbck1GetCompletedDocumentByParamInput input)
+        {
+            var queryFilter = ProcessQueryFilter(input);
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+            return GetPbck1Data(queryFilter, input.SortOrderColumn);
+        }
+
+        private Expression<Func<PBCK1, bool>> ProcessQueryFilter(Pbck1GetByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
@@ -82,35 +110,22 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => (c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year == input.Year.Value)
                     || (c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year == input.Year.Value));
             }
+            return queryFilter;
+        }
 
+        private List<Pbck1Dto> GetPbck1Data(Expression<Func<PBCK1, bool>> queryFilter, string orderColumn)
+        {
             Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
+            if (!string.IsNullOrEmpty(orderColumn))
             {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(orderColumn));
             }
-
-            var rc = new Pbck1GetByParamOutput()
-            {
-                Success = true,
-                ErrorCode = string.Empty,
-                ErrorMessage = string.Empty
-            };
 
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            if (dbData == null)
-            {
-                var exception = new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-                rc.Data = null;
-                rc.ErrorCode = exception.Code;
-                rc.ErrorMessage = exception.Message;
-            }
 
             var mapResult = Mapper.Map<List<Pbck1Dto>>(dbData.ToList());
 
-            rc.Data = mapResult;
-
-            return rc;
-
+            return mapResult;
         }
 
         public Pbck1Dto GetById(long id)
@@ -706,62 +721,6 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        public List<Pbck1Dto> GetByDocumentStatus(Pbck1GetByDocumentStatusParam input)
-        {
-            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
-
-            if (!string.IsNullOrEmpty(input.NppbkcId))
-            {
-                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
-            }
-
-            if (input.Pbck1Type.HasValue)
-            {
-                queryFilter = queryFilter.And(c => c.PBCK1_TYPE == input.Pbck1Type.Value);
-            }
-
-            if (!string.IsNullOrEmpty(input.Poa))
-            {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
-            }
-
-            if (!string.IsNullOrEmpty(input.Creator))
-            {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
-            }
-
-            if (!string.IsNullOrEmpty(input.GoodTypeId))
-            {
-                queryFilter = queryFilter.And(c => c.EXC_GOOD_TYP == input.GoodTypeId);
-            }
-
-            if (input.Year.HasValue)
-            {
-                queryFilter = queryFilter.And(c => (c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year == input.Year.Value)
-                    || (c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year == input.Year.Value));
-            }
-
-            if (input.DocumentStatus.HasValue)
-            {
-                queryFilter = queryFilter.And(c => c.STATUS == input.DocumentStatus.Value);
-            }
-
-            if (input.DocumentStatusGov.HasValue)
-            {
-                queryFilter = queryFilter.And(c => c.STATUS_GOV == input.DocumentStatusGov.Value);
-            }
-
-            Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
-            }
-            
-            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            var rc = Mapper.Map<List<Pbck1Dto>>(dbData);
-            return rc;
-        }
-
         public void Pbck1Workflow(Pbck1WorkflowDocumentInput input)
         {
             switch (input.ActionType)
@@ -795,22 +754,26 @@ namespace Sampoerna.EMS.BLL
 
         private void AddWorkflowHistory(Pbck1WorkflowDocumentInput input)
         {
-            var dbData = new WorkflowHistoryDto
+            var dbData = Mapper.Map<WorkflowHistoryDto>(input);
+            
+            if (input.ActionType == Core.Enums.ActionType.Modified)
             {
-                ACTION = input.ActionType,
-                FORM_NUMBER = input.DocumentNumber,
-                FORM_TYPE_ID = Core.Enums.FormType.CK5,
-                FORM_ID = input.DocumentId
-            };
+                //check if exist
+                var history = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput()
+                {
+                    FormNumber = input.DocumentNumber,
+                    ActionType = input.ActionType
+                });
+                if (history != null)
+                {
+                    dbData = history;
+                }
+            }
 
-            if (!string.IsNullOrEmpty(input.Comment))
-                dbData.COMMENT = input.Comment;
-
-            dbData.ACTION_BY = input.UserId;
-            dbData.ROLE = input.UserRole;
             dbData.ACTION_DATE = DateTime.Now;
 
             _workflowHistoryBll.Save(dbData);
+
         }
 
         private void SubmitDocument(Pbck1WorkflowDocumentInput input)

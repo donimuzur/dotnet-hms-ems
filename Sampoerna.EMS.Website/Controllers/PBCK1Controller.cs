@@ -26,38 +26,49 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private IPBCK1BLL _pbck1Bll;
-        private IZaidmExProdTypeBLL _prodTypeBll;
-        private IMonthBLL _monthBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
 
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IZaidmExProdTypeBLL prodTypeBll, IMonthBLL monthBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
-            _prodTypeBll = prodTypeBll;
-            _monthBll = monthBll;
             _plantBll = plantBll;
             _mainMenu = Enums.MenuList.PBCK1;
             _changesHistoryBll = changesHistoryBll;
             _workflowHistoryBll = workflowHistoryBll;
         }
 
-        private List<Pbck1Item> GetPbckItems(Pbck1FilterViewModel filter = null)
+        private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
         {
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.Pbck1GetByParam(new Pbck1GetByParamInput());
-                return Mapper.Map<List<Pbck1Item>>(pbck1Data.Data);
+                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput());
+                return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
 
             //getbyparams
-            var input = Mapper.Map<Pbck1GetByParamInput>(filter);
-            var dbData = _pbck1Bll.Pbck1GetByParam(input);
-            return Mapper.Map<List<Pbck1Item>>(dbData.Data);
+            var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
+            var dbData = _pbck1Bll.GetOpenDocumentByParam(input);
+            return Mapper.Map<List<Pbck1Item>>(dbData);
+        }
+
+        private List<Pbck1Item> GetCompletedDocument(Pbck1FilterViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //Get All
+                var pbck1Data = _pbck1Bll.GetCompletedDocumentByParam(new Pbck1GetCompletedDocumentByParamInput());
+                return Mapper.Map<List<Pbck1Item>>(pbck1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetCompletedDocumentByParamInput>(filter);
+            var dbData = _pbck1Bll.GetCompletedDocumentByParam(input);
+            return Mapper.Map<List<Pbck1Item>>(dbData);
         }
 
         private SelectList GetYearList(IEnumerable<Pbck1Item> pbck1Data)
@@ -88,10 +99,15 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /PBCK/
         public ActionResult Index()
         {
-            var model = InitPbck1ViewModel(new Pbck1ViewModel()
+            var model = InitPbck1ViewModel(new Pbck1ViewModel
             {
                 MainMenu = _mainMenu,
-                CurrentMenu = PageInfo
+                CurrentMenu = PageInfo,
+                SearchInput =
+                {
+                    DocumentType = Enums.Pbck1DocumentType.OpenDocument 
+                
+                }
             });
             return View("Index", model);
         }
@@ -102,17 +118,24 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
             model.SearchInput.YearList = GetYearList(model.Details);
-            model.Details = model.SearchInput.DocumentStatus.HasValue ? GetPbckCompletedDocumentItems(model.SearchInput) : GetPbckItems();
+            if (model.SearchInput.DocumentType == Enums.Pbck1DocumentType.CompletedDocument)
+            {
+                model.Details = GetCompletedDocument(model.SearchInput);
+            }
+            else if (model.SearchInput.DocumentType == Enums.Pbck1DocumentType.OpenDocument)
+            {
+                model.Details = GetOpenDocument(model.SearchInput);
+            }
             return model;
         }
-        
+
         #endregion
 
         #region ----- Edit -----
 
         public ActionResult Edit(long? id)
         {
-            
+
             if (!id.HasValue)
             {
                 return HttpNotFound();
@@ -130,7 +153,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                
+
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
@@ -149,7 +172,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
             }
-            
+
             return View(model);
         }
 
@@ -166,6 +189,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model = CleanSupplierInfo(model);
 
+                //model.Detail.GoodTypeDesc = model.Detail.GoodTypeDesc.Split('-')[1];
+
                 //process save
                 var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
                 //dataToSave.CreatedById = CurrentUser.USER_ID;
@@ -181,7 +206,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     return RedirectToAction("Index");
                 }
-                
+
             }
             catch (Exception exception)
             {
@@ -203,7 +228,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(ModelInitial(model));
 
         }
-        
+
         #endregion
 
         #region ------ details ----
@@ -277,24 +302,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveResult.Success)
                 {
-                    return RedirectToAction("Edit", new {id = saveResult.Id});
+                    return RedirectToAction("Edit", new { id = saveResult.Id });
                 }
 
             }
-            //catch (DbEntityValidationException e)
-            //{
-            //    foreach (var eve in e.EntityValidationErrors)
-            //    {
-            //        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-            //            eve.Entry.Entity.GetType().Name, eve.Entry.State);
-            //        foreach (var ve in eve.ValidationErrors)
-            //        {
-            //            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
-            //                ve.PropertyName, ve.ErrorMessage);
-            //        }
-            //    }
-            //    throw;
-            //}
             catch (Exception exception)
             {
                 AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
@@ -320,9 +331,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult Filter(Pbck1ViewModel model)
+        public PartialViewResult FilterOpenDocument(Pbck1ViewModel model)
         {
-            model.Details = GetPbckItems(model.SearchInput);
+            model.Details = GetOpenDocument(model.SearchInput);
             return PartialView("_Pbck1Table", model);
         }
 
@@ -330,7 +341,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
-            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item()};
+            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -356,7 +367,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
             var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input);
-            
+
             model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
 
             return PartialView("_ProdConvList", model);
@@ -366,7 +377,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
-            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item()};
+            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -412,9 +423,15 @@ namespace Sampoerna.EMS.Website.Controllers
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.UomList = GlobalFunctions.GetUomList();
 
-            model.PbckReferenceList = model.Detail != null && model.Detail.Pbck1Reference.HasValue ?
-                new SelectList(GetPbckItems().Where(c => model.Detail.Pbck1Reference != null
-                    && c.Pbck1Id != model.Detail.Pbck1Reference.Value), "Pbck1Id", "Pbck1Number") : new SelectList(GetPbckItems(), "Pbck1Id", "Pbck1Number");
+            var pbck1RefList = GetCompletedDocument();
+
+            if (model.Detail != null && model.Detail.Pbck1Reference.HasValue)
+            {
+                //exclude current pbck1 document on list
+                pbck1RefList = pbck1RefList.Where(c => c.Pbck1Id != model.Detail.Pbck1Reference.Value).ToList();
+            }
+
+            model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
 
             model.YearList = CreateYearList();
             return model;
@@ -465,7 +482,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportClientsListToExcel(long id)
         {
-            
+
             var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.ToString());
 
             var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
@@ -473,17 +490,17 @@ namespace Sampoerna.EMS.Website.Controllers
             var grid = new System.Web.UI.WebControls.GridView
             {
                 DataSource = from d in model
-                    select new
-                    {
-                        Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty,
-                        FieldName = d.FIELD_NAME,
-                        OldValue = d.OLD_VALUE,
-                        NewValue = d.NEW_VALUE,
-                        User = d.USERNAME
+                             select new
+                             {
+                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty,
+                                 FieldName = d.FIELD_NAME,
+                                 OldValue = d.OLD_VALUE,
+                                 NewValue = d.NEW_VALUE,
+                                 User = d.USERNAME
 
-                    }
+                             }
             };
-            
+
             grid.DataBind();
 
             var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
@@ -518,32 +535,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 SearchInput = new Pbck1FilterViewModel()
                 {
-                    DocumentStatus = Enums.DocumentStatus.Completed
+                    DocumentType = Enums.Pbck1DocumentType.CompletedDocument
                 }
             });
             return View("CompletedDocument", model);
         }
-        
+
         [HttpPost]
         public PartialViewResult FilterCompletedDocument(Pbck1ViewModel model)
         {
-            model.Details = GetPbckCompletedDocumentItems(model.SearchInput);
+            model.Details = GetCompletedDocument(model.SearchInput);
             return PartialView("_Pbck1CompletedDocumentTable", model);
-        }
-
-        private List<Pbck1Item> GetPbckCompletedDocumentItems(Pbck1FilterViewModel filter = null)
-        {
-            if (filter == null)
-            {
-                //Get All
-                var pbck1Data = _pbck1Bll.GetByDocumentStatus(new Pbck1GetByDocumentStatusParam());
-                return Mapper.Map<List<Pbck1Item>>(pbck1Data);
-            }
-
-            //getbyparams
-            var input = Mapper.Map<Pbck1GetByDocumentStatusParam>(filter);
-            var dbData = _pbck1Bll.GetByDocumentStatus(input);
-            return Mapper.Map<List<Pbck1Item>>(dbData);
         }
 
         #endregion

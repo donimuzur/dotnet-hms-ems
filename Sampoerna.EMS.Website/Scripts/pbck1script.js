@@ -125,7 +125,7 @@ function prodConvSaveClick() {
             data += '<td style="display:none"><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ProductCode" type="hidden" value = "' + datarows[i][0] + '" />' + datarows[i][0] + '</td>';
             data += '<td style="display:none"><input name="Detail.Pbck1ProdConverter[' + i
-                + '].ConverterUomId" type="hidden" value = "' + datarows[i][1] + '" />' + datarows[i][1] + '</td>';
+                + '].ConverterUom" type="hidden" value = "' + datarows[i][1] + '" />' + datarows[i][1] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ProdTypeAlias" type="hidden" value = "' + datarows[i][2] + '" />' + datarows[i][2] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
@@ -133,7 +133,7 @@ function prodConvSaveClick() {
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ConverterOutput" type="hidden" value = "' + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
-                + '].ConverterUom" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
+                + '].ConverterUomId" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
 
         }
         

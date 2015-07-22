@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("Filter", "PBCK1",
+                @using (Ajax.BeginForm("FilterOpenDocument", "PBCK1",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -168,12 +168,12 @@
                     data: formData,
                     success: function(data) {
                         var list = data.SearchInput.PoaList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
                         if (list.length > 0) {
-                            $('#SearchInput_POA').append('<option value="">All</option>');
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
                             }
-                        }
+                        } 
                     }
                 });
             }

@@ -53,6 +53,12 @@ namespace Sampoerna.EMS.Core
             Completed = 7
         }
 
+        public enum Pbck1DocumentType
+        {
+            OpenDocument = 1,
+            CompletedDocument = 2
+        }
+
         public enum DocumentStatus
         {
             [Description("Draft")]
