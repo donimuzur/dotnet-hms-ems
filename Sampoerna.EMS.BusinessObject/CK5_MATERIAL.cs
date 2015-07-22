@@ -21,6 +21,16 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> QTY { get; set; }
         public Nullable<decimal> CONVERTED_QTY { get; set; }
         public Nullable<int> CONVERTED_UOM_ID { get; set; }
+        public string BRAND { get; set; }
+        public Nullable<long> PLANT_ID { get; set; }
+        public string UOM { get; set; }
+        public Nullable<decimal> CONVERTION { get; set; }
+        public Nullable<decimal> HJE { get; set; }
+        public Nullable<decimal> TARIFF { get; set; }
+        public Nullable<decimal> EXCISE_VALUE { get; set; }
+        public Nullable<decimal> USD_VALUE { get; set; }
+        public string NOTE { get; set; }
+        public string CONVERTED_UOM { get; set; }
     
         public virtual CK5 CK5 { get; set; }
     }
