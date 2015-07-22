@@ -26,11 +26,12 @@ namespace Sampoerna.EMS.BusinessObject
     
         public string BUKRS { get; set; }
         public string BUTXT { get; set; }
-        public string ADRNR { get; set; }
         public string NPWP { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string ORT01 { get; set; }
+        public string SPRAS { get; set; }
     
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual USER USER { get; set; }
