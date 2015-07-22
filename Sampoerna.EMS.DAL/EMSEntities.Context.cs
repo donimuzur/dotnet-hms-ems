@@ -65,11 +65,11 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<LACK1> LACK1 { get; set; }
         public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual DbSet<LACK1_ITEM> LACK1_ITEM { get; set; }
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
+        public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
     }
 }
