@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.Contract
         List<UOM> GetAll();
  void Save(UOM uom,string userid,bool isEdit);
 
-        string GetUomNameById(int? id);
+        string GetUomDescById(int? id);
 
         bool IsUomNameExist(string name);
     }

@@ -36,46 +36,48 @@ namespace Sampoerna.EMS.BLL
             return _repositoryT1001.Get().Select(p => p.BUTXT).Distinct().ToList();
         }
 
-        public string GetExSettlementsNameById(int? id)
-        {
-            var dbData = _ExSettlementRepository.GetByID(id);
+        //public string GetExSettlementsNameById(int? id)
+        //{
+        //    var dbData = _ExSettlementRepository.GetByID(id);
 
-            if (dbData == null)
-                return string.Empty;
+        //    if (dbData == null)
+        //        return string.Empty;
 
-            return dbData.EX_SETTLEMENT_NAME;
-        }
+        //    return dbData.EX_SETTLEMENT_NAME;
+        //}
 
-        public string GetExStatusNameById(int? id)
-        {
-            var dbData = _ExStatusRepository.GetByID(id);
+        //public string GetExStatusNameById(int? id)
+        //{
+        //    var dbData = _ExStatusRepository.GetByID(id);
 
-            if (dbData == null)
-                return string.Empty;
+        //    if (dbData == null)
+        //        return string.Empty;
 
-            return dbData.EX_STATUS_NAME;
-        }
+        //    return dbData.EX_STATUS_NAME;
+        //}
 
-        public string GetRequestTypeNameById(int? id)
-        {
-            var dbData = _RequestTypeRepository.GetByID(id);
+        //public string GetRequestTypeNameById(int? id)
+        //{
+        //    var dbData = _RequestTypeRepository.GetByID(id);
 
-            if (dbData == null)
-                return string.Empty;
+        //    if (dbData == null)
+        //        return string.Empty;
 
-            return dbData.REQUEST_TYPE_NAME;
-        }
+        //    return dbData.REQUEST_TYPE_NAME;
+        //}
 
-        }
+        //}
 
-        public string GetCarriageMethodeNameById(int? id)
-        {
-            var dbData = _CarriageMethodRepository.GetByID(id);
+        //public string GetCarriageMethodeNameById(int? id)
+        //{
+        //    var dbData = _CarriageMethodRepository.GetByID(id);
 
-            if (dbData == null)
-                return string.Empty;
+        //    if (dbData == null)
+        //        return string.Empty;
 
-            return dbData.CARRIAGE_METHOD_NAME;
+        //    return dbData.CARRIAGE_METHOD_NAME;
+        //}
+
         #region ZAIDM_EX_PCODE
 
         public List<ZAIDM_EX_PCODE> GetDataPersonalization()

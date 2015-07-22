@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.Contract
 
         void Delete(string id);
 
-        string GetCeOfficeCodeByNppbcId(long nppBkcId);
+        string GetCeOfficeCodeByNppbcId(string nppBkcId);
 
     }
 }

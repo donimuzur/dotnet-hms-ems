@@ -178,5 +178,10 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
+        public string GetPbckNumberById(long id)
+        {
+            var dbData = _repository.GetByID(id);
+            return dbData == null ? string.Empty : dbData.NUMBER;
+        }
     }
 }

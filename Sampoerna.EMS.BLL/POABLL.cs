@@ -17,8 +17,8 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repository;
         private string includeTables = "POA_MAP, USER, USER1, POA_SK";
-        
-        public ZaidmExPOABLL(IUnitOfWork uow, ILogger logger)
+
+        public POABLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
@@ -95,14 +95,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public Enums.UserRole GetUserRole(int id)
+        public Enums.UserRole GetUserRole(string userId)
         {
             var poa = GetAll();
 
-            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID == id))
+            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID == userId))
                 return Enums.UserRole.Manager;
-           
-            if (poa.Any(zaidmExPoa => zaidmExPoa.USER_ID == id))
+
+            if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
                 return Enums.UserRole.POA;
           
 

@@ -95,19 +95,19 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public string GetUomNameById(int? id)
+        public string GetUomDescById(int? id)
         {
             var dbData = _repository.GetByID(id);
 
             if (dbData == null)
                 return string.Empty;
 
-            return dbData.UOM_NAME;
+            return dbData.UOM_DESC;
         }
 
         public bool IsUomNameExist(string name)
         {
-            var dbData = _repository.Get(u => u.UOM_NAME.Equals(name)).FirstOrDefault();
+            var dbData = _repository.Get(u => u.UOM_DESC.Equals(name)).FirstOrDefault();
             return dbData != null;
         }
     }

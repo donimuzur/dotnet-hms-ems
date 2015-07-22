@@ -12,9 +12,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
        public Enums.UserRole UserRole { get; set; }
        public Enums.FormViewType FormView { get; set; }
        public Enums.DocumentStatus DocumentStatus { get; set; }
-       public int CreatedUser { get; set; }
-       public int CurrentUser { get; set; }
-       public int CurrentUserGroup { get; set; }
+       public string CreatedUser { get; set; }
+       public string CurrentUser { get; set; }
+       public string CurrentUserGroup { get; set; }
     }
 
     public class WorkflowAllowEditAndSubmitInput

@@ -195,30 +195,6 @@ namespace Sampoerna.EMS.Core
             Tunda = 2
         }
         
-        /// <summary>
-        /// message popup type
-        /// </summary>
-        public enum MessageInfoType
-        {
-            Success,
-            Error,
-            Warning,
-            Info
-        }
-
-        public enum UserRole
-        {
-            User = 1,
-            POA = 2,
-            Manager =3
-        }
-
-        public enum FormViewType
-        {
-            Index = 1,
-            Create = 2,
-            Edit = 3,
-            Detail = 4
-        }
+      
     }
 }

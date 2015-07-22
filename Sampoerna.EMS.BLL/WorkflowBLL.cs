@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IUserBLL _userBll;
-        private IZaidmExPOABLL _zaidmExPoabll;
+        private IPOABLL _poabll;
 
         public WorkflowBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -20,7 +20,8 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
 
             _userBll = new UserBLL(_uow,_logger);
-            _zaidmExPoabll = new ZaidmExPOABLL(_uow, _logger);
+            _poabll = new POABLL(_uow,_logger);
+            
         }
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
@@ -34,7 +35,7 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
-        private bool IsOneGroup(int createdUser, int currentUserGroup)
+        private bool IsOneGroup(string createdUser, string currentUserGroup)
         {
             var dbCreatedUser = _userBll.GetUserById(createdUser);
             if (dbCreatedUser == null)
@@ -65,7 +66,7 @@ namespace Sampoerna.EMS.BLL
                 if (input.UserRole == Enums.UserRole.POA)
                 {
                     //if created user = poa , false
-                    if (_zaidmExPoabll.GetUserRole(input.CreatedUser) == Enums.UserRole.POA)
+                    if (_poabll.GetUserRole(input.CreatedUser) == Enums.UserRole.POA)
                         return false;
 
                     //if document is created by user in one group then true

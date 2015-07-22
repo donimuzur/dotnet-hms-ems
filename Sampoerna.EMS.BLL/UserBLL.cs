@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
         private string includeTables = "USER_GROUP";
-        private IZaidmExPOABLL _zaidmExPoabll;
+        
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER>();
 
-            _zaidmExPoabll = new ZaidmExPOABLL(_uow, _logger);
+           
         }
 
         public List<USER> GetUsers(UserInput input)
