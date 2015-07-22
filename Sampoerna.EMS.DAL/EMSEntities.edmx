@@ -5,13 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="CARRIAGE_METHOD">
-          <Key>
-            <PropertyRef Name="CARRIAGE_METHOD_ID" />
-          </Key>
-          <Property Name="CARRIAGE_METHOD_ID" Type="int" Nullable="false" />
-          <Property Name="CARRIAGE_METHOD_NAME" Type="nvarchar" MaxLength="30" />
-        </EntityType>
         <EntityType Name="CHANGES_HISTORY">
           <Key>
             <PropertyRef Name="CHANGES_HISTORY_ID" />
@@ -663,18 +656,6 @@
             </Principal>
             <Dependent Role="CK5">
               <PropertyRef Name="APPROVED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_CARRIAGE_METHOD">
-          <End Role="CARRIAGE_METHOD" Type="Self.CARRIAGE_METHOD" Multiplicity="0..1" />
-          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CARRIAGE_METHOD">
-              <PropertyRef Name="CARRIAGE_METHOD_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="CARRIAGE_METHOD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1605,7 +1586,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="EMSModelStoreContainer">
-          <EntitySet Name="CARRIAGE_METHOD" EntityType="Self.CARRIAGE_METHOD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_MATERIAL" EntityType="Self.CK5_MATERIAL" Schema="dbo" store:Type="Tables" />
@@ -1657,10 +1637,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_CK5_APPROVED_BY_USER" Association="Self.FK_CK5_APPROVED_BY_USER">
             <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_CARRIAGE_METHOD" Association="Self.FK_CK5_CARRIAGE_METHOD">
-            <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
             <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_CREATED_BY_USER" Association="Self.FK_CK5_CREATED_BY_USER">
@@ -2283,11 +2259,6 @@
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <EntitySet Name="CARRIAGE_METHOD" EntityType="EMSModel.CARRIAGE_METHOD" />
-          <AssociationSet Name="FK_CK5_CARRIAGE_METHOD" Association="EMSModel.FK_CK5_CARRIAGE_METHOD">
-            <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
-            <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
           <EntitySet Name="PBCK1_PROD_PLAN" EntityType="EMSModel.PBCK1_PROD_PLAN" />
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_MONTH" Association="EMSModel.FK_PBCK1_PROD_PLAN_MONTH">
@@ -3508,7 +3479,7 @@
           <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
           <Property Name="PBCK1_DECREE_ID" Type="Int32" />
-          <Property Name="CARRIAGE_METHOD_ID" Type="Int32" />
+          <Property Name="CARRIAGE_METHOD_ID" Type="EMSModel.CarriageMethod" />
           <Property Name="GRAND_TOTAL_EX" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="DEST_COUNTRY_ID" Type="Int32" />
@@ -3538,7 +3509,6 @@
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
-          <NavigationProperty Name="CARRIAGE_METHOD" Relationship="EMSModel.FK_CK5_CARRIAGE_METHOD" FromRole="CK5" ToRole="CARRIAGE_METHOD" />
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
         </EntityType>
         <EntityType Name="UOM">
@@ -3834,26 +3804,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CARRIAGE_METHOD">
-          <Key>
-            <PropertyRef Name="CARRIAGE_METHOD_ID" />
-          </Key>
-          <Property Name="CARRIAGE_METHOD_ID" Type="Int32" Nullable="false" />
-          <Property Name="CARRIAGE_METHOD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_CARRIAGE_METHOD" FromRole="CARRIAGE_METHOD" ToRole="CK5" />
-        </EntityType>
-        <Association Name="FK_CK5_CARRIAGE_METHOD">
-          <End Type="EMSModel.CARRIAGE_METHOD" Role="CARRIAGE_METHOD" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CARRIAGE_METHOD">
-              <PropertyRef Name="CARRIAGE_METHOD_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="CARRIAGE_METHOD_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EnumType Name="ActionType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ActionType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EntityType Name="PBCK1_PROD_PLAN">
           <Key>
@@ -4114,6 +4064,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="CarriageMethod" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CarriageMethod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4687,14 +4638,6 @@
                 <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CARRIAGE_METHOD">
-            <EntityTypeMapping TypeName="EMSModel.CARRIAGE_METHOD">
-              <MappingFragment StoreEntitySet="CARRIAGE_METHOD">
-                <ScalarProperty Name="CARRIAGE_METHOD_NAME" ColumnName="CARRIAGE_METHOD_NAME" />
-                <ScalarProperty Name="CARRIAGE_METHOD_ID" ColumnName="CARRIAGE_METHOD_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
