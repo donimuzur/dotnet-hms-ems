@@ -224,6 +224,7 @@
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\DocumenSequenceController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\GlobalSettingsController.cs" />
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
+    <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
@@ -752,6 +754,7 @@
     <Content Include="Views\EmailTemplate\Details.cshtml" />
     <Content Include="Views\EmailTemplate\Create.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\DocumentSequence\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

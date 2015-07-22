@@ -22,6 +22,7 @@ using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.EmailTemplate;
+using Sampoerna.EMS.Website.Models.Settings;
 
 namespace Sampoerna.EMS.Website
 {
@@ -605,6 +606,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.BODY,
                     opt => opt.MapFrom(src => src.EmailTemplateBody));
             #endregion
+
+            Mapper.CreateMap<DOC_NUMBER_SEQ, DocumentSequenceModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.LastSequence, opt => opt.MapFrom(src => src.DOC_NUMBER_SEQ_LAST))
+                .ForMember(dest => dest.MonthInt, opt => opt.MapFrom(src => src.MONTH))
+                .ForMember(dest => dest.MonthName_Eng, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_ENG))
+                .ForMember(dest => dest.MonthName_Ind, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_IND))
+                .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.YEAR));
         }
     }
 }
