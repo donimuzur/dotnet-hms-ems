@@ -21,7 +21,8 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER";
+        // private string includeTables = "ZAIDM_EX_GOODTYP, UOM, UOM1, ZAIDM_EX_NPPBKC, SUPPLIER_PORT, MONTH, MONTH1, USER";
+        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -33,12 +34,12 @@ namespace Sampoerna.EMS.BLL
 
         public List<Pbck1> GetPBCK1ByParam(Pbck1GetByParamInput input)
         {
-            
+
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
-            if (input.NppbkcId.HasValue)
+            if (!string.IsNullOrEmpty(input.NppbkcId))
             {
-                queryFilter = queryFilter.And(c => c.NPPBKC_ID.Value == input.NppbkcId.Value);
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
             }
 
             if (input.Pbck1Type.HasValue)
@@ -46,19 +47,19 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK1_TYPE == input.Pbck1Type.Value);
             }
 
-            if (input.Poa.HasValue)
+            if (!string.IsNullOrEmpty(input.Poa))
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY.HasValue && c.APPROVED_BY.Value == input.Poa.Value);
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
 
-            if (input.Creator.HasValue)
+            if (!string.IsNullOrEmpty(input.Creator))
             {
-                queryFilter = queryFilter.And(c => c.CREATED_BY.HasValue && c.CREATED_BY.Value == input.Creator.Value);
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
             }
 
-            if (input.GoodTypeId.HasValue)
+            if (!string.IsNullOrEmpty(input.GoodTypeId))
             {
-                queryFilter = queryFilter.And(c => c.GOODTYPE_ID.HasValue && c.GOODTYPE_ID.Value == input.GoodTypeId.Value);
+                queryFilter = queryFilter.And(c => c.EXC_GOOD_TYP == input.GoodTypeId);
             }
 
             if (input.Year.HasValue)
@@ -118,7 +119,7 @@ namespace Sampoerna.EMS.BLL
                     Month = pbck1.PeriodFrom.Month,
                     NppbkcId = pbck1.NppbkcId
                 };
-                
+
                 pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(input);
                 pbck1.Status = Enums.DocumentStatus.Draft;
                 pbck1.CreatedDate = DateTime.Now;
@@ -165,7 +166,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     _repository.Delete(dbData);
                     _uow.SaveChanges();
-                    output.Success = true;    
+                    output.Success = true;
                 }
             }
             catch (Exception exception)

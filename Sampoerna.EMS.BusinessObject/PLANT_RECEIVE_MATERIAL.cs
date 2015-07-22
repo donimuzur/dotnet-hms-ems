@@ -15,10 +15,10 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class PLANT_RECEIVE_MATERIAL
     {
         public long PLANT_MATERIAL_ID { get; set; }
-        public long PLANT_ID { get; set; }
-        public int GOODTYPE_ID { get; set; }
+        public string PLANT_ID { get; set; }
+        public string EXC_GOOD_TYP { get; set; }
     
-        public virtual T1001W T1001W { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP1 { get; set; }
     }
 }

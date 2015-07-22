@@ -131,7 +131,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">Conversion</label>
+                                                            <label class="col-md-4">Convertion</label>
                                                             <div class="col-md-8">
                                                                 @Html.TextBoxFor(model => model.Convertion, new { @class = "form-control", @disabled = "disabled" })
 
@@ -242,7 +242,7 @@
         
         var deleteData = function () {
             
-                window.location = "@Url.Action("Delete", "Material", new { id = @Model.MaterialId })";
+                window.location = "@Url.Action("Delete", "Material", new { id = @Model.MaterialNumber })";
             
 
         };

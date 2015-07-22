@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
@@ -14,7 +13,7 @@ namespace Sampoerna.EMS.Website.Code
     {
         public static SelectList GetPoaAll()
         {
-            IZaidmExPOABLL poaBll = MvcApplication.GetInstance<ZaidmExPOABLL>();
+            POABLL poaBll = MvcApplication.GetInstance<POABLL>();
             var poaList =  poaBll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(poaList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
@@ -45,59 +44,10 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
-        public static SelectList GetKppBcCityList()
+        public static ZAIDM_EX_NPPBKC GetNppbkcById(string id)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            var nppbkcList = nppbkcbll.GetAll();
-                
-            //var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
-            return new SelectList(nppbkcList, "NPPBKC_ID", "City");
-        }
-
-        public static SelectList GetGoodTypeGroupList()
-        {
-            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
-            var goodTypes = goodTypeBll.GetAll();
-            return new SelectList(goodTypes, "GOODTYPE_ID", "EXT_TYP_DESC");
-        }
-
-        public static SelectList GetExciseSettlementList()
-        {
-            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var exciseSettlements = masterDataBll.GetAllExciseExSettlements();
-            return new SelectList(exciseSettlements, "EX_SETTLEMENT_ID", "EX_SETTLEMENT_NAME");
-        }
-
-        public static SelectList GetExciseStatusList()
-        {
-            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var exciseStatus = masterDataBll.GetAllExciseStatus();
-            return new SelectList(exciseStatus, "EX_STATUS_ID", "EX_STATUS_NAME");
-        }
-
-        public static SelectList GetRequestTypeList()
-        {
-            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var requestType = masterDataBll.GetAllRequestTypes();
-            return new SelectList(requestType, "REQUEST_TYPE_ID", "REQUEST_TYPE_NAME");
-        }
-
-        public static SelectList GetSourcePlantList()
-        {
-            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
-            List<T1001W> sourcePlant;
-            sourcePlant = masterDataBll.GetAllSourcePlants();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(sourcePlant);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
-
-            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
-        }
-
-        public static SelectList GetCarriageMethodList()
-        {
-            IMasterDataBLL masterDataBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var carriageMethod = masterDataBll.GetAllCarriageMethods();
-            return new SelectList(carriageMethod, "CARRIAGE_METHOD_ID", "CARRIAGE_METHOD_NAME");
+            return nppbkcbll.GetById(id);
         }
 
         public static SelectList GetSupplierPortList()
@@ -135,30 +85,14 @@ namespace Sampoerna.EMS.Website.Code
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
             var data = uomBll.GetAll();
-            return new SelectList(data, "UOM_ID", "UOM_NAME");
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
-        public static SelectList GetPbck1CompletedList()
-        {
-            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
-            var input = new Pbck1GetByParamInput();
-            var data = pbck1.GetPBCK1ByParam(input);
-            return new SelectList(data, "Pbck1Id", "Pbck1Number");
-        }
-        
-        public static ZAIDM_EX_NPPBKC GetNppbkcById(long id)
-        {
-            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            return nppbkcbll.GetById(id);
-            
-        }
-        
-        
         public static SelectList GetCompanyList()
         {
             ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
             var data = companyBll.GetAllData();
-            return new SelectList(data, "COMPANY_ID", "BUKRSTXT");
+            return new SelectList(data, "BUKRS", "BUTXT");
         }
 
         public static SelectList GetVirtualPlantList()
@@ -181,7 +115,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetDataPersonalization();
-            return new SelectList(data, "PER_ID", "PER_CODE");
+            return new SelectList(data, "PER_CODE", "PER_DESC");
         }
 
         public static SelectList GetProductCodeList()
@@ -189,42 +123,42 @@ namespace Sampoerna.EMS.Website.Code
             IZaidmExProdTypeBLL productBll = MvcApplication.GetInstance<ZaidmExProdTypeBLL>();
             var data = productBll.GetAll();
             //var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(data, "PRODUCT_ID", "PRODUCT_CODE");
+            return new SelectList(data, "PROD_CODE", "PRODUCT_TYPE");
         }
 
         public static SelectList GetSeriesCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataSeries();
-            return new SelectList(data, "SERIES_ID", "SERIES_CODE");
+            return new SelectList(data, "SERIES_CODE", "SERIES_VALUE");
         }
 
         public static SelectList GetMarketCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataMarket();
-            return new SelectList(data, "MARKET_ID", "MARKET_CODE");
+            return new SelectList(data, "MARKET_ID", "MARKET_DESC");
         }
 
         public static SelectList GetCountryList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCountry();
-            return new SelectList(data, "COUNTRY_ID", "COUNTRY_NAME");
+            return new SelectList(data);
         }
 
         public static SelectList GetCurrencyList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCurrency();
-            return new SelectList(data, "CURRENCY_ID", "CURRENCY_CODE");
+            return new SelectList(data);
         }
 
         public static SelectList GetStickerCodeList()
         {
             IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
             var data = materialBll.getAll();
-            return new SelectList(data, "MATERIAL_NUMBER", "MATERIAL_NUMBER");
+            return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
     }
 }

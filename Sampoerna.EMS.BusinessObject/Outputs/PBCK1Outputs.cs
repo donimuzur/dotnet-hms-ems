@@ -7,7 +7,7 @@
 
     public class DeletePBCK1Output : BLLBaseOutput
     {
-        
+
     }
 
 }

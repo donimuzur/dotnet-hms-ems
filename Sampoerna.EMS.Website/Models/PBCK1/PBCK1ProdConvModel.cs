@@ -2,7 +2,7 @@
 {
     public class Pbck1ProdConvModel
     {
-        public int? ProductCode { get; set; }
+        public string ProductCode { get; set; }
         public string ProductTypeAlias { get; set; }
         public string ProductType { get; set; }
         public decimal? ConverterOutput { get; set; }

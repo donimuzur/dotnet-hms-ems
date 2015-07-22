@@ -1,8 +1,7 @@
-﻿@using System.Activities.Expressions
-@using System.Diagnostics.Eventing.Reader
+﻿@using Microsoft.Ajax.Utilities
 @model Sampoerna.EMS.Website.Models.POA.POAFormModel
 @section scripts {
-  
+
     <script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
         $('#MenuPOA').addClass('active');
@@ -14,17 +13,6 @@
         };
         var confirmDeletePOA = function () {
             $('#btn-delete-poa').click();
-        };
-
-        //active
-        var poaActive = function () {
-            window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
-           
-
-
-        };
-        var confirmActivePOA = function () {
-            $('#btn-active-poa').click();
         };
     </script>
 }
@@ -39,14 +27,11 @@
                 <a href="@Url.Action("Index", "POA")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-                @if (Model.Detail.Is_Deleted.Equals("No"))
-                {
-                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Deactive</a>
+                @{
+                    var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
                 }
-                @if (Model.Detail.Is_Deleted.Equals("Yes"))
-                {
-                     <a href="javascript:void(0);" onclick="confirmActivePOA() " class="btn btn-blue">Active</a>
-                }
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE": "ACTIVE")</a>
+                
             </div>
         </div>
     </div>
@@ -93,7 +78,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-3">User Account</label>
+                                                            <label class="col-md-3">Login As</label>
                                                             <div class="col-md-9">
                                                                 @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
 
@@ -191,32 +176,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Deactive</h3>
+                @if (Model.Detail.Is_Active == "Yes")
+                {
+                    <h3>Deactive</h3>
+                }
+                else
+                {
+                    <h3>Active</h3>
+                }
+                
             </div>
             <div class="modal-body">
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="poaDelete();">Deactive</button>
-                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Active-->
-<input id="btn-active-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".active-modal.poa" value="delete">
-<div class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Active</h3>
-            </div>
-            <div class="modal-body">
-                Are you sure?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-blue" onclick="poaActive();">Active</button>
+                <button type="button" class="btn btn-danger" onclick="poaDelete();">Yes</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>

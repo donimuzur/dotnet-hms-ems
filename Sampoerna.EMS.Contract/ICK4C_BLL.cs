@@ -9,6 +9,6 @@ namespace Sampoerna.EMS.Contract
 {
     public interface ICK4C_BLL
     {
-        void Insert(CK4C ck4c);
+        //void Insert(CK4C ck4c);
     }
 }

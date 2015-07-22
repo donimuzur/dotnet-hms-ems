@@ -1,12 +1,14 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Configuration;
+using Sampoerna.EMS.BusinessObject;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
@@ -54,27 +56,51 @@ namespace Sampoerna.EMS.XMLReader
 
             return _xmlData.Elements(elementName);
         }
-        public void InsertToDatabase<T>(List<T> items) where  T : class 
+       
+        public void InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
-
+            
             try
             {
                 foreach (var item in items)
                 {
-                    repo.Insert(item);
-
+                   
+                    repo.InsertOrUpdate(item);
+                    uow.SaveChanges();
                 }
+                MoveFile();
             }
+            
             catch (Exception ex)
             {
                 logger.Error(ex.Message);
                 uow.RevertChanges();
             }
-            uow.SaveChanges();
+         
+           
+        }
+        public void InsertToDatabase<T>(T data) where T : class
+        {
+            var repo = uow.GetGenericRepository<T>();
+
+            try
+            {
+                
+                    repo.InsertOrUpdate(data);
+
+                
+                uow.SaveChanges();
+            }
+
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                uow.RevertChanges();
+            }
+
             MoveFile();
         }
-
         private void MoveFile()
         {
             try
@@ -94,6 +120,18 @@ namespace Sampoerna.EMS.XMLReader
                 throw;
             }
           
+        }
+
+        public DateTime? GetDate(string valueStr)
+        {
+            if (valueStr.Length == 8)
+            {
+                var year = Convert.ToInt32(valueStr.Substring(0, 4));
+                var month = Convert.ToInt32(valueStr.Substring(4, 2));
+                var date = Convert.ToInt32(valueStr.Substring(6, 2));
+                return new DateTime(year, month, date);
+            }
+            return null;
         }
 
 

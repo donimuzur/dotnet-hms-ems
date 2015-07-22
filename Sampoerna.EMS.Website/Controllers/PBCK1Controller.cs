@@ -72,7 +72,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var currentYear = DateTime.Now.Year;
             for (int i = 0; i < 5; i++)
             {
-                years.Add(new SelectItemModel(){ ValueField = currentYear - i, TextField = (currentYear - i).ToString()});
+                years.Add(new SelectItemModel() { ValueField = currentYear - i, TextField = (currentYear - i).ToString() });
             }
             return new SelectList(years, "ValueField", "TextField");
         }
@@ -98,12 +98,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Edit(long id)
+        public ActionResult Edit(int id)
         {
             var pbck1Data = _pbck1Bll.GetById(id);
             var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
             return EditInitial(new Pbck1ItemViewModel()
             {
                 ChangesHistoryList = changeHistory,
@@ -148,7 +148,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Detail = Mapper.Map<Pbck1Item>(pbck1Data),
-                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()))
             });
         }
 
@@ -180,11 +180,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     try
                     {
-                        var prodCodeFromFile = Convert.ToInt32(datarow[0]);
+                        var prodCodeFromFile = datarow[0];
                         var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
                         if (prodType != null)
                         {
-                            prodConvModel.ProductCode = prodType.PRODUCT_CODE;
+                            prodConvModel.ProductCode = prodType.PROD_CODE;
                             prodConvModel.ProductType = prodType.PRODUCT_TYPE;
                             prodConvModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
                             prodConvModel.ConverterOutput = Convert.ToDecimal(datarow[1]);
@@ -216,12 +216,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     try
                     {
                         var month = _monthBll.GetMonth(Convert.ToInt32(datarow[0]));
-                        var prodCodeFromFile = Convert.ToInt32(datarow[1]);
+                        var prodCodeFromFile = datarow[1];
                         var prodType = _prodTypeBll.GetByCode(prodCodeFromFile);
                         if (prodType != null)
                         {
                             prodPlanModel.MonthName = month.MONTH_NAME_IND;
-                            prodPlanModel.ProductCode = prodType.PRODUCT_CODE;
+                            prodPlanModel.ProductCode = prodType.PROD_CODE;
                             prodPlanModel.ProductType = prodType.PRODUCT_TYPE;
                             prodPlanModel.ProductTypeAlias = prodType.PRODUCT_ALIAS;
                             prodPlanModel.Amount = Convert.ToDecimal(datarow[2]);
@@ -265,11 +265,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
+
             return CreateInitial(model);
 
         }
-        
+
         public ActionResult CreateInitial(Pbck1ItemViewModel model)
         {
             return View("Create", ModelInitial(model));
@@ -319,14 +319,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNppbkcDetail(long nppbkcid)
+        public JsonResult GetNppbkcDetail(string nppbkcid)
         {
             var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T1001));
+            return Json(Mapper.Map<CompanyDetail>(data.T001));
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlantDetail(long plantid)
+        public JsonResult GetSupplierPlantDetail(string plantid)
         {
             var data = _plantBll.GetId(plantid);
             return Json(Mapper.Map<DetailPlantT1001W>(data));

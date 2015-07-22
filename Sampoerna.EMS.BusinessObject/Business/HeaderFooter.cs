@@ -8,7 +8,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
     {
         public int HEADER_FOOTER_ID { get; set; }
         public string FORM_NAME { get; set; }
-        public long? COMPANY_ID { get; set; }
+        public string COMPANY_ID { get; set; }
         public string HEADER_IMAGE_PATH { get; set; }
         public string FOOTER_CONTENT { get; set; }
         public bool? IS_ACTIVE { get; set; }
