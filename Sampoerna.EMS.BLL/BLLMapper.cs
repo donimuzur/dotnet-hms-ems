@@ -72,8 +72,8 @@ namespace Sampoerna.EMS.BLL
                 //.ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.T1001W1.NAME1))
                 //.ForMember(dest => dest.DestPlantWerks, opt => opt.MapFrom(src => src.T1001W1.WERKS))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
-                .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
-                .ForMember(dest => dest.CarriageMethodName,opt => opt.MapFrom(src => src.CARRIAGE_METHOD.CARRIAGE_METHOD_NAME));
+                .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE));
+                //.ForMember(dest => dest.CarriageMethodName,opt => opt.MapFrom(src => src.CARRIAGE_METHOD.CARRIAGE_METHOD_NAME));
                 //.ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
                 //.ForMember(dest => dest.KppbcCityName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
                 //.ForMember(dest => dest.CeOfficeCode, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER))

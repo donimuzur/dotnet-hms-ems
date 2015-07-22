@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class WorkflowAllowEditAndSubmitInput
     {
         public Enums.DocumentStatus DocumentStatus { get; set; }
-        public int? CreatedUser { get; set; }
-        public int CurrentUser { get; set; }
+        public string CreatedUser { get; set; }
+        public string CurrentUser { get; set; }
     }
 }

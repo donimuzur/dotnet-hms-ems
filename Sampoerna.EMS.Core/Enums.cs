@@ -194,7 +194,13 @@ namespace Sampoerna.EMS.Core
             [Description("Tunda")]
             Tunda = 2
         }
-        
-      
+
+        public enum CarriageMethod
+        {
+            [Description("Darat")]
+            Darat = 1,
+            [Description("Laut")]
+            Laut = 2
+        }
     }
 }

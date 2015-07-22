@@ -32,9 +32,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowBLL _workflowBll;
+        private IPlantBLL _plantBll;
         public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
             IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
-            IChangesHistoryBLL changesHistoryBll, IWorkflowBLL workflowBll)
+            IChangesHistoryBLL changesHistoryBll, IWorkflowBLL workflowBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -44,6 +45,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _changesHistoryBll = changesHistoryBll;
             _workflowBll = workflowBll;
+            _plantBll = plantBll;
         }
 
         #region View Documents
@@ -294,14 +296,16 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CeOfficeCodePartial(long nppBkcCityId)
         {
-            var ceOfficeCode = _nppbkcBll.GetCeOfficeCodeByNppbcId(nppBkcCityId);
+            //todo check
+            var ceOfficeCode = _nppbkcBll.GetCeOfficeCodeByNppbcId(nppBkcCityId.ToString());
             return Json(ceOfficeCode);
         }
 
         [HttpPost]
         public JsonResult GetSourcePlantDetails(long plantId)
         {
-            var dbPlant = _masterDataBll.GetPlantById(plantId);
+            //todo check
+            var dbPlant = _plantBll.GetId(plantId.ToString());
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
             return Json(model);
         }
@@ -416,15 +420,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
-            model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
-            model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
-            model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
+            //model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
+            //model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
+            //model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-            model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
+            //model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
 
@@ -447,8 +451,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 //only allow edit/submit when current_user = createdby and document = draft
                 var input = new WorkflowAllowEditAndSubmitInput();
                 input.DocumentStatus = model.DocumentStatus;
-                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
-                input.CurrentUser = CurrentUser.USER_ID;
+                //todo check
+                //input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
+                //input.CurrentUser = CurrentUser.USER_ID;
                 if (!_workflowBll.AllowEditDocument(input))
                    return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
 
@@ -523,12 +528,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private CK5FormViewModel GetHistorys(CK5FormViewModel model)
         {
+            //todo check
             model.WorkflowHistory =
                 Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(model.SubmissionNumber));
 
             model.ChangesHistoryList =
-                Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5,
-                    model.Ck5Id));
+                Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5,model.Ck5Id.ToString()));
 
             return model;
         }
@@ -558,9 +563,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentStatus = model.DocumentStatus;
                 input.FormView = Enums.FormViewType.Detail;
                 input.UserRole = CurrentUser.UserRole;
-                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY.HasValue ? ck5Details.Ck5Dto.CREATED_BY.Value : 0;
+                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
                 input.CurrentUser = CurrentUser.USER_ID;
-                input.CurrentUserGroup = CurrentUser.USER_GROUP_ID.HasValue ? CurrentUser.USER_GROUP_ID.Value : 0;
+                input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -641,7 +646,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var slDocument = new SLDocument();
 
-            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id);
+            //todo check
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id.ToString());
 
             var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
             
@@ -682,7 +688,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public void ExportClientsListToExcel(long ck5Id)
         {
           
-            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id);
+            //todo check
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id.ToString());
 
             var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
 

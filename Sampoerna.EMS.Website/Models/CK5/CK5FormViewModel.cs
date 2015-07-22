@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public string Comment { get; set; }
-        public int? CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
 
         public long Ck5Id { get; set; }
 
