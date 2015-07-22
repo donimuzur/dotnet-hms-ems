@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public GlobalSettingsController(IPageBLL pageBLL) : base(pageBLL,Enums.MenuList.Settings){
 
+
         }
         //
         // GET: /GlobalSettings/
