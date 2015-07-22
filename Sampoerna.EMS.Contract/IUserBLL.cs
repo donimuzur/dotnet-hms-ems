@@ -9,13 +9,12 @@ namespace Sampoerna.EMS.Contract
     {
         List<USER> GetUsers(UserInput input);
 
-        UserTree GetUserTreeByUserID(int userID);
+        List<USER> GetUsers();
 
-        List<UserTree> GetUserTree();
-
+        
         Login GetLogin(string userName);
 
-        USER GetUserById(int id);
+        USER GetUserById(string id);
 
     }
 }

@@ -12,15 +12,15 @@ namespace Sampoerna.EMS.Contract
     {
         List<BrandRegistrationOutput> GetAll();
 
-        ZAIDM_EX_BRAND GetById(long id);
+        ZAIDM_EX_BRAND GetById(string plant, string facode);
 
-        ZAIDM_EX_BRAND GetByIdIncludeChild(long id);
+        ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode);
 
         void Save(ZAIDM_EX_BRAND brandRegistration);
 
         List<ZAIDM_EX_BRAND> GetAllBrands();
 
-        void Delete(long id);
+        void Delete(string plant, string facode);
     }
 
 }

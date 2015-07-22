@@ -27,30 +27,26 @@ namespace Sampoerna.EMS.XMLReader
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_MARKET");
                 var items = new List<ZAIDM_EX_MARKET>();
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_MARKET();
-                    item.MARKET_CODE = Convert.ToInt32(xElement.Element("MARKET_CODE").Value);
+                    item.MARKET_ID = xElement.Element("MARKET").Value;
                     item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    var exisitingMarket = GetMarket(item.MARKET_CODE);
-                    var marketDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                     if (exisitingMarket != null)
+                    var exisitingMarket = GetMarket(item.MARKET_ID);
+                    //var marketDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    if (exisitingMarket != null)
                     {
-                        if (marketDateXml > exisitingMarket.CREATED_DATE)
-                        {
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-                            
-                        }
+                       item.CREATED_DATE = exisitingMarket.CREATED_DATE;
+                       item.MODIFIED_DATE = DateTime.Now;
+                       items.Add(item);
+                       
                     }
                     else
-                    {
+                     {
+                         item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -63,16 +59,16 @@ namespace Sampoerna.EMS.XMLReader
 
         public void InsertToDatabase()
         {
+            
+            
             _xmlMapper.InsertToDatabase<ZAIDM_EX_MARKET>(Items);
        
         }
 
-        public ZAIDM_EX_MARKET GetMarket(int? MarketCode)
+        public ZAIDM_EX_MARKET GetMarket(string MarketId)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MARKET>()
-                          .Get(p => p.MARKET_CODE == MarketCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(MarketId);
             return exisitingPlant;
         }
 

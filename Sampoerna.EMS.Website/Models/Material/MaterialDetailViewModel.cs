@@ -9,8 +9,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialDetailViewModel : BaseModel
     {
-        public long MaterialId { get; set; }
-
+     
         [Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 

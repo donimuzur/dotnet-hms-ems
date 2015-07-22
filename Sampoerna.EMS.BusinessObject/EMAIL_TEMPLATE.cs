@@ -14,17 +14,10 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class EMAIL_TEMPLATE
     {
-        public EMAIL_TEMPLATE()
-        {
-            this.WORKFLOW_EMAIL = new HashSet<WORKFLOW_EMAIL>();
-        }
-    
         public int EMAIL_TEMPLATE_ID { get; set; }
         public string TEMPLATE_NAME { get; set; }
         public string SUBJECT { get; set; }
         public string BODY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
-    
-        public virtual ICollection<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
     }
 }

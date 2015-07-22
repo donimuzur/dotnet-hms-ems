@@ -48,7 +48,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public decimal? QtyApproved { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public int? CreatedById { get; set; }
+        public string CreatedById { get; set; }
         public string CreatedUsername { get; set; }
         public int? ApprovedById { get; set; }
         public string ApprovedUsername { get; set; }
@@ -63,6 +63,6 @@ namespace Sampoerna.EMS.BusinessObject.Business
 
         public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
         public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
-        
+
     }
 }

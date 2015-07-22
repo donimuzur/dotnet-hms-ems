@@ -39,12 +39,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        public ActionResult Detail(int? id)
+        public ActionResult Detail(string id)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrEmpty(id))
                 return RedirectToAction("Index");
             
-            var user = _bll.GetUserTreeByUserID(id.Value);
+            var user = _bll.GetUserById(id);
             var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.USER);
             var model = new UserItemViewModel()
             {

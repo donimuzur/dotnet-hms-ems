@@ -8,7 +8,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1Item
     {
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
         public string Pbck1Number { get; set; }
@@ -37,10 +37,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
 
         public string CompanyName { get; set; }
-        
+
         public string PoaList { get; set; }
 
         public string NppbkcNo { get; set; }
@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [Required, Display(Name = "Supplier Plant")]
         public string SupplierPlant { get; set; }
-        
+
         [Display(Name = "Supplier Port")]
         public int? SupplierPortId { get; set; }
 
@@ -81,7 +81,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [Required, Display(Name = "Plan Production To")]
         [UIHint("FormatDateTime")]
         public DateTime? PlanProdTo { get; set; }
-        
+
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
         public decimal? RequestQty { get; set; }
@@ -116,12 +116,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [UIHint("FormatQty")]
         public decimal? QtyApproved { get; set; }
-        
+
         [UIHint("FormatDateTime")]
         public DateTime? DecreeDate { get; set; }
-        
+
         public DateTime? CreatedDate { get; set; }
-        
+
         public int? CreatedById { get; set; }
 
         public string CreatedUsername { get; set; }
@@ -147,6 +147,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
 
         public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
-        
+
     }
 }

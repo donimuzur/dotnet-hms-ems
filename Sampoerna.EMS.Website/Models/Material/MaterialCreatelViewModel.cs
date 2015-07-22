@@ -9,8 +9,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialCreateViewModel : BaseModel
     {
-        public long MaterialId { get; set; }
-
+      
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -26,11 +25,11 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         [Required, Display(Name = "Plant")]
-        public Nullable<int> PlantId { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
 
         [Required, Display(Name = "Excisable Good Type")]
-        public Nullable<int> GoodTypeId { get; set; }
+        public string GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
 
         [Required, Display(Name = "Issue Storace Loc")]
@@ -100,8 +99,17 @@ namespace Sampoerna.EMS.Website.Models.Material
             }
         }
 
-        [Required, Display(Name = "Convertion")]
-        public decimal? Convertion { get; set; }
+        public decimal? Conversion
+        {
+            get { return Convert.ToDecimal(ConversionValueStr); }
+            set { value = Conversion; }
+        }
+        [Required]
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
 
         // list for dropdown in the form
         public SelectList PlantList { get; set; }
