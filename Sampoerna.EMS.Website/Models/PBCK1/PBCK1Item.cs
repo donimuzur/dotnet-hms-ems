@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
-using Sampoerna.EMS.Website.Validations;
 
 namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1Item
     {
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
         public string Pbck1Number { get; set; }
 
-        [RequiredIf("Pbck1Type", Enums.PBCK1Type.Additional), Display(Name = "References")]
+        [Display(Name = "References")]
         public long? Pbck1Reference { get; set; }
         public string Pbck1ReferenceNumber { get; set; }
 
@@ -35,25 +34,25 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [Required, Display(Name = "Reported On")]
         [UIHint("FormatDateTime")]
-        public DateTime ReportedOn { get; set; }
+        public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
 
         public string CompanyName { get; set; }
-        
+
         public string PoaList { get; set; }
 
         public string NppbkcNo { get; set; }
 
         [Required, Display(Name = "Exciseable Goods Description")]
-        public int GoodTypeId { get; set; }
+        public int? GoodTypeId { get; set; }
 
         public string GoodTypeDesc { get; set; }
 
         [Required, Display(Name = "Supplier Plant")]
         public string SupplierPlant { get; set; }
-        
+
         [Display(Name = "Supplier Port")]
         public int? SupplierPortId { get; set; }
 
@@ -77,36 +76,35 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [Required, Display(Name = "Plan Production From")]
         [UIHint("FormatDateTime")]
-        public DateTime PlanProdFrom { get; set; }
+        public DateTime? PlanProdFrom { get; set; }
 
         [Required, Display(Name = "Plan Production To")]
         [UIHint("FormatDateTime")]
-        public DateTime PlanProdTo { get; set; }
-        
+        public DateTime? PlanProdTo { get; set; }
+
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
-        public decimal RequestQty { get; set; }
+        public decimal? RequestQty { get; set; }
 
         [Required]
-        public int RequestQtyUomId { get; set; }
+        public int? RequestQtyUomId { get; set; }
 
         public string RequestQtyUomName { get; set; }
 
         [Required, Display(Name = "LACK-1 From")]
-        public int Lack1FromMonthId { get; set; }
+        public int? Lack1FromMonthId { get; set; }
 
         public string Lack1FromMonthName { get; set; }
 
         [Required]
-        public int Lack1FormYear { get; set; }
+        public int? Lack1FormYear { get; set; }
 
         [Required, Display(Name = "LACK-1 To")]
-        public int Lack1ToMonthId { get; set; }
+        public int? Lack1ToMonthId { get; set; }
 
         public string Lack1ToMonthName { get; set; }
 
-        [Required]
-        public int Lack1ToYear { get; set; }
+        public int? Lack1ToYear { get; set; }
 
         public Enums.DocumentStatus Status { get; set; }
 
@@ -117,13 +115,13 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string StatusGovName { get; set; }
 
         [UIHint("FormatQty")]
-        public decimal QtyApproved { get; set; }
-        
+        public decimal? QtyApproved { get; set; }
+
         [UIHint("FormatDateTime")]
-        public DateTime DecreeDate { get; set; }
-        
-        public DateTime CreatedDate { get; set; }
-        
+        public DateTime? DecreeDate { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
         public int? CreatedById { get; set; }
 
         public string CreatedUsername { get; set; }
@@ -136,9 +134,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public DateTime? ModifiedDate { get; set; }
 
-        public decimal LatestSaldo { get; set; }
+        public decimal? LatestSaldo { get; set; }
 
-        public int LatestSaldoUomId { get; set; }
+        public int? LatestSaldoUomId { get; set; }
 
         public string LatestSaldoUomName { get; set; }
 
@@ -149,6 +147,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
 
         public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
-        
+
     }
 }

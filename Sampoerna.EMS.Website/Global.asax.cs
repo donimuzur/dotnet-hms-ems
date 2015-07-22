@@ -45,7 +45,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
             container.Register<IPageBLL, PageBLL>();
             container.Register<IPBCK1BLL, PBCK1BLL>();
-            container.Register<IZaidmExPOABLL, ZaidmExPOABLL>();
+            container.Register<POABLL, POABLL>();
             container.Register<ICK4C_BLL, CK4C_BLL>();
             container.Register<IZaidmExPOAMapBLL, ZaidmExPOAMapBLL>();
             container.Register<IVirtualMappingPlantBLL, VirtualMappingPlantBLL>();
@@ -59,12 +59,14 @@ namespace Sampoerna.EMS.Website
             container.Register<IMonthBLL, MonthBLL>();
             container.Register<IDocumentSequenceNumberBLL, DocumentSequenceNumberBLL>();
             container.Register<IHeaderFooterBLL, HeaderFooterBLL>();
-            container.Register<IExGroupType, ExGroupType>();
+            container.Register<IExGroupTypeBLL, ExGroupTypeBLL>();
             container.Register<IZaidmExKPPBCBLL, ZaidmExKPPBCBLL>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
             container.Register<IMaterialBLL, MaterialBLL>();
             container.Register<IWorkflowHistoryBLL,WorkflowHistoryBLL>();
             container.Register < IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
+            container.Register<IPOASKBLL, POASKBLL>();
+          
             // 3. Optionally verify the container's configuration.
             container.Verify();
 

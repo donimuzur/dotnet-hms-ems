@@ -20,9 +20,11 @@ namespace Sampoerna.EMS.BusinessObject
             this.USER = new HashSet<USER>();
         }
     
-        public int GROUP_ID { get; set; }
-        public string GROUP_NAME { get; set; }
+        public string USER_GROUP_ID { get; set; }
+        public string GROUP_DESCRIPTION { get; set; }
         public string ROLE_NAME { get; set; }
+        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual ICollection<USER> USER { get; set; }

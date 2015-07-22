@@ -53,13 +53,13 @@
     <script type="text/javascript">
 
         var supplierData;
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            $('#btnCancel').click(function(e) {
+            $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
 
-            $('#prod-conv-save').click(function() {
+            $('#prod-conv-save').click(function () {
                 var datarows = GetTableData($('#prod-conv-table'));
                 var columnLength = $('#pbck1-prod-conv-item').find("thead tr:first th").length;
                 $('#pbck1-prod-conv-item tbody').html('');
@@ -80,7 +80,7 @@
                 $('#home').addClass('active');
                 $('#upload').removeClass('active');
             });
-            $('#prod-plan-save').click(function() {
+            $('#prod-plan-save').click(function () {
                 var datarows = GetTableData($('#prod-plan-table'));
                 var columnLength = $('#pbck1-prod-plan-item').find("thead tr:first th").length;
                 $('#pbck1-prod-plan-item tbody').html('');
@@ -103,7 +103,7 @@
                 $('#messages').removeClass('active');
             });
 
-            $('#ProdConvSubmitBtn').click(function() {
+            $('#ProdConvSubmitBtn').click(function () {
                 var fileName = $('[name="ProdConvExcelfile"]').val().trim();
                 var pos = fileName.lastIndexOf('.');
                 var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -111,14 +111,14 @@
                     alert('Please browse a correct excel file to upload');
                     return false;
                 }
-                $('#FormProdConv').ajaxSubmit(function(data) {
+                $('#FormProdConv').ajaxSubmit(function (data) {
                     $('#ProdConvContent').html("");
                     $('#ProdConvContent').html(data);
 
                 });
                 return false;
             });
-            $('#ProdPlanSubmitBtn').click(function() {
+            $('#ProdPlanSubmitBtn').click(function () {
                 var fileName = $('[name="ProdPlanExcelfile"]').val().trim();
                 var pos = fileName.lastIndexOf('.');
                 var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -126,7 +126,7 @@
                     alert('Please browse a correct excel file to upload');
                     return false;
                 }
-                $('#FormProdPlan').ajaxSubmit(function(data) {
+                $('#FormProdPlan').ajaxSubmit(function (data) {
                     $('#ProdPlanContent').html("");
                     $('#ProdPlanContent').html(data);
 
@@ -134,40 +134,40 @@
                 return false;
             });
 
-            $('#btn-prod-conv-upload').click(function() {
+            $('#btn-prod-conv-upload').click(function () {
                 $('#home-tab').removeClass('active');
                 $('#home').removeClass('active');
                 $('#prod-conv-upload-tab').addClass('active');
                 $('#upload').addClass('active');
             });
 
-            $('#btn-prod-plan-upload').click(function() {
+            $('#btn-prod-plan-upload').click(function () {
                 $('#home-tab').removeClass('active');
                 $('#home').removeClass('active');
                 $('#prod-plan-upload-tab').addClass('active');
                 $('#messages').addClass('active');
             });
 
-            
+
             $('#MenuPBCK1OpenListDocument').addClass('active');
-            
+
             $("#Detail_Pbck1Type").change(function () {
                 pbck1TypeOnchange();
             });
-            
+
             //load nppbkc detail
             nppbkcIdOnChange();
-            
+
             ajaxLoadSupplierPlant();
-            
+
             pbck1TypeOnchange();
 
         });
 
-        $('#Detail_NppbkcId').change(function() {
+        $('#Detail_NppbkcId').change(function () {
             nppbkcIdOnChange();
         });
-        
+
         function nppbkcIdOnChange() {
             if ($("#Detail_NppbkcId").length) {
                 var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
@@ -182,7 +182,7 @@
                 }
             }
         }
-        
+
         function pbck1TypeOnchange() {
             if ($("#Detail_Pbck1Type").length) {
                 var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
@@ -209,7 +209,7 @@
                 type: 'POST',
                 url: '@Url.Action("PoaListPartial", "pbck1")',
                 data: formData,
-                success: function(data) {
+                success: function (data) {
                     var list = data.SearchInput.PoaList;
                     if (list.length > 0) {
                         var poalist = '';
@@ -230,7 +230,7 @@
                     type: 'POST',
                     url: '@Url.Action("GetNppbkcDetail", "PBCK1")',
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         if (data != null) {
                             $('#Detail_CompanyName').val(data.DocumentBukrstxt);
                             $('#displayCompanyName').val(data.DocumentBukrstxt);
@@ -243,10 +243,10 @@
             }
         }
 
-        $("#Detail_SupplierPortId").change(function() {
+        $("#Detail_SupplierPortId").change(function () {
             supplierPortOnChange();
         });
-        
+
         function supplierPortOnChange() {
             if ($("#Detail_SupplierPortId").length) {
                 var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
@@ -274,7 +274,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetSupplierPlant", "PBCK1")',
-                success: function(data) {
+                success: function (data) {
                     supplierData = data;
                     //load supplier plant
                     supplierPortOnChange();
@@ -303,7 +303,7 @@
                 type: 'POST',
                 data: formData,
                 url: '@Url.Action("GetSupplierPlantDetail", "PBCK1")',
-                success: function(data) {
+                success: function (data) {
 
                     if (data != null) {
                         //load to form

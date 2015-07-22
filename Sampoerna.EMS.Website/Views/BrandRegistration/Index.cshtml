@@ -3,32 +3,32 @@
 
 
 @section scripts {
+<script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#mydata .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
-                    var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+    $(document).ready(function () {
+        // Setup - add a text input to each footer cell
+        $('#mydata .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0 && idx != 0) {
+                var title = $('#mydata thead th').eq($(this).index()).text();
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
-                }
+            }
+        });
+
+        // DataTable
+        var table = $('#mydata').DataTable();
+
+        // Apply the search
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
             });
-
-            // DataTable
-            var table = $('#mydata').DataTable();
-
-            // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-            
-            @if (TempData[Constans.SubmitType.Save] != null)
+        });
+         @if (TempData[Constans.SubmitType.Save] != null)
             {
                 @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Save]');
                 @: $('#btn-brand-modal').click();
@@ -47,8 +47,8 @@
                 @:TempData[Constans.SubmitType.Delete] = null;
             }
 
-            $('#MenuMasterBrandRegistration').addClass('active');
-        });
+        $('#MenuMasterBrandRegistration').addClass('active');
+    });
     </script>
 }
 
@@ -63,9 +63,6 @@
             <div class="action-button new">
                 <a href="@Url.Action("Create", "BrandRegistration")">
                     <button class="btn btn-blue">NEW</button>
-                </a>
-                <a data-toggle="modal" data-target=".menu-maping-type">
-
                 </a>
             </div>
         </div>
@@ -86,7 +83,7 @@
                             <th>Sticker Code</th>
                             <th>Plant</th>
                             <th>FA Code</th>
-                            <th>Brand Name Registration<br>by KBBPC</th>
+                            <th>Brand Name Registration<br>by KPPBC</th>
                             <th>Series Value</th>
                             <th>Conversion</th>
                             <th>Printing Price</th>
@@ -101,7 +98,7 @@
                             <th>Sticker Code</th>
                             <th>Plant</th>
                             <th>FA Code</th>
-                            <th>Brand Name Registration<br>by CE Office C</th>
+                            <th>Brand Name Registration<br>by KBBPC</th>
                             <th>Series Value</th>
                             <th>Conversion</th>
                             <th>Printing Price</th>
@@ -116,8 +113,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "BrandRegistration", new { id = item.BrandId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "BrandRegistration", new { id = item.BrandId })"data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.StickerCode)
@@ -172,7 +169,6 @@
         </div>
     </div>
 </div>
-
 
 
 

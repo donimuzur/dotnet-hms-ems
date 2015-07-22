@@ -40,7 +40,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#MenuPBCK1OpenListDocument').addClass('active');
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
@@ -55,8 +55,30 @@
             var nppbkcid = $('#Detail_NppbkcNo').val();
             ajaxLoadPoa({ nppbkcId: nppbkcid });
 
+            var nppbkcid = $('#Detail_NppbkcNo').val();
+            ajaxLoadPoa({ nppbkcId: nppbkcid });
+
         });
         
+        function ajaxLoadPoa(formData) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PoaListPartial", "pbck1")',
+                data: formData,
+                success: function (data) {
+                    var list = data.SearchInput.PoaList;
+                    if (list.length > 0) {
+                        var poalist = '';
+                        for (var i = 0; i < list.length; i++) {
+                            poalist = poalist + ', ' + list[i].Text;
+                        }
+                        poalist = poalist.slice(2);
+                        $('#displayPoaList').val(poalist);
+                    }
+                }
+            });
+        }
+
         function ajaxLoadPoa(formData) {
             $.ajax({
                 type: 'POST',

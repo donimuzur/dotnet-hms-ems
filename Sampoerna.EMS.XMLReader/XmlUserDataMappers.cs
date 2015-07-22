@@ -34,58 +34,28 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new USER();
-                        item.USER_ID = Convert.ToInt32(xElement.Element("USER_ID").Value);
+                        item.USER_ID = xElement.Element("USER_ID").Value;
                         item.USERNAME = xElement.Element("USERNAME").Value;
-                        if (!string.IsNullOrEmpty((xElement.Element("MANAGER_ID").Value)))
-                        {
-                            item.MANAGER_ID = Convert.ToInt32(xElement.Element("MANAGER_ID").Value);
-                            var findManager = GetUser(item.MANAGER_ID);
-                            if (findManager == null)
-                                continue;
-
-                        }
+                       
                         var userGroup = xElement.Element("USER_GROUP").Value;
 
-                        if (string.IsNullOrEmpty(userGroup))
-                            continue;
-                        var existingGroup = GetUserGroup(userGroup);
-                        if (existingGroup == null)
-                        {
-                            //insert to table group if new group
-                            List<USER_GROUP> listGroup = new List<USER_GROUP>();
-                            var roleName = xElement.Element("ROLE_NAME").Value;
-
-                            listGroup.Add(new USER_GROUP { GROUP_NAME = userGroup, ROLE_NAME = roleName });
-                            _xmlMapper.InsertToDatabase<USER_GROUP>(listGroup);
-                            item.USER_GROUP_ID = GetUserGroup(userGroup).GROUP_ID
-
-
-                                ;
-                        }
-                        else
-                        {
-                            item.USER_GROUP_ID = existingGroup.GROUP_ID;
-                        }
+                        
                         item.FIRST_NAME = xElement.Element("FIRST_NAME").Value;
                         item.LAST_NAME = xElement.Element("LAST_NAME").Value;
                         item.EMAIL = xElement.Element("EMAIL").Value;
-                        item.CREATED_DATE = DateTime.Now;
+                    
                         var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                         var exsitingUser = GetUser(item.USER_ID);
                         if (exsitingUser != null)
                         {
-                            if (dateXml > exsitingUser.CREATED_DATE)
-                            {
-                                items.Add(item);
-                            }
-                            else
-                            {
-                                continue;
-
-                            }
+                            
+                            item.MODIFIED_DATE = dateXml;
+                            items.Add(item);
+                          
                         }
                         else
                         {
+                            item.CREATED_DATE = DateTime.Now;
                             items.Add(item);
                         }
 
@@ -109,20 +79,13 @@ namespace Sampoerna.EMS.XMLReader
        
         }
 
-        public USER GetUser(int? UserId)
+        public USER GetUser(string UserId)
         {
             var exisitingUser = _xmlMapper.uow.GetGenericRepository<USER>()
-                            .Get(p => p.USER_ID == UserId )
-                         .FirstOrDefault();
+                .GetByID(UserId);
             return exisitingUser;
         }
-        public USER_GROUP GetUserGroup(string userGroupName)
-        {
-            var exisitingUser = _xmlMapper.uow.GetGenericRepository<USER_GROUP>()
-                            .Get(p => p.GROUP_NAME == userGroupName)
-                         .FirstOrDefault();
-            return exisitingUser;
-        }
+     
 
 
 

@@ -33,6 +33,5 @@ namespace Sampoerna.EMS.BusinessObject
         public string CONVERTED_UOM { get; set; }
     
         public virtual CK5 CK5 { get; set; }
-        public virtual ZAIDM_EX_MATERIAL ZAIDM_EX_MATERIAL { get; set; }
     }
 }

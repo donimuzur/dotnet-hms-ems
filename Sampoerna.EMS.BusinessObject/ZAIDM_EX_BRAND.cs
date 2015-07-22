@@ -14,57 +14,44 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class ZAIDM_EX_BRAND
     {
-        public ZAIDM_EX_BRAND()
-        {
-            this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
-            this.PBCK3_7_ITEM = new HashSet<PBCK3_7_ITEM>();
-            this.PBCK3_CK5_ITEM = new HashSet<PBCK3_CK5_ITEM>();
-            this.PBCK4_ITEM = new HashSet<PBCK4_ITEM>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
-        }
-    
-        public long BRAND_ID { get; set; }
-        public string STICKER_CODE { get; set; }
-        public long PLANT_ID { get; set; }
+        public string WERKS { get; set; }
         public string FA_CODE { get; set; }
-        public long PER_ID { get; set; }
+        public string STICKER_CODE { get; set; }
+        public string PER_CODE { get; set; }
         public string BRAND_CE { get; set; }
-        public string SKEP_NP { get; set; }
-        public System.DateTime SKEP_DATE { get; set; }
-        public Nullable<int> PRODUCT_ID { get; set; }
-        public long SERIES_ID { get; set; }
-        public long MARKET_ID { get; set; }
+        public string SKEP_NO { get; set; }
+        public Nullable<System.DateTime> SKEP_DATE { get; set; }
+        public string PROD_CODE { get; set; }
+        public string SERIES_CODE { get; set; }
+        public string BRAND_CONTENT { get; set; }
+        public string MARKET_ID { get; set; }
+        public string COUNTRY { get; set; }
+        public Nullable<decimal> HJE_IDR { get; set; }
+        public string HJE_CURR { get; set; }
+        public Nullable<decimal> TARIFF { get; set; }
+        public string TARIF_CURR { get; set; }
         public string COLOUR { get; set; }
-        public Nullable<int> COUNTRY_ID { get; set; }
+        public string EXC_GOOD_TYP { get; set; }
         public string CUT_FILLER_CODE { get; set; }
         public Nullable<decimal> PRINTING_PRICE { get; set; }
-        public Nullable<int> HJE_CURR { get; set; }
-        public Nullable<decimal> HJE_IDR { get; set; }
-        public Nullable<decimal> TARIFF { get; set; }
-        public Nullable<int> TARIFF_CURR { get; set; }
-        public Nullable<int> GOODTYP_ID { get; set; }
+        public Nullable<decimal> CONVERSION { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
-        public Nullable<bool> IS_ACTIVE { get; set; }
+        public Nullable<bool> STATUS { get; set; }
         public Nullable<bool> IS_FROM_SAP { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
-        public string BRAND_CONTENT { get; set; }
-        public Nullable<decimal> CONVERSION { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
     
-        public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
-        public virtual COUNTRY COUNTRY { get; set; }
-        public virtual CURRENCY CURRENCY { get; set; }
-        public virtual CURRENCY CURRENCY1 { get; set; }
-        public virtual ICollection<PBCK3_7_ITEM> PBCK3_7_ITEM { get; set; }
-        public virtual ICollection<PBCK3_CK5_ITEM> PBCK3_CK5_ITEM { get; set; }
-        public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
+        public virtual T001W T001W { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
         public virtual ZAIDM_EX_PCODE ZAIDM_EX_PCODE { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
-        public virtual T1001W T1001W { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
     }
 }

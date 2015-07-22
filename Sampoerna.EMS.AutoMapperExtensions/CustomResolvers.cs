@@ -103,23 +103,23 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
- public class SourcePlantTextResolver : ValueResolver<T1001W, string>
+ public class SourcePlantTextResolver : ValueResolver<T001W, string>
     {
-        protected override string ResolveCore(T1001W value)
+        protected override string ResolveCore(T001W value)
         {
-            if (string.IsNullOrEmpty(value.CITY))
+            if (string.IsNullOrEmpty(value.ORT01))
                 return value.NAME1;
 
-            return value.NAME1 + " - " + value.CITY;
+            return value.NAME1 + " - " + value.ORT01;
         }
     }
 
 
-    public class PlantCityCodeResolver : ValueResolver<T1001W, string>
+    public class PlantCityCodeResolver : ValueResolver<T001W, string>
     {
-        protected override string ResolveCore(T1001W value)
+        protected override string ResolveCore(T001W value)
         {
-            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER; 
+            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_ID; 
             
         }
     }

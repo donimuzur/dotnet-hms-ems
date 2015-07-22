@@ -9,8 +9,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialEditViewModel : BaseModel
     {
-        public long MaterialId { get; set; }
-
+       
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -26,23 +25,23 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         [Required, Display(Name = "Plant")]
-        public Nullable<int> PlantId { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
 
         [Required, Display(Name = "Excisable Good Type")]
-        public Nullable<int> GoodTypeId { get; set; }
+        public string GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
 
         [Required, Display(Name = "Issue Storace Loc")]
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public Nullable<int> UomId { get; set; }
+        public int UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<int> CreatedById { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public string CreatedById { get; set; }
 
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
@@ -52,7 +51,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public Nullable<System.DateTime> ChangedDate { get; set; }
 
 
-        public Nullable<int> ChangedById { get; set; }
+        public string ChangedById { get; set; }
 
         [Display(Name = "Changed By"), Editable(false)]
         public string ChangedBy { get; set; }
@@ -101,8 +100,18 @@ namespace Sampoerna.EMS.Website.Models.Material
             }
         }
 
-        [Required, Display(Name = "Convertion")]
-        public object Convertion { get; set; }
+     
+        public decimal? Conversion
+        {
+            get;
+            set;
+        }
+        [Required]
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
 
         // list for dropdown in the form
         public SelectList PlantList { get; set; }

@@ -16,21 +16,15 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_PRODTYP()
         {
-            this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
-            this.REALISASI_PEMASUKAN = new HashSet<REALISASI_PEMASUKAN>();
-            this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
         }
     
-        public int PRODUCT_ID { get; set; }
-        public Nullable<int> PRODUCT_CODE { get; set; }
+        public string PROD_CODE { get; set; }
         public string PRODUCT_TYPE { get; set; }
         public string PRODUCT_ALIAS { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual ICollection<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
-        public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
 }

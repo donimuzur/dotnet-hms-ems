@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new LoginFormModel();
-            model.Users = new SelectList(_userBll.GetUserTree(), "USERNAME", "FIRST_NAME");
+            model.Users = new SelectList(_userBll.GetUsers(), "USERNAME", "USERNAME");
             return View(model);
         }
 

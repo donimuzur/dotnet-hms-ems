@@ -76,7 +76,7 @@
                 $('#home').addClass('active');
                 $('#upload').removeClass('active');
             });
-            
+
             $('#prod-plan-save').click(function () {
                 var datarows = GetTableData($('#prod-plan-table'));
                 var columnLength = $('#pbck1-prod-plan-item').find("thead tr:first th").length;
@@ -144,7 +144,7 @@
                     alert('Please browse a correct excel file to upload');
                     return false;
                 }
-                
+
                 var formData = new FormData();
                 var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
                 for (var i = 0; i < totalFiles; i++) {
@@ -186,9 +186,9 @@
                 $('#prod-plan-upload-tab').addClass('active');
                 $('#messages').addClass('active');
             });
-            
+
             $('#MenuPBCK1OpenListDocument').addClass('active');
-            
+
             $("#Detail_Pbck1Type").change(function () {
                 pbck1TypeOnchange();
             });
@@ -197,7 +197,7 @@
             nppbkcIdOnChange();
 
             ajaxLoadSupplierPlant();
-            
+
             pbck1TypeOnchange();
 
         });
@@ -205,7 +205,7 @@
         $('#Detail_NppbkcId').change(function () {
             nppbkcIdOnChange();
         });
-        
+
         function pbck1TypeOnchange() {
             if ($("#Detail_Pbck1Type").length) {
                 var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();

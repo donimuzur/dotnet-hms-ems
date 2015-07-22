@@ -20,7 +20,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
-            this.REALISASI_PEMASUKAN = new HashSet<REALISASI_PEMASUKAN>();
         }
     
         public int MONTH_ID { get; set; }
@@ -31,6 +30,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual ICollection<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
     }
 }

@@ -22,16 +22,15 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public NppbkcFormModel()
         {
             Detail = new VirtualNppbckDetails();
-            Plant = new List<T1001W>();
+            Plant = new List<T001W>();
         }
         public VirtualNppbckDetails Detail { get; set; }
-        public List<T1001W> Plant { get; set; }
+        public List<T001W> Plant { get; set; }
     }
 
     public class VirtualNppbckDetails 
     {
-        public long VirtualNppbckId { get; set; }
-        public string NppbckNo { get; set; }
+        public string VirtualNppbckId { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
         public string City { get; set; }
@@ -43,15 +42,20 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string Region { get; set; }
         [Required(ErrorMessage = "please fill this field")]
         public string TextTo { get; set; }
+
+        [Required(ErrorMessage = "Enter the Issued date.")]
+      
         public DateTime? CreateDate { get; set; }
-       
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StartDate { get; set; }
-        
+
         public DateTime? EndDate { get; set; }
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }
         public string AcountNumber { get; set; }
-        public C1LFA1 VENDOR { get; set; }
+        public LFA1 VENDOR { get; set; }
         public string Is_Deleted { get; set; }
     }
 

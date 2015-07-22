@@ -23,14 +23,13 @@ namespace Sampoerna.EMS.Website.Models
 
     public class CompanyDetail
     {
-        public long CompanyId { get; set; }
-
+        
         public string DocumentBukrs { get; set; }
 
         public string DocumentBukrstxt { get; set; }
 
         public Nullable<System.DateTime> CreatedDate { get; set; }
 
-        public virtual ICollection<T1001K> T1001K { get; set; }
+        public virtual ICollection<T001K> T1001K { get; set; }
     }
 }

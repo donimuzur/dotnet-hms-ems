@@ -14,19 +14,19 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private IGenericRepository<ZAIDM_POA_MAP> _repository;
-        private string includeTables = "ZAIDM_EX_POA";
+        private IGenericRepository<POA_MAP> _repository;
+        private string includeTables = "POA";
 
         public ZaidmExPOAMapBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
-            _repository = _uow.GetGenericRepository<ZAIDM_POA_MAP>();
+            _repository = _uow.GetGenericRepository<POA_MAP>();
         }
 
-        public List<ZAIDM_EX_POA> GetPOAByNPPBKCID(string NPPBKCID)
+        public List<POA> GetPOAByNPPBKCID(string NPPBKCID)
         {
-            Expression<Func<ZAIDM_POA_MAP, bool>> queryFilter = PredicateHelper.True<ZAIDM_POA_MAP>();
+            Expression<Func<POA_MAP, bool>> queryFilter = PredicateHelper.True<POA_MAP>();
 
             if (!string.IsNullOrEmpty(NPPBKCID))
             {
@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            return dbData.Select(s => s.ZAIDM_EX_POA).Distinct().ToList();
+            return dbData.Select(s => s.POA).Distinct().ToList();
 
         }
 
@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
 
         public void Delet(int id)
         {
-           _repository.Delete(id);
+            _repository.Delete(id);
         }
     }
 }

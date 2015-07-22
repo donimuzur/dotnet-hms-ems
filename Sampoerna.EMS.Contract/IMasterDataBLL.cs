@@ -13,53 +13,49 @@ namespace Sampoerna.EMS.Contract
         List<string> GetDataCompany();
 
         List<ZAIDM_EX_PCODE> GetDataPersonalization();
-        ZAIDM_EX_PCODE GetDataPersonalizationById(long id);
-        string GetPersonalizationDescById(long id);
+        ZAIDM_EX_PCODE GetDataPersonalizationById(string id);
+        string GetPersonalizationDescById(string id);
 
-        List<EX_SETTLEMENT> GetAllExciseExSettlements();
+        //List<EX_SETTLEMENT> GetAllExciseExSettlements();
         string GetExSettlementsNameById(int? id);
 
-        List<EX_STATUS> GetAllExciseStatus();
+        //List<EX_STATUS> GetAllExciseStatus();
         string GetExStatusNameById(int? id);
 
-        List<REQUEST_TYPE> GetAllRequestTypes();
+       // List<REQUEST_TYPE> GetAllRequestTypes();
         string GetRequestTypeNameById(int? id);
 
         //string GetCeOfficeCodeByKppbcId(long kppBcId);
 
-        List<T1001W> GetAllSourcePlants();
+        //List<T001W> GetAllSourcePlants();
 
-        T1001W GetPlantById(long plantId);
+        //T001W GetPlantById(long plantId);
 
-        List<CARRIAGE_METHOD> GetAllCarriageMethods();
+        //List<CARRIAGE_METHOD> GetAllCarriageMethods();
         string GetCarriageMethodeNameById(int? id);
 
         List<ZAIDM_EX_SERIES> GetAllDataSeries();
-        ZAIDM_EX_SERIES GetDataSeriesById(long id);
-        string GetDataSeriesDescById(long id);
+        ZAIDM_EX_SERIES GetDataSeriesById(string id);
+        string GetDataSeriesDescById(string id);
 
         #region ZAIDM_EX_MARKET
 
         List<ZAIDM_EX_MARKET> GetAllDataMarket();
-        ZAIDM_EX_MARKET GetDataMarketById(long id);
-        string GetMarketDescById(long id);
+        ZAIDM_EX_MARKET GetDataMarketById(string id);
+        string GetMarketDescById(string id);
 
         #endregion
 
         #region COUNTRY
 
-        List<COUNTRY> GetAllDataCountry();
-        string GetCountryCodeById(int? id);
-        
+        List<string> GetAllDataCountry();
         #endregion
 
         #region CURRENCY
 
-        List<CURRENCY> GetAllDataCurrency();
-        string GetCurrencyCodeById(int? id);
-
+        List<string> GetAllDataCurrency();
         #endregion
 
-        string GetProductCodeTypeDescById(int? id);
+        string GetProductCodeTypeDescById(string id);
     }
 }
