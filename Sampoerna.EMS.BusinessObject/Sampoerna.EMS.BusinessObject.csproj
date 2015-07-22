@@ -85,12 +85,6 @@
     <Compile Include="EX_GROUP_TYPE_DETAILS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="EX_SETTLEMENT.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EX_STATUS.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="FILE_UPLOAD.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -163,9 +157,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
-    <Compile Include="REQUEST_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="SUPPLIER_PORT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

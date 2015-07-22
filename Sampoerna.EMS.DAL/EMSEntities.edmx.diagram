@@ -119,10 +119,8 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_MONTH" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM" />
-        <EntityTypeShape EntityType="EMSModel.EX_SETTLEMENT" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EMSModel.EX_STATUS" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="EMSModel.REQUEST_TYPE" Width="1.5" PointX="2.75" PointY="6.75" />
         <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="5.375" PointY="6.75" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

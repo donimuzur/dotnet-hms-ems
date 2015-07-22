@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CARRIAGE_METHOD">
           <Key>
             <PropertyRef Name="CARRIAGE_METHOD_ID" />
@@ -36,9 +36,9 @@
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="REGISTRATION_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="EX_GOODS_TYPE_ID" Type="int" />
-          <Property Name="EX_SETTLEMENT_ID" Type="int" />
-          <Property Name="EX_STATUS_ID" Type="int" />
-          <Property Name="REQUEST_TYPE_ID" Type="int" />
+          <Property Name="EX_SETTLEMENT_ID" Type="int" Nullable="false" />
+          <Property Name="EX_STATUS_ID" Type="int" Nullable="false" />
+          <Property Name="REQUEST_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="STO_SENDER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STO_RECEIVER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STOB_NUMBER" Type="nvarchar" MaxLength="50" />
@@ -119,20 +119,6 @@
           <Property Name="EX_GROUP_TYPE_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EX_GROUP_TYPE_ID" Type="int" />
           <Property Name="GOODTYPE_ID" Type="nvarchar" MaxLength="2" />
-        </EntityType>
-        <EntityType Name="EX_SETTLEMENT">
-          <Key>
-            <PropertyRef Name="EX_SETTLEMENT_ID" />
-          </Key>
-          <Property Name="EX_SETTLEMENT_ID" Type="int" Nullable="false" />
-          <Property Name="EX_SETTLEMENT_NAME" Type="nvarchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="EX_STATUS">
-          <Key>
-            <PropertyRef Name="EX_STATUS_ID" />
-          </Key>
-          <Property Name="EX_STATUS_ID" Type="int" Nullable="false" />
-          <Property Name="EX_STATUS_NAME" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="FILE_UPLOAD">
           <Key>
@@ -352,14 +338,6 @@
           <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
         </EntityType>
-        <EntityType Name="REQUEST_TYPE">
-          <Key>
-            <PropertyRef Name="REQUEST_TYPE_ID" />
-          </Key>
-          <Property Name="REQUEST_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="REQUEST_TYPE_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="REQUEST_TYPE_PARENT" Type="int" />
-        </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
@@ -466,6 +444,7 @@
           <Property Name="ACTION_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="ACTION_DATE" Type="datetime" />
           <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
+          <Property Name="ROLE" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -1255,6 +1234,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_WORKFLOW_HISTORY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="WORKFLOW_HISTORY" Type="Self.WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1480,8 +1471,6 @@
           <EntitySet Name="EMAIL_TEMPLATE" EntityType="Self.EMAIL_TEMPLATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_GROUP_TYPE" EntityType="Self.EX_GROUP_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="Self.EX_GROUP_TYPE_DETAILS" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EX_SETTLEMENT" EntityType="Self.EX_SETTLEMENT" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EX_STATUS" EntityType="Self.EX_STATUS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER_FORM_MAP" EntityType="Self.HEADER_FOOTER_FORM_MAP" Schema="dbo" store:Type="Tables" />
@@ -1499,7 +1488,6 @@
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="REQUEST_TYPE" EntityType="Self.REQUEST_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="Self.SUPPLIER_PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001" EntityType="Self.T001" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001K" EntityType="Self.T001K" Schema="dbo" store:Type="Tables" />
@@ -1733,6 +1721,10 @@
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T001" Association="Self.FK_VIRTUAL_PLANT_MAP_T001">
             <End Role="T001" EntitySet="T001" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -2142,10 +2134,11 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
           </AssociationSet>
-          <EntitySet Name="EX_SETTLEMENT" EntityType="EMSModel.EX_SETTLEMENT" />
-          <EntitySet Name="EX_STATUS" EntityType="EMSModel.EX_STATUS" />
-          <EntitySet Name="REQUEST_TYPE" EntityType="EMSModel.REQUEST_TYPE" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2468,6 +2461,7 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
         </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -3295,9 +3289,9 @@
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
           <Property Name="REGISTRATION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="EX_GOODS_TYPE_ID" Type="Int32" />
-          <Property Name="EX_SETTLEMENT_ID" Type="Int32" />
-          <Property Name="EX_STATUS_ID" Type="Int32" />
-          <Property Name="REQUEST_TYPE_ID" Type="Int32" />
+          <Property Name="EX_SETTLEMENT_ID" Type="EMSModel.ExciseSettlement" Nullable="false" />
+          <Property Name="EX_STATUS_ID" Type="EMSModel.ExciseStatus" Nullable="false" />
+          <Property Name="REQUEST_TYPE_ID" Type="EMSModel.RequestType" Nullable="false" />
           <Property Name="STO_SENDER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3729,28 +3723,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="EX_SETTLEMENT">
-          <Key>
-            <PropertyRef Name="EX_SETTLEMENT_ID" />
-          </Key>
-          <Property Name="EX_SETTLEMENT_ID" Type="Int32" Nullable="false" />
-          <Property Name="EX_SETTLEMENT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="EX_STATUS">
-          <Key>
-            <PropertyRef Name="EX_STATUS_ID" />
-          </Key>
-          <Property Name="EX_STATUS_ID" Type="Int32" Nullable="false" />
-          <Property Name="EX_STATUS_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="REQUEST_TYPE">
-          <Key>
-            <PropertyRef Name="REQUEST_TYPE_ID" />
-          </Key>
-          <Property Name="REQUEST_TYPE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="REQUEST_TYPE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="REQUEST_TYPE_PARENT" Type="Int32" />
-        </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
             <PropertyRef Name="WORKFLOW_HISTORY_ID" />
@@ -3763,7 +3735,25 @@
           <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
           <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
         </EntityType>
+        <Association Name="FK_WORKFLOW_HISTORY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="UserRole" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.UserRole" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="RequestType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.RequestType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="ExciseStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ExciseStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="ExciseSettlement" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ExciseSettlement" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4375,34 +4365,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EX_SETTLEMENT">
-            <EntityTypeMapping TypeName="EMSModel.EX_SETTLEMENT">
-              <MappingFragment StoreEntitySet="EX_SETTLEMENT">
-                <ScalarProperty Name="EX_SETTLEMENT_NAME" ColumnName="EX_SETTLEMENT_NAME" />
-                <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EX_STATUS">
-            <EntityTypeMapping TypeName="EMSModel.EX_STATUS">
-              <MappingFragment StoreEntitySet="EX_STATUS">
-                <ScalarProperty Name="EX_STATUS_NAME" ColumnName="EX_STATUS_NAME" />
-                <ScalarProperty Name="EX_STATUS_ID" ColumnName="EX_STATUS_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="REQUEST_TYPE">
-            <EntityTypeMapping TypeName="EMSModel.REQUEST_TYPE">
-              <MappingFragment StoreEntitySet="REQUEST_TYPE">
-                <ScalarProperty Name="REQUEST_TYPE_PARENT" ColumnName="REQUEST_TYPE_PARENT" />
-                <ScalarProperty Name="REQUEST_TYPE_NAME" ColumnName="REQUEST_TYPE_NAME" />
-                <ScalarProperty Name="REQUEST_TYPE_ID" ColumnName="REQUEST_TYPE_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="WORKFLOW_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
               <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
                 <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
                 <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
                 <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
