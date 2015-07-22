@@ -39,7 +39,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.UOM = new HashSet<UOM>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
-            this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
         }
     
         public string USER_ID { get; set; }
@@ -78,6 +77,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
-        public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
     }
 }
