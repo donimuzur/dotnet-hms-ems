@@ -77,6 +77,7 @@
           <Property Name="DEST_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="DEST_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
           <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
+          <Property Name="REGISTRATION_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
@@ -4026,6 +4027,7 @@
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
+          <Property Name="REGISTRATION_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_CK5_APPROVED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -4719,6 +4721,7 @@
           <EntitySetMapping Name="CK5">
             <EntityTypeMapping TypeName="EMSModel.CK5">
               <MappingFragment StoreEntitySet="CK5">
+                <ScalarProperty Name="REGISTRATION_DATE" ColumnName="REGISTRATION_DATE" />
                 <ScalarProperty Name="DEST_PLANT_KPPBC_NAME_OFFICE" ColumnName="DEST_PLANT_KPPBC_NAME_OFFICE" />
                 <ScalarProperty Name="DEST_PLANT_ADDRESS" ColumnName="DEST_PLANT_ADDRESS" />
                 <ScalarProperty Name="DEST_PLANT_COMPANY_NAME" ColumnName="DEST_PLANT_COMPANY_NAME" />

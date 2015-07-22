@@ -74,6 +74,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string DEST_PLANT_COMPANY_NAME { get; set; }
         public string DEST_PLANT_ADDRESS { get; set; }
         public string DEST_PLANT_KPPBC_NAME_OFFICE { get; set; }
+        public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
