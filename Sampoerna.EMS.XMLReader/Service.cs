@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("T001"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
