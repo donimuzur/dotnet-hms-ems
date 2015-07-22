@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual DbSet<LACK1_ITEM> LACK1_ITEM { get; set; }
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
-        public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
+        public virtual DbSet<CK5> CK5 { get; set; }
     }
 }
