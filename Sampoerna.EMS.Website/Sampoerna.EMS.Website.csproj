@@ -755,6 +755,7 @@
     <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
     <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
+    <Content Include="Views\CK5\_CK5DomesticAlcoholTablePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
