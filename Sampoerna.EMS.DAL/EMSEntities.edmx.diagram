@@ -90,11 +90,9 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PBCK1" />
         <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="20.75" PointY="32" />
-        <EntityTypeShape EntityType="EMSModel.CK5_MATERIAL" Width="1.5" PointX="23" PointY="36" />
         <EntityTypeShape EntityType="EMSModel.UOM" Width="1.5" PointX="5.25" PointY="39.75" />
         <AssociationConnector Association="EMSModel.FK_CK5_APPROVED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_CK5_CREATED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_CK5_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_REQUEST_UOM" />
@@ -121,6 +119,8 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM" />
         <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="5.375" PointY="6.75" />
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_HISTORY_USER" />
+        <EntityTypeShape EntityType="EMSModel.CK5_MATERIAL" Width="1.5" PointX="23" PointY="34.125" />
+        <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
