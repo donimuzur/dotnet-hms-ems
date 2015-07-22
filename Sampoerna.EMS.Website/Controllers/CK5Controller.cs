@@ -231,15 +231,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
-            model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
-            model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
-            model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
+            //model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
+            //model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
+            //model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-            model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
+           // model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
 

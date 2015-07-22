@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CARRIAGE_METHOD">
           <Key>
             <PropertyRef Name="CARRIAGE_METHOD_ID" />
@@ -36,9 +36,9 @@
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="REGISTRATION_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="EX_GOODS_TYPE_ID" Type="int" />
-          <Property Name="EX_SETTLEMENT_ID" Type="int" Nullable="false" />
-          <Property Name="EX_STATUS_ID" Type="int" Nullable="false" />
-          <Property Name="REQUEST_TYPE_ID" Type="int" Nullable="false" />
+          <Property Name="EX_SETTLEMENT_ID" Type="int" />
+          <Property Name="EX_STATUS_ID" Type="int" />
+          <Property Name="REQUEST_TYPE_ID" Type="int" />
           <Property Name="STO_SENDER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STO_RECEIVER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STOB_NUMBER" Type="nvarchar" MaxLength="50" />
@@ -165,6 +165,53 @@
           <Property Name="FORM_TYPE_ID" Type="int" />
           <Property Name="IS_HEADER_SET" Type="bit" />
           <Property Name="IS_FOOTER_SET" Type="bit" />
+        </EntityType>
+        <EntityType Name="LACK1">
+          <Key>
+            <PropertyRef Name="LACK1_ID" />
+          </Key>
+          <Property Name="LACK1_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_NUMBER" Type="nvarchar" MaxLength="35" />
+          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" />
+          <Property Name="BUTXT" Type="nvarchar" MaxLength="35" />
+          <Property Name="PERIOD_MONTH" Type="int" />
+          <Property Name="PERIOD_YEAR" Type="int" />
+          <Property Name="LEVEL_PLANT_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="LEVEL_PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="SUBMISSION_DATE" Type="datetime" />
+          <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" />
+          <Property Name="EX_GOODTYP" Type="nvarchar" MaxLength="2" />
+          <Property Name="WASTE_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="WASTE_UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="RETURN_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="RETURN_UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="STATUS" Type="int" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="DECREE_DATE" Type="datetime" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LACK1_DOCUMENT">
+          <Key>
+            <PropertyRef Name="LACK1_DOCUMENT_ID" />
+          </Key>
+          <Property Name="LACK1_DOCUMENT_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="LACK1_ITEM">
+          <Key>
+            <PropertyRef Name="LACK1_ITEM_ID" />
+          </Key>
+          <Property Name="LACK1_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" />
+          <Property Name="BEGINNING_BALANCE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="INCOME" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="USAGE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PRODUCTION" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="LFA1">
           <Key>
@@ -361,8 +408,9 @@
           </Key>
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="ADRNR" Type="nvarchar" MaxLength="200" />
           <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
+          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -759,6 +807,90 @@
             </Principal>
             <Dependent Role="HEADER_FOOTER">
               <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_DOCUMENT_LACK1">
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
+          <End Role="LACK1_DOCUMENT" Type="Self.LACK1_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_DOCUMENT">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_ITEM_LACK1">
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
+          <End Role="LACK1_ITEM" Type="Self.LACK1_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_ITEM">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_MONTH">
+          <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="MONTH_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="PERIOD_MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_RETURN_UOM">
+          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="RETURN_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_USER_APPROVED">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_USER_CREATED">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_WASTE_UOM">
+          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="WASTE_UOM" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1484,6 +1616,9 @@
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER_FORM_MAP" EntityType="Self.HEADER_FOOTER_FORM_MAP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1" EntityType="Self.LACK1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1_DOCUMENT" EntityType="Self.LACK1_DOCUMENT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1_ITEM" EntityType="Self.LACK1_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LFA1" EntityType="Self.LFA1" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MATERIAL_UOM" EntityType="Self.MATERIAL_UOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MENGETAHUI" EntityType="Self.MENGETAHUI" Schema="dbo" store:Type="Tables" />
@@ -1571,6 +1706,34 @@
           <AssociationSet Name="FK_HEADER_FOOTER_MODIFIED_BY_USER" Association="Self.FK_HEADER_FOOTER_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_DOCUMENT_LACK1" Association="Self.FK_LACK1_DOCUMENT_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_DOCUMENT" EntitySet="LACK1_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_ITEM_LACK1" Association="Self.FK_LACK1_ITEM_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_ITEM" EntitySet="LACK1_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_MONTH" Association="Self.FK_LACK1_MONTH">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="Self.FK_LACK1_RETURN_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_USER_APPROVED" Association="Self.FK_LACK1_USER_APPROVED">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_USER_CREATED" Association="Self.FK_LACK1_USER_CREATED">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="Self.FK_LACK1_WASTE_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_MATERIAL_UOM_MATERIAL_UOM" Association="Self.FK_MATERIAL_UOM_MATERIAL_UOM">
             <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
@@ -2139,15 +2302,46 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
           </AssociationSet>
-          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
-          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
-          </AssociationSet>
           <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="EMSModel.FK_CK5_MATERIAL_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
+          </AssociationSet>
+          <EntitySet Name="LACK1" EntityType="EMSModel.LACK1" />
+          <EntitySet Name="LACK1_DOCUMENT" EntityType="EMSModel.LACK1_DOCUMENT" />
+          <EntitySet Name="LACK1_ITEM" EntityType="EMSModel.LACK1_ITEM" />
+          <AssociationSet Name="FK_LACK1_DOCUMENT_LACK1" Association="EMSModel.FK_LACK1_DOCUMENT_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_DOCUMENT" EntitySet="LACK1_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_ITEM_LACK1" Association="EMSModel.FK_LACK1_ITEM_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_ITEM" EntitySet="LACK1_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_MONTH" Association="EMSModel.FK_LACK1_MONTH">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="EMSModel.FK_LACK1_RETURN_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_USER_APPROVED" Association="EMSModel.FK_LACK1_USER_APPROVED">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_USER_CREATED" Association="EMSModel.FK_LACK1_USER_CREATED">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2279,6 +2473,7 @@
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_LACK1_MONTH_FROM" FromRole="MONTH" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_MONTH" FromRole="MONTH" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_MONTH" FromRole="MONTH" ToRole="PBCK1_PROD_PLAN" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="MONTH" ToRole="LACK1" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
@@ -2386,7 +2581,6 @@
           </Key>
           <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="ADRNR" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -2398,6 +2592,8 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -2471,6 +2667,8 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="USER" ToRole="LACK1" />
+          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="USER" ToRole="LACK1" />
           <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
         </EntityType>
         <EntityType Name="USER_GROUP">
@@ -3293,7 +3491,7 @@
             <PropertyRef Name="CK5_ID" />
           </Key>
           <Property Name="CK5_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CK5_TYPE" Type="Int32" Nullable="false" />
+          <Property Name="CK5_TYPE" Type="EMSModel.CK5Type" Nullable="false" />
           <Property Name="KPPBC_CITY" Type="Int64" />
           <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
@@ -3330,7 +3528,7 @@
           <Property Name="LOADING_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS_ID" Type="Int32" Nullable="false" />
+          <Property Name="STATUS_ID" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -3359,6 +3557,8 @@
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
         </EntityType>
         <Association Name="FK_CK5_APPROVED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -3708,33 +3908,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="WORKFLOW_HISTORY">
-          <Key>
-            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
-          </Key>
-          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
-          <Property Name="FORM_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
-          <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
-          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
-        </EntityType>
-        <Association Name="FK_WORKFLOW_HISTORY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="WORKFLOW_HISTORY">
-              <PropertyRef Name="ACTION_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EnumType Name="UserRole" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.UserRole" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="RequestType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.RequestType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="ExciseStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ExciseStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3771,6 +3944,173 @@
             </Principal>
             <Dependent Role="CK5_MATERIAL">
               <PropertyRef Name="CK5_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LACK1">
+          <Key>
+            <PropertyRef Name="LACK1_ID" />
+          </Key>
+          <Property Name="LACK1_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_NUMBER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="BUKRS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="BUTXT" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PERIOD_MONTH" Type="Int32" />
+          <Property Name="PERIOD_YEAR" Type="Int32" />
+          <Property Name="LEVEL_PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="LEVEL_PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="SUPPLIER_PLANT" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
+          <Property Name="EX_GOODTYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="WASTE_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="WASTE_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="RETURN_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="RETURN_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="Int32" />
+          <Property Name="GOV_STATUS" Type="Int32" />
+          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="LACK1_DOCUMENT" Relationship="EMSModel.FK_LACK1_DOCUMENT_LACK1" FromRole="LACK1" ToRole="LACK1_DOCUMENT" />
+          <NavigationProperty Name="LACK1_ITEM" Relationship="EMSModel.FK_LACK1_ITEM_LACK1" FromRole="LACK1" ToRole="LACK1_ITEM" />
+          <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="LACK1" ToRole="MONTH" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="LACK1" ToRole="UOM" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="LACK1" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="LACK1" ToRole="USER" />
+          <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
+        </EntityType>
+        <EntityType Name="LACK1_DOCUMENT">
+          <Key>
+            <PropertyRef Name="LACK1_DOCUMENT_ID" />
+          </Key>
+          <Property Name="LACK1_DOCUMENT_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" />
+          <Property Name="FILE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_DOCUMENT_LACK1" FromRole="LACK1_DOCUMENT" ToRole="LACK1" />
+        </EntityType>
+        <EntityType Name="LACK1_ITEM">
+          <Key>
+            <PropertyRef Name="LACK1_ITEM_ID" />
+          </Key>
+          <Property Name="LACK1_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" />
+          <Property Name="BEGINNING_BALANCE" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="INCOME" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="USAGE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PRODUCTION" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_ITEM_LACK1" FromRole="LACK1_ITEM" ToRole="LACK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_DOCUMENT_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1_DOCUMENT" Role="LACK1_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_DOCUMENT">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_ITEM_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1_ITEM" Role="LACK1_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_ITEM">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_MONTH">
+          <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="MONTH_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="PERIOD_MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_RETURN_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="RETURN_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_USER_APPROVED">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_USER_CREATED">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_WASTE_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="WASTE_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="WORKFLOW_HISTORY">
+          <Key>
+            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
+          </Key>
+          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
+          <Property Name="FORM_ID" Type="Int64" Nullable="false" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
+          <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_HISTORY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3993,11 +4333,12 @@
           <EntitySetMapping Name="T001">
             <EntityTypeMapping TypeName="EMSModel.T001">
               <MappingFragment StoreEntitySet="T001">
+                <ScalarProperty Name="SPRAS" ColumnName="SPRAS" />
+                <ScalarProperty Name="ORT01" ColumnName="ORT01" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="NPWP" ColumnName="NPWP" />
-                <ScalarProperty Name="ADRNR" ColumnName="ADRNR" />
                 <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
                 <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
               </MappingFragment>
@@ -4372,21 +4713,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WORKFLOW_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
-              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
-                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
-                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
-                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
-                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
-                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
-                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
-                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
-                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
-                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CK5_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.CK5_MATERIAL">
               <MappingFragment StoreEntitySet="CK5_MATERIAL">
@@ -4407,6 +4733,71 @@
                 <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
                 <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
                 <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1">
+            <EntityTypeMapping TypeName="EMSModel.LACK1">
+              <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="RETURN_UOM" ColumnName="RETURN_UOM" />
+                <ScalarProperty Name="RETURN_QTY" ColumnName="RETURN_QTY" />
+                <ScalarProperty Name="WASTE_UOM" ColumnName="WASTE_UOM" />
+                <ScalarProperty Name="WASTE_QTY" ColumnName="WASTE_QTY" />
+                <ScalarProperty Name="EX_GOODTYP" ColumnName="EX_GOODTYP" />
+                <ScalarProperty Name="SUPPLIER_PLANT" ColumnName="SUPPLIER_PLANT" />
+                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+                <ScalarProperty Name="LEVEL_PLANT_NAME" ColumnName="LEVEL_PLANT_NAME" />
+                <ScalarProperty Name="LEVEL_PLANT_ID" ColumnName="LEVEL_PLANT_ID" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
+                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+                <ScalarProperty Name="LACK1_NUMBER" ColumnName="LACK1_NUMBER" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_DOCUMENT">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_DOCUMENT">
+              <MappingFragment StoreEntitySet="LACK1_DOCUMENT">
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_DOCUMENT_ID" ColumnName="LACK1_DOCUMENT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_ITEM">
+              <MappingFragment StoreEntitySet="LACK1_ITEM">
+                <ScalarProperty Name="PRODUCTION" ColumnName="PRODUCTION" />
+                <ScalarProperty Name="USAGE" ColumnName="USAGE" />
+                <ScalarProperty Name="INCOME" ColumnName="INCOME" />
+                <ScalarProperty Name="BEGINNING_BALANCE" ColumnName="BEGINNING_BALANCE" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_ITEM_ID" ColumnName="LACK1_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_HISTORY">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
+              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
+                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
+                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
+                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
+                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -109,6 +109,15 @@
     <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
+    <Compile Include="LACK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_DOCUMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

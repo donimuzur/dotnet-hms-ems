@@ -22,6 +22,8 @@ using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
+using Sampoerna.EMS.Website.Models.EmailTemplate;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website
 {
@@ -106,7 +108,7 @@ namespace Sampoerna.EMS.Website
             //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.)) //todo ask
             // .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
 
-            Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
+            //Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
             //Mapper.CreateMap<SUPPLIER_PORT, SelectItemModel>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID + "-" + src.PORT_NAME))
             //    .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
@@ -588,11 +590,11 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting();
 
 
-            Mapper.CreateMap<T1001W, CK5PlantModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
-                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.NPWP))
-                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBCK_ID))
-                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT))
+            Mapper.CreateMap<T001W, CK5PlantModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.NPWP))
+                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.BUTXT))
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ADDRESS))
                 .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.NAME1));
 
@@ -699,6 +701,29 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));
 
 
+            #endregion
+
+            #region Email Template
+            Mapper.CreateMap<EMAIL_TEMPLATE, EmailTemplateModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EmailTemplateId,
+                    opt => opt.MapFrom(src => src.EMAIL_TEMPLATE_ID))
+                .ForMember(dest => dest.EmailTemplateName,
+                    opt => opt.MapFrom(src => src.TEMPLATE_NAME))
+                .ForMember(dest => dest.EmailTemplateSubject,
+                    opt => opt.MapFrom(src => src.SUBJECT))
+                .ForMember(dest => dest.EmailTemplateBody,
+                    opt => opt.MapFrom(src => src.BODY));
+                //.ForMember(dest => dest.;
+
+            Mapper.CreateMap<EmailTemplateModel,EMAIL_TEMPLATE>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EMAIL_TEMPLATE_ID,
+                    opt => opt.MapFrom(src => src.EmailTemplateId))
+                .ForMember(dest => dest.TEMPLATE_NAME,
+                    opt => opt.MapFrom(src => src.EmailTemplateName))
+                .ForMember(dest => dest.SUBJECT,
+                    opt => opt.MapFrom(src => src.EmailTemplateSubject))
+                .ForMember(dest => dest.BODY,
+                    opt => opt.MapFrom(src => src.EmailTemplateBody));
             #endregion
         }
     }
