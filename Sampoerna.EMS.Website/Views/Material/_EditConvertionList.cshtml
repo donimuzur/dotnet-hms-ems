@@ -15,7 +15,7 @@
                             <label class="col-md-4">Converted UOM<span class="red">*</span></label>
                             <div class="col-md-8">
                                 @Html.HiddenFor(model => model.MaterialNumber, new { id = "ddlkey" })
-                                @Html.DropDownListFor(model => model.Conversion_UOM, Model.Conversion_UOM, "select", new { @class = "form-control", id = "ddlConversion_UOM" })
+                                @Html.DropDownListFor(model => model.ConversionUomList, Model.ConversionUomList, "select", new { @class = "form-control", id = "ddlConversion_UOM" })
                                 @*@Html.ValidationMessageFor(model => model.Convertion)*@
                             </div>
                         </div>
