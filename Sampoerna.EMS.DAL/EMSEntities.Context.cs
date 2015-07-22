@@ -67,7 +67,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<CARRIAGE_METHOD> CARRIAGE_METHOD { get; set; }
-        public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
+        public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
     }
 }

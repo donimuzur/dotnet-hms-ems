@@ -26,9 +26,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
-        public Nullable<int> EX_SETTLEMENT_ID { get; set; }
-        public Nullable<int> EX_STATUS_ID { get; set; }
-        public Nullable<int> REQUEST_TYPE_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExciseSettlement EX_SETTLEMENT_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExciseStatus EX_STATUS_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.RequestType REQUEST_TYPE_ID { get; set; }
         public string STO_SENDER_NUMBER { get; set; }
         public string STO_RECEIVER_NUMBER { get; set; }
         public string STOB_NUMBER { get; set; }

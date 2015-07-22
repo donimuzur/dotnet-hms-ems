@@ -171,5 +171,29 @@ namespace Sampoerna.EMS.Core
             Detail = 4
         }
 
+        public enum ExciseSettlement
+        {
+            [Description("Pembayaran")]
+            Pembayaran = 1,
+            [Description("Pita Cukai")]
+            PitaCukai = 2
+        }
+
+        public enum ExciseStatus
+        {
+            [Description("Belum Dilunasi")]
+            BelumDilunasi = 1,
+            [Description("Sudah Dilunasi")]
+            SudahDilunasi = 2
+        }
+
+        public enum RequestType
+        {
+            [Description("Tunai")]
+            Tunai = 1,
+            [Description("Tunda")]
+            Tunda = 2
+        }
+        
     }
 }

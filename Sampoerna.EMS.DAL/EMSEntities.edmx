@@ -36,9 +36,9 @@
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="REGISTRATION_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="EX_GOODS_TYPE_ID" Type="int" />
-          <Property Name="EX_SETTLEMENT_ID" Type="int" />
-          <Property Name="EX_STATUS_ID" Type="int" />
-          <Property Name="REQUEST_TYPE_ID" Type="int" />
+          <Property Name="EX_SETTLEMENT_ID" Type="int" Nullable="false" />
+          <Property Name="EX_STATUS_ID" Type="int" Nullable="false" />
+          <Property Name="REQUEST_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="STO_SENDER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STO_RECEIVER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STOB_NUMBER" Type="nvarchar" MaxLength="50" />
@@ -444,6 +444,7 @@
           <Property Name="ACTION_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="ACTION_DATE" Type="datetime" />
           <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
+          <Property Name="ROLE" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -2120,11 +2121,6 @@
             <End Role="CARRIAGE_METHOD" EntitySet="CARRIAGE_METHOD" />
             <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
-          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
-          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
-          </AssociationSet>
           <EntitySet Name="PBCK1_PROD_PLAN" EntityType="EMSModel.PBCK1_PROD_PLAN" />
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_MONTH" Association="EMSModel.FK_PBCK1_PROD_PLAN_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
@@ -2137,6 +2133,11 @@
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+          </AssociationSet>
+          <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3288,9 +3289,9 @@
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
           <Property Name="REGISTRATION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="EX_GOODS_TYPE_ID" Type="Int32" />
-          <Property Name="EX_SETTLEMENT_ID" Type="Int32" />
-          <Property Name="EX_STATUS_ID" Type="Int32" />
-          <Property Name="REQUEST_TYPE_ID" Type="Int32" />
+          <Property Name="EX_SETTLEMENT_ID" Type="EMSModel.ExciseSettlement" Nullable="false" />
+          <Property Name="EX_STATUS_ID" Type="EMSModel.ExciseStatus" Nullable="false" />
+          <Property Name="REQUEST_TYPE_ID" Type="EMSModel.RequestType" Nullable="false" />
           <Property Name="STO_SENDER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3668,32 +3669,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="WORKFLOW_HISTORY">
-          <Key>
-            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
-          </Key>
-          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
-          <Property Name="FORM_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
-          <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
-          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
-        </EntityType>
-        <Association Name="FK_WORKFLOW_HISTORY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="WORKFLOW_HISTORY">
-              <PropertyRef Name="ACTION_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EnumType Name="ActionType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ActionType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EntityType Name="PBCK1_PROD_PLAN">
           <Key>
@@ -3748,6 +3723,37 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WORKFLOW_HISTORY">
+          <Key>
+            <PropertyRef Name="WORKFLOW_HISTORY_ID" />
+          </Key>
+          <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
+          <Property Name="FORM_ID" Type="Int64" Nullable="false" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
+          <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_HISTORY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="UserRole" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.UserRole" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="RequestType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.RequestType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="ExciseStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ExciseStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="ExciseSettlement" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ExciseSettlement" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4344,20 +4350,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WORKFLOW_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
-              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
-                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
-                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
-                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
-                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
-                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
-                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
-                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
-                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK1_PROD_PLAN">
             <EntityTypeMapping TypeName="EMSModel.PBCK1_PROD_PLAN">
               <MappingFragment StoreEntitySet="PBCK1_PROD_PLAN">
@@ -4370,6 +4362,21 @@
                 <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
                 <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
                 <ScalarProperty Name="PBCK1_PROD_PLAN_ID" ColumnName="PBCK1_PROD_PLAN_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_HISTORY">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
+              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
+                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
+                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
+                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
+                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
