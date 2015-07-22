@@ -129,6 +129,9 @@
         <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_CK5_UOM" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE" Width="1.5" PointX="5.25" PointY="20.875" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" />
+        <AssociationConnector Association="EMSModel.WORKFLOW_STATE_USERS" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

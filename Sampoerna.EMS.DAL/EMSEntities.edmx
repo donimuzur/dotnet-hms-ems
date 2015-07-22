@@ -105,10 +105,10 @@
           <Key>
             <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
           </Key>
-          <Property Name="DOC_NUMBER_SEQ_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DOC_NUMBER_SEQ_LAST" Type="bigint" Nullable="false" />
           <Property Name="MONTH" Type="int" />
           <Property Name="YEAR" Type="int" />
+          <Property Name="DOC_NUMBER_SEQ_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="EMAIL_TEMPLATE">
           <Key>
@@ -508,6 +508,25 @@
           <Property Name="ACTION_DATE" Type="datetime" />
           <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
           <Property Name="ROLE" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WORKFLOW_STATE">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACTION_NAME" Type="varchar" MaxLength="50" />
+          <Property Name="FORM_ID" Type="bigint" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="WORKFLOW_STATE_USERS">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="int" Nullable="false" />
+          <Property Name="USER_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -1381,6 +1400,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+          <End Role="EMAIL_TEMPLATE" Type="Self.EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+          <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="1" />
+          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WORKFLOW_STATE">
+              <PropertyRef Name="ACTION_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="ACTION_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1634,6 +1689,7 @@
           <EntitySet Name="USER_GROUP" EntityType="Self.USER_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
@@ -1643,6 +1699,12 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [WORKFLOW_STATE_USERS].[ACTION_ID] AS [ACTION_ID], 
+    [WORKFLOW_STATE_USERS].[USER_ID] AS [USER_ID]
+    FROM [dbo].[WORKFLOW_STATE_USERS] AS [WORKFLOW_STATE_USERS]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
@@ -1886,6 +1948,18 @@
           <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="Self.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_USER" Association="Self.FK_WORKFLOW_STATE_USERS_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="Self.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -2326,6 +2400,15 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="CK5" EntitySet="CK5" />
           </AssociationSet>
+          <EntitySet Name="WORKFLOW_STATE" EntityType="EMSModel.WORKFLOW_STATE" />
+          <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+          </AssociationSet>
+          <AssociationSet Name="WORKFLOW_STATE_USERS" Association="EMSModel.WORKFLOW_STATE_USERS">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2366,6 +2449,7 @@
           <Property Name="SUBJECT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BODY" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="WORKFLOW_STATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="EMAIL_TEMPLATE" ToRole="WORKFLOW_STATE" />
         </EntityType>
         <EntityType Name="EX_GROUP_TYPE">
           <Key>
@@ -2653,6 +2737,7 @@
           <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="USER" ToRole="CK5" />
           <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="USER" ToRole="CK5" />
+          <NavigationProperty Name="WORKFLOW_STATE" Relationship="EMSModel.WORKFLOW_STATE_USERS" FromRole="USER" ToRole="WORKFLOW_STATE" />
           </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -3952,7 +4037,7 @@
           <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="Int32" />
           <Property Name="BRAND" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" FixedLength="false" Unicode="true" MaxLength="4" />
           <Property Name="UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CONVERTION" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="HJE" Type="Decimal" Precision="18" Scale="2" />
@@ -3969,7 +4054,7 @@
           </Key>
           <Property Name="CK5_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CK5_TYPE" Type="EMSModel.CK5Type" Nullable="false" />
-          <Property Name="KPPBC_CITY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="KPPBC_CITY" Type="String" FixedLength="false" Unicode="true" Nullable="false" MaxLength="50" />
           <Property Name="CE_OFFICE_CODE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
@@ -3981,8 +4066,8 @@
           <Property Name="STO_SENDER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SOURCE_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="DEST_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="SOURCE_PLANT_ID" Type="String" FixedLength="false" Unicode="true" Nullable="false" MaxLength="4" />
+          <Property Name="DEST_PLANT_ID" Type="String" FixedLength="false" Unicode="true" Nullable="false" MaxLength="4" />
           <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
           <Property Name="PBCK1_DECREE_ID" Type="Int32" />
@@ -4089,12 +4174,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WORKFLOW_STATE">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACTION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FORM_ID" Type="Int64" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
+          <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="WORKFLOW_STATE" ToRole="EMAIL_TEMPLATE" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.WORKFLOW_STATE_USERS" FromRole="WORKFLOW_STATE" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+          <End Type="EMSModel.EMAIL_TEMPLATE" Role="EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="WORKFLOW_STATE_USERS">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="*" />
+          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="EMSModelStoreContainer" CdmEntityContainer="EMSEntities" >
+        <EntityContainerMapping CdmEntityContainer="EMSEntities" StorageEntityContainer="EMSModelStoreContainer">
           <EntitySetMapping Name="CHANGES_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.CHANGES_HISTORY">
               <MappingFragment StoreEntitySet="CHANGES_HISTORY">
@@ -4780,6 +4892,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_STATE">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE">
+              <MappingFragment StoreEntitySet="WORKFLOW_STATE">
+                <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+                <ScalarProperty Name="ACTION_NAME" ColumnName="ACTION_NAME" />
+                <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="WORKFLOW_STATE_USERS" TypeName="EMSModel.WORKFLOW_STATE_USERS" StoreEntitySet="WORKFLOW_STATE_USERS">
+            <EndProperty Name="WORKFLOW_STATE">
+              <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
+            </EndProperty>
+            <EndProperty Name="USER">
+              <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

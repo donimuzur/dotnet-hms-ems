@@ -23,6 +23,7 @@ using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.EmailTemplate;
 using Sampoerna.EMS.Website.Models.Settings;
+using Sampoerna.EMS.Website.Models.WorkflowSetting;
 
 namespace Sampoerna.EMS.Website
 {
@@ -613,6 +614,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MonthName_Eng, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_ENG))
                 .ForMember(dest => dest.MonthName_Ind, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_IND))
                 .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.YEAR));
+
+            Mapper.CreateMap<PAGE, WorkflowDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Form_Id, opt => opt.MapFrom(src => src.PAGE_ID))
+                .ForMember(dest => dest.Modul, opt => opt.MapFrom(src => src.MENU_NAME));
         }
     }
 }

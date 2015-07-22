@@ -19,6 +19,11 @@ namespace Sampoerna.EMS.Website
                             "poa/getpoabynppbkcid/",
                             new { controller = "Address", action = "GetPOAByNppbkcId" },
                             new[] { "Sampoerna.EMS.Website.Controllers" });
+
+            routes.MapRoute("GetMapping",
+                            "WorkflowSettings/GetMapping/",
+                            new { controller = "Address", action = "GetMapping" },
+                            new[] { "Sampoerna.EMS.Website.Controllers" });
         }
     }
 }

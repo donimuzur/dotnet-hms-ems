@@ -240,6 +240,7 @@
     <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
+    <Compile Include="Controllers\WorkflowSettingsController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -755,6 +756,10 @@
     <Content Include="Views\EmailTemplate\Create.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Edit.cshtml" />
+    <Content Include="Views\WorkflowSettings\Details.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMapping.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
