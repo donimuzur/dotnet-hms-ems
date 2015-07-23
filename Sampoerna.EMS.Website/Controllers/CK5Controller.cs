@@ -83,7 +83,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Ck5Type = ck5Type;
 
             var listCk5Dto = _ck5Bll.GetAll();
-            model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+            //model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+            model.SearchView.DocumentNumberList = new SelectList(Enumerable.Empty<SelectListItem>());
             model.SearchView.POAList = GlobalFunctions.GetPoaAll();
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
@@ -240,7 +241,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
            // model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();

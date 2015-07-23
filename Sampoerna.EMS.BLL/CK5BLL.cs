@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IPBCK1BLL _pbck1Bll;
 
-        private string includeTables = "T1001W.ZAIDM_EX_NPPBKC.T1001,CK5_MATERIAL, ZAIDM_EX_NPPBKC.T1001,ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC, ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,T1001W, T1001W1, PBCK1,CARRIAGE_METHOD,COUNTRY, UOM, USER, CK5_MATERIAL";
+        private string includeTables = "CK5_MATERIAL, PBCK1,UOM";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.BLL
 
         public CK5 GetByIdIncludeTables(long id)
         {
-            includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
+            //includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
             var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -85,10 +85,6 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5Dto> GetAll()
         {
-            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
-            //return _repository.Get(null, null, includeTables).ToList();
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
-
             var dtData = _repository.Get(null, null, includeTables).ToList();
 
             return Mapper.Map<List<CK5Dto>>(dtData);
@@ -97,13 +93,13 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5> GetCK5ByType(Enums.CK5Type ck5Type)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
+            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
             return _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
         }
 
         public List<CK5Dto> GetInitDataListIndex(Enums.CK5Type ck5Type)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
+           // includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
 
             var dtData = _repository.Get(null, null, includeTables).ToList();
 
@@ -112,7 +108,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5Dto> GetCK5ByParam(CK5GetByParamInput input)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1,UOM";
+            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1,UOM";
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
@@ -388,7 +384,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(data.KPPBC_CITY));
             changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
 
-            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(data.EX_GOODS_TYPE_ID));
+            //changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(data.EX_GOODS_TYPE_ID));
             changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(data.EX_SETTLEMENT_ID));
             changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(data.EX_STATUS_ID));
             changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(data.REQUEST_TYPE_ID));
@@ -416,19 +412,15 @@ namespace Sampoerna.EMS.BLL
                 switch (listChange.Key)
                 {
                     case "KPPBC_CITY":
-                        long city = 0;
-                        if (data.KPPBC_CITY.HasValue)
-                            city = data.KPPBC_CITY.Value;
-
-                        changes.OLD_VALUE = origin.KppbcCityName;
-                        //changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(city);
+                        changes.OLD_VALUE = origin.KPPBC_CITY;
+                        changes.NEW_VALUE = data.KPPBC_CITY;
                         break;
                     case "REGISTRATION_NUMBER":
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
                         changes.NEW_VALUE = data.REGISTRATION_NUMBER;
                         break;
                     case "EX_GOODS_TYPE_ID":
-                        changes.OLD_VALUE = origin.GoodTypeDesc;
+                        changes.OLD_VALUE = origin.EX_GOODS_TYPE_DESC;
                         //changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(data.EX_GOODS_TYPE_ID);
                         break;
                     case "EX_SETTLEMENT_ID":
@@ -444,20 +436,12 @@ namespace Sampoerna.EMS.BLL
                         //changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(data.REQUEST_TYPE_ID);
                         break;
                     case "SOURCE_PLANT_ID":
-                        long sourcePlant = 0;
-                        if (data.SOURCE_PLANT_ID.HasValue)
-                            sourcePlant = data.SOURCE_PLANT_ID.Value;
-
-                        changes.OLD_VALUE = origin.SourcePlantName;
-                        changes.NEW_VALUE = _plantBll.GetPlantNameById(sourcePlant);
+                        changes.OLD_VALUE = origin.SOURCE_PLANT_ID;
+                        changes.NEW_VALUE = data.SOURCE_PLANT_ID;
                         break;
                     case "DEST_PLANT_ID":
-                        long destPlant = 0;
-                        if (data.DEST_PLANT_ID.HasValue)
-                            destPlant = data.DEST_PLANT_ID.Value;
-
-                        changes.OLD_VALUE = origin.DestPlantName;
-                        changes.NEW_VALUE = _plantBll.GetPlantNameById(destPlant);
+                        changes.OLD_VALUE = origin.DEST_PLANT_ID;
+                        changes.NEW_VALUE = data.DEST_PLANT_ID;
                         break;
                     case "INVOICE_NUMBER":
                         changes.OLD_VALUE = origin.INVOICE_NUMBER;
@@ -476,20 +460,20 @@ namespace Sampoerna.EMS.BLL
                         //changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(pbck1);
                         break;
 
-                    case "CARRIAGE_METHOD_ID":
-                        changes.OLD_VALUE = origin.CarriageMethodName;
-                        //changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(data.CARRIAGE_METHOD_ID);
-                        break;
+                    //case "CARRIAGE_METHOD_ID":
+                    //    changes.OLD_VALUE = origin.CARRIAGE_METHOD_ID;
+                    //    //changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(data.CARRIAGE_METHOD_ID);
+                    //    break;
 
                     case "GRAND_TOTAL_EX":
                         changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
                         changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
                         break;
 
-                    case "PACKAGE_UOM_ID":
-                        changes.OLD_VALUE = origin.PackageUomName;
-                        changes.NEW_VALUE = _uomBll.GetUomDescById(data.PACKAGE_UOM_ID);
-                        break;
+                    //case "PACKAGE_UOM_ID":
+                    //    changes.OLD_VALUE = origin.PackageUomName;
+                    //    changes.NEW_VALUE = _uomBll.GetUomDescById(data.PACKAGE_UOM_ID);
+                    //    break;
 
 
                 }
