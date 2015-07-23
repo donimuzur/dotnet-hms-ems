@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
-using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -18,6 +17,8 @@ namespace Sampoerna.EMS.BLL
 
         private IGenericRepository<WORKFLOW_HISTORY> _repository;
 
+        private string includeTables = "USER";
+
         public WorkflowHistoryBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -25,30 +26,47 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<WORKFLOW_HISTORY>();
         }
 
-        public WORKFLOW_HISTORY GetById(long id)
+        public WorkflowHistoryDto GetById(long id)
         {
-            return _repository.GetByID(id);
+            return Mapper.Map<WorkflowHistoryDto>(_repository.Get(c => c.WORKFLOW_HISTORY_ID == id, null, includeTables).FirstOrDefault());
         }
 
-        public WORKFLOW_HISTORY GetByActionAndFormId(Enums.ActionType actionType, long formId)
+        public List<WorkflowHistoryDto> GetByFormTypeAndFormId(GetByFormTypeAndFormIdInput input)
         {
-            return _repository.Get(w=> w.ACTION == actionType && w.FORM_ID == formId).FirstOrDefault();
+            var dbData =
+                _repository.Get(c => c.FORM_TYPE_ID == input.FormType && c.FORM_ID == input.FormId, null, includeTables)
+                    .ToList();
+            return Mapper.Map<List<WorkflowHistoryDto>>(dbData);
         }
 
-        public void AddHistory(WORKFLOW_HISTORY history)
+        public WorkflowHistoryDto GetByActionAndFormNumber(GetByActionAndFormNumberInput input)
         {
-            _repository.Insert(history);
+            var dbData =
+                _repository.Get(c => c.ACTION == input.ActionType && c.FORM_NUMBER == input.FormNumber, null,
+                    includeTables).FirstOrDefault();
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
         }
 
-        public void Save(WORKFLOW_HISTORY history)
+        public void AddHistory(WorkflowHistoryDto history)
         {
-            _repository.InsertOrUpdate(history);
+            var dbData = Mapper.Map<WORKFLOW_HISTORY>(history);
+            _repository.Insert(dbData);
         }
 
-        public List<WORKFLOW_HISTORY> GetByFormTypeAndFormId(Enums.FormType formTypeId, long id)
+        public void Save(WorkflowHistoryDto history)
         {
-            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, "USER").ToList();
+            WORKFLOW_HISTORY dbData = null;
+            if (history.WORKFLOW_HISTORY_ID > 0)
+            {
+                dbData = _repository.GetByID(history.WORKFLOW_HISTORY_ID);
+                Mapper.Map<WorkflowHistoryDto, WORKFLOW_HISTORY>(history, dbData);
+            }
+            else
+            {
+                dbData = Mapper.Map<WORKFLOW_HISTORY>(history);
+                _repository.Insert(dbData);
+            }
         }
-
+        
     }
 }

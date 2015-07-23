@@ -1,30 +1,37 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 
-<table id="prod-conv-table" class="table table-bordered table-striped js-options-table">
+    <table id="prod-conv-table" class="table table-bordered table-striped js-options-table">
     <thead>
         <tr>
+            <th style="display: none"></th>
             <th style="display: none"></th>
             <th>Product Type Alias</th>
             <th>Product Type</th>
             <th>Converted Output</th>
             <th>Converted Uom</th>
+            <th>Message Error</th>
         </tr>
     </thead>
     <tbody>
         @if (Model != null)
         {
-            foreach (var row in Model.ProductConversions)
+            foreach (var row in Model.Detail.Pbck1ProdConverter)
             {
                 <tr>
                     <td style="display: none">@row.ProductCode</td>
-                    <td>@row.ProductTypeAlias</td>
-                    <td>@row.ProductType</td>
+                    <td style="display: none">@row.ConverterUom</td>
+                    <td>@row.ProdTypeAlias</td>
+                    <td>@row.ProdTypeName</td>
                     <td>@row.ConverterOutput</td>
-                    <td>@row.ConverterUom</td>
+                    <td>@row.ConverterUomId</td>
+                    <td>@row.Message</td>
                 </tr>
             }
         }
     </tbody>
 </table>
+
+
+
 
 

@@ -6,7 +6,7 @@ using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
-    public class CK5CreateViewModel : BaseModel
+    public class CK5CreateViewModel : BaseModel, IValidatableObject
     {
         public CK5CreateViewModel()
         {
@@ -14,9 +14,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
             UploadItemModels = new List<CK5UploadViewModel>();
         }
 
-        //public CK5InformationViewModel InfoViewModel { get; set; }
+       
+        [Required]
         public List<CK5UploadViewModel> UploadItemModels { get; set; }
-
+       
         public Enums.DocumentStatus DocumentStatus { get; set; }
 
         //DETAIL INFORMATION
@@ -127,7 +128,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? UnsealingNotifDate { get; set; }
 
 
-        
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (UploadItemModels.Count == 0)
+                yield return new ValidationResult("Upload ck5 item required");
+
+
+        }
 
     }
 }

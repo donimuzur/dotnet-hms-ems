@@ -91,7 +91,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public string GetCityByNppbkcId(long nppBkcId)
+        public string GetCityByNppbkcId(string nppBkcId)
         {
             var dbData = _repository.GetByID(nppBkcId);
             if (dbData == null)

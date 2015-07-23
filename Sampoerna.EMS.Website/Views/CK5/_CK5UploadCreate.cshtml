@@ -15,20 +15,20 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="input-group">
+                                @*<div class="input-group">
                                     <input type="text" class="form-control">
                                     <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                        Browse <input type="file" name="itemExcelFile">
+                                        Browse <input type="file" name="itemExcelFile" id="itemExcelFile">
                                     </span>
-                                </div>
-
-                                @*<div class="input-group">
-                                    <input type="file" class="form-control" name="itemExcelFile">
                                 </div>*@
+
+                                <div class="input-group">
+                                    <input type="file" class="form-control" name="itemExcelFile" id="itemExcelFile">
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <input type="button" id="CK5UploadSubmitBtn" class="btn btn-grey generate" value="Generate" />
-                                <input type="button" class="btn btn-grey" id="CK5UploadSave" value="Save" />
+                                <input type="button" id="CK5UploadSubmitBtn" class="btn btn-grey generate" value="Generate" disabled />
+                                <input type="button" class="btn btn-grey" id="CK5UploadSave" value="Save" disabled />
                             </div>
 
                         </div>

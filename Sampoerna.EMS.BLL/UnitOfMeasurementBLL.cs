@@ -28,6 +28,11 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
+        public UOM GetByName(string uomName)
+        {
+            return _repository.Get(c => c.UOM_DESC == uomName, null, string.Empty).FirstOrDefault();
+        }
+
         public List<UOM> GetAll()
         {
             return _repository.Get().ToList();
