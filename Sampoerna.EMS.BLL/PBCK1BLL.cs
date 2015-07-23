@@ -143,12 +143,15 @@ namespace Sampoerna.EMS.BLL
 
         public SavePbck1Output Save(Pbck1SaveInput input)
         {
-            PBCK1 dbData = null;
+            PBCK1 dbData;
             if (input.Pbck1.Pbck1Id > 0)
             {
 
                 //update
                 dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
+
+                if(dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
                 //delete first
                 _prodConverterBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
@@ -177,7 +180,7 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 input.Pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
-                input.Pbck1.Status = Core.Enums.DocumentStatus.Draft;
+                input.Pbck1.Status = Enums.DocumentStatus.Draft;
                 input.Pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
@@ -266,7 +269,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     var changes = new CHANGES_HISTORY
                     {
-                        FORM_TYPE_ID = Core.Enums.MenuList.PBCK1,
+                        FORM_TYPE_ID = Enums.MenuList.PBCK1,
                         FORM_ID = data.Pbck1Id.ToString(),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
@@ -725,23 +728,23 @@ namespace Sampoerna.EMS.BLL
         {
             switch (input.ActionType)
             {
-                case Core.Enums.ActionType.Submit:
+                case Enums.ActionType.Submit:
                     SubmitDocument(input);
                     break;
-                case Core.Enums.ActionType.Approve:
+                case Enums.ActionType.Approve:
                     ApproveDocument(input);
                     break;
-                case Core.Enums.ActionType.Reject:
+                case Enums.ActionType.Reject:
                     RejectDocument(input);
                     break;
-                case Core.Enums.ActionType.GovApprove:
+                case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
                     break;
-                case Core.Enums.ActionType.GovReject:
+                case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
                     break;
-                case Core.Enums.ActionType.GovCancel:
-                    GovCancelledDocument(input);
+                case Enums.ActionType.GovPartialApprove:
+                    GovPartialApproveDocument(input);
                     break;
             }
 
@@ -756,7 +759,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
             
-            if (input.ActionType == Core.Enums.ActionType.Modified)
+            if (input.ActionType == Enums.ActionType.Modified)
             {
                 //check if exist
                 var history = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput()
@@ -771,6 +774,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             dbData.ACTION_DATE = DateTime.Now;
+            dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
 
             _workflowHistoryBll.Save(dbData);
 
@@ -783,10 +787,13 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.Draft)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.WaitingForApproval;
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
+
+            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -801,10 +808,13 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.WaitingGovApproval;
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
+            dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
@@ -821,11 +831,14 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+
             //change back to draft
-            dbData.STATUS = Core.Enums.DocumentStatus.Draft;
+            dbData.STATUS = Enums.DocumentStatus.Draft;
 
             //todo ask
             dbData.APPROVED_BY = null;
@@ -844,20 +857,24 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
+
+            dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
 
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
-            input.ActionType = Core.Enums.ActionType.Completed;
+            input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
-
-
+            
         }
 
         private void GovPartialApproveDocument(Pbck1WorkflowDocumentInput input)
@@ -867,16 +884,20 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
-            dbData.STATUS_GOV = Core.Enums.DocumentStatusGov.PartialApproved;
+            //Add Changes
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
+
+            //dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
 
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
-            input.ActionType = Core.Enums.ActionType.Completed;
+            input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
@@ -889,10 +910,15 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Draft;
+            //Add Changes
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.Rejected);
+
+            //dbData.STATUS = Enums.DocumentStatus.Draft;
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
 
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
@@ -903,24 +929,38 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private void GovCancelledDocument(Pbck1WorkflowDocumentInput input)
+        private void WorkflowStatusAddChanges(Pbck1WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
-            var dbData = _repository.GetByID(input.DocumentId);
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.PBCK1,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "STATUS",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            _changesHistoryBll.AddHistory(changes);
+        }
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+        private void WorkflowStatusGovAddChanges(Pbck1WorkflowDocumentInput input, Enums.DocumentStatusGov oldStatus, Enums.DocumentStatusGov newStatus)
+        {
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.PBCK1,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "STATUS_GOV",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
-
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
-
-            input.DocumentNumber = dbData.NUMBER;
-
-            AddWorkflowHistory(input);
+            _changesHistoryBll.AddHistory(changes);
         }
 
         #endregion

@@ -11,6 +11,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
@@ -109,7 +110,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
-                }
+                },
+                CurrentUser = CurrentUser
             });
             return View("Index", model);
         }
@@ -156,8 +158,20 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Pbck1ItemViewModel();
             model = ModelInitial(model);
 
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //redirect to details for approval/rejected
+                return RedirectToAction("Details", new { id });
+            }
+
             try
             {
+                model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
+
+                if (!ValidateEditDocument(model))
+                {
+                    return RedirectToAction("Index");
+                }
 
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
@@ -168,7 +182,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     FormId = id.Value,
                     FormType = Enums.FormType.PBCK1
                 }));
-                model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
+
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
 
@@ -176,12 +190,46 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception exception)
             {
                 AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
+        private bool ValidateEditDocument(Pbck1ItemViewModel model)
+        {
+
+            //check is Allow Edit Document
+            var isAllowEditDocument = _workflowBll.AllowEditDocument(new WorkflowAllowEditAndSubmitInput()
+            {
+                DocumentStatus = model.Detail.Status,
+                CreatedUser = model.Detail.CreatedById,
+                CurrentUser = CurrentUser.USER_ID
+            });
+
+            if (!isAllowEditDocument)
+            {
+                AddMessageInfo(
+                    "Operation not allowed.",
+                    Enums.MessageInfoType.Error);
+                return false;
+            }
+
+            if (model.Detail.Status != Enums.DocumentStatus.Draft)
+            {
+                //can't edit
+                AddMessageInfo(
+                    "Can't modify document with status " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval),
+                    Enums.MessageInfoType.Error);
+                return false;
+            }
+            
+            return true;
+
+        }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(Pbck1ItemViewModel model)
         {
             try
@@ -192,13 +240,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View(ModelInitial(model));
                 }
 
+                if (!ValidateEditDocument(model))
+                {
+                    return View(ModelInitial(model));
+                }
+                model.Detail.Status = Enums.DocumentStatus.Revised;
                 model = CleanSupplierInfo(model);
-
-                //model.Detail.GoodTypeDesc = model.Detail.GoodTypeDesc.Split('-')[1];
 
                 //process save
                 var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-                //dataToSave.CreatedById = CurrentUser.USER_ID;
                 var input = new Pbck1SaveInput()
                 {
                     Pbck1 = dataToSave,
@@ -227,6 +277,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 FormId = model.Detail.Pbck1Id,
                 FormType = Enums.FormType.PBCK1
             }));
+
             model.WorkflowHistory = workflowHistory;
             model.ChangesHistoryList = changeHistory;
 
@@ -279,11 +330,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 DocumentStatus = model.Detail.Status,
                 FormView = Enums.FormViewType.Detail,
                 UserRole = CurrentUser.UserRole,
-                CreatedUser = pbck1Data.CreatedUsername,
+                CreatedUser = pbck1Data.CreatedById,
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID
             };
-            
+
             ////workflow
             var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
             model.AllowApproveAndReject = allowApproveAndReject;
@@ -302,6 +353,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create PBCK1 Document
+                AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             return CreateInitial(new Pbck1ItemViewModel()
             {
                 Detail = new Pbck1Item()
@@ -309,6 +366,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(Pbck1ItemViewModel model)
         {
             try
@@ -583,7 +641,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-        
+
         #region Workflow
 
         private void Pbck1Workflow(long id, Enums.ActionType actionType, string comment)
@@ -599,17 +657,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _pbck1Bll.Pbck1Workflow(input);
         }
-        public ActionResult SubmitDocument(long id)
+
+        public ActionResult SubmitDocument(long? id)
         {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            bool isSuccess = false;
+
             try
             {
-                Pbck1Workflow(id, Enums.ActionType.Submit, string.Empty);
-                AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                Pbck1Workflow(id.Value, Enums.ActionType.Submit, string.Empty);
+                isSuccess = true;
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
+
+            if (isSuccess)
+            {
+                AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+            }
+
             return RedirectToAction("Details", "Pbck1", new { id });
         }
 
@@ -669,12 +741,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
         }
 
-        public ActionResult GovCancelDocument(Pbck1ItemViewModel model)
+        public ActionResult GovPartialApproveDocument(Pbck1ItemViewModel model)
         {
             try
             {
-                Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovCancel, model.Detail.Comment);
-                AddMessageInfo("Success GovCancel Document", Enums.MessageInfoType.Success);
+                Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovPartialApprove, model.Detail.Comment);
+                AddMessageInfo("Success GovPartialApprove Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {

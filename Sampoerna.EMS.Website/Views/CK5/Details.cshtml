@@ -201,13 +201,13 @@
         $("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
             
-            $('#Comment').val('');
+            $('#Detail_Comment').val('');
             
             $('#Ck5ModalReject').modal('show');
 
         });
         
-        $('#Comment').bind('input propertychange', function () {
+        $('#Detail_Comment').bind('input propertychange', function () {
 
             $('#btnConfirmReject').attr('disabled', 'disabled');
             $('#btnConfirmGovReject').attr('disabled', 'disabled');

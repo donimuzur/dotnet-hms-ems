@@ -744,8 +744,6 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
-    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
-    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
     <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />

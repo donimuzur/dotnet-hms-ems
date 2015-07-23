@@ -1,4 +1,5 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core;
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
 
 @{
@@ -11,7 +12,9 @@
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "PBCK1")">
-                    <input type="button" class="btn btn-blue" value="NEW" />
+                    @if (Model.CurrentUser.UserRole != Enums.UserRole.Manager) {
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    }
                 </a>
             </div>
         </div>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 
@@ -24,6 +25,7 @@ namespace Sampoerna.EMS.Website.Models
         public string MessageTitle { get; set; }
         public List<string> MessageBody { get; set; }
 
+        public Login CurrentUser { get; set; }
        
     }
 }
