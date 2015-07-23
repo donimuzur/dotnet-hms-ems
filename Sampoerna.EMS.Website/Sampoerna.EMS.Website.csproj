@@ -281,6 +281,7 @@
     <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
     <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LACK1\LACK1ViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
