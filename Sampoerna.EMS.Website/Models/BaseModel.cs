@@ -13,10 +13,16 @@ namespace Sampoerna.EMS.Website.Models
         }
         public Enums.MenuList MainMenu { get; set; }
         public PAGE CurrentMenu { get; set; }
-        public string ErrorMessage { get; set; }
+        //public string ErrorMessage { get; set; }
 
         public List<ChangesHistoryItemModel> ChangesHistoryList { get; set; }
 
+
+        public string ErrorMessage { get; set; }
+        public string SuccesMessage { get; set; }
+
+        public string MessageTitle { get; set; }
+        public List<string> MessageBody { get; set; }
 
        
     }

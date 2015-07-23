@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConvertHelper.cs" />
     <Compile Include="DataTableHelper.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="MonthHelper.cs" />

@@ -4,51 +4,52 @@
 <div role="tabpanel" class="tab-pane" id="settings">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingOne">
+            <div class="panel-heading" role="tab" id="headingChangesLog">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseChangesLog" aria-expanded="true" aria-controls="collapseChangesLog">
                         Changes Log
                     </a>
                 </h4>
             </div>
-            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div id="collapseChangesLog" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChangesLog">
                 <div class="panel-body">
-                    <div class="row">
-                        <form class="form-excise " role="form">
-                            <div class="last-form">
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <label class="col-md-5">PBCK-1 No</label>
-                                        <div class="col-md-7">
-                                            <input type="text" class="form-control" value="@Model.Detail.Pbck1Number" disabled />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <label class="col-md-3">Date</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy")" disabled />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <label class="col-md-3">User</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" value="@Html.UserName()" disabled />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <button type="button" id="btn-changelog-export-xls" class="btn btn-blue full">Export to xls</button>
-                                        </div>
+                    <div class="form-excise " role="form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">PBCK-1 No</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@Model.Detail.Pbck1Number" disabled />
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">Date</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy")" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">User</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@Html.UserName()" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3"></label>
+                                    <div class="col-md-9">
+                                        <button type="button" id="btn-changelog-export-xls" class="btn btn-blue full">Export to xls</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -54,8 +54,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             ISupplierPortBLL supplierPortBll = MvcApplication.GetInstance<SupplierPortBLL>();
             var data = supplierPortBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(data, "SUPPLIER_PORT_ID", "PORT_NAME");
         }
 
         public static SelectList GetMonthList()
