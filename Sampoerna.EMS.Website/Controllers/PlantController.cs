@@ -85,7 +85,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
 
-                if (checkIfExist != null)
+                if (checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks)
                 {
                     TempData[Constans.SubmitType.DataExist] = Constans.SubmitMessage.DataExist;
                     return InitialEdit(model);

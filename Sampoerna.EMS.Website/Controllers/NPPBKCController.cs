@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /NPPBKC/
         public ActionResult Index()
         {
-            var plant = new NPPBKCIViewModels
+            var nppbkc = new NPPBKCIViewModels
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
             };
 
             //ViewBag.Message = TempData["message"];
-            return View("Index", plant);
+            return View("Index", nppbkc);
 
         }
 

@@ -26,6 +26,16 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.MasterData;
         }
 
+        [HttpPost]
+        public void Save(string Id, string ConversionUom, string Conversion)
+        {
+            var data = _materialBll.getByID(Id);
+            data.CONVERSION_UOM = ConversionUom;
+            data.CONVERSION = Conversion == null ? 0 : Convert.ToDecimal(Conversion);
+
+            _materialBll.Save(data, Id);
+        }
+
         private MaterialCreateViewModel InitCreateModel(MaterialCreateViewModel model)
         {
             model.MainMenu = _mainMenu;
@@ -35,6 +45,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -66,9 +77,11 @@ namespace Sampoerna.EMS.Website.Controllers
             Mapper.Map(data,model);
             
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
+            model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             InitDetailModel(model);
             return View("Details",model);
         }
+         
 
         private MaterialEditViewModel InitEditModel(MaterialEditViewModel model)
         {
@@ -79,6 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -91,6 +105,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
+           
             return model;
         }
 
@@ -99,6 +115,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             var model = new MaterialCreateViewModel();
+            var data = _materialBll.getAll();
+            model.MateriaList = Mapper.Map<List<ZAIDM_EX_MATERIAL>>(_materialBll.getAll());
             InitCreateModel(model);
             return View(model);
         }
@@ -179,6 +197,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(MaterialCreateViewModel data)
         {
+
             try
             {
                 // TODO: Add insert logic here
@@ -220,7 +239,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Details", new {id=id});
             }
             else {
+
                 var model = Mapper.Map<MaterialEditViewModel>(data);
+                model.MateriaList = Mapper.Map<List<ZAIDM_EX_MATERIAL>>(_materialBll.getAll());
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
@@ -264,9 +285,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     data.MODIFIED_DATE = DateTime.Now;
                     data.CREATED_DATE = origin.CreatedDate;
                     data.CREATED_BY = origin.CreatedById;
+                    data.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                     SetChanges(origin,data);
                     _materialBll.Save(data,CurrentUser.USER_ID);
-                    data.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
+                    
                     
                 }
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;

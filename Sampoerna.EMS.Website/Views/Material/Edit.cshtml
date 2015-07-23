@@ -8,7 +8,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Update Master Material</h3>
+                <h3> Material Master </h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Cancel</a>
@@ -40,9 +40,9 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Material Number<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", maxlength = "18" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
-                                                        </div>
+                                                            @Html.HiddenFor(model => model.MaterialNumber)
+                                                            @Html.TextBox("materialNumber", Model.MaterialNumber, new { @class = "form-control", maxlength = "18", disabled = "disabled" })
+                                                           </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -50,7 +50,7 @@
                                                         <label class="col-md-4">Material Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialGroup)*@
+                                                         
                                                         </div>
                                                     </div>
                                                 </div>
@@ -60,7 +60,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4 long">Material Description<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50" })
+                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50", rows = "5" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
                                                         </div>
                                                     </div>
@@ -85,7 +85,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Base UOM<span class="red">*</span></label>
+                                                        <label class="col-md-4">Base UOM (SAP)<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
 
@@ -114,6 +114,35 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            Convertion List
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Converted UOM (EMS)<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(model => model.ConversionUom, Model.ConversionUomList, "select", new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Convertion<span class="red">*</span></label>
@@ -123,7 +152,34 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <span class="red">*</span> ) This Field Required
+                                                </div>
+                                            </div>
+                                           
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-group" id="accordionThree" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                            Information
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
@@ -147,13 +203,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Created On</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.CreatedDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.CreatedDate)*@
                                                         </div>
                                                     </div>
@@ -162,13 +216,11 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Last Change On</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
+                                                            @Html.TextBoxFor(model => model.ChangedDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                             @*@Html.ValidationMessageFor(model => model.ChangedDate)*@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Plant Deletion</label>
@@ -178,20 +230,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Client Deletion</label>
-                                                            <div class="col-md-6">
-                                                                @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "" })
-                                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Client Deletion</label>
+                                                        <div class="col-md-6">
+                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "" })
                                                         </div>
                                                     </div>
-                                                </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <span class="red">*</span> ) This Field Required
                                                 </div>
                                             </div>
                                         </form>
@@ -204,6 +250,15 @@
             </div>
         </div>
     </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+
+                </div>
+            </div>
+        </div>
+    </footer>
 }
 @section scripts{
     <script type="text/javascript" language="javascript" class="init">
