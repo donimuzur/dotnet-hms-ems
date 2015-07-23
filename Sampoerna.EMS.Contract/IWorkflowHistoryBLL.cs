@@ -10,6 +10,8 @@ namespace Sampoerna.EMS.Contract
 
         List<WorkflowHistoryDto> GetByFormTypeAndFormId(GetByFormTypeAndFormIdInput input);
 
+        List<WorkflowHistoryDto> GetByFormNumber(string formNumber);
+
         WorkflowHistoryDto GetByActionAndFormNumber(GetByActionAndFormNumberInput input);
 
         void AddHistory(WorkflowHistoryDto history);

@@ -24,7 +24,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public List<CK5Item> DetailsList { get; set; }
 
-        public List<CK5Item> DetailList2 { get; set; } 
+        public List<CK5Item> DetailList2 { get; set; }
+
+        public List<CK5Item> DetailList3 { get; set; } 
+
         public Enums.CK5Type Ck5Type { get; set; }
     }
 
@@ -48,6 +51,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string Status { get; set; }
 
-
+        public Enums.CK5Type Ck5Type { get; set; }
     }
 }

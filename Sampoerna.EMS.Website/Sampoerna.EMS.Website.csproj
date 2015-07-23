@@ -47,7 +47,10 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -79,6 +82,9 @@
     <Reference Include="SimpleInjector.Integration.Web.Mvc, Version=2.6.1.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SimpleInjector.Integration.Web.Mvc.2.6.1\lib\net40\SimpleInjector.Integration.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="SpreadsheetLight">
+      <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -242,6 +248,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
+    <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -256,6 +263,7 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FormViewModel.cs" />
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
@@ -420,6 +428,7 @@
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
     <Content Include="Content\css\main.min.css.map" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
@@ -756,12 +765,28 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
+    <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
+    <Content Include="Views\CK5\_CK5DomesticAlcoholTablePartial.cshtml" />
+    <Content Include="Views\EmailTemplate\Create.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\GlobalSettings\Index.cshtml" />
     <Content Include="Views\EmailTemplate\Index.cshtml" />
     <Content Include="Views\EmailTemplate\Details.cshtml" />
-    <Content Include="Views\EmailTemplate\Create.cshtml" />
-    <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\CK5\_CK5ChangeLog.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5Printout.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadList.cshtml" />
+    <Content Include="Views\CK5\Create.cshtml" />
+    <Content Include="Views\CK5\Details.cshtml" />
+    <Content Include="Views\CK5\Edit.cshtml" />
     <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />

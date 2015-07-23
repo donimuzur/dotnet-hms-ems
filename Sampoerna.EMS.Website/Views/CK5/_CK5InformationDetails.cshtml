@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5DetailsViewModel
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 @Html.HiddenFor(model=>model.SubmissionNumber)
 @Html.HiddenFor(model => model.SubmissionDate)
@@ -34,7 +34,7 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.KppBcCity, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.KppBcCityName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Settlement</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.ExciseSettlement, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.ExciseSettlementName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Status</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.ExciseStatus, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.ExciseStatusName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +110,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Type</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.RequestType, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RequestTypeName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -317,7 +317,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.CarriageMethod, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.CarriageMethodName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -328,7 +328,7 @@
                                             @Html.TextBoxFor(model => model.GrandTotalEx, new { @disabled = false, @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.PackageUom, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.PackageUomName, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -352,63 +352,11 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
                     <div class="panel-body">
-                        @*<a href="#upload">*@
-                        <input type="button" class="btn btn-blue" value="Upload" id="btnUploadInfo" />
-                        @*</a>*@
-                        <div class="table-container">
-                            <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Brand</th>
-                                        <th>QTY</th>
-                                        <th>UOM</th>
-                                        <th>Convertion</th>
-                                        <th>Description</th>
-                                        <th>Converted QTY</th>
-                                        <th>Converted UOM</th>
-                                        <th>HJE</th>
-                                        <th>Tariff</th>
-                                        <th>Excise Value</th>
-                                        <th>USD Value</th>
-                                        <th>Note</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
+                       
+                      <div class="table-container" id="ck5DetailMaterialTable">
+                            @Html.Partial("_CK5UploadList", Model.UploadItemModels)
                         </div>
+
                     </div>
                 </div>
             </div>

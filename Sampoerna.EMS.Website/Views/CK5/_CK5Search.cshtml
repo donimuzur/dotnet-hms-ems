@@ -9,7 +9,14 @@
                     @*<label class="col-md-4">@Html.LabelFor(model => model.SearchView.DocumentNumber)</label>*@
                     @Html.LabelFor(model => model.SearchView.DocumentNumber, new { @class = "col-md-4" })
                     <div class="col-md-8">
-                        @Html.DropDownListFor(model => model.SearchView.DocumentNumber, Model.SearchView.DocumentNumberList, "All", new { @class = "form-control selectreset" })
+                        @if (Model.SearchView.DocumentNumberList == null)
+                        {
+                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.SearchView.DocumentNumber, Model.SearchView.DocumentNumberList, "All", new { @class = "form-control selectreset" })
+                        }
                     </div>
                 </div>
             </div>
@@ -18,7 +25,15 @@
                     @*<label class="col-md-4 long">NPPBKC Origin</label>*@
                     @Html.LabelFor(model => model.SearchView.NPPBKCOrigin, new { @class = "col-md-4" })
                     <div class="col-md-8">
-                        @Html.DropDownListFor(model => model.SearchView.NPPBKCOrigin, Model.SearchView.NPPBKCOriginList, "All", new { @class = "form-control selectreset" })
+                        @if (Model.SearchView.DocumentNumberList == null)
+                        {
+                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.SearchView.NPPBKCOrigin, Model.SearchView.NPPBKCOriginList, "All", new { @class = "form-control selectreset" })
+                        }
+
                     </div>
                 </div>
             </div>
@@ -27,7 +42,15 @@
                     @*<label class="col-md-4 long">NPPBKC Destination</label>*@
                     @Html.LabelFor(model => model.SearchView.NPPBKCDestination, new { @class = "col-md-4" })
                     <div class="col-md-8">
-                        @Html.DropDownListFor(model => model.SearchView.NPPBKCDestination, Model.SearchView.NPPBKCDestinationList, "All", new { @class = "form-control selectreset" })
+                        @if (Model.SearchView.DocumentNumberList == null)
+                        {
+                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.SearchView.NPPBKCDestination, Model.SearchView.NPPBKCDestinationList, "All", new { @class = "form-control selectreset" })
+                        }
+
                     </div>
                 </div>
             </div>
@@ -36,7 +59,15 @@
                 <div class="row">
                     @Html.LabelFor(model => model.SearchView.POA, new { @class = "col-md-4" })
                     <div class="col-md-8">
-                        @Html.DropDownListFor(model => model.SearchView.POA, Model.SearchView.POAList, "All", new { @class = "form-control selectreset" })
+                        @if (Model.SearchView.DocumentNumberList == null)
+                        {
+                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.SearchView.POA, Model.SearchView.POAList, "All", new { @class = "form-control selectreset" })
+                        }
+
                     </div>
                 </div>
             </div>
@@ -45,7 +76,15 @@
                     <div class="row">
                         @Html.LabelFor(model => model.SearchView.Creator, new { @class = "col-md-4" })
                         <div class="col-md-8">
-                            @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" })
+                            @if (Model.SearchView.DocumentNumberList == null)
+                            {
+                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" })
+                            }
+                            
                         </div>
                     </div>
                 </div>

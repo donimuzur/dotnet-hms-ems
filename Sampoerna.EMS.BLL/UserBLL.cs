@@ -10,6 +10,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -20,12 +21,15 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
         private string includeTables = "USER_GROUP";
+        
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER>();
+
+           
         }
 
         public List<USER> GetUsers(UserInput input)
@@ -100,5 +104,6 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
+      
     }
 }
