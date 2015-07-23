@@ -138,7 +138,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Converted UOM(EMS)<span class="red">*</span></label>
                                                             <div class="col-md-8">
-                                                                @*@Html.DropDownListFor(model => model.ConversionUomList, Model.ConversionUomList, "select", new { @class = "form-control" })*@
+                                                                @Html.DropDownList("uom-list", Model.BaseUOM, "select", new { @class = "form-control" })
                                                                 @*@Html.ValidationMessageFor(model => model.Convertion)*@
                                                             </div>
                                                         </div>
@@ -228,7 +228,7 @@
             var arrayUom = [];
 
             $('#material-uom-add-btn').click(function() {
-                var meinh = $('#ConversionUomList').find("option:selected").val();
+                var meinh = $('#uom-list').find("option:selected").val();
                 if (meinh !== '') {
                     var umren = $('#ConversionValueStr').val();
                    

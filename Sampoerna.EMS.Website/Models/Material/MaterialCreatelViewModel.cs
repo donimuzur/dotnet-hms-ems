@@ -105,7 +105,7 @@ namespace Sampoerna.EMS.Website.Models.Material
             get { return Convert.ToDecimal(ConversionValueStr); }
             set { value = Conversion; }
         }
-        [Required]
+        
         public string ConversionValueStr
         {
             get;
@@ -119,7 +119,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public SelectList BaseUOM { get; set; }
 
         public string ConversionUom { get; set; }
-        [Required]
+        
         public SelectList ConversionUomList { get; set; }
 
         public List<MaterialUomDetails> MaterialUom { get; set; }       

@@ -188,6 +188,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
+                    foreach (var uom in model.MATERIAL_UOM)
+                    {
+                        uom.STICKER_CODE = model.STICKER_CODE;
+                        uom.WERKS = model.WERKS;
+
+                    }
                     model.CREATED_BY = CurrentUser.USER_ID;
                     model.CREATED_DATE = DateTime.Now;
                     MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);

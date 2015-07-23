@@ -616,6 +616,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Meinh, opt => opt.MapFrom(src => src.MEINH))
                 .ForMember(dest => dest.Umren, opt => opt.MapFrom(src => src.UMREN))
                 .ForMember(dest => dest.Umrez, opt => opt.MapFrom(src => src.UMREZ));
+            Mapper.CreateMap<MaterialUomDetails, MATERIAL_UOM>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.MATERIAL_UOM_ID, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.MaterialNumber))
+               .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Plant))
+               .ForMember(dest => dest.MEINH, opt => opt.MapFrom(src => src.Meinh))
+               .ForMember(dest => dest.UMREN, opt => opt.MapFrom(src => src.Umren))
+               .ForMember(dest => dest.UMREZ, opt => opt.MapFrom(src => src.Umrez));
 
             #endregion
 
