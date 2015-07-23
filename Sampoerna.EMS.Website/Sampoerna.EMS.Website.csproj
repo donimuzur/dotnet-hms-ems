@@ -427,6 +427,7 @@
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff" />
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
     <Content Include="Content\css\main.min.css.map" />
+    <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
