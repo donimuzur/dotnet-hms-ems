@@ -54,7 +54,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Material Number</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBox("material-number", Model.MaterialNumber, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -63,7 +63,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Material Group</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBox("material-group", Model.MaterialGroup, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -74,7 +74,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4 long">Material Description</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextArea("material-desc", Model.MaterialDesc, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -83,7 +83,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Purchasing Group</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.PurchasingGroup, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBox("purchasing-group",Model.PurchasingGroup, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -92,8 +92,8 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Plant</label>
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "select", new { @class = "form-control", @disabled = "disabled" })
-                                                                @Html.ValidationMessageFor(model => model.PlantId)
+                                                                @Html.TextBox("plant",Model.PlantName, new { @class = "form-control", @disabled = "disabled" })
+                                                               
 
                                                             </div>
                                                         </div>
@@ -102,8 +102,8 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Base UOM(SAP)</label>
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control", @disabled = "disabled" })
-                                                                @Html.ValidationMessageFor(model => model.UomId)
+                                                                @Html.TextBox("base-uom", Model.UomName, new { @class = "form-control", @disabled = "disabled" })
+                                                                
 
                                                             </div>
                                                         </div>
@@ -113,8 +113,8 @@
                                                             <label class="col-md-4">Excisable Good Type</label>
                                                             <div class="col-md-8">
 
-                                                                @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control", @disabled = "disabled" })
-                                                                @Html.ValidationMessageFor(model => model.GoodTypeId)
+                                                                @Html.TextBox("goodtyp", Model.GoodTypeName, new { @class = "form-control", @disabled = "disabled" })
+                                                               
 
 
                                                             </div>
@@ -125,7 +125,7 @@
                                                             <label class="col-md-4">Issue Storage Loc</label>
                                                             <div class="col-md-8">
 
-                                                                @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBox("issue-storange-location", Model.IssueStorageLoc, new { @class = "form-control", @disabled = "disabled" })
 
 
                                                             </div>
@@ -148,31 +148,47 @@
                                         </h4>
                                     </div>
                                     <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
-                                        <div class="panel-body">
-                                            <form class="form-excise" role="form">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Converted UOM(EMS)</label>
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.ConversionUom, Model.ConversionUomList, "select", new { @class = "form-control", disabled="disabled" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Convertion</label>
-                                                            <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control", disabled="disbaled" })
+                                        <div class="container-wrap">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div id="contenttable" class="table-container">
+                                                        <table id="material-uom" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th> Converted UOM </th>
+                                                                    <th> Conversion </th>
 
-                                                            </div>
-                                                        </div>
+                                                                </tr>
+
+                                                            </thead>
+                                                           
+
+                                                            <tbody>
+                                                                @foreach (var item in Model.MaterialUom)
+                                                                {
+                                                                    <tr>
+                                                                        
+
+                                                                        <td>
+                                                                            <span id="field1">@Html.DisplayFor(modelItem => item.Meinh)</span>
+
+                                                                        </td>
+                                                                        <td>
+                                                                            <span id="field2">@Html.DisplayFor(modelItem => item.Umren)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+
+                                                        </table>
                                                     </div>
+
 
                                                 </div>
-                                                
-                                            </form>
+                                            </div>
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -195,8 +211,7 @@
                                                             <label class="col-md-4">Create By</label>
                                                             <div class="col-md-8">
                                                                 @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                                @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control", @disabled = "disabled" })
-
+                                                       
                                                             </div>
                                                         </div>
                                                     </div>
@@ -206,8 +221,7 @@
                                                             <div class="col-md-8">
 
                                                                 @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                                @Html.HiddenFor(model => model.ChangedById, new { @class = "form-control", @disabled = "disabled" })
-
+                                                             
 
                                                             </div>
                                                         </div>

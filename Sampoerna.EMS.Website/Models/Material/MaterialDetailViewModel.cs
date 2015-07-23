@@ -109,13 +109,9 @@ namespace Sampoerna.EMS.Website.Models.Material
             get;
             set;
         }
-        // list for dropdown in the form
-        public SelectList PlantList { get; set; }
-        public SelectList GoodTypeList { get; set; }
-        public SelectList BaseUOM { get; set; }
+       
 
-        public string ConversionUom { get; set; }
-        public SelectList ConversionUomList { get; set; }
+        public List<MaterialUomDetails> MaterialUom { get; set; } 
         
     }
 }

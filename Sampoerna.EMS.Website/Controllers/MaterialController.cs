@@ -26,16 +26,6 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.MasterData;
         }
 
-        [HttpPost]
-        public void Save(string Id, string ConversionUom, string Conversion)
-        {
-            var data = _materialBll.getByID(Id);
-            data.CONVERSION_UOM = ConversionUom;
-            data.CONVERSION = Conversion == null ? 0 : Convert.ToDecimal(Conversion);
-
-            _materialBll.Save(data, Id);
-        }
-
         private MaterialCreateViewModel InitCreateModel(MaterialCreateViewModel model)
         {
             model.MainMenu = _mainMenu;
@@ -102,11 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
 
-            model.PlantList = GlobalFunctions.GetVirtualPlantList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
-            model.BaseUOM = GlobalFunctions.GetUomList();
-            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
-           
+             
             return model;
         }
 
@@ -115,9 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             var model = new MaterialCreateViewModel();
-            var data = _materialBll.getAll();
-            model.MateriaList = Mapper.Map<List<ZAIDM_EX_MATERIAL>>(_materialBll.getAll());
-            InitCreateModel(model);
+           InitCreateModel(model);
             return View(model);
         }
         private void SetChanges(MaterialEditViewModel origin, ZAIDM_EX_MATERIAL data)
@@ -213,8 +197,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     return RedirectToAction("Index");    
                 }
 
-                InitCreateModel(data);
-                return View(data);
+                return RedirectToAction("Create"); 
                 
             }
             catch(Exception ex)

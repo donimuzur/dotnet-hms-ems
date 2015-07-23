@@ -17,8 +17,29 @@ namespace Sampoerna.EMS.Website.Models.Material
 
     }
 
+    public class MaterialUomDetails
+    {
+        public MaterialUomDetails()
+        {
+        }
+        public long Id { get; set; }
+        public string MaterialNumber { get; set; }
+        public string Plant { get; set; }
+        public string Meinh { get; set; }
+        public Nullable<decimal> Umrez { get; set; }
+        public Nullable<decimal> Umren { get; set; }
+    
+    }
+
+
     public class MaterialDetails {
-      
+
+        public MaterialDetails()
+        {
+            MaterialUomsList = new List<MaterialUomDetails>();
+        }
+
+        private List<MaterialUomDetails> MaterialUomsList { get; set; } 
         public string PlantId { get; set; }
 
         public string PlantName { get; set; }
@@ -55,15 +76,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public string IsDeleted { get; set; }
 
-        //public string IsDeletedString
-        //{
-        //    get
-        //    {
-        //        return IsDeleted ==  ? "Yes" : "No";
-        //    }
-
-        //}
-
+        
 
 
 

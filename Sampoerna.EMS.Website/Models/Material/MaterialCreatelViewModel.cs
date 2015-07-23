@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public Nullable<int> UomId { get; set; }
+        public string UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         private Nullable<bool> _isPlantDelete;
-        [Required, Display(Name = "Plant Deletion")]
+        [Display(Name = "Plant Deletion")]
         public bool IsPlantDelete
         {
             get
@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         private Nullable<bool> _isClientDelete;
 
-        [Required, Display(Name = "Client Deletion")]
+        [ Display(Name = "Client Deletion")]
         public bool IsClientDelete
         {
             get
@@ -122,6 +122,6 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Required]
         public SelectList ConversionUomList { get; set; }
 
-        public List<ZAIDM_EX_MATERIAL> MateriaList { get; set; }       
+        public List<MaterialUomDetails> MaterialUom { get; set; }       
     }
 }
