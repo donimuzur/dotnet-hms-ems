@@ -100,7 +100,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">Base UOM</label>
+                                                            <label class="col-md-4">Base UOM(SAP)</label>
                                                             <div class="col-md-8">
                                                                 @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control", @disabled = "disabled" })
                                                                 @Html.ValidationMessageFor(model => model.UomId)
@@ -153,7 +153,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">Converted UOM</label>
+                                                            <label class="col-md-4">Converted UOM(EMS)</label>
                                                             <div class="col-md-8">
                                                                 @Html.DropDownListFor(model => model.ConversionUom, Model.ConversionUomList, "select", new { @class = "form-control", disabled="disabled" })
                                                             </div>

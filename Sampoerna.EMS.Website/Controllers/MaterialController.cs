@@ -285,9 +285,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     data.MODIFIED_DATE = DateTime.Now;
                     data.CREATED_DATE = origin.CreatedDate;
                     data.CREATED_BY = origin.CreatedById;
+                    data.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                     SetChanges(origin,data);
                     _materialBll.Save(data,CurrentUser.USER_ID);
-                    data.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
+                    
                     
                 }
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
