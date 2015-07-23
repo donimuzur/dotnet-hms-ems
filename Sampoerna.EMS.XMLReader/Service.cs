@@ -25,61 +25,54 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("POA-"))
-            {
-                return new XmlPoaDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("POAMAP"))
-            {
-                return new XmlPoaMapDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("T001_"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("NPPBKC"))
+            if (xmlfile.Contains("T001K"))
+            {
+                return new XmlT001KDataMapper(xmlfile);
+            }
+            if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }
             else if (xmlfile.Contains("KPPBC"))
             {
-               return  new XmlKPPBCDataMapper(xmlfile);
+                return new XmlKPPBCDataMapper(xmlfile);
             }
             else if (xmlfile.Contains("VENDOR"))
             {
-                return  new XmlVendorDataMapper(xmlfile);
+                return new XmlVendorDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("UOM"))
-            {
-                return  new XmlUoMDataMapper(xmlfile);
-            }
+           
             else if (xmlfile.Contains("MARKET"))
             {
                 return  new XmlMarketDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PRODTYP"))
-            {
-                return new XmlProdTypeDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("PCODE"))
-            {
-                return new XmlPCodeDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("SERIES"))
-            {
-                return new XmlSeriesDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("PLANT-"))
+             else if (xmlfile.Contains("PRODTYP"))
+             {
+                 return new XmlProdTypeDataMapper(xmlfile);
+             }
+             else if (xmlfile.Contains("PCODE"))
+             {
+                 return new XmlPCodeDataMapper(xmlfile);
+             }
+             else if (xmlfile.Contains("SERIES"))
+             {
+                 return new XmlSeriesDataMapper(xmlfile);
+             }
+            else if (xmlfile.Contains("T001W"))
             {
                 return new XmlPlantDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("GOODT"))
-            {
-                return new XmlGoodsTypeDataMapper(xmlfile);
-            }
+             else if (xmlfile.Contains("GOODTYP"))
+             {
+                 return new XmlGoodsTypeDataMapper(xmlfile);
+             }
             else if (xmlfile.Contains("BRANDREG"))
             {
-                return  new XmlBrandDataMapper(xmlfile);
+                return new XmlBrandDataMapper(xmlfile);
             }
             else if (xmlfile.Contains("MATERIAL"))
             {

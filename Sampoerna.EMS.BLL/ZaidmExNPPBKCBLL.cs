@@ -13,48 +13,49 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
-        private string includeTables = "ZAIDM_EX_KPPBC,T1001,C1LFA1";
+        private string includeTables = "ZAIDM_EX_KPPBC,T001,LFA1";
         private IChangesHistoryBLL _changesHistoryBll;
 
-        public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger, IChangesHistoryBLL changesHistoryBll)
+        public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
-            _changesHistoryBll = changesHistoryBll;
+            _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
         }
 
-        public ZAIDM_EX_NPPBKC GetById(long id)
+        public ZAIDM_EX_NPPBKC GetById(string id)
         {
             //return _repository.Get(id);
             return _repository.Get(c => c.NPPBKC_ID == id, null, includeTables).FirstOrDefault();
         }
 
-        public ZAIDM_EX_NPPBKC GetDetailsById(long id)
+        public ZAIDM_EX_NPPBKC GetDetailsById(string id)
         {
-            return _repository.Get(c => c.NPPBKC_ID == id, null, "T1001, ZAIDM_EX_KPPBC").FirstOrDefault();
+            return _repository.Get(c => c.NPPBKC_ID == id, null, "T001, ZAIDM_EX_KPPBC").FirstOrDefault();
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()
         {
             return _repository.Get(null, null, includeTables).ToList();
         }
-        
+
         public void Save(ZAIDM_EX_NPPBKC nppbkc)
         {
-            if (nppbkc.NPPBKC_ID != 0)
-            {
-                //update
-                _repository.Update(nppbkc);
-            }
-            else
-            {
-                //Insert
-                _repository.Insert(nppbkc);
-            }
+            //if (!string.IsNullOrEmpty(nppbkc.NPPBKC_ID))
+            //{
+            //    //update
+            //    _repository.Update(nppbkc);
+            //}
+            //else
+            //{
+            //    //Insert
+            //    _repository.Insert(nppbkc);
+            //}
 
             try
             {
+                _repository.InsertOrUpdate(nppbkc);
                 _uow.SaveChanges();
 
             }
@@ -63,11 +64,11 @@ namespace Sampoerna.EMS.BLL
                 _logger.Error(exception);
 
             }
-            
+
         }
 
 
-        public void Delete(int id)
+        public void Delete(string id)
         {
             var existingNppbkc = GetById(id);
             existingNppbkc.IS_DELETED = true;
@@ -83,14 +84,14 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(nppbkc);
                 _uow.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _uow.RevertChanges();
                 throw;
             }
         }
 
-        public string GetCityByNppbkcId(long nppBkcId)
+        public string GetCityByNppbkcId(string nppBkcId)
         {
             var dbData = _repository.GetByID(nppBkcId);
             if (dbData == null)
@@ -100,14 +101,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public string GetCeOfficeCodeByNppbcId(long nppBkcId)
+        public string GetCeOfficeCodeByNppbcId(string nppBkcId)
         {
 
             var dbData = _repository.Get(n => n.NPPBKC_ID == nppBkcId, null, "ZAIDM_EX_KPPBC").FirstOrDefault();
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return dbData.ZAIDM_EX_KPPBC.KPPBC_NUMBER;
+            return dbData.ZAIDM_EX_KPPBC.KPPBC_ID;
 
         }
     }

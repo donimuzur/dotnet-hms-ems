@@ -48,12 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BACK1.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="BACK3_CK2.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
@@ -62,25 +56,7 @@
     <Compile Include="Business\Pbck1ProdConverter.cs" />
     <Compile Include="Business\Pbck1ProdPlan.cs" />
     <Compile Include="Business\Plant.cs" />
-    <Compile Include="C1LFA1.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CARRIAGE_METHOD.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="CHANGES_HISTORY.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CK2.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CK3.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CK4C.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CK4C_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="CK5.cs">
@@ -89,15 +65,17 @@
     <Compile Include="CK5_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="COUNTRY.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CURRENCY.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="DTOs\ChangeHistoryDto.cs" />
+    <Compile Include="DTOs\CK5Dto.cs" />
+    <Compile Include="DTOs\CK5MaterialDto.cs" />
+     <Compile Include="DTOs\Pbck1Dto.cs" />
+    <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
+    <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
+    
+    <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -109,10 +87,7 @@
     <Compile Include="EX_GROUP_TYPE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="EX_SETTLEMENT.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EX_STATUS.cs">
+    <Compile Include="EX_GROUP_TYPE_DETAILS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="FILE_UPLOAD.cs">
@@ -125,13 +100,33 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Inputs\CK5Input.cs" />
+    <Compile Include="Inputs\CK5MaterialInput.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
+    <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
+    <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
+    <Compile Include="Inputs\WorkflowHistoryInput.cs" />
+    <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
+    <Compile Include="LACK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_DOCUMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LFA1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MATERIAL_UOM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="MENGETAHUI.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -141,10 +136,14 @@
     <Compile Include="Outputs\AutoCompletePlant.cs" />
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\CK5MaterialOutput.cs" />
+    <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\MaterialOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
+    <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
+    <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />
@@ -167,48 +166,30 @@
     <Compile Include="PBCK1_PROD_PLAN.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="PBCK3_7.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PBCK3_7_ITEM.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PBCK3_CK5.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PBCK3_CK5_ITEM.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PBCK4.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PBCK4_ITEM.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="PLANT_RECEIVE_MATERIAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="POA.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="POA_MAP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="POA_SK.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
-    <Compile Include="REALISASI_PEMASUKAN.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="RENCANA_PRODUKSI.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="REQUEST_TYPE.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="SUPPLIER_PORT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="T1001.cs">
+    <Compile Include="T001.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="T1001K.cs">
+    <Compile Include="T001K.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="T1001W.cs">
+    <Compile Include="T001W.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="UOM.cs">
@@ -221,9 +202,6 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="WORKFLOW_EMAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WORKFLOW_HISTORY.cs">
@@ -250,16 +228,10 @@
     <Compile Include="ZAIDM_EX_PCODE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="ZAIDM_EX_POA.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="ZAIDM_EX_PRODTYP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_SERIES.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ZAIDM_POA_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
   </ItemGroup>

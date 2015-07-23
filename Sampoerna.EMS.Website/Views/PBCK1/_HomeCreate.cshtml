@@ -21,7 +21,6 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
-                                            @*<input type="text" class="form-control" placeholder="" disabled />*@
                                             @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
@@ -48,7 +47,7 @@
                                         <div class="col-md-9">
                                             <div class="input-group date">
                                                 @*@Html.HiddenFor(model => model.Detail.ReportedOn)*@
-                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -61,7 +60,7 @@
                                         <label class="col-md-3">Period From</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -75,7 +74,7 @@
                                         <div class="col-md-9">
                                             <div class="input-group date">
                                                 @*@Html.HiddenFor(model => model.Detail.PeriodTo)*@
-                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -124,8 +123,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.CompanyName)
-                                            @Html.TextBoxFor(model => model.Detail.CompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
+                                            @Html.HiddenFor(model => model.Detail.NppbkcCompanyName)
+                                            @Html.HiddenFor(model => model.Detail.NppbkcCompanyCode)
+                                            @Html.TextBoxFor(model => model.Detail.NppbkcCompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
                                         </div>
                                     </div>
                                 </div>
@@ -135,6 +135,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Port</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Detail.SupplierPortName)
                                             @Html.DropDownListFor(model => model.Detail.SupplierPortId, Model.SupplierPortList, "None", new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -143,7 +144,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier NPPBKC</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkc, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -151,6 +153,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Plant</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
                                             <div id="supp-plant">
                                                 @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
                                             </div>
@@ -161,8 +164,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier KPPBC</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbc)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbc, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -207,7 +210,8 @@
                                     <div class="row">
                                         <label class="col-md-4 long">Exciseable Goods Description</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Detail.GoodTypeId, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.GoodTypeDesc)
+                                            @Html.DropDownListFor(model => model.Detail.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -218,7 +222,7 @@
                                         <label class="col-md-4 long">Plan Produtcion From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -231,7 +235,7 @@
                                         <label class="col-md-4">Plan Production to</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -265,7 +269,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Qty</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.RequestQty)
+                                            @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control" })
@@ -276,10 +281,10 @@
                                     <div class="row">
                                         <label class="col-md-4">Latest Saldo</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                         <div class="col-md-4">
-                                            @Html.DropDownListFor(model => model.Detail.LatestSaldoUomId, Model.UomList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Detail.LatestSaldoUomId, Model.UomList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -302,12 +307,13 @@
                 </div>
                 <div id="collapse6" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading6">
                     <div class="panel-body">
-                        <a href="#upload" id="btn-prod-conv-upload"><button class="btn btn-blue">Upload</button></a>
+                        <input id="btn-prod-conv-upload" type="button" class="btn btn-blue" value="Upload" />
                         <div class="table-container">
-                            <table id="pbck1-prod-conv-item" class="table table-bordered table-striped js-options-table">
+                            <table id="Detail_Pbck1ProdConverter" name="Detail.Pbck1ProdConverter" class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
-                                        <th style="display: none">Product Id</th>
+                                        <th style="display: none">Product Code</th>
+                                        <th style="display: none">Converter Uom Id</th>
                                         <th>Product Type Alias</th>
                                         <th>Product Type</th>
                                         <th>Converted Output</th>
@@ -315,36 +321,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-
-
+                                    @for (var i = 0; i < Model.Detail.Pbck1ProdConverter.Count; i++) {
+                                        var item = Model.Detail.Pbck1ProdConverter[i];
+                                        <tr>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProductCode" type="hidden" value="@item.ProductCode" />@item.ProductCode</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ConverterUomId" type="hidden" value="@item.ConverterUomId" />@item.ConverterUomId</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeName" type="hidden" value="@item.ProdTypeName" />@item.ProdTypeName</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ConverterOutput" type="hidden" value="@item.ConverterOutput" />@item.ConverterOutput</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ConverterUom" type="hidden" value="@item.ConverterUom" />@item.ConverterUom</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -365,56 +352,38 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading5">
                     <div class="panel-body">
-                        <a href="#messages" id="btn-prod-plan-upload"><button class="btn btn-blue">Upload</button></a>
+                        <input id="btn-prod-plan-upload" type="button" class="btn btn-blue" value="Upload" />
                         <div class="table-container">
-                            <table id="pbck1-prod-plan-item" class="table table-bordered table-striped js-options-table">
+                            <table id="Detail_Pbck1ProdPlan" name="Detail.Pbck1ProdPlan" class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
-                                        <th style="display: none">Product Id</th>
+                                        <th style="display: none">Product Code</th>
+                                        <th style="display: none">Product Type Name</th>
                                         <th style="display: none">Month Id</th>
                                         <th>Month</th>
                                         <th>Product Type Alias</th>
                                         <th>Amount</th>
                                         <th>BKC Required</th>
+                                        <th>BKC Required Uom</th>
+                                        <th style="display: none">BKC Required Uom Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: none"> </td>
-                                        <td style="display: none"> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
+                                    @for (var i = 0; i < Model.Detail.Pbck1ProdPlan.Count; i++)
+                                    {
+                                        var item = Model.Detail.Pbck1ProdPlan[i];
+                                        <tr>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProductCode" type="hidden" value="@item.ProductCode" />@item.ProductCode</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProdTypeName" type="hidden" value="@item.Month" />@item.ProdTypeName</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].Month" type="hidden" value="@item.Month" />@item.Month</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].MonthName" type="hidden" value="@item.MonthName" />@item.MonthName</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].Amount" type="hidden" value="@item.Amount" />@item.Amount</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].BkcRequired" type="hidden" value="@item.BkcRequired" />@item.BkcRequired</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].BkcRequiredUomId" type="hidden" value="@item.BkcRequiredUomId" />@item.BkcRequiredUomId</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].BkcRequiredUomName" type="hidden" value="@item.BkcRequiredUomName" />@item.BkcRequiredUomName</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -450,7 +419,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -462,7 +431,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Qty Approved</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "decimal form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -480,26 +449,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading7">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
-                            Workflow History
-                            <i class="fa fa-caret-down"></i>
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
-                    <div class="panel-body">
-                        <div class="table-container">
-                            @Html.Partial("_WorkflowHistoryTable")
                         </div>
                     </div>
                 </div>

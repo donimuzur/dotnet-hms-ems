@@ -4,25 +4,33 @@
     <thead>
         <tr>
             <th style="display: none"></th>
-            <th>Month</th>
             <th style="display: none"></th>
+            <th style="display: none"></th>
+            <th>Month</th>
             <th>Product Type Alias</th>
             <th>Amount</th>
             <th>BKC Required</th>
+            <th>BKC Required Uom</th>
+            <th style="display: none"></th>
+            <th>Message Error</th>
         </tr>
     </thead>
     <tbody>
         @if (Model != null)
             {
-                foreach (var row in Model.ProductPlans)
+                foreach (var row in Model.Detail.Pbck1ProdPlan)
                 {
                     <tr>
-                        <td style="display: none">@row.MonthId</td>
                         <td style="display: none">@row.ProductCode</td>
+                        <td style="display: none">@row.ProdTypeName</td>
+                        <td style="display: none">@row.Month</td>
                         <td>@row.MonthName</td>
-                        <td>@row.ProductTypeAlias</td>
+                        <td>@row.ProdTypeAlias</td>
                         <td>@row.Amount</td>
-                        <td>@row.BkcRequires</td>
+                        <td>@row.BkcRequired</td>
+                        <td>@row.BkcRequiredUomId</td>
+                        <td style="display: none">@row.BkcRequiredUomName</td>
+                        <td>@row.Message</td>
                     </tr>
                 }
             }

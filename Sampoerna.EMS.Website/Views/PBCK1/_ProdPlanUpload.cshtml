@@ -2,8 +2,6 @@
 
 <div role="tabpanel" class="tab-pane" id="messages">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <form id="FormProdPlan" action="@Url.Action("UploadFilePlan", "PBCK1")" enctype="multipart/form-data" method="post">
-
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
                 <h4 class="panel-title">
@@ -16,27 +14,19 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="file" class="form-control" name="ProdPlanExcelfile">
-                                @*<span class=" input-group-addon file-input btn btn-primary btn-file">
-                                    Browse <input type="file" multiple>
-                                </span>*@
-                            </div>
+                            <input type="file" class="form-control" id="ProdPlanExcelfile" name="ProdPlanExcelfile">
                         </div>
                         <div class="col-md-6">
-                            <button id="ProdPlanSubmitBtn" class="btn btn-grey generate">Generate</button>
+                            <input id="ProdPlanSubmitBtn" type="button" class="btn btn-grey generate" value="Generate" />
+                            <input id="prod-plan-save" type="button" class="btn btn-grey" value="Save" disabled="disabled" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </form>
-</div>
+    </div>
     <div class="table-container" id="ProdPlanContent">
         @Html.Partial("_ProdPlanList", Model)
-    </div>
-    <div>
-        <button type="button" class="btn btn-grey generate" id="prod-plan-save">Save</button>
     </div>
 </div>
 

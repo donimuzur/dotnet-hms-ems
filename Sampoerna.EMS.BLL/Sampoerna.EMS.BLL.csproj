@@ -61,13 +61,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLMapper.cs" />
+    <Compile Include="BLLMapperCK5.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
+    <Compile Include="Pbck1ProdConverterBLL.cs" />
+    <Compile Include="EmailTemplateBLL.cs" />
+    <Compile Include="Pbck1ProdPlanBLL.cs" />
+    <Compile Include="POASKBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="DocumentSequenceNumberBLL.cs" />
+    <Compile Include="FileUploadBLL.cs" />
     <Compile Include="HeaderFooterBLL.cs" />
-    <Compile Include="ExGroupType.cs" />
+    <Compile Include="ExGroupTypeBLL.cs" />
     <Compile Include="MasterDataBLL.cs" />
     <Compile Include="MaterialBLL.cs" />
     <Compile Include="MonthBLL.cs" />
@@ -85,7 +91,7 @@
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
     <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />
-    <Compile Include="ZaidmExPOABLL.cs" />
+    <Compile Include="POABLL.cs" />
     <Compile Include="ZaidmExPOAMapBLL.cs" />
     <Compile Include="ZaidmExProdTypeBLL.cs" />
   </ItemGroup>

@@ -12,16 +12,16 @@ namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
         public long VirtualMapId { get; set; }
 
         [Required]
-        public long CompanyId { get; set; }
+        public string CompanyId { get; set; }
 
         public SelectList CompanyNameList { get; set; }
 
         [Required]
-        public long ImportPlantId { get; set; }
+        public string ImportPlantId { get; set; }
         public SelectList ImportPlanNameList { get; set; }
 
         [Required]
-        public long ExportPlantId { get; set; }
+        public string ExportPlantId { get; set; }
         public SelectList ExportPlanNameList { get; set; }
     }
 }

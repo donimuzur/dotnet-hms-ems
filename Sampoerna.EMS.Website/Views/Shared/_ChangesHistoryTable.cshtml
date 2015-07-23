@@ -23,15 +23,15 @@
         @foreach (var item in Model.ChangesHistoryList)
         {
             <tr>
-                <td>@Html.DisplayFor(model => item.MODIFIED_DATE)</td>
-                <td>@Html.DisplayFor(model => item.FIELD_NAME)
+                <td>@item.MODIFIED_DATE.Value.ToString("dd MMMM yyyy")</td>
+                <td>@item.FIELD_NAME
                 <td>
                     @Html.Raw(item.OLD_VALUE)
                 </td>
                 <td>
                     @Html.Raw(item.NEW_VALUE)
                 </td>
-                <td class="last">@Html.DisplayFor(model => item.USERNAME)</td>
+                <td class="last">@item.USERNAME</td>
             </tr>
         }
     </tbody>

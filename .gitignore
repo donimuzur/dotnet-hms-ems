@@ -125,3 +125,4 @@ aspnet_client
 **/log*.txt
 
 
+/Sampoerna.EMS.BLL/*.orig

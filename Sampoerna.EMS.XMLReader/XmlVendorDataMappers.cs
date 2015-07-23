@@ -25,15 +25,16 @@ namespace Sampoerna.EMS.XMLReader
         }
        
 
-        public List<C1LFA1> Items
+        public List<LFA1> Items
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<C1LFA1>();
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_MARKET");
+                var items = new List<LFA1>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new C1LFA1();
+                    var item = new LFA1();
                     var vendorCodeXml = xElement.Element("LIFNR").Value;
 
                     var exsitingVendor = GetExVendor(vendorCodeXml);
@@ -41,21 +42,17 @@ namespace Sampoerna.EMS.XMLReader
                     item.LIFNR = vendorCodeXml;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.NAME2 = xElement.Element("NAME2").Value;
-                    item.CREATED_DATE = DateTime.Now;
+                    
                     if (exsitingVendor != null)
                     {
-                        if (dateXml > exsitingVendor.CREATED_DATE)
-                        {
-                            items.Add(item);
-                        }
-                        else
-                        {
-                            continue;
-                            
-                        }
+                        item.CREATED_DATE = exsitingVendor.CREATED_DATE;
+                        item.MODIFIED_DATE = dateXml;
+                        items.Add(item);
+                     
                     }
                     else
                     {
+                        item.CREATED_DATE = DateTime.Now;
                         items.Add(item);
                     }
 
@@ -68,16 +65,14 @@ namespace Sampoerna.EMS.XMLReader
 
         public void InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<C1LFA1>(Items);
+            _xmlMapper.InsertToDatabase<LFA1>(Items);
        
         }
 
-        public C1LFA1 GetExVendor(string vendorCode)
+        public LFA1 GetExVendor(string vendorCode)
         {
-            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<C1LFA1>()
-                            .Get(p => p.LIFNR == vendorCode)
-                            .OrderByDescending(p => p.CREATED_DATE)
-                            .FirstOrDefault();
+            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<LFA1>()
+                .GetByID(vendorCode);
             return exisitingPoa;
         }
 

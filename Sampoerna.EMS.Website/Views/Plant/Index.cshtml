@@ -52,17 +52,17 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "Plant", new { id = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "Plant", new { id = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "Plant", new { id = item.Werks })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Plant", new { id = item.Werks })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.NPPBKC_NO)
+                                    @Html.DisplayFor(modelItem => item.NPPBKC_ID)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Werks)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.City),
+                                    @Html.DisplayFor(modelItem => item.Ort01),
                                     @Html.DisplayFor(modelItem => item.Name1)
                                 </td>
                                 <td>
@@ -72,7 +72,7 @@
                                     @Html.DisplayFor(modelItem => item.Address)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.City)
+                                    @Html.DisplayFor(modelItem => item.Ort01)
                                 </td>
                             </tr>
                         }
