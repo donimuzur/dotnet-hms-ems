@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         //ORIGIN PLANT
         [Required(ErrorMessage = "Origin Plant field is required")]
-        public int SourcePlantId { get; set; }
+        public long SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
         public string SourceNpwp { get; set; }
         public string SourceNppbkcId { get; set; }
@@ -71,7 +71,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         //DESTINATION PLANT
         [Required(ErrorMessage = "Destination Plant field is required")]
-        public int DestPlantId { get; set; }
+        public long DestPlantId { get; set; }
         public SelectList DestPlantList { get; set; }
         public string DestNpwp { get; set; }
         public string DestNppbkcId { get; set; }
@@ -86,7 +86,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("FormatDateTime")]
         public DateTime? InvoiceDate { get; set; }
 
-        public int? PbckDecreeId { get; set; }
+        public long? PbckDecreeId { get; set; }
         public SelectList PbckDecreeList { get; set; }
        
         public string PbckDecreeDate { get; set; }

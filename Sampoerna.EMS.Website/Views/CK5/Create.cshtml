@@ -1,5 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
-
+@{
+    ViewBag.Title = "Create";
+}
 
 @using (Html.BeginForm("SaveCK5", "CK5"))
 {
@@ -30,10 +32,9 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                       
-
 
                         @Html.Partial("_CK5InformationCreate")
+
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5UploadCreate")
                         @*@Html.Partial("_CK5ChangeLog")*@
@@ -42,81 +43,116 @@
             </div>
         </div>
     </div>
-}
 
+}
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#MenuCK5Domestic').addClass('active');
-        });
+    $(document).ready(function () {
+        $('#MenuCK5Domestic').addClass('active');
+    });
+
+    $(document).ready(function () {
         
-        //$(document).ready(function () {
-        //    $('#CK5UploadSave').click(function () {
-        //        var datarows = GetTableData($('#Ck5UploadTable'));
-        //        var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
-        //        $('#ck5TableItem tbody').html('');
-        //        for (var i = 0; i < datarows.length; i++) {
-        //            var data = '<tr>';
-        //            if (columnLength > 0) {
-        //                data += '<td style="display:none">' + datarows[i][0] + '</td>';
-        //                data += '<td style="display:none">' + datarows[i][1] + '</td>';
-        //                data += '<td>' + datarows[i][2] + '</td>';
-        //                data += '<td>' + datarows[i][3] + '</td>';
-        //                data += '<td>' + datarows[i][4] + '</td>';
-        //                data += '<td>' + datarows[i][5] + '</td>';
-        //            }
-        //            data += '</tr>';
-        //            $('#ck5TableItem tbody').append(data);
-        //        }
-        //        $('#upload-tab').removeClass('active');
-        //        $('#home-tab').addClass('active');
-
-        //        $('#information').addClass('active');
-        //        $('#upload').removeClass('active');
-        //    });
-        //});
-
-        $('#CK5UploadSubmitBtn').click(function () {
-
-            var fileName = $('[name="itemExcelFile"]').val().trim();
-            var pos = fileName.lastIndexOf('.');
-            var extension = (pos <= 0) ? '' : fileName.substring(pos);
-            if (extension != '.xlsx') {
-                alert('Please browse a correct excel file to upload');
-                return false;
-            }
-            $('#ProdConv').ajaxSubmit(function (data) {
-                $('#ProdConvContent').html("");
-                $('#ProdConvContent').html(data);
-
-            });
-            return false;
+        $('#btnUploadInfo').click(function () {
+            
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
+            
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
+           
         });
 
-        //$('#btn-prod-plan-upload').click(function () {
-        //    $('#home-tab').removeClass('active');
-        //    $('#home').removeClass('active');
-        //    $('#upload-tab').addClass('active');
-        //    $('#messages').addClass('active');
-        //});
+        
+        $('#CK5UploadSave').click(function () {
+            var datarows = GetTableData($('#Ck5UploadTable'));
+            var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
+            $('#ck5TableItem tbody').html('');
+            for (var i = 0; i < datarows.length; i++) {
+                var data = '<tr>';
+                if (columnLength > 0) {
+                    data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Description" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].UsdValue " type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+                }
+                data += '</tr>';
+                $('#ck5TableItem tbody').append(data);
+            }
 
-        //$('.input-group.date').datepicker({
-        //    toggleActive: true,
-        //    defaultViewDate: { year: 2015, month: 06, day: 28 }
-        //});
+            //$('#GrandTotalEx').val($('#GrandTotalList').val());
+            $('#upload-tab').removeClass('active');
+            $('#home-tab').addClass('active');
 
-        //$('#btnUploadInfo').click(function () {
-        //    $('#upload-tab').addClass('active');
-        //    $('#home-tab').removeClass('active');
+            $('#information').addClass('active');
+            $('#upload').removeClass('active');
+           
+            $('#collapse5').addClass('in');
+        });
+    });
 
-        //    $('#information').removeClass('active');
-        //    $('#upload').addClass('active');
-        //});
+    function IsValidDataUpload() {
+        
+        var datarows = GetTableData($('#Ck5UploadTable'));
+        
+        for (var i = 0; i < datarows.length; i++) {
+            if (datarows[i][12].length > 0)
+                return false;
+               
+        }
 
-        function ajaxCallSave(url, formData) {
+        return true;
+    }
+    $('#CK5UploadSubmitBtn').click(function () {
+
+        var fileName = $('[name="itemExcelFile"]').val().trim();
+        var pos = fileName.lastIndexOf('.');
+        var extension = (pos <= 0) ? '' : fileName.substring(pos);
+        if (extension != '.xlsx') {
+            alert('Please browse a correct excel file to upload');
+            return false;
+        }
+     
+        var formData = new FormData();
+        var totalFiles = document.getElementById("itemExcelFile").files.length;
+        for (var i = 0; i < totalFiles; i++) {
+            var file = document.getElementById("itemExcelFile").files[i];
+
+            formData.append("itemExcelFile", file);
+            formData.append("plantId",12);
+        }
+        $.ajax({
+            type: "POST",
+            url: '/CK5/UploadFile',
+            data: formData,
+            dataType: 'html',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                    $('#ProdConvContent').html("");
+                    $('#ProdConvContent').html(response);
+                    if (IsValidDataUpload())
+                        $('#CK5UploadSave').enable();
+            },
+            error: function (error) {
+                alert("errror " + error);
+            }
+        });
+    });
+        
+    function ajaxCallSave(url, formData) {
             if (formData.model) {
                 $.ajax({
                     type: 'POST',
@@ -186,15 +222,31 @@
             }
         }
 
+        function RemoveTable() {
+            
+            $('#ck5TableItem tbody').html('');
+            $('#Ck5UploadTable tbody').html('');
+
+        }
         $("#SourcePlantId").change(function () {
             if ($("#SourcePlantId").length) {
                 var sourcePlant = $(this).find("option:selected").val();
+
+                //remove table
+                RemoveTable();
+                
                 if (sourcePlant == '') {
                     $('#SourceNpwp').val('');
                     $('#SourceNppbkcId').val('');
                     $('#SourceCompanyName').val('');
                     $('#SourceAddress').val('');
                     $('#SourceKppbcName').val('');
+                    
+                    //enable upload
+                    $('#btnUploadInfo').enable(false);
+                    $('#CK5UploadSubmitBtn').enable(false);
+
+                   
                 } else {
                     ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
                 }
@@ -213,6 +265,11 @@
                         $('#SourceCompanyName').val(data.CompanyName);
                         $('#SourceAddress').val(data.CompanyAddress);
                         $('#SourceKppbcName').val(data.KppBcName);
+                        
+                        //enable upload
+                        $('#btnUploadInfo').enable();
+                        $('#CK5UploadSubmitBtn').enable();
+                        
                     }
                 });
             }

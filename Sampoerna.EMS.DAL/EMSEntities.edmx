@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CHANGES_HISTORY">
           <Key>
             <PropertyRef Name="CHANGES_HISTORY_ID" />
@@ -42,7 +42,7 @@
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -87,17 +87,17 @@
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -232,12 +232,12 @@
           <Key>
             <PropertyRef Name="MATERIAL_UOM_ID" />
           </Key>
-          <Property Name="MATERIAL_UOM_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MATERIAL_UOM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -303,9 +303,9 @@
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -313,7 +313,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" Nullable="false" />
-          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" />
@@ -334,7 +334,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -414,11 +414,11 @@
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
+          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="ORT01" Type="varchar" MaxLength="25" />
-          <Property Name="SPRAS" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -545,15 +545,15 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="0" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -604,7 +604,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
@@ -903,18 +903,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             </Principal>
             <Dependent Role="LACK1">
               <PropertyRef Name="WASTE_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MATERIAL_UOM_MATERIAL_UOM">
-          <End Role="MATERIAL_UOM" Type="Self.MATERIAL_UOM" Multiplicity="1" />
-          <End Role="MATERIAL_UOM1" Type="Self.MATERIAL_UOM" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="MATERIAL_UOM">
-              <PropertyRef Name="MATERIAL_UOM_ID" />
-            </Principal>
-            <Dependent Role="MATERIAL_UOM1">
-              <PropertyRef Name="MATERIAL_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1785,10 +1773,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
-          <AssociationSet Name="FK_MATERIAL_UOM_MATERIAL_UOM" Association="Self.FK_MATERIAL_UOM_MATERIAL_UOM">
-            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
-            <End Role="MATERIAL_UOM1" EntitySet="MATERIAL_UOM" />
-          </AssociationSet>
           <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="Self.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
             <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
@@ -2040,7 +2024,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
       <Schema Namespace="EMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="EMSEntities" annotation:LazyLoadingEnabled="false" >
           <EntitySet Name="CHANGES_HISTORY" EntityType="EMSModel.CHANGES_HISTORY" />
-          <EntitySet Name="DOC_NUMBER_SEQ" EntityType="EMSModel.DOC_NUMBER_SEQ" />
           <EntitySet Name="EMAIL_TEMPLATE" EntityType="EMSModel.EMAIL_TEMPLATE" />
           <EntitySet Name="EX_GROUP_TYPE" EntityType="EMSModel.EX_GROUP_TYPE" />
           <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="EMSModel.EX_GROUP_TYPE_DETAILS" />
@@ -2072,10 +2055,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
           </AssociationSet>
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
             <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
@@ -2223,16 +2202,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
-          <EntitySet Name="MATERIAL_UOM" EntityType="EMSModel.MATERIAL_UOM" />
-          <AssociationSet Name="FK_MATERIAL_UOM_MATERIAL_UOM" Association="EMSModel.FK_MATERIAL_UOM_MATERIAL_UOM">
-            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
-            <End Role="MATERIAL_UOM1" EntitySet="MATERIAL_UOM" />
-          </AssociationSet>
           <EntitySet Name="ZAIDM_EX_MATERIAL" EntityType="EMSModel.ZAIDM_EX_MATERIAL" />
-          <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W">
             <End Role="T001W" EntitySet="T001W" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -2378,8 +2348,13 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             <End Role="USER" EntitySet="USER" />
             <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
           </AssociationSet>
-          <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
+          <EntitySet Name="MATERIAL_UOM" EntityType="EMSModel.MATERIAL_UOM" />
+          <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
+          </AssociationSet>
           <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
+          <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
           <AssociationSet Name="FK_CK5_APPROVED_BY_USER" Association="EMSModel.FK_CK5_APPROVED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CK5" EntitySet="CK5" />
@@ -2409,6 +2384,11 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             <End Role="USER" EntitySet="USER" />
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
           </AssociationSet>
+          <EntitySet Name="DOC_NUMBER_SEQ" EntityType="EMSModel.DOC_NUMBER_SEQ" />
+          <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2429,16 +2409,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="DOC_NUMBER_SEQ">
-          <Key>
-            <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
-          </Key>
-          <Property Name="DOC_NUMBER_SEQ_LAST" Type="Int64" Nullable="false" />
-          <Property Name="MONTH" Type="Int32" />
-          <Property Name="YEAR" Type="Int32" />
-          <NavigationProperty Name="MONTH1" Relationship="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" FromRole="DOC_NUMBER_SEQ" ToRole="MONTH" />
-          <Property Name="DOC_NUMBER_SEQ_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="EMAIL_TEMPLATE">
           <Key>
@@ -2536,11 +2506,11 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="MONTH_ID" Type="Int32" Nullable="false" />
           <Property Name="MONTH_NAME_IND" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="MONTH_NAME_ENG" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="DOC_NUMBER_SEQ" Relationship="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" FromRole="MONTH" ToRole="DOC_NUMBER_SEQ" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_LACK1_MONTH_FROM" FromRole="MONTH" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_MONTH" FromRole="MONTH" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_MONTH" FromRole="MONTH" ToRole="PBCK1_PROD_PLAN" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="MONTH" ToRole="LACK1" />
+          <NavigationProperty Name="DOC_NUMBER_SEQ" Relationship="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" FromRole="MONTH" ToRole="DOC_NUMBER_SEQ" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
@@ -2659,8 +2629,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
-          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -2834,18 +2804,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             </Principal>
             <Dependent Role="CHANGES_HISTORY">
               <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DOC_NUMBER_SEQ_MONTH">
-          <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
-          <End Type="EMSModel.DOC_NUMBER_SEQ" Role="DOC_NUMBER_SEQ" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MONTH">
-              <PropertyRef Name="MONTH_ID" />
-            </Principal>
-            <Dependent Role="DOC_NUMBER_SEQ">
-              <PropertyRef Name="MONTH" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3323,32 +3281,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="MATERIAL_UOM">
-          <Key>
-            <PropertyRef Name="MATERIAL_UOM_ID" />
-          </Key>
-          <Property Name="MATERIAL_UOM_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="MEINH" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="UMREZ" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="Decimal" Precision="18" Scale="2" />
-          <NavigationProperty Name="MATERIAL_UOM1" Relationship="EMSModel.FK_MATERIAL_UOM_MATERIAL_UOM" FromRole="MATERIAL_UOM" ToRole="MATERIAL_UOM1" />
-          <NavigationProperty Name="MATERIAL_UOM2" Relationship="EMSModel.FK_MATERIAL_UOM_MATERIAL_UOM" FromRole="MATERIAL_UOM1" ToRole="MATERIAL_UOM" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="MATERIAL_UOM" ToRole="ZAIDM_EX_MATERIAL" />
-        </EntityType>
-        <Association Name="FK_MATERIAL_UOM_MATERIAL_UOM">
-          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM" Multiplicity="1" />
-          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM1" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="MATERIAL_UOM">
-              <PropertyRef Name="MATERIAL_UOM_ID" />
-            </Principal>
-            <Dependent Role="MATERIAL_UOM1">
-              <PropertyRef Name="MATERIAL_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="ZAIDM_EX_MATERIAL">
           <Key>
             <PropertyRef Name="STICKER_CODE" />
@@ -3369,28 +3301,14 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="MATERIAL_UOM" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="MATERIAL_UOM" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <Property Name="CONVERSION_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MATERIAL_UOM" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="MATERIAL_UOM" />
         </EntityType>
-        <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
-          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="STICKER_CODE" />
-              <PropertyRef Name="WERKS" />
-            </Principal>
-            <Dependent Role="MATERIAL_UOM">
-              <PropertyRef Name="STICKER_CODE" />
-              <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
@@ -4025,29 +3943,32 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           </ReferentialConstraint>
         </Association>
         <EnumType Name="CarriageMethod" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CarriageMethod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
-        <EntityType Name="CK5_MATERIAL">
+        <EntityType Name="MATERIAL_UOM">
           <Key>
-            <PropertyRef Name="CK5_MATERIAL_ID" />
+            <PropertyRef Name="MATERIAL_UOM_ID" />
           </Key>
-          <Property Name="CK5_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CK5_ID" Type="Int64" />
-          <Property Name="MATERIAL_ID" Type="Int64" />
-          <Property Name="LINE_ITEM" Type="Int32" />
-          <Property Name="QTY" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_UOM_ID" Type="Int32" />
-          <Property Name="BRAND" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PLANT_ID" Type="String" FixedLength="false" Unicode="true" MaxLength="4" />
-          <Property Name="UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CONVERTION" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="NOTE" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CONVERTED_UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
+          <Property Name="MATERIAL_UOM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="MEINH" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="UMREZ" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="MATERIAL_UOM" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
+        <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Type="EMSModel.MATERIAL_UOM" Role="MATERIAL_UOM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="MATERIAL_UOM">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="CK5">
           <Key>
             <PropertyRef Name="CK5_ID" />
@@ -4071,7 +3992,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
           <Property Name="PBCK1_DECREE_ID" Type="Int32" />
-          <Property Name="CARRIAGE_METHOD_ID" Type="EMSModel.CarriageMethod" />
+          <Property Name="CARRIAGE_METHOD_ID" Type="Int32" />
           <Property Name="GRAND_TOTAL_EX" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="DEST_COUNTRY_ID" Type="Int32" />
@@ -4091,7 +4012,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="LOADING_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS_ID" Type="EMSModel.DocumentStatus" Nullable="false" />
+          <Property Name="STATUS_ID" Type="Int32" Nullable="false" />
           <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -4113,6 +4034,29 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
+        </EntityType>
+        <EntityType Name="CK5_MATERIAL">
+          <Key>
+            <PropertyRef Name="CK5_MATERIAL_ID" />
+          </Key>
+          <Property Name="CK5_MATERIAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK5_ID" Type="Int64" />
+          <Property Name="MATERIAL_ID" Type="Int64" />
+          <Property Name="LINE_ITEM" Type="Int32" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_UOM_ID" Type="Int32" />
+          <Property Name="BRAND" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CONVERTION" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="NOTE" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CONVERTED_UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
         </EntityType>
         <Association Name="FK_CK5_APPROVED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -4201,6 +4145,28 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <End Type="EMSModel.USER" Role="USER" Multiplicity="*" />
           <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
         </Association>
+        <EntityType Name="DOC_NUMBER_SEQ">
+          <Key>
+            <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
+          </Key>
+          <Property Name="DOC_NUMBER_SEQ_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DOC_NUMBER_SEQ_LAST" Type="Int64" Nullable="false" />
+          <Property Name="MONTH" Type="Int32" />
+          <Property Name="YEAR" Type="Int32" />
+          <NavigationProperty Name="MONTH1" Relationship="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" FromRole="DOC_NUMBER_SEQ" ToRole="MONTH" />
+        </EntityType>
+        <Association Name="FK_DOC_NUMBER_SEQ_MONTH">
+          <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
+          <End Type="EMSModel.DOC_NUMBER_SEQ" Role="DOC_NUMBER_SEQ" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="MONTH_ID" />
+            </Principal>
+            <Dependent Role="DOC_NUMBER_SEQ">
+              <PropertyRef Name="MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4218,16 +4184,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
                 <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
                 <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
                 <ScalarProperty Name="CHANGES_HISTORY_ID" ColumnName="CHANGES_HISTORY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DOC_NUMBER_SEQ">
-            <EntityTypeMapping TypeName="EMSModel.DOC_NUMBER_SEQ">
-              <MappingFragment StoreEntitySet="DOC_NUMBER_SEQ">
-                <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
-                <ScalarProperty Name="YEAR" ColumnName="YEAR" />
-                <ScalarProperty Name="MONTH" ColumnName="MONTH" />
-                <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4588,18 +4544,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MATERIAL_UOM">
-            <EntityTypeMapping TypeName="EMSModel.MATERIAL_UOM">
-              <MappingFragment StoreEntitySet="MATERIAL_UOM">
-                <ScalarProperty Name="UMREN" ColumnName="UMREN" />
-                <ScalarProperty Name="UMREZ" ColumnName="UMREZ" />
-                <ScalarProperty Name="MEINH" ColumnName="MEINH" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
-                <ScalarProperty Name="MATERIAL_UOM_ID" ColumnName="MATERIAL_UOM_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
@@ -4807,26 +4751,15 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CK5_MATERIAL">
-            <EntityTypeMapping TypeName="EMSModel.CK5_MATERIAL">
-              <MappingFragment StoreEntitySet="CK5_MATERIAL">
-                <ScalarProperty Name="CONVERTED_UOM" ColumnName="CONVERTED_UOM" />
-                <ScalarProperty Name="NOTE" ColumnName="NOTE" />
-                <ScalarProperty Name="USD_VALUE" ColumnName="USD_VALUE" />
-                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
-                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
-                <ScalarProperty Name="HJE" ColumnName="HJE" />
-                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
-                <ScalarProperty Name="UOM" ColumnName="UOM" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="BRAND" ColumnName="BRAND" />
-                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
-                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
-                <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
+          <EntitySetMapping Name="MATERIAL_UOM">
+            <EntityTypeMapping TypeName="EMSModel.MATERIAL_UOM">
+              <MappingFragment StoreEntitySet="MATERIAL_UOM">
+                <ScalarProperty Name="UMREN" ColumnName="UMREN" />
+                <ScalarProperty Name="UMREZ" ColumnName="UMREZ" />
+                <ScalarProperty Name="MEINH" ColumnName="MEINH" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
+                <ScalarProperty Name="MATERIAL_UOM_ID" ColumnName="MATERIAL_UOM_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4910,6 +4843,39 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
               <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="CK5_MATERIAL">
+            <EntityTypeMapping TypeName="EMSModel.CK5_MATERIAL">
+              <MappingFragment StoreEntitySet="CK5_MATERIAL">
+                <ScalarProperty Name="CONVERTED_UOM" ColumnName="CONVERTED_UOM" />
+                <ScalarProperty Name="NOTE" ColumnName="NOTE" />
+                <ScalarProperty Name="USD_VALUE" ColumnName="USD_VALUE" />
+                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
+                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+                <ScalarProperty Name="HJE" ColumnName="HJE" />
+                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="BRAND" ColumnName="BRAND" />
+                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
+                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
+                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+                <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DOC_NUMBER_SEQ">
+            <EntityTypeMapping TypeName="EMSModel.DOC_NUMBER_SEQ">
+              <MappingFragment StoreEntitySet="DOC_NUMBER_SEQ">
+                <ScalarProperty Name="YEAR" ColumnName="YEAR" />
+                <ScalarProperty Name="MONTH" ColumnName="MONTH" />
+                <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
+                <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

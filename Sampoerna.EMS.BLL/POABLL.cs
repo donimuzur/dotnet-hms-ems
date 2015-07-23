@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Core.Exceptions;
-using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
-using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -18,13 +14,12 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<POA> _repository;
         private string includeTables = "POA_MAP, USER, USER1, POA_SK";
         private IChangesHistoryBLL _changesHistoryBll;
-        public POABLL(IUnitOfWork uow, ILogger logger, IChangesHistoryBLL changesHistoryBll)
+        public POABLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA>();
-            _changesHistoryBll = changesHistoryBll;
-
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
 
@@ -59,11 +54,7 @@ namespace Sampoerna.EMS.BLL
             }
 
         }
-
-
-
-
-
+        
         public void Delete(int id)
         {
             var existingPoa = GetById(id);
@@ -93,6 +84,19 @@ namespace Sampoerna.EMS.BLL
                 throw;
             }
 
+        }
+
+        public Core.Enums.UserRole GetUserRole(string userId)
+        {
+            var poa = GetAll();
+
+            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID == userId))
+                return Core.Enums.UserRole.Manager;
+
+            if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
+                return Core.Enums.UserRole.POA;
+
+            return Core.Enums.UserRole.User;
         }
     }
 }

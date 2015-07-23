@@ -218,6 +218,7 @@
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
     <Compile Include="Code\IFormsAuthenticationService.cs" />
+    <Compile Include="Code\MessageInfo.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -256,8 +257,13 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
+    <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
+    <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
@@ -302,6 +308,7 @@
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
     <Compile Include="Utility\ExcelWriter.cs" />
+    <Compile Include="Validations\RequiredIfAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x64\msvcr100.dll">
@@ -640,6 +647,7 @@
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -647,6 +655,8 @@
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -747,13 +757,14 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
-    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
-    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
     <Content Include="Views\GlobalSettings\Index.cshtml" />
     <Content Include="Views\EmailTemplate\Index.cshtml" />
     <Content Include="Views\EmailTemplate\Details.cshtml" />
     <Content Include="Views\EmailTemplate\Create.cshtml" />
+    <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
     <Content Include="Views\WorkflowSettings\Index.cshtml" />
