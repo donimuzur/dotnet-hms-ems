@@ -1,0 +1,3 @@
+ALTER TABLE dbo.CK5 ADD
+	DN_DATE datetime NULL
+GO
