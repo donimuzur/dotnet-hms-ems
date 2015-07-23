@@ -159,6 +159,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdConvModel> Pbck1ProdConverter { get; set; }
 
         public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
+
+        public string Comment { get; set; }
         
     }
 }
