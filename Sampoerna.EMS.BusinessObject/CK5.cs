@@ -20,16 +20,16 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public long CK5_ID { get; set; }
-        public int CK5_TYPE { get; set; }
+        public Sampoerna.EMS.Core.Enums.CK5Type CK5_TYPE { get; set; }
         public string KPPBC_CITY { get; set; }
         public string CE_OFFICE_CODE { get; set; }
         public string SUBMISSION_NUMBER { get; set; }
         public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public string EX_GOODS_TYPE_DESC { get; set; }
-        public int EX_SETTLEMENT_ID { get; set; }
-        public int EX_STATUS_ID { get; set; }
-        public int REQUEST_TYPE_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExciseSettlement EX_SETTLEMENT_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExciseStatus EX_STATUS_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.RequestType REQUEST_TYPE_ID { get; set; }
         public string STO_SENDER_NUMBER { get; set; }
         public string STO_RECEIVER_NUMBER { get; set; }
         public string STOB_NUMBER { get; set; }
@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string LOADING_PORT_ID { get; set; }
         public string FINAL_PORT { get; set; }
         public string FINAL_PORT_ID { get; set; }
-        public int STATUS_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS_ID { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string APPROVED_BY { get; set; }

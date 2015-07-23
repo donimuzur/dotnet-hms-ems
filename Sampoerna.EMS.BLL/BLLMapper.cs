@@ -9,11 +9,11 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
 {
-    public class BLLMapper
+    public partial class BLLMapper
     {
         public static void Initialize()
         {
-            
+            InitializeCK5();
             //Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
             //    .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
@@ -207,12 +207,7 @@ namespace Sampoerna.EMS.BLL
 
             #endregion
 
-            #region CK5
-
-            Mapper.CreateMap<CK5MaterialInput, CK5MaterialOutput>().IgnoreAllNonExisting();
-
-
-            #endregion
+        
 
             #region Workflow History
 

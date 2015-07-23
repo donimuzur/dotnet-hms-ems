@@ -4012,7 +4012,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="LOADING_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS_ID" Type="Int32" Nullable="false" />
+          <Property Name="STATUS_ID" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
