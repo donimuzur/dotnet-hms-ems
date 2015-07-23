@@ -36,6 +36,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public Enums.DocumentStatus? DocStatus { get; set; }
         
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
-        
+
+        public bool AllowApproveAndReject { get; set; }
+        public bool AllowGovApproveAndReject { get; set; }
+
     }
 }
