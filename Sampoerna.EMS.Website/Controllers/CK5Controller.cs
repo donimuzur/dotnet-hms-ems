@@ -13,6 +13,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
@@ -213,6 +214,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private CK5FormViewModel InitCreateCK5(Enums.CK5Type ck5Type)
         {
+           
+
             var model = new CK5FormViewModel();
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
@@ -247,6 +250,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateDomestic()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = InitCreateCK5(Enums.CK5Type.Domestic);
             //AddMessageInfo("Create domestic.", Enums.MessageInfoType.Info);
             return View("Create", model);
@@ -329,6 +339,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult SaveCK5(CK5FormViewModel model)
         {
             try
@@ -415,17 +426,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-           // model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-           // model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
-            //model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
-            //model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
-            //model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
+            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
 
-           // model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-           // model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
-            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-            //model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
 
@@ -441,18 +448,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
-                //TODO CHECK
-                //model.RequestTypeId = ck5Details.Ck5Dto.REQUEST_TYPE_ID;
-
-                //validate
-                //only allow edit/submit when current_user = createdby and document = draft
-                var input = new WorkflowAllowEditAndSubmitInput();
-                input.DocumentStatus = model.DocumentStatus;
-                //todo check
-                //input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
-                //input.CurrentUser = CurrentUser.USER_ID;
-                if (!_workflowBll.AllowEditDocument(input))
-                   return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
+               
+                ////validate
+                ////only allow edit/submit when current_user = createdby and document = draft
+                //var input = new WorkflowAllowEditAndSubmitInput();
+                //input.DocumentStatus = model.DocumentStatus;
+                ////todo check
+                ////input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
+                ////input.CurrentUser = CurrentUser.USER_ID;
+                //if (!_workflowBll.AllowEditDocument(input))
+                //   return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
 
                 model = InitEdit(model);
                
@@ -472,35 +477,36 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(CK5FormViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (model.UploadItemModels.Count > 0)
-                    {
-                        //validate
-                        var input = new WorkflowAllowEditAndSubmitInput();
-                        input.DocumentStatus = model.DocumentStatus;
-                        input.CreatedUser = model.CreatedBy;
-                        input.CurrentUser = CurrentUser.USER_ID;
-                        if (_workflowBll.AllowEditDocument(input))
-                        {
+                    //if (model.UploadItemModels.Count > 0)
+                    //{
+                        ////validate
+                        //var input = new WorkflowAllowEditAndSubmitInput();
+                        //input.DocumentStatus = model.DocumentStatus;
+                        //input.CreatedUser = model.CreatedBy;
+                        //input.CurrentUser = CurrentUser.USER_ID;
+                        //if (_workflowBll.AllowEditDocument(input))
+                        //{
 
                             SaveCk5ToDatabase(model);
 
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
-                        }
-                        else
-                        {
-                            AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
-                        }
+                        //}
+                        //else
+                        //{
+                        //    AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
+                        //    return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
+                        //}
 
-                    }
-                    else
-                        AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
+                    //}
+                    //else
+                    //    AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
                 }
                 else
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
@@ -590,6 +596,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private CK5Dto SaveCk5ToDatabase(CK5FormViewModel model)
         {
             //process save
+            //if (model.Ck5Id >0)
+
             var dataToSave = Mapper.Map<CK5Dto>(model);
           
             var input = new CK5SaveInput()

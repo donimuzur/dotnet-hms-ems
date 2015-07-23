@@ -72,5 +72,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DEST_PLANT_ADDRESS { get; set; }
         public string DEST_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
+        public Nullable<System.DateTime> DN_DATE { get; set; }
     }
 }

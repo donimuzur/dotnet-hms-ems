@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowApproveAndReject { get; set; }
         public string Comment { get; set; }
         public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public long Ck5Id { get; set; }
 
@@ -115,7 +116,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
 
-        public int? PackageUomId { get; set; }
+        //public int? PackageUomId { get; set; }
         public SelectList PackageUomList { get; set; }
         public string PackageUomName { get; set; }
 

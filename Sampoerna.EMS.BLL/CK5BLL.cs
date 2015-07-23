@@ -176,9 +176,9 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
                 
                 //set changes history
-                //var origin = Mapper.Map<CK5Dto>(dbData);
+                var origin = Mapper.Map<CK5Dto>(dbData);
 
-                //SetChangesHistory(origin, input.Ck5Dto, input.UserId);
+                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
 
                
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
@@ -338,7 +338,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(data.KPPBC_CITY));
             changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
 
-            //changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(data.EX_GOODS_TYPE_ID));
+            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_DESC.Equals(data.EX_GOODS_TYPE_DESC));
             changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(data.EX_SETTLEMENT_ID));
             changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(data.EX_STATUS_ID));
             changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(data.REQUEST_TYPE_ID));
@@ -352,7 +352,9 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(data.CARRIAGE_METHOD_ID));
 
             changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(data.GRAND_TOTAL_EX));
-            changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID));
+            //changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID));
+            changesData.Add("PACKAGE_UOM_ID", !string.IsNullOrEmpty(origin.PACKAGE_UOM_ID) ? origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID) : (!string.IsNullOrEmpty(data.PACKAGE_UOM_ID) ? false : true));
+
 
             foreach (var listChange in changesData)
             {
@@ -375,19 +377,19 @@ namespace Sampoerna.EMS.BLL
                         break;
                     case "EX_GOODS_TYPE_ID":
                         changes.OLD_VALUE = origin.EX_GOODS_TYPE_DESC;
-                        //changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(data.EX_GOODS_TYPE_ID);
+                        changes.NEW_VALUE = data.EX_GOODS_TYPE_DESC;
                         break;
                     case "EX_SETTLEMENT_ID":
-                        //changes.OLD_VALUE = origin.ExSettlementName;
-                        //changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_SETTLEMENT_ID);
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_SETTLEMENT_ID);
                         break;
                     case "EX_STATUS_ID":
-                        //changes.OLD_VALUE = origin.ExStatusName;
-                        //changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_STATUS_ID);
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_STATUS_ID);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_STATUS_ID);
                         break;
                     case "REQUEST_TYPE_ID":
-                        //changes.OLD_VALUE = origin.RequestTypeName;
-                        //changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(data.REQUEST_TYPE_ID);
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.REQUEST_TYPE_ID);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.REQUEST_TYPE_ID);
                         break;
                     case "SOURCE_PLANT_ID":
                         changes.OLD_VALUE = origin.SOURCE_PLANT_ID;
@@ -406,28 +408,28 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.INVOICE_DATE != null ? data.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         break;
                     case "PBCK1_DECREE_ID":
-                        long pbck1 = 0;
-                        if (data.PBCK1_DECREE_ID.HasValue)
-                            pbck1 = data.PBCK1_DECREE_ID.Value;
+                        //long pbck1 = 0;
+                        //if (data.PBCK1_DECREE_ID.HasValue)
+                        //    pbck1 = data.PBCK1_DECREE_ID.Value;
 
                         changes.OLD_VALUE = origin.PbckNumber;
-                        //changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(pbck1);
+                        changes.NEW_VALUE = data.PbckNumber;// _pbck1Bll.GetPbckNumberById(pbck1);
                         break;
 
-                    //case "CARRIAGE_METHOD_ID":
-                    //    changes.OLD_VALUE = origin.CARRIAGE_METHOD_ID;
-                    //    //changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(data.CARRIAGE_METHOD_ID);
-                    //    break;
+                    case "CARRIAGE_METHOD_ID":
+                        changes.OLD_VALUE = origin.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(origin.CARRIAGE_METHOD_ID) : "NULL";
+                        changes.NEW_VALUE = data.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(data.CARRIAGE_METHOD_ID) : "NULL";
+                        break;
 
                     case "GRAND_TOTAL_EX":
                         changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
                         changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
                         break;
 
-                    //case "PACKAGE_UOM_ID":
-                    //    changes.OLD_VALUE = origin.PackageUomName;
-                    //    changes.NEW_VALUE = _uomBll.GetUomDescById(data.PACKAGE_UOM_ID);
-                    //    break;
+                    case "PACKAGE_UOM_ID":
+                        changes.OLD_VALUE = origin.PackageUomName;
+                        changes.NEW_VALUE = data.PackageUomName;// _uomBll.GetUomDescById(data.PACKAGE_UOM_ID);
+                        break;
 
 
                 }
