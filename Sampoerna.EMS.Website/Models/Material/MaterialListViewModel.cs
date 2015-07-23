@@ -27,8 +27,14 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string Plant { get; set; }
         public string Meinh { get; set; }
         public Nullable<decimal> Umrez { get; set; }
-        public Nullable<decimal> Umren { get; set; }
-    
+        public string UmrenStr { get; set; }
+
+        public Nullable<decimal> Umren
+        {
+            get { return Convert.ToDecimal(UmrenStr); }
+            set { value = Umren; }
+        }
+
     }
 
 

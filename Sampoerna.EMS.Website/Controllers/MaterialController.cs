@@ -185,8 +185,8 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
+                //if (ModelState.IsValid)
+                //{
                     var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
                     foreach (var uom in model.MATERIAL_UOM)
                     {
@@ -201,9 +201,9 @@ namespace Sampoerna.EMS.Website.Controllers
                    
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");    
-                }
+                //}
 
-                return RedirectToAction("Create"); 
+                //return RedirectToAction("Create"); 
                 
             }
             catch(Exception ex)
