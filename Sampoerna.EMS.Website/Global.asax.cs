@@ -64,15 +64,13 @@ namespace Sampoerna.EMS.Website
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
             container.Register<IMaterialBLL, MaterialBLL>();
             container.Register<IWorkflowHistoryBLL,WorkflowHistoryBLL>();
-            container.Register < IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
+            container.Register <IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
             container.Register<IPOASKBLL, POASKBLL>();
-           
-           
              container.Register<IEmailTemplateBLL, EmailTemplateBLL>();
              container.Register<IPOABLL, POABLL>();
             container.Register<IPbck1ProdPlanBLL, Pbck1ProdPlanBLL>();
+            
             container.Register<ILACK1BLL, LACK1BLL>();
-           
           
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -84,7 +82,7 @@ namespace Sampoerna.EMS.Website
         
         protected void Application_Start()
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
+            //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
