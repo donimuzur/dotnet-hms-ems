@@ -47,6 +47,16 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<WorkflowHistoryDto>(dbData);
         }
 
+
+        public List<WorkflowHistoryDto> GetByFormNumber(string formNumber)
+        {
+            var dbData =
+                _repository.Get(c => c.FORM_NUMBER == formNumber, null, includeTables)
+                    .ToList();
+            return Mapper.Map<List<WorkflowHistoryDto>>(dbData);
+        }
+
+
         public void AddHistory(WorkflowHistoryDto history)
         {
             var dbData = Mapper.Map<WORKFLOW_HISTORY>(history);

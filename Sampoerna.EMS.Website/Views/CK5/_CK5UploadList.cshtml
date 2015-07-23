@@ -1,16 +1,13 @@
 ﻿@model IEnumerable<Sampoerna.EMS.Website.Models.CK5.CK5UploadViewModel>
-@*@model Sampoerna.EMS.Website.Models.CK5.CK5CreateViewModel
-@Html.HiddenFor(model=>model.GrandTotalList)*@
 
 <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
     <thead>
         <tr>
-            @*<th style="display: none"></th>*@
+           
             <th>Brand</th>
             <th>Qty</th>
             <th>UOM</th>
             <th>Convertion</th>
-            <th>Description</th>
             <th>Converted Qty</th>
             <th>Converted UOM</th>
             <th>HJE</th>
@@ -28,12 +25,10 @@
             foreach (var row in Model)
             {
                 <tr>
-                    @*<td style="display: none"></td>*@
                     <td>@row.Brand</td>
                     <td>@row.Qty</td>
                     <td>@row.Uom</td>
                     <td>@row.Convertion</td>
-                    <td>@row.Description</td>
                     <td>@row.ConvertedQty</td>
                     <td>@row.ConvertedUom</td>
                     <td>@row.Hje</td>

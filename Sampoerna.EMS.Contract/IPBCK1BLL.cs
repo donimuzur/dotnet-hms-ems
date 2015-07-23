@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -15,7 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         Pbck1Dto GetById(long id);
 
-        SavePbck1Output Save(Pbck1SaveInput input);
+        SavePbck1Output Save(Pbck1SaveInput pbck1);
 
         void Delete(long id);
 

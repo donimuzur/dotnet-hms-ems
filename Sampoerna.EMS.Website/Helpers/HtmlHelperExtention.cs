@@ -102,6 +102,12 @@ namespace Sampoerna.EMS.Website.Helpers
             return user != null ? user.USERNAME : "";
         }
 
+        public static string UserRole(this HtmlHelper htmlHelper)
+        {
+            var user = (Login)HttpContext.Current.Session[Core.Constans.SessionKey.CurrentUser];
+            return user != null ? user.UserRole.ToString() : "";
+        }
+
         public static string BooleanToString(this HtmlHelper htmlHelper, bool active, string text)
         {
             return active ? text : "";

@@ -1,4 +1,6 @@
-﻿namespace Sampoerna.EMS.BusinessObject.Business
+﻿using Sampoerna.EMS.Core;
+
+namespace Sampoerna.EMS.BusinessObject.Business
 {
     public class Login
     {
@@ -8,5 +10,7 @@
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
         public string USER_GROUP_ID { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
+
 }
