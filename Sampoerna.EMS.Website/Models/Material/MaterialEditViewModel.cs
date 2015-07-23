@@ -123,7 +123,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string ConversionUom { get; set; }
         public SelectList ConversionUomList { get; set; }
 
-        public List<ZAIDM_EX_MATERIAL> MateriaList { get; set; }
+        public List<MaterialUomDetails> MaterialUom { get; set; }
     }
 
 

@@ -31,9 +31,9 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
         }
 
-        public ZAIDM_EX_MATERIAL getByID(string materialId)
+        public ZAIDM_EX_MATERIAL getByID(string materialId, string plant)
         {
-            return _repository.Get(q => q.STICKER_CODE == materialId, null, includeTables).FirstOrDefault();
+            return _repository.Get(q => q.STICKER_CODE == materialId && q.WERKS == plant, null, includeTables).FirstOrDefault();
             //return _repository.GetByID(materialId);
         }
 
@@ -72,9 +72,9 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public void Delete(string id, string userId)
+        public void Delete(string mn, string p, string userId)
         {
-            var existingData = _repository.GetByID(id);
+            var existingData = _repository.GetByID(mn, p);
             existingData.IS_DELETED = true;
             //existingData.CHANGED_BY = userId;
             //existingData.CHANGED_DATE = DateTime.Now;

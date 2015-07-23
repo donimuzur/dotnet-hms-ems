@@ -56,17 +56,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Material/Details/5
-        public ActionResult Details(string id)
+        public ActionResult Details(string mn, string p)
         {
 
             var model = new MaterialDetailViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            var data = _materialBll.getByID(id);
+            var data = _materialBll.getByID(mn, p);
             Mapper.Map(data,model);
             
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, mn+p));
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             InitDetailModel(model);
             return View("Details",model);
@@ -223,25 +223,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Material/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(string mn, string p)
         {
-            var data = _materialBll.getByID(id);
+            var data = _materialBll.getByID(mn, p);
             
             
 
             if (data.IS_FROM_SAP)
             {
              
-                return RedirectToAction("Details", new {id=id});
+                return RedirectToAction("Details", new {mn=mn, p=p});
             }
             else {
 
                 var model = Mapper.Map<MaterialEditViewModel>(data);
-                model.MateriaList = Mapper.Map<List<ZAIDM_EX_MATERIAL>>(_materialBll.getAll());
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
-                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()));
-                model.MaterialNumber = id;
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, mn+p));
                 model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
 
                 InitEditModel(model);
@@ -255,14 +253,14 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Material/Edit/5
         [HttpPost]
-        public ActionResult Edit(string id, MaterialEditViewModel model)
+        public ActionResult Edit(MaterialEditViewModel model)
         {
             try
             {
                 // TODO: Add update logic here
                 if (ModelState.IsValid)
                 {
-                    var data = _materialBll.getByID(id);
+                    var data = _materialBll.getByID(model.MaterialNumber, model.PlantId);
                     
                     model.ChangedById = CurrentUser.USER_ID;
                     model.ChangedDate = DateTime.Now;
@@ -302,12 +300,12 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Material/Delete/5
         
-        public ActionResult Delete(string id, FormCollection collection)
+        public ActionResult Delete(string mn, string p)
         {
             try
             {
                 // TODO: Add delete logic here
-                _materialBll.Delete(id, CurrentUser.USER_ID);
+                _materialBll.Delete(mn, p, CurrentUser.USER_ID);
                 TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
                 return RedirectToAction("Index");
             }
