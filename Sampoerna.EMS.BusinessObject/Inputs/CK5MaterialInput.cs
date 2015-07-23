@@ -8,6 +8,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 {
     public class CK5MaterialInput
     {
+        public long Plant { get; set; }
         public string Brand { get; set; }
         public string Qty { get; set; }
         public string Uom { get; set; }

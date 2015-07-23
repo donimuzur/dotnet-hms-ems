@@ -1,0 +1,54 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
+
+<table id="ck5TableDomesticAlcohol" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Document Number</th>
+            <th>Qty - Type of Packaging</th>
+            <th>POA</th>
+            <th>NPPBKC ID</th>
+            <th>Source Plant</th>
+            <th>Destination Plant</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.DetailList3)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "POA", new { id = item.NPPBKC_ID })"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "POA", new { id = item.NPPBKC_ID })"> <i class="fa fa-pencil-square-o"></i></a>
+                </td>
+
+                <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
+                <td>@Html.DisplayFor(model => item.Qty)</td>
+                <td>
+                    @Html.DisplayFor(model => item.POA)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.NPPBKC_ID)
+                </td>
+                <td>@Html.DisplayFor(model => item.SourcePlant)</td>
+                <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
+                <td class="last">@Html.DisplayFor(model => item.Status)</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
