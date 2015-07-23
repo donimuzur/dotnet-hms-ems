@@ -5,6 +5,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -51,6 +52,14 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
 
+        }
+
+
+
+
+        public List<DOC_NUMBER_SEQ> GetDocumentSequenceList()
+        {
+            return _repository. Get(null, null, "MONTH1").ToList();
         }
     }
 }
