@@ -31,8 +31,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            
-            model.PlantList = GlobalFunctions.GetVirtualPlantList();
+
+            model.PlantList = GlobalFunctions.GetVirtualPlantListMultiSelect();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
             model.ConversionUomList = GlobalFunctions.GetConversionUomList();
@@ -187,20 +187,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 // TODO: Add insert logic here
                 //if (ModelState.IsValid)
                 //{
-                    var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                    foreach (var uom in model.MATERIAL_UOM)
+                    var plantIds = data.PlantId;
+                    foreach (var plant in plantIds)
                     {
-                        uom.STICKER_CODE = model.STICKER_CODE;
-                        uom.WERKS = model.WERKS;
+                        var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
+                  
 
+                        model.WERKS = plant;
+                        foreach (var uom in model.MATERIAL_UOM)
+                        {
+                            uom.STICKER_CODE = model.STICKER_CODE;
+                            uom.WERKS = model.WERKS;
+
+                        }
+                        model.CREATED_BY = CurrentUser.USER_ID;
+                        model.CREATED_DATE = DateTime.Now;
+                        MaterialOutput output = _materialBll.Save(model, CurrentUser.USER_ID);
+                        model.CONVERSION = data.ConversionValueStr == null ? 0 : Convert.ToDecimal(data.ConversionValueStr);
+
+                        TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     }
-                    model.CREATED_BY = CurrentUser.USER_ID;
-                    model.CREATED_DATE = DateTime.Now;
-                    MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);
-                    model.CONVERSION = data.ConversionValueStr == null ? 0 : Convert.ToDecimal(data.ConversionValueStr);
-                   
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
-                    return RedirectToAction("Index");    
+                return RedirectToAction("Index");    
                 //}
 
                 //return RedirectToAction("Create"); 

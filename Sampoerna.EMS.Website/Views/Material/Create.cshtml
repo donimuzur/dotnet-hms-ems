@@ -79,7 +79,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "select", new { @class = "selectpicker form-control" })
+                                                            @Html.ListBoxFor(model => model.PlantId, Model.PlantList, new { @class = "selectpicker form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.PlantId)*@
                                                         </div>
                                                     </div>
@@ -213,10 +213,9 @@
     {
         <script src="~/Scripts/js/custom.js"></script>
         <script src="~/Scripts/thousand-separator.js"></script>
-        <script type="text/javascript" language="javascript" class="init">
-            $(document).ready(function() {
-
-
+         <script type="text/javascript" language="javascript" class="init">
+             $(document).ready(function () {
+                
             });
             $('#MenuMasterMaterial').addClass('active');
 

@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         [Required, Display(Name = "Plant")]
-        public string PlantId { get; set; }
+        public string[] PlantId { get; set; }
         public string PlantName { get; set; }
 
         [Required, Display(Name = "Excisable Good Type")]
@@ -114,7 +114,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
        
         // list for dropdown in the form
-        public SelectList PlantList { get; set; }
+        public MultiSelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
 
