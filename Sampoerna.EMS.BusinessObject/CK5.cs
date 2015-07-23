@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string INVOICE_NUMBER { get; set; }
         public Nullable<System.DateTime> INVOICE_DATE { get; set; }
         public Nullable<int> PBCK1_DECREE_ID { get; set; }
-        public Nullable<int> CARRIAGE_METHOD_ID { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.CarriageMethod> CARRIAGE_METHOD_ID { get; set; }
         public Nullable<decimal> GRAND_TOTAL_EX { get; set; }
         public string PACKAGE_UOM_ID { get; set; }
         public Nullable<int> DEST_COUNTRY_ID { get; set; }
@@ -75,6 +75,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string DEST_PLANT_ADDRESS { get; set; }
         public string DEST_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
+        public Nullable<System.DateTime> DN_DATE { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
