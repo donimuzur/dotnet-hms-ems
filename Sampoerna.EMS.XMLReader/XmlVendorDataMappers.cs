@@ -29,7 +29,8 @@ namespace Sampoerna.EMS.XMLReader
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_MARKET");
                 var items = new List<LFA1>();
                 foreach (var xElement in xmlItems)
                 {

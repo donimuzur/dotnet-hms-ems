@@ -5,6 +5,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -26,11 +27,11 @@ namespace Sampoerna.EMS.BLL
         public string GenerateNumber(GenerateDocNumberInput input)
         {
             var lastSeqData = _repository.Get(c => c.MONTH == input.Month && c.YEAR == input.Year).FirstOrDefault();
-            
+
             if (lastSeqData == null)
             {
                 //insert new record
-                lastSeqData = new DOC_NUMBER_SEQ() {YEAR = input.Year, MONTH = input.Month, DOC_NUMBER_SEQ_LAST = 1};
+                lastSeqData = new DOC_NUMBER_SEQ() { YEAR = input.Year, MONTH = input.Month, DOC_NUMBER_SEQ_LAST = 1 };
                 _repository.Insert(lastSeqData);
             }
             else
@@ -39,11 +40,12 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(lastSeqData);
             }
 
-            var nppbkcData = _nppbkcRepository.GetByID(input.NppbkcId);
+            //var nppbkcData = _nppbkcRepository.GetByID(input.NppbkcId);
+            var nppbkcData = _nppbkcRepository.Get(c => c.NPPBKC_ID == input.NppbkcId, null, "T001").FirstOrDefault();
 
-            if(nppbkcData == null)
+            if (nppbkcData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.NppbkcNotFound);
-            
+
             //generate number
             string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("00000") + "/" + nppbkcData.T001.BUTXT + "/" + nppbkcData.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
@@ -51,6 +53,14 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
 
+        }
+
+
+
+
+        public List<DOC_NUMBER_SEQ> GetDocumentSequenceList()
+        {
+            return _repository. Get(null, null, "MONTH1").ToList();
         }
     }
 }

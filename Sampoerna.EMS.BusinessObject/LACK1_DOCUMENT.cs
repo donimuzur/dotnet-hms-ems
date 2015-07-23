@@ -12,16 +12,13 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class CARRIAGE_METHOD
+    public partial class LACK1_DOCUMENT
     {
-        public CARRIAGE_METHOD()
-        {
-            this.CK5 = new HashSet<CK5>();
-        }
+        public int LACK1_DOCUMENT_ID { get; set; }
+        public Nullable<int> LACK1_ID { get; set; }
+        public string FILE_NAME { get; set; }
+        public string FILE_PATH { get; set; }
     
-        public int CARRIAGE_METHOD_ID { get; set; }
-        public string CARRIAGE_METHOD_NAME { get; set; }
-    
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual LACK1 LACK1 { get; set; }
     }
 }

@@ -1,5 +1,124 @@
-﻿@{
-    ViewBag.Title = "Edit PBCK 1";
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+@{
+    ViewBag.Title = "Edit";
 }
 
-<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Edit", "PBCK1"))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-1 Form</h3>
+                <label class="status">Draft</label>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation" id="prod-plan-upload-tab"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Upload Production Plan</a></li>
+                        <li role="presentation" id="prod-conv-upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload Production Converted</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                        @Html.HiddenFor(model => model.Detail.Status)
+                        @Html.HiddenFor(model => model.Detail.CreatedDate)
+                        @Html.HiddenFor(model => model.Detail.CreatedById)
+                        @Html.Partial("_HomeEdit")
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_ProdPlanUpload")
+                        @Html.Partial("_ProdConvUpload")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck1script.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "Pbck1")';
+            });
+            
+            $('#btn-changelog-export-xls').click(function () {
+                href.location = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
+            });
+
+            $('#prod-conv-save').click(function () {
+                prodConvSaveClick();
+            });
+            $('#prod-plan-save').click(function () {
+                prodPlanSaveClick();
+            });
+
+            $('#ProdConvSubmitBtn').click(function () {
+                prodConvGenerateClick('@Url.Action("UploadFileConversion", "PBCK1")');
+            });
+
+            $('#ProdPlanSubmitBtn').click(function () {
+                prodPlanGenerateClick('@Url.Action("UploadFilePlan", "PBCK1")');
+            });
+
+            $('#btn-prod-conv-upload').click(function () {
+                btnProdConvUploadClick();
+            });
+
+            $('#btn-prod-plan-upload').click(function () {
+                btnProdPlanUploadClick();
+            });
+
+            $('#MenuPBCK1OpenListDocument').addClass('active');
+
+            $("#Detail_Pbck1Type").change(function () {
+                pbck1TypeOnchange();
+            });
+
+            //load nppbkc detail
+            nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
+
+            ajaxLoadSupplierPlant('@Url.Action("GetSupplierPlant", "PBCK1")');
+
+            pbck1TypeOnchange();
+            
+            $('#Detail_NppbkcId').change(function () {
+                nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
+            });
+
+        });
+
+        function loadSupplierPlant() {
+            var list = supplierData;
+            if (list.length > 0) {
+                var htmlSelect = '';
+                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange(\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
+                for (var i = 0; i < list.length; i++) {
+                    htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
+                }
+                htmlSelect += '</select>';
+                htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
+                $('#supp-plant').html(htmlSelect);
+                //selected to 1
+                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+            }
+        }
+    </script>
+}

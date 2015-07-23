@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string STICKER_CODE { get; set; }
         public string PER_CODE { get; set; }
         public string BRAND_CE { get; set; }
-        public string SKEP_NP { get; set; }
+        public string SKEP_NO { get; set; }
         public Nullable<System.DateTime> SKEP_DATE { get; set; }
         public string PROD_CODE { get; set; }
         public string SERIES_CODE { get; set; }

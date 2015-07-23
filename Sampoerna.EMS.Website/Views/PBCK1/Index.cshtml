@@ -1,14 +1,8 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ViewModel
-
-@section styles
-{
-    
-    
-}
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
 
 @{
-    ViewBag.Title = "PBCK 1";
+    ViewBag.Title = "PBCK-1";
 }
 
 <div class="container-wrap title-page">
@@ -17,7 +11,7 @@
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "PBCK1")">
-                    <button class="btn btn-blue">NEW</button>
+                    <input type="button" class="btn btn-blue" value="NEW" />
                 </a>
             </div>
         </div>
@@ -28,7 +22,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("Filter", "PBCK1",
+                @using (Ajax.BeginForm("FilterOpenDocument", "PBCK1",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -42,7 +36,7 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.NPBCKID, Model.SearchInput.NPPBKCIDList, "All", new { @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -50,7 +44,7 @@
                             <div class="row">
                                 <label class="col-md-4">Type</label>
                                 <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.PBCK1Types, "All", new { @class = "form-control" })
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -58,7 +52,7 @@
                             <div class="row">
                                 <label class="col-md-4">Year</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -67,7 +61,7 @@
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
                                             <option value="">All</option>
                                         </select>
                                     </div>
@@ -77,14 +71,19 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control" })
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-
-                                <input type="submit" class="btn btn-blue full" value="FILTER" />
-
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,10 +99,12 @@
 @section scripts {
     
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript">
-        function setupDataTables() {
 
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
             // DataTable
             var table = null;
             if ($.fn.dataTable.isDataTable('#pbckTable')) {
@@ -121,7 +122,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#pbckTable .filters th').each(function () {
+            $('#pbckTable .filters th').each(function() {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -129,8 +130,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -138,15 +139,11 @@
                 });
             });
 
-            $("#pbckTable_filter").hide();
-            $('#pbckTable_length').hide();
-            $('#pbckTable_info').hide();
-
             $('#MenuPBCK1OpenListDocument').addClass('active');
         }
 
-        $("#SearchInput_NPBCKID").change(function () {
-            if ($("#SearchInput_NPBCKID").length) {
+        $("#SearchInput_NppbkcId").change(function() {
+            if ($("#SearchInput_NppbkcId").length) {
                 var nbck = $(this).find("option:selected").text();
                 $('#SearchInput_POA option').remove();
                 console.log(nbck);
@@ -159,7 +156,7 @@
 
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             setupDataTables();
         });
 
@@ -169,20 +166,27 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
-                        var list = data.SearchInput.POAList;
+                    success: function(data) {
+                        var list = data.SearchInput.PoaList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
                         if (list.length > 0) {
-                            $('#SearchInput_POA').append('<option value="">All</option>');
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
                             }
-                        }
+                        } 
                     }
                 });
             }
         }
 
         function ReloadDataTables() {
+            $('.toggle-row').click(function() {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function() {
+
+                });
+            });
             setupDataTables();
         }
 

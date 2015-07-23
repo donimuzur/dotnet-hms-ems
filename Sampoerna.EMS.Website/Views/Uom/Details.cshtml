@@ -11,7 +11,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>View Virtual Plant Mapping</h3>
+                <h3>Master UoM</h3>
                 <div class="action-button">
                     <a href="@Url.Action("Index", "Uom")" class="btn btn-grey">Back</a>
                     @if (!Model.IsDeleted)
@@ -62,7 +62,7 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <div class="row">
-                                                            <label class="col-md-2">Uom Name</label>
+                                                            <label class="col-md-2">Description</label>
                                                             <div class="col-md-4">
                                                                 @Html.TextBoxFor(model => model.UomName, new { @class = "form-control", @disabled= "disabled" })
                                                             </div>

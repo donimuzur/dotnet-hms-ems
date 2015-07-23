@@ -17,11 +17,10 @@ namespace Sampoerna.EMS.BusinessObject
         public ZAIDM_EX_GOODTYP()
         {
             this.EX_GROUP_TYPE_DETAILS = new HashSet<EX_GROUP_TYPE_DETAILS>();
-            this.PBCK1 = new HashSet<PBCK1>();
             this.PLANT_RECEIVE_MATERIAL = new HashSet<PLANT_RECEIVE_MATERIAL>();
             this.PLANT_RECEIVE_MATERIAL1 = new HashSet<PLANT_RECEIVE_MATERIAL>();
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
         }
     
         public string EXC_GOOD_TYP { get; set; }
@@ -30,10 +29,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual ICollection<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
-        public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL1 { get; set; }
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
 }

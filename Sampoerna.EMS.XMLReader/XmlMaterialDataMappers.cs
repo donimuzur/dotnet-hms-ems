@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -28,43 +29,50 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("E1MARAM");
                 var items = new List<ZAIDM_EX_MATERIAL>();
                 foreach (var xElement in xmlItems)
                 {
                     var item = new ZAIDM_EX_MATERIAL();
-                    item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
-                    item.MATERIAL_DESC = xElement.Element("MATERIAL_DESC").Value;
-                    item.MATERIAL_GROUP = xElement.Element("MATERIAL_GROUP").Value;
-                    item.PURCHASING_GROUP = xElement.Element("PURCHASING_GROUP").Value;
-                    item.ISSUE_STORANGE_LOC = xElement.Element("ISSUE_STORANGE_LOC").Value;
-                    item.WERKS = xElement.Element("PLANT_ID").Value;
-                    var exGoodTypCode = xElement.Element("EX_GOOD_TYP").Value;
-                    var exGoodType = new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodTypCode);
-                    if(exGoodType == null)
+                    item.STICKER_CODE = xElement.Element("MATNR").Value;
+                    item.MATERIAL_DESC = string.Empty;
+                    item.BASE_UOM_ID = xElement.Element("MEINS").Value;
+                    item.MATERIAL_GROUP = xElement.Element("MATKL").Value;
+                    var E1MARCM = xElement.Element("E1MARCM");
+                    if (E1MARCM != null)
                     {
-                        throw new Exception(string.Format("There no data GoodType macthing with  {0} ", exGoodTypCode));
-
+                        item.WERKS = E1MARCM.Element("WERKS").Value;
+                        item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? null : E1MARCM.Element("LGPRO").Value;
+                        var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
+                        if (exGoodType != null)
+                        {
+                            item.EXC_GOOD_TYP = exGoodType.Element("EXC_GOOD_TYP").Value;
+                           
+                        }
                     }
-                    item.EXC_GOOD_TYP = exGoodType.EXC_GOOD_TYP;
-                    var baseUomId =Convert.ToInt32(xElement.Element("BASE_UOM").Value);
-                    var baseUoM = new XmlUoMDataMapper(null).GetExUoM(baseUomId);
-                    if (baseUoM == null)
+                    //uom
+                    var uomList = xElement.Elements("E1MARMM");
+                    foreach (var element in uomList)
                     {
-                        throw new Exception(string.Format("There no data UoM macthing with  {0} ", baseUomId));
-
+                        var matUom = new MATERIAL_UOM();
+                        matUom.STICKER_CODE = item.STICKER_CODE;
+                        matUom.WERKS = item.WERKS;
+                        matUom.UMREZ = Convert.ToDecimal(element.Element("UMREZ").Value);
+                        matUom.UMREN = Convert.ToDecimal(element.Element("UMREN").Value);
+                        matUom.MEINH = element.Element("MEINH").Value;
+                        item.MATERIAL_UOM.Add(matUom);
                     }
-                    item.BASE_UOM_ID = baseUoM.UOM_ID;
-                    item.CONVERSION = Convert.ToDecimal(xElement.Element("CONVERSION").Value);
-                    
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
-                    var existingMaterial = GetMaterial(item.STICKER_CODE);
+
+                    item.IS_FROM_SAP = true;
+
+                    var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
                     if (existingMaterial != null)
                     {
                         item.CREATED_DATE = existingMaterial.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
-                        
+
                     }
                     else
                     {
@@ -86,10 +94,10 @@ namespace Sampoerna.EMS.XMLReader
             
 
         }
-        public ZAIDM_EX_MATERIAL GetMaterial(string materialNumber)
+        public ZAIDM_EX_MATERIAL GetMaterial(string materialNumber, string plant)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL>()
-                .GetByID(materialNumber);
+                .GetByID(materialNumber,plant);
             return existingData;
         }
         

@@ -22,7 +22,8 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1AXX_T001W");
                 var items = new List<T001W>();
                 foreach (var xElement in xmlItems)
                 {
@@ -30,14 +31,18 @@ namespace Sampoerna.EMS.XMLReader
                     item.WERKS = xElement.Element("WERKS").Value;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.ORT01 = xElement.Element("ORT01").Value;
-                    item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                    
-                    var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    //item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
+                    //var nppbck = new XmlNPPBKCDataMapper(null).GetNPPBKC(item.NPPBKC_ID);
+                    //if (nppbck == null)
+                    //{
+
+                    //}
+                    //var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {
                         item.CREATED_DATE = exisitingPlant.CREATED_DATE;
-                        item.MODIFIED_DATE = plantDateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                        
                     }

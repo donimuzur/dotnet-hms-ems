@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Uom/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
             var model = new UomDetailViewModel();
 
@@ -88,7 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Uom/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var model = new UomDetailViewModel();
 
@@ -123,23 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+      
         
-
-        //
-        // POST: /Uom/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

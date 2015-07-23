@@ -1,0 +1,110 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5DetailsViewModel
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@Model.Ck5Type.ToString()</h3>
+            <label class="status">@Model.DocumentStatus</label>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "CK5")">
+                    <button class="btn btn-blue">Back</button>
+                </a>
+
+                <input type="button" class="btn btn-grey" value="Print Preview" />
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    @Html.HiddenFor(model => model.Ck5Id);
+                    @Html.Partial("_CK5InformationDetails")
+                    @Html.Partial("_CK5Printout")
+                   
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Changes Log
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-excise " role="form">
+                                                <div class="last-form">
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <label class="col-md-5">CK-5 No</label>
+                                                            <div class="col-md-7">
+                                                                @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Date</label>
+                                                            <div class="col-md-9">
+                                                                <input type="text" class="form-control" placeholder="">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <label class="col-md-3">User</label>
+                                                            <div class="col-md-9">
+                                                                <input type="text" class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            @*<div class="col-md-12">
+                                                    <button class="btn btn-blue full">Export to xls</button>
+                                                </div>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable")
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MenuCK5Domestic').addClass('active');
+        });
+    </script>
+}

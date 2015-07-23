@@ -30,5 +30,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public Enums.PBCK1Type Pbck1Types { get; set; }
         public SelectList CreatorList { get; set; }
         public SelectList YearList { get; set; }
+
+        public Enums.Pbck1DocumentType DocumentType { get; set; }
+
     }
 }

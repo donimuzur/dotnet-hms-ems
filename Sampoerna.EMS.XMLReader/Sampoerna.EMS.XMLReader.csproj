@@ -64,12 +64,12 @@
     <Compile Include="Service.cs" />
     <Compile Include="XmlBrandDataMappers.cs" />
     <Compile Include="XmlCK5DataWriter.cs" />
+    <Compile Include="XmlT001KDataMappers.cs" />
     <Compile Include="XmlPCodeDataMappers .cs" />
     <Compile Include="XmlMaterialDataMappers.cs" />
     <Compile Include="XmlGoodsTypeDataMappers.cs" />
     <Compile Include="XmlNPPBCKDataMappers.cs" />
     <Compile Include="XmlPlantDataMappers.cs" />
-    <Compile Include="XmlUoMDataMappers.cs" />
     <Compile Include="XmlVendorDataMappers.cs" />
     <Compile Include="XmlProdTypeDataMappers.cs" />
     <Compile Include="XmlKPPBCDataMappers.cs" />

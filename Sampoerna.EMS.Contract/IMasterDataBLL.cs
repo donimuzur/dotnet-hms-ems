@@ -16,6 +16,20 @@ namespace Sampoerna.EMS.Contract
         ZAIDM_EX_PCODE GetDataPersonalizationById(string id);
         string GetPersonalizationDescById(string id);
 
+        //List<EX_SETTLEMENT> GetAllExciseExSettlements();
+
+        //List<EX_STATUS> GetAllExciseStatus();
+
+       // List<REQUEST_TYPE> GetAllRequestTypes();
+
+        //string GetCeOfficeCodeByKppbcId(long kppBcId);
+
+        //List<T001W> GetAllSourcePlants();
+
+        //T001W GetPlantById(long plantId);
+
+        //List<CARRIAGE_METHOD> GetAllCarriageMethods();
+
         List<ZAIDM_EX_SERIES> GetAllDataSeries();
         ZAIDM_EX_SERIES GetDataSeriesById(string id);
         string GetDataSeriesDescById(string id);

@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public DateTime PeriodFrom { get; set; }
         public DateTime? PeriodTo { get; set; }
         public DateTime? ReportedOn { get; set; }
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
         public string CompanyName { get; set; }
         public string NppbkcNo { get; set; }
         public int? GoodTypeId { get; set; }
@@ -48,7 +48,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public decimal? QtyApproved { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public int? CreatedById { get; set; }
+        public string CreatedById { get; set; }
         public string CreatedUsername { get; set; }
         public int? ApprovedById { get; set; }
         public string ApprovedUsername { get; set; }

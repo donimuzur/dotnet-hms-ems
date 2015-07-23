@@ -1,7 +1,92 @@
-﻿
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
-    ViewBag.Title = "Detail PBCK1";
+    ViewBag.Title = "Create";
 }
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>PBCK-1 Form</h3>
+            <label class="status">Draft</label>
+            <div class="action-button">
+                @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed) {
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
+                }
+                else {
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    @Html.Partial("_HomeDetails")
+                    @Html.Partial("_PrintOut")
+                    @Html.Partial("_ChangeLog")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h2>@ViewBag.Title</h2>
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script type="text/javascript">
 
+        $(document).ready(function() {
+            $('#MenuPBCK1OpenListDocument').addClass('active');
+            $('#btn-back-open-doc').click(function (e) {
+                location.href = '@Url.Action("Index", "Pbck1")';
+            });
+            $('#btn-back-completed-doc').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "Pbck1")';
+            });
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
+            });
+
+            $('#MenuPBCK1OpenListDocument').addClass('active');
+
+            $('#btn-changelog-export-xls').click(function () {
+                alert('export on progress');
+            });
+            
+            var nppbkcid = $('#Detail_NppbkcId').val();
+            ajaxLoadPoa({ nppbkcId: nppbkcid });
+
+        });
+        
+        function ajaxLoadPoa(formData) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PoaListPartial", "pbck1")',
+                data: formData,
+                success: function (data) {
+                    var list = data.SearchInput.PoaList;
+                    if (list.length > 0) {
+                        var poalist = '';
+                        for (var i = 0; i < list.length; i++) {
+                            poalist = poalist + ', ' + list[i].Text;
+                        }
+                        poalist = poalist.slice(2);
+                        $('#displayPoaList').val(poalist);
+                    }
+                }
+            });
+        }
+
+    </script>
+}

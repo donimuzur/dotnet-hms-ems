@@ -243,8 +243,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     origin.FA_CODE = "";
                 if (string.IsNullOrEmpty(origin.BRAND_CE))
                     origin.BRAND_CE = "";
-                if (string.IsNullOrEmpty(origin.SKEP_NP))
-                    origin.SKEP_NP = "";
+                if (string.IsNullOrEmpty(origin.SKEP_NO))
+                    origin.SKEP_NO = "";
                 if (string.IsNullOrEmpty(origin.COLOUR))
                     origin.COLOUR = "";
                 if (string.IsNullOrEmpty(origin.CUT_FILLER_CODE))
@@ -256,7 +256,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 changesData.Add("FACode", origin.FA_CODE.Equals(updatedModel.FaCode));
                 changesData.Add("PersonalizationCode", origin.PER_CODE == updatedModel.PersonalizationCode);
                 changesData.Add("BrandName", origin.BRAND_CE.Equals(updatedModel.BrandName));
-                changesData.Add("SkepNo", origin.SKEP_NP.Equals(updatedModel.SkepNo));
+                changesData.Add("SkepNo", origin.SKEP_NO.Equals(updatedModel.SkepNo));
                 changesData.Add("SkepDate", origin.SKEP_DATE.Equals(updatedModel.SkepDate));
                 changesData.Add("ProductCode", origin.PROD_CODE.Equals(updatedModel.ProductCode));
                 changesData.Add("SeriesId", origin.SERIES_CODE.Equals(updatedModel.SeriesId));
@@ -310,7 +310,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         changes.NEW_VALUE = updatedModel.BrandName;
                         break;
                     case "SkepNo":
-                        changes.OLD_VALUE = origin.SKEP_NP;
+                        changes.OLD_VALUE = origin.SKEP_NO;
                         changes.NEW_VALUE = updatedModel.SkepNo;
                         break;
                     case "SkepDate":

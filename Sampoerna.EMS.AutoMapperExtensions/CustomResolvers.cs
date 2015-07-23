@@ -2,6 +2,7 @@
 using System.Globalization;
 using AutoMapper;
 using AutoMapper.Internal;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.AutoMapperExtensions
 {
@@ -101,18 +102,62 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+ public class SourcePlantTextResolver : ValueResolver<T001W, string>
+    {
+        protected override string ResolveCore(T001W value)
+        {
+            if (string.IsNullOrEmpty(value.ORT01))
+                return value.NAME1;
 
-    //public class VirtualPlantMapCompanyNameResolver : ValueResolver<object, string>
-    //{
-    //    protected override string ResolveCore(object value)
-    //    {
+            return value.NAME1 + " - " + value.ORT01;
+        }
+    }
+
+
+    public class PlantCityCodeResolver : ValueResolver<T001W, string>
+    {
+        protected override string ResolveCore(T001W value)
+        {
+            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_ID; 
             
-    //        string InputAsString = value.ToNullSafeString();
+        }
+    }
 
-    //        if (string.IsNullOrWhiteSpace(InputAsString))
-    //            return null;
+    public class CK5ListIndexQtyResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 value)
+        {
+            string resultValue = "";
+            string resultUOM = "Boxes";
 
-    //        return int.Parse(InputAsString);
-    //    }
-    //}
+            if (value.GRAND_TOTAL_EX.HasValue)
+                resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
+
+            if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
+            {
+                if (value.UOM != null)
+                    resultUOM = value.UOM.UOM_DESC;
+            }
+
+            return resultValue + " " + resultUOM;
+        }
+
+    }
+
+    /// <summary>
+    /// Resolve String as CultureInfo.InvariantCulture to a nullable DateTime
+    /// </summary>
+    public class StringToNullableDecimalResolver : ValueResolver<object, decimal?>
+    {
+        protected override decimal? ResolveCore(object value)
+        {
+            string InputAsString = value.ToNullSafeString();
+
+            if (string.IsNullOrWhiteSpace(InputAsString))
+                return null;
+
+            return decimal.Parse(InputAsString);
+        }
+    }
+
 }

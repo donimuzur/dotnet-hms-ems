@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -28,6 +28,11 @@ namespace Sampoerna.EMS.BLL
         {
             //return _repository.Get(id);
             return _repository.Get(c => c.NPPBKC_ID == id, null, includeTables).FirstOrDefault();
+        }
+
+        public ZAIDM_EX_NPPBKC GetDetailsById(string id)
+        {
+            return _repository.Get(c => c.NPPBKC_ID == id, null, "T001, ZAIDM_EX_KPPBC").FirstOrDefault();
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()
@@ -84,6 +89,27 @@ namespace Sampoerna.EMS.BLL
                 _uow.RevertChanges();
                 throw;
             }
+        }
+
+        public string GetCityByNppbkcId(string nppBkcId)
+        {
+            var dbData = _repository.GetByID(nppBkcId);
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData.CITY;
+
+        }
+
+        public string GetCeOfficeCodeByNppbcId(string nppBkcId)
+        {
+
+            var dbData = _repository.Get(n => n.NPPBKC_ID == nppBkcId, null, "ZAIDM_EX_KPPBC").FirstOrDefault();
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return dbData.ZAIDM_EX_KPPBC.KPPBC_ID;
+
         }
     }
 }
