@@ -23,6 +23,7 @@ using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Models.Settings;
 
 namespace Sampoerna.EMS.Website
 {
@@ -657,7 +658,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.KppBcCity))
               .ForMember(dest => dest.SUBMISSION_NUMBER, opt => opt.MapFrom(src => src.SubmissionNumber))
               .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
-              .ForMember(dest => dest.EX_GOODS_TYPE_ID, opt => opt.MapFrom(src => src.GoodTypeId))
+              //.ForMember(dest => dest.EX_GOODS_TYPE_ID, opt => opt.MapFrom(src => src.GoodTypeId))
               .ForMember(dest => dest.EX_SETTLEMENT_ID, opt => opt.MapFrom(src => src.ExciseSettlement))
               .ForMember(dest => dest.EX_STATUS_ID, opt => opt.MapFrom(src => src.ExciseStatus))
                 //.ForMember(dest => dest.REQUEST_TYPE_ID, opt => opt.MapFrom(src => src.RequestType))
@@ -680,7 +681,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
-                .ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_ID))
+                //.ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_ID))
                 .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => src.EX_SETTLEMENT_ID))
                 .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => src.EX_STATUS_ID))
                 .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.REQUEST_TYPE_ID))
@@ -713,7 +714,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SUBMISSION_NUMBER, opt => opt.MapFrom(src => src.SubmissionNumber))
                 .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
                 .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
-                .ForMember(dest => dest.EX_GOODS_TYPE_ID, opt => opt.MapFrom(src => src.GoodTypeId))
+                //.ForMember(dest => dest.EX_GOODS_TYPE_ID, opt => opt.MapFrom(src => src.GoodTypeId))
                 .ForMember(dest => dest.EX_SETTLEMENT_ID, opt => opt.MapFrom(src => src.ExciseSettlement))
                 .ForMember(dest => dest.EX_STATUS_ID, opt => opt.MapFrom(src => src.ExciseStatus))
                 .ForMember(dest => dest.REQUEST_TYPE_ID, opt => opt.MapFrom(src => src.RequestType))
@@ -754,7 +755,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
                 .ForMember(dest => dest.PbckDecreeNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
-                .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => src.CARRIAGE_METHOD.CARRIAGE_METHOD_NAME))
+                //.ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => src.CARRIAGE_METHOD.CARRIAGE_METHOD_NAME))
                 .ForMember(dest => dest.GrandTotalEx, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
                 //.ForMember(dest => dest.PackageUom, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
                 .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
@@ -771,6 +772,12 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            Mapper.CreateMap<DOC_NUMBER_SEQ, DocumentSequenceModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.LastSequence, opt => opt.MapFrom(src => src.DOC_NUMBER_SEQ_LAST))
+                .ForMember(dest => dest.MonthInt, opt => opt.MapFrom(src => src.MONTH))
+                .ForMember(dest => dest.MonthName_Eng, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_ENG))
+                .ForMember(dest => dest.MonthName_Ind, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_IND))
+                .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.YEAR));
             #region Workflow History
 
             Mapper.CreateMap<WorkflowHistoryDto, WorkflowHistoryViewModel>().IgnoreAllNonExisting()

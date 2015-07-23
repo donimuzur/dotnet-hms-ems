@@ -34,14 +34,14 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_MATERIAL1 = new HashSet<ZAIDM_EX_MATERIAL>();
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
-            this.CK5 = new HashSet<CK5>();
-            this.CK51 = new HashSet<CK5>();
             this.UOM = new HashSet<UOM>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
             this.LACK1 = new HashSet<LACK1>();
             this.LACK11 = new HashSet<LACK1>();
             this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
+            this.CK5 = new HashSet<CK5>();
+            this.CK51 = new HashSet<CK5>();
         }
     
         public string USER_ID { get; set; }
@@ -75,13 +75,13 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL1 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
-        public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual ICollection<CK5> CK51 { get; set; }
         public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
         public virtual ICollection<LACK1> LACK1 { get; set; }
         public virtual ICollection<LACK1> LACK11 { get; set; }
         public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
+        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual ICollection<CK5> CK51 { get; set; }
     }
 }
