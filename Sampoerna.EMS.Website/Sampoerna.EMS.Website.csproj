@@ -264,7 +264,6 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
-    <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
@@ -766,7 +765,6 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
-    
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
@@ -789,11 +787,10 @@
     <Content Include="Views\CK5\Create.cshtml" />
     <Content Include="Views\CK5\Details.cshtml" />
     <Content Include="Views\CK5\Edit.cshtml" />
-     <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
+    <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
-
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

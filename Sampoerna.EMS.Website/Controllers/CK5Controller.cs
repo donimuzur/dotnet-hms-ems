@@ -232,14 +232,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+            //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+           // model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
             //model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
             //model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
             //model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
 
-            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+            //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
             //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
            // model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
@@ -419,16 +419,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+           // model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+           // model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
             //model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
             //model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
             //model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
 
-            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+           // model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+           // model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
             //model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
