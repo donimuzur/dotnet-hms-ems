@@ -101,6 +101,13 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
+        public static MultiSelectList GetVirtualPlantListMultiSelect()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var data = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
+            return new MultiSelectList(selectItemSource, "ValueField", "TextField");
+        }
 
         public static SelectList GetBrandList()
         {
@@ -160,6 +167,13 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
+            public static SelectList GetConversionUomList()
+        {
+            IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
+            var data = uomBll.GetAll();
+            return new SelectList(data, "UOM_ID", "UOM_ID");
+        }
+        
         public static SelectList GetKppBcCityList()
         {
             IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
@@ -194,5 +208,5 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
-    }
+     }
 }
