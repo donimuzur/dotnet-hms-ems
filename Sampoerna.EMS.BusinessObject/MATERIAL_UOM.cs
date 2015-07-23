@@ -14,15 +14,13 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class MATERIAL_UOM
     {
-        public int MATERIAL_UOM_ID { get; set; }
+        public long MATERIAL_UOM_ID { get; set; }
         public string STICKER_CODE { get; set; }
         public string WERKS { get; set; }
         public string MEINH { get; set; }
         public Nullable<decimal> UMREZ { get; set; }
         public Nullable<decimal> UMREN { get; set; }
     
-        public virtual MATERIAL_UOM MATERIAL_UOM1 { get; set; }
-        public virtual MATERIAL_UOM MATERIAL_UOM2 { get; set; }
         public virtual ZAIDM_EX_MATERIAL ZAIDM_EX_MATERIAL { get; set; }
     }
 }
