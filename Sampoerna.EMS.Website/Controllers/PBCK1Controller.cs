@@ -30,8 +30,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IWorkflowBLL _workflowBll;
 
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.PBCK1;
             _changesHistoryBll = changesHistoryBll;
             _workflowHistoryBll = workflowHistoryBll;
+            _workflowBll = workflowBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -272,17 +274,24 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DocStatus = model.Detail.Status;
 
             //validate approve and reject
-            var input = new WorkflowAllowApproveAndRejectInput();
-            input.DocumentStatus = model.Detail.Status;
-            input.FormView = Enums.FormViewType.Detail;
-            //input.UserRole = CurrentUser.UserRole;
-            //input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY.HasValue ? ck5Details.Ck5Dto.CREATED_BY.Value : 0;
-            //input.CurrentUser = CurrentUser.USER_ID;
-            //input.CurrentUserGroup = CurrentUser.USER_GROUP_ID.HasValue ? CurrentUser.USER_GROUP_ID.Value : 0;
-
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Detail.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = pbck1Data.CreatedUsername,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID
+            };
+            
             ////workflow
-            //var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-            //model.AllowApproveAndReject = allowApproveAndReject;
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+            }
 
             return View(model);
         }
@@ -574,6 +583,108 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+        
+        #region Workflow
+
+        private void Pbck1Workflow(long id, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck1WorkflowDocumentInput
+            {
+                DocumentId = id,
+                UserId = CurrentUser.USER_ID,
+                UserRole = CurrentUser.UserRole,
+                ActionType = actionType,
+                Comment = comment
+            };
+
+            _pbck1Bll.Pbck1Workflow(input);
+        }
+        public ActionResult SubmitDocument(long id)
+        {
+            try
+            {
+                Pbck1Workflow(id, Enums.ActionType.Submit, string.Empty);
+                AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "Pbck1", new { id });
+        }
+
+        public ActionResult ApproveDocument(long id)
+        {
+            try
+            {
+                Pbck1Workflow(id, Enums.ActionType.Approve, string.Empty);
+                AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "Pbck1", new { id });
+        }
+
+        public ActionResult RejectDocument(Pbck1ItemViewModel model)
+        {
+            try
+            {
+                Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.Reject, model.Detail.Comment);
+                AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+        }
+
+        public ActionResult GovApproveDocument(long id)
+        {
+            try
+            {
+                Pbck1Workflow(id, Enums.ActionType.GovApprove, "");
+                AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "Pbck1", new { id });
+        }
+
+        public ActionResult GovRejectDocument(Pbck1ItemViewModel model)
+        {
+            try
+            {
+                Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovReject, model.Detail.Comment);
+                AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+        }
+
+        public ActionResult GovCancelDocument(Pbck1ItemViewModel model)
+        {
+            try
+            {
+                Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovCancel, model.Detail.Comment);
+                AddMessageInfo("Success GovCancel Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+        }
+
+        #endregion
+
 
     }
 }
