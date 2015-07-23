@@ -9,12 +9,34 @@
             <h3>PBCK-1 Form</h3>
             <label class="status">Draft</label>
             <div class="action-button">
+                
+                @if (Model.AllowApproveAndReject)
+                {
+                    <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+
+                    <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                }
+                else
+                {
+                    if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
+
+                        <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
+
+                        <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />
+                    }
+                }
+                
+                <input type="button" class="btn btn-grey" value="Print Preview" />
+
                 @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed) {
                     <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
                 }
                 else {
                     <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
                 }
+                
             </div>
         </div>
     </div>
@@ -36,6 +58,119 @@
                     @Html.Partial("_ChangeLog")
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Approval</span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Approve Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" id="btnConfirmGovApprove" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="Pbck1ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Reject document</h4>
+            </div>
+            @using (Html.BeginForm("RejectDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @*@Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })*@
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div id="Ck5ModalGovReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Government Reject document</h4>
+            </div>
+            @using (Html.BeginForm("GovRejectDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @*@Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })*@
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmGovReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div id="Ck5ModalGovCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Government Cancel document</h4>
+            </div>
+            @using (Html.BeginForm("GovCancelDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @*@Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })*@
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmGovCancel" />
+                </div>
+            }
         </div>
     </div>
 </div>

@@ -105,8 +105,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 SearchInput =
                 {
-                    DocumentType = Enums.Pbck1DocumentType.OpenDocument 
-                
+                    DocumentType = Enums.Pbck1DocumentType.OpenDocument
+
                 }
             });
             return View("Index", model);
@@ -117,15 +117,18 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
+            switch (model.SearchInput.DocumentType)
+            {
+                case Enums.Pbck1DocumentType.CompletedDocument:
+                    model.Details = GetCompletedDocument(model.SearchInput);
+                    break;
+                case Enums.Pbck1DocumentType.OpenDocument:
+                    model.Details = GetOpenDocument(model.SearchInput);
+                    break;
+            }
+
             model.SearchInput.YearList = GetYearList(model.Details);
-            if (model.SearchInput.DocumentType == Enums.Pbck1DocumentType.CompletedDocument)
-            {
-                model.Details = GetCompletedDocument(model.SearchInput);
-            }
-            else if (model.SearchInput.DocumentType == Enums.Pbck1DocumentType.OpenDocument)
-            {
-                model.Details = GetOpenDocument(model.SearchInput);
-            }
+
             return model;
         }
 
@@ -246,10 +249,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput() { FormId = id.Value, FormType = Enums.FormType.PBCK1 }));
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
+            {
+                FormId = id.Value,
+                FormType = Enums.FormType.PBCK1
+            }));
+
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
+                    id.Value.ToString()));
+
             var model = new Pbck1ItemViewModel()
             {
                 MainMenu = _mainMenu,
@@ -258,7 +268,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 ChangesHistoryList = changesHistory,
                 WorkflowHistory = workflowHistory
             };
+
             model.DocStatus = model.Detail.Status;
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput();
+            input.DocumentStatus = model.Detail.Status;
+            input.FormView = Enums.FormViewType.Detail;
+            //input.UserRole = CurrentUser.UserRole;
+            //input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY.HasValue ? ck5Details.Ck5Dto.CREATED_BY.Value : 0;
+            //input.CurrentUser = CurrentUser.USER_ID;
+            //input.CurrentUserGroup = CurrentUser.USER_GROUP_ID.HasValue ? CurrentUser.USER_GROUP_ID.Value : 0;
+
+            ////workflow
+            //var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            //model.AllowApproveAndReject = allowApproveAndReject;
+
             return View(model);
         }
 
