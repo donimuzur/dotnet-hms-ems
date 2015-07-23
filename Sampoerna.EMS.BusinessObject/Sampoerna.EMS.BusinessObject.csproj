@@ -71,10 +71,10 @@
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
-     <Compile Include="DTOs\Pbck1Dto.cs" />
+    <Compile Include="DTOs\Lack1Dto.cs" />
+    <Compile Include="DTOs\Pbck1Dto.cs" />
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
     <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
-    
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
@@ -102,6 +102,7 @@
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\CK5MaterialInput.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
+    <Compile Include="Inputs\Lack1Input.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />

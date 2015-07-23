@@ -237,6 +237,7 @@
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LACK1Controller.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MaterialController.cs" />
@@ -791,6 +792,7 @@
     <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
+    <Content Include="Views\LACK1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
