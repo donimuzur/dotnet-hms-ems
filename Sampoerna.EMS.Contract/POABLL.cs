@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
-using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -14,8 +13,7 @@ namespace Sampoerna.EMS.Contract
 
         void Update(POA poa);
         void Delete(int id);
-
-        Enums.UserRole GetUserRole(string userId);
+        Core.Enums.UserRole GetUserRole(string userId);
 
     }
 }

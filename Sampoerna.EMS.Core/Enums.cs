@@ -53,6 +53,12 @@ namespace Sampoerna.EMS.Core
             Completed = 7
         }
 
+        public enum Pbck1DocumentType
+        {
+            OpenDocument = 1,
+            CompletedDocument = 2
+        }
+
         public enum DocumentStatus
         {
             [Description("Draft")]
@@ -118,9 +124,9 @@ namespace Sampoerna.EMS.Core
             [Description("CK-5")]
             CK5 = 2,
             [Description("PBCK-4")]
-            PBKC4 = 3,
+            PBCK4 = 3,
             [Description("PBCK-3")]
-            PBKC3 = 4
+            PBCK3 = 4
         }
 
         public enum ActionType

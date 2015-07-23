@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.XMLReader
             get
             {
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
-                var xmlItems = xmlRoot.Elements("Z1A_PLANT");
+                var xmlItems = xmlRoot.Elements("Z1AXX_T001W");
                 var items = new List<T001W>();
                 foreach (var xElement in xmlItems)
                 {

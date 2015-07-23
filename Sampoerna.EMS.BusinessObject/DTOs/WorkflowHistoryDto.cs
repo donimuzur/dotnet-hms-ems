@@ -1,4 +1,5 @@
 ﻿using System;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -12,7 +13,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ACTION_BY { get; set; }
         public DateTime? ACTION_DATE { get; set; }
         public string COMMENT { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.UserRole> ROLE { get; set; }
+        public Enums.UserRole ROLE { get; set; }
         public USER USER { get; set; }
     }
 }

@@ -71,6 +71,10 @@
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
+     <Compile Include="DTOs\Pbck1Dto.cs" />
+    <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
+    <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
+    
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
@@ -100,6 +104,8 @@
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
+    <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
+    <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
@@ -136,6 +142,8 @@
     <Compile Include="Outputs\MaterialOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
+    <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
+    <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />

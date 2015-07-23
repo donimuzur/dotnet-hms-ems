@@ -104,7 +104,6 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-
       
     }
 }

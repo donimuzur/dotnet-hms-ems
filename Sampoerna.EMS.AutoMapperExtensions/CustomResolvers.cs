@@ -168,5 +168,23 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             return value.Value.ToString("f2");
 
         }
+
     }
+
+    /// <summary>
+    /// Resolve String as CultureInfo.InvariantCulture to a nullable DateTime
+    /// </summary>
+    public class StringToNullableDecimalResolver : ValueResolver<object, decimal?>
+    {
+        protected override decimal? ResolveCore(object value)
+        {
+            string InputAsString = value.ToNullSafeString();
+
+            if (string.IsNullOrWhiteSpace(InputAsString))
+                return null;
+
+            return decimal.Parse(InputAsString);
+        }
+    }
+
 }

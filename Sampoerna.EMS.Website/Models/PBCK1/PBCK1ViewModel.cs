@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sampoerna.EMS.Website.Models.PBCK1
+namespace Sampoerna.EMS.Website.Models.PBCK1 
 {
     public class Pbck1ViewModel : BaseModel
     {
@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1Item> Details { get; set; }
 
         public Pbck1FilterViewModel SearchInput { get; set; }
-
+        
     }
-
+    
 }

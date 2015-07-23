@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Models;
@@ -55,8 +54,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             ISupplierPortBLL supplierPortBll = MvcApplication.GetInstance<SupplierPortBLL>();
             var data = supplierPortBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(data, "SUPPLIER_PORT_ID", "PORT_NAME");
         }
 
         public static SelectList GetMonthList()
@@ -160,41 +158,6 @@ namespace Sampoerna.EMS.Website.Code
             IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
             var data = materialBll.getAll();
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
-        }
-
-        public static SelectList GetKppBcCityList()
-        {
-            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            var nppbkcList = nppbkcbll.GetAll();
-
-            //var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
-            return new SelectList(nppbkcList, "NPPBKC_ID", "City");
-        }
-
-        public static SelectList GetGoodTypeGroupList()
-        {
-            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
-            var goodTypes = goodTypeBll.GetAll();
-            return new SelectList(goodTypes, "GOODTYPE_ID", "EXT_TYP_DESC");
-        }
-
-        public static SelectList GetSourcePlantList()
-        {
-            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            List<Plant> sourcePlant;
-            sourcePlant = plantBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(sourcePlant);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
-
-            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
-        }
-
-        public static SelectList GetPbck1CompletedList()
-        {
-            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
-            var input = new Pbck1GetByParamInput();
-            var data = pbck1.GetPBCK1ByParam(input);
-            return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
     }
 }

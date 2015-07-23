@@ -231,6 +231,7 @@
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\DocumenSequenceController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\GlobalSettingsController.cs" />
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
@@ -264,6 +265,10 @@
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
+    <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
+    <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
     <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
@@ -293,6 +298,7 @@
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
+    <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
@@ -650,6 +656,7 @@
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -657,6 +664,8 @@
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -757,6 +766,7 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
+    
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
@@ -779,6 +789,11 @@
     <Content Include="Views\CK5\Create.cshtml" />
     <Content Include="Views\CK5\Details.cshtml" />
     <Content Include="Views\CK5\Edit.cshtml" />
+     <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\DocumentSequence\Index.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

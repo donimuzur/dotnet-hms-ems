@@ -7,12 +7,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1ItemViewModel : BaseModel
     {
-        public Pbck1ItemViewModel()
-        {
-            ProductConversions = new List<Pbck1ProdConvModel>();
-            ProductPlans = new List<Pbck1ProdPlanModel>();
-        }
-
         public string SubmitType { get; set; }
 
         public Pbck1Item Detail { get; set; }
@@ -39,10 +33,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public Enums.DocumentStatusGov StatusGovList { get; set; }
 
-        public List<Pbck1ProdConvModel> ProductConversions { get; set; }
-        public List<Pbck1ProdPlanModel> ProductPlans { get; set; }
-
+        public Enums.DocumentStatus? DocStatus { get; set; }
+        
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
-
+        
     }
 }
