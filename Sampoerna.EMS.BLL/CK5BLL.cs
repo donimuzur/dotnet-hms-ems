@@ -250,7 +250,6 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<CK5Dto>(dbData);
 
 
-
         }
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs)
@@ -352,7 +351,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(data.CARRIAGE_METHOD_ID));
 
             changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(data.GRAND_TOTAL_EX));
-            //changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID));
+           
             changesData.Add("PACKAGE_UOM_ID", !string.IsNullOrEmpty(origin.PACKAGE_UOM_ID) ? origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID) : (!string.IsNullOrEmpty(data.PACKAGE_UOM_ID) ? false : true));
 
 
@@ -408,12 +407,9 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.INVOICE_DATE != null ? data.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         break;
                     case "PBCK1_DECREE_ID":
-                        //long pbck1 = 0;
-                        //if (data.PBCK1_DECREE_ID.HasValue)
-                        //    pbck1 = data.PBCK1_DECREE_ID.Value;
-
+                      
                         changes.OLD_VALUE = origin.PbckNumber;
-                        changes.NEW_VALUE = data.PbckNumber;// _pbck1Bll.GetPbckNumberById(pbck1);
+                        changes.NEW_VALUE = data.PbckNumber;
                         break;
 
                     case "CARRIAGE_METHOD_ID":
@@ -428,7 +424,7 @@ namespace Sampoerna.EMS.BLL
 
                     case "PACKAGE_UOM_ID":
                         changes.OLD_VALUE = origin.PackageUomName;
-                        changes.NEW_VALUE = data.PackageUomName;// _uomBll.GetUomDescById(data.PACKAGE_UOM_ID);
+                        changes.NEW_VALUE = data.PackageUomName;
                         break;
 
 
