@@ -174,35 +174,17 @@ namespace Sampoerna.EMS.BLL
                 dbData = _repository.Get(c => c.CK5_ID == input.Ck5Dto.CK5_ID, null, includeTables).FirstOrDefault();
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-
-
+                
                 //set changes history
-                var origin = Mapper.Map<CK5Dto>(dbData);
+                //var origin = Mapper.Map<CK5Dto>(dbData);
 
-                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
+                //SetChangesHistory(origin, input.Ck5Dto, input.UserId);
 
-                //todo mapper
+               
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
-                //dbData.REQUEST_TYPE_ID = input.Ck5Dto.REQUEST_TYPE_ID;
-                //dbData.STATUS_ID = Enums.DocumentStatus.Draft;
-                //dbData.CK5_TYPE = input.Ck5Dto.CK5_TYPE;
-                //dbData.KPPBC_CITY = input.Ck5Dto.KPPBC_CITY;
 
-                //dbData.REGISTRATION_NUMBER = input.Ck5Dto.REGISTRATION_NUMBER;
-                //dbData.EX_GOODS_TYPE_ID = input.Ck5Dto.EX_GOODS_TYPE_ID;
-                //dbData.EX_SETTLEMENT_ID = input.Ck5Dto.EX_SETTLEMENT_ID;
-                //dbData.EX_STATUS_ID = input.Ck5Dto.EX_STATUS_ID;
-                //dbData.REQUEST_TYPE_ID = input.Ck5Dto.REQUEST_TYPE_ID;
-
-                //dbData.SOURCE_PLANT_ID = input.Ck5Dto.SOURCE_PLANT_ID;
-                //dbData.DEST_PLANT_ID = input.Ck5Dto.DEST_PLANT_ID;
-                //dbData.INVOICE_NUMBER = input.Ck5Dto.INVOICE_NUMBER;
-                //dbData.PBCK1_DECREE_ID = input.Ck5Dto.PBCK1_DECREE_ID;
-                //dbData.CARRIAGE_METHOD_ID = input.Ck5Dto.CARRIAGE_METHOD_ID;
-                //dbData.GRAND_TOTAL_EX = input.Ck5Dto.GRAND_TOTAL_EX;
-                //dbData.INVOICE_DATE = input.Ck5Dto.INVOICE_DATE;
-                //dbData.PACKAGE_UOM_ID = input.Ck5Dto.PACKAGE_UOM_ID;
+                dbData.STATUS_ID = Enums.DocumentStatus.Revised;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 //delete child first
                 foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
@@ -216,23 +198,13 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 //create new ck5 documents
-
-                long plantId = 0;
-                //if (input.Ck5Dto.SOURCE_PLANT_ID.HasValue)
-                //    plantId = input.Ck5Dto.SOURCE_PLANT_ID.Value;
-
-                //todo check it
-                //var plant = _masterDataBll.GetPlantById(plantId);
-                //long nppbkc = 0;
-                //if (plant.NPPBCK_ID.HasValue)
-                //    nppbkc = plant.NPPBCK_ID.Value;
-                string nppbkc = "0";
                 var generateNumberInput = new GenerateDocNumberInput()
                 {
                     Year = DateTime.Now.Year,
                     Month = DateTime.Now.Month,
-                    NppbkcId = nppbkc
+                    NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID
                 };
+
                 input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
                 input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
                 input.Ck5Dto.CREATED_DATE = DateTime.Now;
@@ -240,33 +212,15 @@ namespace Sampoerna.EMS.BLL
 
                 dbData = new CK5();
 
-                //todo check it
+            
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
-                //dbData.CK5_TYPE = input.Ck5Dto.CK5_TYPE;
-                //dbData.KPPBC_CITY = input.Ck5Dto.KPPBC_CITY;
-                //dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
-                //dbData.REGISTRATION_NUMBER = input.Ck5Dto.REGISTRATION_NUMBER;
-                //dbData.EX_GOODS_TYPE_ID = input.Ck5Dto.EX_GOODS_TYPE_ID;
-                //dbData.EX_SETTLEMENT_ID = input.Ck5Dto.EX_SETTLEMENT_ID;
-                //dbData.EX_STATUS_ID = input.Ck5Dto.EX_STATUS_ID;
-                //dbData.REQUEST_TYPE_ID = input.Ck5Dto.REQUEST_TYPE_ID;
-
-                //dbData.SOURCE_PLANT_ID = input.Ck5Dto.SOURCE_PLANT_ID;
-                //dbData.DEST_PLANT_ID = input.Ck5Dto.DEST_PLANT_ID;
-                //dbData.INVOICE_NUMBER = input.Ck5Dto.INVOICE_NUMBER;
-                //dbData.PBCK1_DECREE_ID = input.Ck5Dto.PBCK1_DECREE_ID;
-                //dbData.CARRIAGE_METHOD_ID = input.Ck5Dto.CARRIAGE_METHOD_ID;
-                //dbData.GRAND_TOTAL_EX = input.Ck5Dto.GRAND_TOTAL_EX;
-                //dbData.INVOICE_DATE = input.Ck5Dto.INVOICE_DATE;
-                //dbData.PACKAGE_UOM_ID = input.Ck5Dto.PACKAGE_UOM_ID;
-
-                //dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+            
+                dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
                 inputWorkflowHistory.ActionType = Enums.ActionType.Created;
             }
 
-            dbData.CREATED_DATE = DateTime.Now;
-            dbData.CREATED_BY = input.UserId;
+            
 
             //insert child
             //insert the data

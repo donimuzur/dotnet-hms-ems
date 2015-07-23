@@ -32,11 +32,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //DETAIL INFORMATION
         public Enums.CK5Type Ck5Type { get; set; }
 
-        [Required(ErrorMessage = "KPPBC City field is required")]
-        public long? KppBcCityId { get; set; }
+        //[Required(ErrorMessage = "KPPBC City field is required")]
+        //public long? KppBcCityId { get; set; }
         public SelectList KppBcCityList { get; set; }
-        public string KppBcCityName { get; set; }
+        [Required(ErrorMessage = "KPPBC City field is required")]
+        public string KppBcCity { get; set; }
         public string CeOfficeCode { get; set; }
+        public string KppBcCityName { get; set; }
 
         public string SubmissionNumber { get; set; }
 
@@ -48,29 +50,31 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("FormatDateTime")]
         public DateTime? RegistrationDate { get; set; }
 
-        [Required]
-        public int? GoodTypeId { get; set; }
+        //[Required]
+        //public int? GoodTypeId { get; set; }
         public SelectList GoodTypeList { get; set; }
+        [Required]
         public string GoodTypeName { get; set; }
 
-        [Required]
-        public int? ExciseSettlementId { get; set; }
-        public SelectList ExciseSettlementList { get; set; }
-        public string ExciseSettlementName { get; set; }
 
         [Required]
-        public int? ExciseStatusId { get; set; }
-        public SelectList ExciseStatusList { get; set; }
-        public string ExciseStatusName { get; set; }
+        public Enums.ExciseSettlement ExciseSettlement { get; set; }
+        public Enums.ExciseSettlement ExciseSettlementList { get; set; }
 
-        [Required]
-        public int? RequestTypeId { get; set; }
-        public SelectList RequestTypeList { get; set; }
-        public string RequestTypeName { get; set; }
+       [Required]
+        public Enums.ExciseStatus ExciseStatus { get; set; }
+        public Enums.ExciseStatus ExciseStatusList { get; set; }
+        //public string ExciseStatusName { get; set; }
+
+        //[Required]
+        //public int? RequestTypeId { get; set; }
+        public Enums.RequestType RequestType { get; set; }
+        public Enums.RequestType RequestTypeList { get; set; }
+        //public string RequestTypeName { get; set; }
 
         //ORIGIN PLANT
         [Required(ErrorMessage = "Origin Plant field is required")]
-        public int? SourcePlantId { get; set; }
+        public string SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
         public string SourcePlantName { get; set; }
         public string SourceNpwp { get; set; }
@@ -81,7 +85,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         //DESTINATION PLANT
         [Required(ErrorMessage = "Destination Plant field is required")]
-        public int? DestPlantId { get; set; }
+        public string DestPlantId { get; set; }
         public SelectList DestPlantList { get; set; }
         public string DestPlantName { get; set; }
         public string DestNpwp { get; set; }
@@ -103,9 +107,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public DateTime? PbckDecreeDate { get; set; }
 
-        public int? CarriageMethodId { get; set; }
-        public SelectList CarriageMethodList { get; set; }
-        public string CarriageMethodName { get; set; }
+        //public int? CarriageMethodId { get; set; }
+        public Enums.CarriageMethod? CarriageMethod { get; set; }
+        public Enums.CarriageMethod CarriageMethodList { get; set; }
+        //public string CarriageMethodName { get; set; }
 
         [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
@@ -133,6 +138,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("FormatDateTime")]
         [Display(Name = "GI Date")]
         public DateTime? GiDate { get; set; }
+
+        public DateTime? GrDate { get; set; }
 
         [Display(Name = "Sealing Notification Number")]
         public string SealingNotifNumber { get; set; }

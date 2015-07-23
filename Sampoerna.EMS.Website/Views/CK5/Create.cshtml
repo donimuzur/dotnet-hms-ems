@@ -31,6 +31,7 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.CeOfficeCode)
+                        @Html.HiddenFor(model => model.KppBcCityName)
                         @Html.HiddenFor(model => model.SubmissionNumber)
                         @Html.HiddenFor(model => model.SubmissionDate)
                         
@@ -86,7 +87,7 @@
             if ($("#PbckDecreeId").length) {
                 var pbck1 = $(this).find("option:selected").val();
                 if (pbck1 == '') {
-                    $("input[name='pbck1Date']").val('');
+                    $("input[name='PbckDecreeDate']").val('');
                 } else {
                     ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
                 }
@@ -101,7 +102,7 @@
                     $("input[name='DestNpwp']").val('');
                     $("input[name='DestNppbkcId']").val('');
                     $("input[name='DestCompanyName']").val('');
-                    $("input[name='DestAddress']").val('');
+                    $("textarea[name='DestAddress']").val('');
                     $("input[name='DestKppbcName']").val('');
                 } else {
                     ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
@@ -120,7 +121,7 @@
                     $("input[name='SourceNpwp']").val('');
                     $("input[name='SourceNppbkcId']").val('');
                     $("input[name='SourceCompanyName']").val('');
-                    $("input[name='SourceAddress']").val('');
+                    $("textarea[name='SourceAddress']").val('');
                     $("input[name='SourceKppbcName']").val('');
 
                     //enable upload
@@ -134,13 +135,18 @@
             }
         });
 
-        $("#KppBcCityId").change(function () {
-            if ($("#KppBcCityId").length) {
+        $("#KppBcCity").change(function () {
+            if ($("#KppBcCity").length) {
                 var nppBkcCity = $(this).find("option:selected").val();
+                var cityName = $('option:selected', $(this)).text();
                 if (nppBkcCity == '') {
                     $("input[name='CeOfficeCode']").val('');
+                    $("input[name='KppBcCityName']").val('');
                 } else {
-                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });
+                    $("input[name='CeOfficeCode']").val(nppBkcCity);
+                    $("input[name='KppBcCityName']").val(cityName);
+                    
+                    @*ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });*@
                 }
             }
 

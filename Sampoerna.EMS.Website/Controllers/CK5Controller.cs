@@ -232,18 +232,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-           // model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
-            //model.ExciseSettlementList = GlobalFunctions.GetExciseSettlementList();
-            //model.ExciseStatusList = GlobalFunctions.GetExciseStatusList();
-            //model.RequestTypeList = GlobalFunctions.GetRequestTypeList();
+            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+          
+            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
 
-            //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
-
-            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-           // model.CarriageMethodList = GlobalFunctions.GetCarriageMethodList();
-
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+          
             model.PackageUomList = GlobalFunctions.GetUomList();
 
             return model;
@@ -294,19 +290,19 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        [HttpPost]
-        public JsonResult CeOfficeCodePartial(long nppBkcCityId)
-        {
-            //todo check
-            var ceOfficeCode = _nppbkcBll.GetCeOfficeCodeByNppbcId(nppBkcCityId.ToString());
-            return Json(ceOfficeCode);
-        }
+        //[HttpPost]
+        //public JsonResult CeOfficeCodePartial(string nppBkcCityId)
+        //{
+        //    //todo check
+        //    var ceOfficeCode = _nppbkcBll.GetCeOfficeCodeByNppbcId(nppBkcCityId);
+        //    return Json(ceOfficeCode);
+        //}
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(long plantId)
+        public JsonResult GetSourcePlantDetails(string plantId)
         {
             //todo check
-            var dbPlant = _plantBll.GetId(plantId.ToString());
+            var dbPlant = _plantBll.GetId(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
             return Json(model);
         }
@@ -339,16 +335,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (model.UploadItemModels.Count > 0)
-                    {
+                    //if (model.UploadItemModels.Count > 0)
+                    //{
                         var saveResult = SaveCk5ToDatabase(model);
 
                         AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
                         return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
-                    }
+                    //}
 
-                    AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
+                    //AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
                 }
                 else
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);

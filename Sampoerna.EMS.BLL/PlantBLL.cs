@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
-        private string includeTables = "ZAIDM_EX_NPPBKC";
+        private string includeTables = "ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKC.T001";
        
         private IZaidmExNPPBKCBLL _nppbkcbll;
 

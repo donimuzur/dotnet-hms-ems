@@ -148,8 +148,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<T001W, SelectItemModel>().IgnoreAllNonExisting()
             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
             .ForMember(dest => dest.TextField, opt => opt.ResolveUsing<SourcePlantTextResolver>().FromMember(src => src));
-            //    .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
-            //    ;
+         
 
             Mapper.CreateMap<Plant, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
