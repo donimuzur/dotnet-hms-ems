@@ -37,7 +37,29 @@ namespace Sampoerna.EMS.BLL
         
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
+            var queryFilter = ProcessQueryFilter(input);
+
+            return GetLack1Data(queryFilter, input.SortOrderColumn);
+        }
+        
+
+        public List<Lack1Dto> GetListByNpbkcParam(Lack1GetListByNppbkcParam input)
+        {
             throw new NotImplementedException();
+        }
+
+        public List<Lack1Dto> GetListByPlantParam(Lack1GetListByPlantParam input)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Expression<Func<LACK1, bool>> ProcessQueryFilter(Lack1GetByParamInput input)
+        {
+            Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
+            if (!string.IsNullOrEmpty(input.NppbKcId))
+            {
+                queryFilter = queryFilter.And(c => )
+            }
         }
 
     }

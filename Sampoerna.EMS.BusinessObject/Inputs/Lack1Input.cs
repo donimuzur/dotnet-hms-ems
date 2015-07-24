@@ -10,6 +10,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public string NppbKcId { get; set; }
         public string Poa { get; set; }
+        public string PlantId { get; set; }
         public DateTime ReportedOn { get; set; }
         public string Creator { get; set; }
 
@@ -19,7 +20,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
     }
 
-    public class GetListNppbkcByParam : Lack1GetByParamInput
+    public class Lack1GetListByNppbkcParam : Lack1GetByParamInput
+    {
+        
+    }
+
+    public class Lack1GetListByPlantParam : Lack1GetByParamInput
     {
         
     }
