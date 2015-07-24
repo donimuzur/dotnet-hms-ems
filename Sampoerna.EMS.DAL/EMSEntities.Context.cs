@@ -71,5 +71,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
+        public virtual DbSet<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
     }
 }

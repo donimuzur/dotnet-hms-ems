@@ -68,12 +68,12 @@
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SOURCE_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="SOURCE_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="SOURCE_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
           <Property Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
           <Property Name="DEST_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="DEST_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="DEST_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="DEST_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="DEST_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
           <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
@@ -313,7 +313,7 @@
           <Property Name="LACK1_TO_MONTH" Type="int" />
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
-          <Property Name="STATUS_GOV" Type="int" Nullable="false" />
+          <Property Name="STATUS_GOV" Type="int" />
           <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -325,6 +325,17 @@
           <Property Name="SUPPLIER_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="SUPPLIER_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
+        </EntityType>
+        <EntityType Name="PBCK1_DECREE_DOC">
+          <Key>
+            <PropertyRef Name="PBCK1_DECREE_DOC_ID" />
+          </Key>
+          <Property Name="PBCK1_DECREE_DOC_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK1_ID" Type="int" Nullable="false" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_CONVERTER">
           <Key>
@@ -586,7 +597,6 @@
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
@@ -596,7 +606,6 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="CONVERSION_UOM" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -958,6 +967,30 @@
               <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="PBCK1">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_DECREE_DOC_PBCK1">
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="1" />
+          <End Role="PBCK1_DECREE_DOC" Type="Self.PBCK1_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_DECREE_DOC">
+              <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_DECREE_DOC_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="PBCK1_DECREE_DOC" Type="Self.PBCK1_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_DECREE_DOC">
               <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
@@ -1608,6 +1641,7 @@
           <EntitySet Name="PAGE_MAP" EntityType="Self.PAGE_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PARAMATER" EntityType="Self.PARAMATER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1" EntityType="Self.PBCK1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PBCK1_DECREE_DOC" EntityType="Self.PBCK1_DECREE_DOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_PROD_CONVERTER" EntityType="Self.PBCK1_PROD_CONVERTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_PROD_PLAN" EntityType="Self.PBCK1_PROD_PLAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
@@ -1735,6 +1769,14 @@
           <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="Self.FK_PBCK1_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_DECREE_DOC_PBCK1" Association="Self.FK_PBCK1_DECREE_DOC_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_DECREE_DOC_USER" Association="Self.FK_PBCK1_DECREE_DOC_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_LACK1_MONTH_FROM" Association="Self.FK_PBCK1_LACK1_MONTH_FROM">
             <End Role="MONTH" EntitySet="MONTH" />
@@ -2307,6 +2349,15 @@
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
           </AssociationSet>
+          <EntitySet Name="PBCK1_DECREE_DOC" EntityType="EMSModel.PBCK1_DECREE_DOC" />
+          <AssociationSet Name="FK_PBCK1_DECREE_DOC_PBCK1" Association="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_DECREE_DOC_USER" Association="EMSModel.FK_PBCK1_DECREE_DOC_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2624,6 +2675,7 @@
           <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="USER" ToRole="CK5" />
           <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="USER" ToRole="CK5" />
+          <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="USER" ToRole="PBCK1_DECREE_DOC" />
           </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
@@ -3302,7 +3354,7 @@
           <Property Name="LACK1_TO_MONTH" Type="Int32" />
           <Property Name="LACK1_TO_YEAR" Type="Int32" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
-          <Property Name="STATUS_GOV" Type="EMSModel.DocumentStatusGov" Nullable="false" />
+          <Property Name="STATUS_GOV" Type="EMSModel.DocumentStatusGov" Nullable="true" />
           <Property Name="QTY_APPROVED" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -3325,6 +3377,7 @@
           <Property Name="SUPPLIER_PLANT_WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" FromRole="PBCK1" ToRole="PBCK1_PROD_PLAN" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="PBCK1" ToRole="CK5" />
+          <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" FromRole="PBCK1" ToRole="PBCK1_DECREE_DOC" />
           </EntityType>
         <Association Name="FK_PBCK1_LACK1_MONTH_FROM">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -3708,8 +3761,8 @@
           <Property Name="WASTE_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="RETURN_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="RETURN_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS" Type="Int32" />
-          <Property Name="GOV_STATUS" Type="Int32" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -3933,12 +3986,12 @@
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="SOURCE_PLANT_NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_ADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="DEST_PLANT_NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="DEST_PLANT_NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_ADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -4052,6 +4105,43 @@
             </Principal>
             <Dependent Role="DOC_NUMBER_SEQ">
               <PropertyRef Name="MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PBCK1_DECREE_DOC">
+          <Key>
+            <PropertyRef Name="PBCK1_DECREE_DOC_ID" />
+          </Key>
+          <Property Name="PBCK1_DECREE_DOC_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK1_ID" Type="Int32" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" FromRole="PBCK1_DECREE_DOC" ToRole="PBCK1" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="PBCK1_DECREE_DOC" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_PBCK1_DECREE_DOC_PBCK1">
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="1" />
+          <End Type="EMSModel.PBCK1_DECREE_DOC" Role="PBCK1_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_DECREE_DOC">
+              <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_DECREE_DOC_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK1_DECREE_DOC" Role="PBCK1_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_DECREE_DOC">
+              <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4742,6 +4832,18 @@
                 <ScalarProperty Name="MONTH" ColumnName="MONTH" />
                 <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
                 <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK1_DECREE_DOC">
+            <EntityTypeMapping TypeName="EMSModel.PBCK1_DECREE_DOC">
+              <MappingFragment StoreEntitySet="PBCK1_DECREE_DOC">
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+                <ScalarProperty Name="PBCK1_DECREE_DOC_ID" ColumnName="PBCK1_DECREE_DOC_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

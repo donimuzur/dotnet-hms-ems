@@ -161,6 +161,9 @@
     <Compile Include="PBCK1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PBCK1_DECREE_DOC.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="PBCK1_PROD_CONVERTER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

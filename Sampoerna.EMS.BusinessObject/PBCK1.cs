@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.CK5 = new HashSet<CK5>();
+            this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -49,7 +50,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> LACK1_TO_MONTH { get; set; }
         public Nullable<int> LACK1_TO_YEAR { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
-        public Sampoerna.EMS.Core.Enums.DocumentStatusGov STATUS_GOV { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> STATUS_GOV { get; set; }
         public Nullable<decimal> QTY_APPROVED { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
@@ -73,5 +74,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
     }
 }

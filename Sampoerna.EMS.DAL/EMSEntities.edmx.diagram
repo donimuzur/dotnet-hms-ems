@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="59" >
+      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="50" >
         <EntityTypeShape EntityType="EMSModel.CHANGES_HISTORY" Width="1.5" PointX="5.25" PointY="64" />
         <EntityTypeShape EntityType="EMSModel.EMAIL_TEMPLATE" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="11.25" PointY="70.625" />
@@ -128,6 +128,9 @@
         <AssociationConnector Association="EMSModel.FK_CK5_UOM" />
         <EntityTypeShape EntityType="EMSModel.DOC_NUMBER_SEQ" Width="1.5" PointX="10.5" PointY="44.125" />
         <AssociationConnector Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" />
+        <EntityTypeShape EntityType="EMSModel.PBCK1_DECREE_DOC" Width="1.5" PointX="21.75" PointY="31.625" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_DECREE_DOC_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
