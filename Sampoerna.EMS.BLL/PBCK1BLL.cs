@@ -862,9 +862,13 @@ namespace Sampoerna.EMS.BLL
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
+            if (dbData.STATUS_GOV != null)
+            {
+                WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV.Value, Enums.DocumentStatusGov.FullApproved);
+            }
 
             dbData.STATUS = Enums.DocumentStatus.Completed;
+
             dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
 
             dbData.APPROVED_BY = input.UserId;
@@ -889,7 +893,8 @@ namespace Sampoerna.EMS.BLL
 
             //Add Changes
             //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
+            if (dbData.STATUS_GOV != null)
+                WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV.Value, Enums.DocumentStatusGov.PartialApproved);
 
             //dbData.STATUS = Enums.DocumentStatus.Completed;
             dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
@@ -915,7 +920,8 @@ namespace Sampoerna.EMS.BLL
 
             //Add Changes
             //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.Rejected);
+            if (dbData.STATUS_GOV != null)
+                WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV.Value, Enums.DocumentStatusGov.Rejected);
 
             //dbData.STATUS = Enums.DocumentStatus.Draft;
             dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
