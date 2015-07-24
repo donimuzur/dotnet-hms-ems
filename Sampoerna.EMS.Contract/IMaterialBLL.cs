@@ -14,6 +14,9 @@ namespace Sampoerna.EMS.Contract
         ZAIDM_EX_MATERIAL getByID(string materialnumber,string plant);
 
         List<ZAIDM_EX_MATERIAL> getAll();
+        List<string> getStickerCode();
+
+        List<T001W> getAllPlant(string materialnumber);
 
         MaterialOutput Save(ZAIDM_EX_MATERIAL data, string userId);
 

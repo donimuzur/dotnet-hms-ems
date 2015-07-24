@@ -20,10 +20,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
+        private IMaterialBLL _materialBll;
 
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
-            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll)
+            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll)
             : base(pageBLL, Enums.MenuList.BrandRegistration)
         {
             _brandRegistrationBll = brandRegistrationBll;
@@ -32,7 +33,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _goodTypeBll = goodTypeBll;
             _changesHistoryBll = changesHistoryBll;
             _plantBll = plantBll;
+            _materialBll = materialBll;
             _mainMenu = Enums.MenuList.MasterData;
+            
         }
 
         //
@@ -70,7 +73,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
-            model.PlantList = GlobalFunctions.GetVirtualPlantList();
+            //model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
             model.ProductCodeList = GlobalFunctions.GetProductCodeList();
             model.SeriesList = GlobalFunctions.GetSeriesCodeList();
@@ -145,10 +148,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+                try
+                {
+                    _brandRegistrationBll.Save(dbBrand);
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                }
+                catch (Exception ex)
+                {
+                    TempData[Constans.SubmitType.Save] = ex.Message;
+                   
+                }
+               
 
-                _brandRegistrationBll.Save(dbBrand);
-
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                
                 return RedirectToAction("Index");
             }
 
@@ -412,6 +424,12 @@ namespace Sampoerna.EMS.Website.Controllers
             history.MODIFIED_BY = CurrentUser.USER_ID;
 
             _changesHistoryBll.AddHistory(history);
+        }
+        [HttpPost]
+        public JsonResult GetPlantByStickerCode(string mn)
+        {
+           var data =  _materialBll.getAllPlant(mn);
+            return Json(new SelectList(data, "WERKS", "NAME1"));
         }
     }
 }

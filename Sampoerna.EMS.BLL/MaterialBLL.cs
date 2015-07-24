@@ -43,6 +43,19 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
+        public List<string> getStickerCode()
+        {
+            return _repository.Get(null, null, includeTables).Select(p=>p.STICKER_CODE).Distinct().ToList();
+        }
+
+        public List<T001W> getAllPlant(string materialnumber)
+        {
+            var data =
+                _repository.Get(p => p.STICKER_CODE == materialnumber, null, includeTables)
+                    .Select(p => p.T001W)
+                    .ToList();
+            return data;
+        }
 
 
         public MaterialOutput Save(ZAIDM_EX_MATERIAL data,string userId)
