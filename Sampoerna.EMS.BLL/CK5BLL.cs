@@ -575,6 +575,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovCancel:
                     GovCancelledDocument(input);
                     break;
+                case Enums.ActionType.Cancel:
+                    CancelledDocument(input);
+                    break;
             }
 
             //todo sent mail
@@ -702,6 +705,24 @@ namespace Sampoerna.EMS.BLL
             //dbData.APPROVED_BY = input.UserId;
             //dbData.APPROVED_DATE = DateTime.Now;
 
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            AddWorkflowHistory(input);
+        }
+
+        private void CancelledDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+
+          
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);

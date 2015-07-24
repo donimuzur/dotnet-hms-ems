@@ -14,6 +14,7 @@
                 <div class="action-button">
                    
                     <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" />
                     
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
@@ -51,13 +52,15 @@
                         @Html.HiddenFor(model => model.SourceCompanyName)
                         @Html.HiddenFor(model => model.SourceAddress)
                         @Html.HiddenFor(model => model.SourceKppbcName)
-                        
+                        @Html.HiddenFor(model => model.SourcePlantName)
+
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyName)
                         @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
-                        
+                        @Html.HiddenFor(model => model.DestPlantName)
+
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
 
                         @Html.HiddenFor(model => model.DnNumber)
@@ -104,6 +107,37 @@
     </div>
 </div>
 
+<div id="Ck5ModalCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Cancel document</h4>
+            </div>
+            @using (Html.BeginForm("CancelDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmCancel" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -123,6 +157,26 @@
             }
         });
         
+
+        $("#btnCancelDocument").click(function () {
+            $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+            $('#Comment').val('');
+
+            $('#Ck5ModalCancel').modal('show');
+
+        });
+        
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmCancel').attr('disabled', 'disabled');
+           
+            if (this.value.length) {
+                $('#btnConfirmCancel').removeAttr('disabled');
+            }
+        });
+
+
     });
 
     $("#PbckDecreeId").change(function () {
@@ -151,6 +205,7 @@
                 $("input[name='DestCompanyName']").val('');
                 $("*[name='DestAddress']").val('');
                 $("input[name='DestKppbcName']").val('');
+                $("input[name='DestPlantName']").val('');
             } else {
                 ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
 
@@ -171,7 +226,7 @@
                 $("input[name='SourceCompanyName']").val('');
                 $("*[name='SourceAddress']").val('');
                 $("input[name='SourceKppbcName']").val('');
-
+                $("input[name='SourcePlantName']").val('');
                 //enable upload
                 $('#btnUploadInfo').enable(false);
                 $('#CK5UploadSubmitBtn').enable(false);

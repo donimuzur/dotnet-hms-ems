@@ -42,12 +42,14 @@
                         @Html.HiddenFor(model => model.SourceCompanyName)
                         @Html.HiddenFor(model => model.SourceAddress)
                         @Html.HiddenFor(model => model.SourceKppbcName)
+                        @Html.HiddenFor(model => model.SourcePlantName)
 
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyName)
                         @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
+                        @Html.HiddenFor(model => model.DestPlantName)
 
                         @Html.HiddenFor(model => model.PbckDecreeDate)
 
@@ -116,6 +118,7 @@
                     $("input[name='DestCompanyName']").val('');
                     $("*[name='DestAddress']").val('');
                     $("input[name='DestKppbcName']").val('');
+                    $("input[name='DestPlantName']").val('');
                 } else {
                     ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
                 }
@@ -135,7 +138,7 @@
                     $("input[name='SourceCompanyName']").val('');
                     $("*[name='SourceAddress']").val('');
                     $("input[name='SourceKppbcName']").val('');
-
+                    $("input[name='SourcePlantName']").val('');
                     //enable upload
                     $('#btnUploadInfo').enable(false);
                     $('#CK5UploadSubmitBtn').enable(false);

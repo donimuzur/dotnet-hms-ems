@@ -552,6 +552,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
+                model.SourcePlantId = model.SourcePlantId + " - " + model.SourcePlantName;
+                model.DestPlantId = model.DestPlantId + " - " + model.DestPlantName;
+
                 model.MainMenu = Enums.MenuList.CK5;
                 model.CurrentMenu = PageInfo;
 
@@ -830,6 +833,20 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CK5Workflow(model.Ck5Id, Enums.ActionType.GovCancel, model.Comment);
                 AddMessageInfo("Success GovCancel Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        public ActionResult CancelDocument(CK5FormViewModel model)
+        {
+            try
+            {
+                CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
+                AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {

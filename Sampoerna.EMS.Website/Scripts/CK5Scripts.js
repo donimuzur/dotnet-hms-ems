@@ -145,6 +145,7 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("input[name='DestCompanyName']").val(data.CompanyName);
                 $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
+                $("input[name='DestPlantName']").val(data.PlantName);
             }
         });
     }
@@ -169,7 +170,7 @@ function ajaxGetPlantDetails(url, formData) {
                 $("input[name='SourceCompanyName']").val(data.CompanyName);
                 $("*[name='SourceAddress']").val(data.CompanyAddress);
                 $("input[name='SourceKppbcName']").val(data.KppBcName);
-
+                $("input[name='SourcePlantName']").val(data.PlantName);
                 //enable upload
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();

@@ -42,16 +42,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<CK5ListIndexQtyResolver>().FromMember(src => src))
-                .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.APPROVED_BY));
-                //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + " - " + src.sou))
-                //.ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DestPlantWerks + " - " + src.DestPlantName))
-                //.ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
+                .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.APPROVED_BY))
+                .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + " - " + src.SOURCE_PLANT_NAME))
+                .ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DEST_PLANT_ID + " - " + src.DEST_PLANT_NAME))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
 
             Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting();
 
 
             Mapper.CreateMap<Plant, CK5PlantModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.NPWP))
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
@@ -83,6 +84,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.SOURCE_PLANT_COMPANY_NAME, opt => opt.MapFrom(src => src.SourceCompanyName))
               .ForMember(dest => dest.SOURCE_PLANT_ADDRESS, opt => opt.MapFrom(src => src.SourceAddress))
               .ForMember(dest => dest.SOURCE_PLANT_KPPBC_NAME_OFFICE, opt => opt.MapFrom(src => src.SourceKppbcName))
+              .ForMember(dest => dest.SOURCE_PLANT_NAME, opt => opt.MapFrom(src => src.SourcePlantName))
 
               .ForMember(dest => dest.DEST_PLANT_ID, opt => opt.MapFrom(src => src.DestPlantId))
               .ForMember(dest => dest.DEST_PLANT_NPWP, opt => opt.MapFrom(src => src.DestNpwp))
@@ -90,7 +92,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.DEST_PLANT_COMPANY_NAME, opt => opt.MapFrom(src => src.DestCompanyName))
               .ForMember(dest => dest.DEST_PLANT_ADDRESS, opt => opt.MapFrom(src => src.DestAddress))
               .ForMember(dest => dest.DEST_PLANT_KPPBC_NAME_OFFICE, opt => opt.MapFrom(src => src.DestKppbcName))
-
+              .ForMember(dest => dest.DEST_PLANT_NAME, opt => opt.MapFrom(src => src.DestPlantName))
 
                .ForMember(dest => dest.INVOICE_NUMBER, opt => opt.MapFrom(src => src.InvoiceNumber))
                .ForMember(dest => dest.INVOICE_DATE, opt => opt.MapFrom(src => src.InvoiceDate))
@@ -126,6 +128,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.SourceCompanyName, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_NAME))
             .ForMember(dest => dest.SourceAddress, opt => opt.MapFrom(src => src.SOURCE_PLANT_ADDRESS))
             .ForMember(dest => dest.SourceKppbcName, opt => opt.MapFrom(src => src.SOURCE_PLANT_KPPBC_NAME_OFFICE))
+            .ForMember(dest => dest.SourcePlantName, opt => opt.MapFrom(src => src.SOURCE_PLANT_NAME))
 
             .ForMember(dest => dest.DestPlantId, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
             .ForMember(dest => dest.DestNpwp, opt => opt.MapFrom(src => src.DEST_PLANT_NPWP))
@@ -133,7 +136,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_NAME))
             .ForMember(dest => dest.DestAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
             .ForMember(dest => dest.DestKppbcName, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
-
+            .ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
 
              .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
              .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.INVOICE_DATE))
