@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialEditViewModel : BaseModel
     {
-       
+
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -36,7 +37,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public int UomId { get; set; }
+        public string UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
@@ -100,7 +101,7 @@ namespace Sampoerna.EMS.Website.Models.Material
             }
         }
 
-     
+
         public decimal? Conversion
         {
             get;
@@ -118,9 +119,14 @@ namespace Sampoerna.EMS.Website.Models.Material
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
 
-       
+        [Required]
+        public string ConversionUom { get; set; }
+        public SelectList ConversionUomList { get; set; }
 
-
-        
+        public List<MaterialUomDetails> MaterialUom { get; set; }
     }
+
+
+
+
 }
