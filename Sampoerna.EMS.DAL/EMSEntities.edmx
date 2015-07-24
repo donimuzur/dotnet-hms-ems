@@ -68,12 +68,12 @@
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SOURCE_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="SOURCE_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="SOURCE_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
           <Property Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
           <Property Name="DEST_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="DEST_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="DEST_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="DEST_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="DEST_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
           <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
@@ -586,7 +586,6 @@
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
@@ -596,7 +595,6 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="CONVERSION_UOM" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -3933,12 +3931,12 @@
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="SOURCE_PLANT_NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_ADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="DEST_PLANT_NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="DEST_PLANT_NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_ADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
