@@ -110,9 +110,10 @@ namespace Sampoerna.EMS.BLL
             return dbData.UOM_DESC;
         }
 
-        public bool IsUomNameExist(string name)
+        public bool IsUomIdExist(string uomId)
         {
-            var dbData = _repository.Get(u => u.UOM_DESC.Equals(name)).FirstOrDefault();
+            //var dbData = _repository.Get(u => u.UOM_DESC.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var dbData = _repository.GetByID(uomId);
             return dbData != null;
         }
 

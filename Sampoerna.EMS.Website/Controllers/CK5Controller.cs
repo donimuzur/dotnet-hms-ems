@@ -376,7 +376,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, long plantId)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5FormViewModel();

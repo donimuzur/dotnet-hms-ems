@@ -272,13 +272,13 @@ namespace Sampoerna.EMS.BLL
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
 
-                if (!_uomBll.IsUomNameExist(ck5MaterialInput.Uom))
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
                     messageList.Add("UOM not exist");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
                     messageList.Add("Convertion not valid");
 
-                if (!_uomBll.IsUomNameExist(ck5MaterialInput.ConvertedUom))
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.ConvertedUom))
                     messageList.Add("ConvertedUom not valid");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
@@ -317,11 +317,18 @@ namespace Sampoerna.EMS.BLL
 
                 output.ConvertedQty = Convert.ToInt32(output.Qty) * Convert.ToInt32(output.Convertion);
 
-                var dbBrand = _brandRegistrationBll.GetByFaCode(output.Brand);
-
-                output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
-                output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
-
+                var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(output.Plant, output.Brand);
+                if (dbBrand == null)
+                {
+                    output.Hje = 0;
+                    output.Tariff = 0;
+                }
+                else
+                {
+                    output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                    output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+                }
+                
                 output.ExciseValue = output.ConvertedQty * output.Tariff;
 
             }

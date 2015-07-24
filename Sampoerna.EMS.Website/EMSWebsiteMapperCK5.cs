@@ -152,7 +152,10 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.UnSealingNotifNumber, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_NUMBER))
             .ForMember(dest => dest.UnsealingNotifDate, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_DATE))
             ;
-           
+
+            Mapper.CreateMap<CK5UploadViewModel, CK5MaterialInput>().IgnoreAllNonExisting();
+
+
 
             Mapper.CreateMap<CK5UploadViewModel, CK5MaterialDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.QTY, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.Qty))
