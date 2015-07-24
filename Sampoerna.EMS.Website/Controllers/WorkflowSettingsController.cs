@@ -1,4 +1,6 @@
-﻿using Sampoerna.EMS.Contract;
+﻿using Newtonsoft.Json;
+using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowSetting;
 using System;
@@ -55,7 +57,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = AutoMapper.Mapper.Map<WorkflowDetails>(_pageBLL.GetPageByID(id));
             model.CurrentMenu = PageInfo;
             model.MainMenu = _mainMenu;
-            model.Details = AutoMapper.Mapper.Map<List<WorkflowMappingDetails>>(_workflowSettingBLL.GetAllById(id));
+            model.Details = AutoMapper.Mapper.Map<List<WorkflowMappingDetails>>(_workflowSettingBLL.GetAllByFormId(id));
             return View(model);
         }
 
@@ -74,6 +76,32 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        public ActionResult SaveForkflowMapping(int formid,int? actionid, string worflowusers, WorkflowMappingDetails mappingdata) {
+            try
+            {
+                var datausers = JsonConvert.DeserializeObject<List<WorkflowUsers>>(worflowusers);
+                var data = AutoMapper.Mapper.Map<WORKFLOW_STATE>(mappingdata);
+                if (actionid.HasValue) {
+                    data.ACTION_ID = actionid.Value;
+                }
+                List<string> useridlist = new List<string>();
+                foreach (var user in datausers)
+                {
+                    useridlist.Add(user.User_Id);
+                }
+                data.USER = _userBLL.GetUsersByListId(useridlist);
+                _workflowSettingBLL.SaveWorkflowState(data);
+                return RedirectToAction("Edit", formid);
+            }
+            catch {
+                //JsonResult json = new JsonResult();
+                //json.Data = "error";
+                return null;
+            }
+            
         }
 
         //
@@ -102,25 +130,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /WorkflowSettings/GetMapping/5
-        public ActionResult GetMapping(int? id) {
+        public ActionResult GetMapping(int formid,int? stateid) {
             WorkflowMappingDetails model;
-            if (id.HasValue && id.Value > 0)
+            if (stateid.HasValue && stateid.Value > 0)
             {
-                var wfstate = _workflowSettingBLL.GetAllById(id.Value);
-                var page = _pageBLL.GetPageByID((int)wfstate.FORM_ID.Value);
+                var wfstate = _workflowSettingBLL.GetAllById(stateid.Value);
+                var page = _pageBLL.GetPageByID(formid);
                 model = new WorkflowMappingDetails();
                 model.Form_Id = page.PAGE_ID;
                 model.Modul = page.MENU_NAME;
+                model.StateMappingId = wfstate.ACTION_ID.ToString();
+                model.State = wfstate.ACTION_NAME;
+                model.ListUser = AutoMapper.Mapper.Map<List<WorkflowUsers>>(wfstate.USER.ToList());
                 //model.
                 //model.
             }
             else {
                 model = new WorkflowMappingDetails();
+                var page = _pageBLL.GetPageByID(formid);
+                model.Form_Id = page.PAGE_ID;
+                model.Modul = page.MENU_NAME;
             }
             
             model.UserList = new SelectList(_userBLL.GetUsers(), "EMAIL", "USERNAME");
             model.EmailTemplateList = new SelectList(_emailTemplateBLL.getAllEmailTemplates(), "EMAIL_TEMPLATE_ID", "TEMPLATE_NAME");
-            return View(model);
+            return PartialView("GetMappingPartial",model);
         }
     }
 }

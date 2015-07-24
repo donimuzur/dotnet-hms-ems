@@ -35,6 +35,8 @@ namespace Sampoerna.EMS.Website.Models.WorkflowSetting
 
         public int EmailTemplateId { get; set; }
         public string EmailTemplateName { get; set; }
+
+        public List<WorkflowUsers> ListUser { get; set; }
         public string SentTo { get; set; }
 
         public string Modul { get; set; }
@@ -43,5 +45,10 @@ namespace Sampoerna.EMS.Website.Models.WorkflowSetting
 
         public SelectList EmailTemplateList { get; set; }
         public SelectList UserList { get; set; }
+    }
+
+    public class WorkflowUsers{
+        public string User_Id;
+        public string Email;
     }
 }

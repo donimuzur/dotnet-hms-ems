@@ -21,8 +21,8 @@ namespace Sampoerna.EMS.Website
                             new[] { "Sampoerna.EMS.Website.Controllers" });
 
             routes.MapRoute("GetMapping",
-                            "WorkflowSettings/GetMapping/",
-                            new { controller = "Address", action = "GetMapping" },
+                            "WorkflowSettings/GetMapping/{formid}/{stateid}",
+                            new { controller = "WorkflowSettings", action = "GetMapping", formid = "", stateid = "" },
                             new[] { "Sampoerna.EMS.Website.Controllers" });
         }
     }

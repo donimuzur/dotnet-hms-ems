@@ -1,0 +1,72 @@
+﻿@model Sampoerna.EMS.Website.Models.WorkflowSetting.WorkflowMappingDetails
+@{
+    Layout = null;
+}
+
+<form class="form-excise" role="form">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <label class="col-md-4">Module</label>
+                <div class="col-md-8">
+                    @Html.HiddenFor(model => model.StateMappingId, new { @class = "form-control", @disabled = "disabled", @id = "stateid" })
+                    @Html.TextBoxFor(model => model.Modul, new { @class = "form-control", @disabled = "disabled" })
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <label class="col-md-4">State</label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.State, new { @class = "form-control",@id="ModulState"})
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <label class="col-md-4">Email Template</label>
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.EmailTemplateId, Model.EmailTemplateList, "Select Template", new { @class = "form-control" })
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <label class="col-md-4">Sent To</label>
+                <div class="col-md-6">
+                    @Html.DropDownList("userid", Model.UserList, new { @class = "form-control", @id = "userid" })
+                </div>
+                <div class="col-md-2">
+                    <div class="action-button pull-left">
+                        @*<input type="submit" class="btn btn-blue" value="Save" />*@
+                        <a href="#" onclick="addUser();" class="btn btn-blue">Add</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+
+                <div class="table-container col-md-12">
+                    <table class="table table-bordered table-striped js-options-table" id="userDataTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbluser">
+                            
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

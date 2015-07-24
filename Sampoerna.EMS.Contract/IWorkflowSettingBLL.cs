@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.Contract
         List<WORKFLOW_STATE> GetAllByFormId(long id);
 
         WORKFLOW_STATE GetAllById(long id);
+
+        List<USER> GetAllUsersById(long id);
     }
 }

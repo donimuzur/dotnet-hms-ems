@@ -796,6 +796,7 @@
     <Content Include="Views\WorkflowSettings\Edit.cshtml" />
     <Content Include="Views\WorkflowSettings\Details.cshtml" />
     <Content Include="Views\WorkflowSettings\GetMapping.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMappingPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

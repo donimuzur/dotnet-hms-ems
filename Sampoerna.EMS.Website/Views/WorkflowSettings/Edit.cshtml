@@ -55,7 +55,7 @@
                                                 <div class="col-md-8">
                                                     <div class="action-button pull-left">
                                                         @*<input type="submit" class="btn btn-blue" value="Save" />*@
-                                                        <a href="#" onclick="GetMapping(null,'edit')" class="btn btn-blue">Add</a>
+                                                        <a href="#" onclick="GetMapping(@Model.Form_Id,null,'edit');" class="btn btn-blue">Add</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -93,8 +93,8 @@
                                                                     {
                                                                         <tr>
                                                                             <td class="action">
-                                                                                <a href="#" onclick="GetMapping(@item.StateMappingId,'view')"  ><i class="fa fa-eye"></i></a>
-                                                                                <a href="#" onclick="GetMapping(@item.StateMappingId,'edit')"><i class="fa fa-pencil-square-o"></i></a>
+                                                                                <a href="#" onclick="GetMapping(@Model.Form_Id,@item.StateMappingId,'view')"  ><i class="fa fa-eye"></i></a>
+                                                                                <a href="#" onclick="GetMapping(@Model.Form_Id,@item.StateMappingId,'edit')"><i class="fa fa-pencil-square-o"></i></a>
                                                                                 
                                                                             </td>
                                                                             <td>
@@ -148,7 +148,7 @@
 	        	
 	        </div>
 	        <div class="modal-footer">	        	
-		      <button type="button" class="btn btn-blue">Save</button>
+		      <button type="button" class="btn btn-blue" onclick="saveData();">Save</button>
 		      <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
 		    </div>
       	</div>
@@ -158,6 +158,72 @@
 
 @section scripts{
     <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript">
+        var worflowmappingdata = {};
+        var workflowuserdata = [];
+
+        function saveData() {
+            worflowmappingdata = {};
+            workflowuserdata = [];
+            $("#tbluser tr").each(function (index,el) {
+                var workflowuser = {};
+                workflowuser.User_Id = $(this).find("th.userid").html().trim();
+                workflowuser.Email = $(this).find("th.emailuser").html().trim();
+                workflowuserdata.push(workflowuser);
+            });
+            worflowmappingdata.EmailTemplateId = $("#EmailTemplateId").val();
+            worflowmappingdata.State = $("#ModulState").val();
+
+            $.post('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
+                formid: "@Model.Form_Id" ,
+                actionid: $("#stateid").val(),
+                worflowusers: JSON.stringify(workflowuserdata),
+                mappingdata : worflowmappingdata
+            }, function (data) {
+                
+            });
+        }
+
+        function addUser() {
+            //debugger;
+            var email = $("#userid").val();
+            var userid = $("#userid").children("option:selected").html();
+
+            if (checkexisting(userid)) {
+                return;
+            } else {
+                var count = $("#tbluser tr.datarow").length;
+                var row =
+                    "<tr class='datarow'> \
+                    <th>"+ (count + 1).toString() + "</th>\
+                    <th class='userid'>"+ userid + " </th>\
+                    <th class='emailuser'>"+ email + " </th>\
+                </tr>";
+                if (count == 0) {
+                    $("#tbluser").html(row);
+                } else {
+                    $("#tbluser").append(row);
+                }
+            }
+
+            
+        }
+
+
+        function checkexisting(userid) {
+            var isexist = false;
+
+            $("th.userid").each(function (obj) {
+
+                if ($(this).html().trim() === userid.trim()) {
+                    isexist = true;
+                    return false;
+                }
+            });
+
+            return isexist;
+        }
+    </script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuWorkflowSettings').addClass('active');
         $(document).ready(function () {
@@ -186,30 +252,18 @@
             $('#mydata_length').hide();
         });
         
-        function GetMapping(id,mode) {
-            $.get("../GetMapping" + "/" + id, {},
-                function (res) {
-                    //debugger;
-                    $(".modal-body.form").html(res);
-                    $(".popupshow").click();
+        function GetMapping(_formid,_id,mode) {
+            $(".modal-body.form").load("@Url.Action("GetMapping", "WorkflowSettings")/" + _formid + "/" + _id, function (obj) {
+                if (_id != null) {
+                    $("#ModulState").attr("disabled", "disabled");
                 }
-            );
+                var table = $('#userDataTable').DataTable();
+                $(".popupshow").click();
+            });
+            
+            
         }
 
-        function addUser(){
-            debugger;
-            var email = $("#userid").val();
-            var userid = $("#userid").children("option:selected").html();
-            var count = $("#tbluser tr").length - 1;
-            var row = 
-                "<tr> \
-                    <th>"+ (count + 1).toString() + "</th>\
-                    <th>"+ userid + " </th>\
-                    <th>"+ email + " </th>\
-                </tr>";
-            if($("#tbluser th").length == 1){
-                $("#tbluser").html(row);
-            }
-        }
+        
     </script>
 }
