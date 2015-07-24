@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public int SeriesCode { get; set; }
         public int SeriesValue { get; set; }
 
-        [Required]
+       
         public string Content { get; set; }
 
         [Required]
@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get;
             set;
         }
-        [Required]
+       
         public string ConversionValueStr
         {
             get;
@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get;
             set;
         }
-        [Required]
+        
         public string PrintingPriceValueStr { get; set; }
 
         [StringLength(25)]
