@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Website.Models
         public string MessageTitle { get; set; }
         public List<string> MessageBody { get; set; }
 
-       
+        public bool IsShowNewButton { get; set; }
+
     }
 }
