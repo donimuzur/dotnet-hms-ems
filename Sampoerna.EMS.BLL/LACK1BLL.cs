@@ -45,7 +45,9 @@ namespace Sampoerna.EMS.BLL
         public List<Lack1Dto> GetListByNpbkcParam(Lack1GetListByNppbkcParam input)
         {
             var queryFilter = ProcessQueryFilter(input);
-            queryFilter = queryFilter.And( c => c.STATUS != Enums)
+            queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+
+            return GetLack1Data(queryFilter, input.SortOrderColumn);
 
         }
 
@@ -73,6 +75,8 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
+            //minus date reported ON
+
             return queryFilter;
         }
 

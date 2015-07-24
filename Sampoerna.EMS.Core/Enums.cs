@@ -208,5 +208,12 @@ namespace Sampoerna.EMS.Core
             [Description("Laut")]
             Laut = 2
         }
+
+        public enum LACK1Type
+        {
+            ListByNppbkc = 1,
+            ListByPlant = 2,
+            ComplatedDocument =3
+        }
     }
 }

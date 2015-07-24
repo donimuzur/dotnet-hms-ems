@@ -174,5 +174,14 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "UOM_ID", "UOM_ID");
         }
 
+        public static SelectList GetPlantAll()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plantIdList = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+
      }
 }

@@ -9,7 +9,12 @@ namespace Sampoerna.EMS.Website.Models.LACK1
     {
         public LACK1ViewModel()
         {
-           
+            Details = new List<LACK1Item>();
+            SearchInput = new LACK1FilterViewModel();
         }
+
+        public List<LACK1Item> Details { get; set; }
+
+        public LACK1FilterViewModel SearchInput { get; set; }
     }
 }

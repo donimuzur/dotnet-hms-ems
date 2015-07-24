@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.BusinessObject.DTOs
+namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class Lack1Dto
+    public class LACK1Item : BaseModel
     {
+       
         public long Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         public string Bukrs { get; set; }
@@ -29,9 +29,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? DecreeDate { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreateBy { get; set; }
-        public string ApprovedBy  { get; set; }
+        public string ApprovedBy { get; set; }
         public DateTime ApprovedDate { get; set; }
-        
-        
     }
 }
