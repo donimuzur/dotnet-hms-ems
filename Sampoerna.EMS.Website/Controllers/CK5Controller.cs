@@ -224,7 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitCK5List(model);
 
             //submission date
-            model.SubmissionDate = DateTime.Now;
+           // model.SubmissionDate = DateTime.Now;
 
             return model;
         }
@@ -346,16 +346,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //if (model.UploadItemModels.Count > 0)
-                    //{
+                    if (model.UploadItemModels.Count > 0)
+                    {
                         var saveResult = SaveCk5ToDatabase(model);
 
                         AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
                         return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
-                    //}
+                    }
 
-                    //AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
                 }
                 else
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
@@ -448,16 +448,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
-               
-                ////validate
-                ////only allow edit/submit when current_user = createdby and document = draft
-                //var input = new WorkflowAllowEditAndSubmitInput();
-                //input.DocumentStatus = model.DocumentStatus;
-                ////todo check
-                ////input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
-                ////input.CurrentUser = CurrentUser.USER_ID;
-                //if (!_workflowBll.AllowEditDocument(input))
-                //   return  RedirectToAction("Details", "CK5", new {@id = model.Ck5Id});
+
+                //validate
+                //only allow edit/submit when current_user = createdby and document = draft
+                var input = new WorkflowAllowEditAndSubmitInput();
+                input.DocumentStatus = model.DocumentStatus;
+                //todo check
+                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
+                input.CurrentUser = CurrentUser.USER_ID;
+                if (!_workflowBll.AllowEditDocument(input))
+                    return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
 
                 model = InitEdit(model);
                
@@ -484,29 +484,29 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //if (model.UploadItemModels.Count > 0)
-                    //{
-                        ////validate
-                        //var input = new WorkflowAllowEditAndSubmitInput();
-                        //input.DocumentStatus = model.DocumentStatus;
-                        //input.CreatedUser = model.CreatedBy;
-                        //input.CurrentUser = CurrentUser.USER_ID;
-                        //if (_workflowBll.AllowEditDocument(input))
-                        //{
+                    if (model.UploadItemModels.Count > 0)
+                    {
+                        //validate
+                        var input = new WorkflowAllowEditAndSubmitInput();
+                        input.DocumentStatus = model.DocumentStatus;
+                        input.CreatedUser = model.CreatedBy;
+                        input.CurrentUser = CurrentUser.USER_ID;
+                        if (_workflowBll.AllowEditDocument(input))
+                        {
 
                             SaveCk5ToDatabase(model);
 
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
-                        //}
-                        //else
-                        //{
-                        //    AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
-                        //    return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
-                        //}
+                        }
+                        else
+                        {
+                            AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
+                        }
 
-                    //}
-                    //else
-                    //    AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
+                    }
+                    else
+                        AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
                 }
                 else
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
@@ -555,11 +555,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.MainMenu = Enums.MenuList.CK5;
                 model.CurrentMenu = PageInfo;
 
+
                 // model = GetInitDetailsData(model);
                 model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
 
+                model.CreatedBy = ck5Details.Ck5Dto.CREATED_BY;
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput();

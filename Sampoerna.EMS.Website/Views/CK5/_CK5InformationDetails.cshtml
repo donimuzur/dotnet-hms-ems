@@ -58,8 +58,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Submission Date</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control", @disabled = "disabled" })
-
+                                            @Html.EditorFor(model => model.SubmissionDate)
                                           
                                         </div>
                                     </div>
@@ -76,9 +75,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Date</label>
                                         <div class="col-md-8">
-                                           
-                                                @Html.TextBoxFor(model => model.RegistrationDate, new {@disabled = false, @class = "form-control" })
-                                               
+                                            @Html.EditorFor(model => model.RegistrationDate)
                                         </div>
                                     </div>
                                 </div>
@@ -481,7 +478,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Requisitioner</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control" disabled="">
+                                            @*<input type="text" class="form-control" disabled="">*@
+                                            @Html.TextBoxFor(model => model.CreatedUser, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -518,18 +516,4 @@
 </div>
 
 
-@section scripts {
-    <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            $('#btnUploadInfo').click(function () {
-                $('#upload-tab').addClass('active');
-                $('#home-tab').removeClass('active');
-
-                $('#information').removeClass('active');
-                $('#upload').removeClass('active');
-            });
-
-        });
-    </script>
-}
 

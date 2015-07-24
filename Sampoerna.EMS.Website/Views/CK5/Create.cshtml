@@ -83,6 +83,16 @@
     <script type="text/javascript">
         $(document).ready(function () {
             OnReadyFunction();
+
+            var sourcePlant = $('#SourcePlantId').find("option:selected").val();
+            
+            if (sourcePlant != '') {
+                //enable upload
+                $('#btnUploadInfo').enable(true);
+                $('#CK5UploadSubmitBtn').enable(true);
+            }
+                
+                
         });
 
         $("#PbckDecreeId").change(function () {

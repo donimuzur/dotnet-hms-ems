@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IPBCK1BLL _pbck1Bll;
 
-        private string includeTables = "CK5_MATERIAL, PBCK1,UOM";
+        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -183,7 +183,8 @@ namespace Sampoerna.EMS.BLL
                
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
-                dbData.STATUS_ID = Enums.DocumentStatus.Revised;
+                //no change status for edit 2015-07-24
+                //dbData.STATUS_ID = Enums.DocumentStatus.Revised;
                 dbData.MODIFIED_DATE = DateTime.Now;
 
                 //delete child first
@@ -191,9 +192,17 @@ namespace Sampoerna.EMS.BLL
                 {
                     _repositoryCK5Material.Delete(ck5Material);
                 }
-
-
+                
                 inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
+
+                //insert new data
+                foreach (var ck5Item in input.Ck5Material)
+                {
+                    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                    dbData.CK5_MATERIAL.Add(ck5Material);
+                }
+
             }
             else
             {
@@ -206,6 +215,7 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+                input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
                 input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
                 input.Ck5Dto.CREATED_DATE = DateTime.Now;
                 input.Ck5Dto.CREATED_BY = input.UserId;
@@ -218,24 +228,33 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
                 inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+                foreach (var ck5Item in input.Ck5Material)
+                {
+                    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                    dbData.CK5_MATERIAL.Add(ck5Material);
+                }
+
+
+                _repository.Insert(dbData);
+
             }
 
             
 
-            //insert child
-            //insert the data
-            foreach (var ck5Item in input.Ck5Material)
-            {
-                var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-                ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
-                dbData.CK5_MATERIAL.Add(ck5Material);
-            }
-
-
-            _repository.InsertOrUpdate(dbData);
-
+            ////insert child
+            ////insert the data
+            //foreach (var ck5Item in input.Ck5Material)
+            //{
+            //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+            //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+            //    dbData.CK5_MATERIAL.Add(ck5Material);
+            //}
 
            
+            //_repository.InsertOrUpdate(dbData);
+
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;
             inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
             inputWorkflowHistory.UserId = input.UserId;
@@ -440,42 +459,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
-        {
-            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
-            inputWorkflowHistory.ActionType = input.ActionType;
-            inputWorkflowHistory.FormNumber = input.DocumentNumber;
-
-            WorkflowHistoryDto dbData = null;
-
-            //todo ask ... for save should be same like others
-            //if yes then remove this function only use one function
-            //only save can be update, else insert new one
-            if (input.ActionType == Enums.ActionType.Modified)
-                dbData = _workflowHistoryBll.GetByActionAndFormNumber(inputWorkflowHistory);
-
-
-            if (dbData == null)
-            {
-                dbData = new WorkflowHistoryDto()
-                {
-                    ACTION = input.ActionType,
-                    FORM_NUMBER = input.DocumentNumber,
-                    FORM_TYPE_ID = Core.Enums.FormType.CK5
-                };
-            }
-            dbData.FORM_ID = input.DocumentId;
-            if (!string.IsNullOrEmpty(input.Comment))
-                dbData.COMMENT = input.Comment;
-
-
-            dbData.ACTION_BY = input.UserId;
-            dbData.ROLE = input.UserRole;
-            dbData.ACTION_DATE = DateTime.Now;
-
-            _workflowHistoryBll.Save(dbData);
-        }
-
+       
         public CK5DetailsOutput GetDetailsCK5(long id)
         {
             var output = new CK5DetailsOutput();
@@ -512,10 +496,52 @@ namespace Sampoerna.EMS.BLL
 
         #region workflow
 
+        private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
+        {
+            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
+            inputWorkflowHistory.ActionType = input.ActionType;
+            inputWorkflowHistory.FormNumber = input.DocumentNumber;
+
+            //WorkflowHistoryDto dbData = null;
+
+            //remark 2015-07-24
+            // ... for save should be same like others
+            //if yes then remove this function only use one function
+            //only save can be update, else insert new one
+            //if (input.ActionType == Enums.ActionType.Modified)
+            //    dbData = _workflowHistoryBll.GetByActionAndFormNumber(inputWorkflowHistory);
+
+
+            //if (dbData == null)
+            //{
+            //    dbData = new WorkflowHistoryDto()
+            //    {
+            //        ACTION = input.ActionType,
+            //        FORM_NUMBER = input.DocumentNumber,
+            //        FORM_TYPE_ID = Core.Enums.FormType.CK5
+            //    };
+            //}
+            var dbData = new WorkflowHistoryDto();
+            dbData.ACTION = input.ActionType;
+            dbData.FORM_NUMBER = input.DocumentNumber;
+            dbData.FORM_TYPE_ID = Enums.FormType.CK5;
+
+            dbData.FORM_ID = input.DocumentId;
+            if (!string.IsNullOrEmpty(input.Comment))
+                dbData.COMMENT = input.Comment;
+
+
+            dbData.ACTION_BY = input.UserId;
+            dbData.ROLE = input.UserRole;
+            dbData.ACTION_DATE = DateTime.Now;
+
+            _workflowHistoryBll.Save(dbData);
+        }
+
+
         private void AddWorkflowHistory(CK5WorkflowDocumentInput input)
         {
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
-
 
             inputWorkflowHistory.DocumentId = input.DocumentId;
             inputWorkflowHistory.DocumentNumber = input.DocumentNumber;
@@ -523,20 +549,6 @@ namespace Sampoerna.EMS.BLL
             inputWorkflowHistory.UserRole = input.UserRole;
             inputWorkflowHistory.ActionType = input.ActionType;
             inputWorkflowHistory.Comment = input.Comment;
-
-            //var dbData = new WorkflowHistoryDto();
-
-            //dbData.ACTION = input.ActionType;
-            //dbData.FORM_NUMBER = input.DocumentNumber;
-            //dbData.FORM_TYPE_ID = Core.Enums.FormType.CK5;
-
-            //dbData.FORM_ID = input.DocumentId;
-            //if (!string.IsNullOrEmpty(input.Comment))
-            //    dbData.COMMENT = input.Comment;
-
-            //dbData.ACTION_BY = input.UserId;
-            //dbData.ROLE = input.UserRole;
-            //dbData.ACTION_DATE = DateTime.Now;
 
             AddWorkflowHistory(inputWorkflowHistory);
         }

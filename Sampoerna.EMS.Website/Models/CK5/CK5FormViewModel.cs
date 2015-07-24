@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowApproveAndReject { get; set; }
         public string Comment { get; set; }
         public string CreatedBy { get; set; }
+        public string CreatedUser { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public long Ck5Id { get; set; }
@@ -43,12 +44,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string SubmissionNumber { get; set; }
 
-        [UIHint("FormatDateTime")]
+        [UIHint("DateTime")]
         public DateTime? SubmissionDate { get; set; }
 
         public string RegistrationNumber { get; set; }
 
-        [UIHint("FormatDateTime")]
+        [UIHint("DateTime")]
         public DateTime? RegistrationDate { get; set; }
 
         //[Required]
