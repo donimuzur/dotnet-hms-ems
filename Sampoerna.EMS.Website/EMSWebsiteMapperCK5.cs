@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.Website
     {
         public static void InitializeCK5()
         {
+           
             //Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
             //    .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX)) //todo ask
@@ -42,7 +43,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<CK5ListIndexQtyResolver>().FromMember(src => src))
                 .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.APPROVED_BY));
-                //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SourcePlantWerks + " - " + src.SourcePlantName))
+                //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + " - " + src.sou))
                 //.ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DestPlantWerks + " - " + src.DestPlantName))
                 //.ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
 

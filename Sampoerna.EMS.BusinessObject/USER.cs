@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
             this.CK5 = new HashSet<CK5>();
             this.CK51 = new HashSet<CK5>();
+            this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
         }
     
         public string USER_ID { get; set; }
@@ -83,5 +84,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<CK5> CK51 { get; set; }
+        public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
     }
 }
