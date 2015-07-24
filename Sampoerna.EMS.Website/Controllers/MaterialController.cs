@@ -112,11 +112,9 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("MATERIAL_GROUP", origin.MaterialGroup.Equals(data.MATERIAL_GROUP));
             changesData.Add("BASE_UOM", origin.UomId.Equals(data.BASE_UOM_ID));
             changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
-           //changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
+            changesData.Add("EX_GOODTYP", origin.GoodTypeId.Equals(data.EXC_GOOD_TYP));
 
-            //changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
-            //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
-
+            
             foreach (var listChange in changesData)
             {
                 if (!listChange.Value)
@@ -144,26 +142,20 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.MaterialGroup;
                             changes.NEW_VALUE = data.MATERIAL_GROUP;
                             break;
+
+                        case "BASE_UOM":
+                            changes.OLD_VALUE = origin.UomId;
+                            changes.NEW_VALUE = data.BASE_UOM_ID;
+                            break;
                         case "ISSUE_STORANGE_LOC":
                             changes.OLD_VALUE = origin.IssueStorageLoc;
                             changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
                             break;
-                        //case "BASE_UOM":
-                        //    changes.OLD_VALUE = origin.BASE_UOM_ID.ToString();
-                        //    changes.NEW_VALUE = data.BASE_UOM_ID.ToString();
-                        //    break;
-                        //case "ISSUE_STORANGE_LOC":
-                        //    changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
-                        //    changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
-                        //    break;
-                        //case "EX_GOODTYP":
-                        //    changes.OLD_VALUE = origin.EXC_GOOD_TYP.ToString();
-                        //    changes.NEW_VALUE = data.EXC_GOOD_TYP.ToString();
-                        //    break;
-                        //case "IS_DELETED":
-                        //    changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
-                        //    changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
-                        //    break;
+                        case "EX_GOODTYP":
+                            changes.OLD_VALUE = origin.GoodTypeId;
+                            changes.NEW_VALUE = data.EXC_GOOD_TYP;
+                            break;
+                        
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }

@@ -13,7 +13,7 @@
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 3) {
+                if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
                 }
             });
