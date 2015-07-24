@@ -111,7 +111,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                CurrentUser = CurrentUser
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             });
             return View("Index", model);
         }

@@ -12,7 +12,7 @@
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "PBCK1")">
-                    @if (Model.CurrentUser.UserRole != Enums.UserRole.Manager) {
+                    @if (Model.IsShowNewButton) {
                         <input type="button" class="btn btn-blue" value="NEW" />
                     }
                 </a>
