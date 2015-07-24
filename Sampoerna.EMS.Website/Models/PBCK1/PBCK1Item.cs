@@ -161,6 +161,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
 
         public string Comment { get; set; }
+
+        //public ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         
     }
 }

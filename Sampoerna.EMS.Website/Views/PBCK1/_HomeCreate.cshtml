@@ -410,7 +410,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Status Gov</label>
                                         <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.Detail.StatusGov, Model.StatusGovList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.Detail.StatusGov, Model.StatusGovList, "Select", new { @class = "form-control", @disabled="disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -419,7 +419,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -431,7 +431,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Qty Approved</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "decimal form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "decimal form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -440,9 +440,9 @@
                                         <label class="col-md-4">Decree Doc</label>
                                         <div class="col-md-8">
                                             <div class="input-group">
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" disabled="disabled">
                                                 <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                    Browse <input type="file" multiple>
+                                                    Browse <input type="file" multiple disabled="disabled">
                                                 </span>
                                             </div>
                                         </div>

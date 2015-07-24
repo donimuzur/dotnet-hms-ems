@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IPbck1ProdConverterBLL _prodConverterBll;
         private IPbck1ProdPlanBLL _prodPlanBll;
+        private IPbck1DecreeDocBLL _decreeDocBll;
         private IPOABLL _poaBll;
 
 
@@ -47,6 +48,7 @@ namespace Sampoerna.EMS.BLL
             _prodPlanBll = new Pbck1ProdPlanBLL(_uow, _logger);
             _prodConverterBll = new Pbck1ProdConverterBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
+            _decreeDocBll = new Pbck1DecreeDocBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -130,7 +132,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck1Dto GetById(long id)
         {
-            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM";
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
             var mapResult = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData != null)
@@ -156,6 +158,7 @@ namespace Sampoerna.EMS.BLL
                 //delete first
                 _prodConverterBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
                 _prodPlanBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
+                _decreeDocBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
 
                 //set changes history
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
@@ -164,9 +167,11 @@ namespace Sampoerna.EMS.BLL
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
                 dbData.PBCK1_PROD_CONVERTER = null;
                 dbData.PBCK1_PROD_PLAN = null;
+                dbData.PBCK1_DECREE_DOC = null;
 
                 dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
                 dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
+                dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.Pbck1.Pbck1DecreeDoc);
 
             }
             else
@@ -198,7 +203,6 @@ namespace Sampoerna.EMS.BLL
             output.Pbck1Number = dbData.NUMBER;
 
             //set workflow history
-            //AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
             var getUserRole = _poaBll.GetUserRole(input.UserId);
             
             var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
@@ -759,19 +763,19 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
             
-            if (input.ActionType == Enums.ActionType.Modified)
-            {
-                //check if exist
-                var history = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput()
-                {
-                    FormNumber = input.DocumentNumber,
-                    ActionType = input.ActionType
-                });
-                if (history != null)
-                {
-                    dbData = history;
-                }
-            }
+            //if (input.ActionType == Enums.ActionType.Modified)
+            //{
+            //    //check if exist
+            //    var history = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput()
+            //    {
+            //        FormNumber = input.DocumentNumber,
+            //        ActionType = input.ActionType
+            //    });
+            //    if (history != null)
+            //    {
+            //        dbData = history;
+            //    }
+            //}
 
             dbData.ACTION_DATE = DateTime.Now;
             dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
