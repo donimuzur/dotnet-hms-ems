@@ -98,5 +98,6 @@ namespace Sampoerna.EMS.BLL
 
             return Core.Enums.UserRole.User;
         }
+
     }
 }

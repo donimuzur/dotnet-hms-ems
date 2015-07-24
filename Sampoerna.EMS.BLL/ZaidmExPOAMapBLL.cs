@@ -43,11 +43,11 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-
-
-        public void Delet(int id)
+        public POA_MAP GetByUserLogin(string userLogin)
         {
-            _repository.Delete(id);
+            var rc =
+                _repository.Get(c => c.POA != null && c.POA.LOGIN_AS == userLogin, null, includeTables).FirstOrDefault();
+            return rc;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.BLL
         private IPbck1ProdPlanBLL _prodPlanBll;
         private IPbck1DecreeDocBLL _decreeDocBll;
         private IPOABLL _poaBll;
-
+        private IWorkflowBLL _workflowBll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
@@ -49,6 +49,7 @@ namespace Sampoerna.EMS.BLL
             _prodConverterBll = new Pbck1ProdConverterBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
             _decreeDocBll = new Pbck1DecreeDocBLL(_uow, _logger);
+            _workflowBll = new WorkflowBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -152,7 +153,7 @@ namespace Sampoerna.EMS.BLL
                 //update
                 dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
 
-                if(dbData == null)
+                if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
                 //delete first
@@ -204,7 +205,7 @@ namespace Sampoerna.EMS.BLL
 
             //set workflow history
             var getUserRole = _poaBll.GetUserRole(input.UserId);
-            
+
             var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
             {
                 DocumentId = output.Id,
@@ -229,7 +230,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
             {
                 _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
-                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
             else
             {
@@ -416,7 +417,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.GetByID(id);
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
-        
+
         public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs)
         {
             var messageList = new List<string>();
@@ -526,7 +527,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                
+
                 #region -------------- Month Validation -----------
 
                 string monthName;
@@ -560,7 +561,7 @@ namespace Sampoerna.EMS.BLL
                     output.IsValid = false;
                     messageList.AddRange(messages);
                 }
-                
+
                 #endregion
 
                 #region ------------------ BKC Required UOM -------
@@ -629,7 +630,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             #endregion
-            
+
             message = messageList;
 
             return valResult;
@@ -640,7 +641,7 @@ namespace Sampoerna.EMS.BLL
             monthName = string.Empty;
             var valResult = false;
             var messageList = new List<string>();
-            
+
             if (string.IsNullOrEmpty(month))
             {
                 messageList.Add("Month is empty");
@@ -722,7 +723,7 @@ namespace Sampoerna.EMS.BLL
             {
                 messageList.Add("UOM is empty");
             }
-            
+
             message = messageList;
 
             return valResult;
@@ -756,26 +757,12 @@ namespace Sampoerna.EMS.BLL
 
             _uow.SaveChanges();
         }
-        
+
         #region workflow
 
         private void AddWorkflowHistory(Pbck1WorkflowDocumentInput input)
         {
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
-            
-            //if (input.ActionType == Enums.ActionType.Modified)
-            //{
-            //    //check if exist
-            //    var history = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput()
-            //    {
-            //        FormNumber = input.DocumentNumber,
-            //        ActionType = input.ActionType
-            //    });
-            //    if (history != null)
-            //    {
-            //        dbData = history;
-            //    }
-            //}
 
             dbData.ACTION_DATE = DateTime.Now;
             dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
@@ -792,6 +779,9 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS != Enums.DocumentStatus.Draft)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (dbData.CREATED_BY != input.UserId)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -812,13 +802,24 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                                    {
+                                        CreatedUser = dbData.CREATED_BY,
+                                        CurrentUser = input.UserId,
+                                        DocumentStatus = dbData.STATUS,
+                                        UserRole = input.UserRole
+                                    });
+
+            if(!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
+            //todo: create validation
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+            dbData.STATUS = input.UserRole == Enums.UserRole.POA ? Enums.DocumentStatus.WaitingForApprovalManager : Enums.DocumentStatus.WaitingGovApproval;
 
-            dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
@@ -835,7 +836,15 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                                    {
+                                        CreatedUser = dbData.CREATED_BY,
+                                        CurrentUser = input.UserId,
+                                        DocumentStatus = dbData.STATUS,
+                                        UserRole = input.UserRole
+                                    });
+
+            if(!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -873,16 +882,21 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS = Enums.DocumentStatus.Completed;
 
-            dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
+            //todo: update remaining quota and necessary data
+            dbData.PBCK1_DECREE_DOC = null;
+            dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
+            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+            dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
 
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
             input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
-
-            AddWorkflowHistory(input);
             
+            AddWorkflowHistory(input);
+
         }
 
         private void GovPartialApproveDocument(Pbck1WorkflowDocumentInput input)
@@ -897,17 +911,20 @@ namespace Sampoerna.EMS.BLL
 
             //Add Changes
             //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            if (dbData.STATUS_GOV != null)
-                WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV.Value, Enums.DocumentStatusGov.PartialApproved);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
+            
+            input.ActionType = Enums.ActionType.Completed;
+            input.DocumentNumber = dbData.NUMBER;
 
-            //dbData.STATUS = Enums.DocumentStatus.Completed;
+            //todo: update remaining quota and necessary data
+            dbData.PBCK1_DECREE_DOC = null;
+            dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
+            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+            dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
 
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
-
-            input.ActionType = Enums.ActionType.Completed;
-            input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
         }
@@ -924,10 +941,8 @@ namespace Sampoerna.EMS.BLL
 
             //Add Changes
             //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
-            if (dbData.STATUS_GOV != null)
-                WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV.Value, Enums.DocumentStatusGov.Rejected);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.Rejected);
 
-            //dbData.STATUS = Enums.DocumentStatus.Draft;
             dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
 
             dbData.APPROVED_BY = input.UserId;
@@ -956,7 +971,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChanges(Pbck1WorkflowDocumentInput input, Enums.DocumentStatusGov oldStatus, Enums.DocumentStatusGov newStatus)
+        private void WorkflowStatusGovAddChanges(Pbck1WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -965,7 +980,7 @@ namespace Sampoerna.EMS.BLL
                 FORM_ID = input.DocumentId.ToString(),
                 FIELD_NAME = "STATUS_GOV",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
-                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
                 MODIFIED_BY = input.UserId,
                 MODIFIED_DATE = DateTime.Now
             };
