@@ -107,8 +107,6 @@ namespace Sampoerna.EMS.Website.Controllers
         private void SetChanges(MaterialEditViewModel origin, ZAIDM_EX_MATERIAL data)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("MATERIAL_NUMBER", origin.MaterialNumber.Equals(data.STICKER_CODE));
-            changesData.Add("PLANT_ID", origin.PlantId.Equals(data.WERKS));
             changesData.Add("MATERIAL_DESC", origin.MaterialDesc.Equals(data.MATERIAL_DESC));
             changesData.Add("PURCHASING_GROUP", origin.PurchasingGroup.Equals(data.PURCHASING_GROUP));
             changesData.Add("MATERIAL_GROUP", origin.MaterialGroup.Equals(data.MATERIAL_GROUP));
@@ -126,21 +124,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                        FORM_ID = data.STICKER_CODE,
+                        FORM_ID = data.STICKER_CODE+data.WERKS,
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = CurrentUser.USER_ID,
                         MODIFIED_DATE = DateTime.Now
                     };
                     switch (listChange.Key)
                     {
-                        case "MATERIAL_NUMBER":
-                            changes.OLD_VALUE = origin.MaterialNumber;
-                            changes.NEW_VALUE = data.STICKER_CODE;
-                            break;
-                        case "PLANT_ID":
-                            changes.OLD_VALUE = origin.PlantId;
-                            changes.NEW_VALUE = data.WERKS;
-                            break;
+                       
                         case "MATERIAL_DESC":
                             changes.OLD_VALUE = origin.MaterialDesc;
                             changes.NEW_VALUE = data.MATERIAL_DESC;
@@ -153,7 +144,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.MaterialGroup;
                             changes.NEW_VALUE = data.MATERIAL_GROUP;
                             break;
-
+                        case "ISSUE_STORANGE_LOC":
+                            changes.OLD_VALUE = origin.IssueStorageLoc;
+                            changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
+                            break;
                         //case "BASE_UOM":
                         //    changes.OLD_VALUE = origin.BASE_UOM_ID.ToString();
                         //    changes.NEW_VALUE = data.BASE_UOM_ID.ToString();
@@ -202,9 +196,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         model.CREATED_BY = CurrentUser.USER_ID;
                         model.CREATED_DATE = DateTime.Now;
-                        MaterialOutput output = _materialBll.Save(model, CurrentUser.USER_ID);
-                      
-                        TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                        var  output = _materialBll.Save(model, CurrentUser.USER_ID);
+                        if (!output.Success)
+                        {
+                            TempData[Constans.SubmitType.Save] = output.ErrorMessage;
+                        }
+                        else
+                        {
+                            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                        }
+                        
                     }
                 return RedirectToAction("Index");    
                 //}
@@ -257,39 +258,52 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
+               
                     var data = _materialBll.getByID(model.MaterialNumber, model.PlantId);
                     
                     model.ChangedById = CurrentUser.USER_ID;
                     model.ChangedDate = DateTime.Now;
                     //model.ChangesHistoryList =  Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
                     if (data == null) {
-                        ModelState.AddModelError("Details", "Data Not Found");
-                        InitEditModel(model);
-
-                        return View("Edit", model);
+                       return RedirectToAction("Index");
                     }
 
-                   
+                    foreach (var matUom in model.MaterialUom)
+                    {
+                        var uom = new MATERIAL_UOM();
+                        uom.STICKER_CODE = matUom.MaterialNumber;
+                        uom.WERKS = matUom.Plant;
+                        uom.UMREN = matUom.Umren;
+                        uom.UMREZ = matUom.Umrez;
+                        uom.MEINH = matUom.Meinh;
+
+                        _materialBll.SaveUoM(uom);
+                    }
                     var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
                     AutoMapper.Mapper.Map(model, data);
                     data.MODIFIED_BY = CurrentUser.USER_ID;
                     data.MODIFIED_DATE = DateTime.Now;
                     data.CREATED_DATE = origin.CreatedDate;
                     data.CREATED_BY = origin.CreatedById;
-                    SetChanges(origin,data);
-                    _materialBll.Save(data,CurrentUser.USER_ID);
                     
-                    
-                }
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    SetChanges(origin, data);
+                    var output = _materialBll.Save(data,CurrentUser.USER_ID);
+                    if (!output.Success)
+                    {
+                        TempData[Constans.SubmitType.Update] = output.ErrorMessage;
+                    }
+                    else
+                    {
+                        TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    }
+
+
+               
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
-                InitEditModel(model);
-                return View(model);
+                return RedirectToAction("Index");
             }
         }
 
