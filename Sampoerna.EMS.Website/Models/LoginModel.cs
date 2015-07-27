@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.Website.Models
     {
         [Required]
         [Display(Name = "Username Login")]
-        public string Username { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }

@@ -49,6 +49,10 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<Plant, T001W>().IgnoreAllNonExisting();
             Mapper.CreateMap<T001W, Plant>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPWP, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.NPWP))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.BUTXT))
+                .ForMember(dest => dest.COMPANY_ADDRESS, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.SPRAS))
+                .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
@@ -140,9 +144,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.CreatedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
+                .ForMember(dest => dest.CreatedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.ApprovedById, opt => opt.MapFrom(src => src.APPROVED_BY))
-                .ForMember(dest => dest.ApprovedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
+                .ForMember(dest => dest.ApprovedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.LatestSaldo, opt => opt.MapFrom(src => src.LATEST_SALDO))

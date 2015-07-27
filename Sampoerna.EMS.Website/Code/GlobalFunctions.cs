@@ -191,7 +191,7 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
-        public static SelectList GetConversionUomList()
+            public static SelectList GetConversionUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
             var data = uomBll.GetAll();
@@ -202,6 +202,40 @@ namespace Sampoerna.EMS.Website.Code
                                  Text = s.UOM_ID + "-" + s.UOM_DESC
                              };
             return new SelectList(selectList, "Value", "Text");
+        }
+        
+        public static SelectList GetKppBcCityList()
+        {
+            IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            var data = nppbkcBll.GetAll();
+            return new SelectList(data, "KPPBC_ID", "CITY");
+        }
+
+        public static SelectList GetGoodTypeGroupList()
+        {
+            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            var goodTypes = goodTypeBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+            //return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
+        }
+
+        public static SelectList GetSourcePlantList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plant = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plant);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
+        }
+
+        public static SelectList GetPbck1CompletedList()
+        {
+            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
+            var input = new Pbck1GetByParamInput();
+            var data = pbck1.GetAllByParam(input);
+            return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
         public static SelectList GetPlantAll()

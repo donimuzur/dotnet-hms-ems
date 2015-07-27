@@ -777,6 +777,7 @@
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
     <Content Include="Views\LACK1\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\LACK1\_Lack1Table.cshtml" />
     <Content Include="Views\LACK1\ListByPlant.cshtml" />
     <Content Include="Views\LACK1\_Lack1ListByPlantTable.cshtml" />

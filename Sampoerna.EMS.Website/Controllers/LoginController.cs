@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new LoginFormModel();
-            model.Users = new SelectList(_userBll.GetUsers(), "USERNAME", "USERNAME");
+            model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
             return View(model);
         }
 
@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index(LoginFormModel model)
         {
             
-            var loginResult = _userBll.GetLogin(model.Login.Username);
+            var loginResult = _userBll.GetLogin(model.Login.UserId);
 
             if (loginResult != null)
             {

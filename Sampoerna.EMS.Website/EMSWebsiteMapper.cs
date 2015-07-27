@@ -36,14 +36,11 @@ namespace Sampoerna.EMS.Website
 
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USERNAME))
+                .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.FIRST_NAME, opt => opt.MapFrom(src => src.FIRST_NAME));
 
             ;
-            Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
-               .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USERNAME))
-               .ForMember(dest => dest.FIRST_NAME, opt => opt.MapFrom(src => src.FIRST_NAME));
-
+         
             Mapper.CreateMap<UserTree, UserItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE.HasValue && src.IS_ACTIVE.Value))
                 ;
@@ -149,15 +146,14 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<T001W, SelectItemModel>().IgnoreAllNonExisting()
             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
             .ForMember(dest => dest.TextField, opt => opt.ResolveUsing<SourcePlantTextResolver>().FromMember(src => src));
-            //    .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
-            //    ;
+         
 
             Mapper.CreateMap<Plant, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS));
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, SelectItemModel>().IgnoreAllNonExisting()
                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.EXC_GOOD_TYP + "-" + src.EXT_TYP_DESC))
-               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.EXC_GOOD_TYP));
+               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.EXT_TYP_DESC));
 
 
             #region NPPBKC
@@ -238,6 +234,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PoaSk, opt => opt.MapFrom(src => src.POA_SK));
 
             Mapper.CreateMap<POAViewDetailModel, POA>().IgnoreAllUnmapped()
+                .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
                 .ForMember(dest => dest.PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
                 .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
@@ -458,7 +455,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USERNAME,
-                    opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.USER_FIRST_NAME,
                     opt => opt.MapFrom(src => src.USER != null ? src.USER.FIRST_NAME : string.Empty))
                 .ForMember(dest => dest.USER_LAST_NAME,
@@ -637,7 +634,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<WorkflowHistoryDto, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.ACTION)))
-                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER.USERNAME))
+                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER.USER_ID))
                 .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
                 .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));
 
@@ -648,6 +645,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterInput>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1ProdConverterOutput, Pbck1ProdConvModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting();
+
 
             #region Lack1
 

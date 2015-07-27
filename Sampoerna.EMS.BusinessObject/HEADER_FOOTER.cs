@@ -31,9 +31,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
     
-        public virtual USER USER { get; set; }
         public virtual ICollection<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
         public virtual T001 T001 { get; set; }
+        public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
     }
 }

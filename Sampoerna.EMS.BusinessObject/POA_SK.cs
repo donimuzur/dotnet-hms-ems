@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class POA_SK
     {
         public int POA_SK_ID { get; set; }
-        public int POA_ID { get; set; }
+        public string POA_ID { get; set; }
         public string FILE_NAME { get; set; }
         public string FILE_PATH { get; set; }
     

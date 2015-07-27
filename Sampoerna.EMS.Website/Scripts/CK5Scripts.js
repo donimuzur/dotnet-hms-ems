@@ -143,8 +143,9 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("input[name='DestNpwp']").val(data.PlantNpwp);
                 $("input[name='DestNppbkcId']").val(data.NPPBCK_ID);
                 $("input[name='DestCompanyName']").val(data.CompanyName);
-                $("input[name='DestAddress']").val(data.CompanyAddress);
+                $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
+                $("input[name='DestPlantName']").val(data.PlantName);
             }
         });
     }
@@ -167,9 +168,9 @@ function ajaxGetPlantDetails(url, formData) {
                 $("input[name='SourceNpwp']").val(data.PlantNpwp);
                 $("input[name='SourceNppbkcId']").val(data.NPPBCK_ID);
                 $("input[name='SourceCompanyName']").val(data.CompanyName);
-                $("input[name='SourceAddress']").val(data.CompanyAddress);
+                $("*[name='SourceAddress']").val(data.CompanyAddress);
                 $("input[name='SourceKppbcName']").val(data.KppBcName);
-
+                $("input[name='SourcePlantName']").val(data.PlantName);
                 //enable upload
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();

@@ -13,5 +13,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
         public string KppBcName { get; set; }
+        public string PlantName { get; set; }
     }
 }
