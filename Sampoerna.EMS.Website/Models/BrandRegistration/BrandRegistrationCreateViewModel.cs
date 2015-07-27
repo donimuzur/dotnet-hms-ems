@@ -50,8 +50,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public SelectList SeriesList { get; set; }
         public string SeriesCode { get; set; }
         public string SeriesValue { get; set; }
-
-        [Required]
+               
         public string Content { get; set; }
 
         [Required]

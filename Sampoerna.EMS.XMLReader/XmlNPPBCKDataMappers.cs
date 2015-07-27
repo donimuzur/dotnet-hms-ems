@@ -25,45 +25,55 @@ namespace Sampoerna.EMS.XMLReader
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
                 var xmlItems = xmlRoot.Elements("Z1A_NPPBKC");
                 var items = new List<ZAIDM_EX_NPPBKC>();
-               
-                foreach (var xElement in xmlItems)
+              
+                try
                 {
-                    var item = new ZAIDM_EX_NPPBKC();
-                    item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                    item.ADDR1 = xElement.Element("ADDR1").Value;
-                    item.ADDR2 = xElement.Element("ADDR2").Value;
-                    item.CITY = xElement.Element("CITY").Value;
-                    item.REGION = xElement.Element("REGION").Value;
-                    var kppbcNo = xElement.Element("KPPBC_ID").Value;
-                    var kppbc = new XmlKPPBCDataMapper(null
-                        ).GetKPPBC(kppbcNo);
-                    if (kppbc == null)
+                   
+                    foreach (var xElement in xmlItems)
                     {
-                        //insert kppbc
-                        var kppbcItem = new ZAIDM_EX_KPPBC();
-                        kppbcItem.KPPBC_ID = kppbcNo;
-                        kppbcItem.CREATED_DATE = DateTime.Now;
-                        _xmlMapper.InsertToDatabase(kppbcItem);
-                    }
-                    item.KPPBC_ID = new XmlKPPBCDataMapper(null
-                        ).GetKPPBC(kppbcNo).KPPBC_ID;
-                    
-                    //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
-                    if (exisitingNppbkc != null)
-                    {
-                        item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
-                        
-                    }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
+                        var item = new ZAIDM_EX_NPPBKC();
+                        item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
+                        item.ADDR1 = xElement.Element("ADDR1") == null ? null : xElement.Element("ADDR1").Value;
+                        item.ADDR2 = xElement.Element("ADDR2") == null ? null : xElement.Element("ADDR2").Value;
+                        item.CITY = xElement.Element("CITY") == null ? null : xElement.Element("CITY").Value;
+                        item.REGION = xElement.Element("REGION") == null ? null : xElement.Element("REGION").Value;
+                        var kppbcNo = xElement.Element("KPPBC_ID") == null ? null : xElement.Element("KPPBC_ID").Value;
+                        var kppbc = new XmlKPPBCDataMapper(null
+                            ).GetKPPBC(kppbcNo);
+                        if (kppbc == null)
+                        {
+                            //insert kppbc
+                            var kppbcItem = new ZAIDM_EX_KPPBC();
+                            kppbcItem.KPPBC_ID = kppbcNo;
+                            kppbcItem.CREATED_DATE = DateTime.Now;
+                            _xmlMapper.InsertToDatabase(kppbcItem);
+                        }
+                        item.KPPBC_ID = new XmlKPPBCDataMapper(null
+                            ).GetKPPBC(kppbcNo).KPPBC_ID;
 
+                        //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
+                        if (exisitingNppbkc != null)
+                        {
+                            item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
+                        
+
+                    }
                 }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+               
                 return items;
             }
              
