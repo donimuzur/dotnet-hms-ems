@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK5MaterialInput, CK5MaterialOutput>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<CK5, CK5Dto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.CreatedUser, opt => opt.MapFrom(src => src.USER1.USERNAME))
+                .ForMember(dest => dest.CreatedUser, opt => opt.MapFrom(src => src.USER1.USER_ID))
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE));

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA_SK = new HashSet<POA_SK>();
         }
     
-        public int POA_ID { get; set; }
+        public string POA_ID { get; set; }
         public string ID_CARD { get; set; }
         public string POA_PHONE { get; set; }
         public string POA_ADDRESS { get; set; }
@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER1 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual USER USER2 { get; set; }
-        public virtual ICollection<POA_SK> POA_SK { get; set; }
         public virtual USER USER3 { get; set; }
+        public virtual ICollection<POA_SK> POA_SK { get; set; }
     }
 }

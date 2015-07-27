@@ -40,14 +40,10 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual DbSet<PARAMATER> PARAMATER { get; set; }
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
-        public virtual DbSet<POA> POA { get; set; }
-        public virtual DbSet<POA_MAP> POA_MAP { get; set; }
-        public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<T001> T001 { get; set; }
         public virtual DbSet<T001K> T001K { get; set; }
         public virtual DbSet<T001W> T001W { get; set; }
-        public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
@@ -72,5 +68,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual DbSet<LACK1> LACK1 { get; set; }
+        public virtual DbSet<USER> USER { get; set; }
+        public virtual DbSet<POA> POA { get; set; }
+        public virtual DbSet<POA_MAP> POA_MAP { get; set; }
+        public virtual DbSet<POA_SK> POA_SK { get; set; }
     }
 }

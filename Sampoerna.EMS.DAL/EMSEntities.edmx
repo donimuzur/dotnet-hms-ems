@@ -16,7 +16,7 @@
           <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="CK5">
           <Key>
@@ -62,9 +62,9 @@
           <Property Name="FINAL_PORT" Type="nvarchar" MaxLength="50" />
           <Property Name="FINAL_PORT_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="STATUS_ID" Type="int" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SOURCE_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
@@ -81,6 +81,7 @@
           <Property Name="DN_DATE" Type="datetime" />
           <Property Name="SOURCE_PLANT_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="DEST_PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="FINAL_PORT_NAME" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
@@ -160,9 +161,9 @@
           <Property Name="IS_ACTIVE" Type="bit" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER_FORM_MAP">
           <Key>
@@ -197,8 +198,8 @@
           <Property Name="GOV_STATUS" Type="int" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
@@ -320,8 +321,8 @@
           <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" />
-          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PORT_NAME" Type="nvarchar" MaxLength="50" />
@@ -338,7 +339,7 @@
           <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_CONVERTER">
           <Key>
@@ -378,18 +379,18 @@
           <Key>
             <PropertyRef Name="POA_ID" />
           </Key>
-          <Property Name="POA_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ID_CARD" Type="nvarchar" MaxLength="22" Nullable="false" />
           <Property Name="POA_PHONE" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="POA_ADDRESS" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="POA_EMAIL" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PRINTED_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TITLE" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="LOGIN_AS" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="LOGIN_AS" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
@@ -400,10 +401,10 @@
           <Property Name="POA_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="POA_ID" Type="int" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="POA_SK">
@@ -411,7 +412,7 @@
             <PropertyRef Name="POA_SK_ID" />
           </Key>
           <Property Name="POA_SK_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="POA_ID" Type="int" Nullable="false" />
+          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
         </EntityType>
@@ -432,7 +433,7 @@
           <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
           <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="T001K">
@@ -457,7 +458,7 @@
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_MAIN_PLANT" Type="bit" />
         </EntityType>
         <EntityType Name="UOM">
@@ -468,14 +469,13 @@
           <Property Name="UOM_DESC" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
             <PropertyRef Name="USER_ID" />
           </Key>
-          <Property Name="USER_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="USERNAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="FIRST_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="LAST_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="PHONE" Type="nvarchar" MaxLength="25" />
@@ -505,9 +505,9 @@
           <Property Name="IMPORT_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="EXPORT_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
@@ -519,7 +519,7 @@
           <Property Name="FORM_ID" Type="bigint" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
           <Property Name="ACTION" Type="int" Nullable="false" />
-          <Property Name="ACTION_BY" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="ACTION_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ACTION_DATE" Type="datetime" />
           <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
           <Property Name="ROLE" Type="int" Nullable="false" />
@@ -556,9 +556,9 @@
           <Property Name="IS_FROM_SAP" Type="bit" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -605,9 +605,9 @@
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="IS_FROM_SAP" Type="bit" Nullable="false" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
@@ -629,7 +629,7 @@
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="10" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
@@ -2009,14 +2009,10 @@
           <EntitySet Name="PAGE_MAP" EntityType="EMSModel.PAGE_MAP" />
           <EntitySet Name="PARAMATER" EntityType="EMSModel.PARAMATER" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="EMSModel.PLANT_RECEIVE_MATERIAL" />
-          <EntitySet Name="POA" EntityType="EMSModel.POA" />
-          <EntitySet Name="POA_MAP" EntityType="EMSModel.POA_MAP" />
-          <EntitySet Name="POA_SK" EntityType="EMSModel.POA_SK" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="EMSModel.SUPPLIER_PORT" />
           <EntitySet Name="T001" EntityType="EMSModel.T001" />
           <EntitySet Name="T001K" EntityType="EMSModel.T001K" />
           <EntitySet Name="T001W" EntityType="EMSModel.T001W" />
-          <EntitySet Name="USER" EntityType="EMSModel.USER" />
           <EntitySet Name="USER_GROUP" EntityType="EMSModel.USER_GROUP" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="EMSModel.VIRTUAL_PLANT_MAP" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
@@ -2024,10 +2020,6 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="EMSModel.ZAIDM_EX_PCODE" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="EMSModel.ZAIDM_EX_PRODTYP" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="EMSModel.ZAIDM_EX_SERIES" />
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
-          </AssociationSet>
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
             <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
             <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
@@ -2036,20 +2028,12 @@
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
           </AssociationSet>
-          <AssociationSet Name="FK_HEADER_FOOTER_CREATED_BY_USER" Association="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
-          </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
             <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
             <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_HEADER_FOOTER" Association="EMSModel.FK_HEADER_FOOTER_HEADER_FOOTER">
             <End Role="T001" EntitySet="T001" />
-            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
-          </AssociationSet>
-          <AssociationSet Name="FK_HEADER_FOOTER_MODIFIED_BY_USER" Association="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
             <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="EMSModel.FK_PAGE_MAP_PAGE">
@@ -2072,42 +2056,6 @@
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
-          <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="EMSModel.FK_POA_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="EMSModel.FK_POA_LOGIN_AS_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_POA" Association="EMSModel.FK_POA_MAP_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_SK_POA" Association="EMSModel.FK_POA_SK_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="POA_SK" EntitySet="POA_SK" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_USER" Association="EMSModel.FK_POA_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_CREATED_BY_USER" Association="EMSModel.FK_POA_MAP_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MAP_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_T001_MODIFIED_BY_USER" Association="EMSModel.FK_T001_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="T001" EntitySet="T001" />
-          </AssociationSet>
           <AssociationSet Name="FK_T001K_T001" Association="EMSModel.FK_T001K_T001">
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
@@ -2120,10 +2068,6 @@
             <End Role="T001" EntitySet="T001" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001W_MODIFIED_BY_USER" Association="EMSModel.FK_T001W_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="T001W" EntitySet="T001W" />
-          </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT">
             <End Role="T001W" EntitySet="T001W" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
@@ -2132,27 +2076,11 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_USER_USER_GROUP" Association="EMSModel.FK_USER_USER_GROUP">
-            <End Role="USER_GROUP" EntitySet="USER_GROUP" />
-            <End Role="USER" EntitySet="USER" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
-          </AssociationSet>
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="EMSModel.ZAIDM_EX_KPPBC" />
           <EntitySet Name="ZAIDM_EX_NPPBKC" EntityType="EMSModel.ZAIDM_EX_NPPBKC" />
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_LFA1" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_LFA1">
             <End Role="LFA1" EntitySet="LFA1" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC">
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T001" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_T001">
             <End Role="T001" EntitySet="T001" />
@@ -2166,10 +2094,6 @@
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="T001W" EntitySet="T001W" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
@@ -2177,14 +2101,6 @@
           <EntitySet Name="ZAIDM_EX_MATERIAL" EntityType="EMSModel.ZAIDM_EX_MATERIAL" />
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W">
             <End Role="T001W" EntitySet="T001W" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
@@ -2200,14 +2116,6 @@
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_APPROVED_BY_USER" Association="EMSModel.FK_PBCK1_APPROVED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="EMSModel.FK_PBCK1_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PBCK1" Association="EMSModel.FK_PBCK1_PBCK1">
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="PBCK11" EntitySet="PBCK1" />
@@ -2220,10 +2128,6 @@
           <AssociationSet Name="FK_PBCK1_SALDO_UOM" Association="EMSModel.FK_PBCK1_SALDO_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="EMSModel.FK_UOM_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="UOM" EntitySet="UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
             <End Role="UOM" EntitySet="UOM" />
@@ -2241,14 +2145,6 @@
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T001W" Association="EMSModel.FK_ZAIDM_EX_BRAND_T001W">
             <End Role="T001W" EntitySet="T001W" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
@@ -2287,10 +2183,6 @@
           <EntitySet Name="LACK1_DOCUMENT" EntityType="EMSModel.LACK1_DOCUMENT" />
           <EntitySet Name="LACK1_ITEM" EntityType="EMSModel.LACK1_ITEM" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
-          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
-          </AssociationSet>
           <EntitySet Name="MATERIAL_UOM" EntityType="EMSModel.MATERIAL_UOM" />
           <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -2298,14 +2190,6 @@
           </AssociationSet>
           <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
           <EntitySet Name="CK5_MATERIAL" EntityType="EMSModel.CK5_MATERIAL" />
-          <AssociationSet Name="FK_CK5_APPROVED_BY_USER" Association="EMSModel.FK_CK5_APPROVED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK5_CREATED_BY_USER" Association="EMSModel.FK_CK5_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="EMSModel.FK_CK5_MATERIAL_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
@@ -2328,10 +2212,6 @@
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_DECREE_DOC_USER" Association="EMSModel.FK_PBCK1_DECREE_DOC_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
-          </AssociationSet>
           <EntitySet Name="LACK1" EntityType="EMSModel.LACK1" />
           <AssociationSet Name="FK_LACK1_DOCUMENT_LACK1" Association="EMSModel.FK_LACK1_DOCUMENT_LACK1">
             <End Role="LACK1" EntitySet="LACK1" />
@@ -2349,6 +2229,31 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <EntitySet Name="USER" EntityType="EMSModel.USER" />
+          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_APPROVED_BY_USER" Association="EMSModel.FK_CK5_APPROVED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_CREATED_BY_USER" Association="EMSModel.FK_CK5_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HEADER_FOOTER_CREATED_BY_USER" Association="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HEADER_FOOTER_MODIFIED_BY_USER" Association="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+          </AssociationSet>
           <AssociationSet Name="FK_LACK1_USER_APPROVED" Association="EMSModel.FK_LACK1_USER_APPROVED">
             <End Role="USER" EntitySet="USER" />
             <End Role="LACK1" EntitySet="LACK1" />
@@ -2357,9 +2262,104 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
-          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
+          <AssociationSet Name="FK_PBCK1_APPROVED_BY_USER" Association="EMSModel.FK_PBCK1_APPROVED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="EMSModel.FK_PBCK1_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_DECREE_DOC_USER" Association="EMSModel.FK_PBCK1_DECREE_DOC_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_T001_MODIFIED_BY_USER" Association="EMSModel.FK_T001_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="T001" EntitySet="T001" />
+          </AssociationSet>
+          <AssociationSet Name="FK_T001W_MODIFIED_BY_USER" Association="EMSModel.FK_T001W_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="T001W" EntitySet="T001W" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="EMSModel.FK_UOM_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
             <End Role="UOM" EntitySet="UOM" />
-            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_USER_GROUP" Association="EMSModel.FK_USER_USER_GROUP">
+            <End Role="USER_GROUP" EntitySet="USER_GROUP" />
+            <End Role="USER" EntitySet="USER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" Association="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="EMSModel.FK_WORKFLOW_HISTORY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" Association="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <EntitySet Name="POA" EntityType="EMSModel.POA" />
+          <EntitySet Name="POA_MAP" EntityType="EMSModel.POA_MAP" />
+          <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="EMSModel.FK_POA_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="EMSModel.FK_POA_LOGIN_AS_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_POA" Association="EMSModel.FK_POA_MAP_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_USER" Association="EMSModel.FK_POA_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_CREATED_BY_USER" Association="EMSModel.FK_POA_MAP_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MAP_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <EntitySet Name="POA_SK" EntityType="EMSModel.POA_SK" />
+          <AssociationSet Name="FK_POA_SK_POA" Association="EMSModel.FK_POA_SK_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_SK" EntitySet="POA_SK" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2379,7 +2379,7 @@
           <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
         </EntityType>
         <EntityType Name="EMAIL_TEMPLATE">
@@ -2432,12 +2432,12 @@
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
           <Property Name="IS_DELETED" Type="Boolean" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER" FromRole="HEADER_FOOTER" ToRole="USER" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="HEADER_FOOTER_FORM_MAP" Relationship="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" FromRole="HEADER_FOOTER" ToRole="HEADER_FOOTER_FORM_MAP" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_HEADER_FOOTER_HEADER_FOOTER" FromRole="HEADER_FOOTER" ToRole="T001" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER" FromRole="HEADER_FOOTER" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER" FromRole="HEADER_FOOTER" ToRole="USER" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER_FORM_MAP">
@@ -2524,58 +2524,6 @@
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_T001W" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP1" Relationship="EMSModel.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="PLANT_RECEIVE_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
         </EntityType>
-        <EntityType Name="POA">
-          <Key>
-            <PropertyRef Name="POA_ID" />
-          </Key>
-          <Property Name="POA_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" />
-          <Property Name="POA_PHONE" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ADDRESS" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="POA_EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="MANAGER_ID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACTIVE" Type="Boolean" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="POA" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="POA" ToRole="USER" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
-          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="POA" ToRole="USER" />
-          <NavigationProperty Name="POA_SK" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA" ToRole="POA_SK" />
-          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_USER" FromRole="POA" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="POA_MAP">
-          <Key>
-            <PropertyRef Name="POA_MAP_ID" />
-          </Key>
-          <Property Name="POA_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ID" Type="Int32" Nullable="false" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA_MAP" ToRole="POA" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
-          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="POA_MAP" ToRole="ZAIDM_EX_NPPBKC" />
-        </EntityType>
-        <EntityType Name="POA_SK">
-          <Key>
-            <PropertyRef Name="POA_SK_ID" />
-          </Key>
-          <Property Name="POA_SK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="POA_ID" Type="Int32" Nullable="false" />
-          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA_SK" ToRole="POA" />
-        </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
@@ -2591,10 +2539,9 @@
           <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_HEADER_FOOTER" FromRole="T001" ToRole="HEADER_FOOTER" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="T001" ToRole="USER" />
           <NavigationProperty Name="T001K" Relationship="EMSModel.FK_T001K_T001" FromRole="T001" ToRole="T001K" />
           <NavigationProperty Name="T001K1" Relationship="EMSModel.FK_T001K_T1001" FromRole="T001" ToRole="T001K" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
@@ -2602,6 +2549,7 @@
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="T001" ToRole="USER" />
           </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -2627,59 +2575,15 @@
           <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_MAIN_PLANT" Type="Boolean" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="T001W" ToRole="USER" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" FromRole="T001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" FromRole="T001W" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="T001W" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="T001W" ToRole="USER" />
         </EntityType>
-        <EntityType Name="USER">
-          <Key>
-            <PropertyRef Name="USER_ID" />
-          </Key>
-          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="USERNAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PHONE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="EMAIL" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="ADDRESS" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="USER_GROUP_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACTIVE" Type="Boolean" />
-          <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
-          <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER" FromRole="USER" ToRole="HEADER_FOOTER" />
-          <NavigationProperty Name="HEADER_FOOTER1" Relationship="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER" FromRole="USER" ToRole="HEADER_FOOTER" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="USER" ToRole="T001" />
-          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="USER" ToRole="T001W" />
-          <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
-          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="USER" ToRole="ZAIDM_EX_NPPBKC" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_APPROVED_BY_USER" FromRole="USER" ToRole="PBCK1" />
-          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_CREATED_BY_USER" FromRole="USER" ToRole="PBCK1" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="USER" ToRole="CK5" />
-          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="USER" ToRole="CK5" />
-          <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="USER" ToRole="PBCK1_DECREE_DOC" />
-          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="USER" ToRole="LACK1" />
-          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="USER" ToRole="LACK1" />
-          </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
             <PropertyRef Name="USER_GROUP_ID" />
@@ -2701,16 +2605,16 @@
           <Property Name="IMPORT_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="EXPORT_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="VIRTUAL_PLANT_MAP" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" FromRole="VIRTUAL_PLANT_MAP" ToRole="T001W" />
           <NavigationProperty Name="T001W1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" FromRole="VIRTUAL_PLANT_MAP" ToRole="T001W" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" FromRole="VIRTUAL_PLANT_MAP" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" FromRole="VIRTUAL_PLANT_MAP" ToRole="USER" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
             <PropertyRef Name="EXC_GOOD_TYP" />
@@ -2766,18 +2670,6 @@
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
           <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="0..1" />
           <End Type="EMSModel.EX_GROUP_TYPE_DETAILS" Role="EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
@@ -2802,18 +2694,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_HEADER_FOOTER_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="HEADER_FOOTER">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
           <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="1" />
           <End Type="EMSModel.HEADER_FOOTER_FORM_MAP" Role="HEADER_FOOTER_FORM_MAP" Multiplicity="*" />
@@ -2835,18 +2715,6 @@
             </Principal>
             <Dependent Role="HEADER_FOOTER">
               <PropertyRef Name="BUKRS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_HEADER_FOOTER_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="HEADER_FOOTER">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2910,114 +2778,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_POA_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_LOGIN_AS_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="LOGIN_AS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_POA">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_SK_POA">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
-          <End Type="EMSModel.POA_SK" Role="POA_SK" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
-            </Principal>
-            <Dependent Role="POA_SK">
-              <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="MANAGER_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_T001_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.T001" Role="T001" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="T001">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_T001K_T001">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
           <End Type="EMSModel.T001K" Role="T001K" Multiplicity="*" />
@@ -3054,18 +2814,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001W_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="T001W">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
           <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
@@ -3087,42 +2835,6 @@
             </Principal>
             <Dependent Role="VIRTUAL_PLANT_MAP">
               <PropertyRef Name="IMPORT_PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_USER_USER_GROUP">
-          <End Type="EMSModel.USER_GROUP" Role="USER_GROUP" Multiplicity="0..1" />
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER_GROUP">
-              <PropertyRef Name="USER_GROUP_ID" />
-            </Principal>
-            <Dependent Role="USER">
-              <PropertyRef Name="USER_GROUP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="VIRTUAL_PLANT_MAP">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="VIRTUAL_PLANT_MAP">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3158,15 +2870,15 @@
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="LFA1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_LFA1" FromRole="ZAIDM_EX_NPPBKC" ToRole="LFA1" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="POA_MAP" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001" />
           <NavigationProperty Name="T0011" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001W" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="ZAIDM_EX_NPPBKC" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="ZAIDM_EX_NPPBKC" ToRole="USER" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="POA_MAP" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
           <End Type="EMSModel.LFA1" Role="LFA1" Multiplicity="0..1" />
@@ -3177,18 +2889,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="VENDOR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
-          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_NPPBKC">
-              <PropertyRef Name="NPPBKC_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="NPPBKC_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3228,18 +2928,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_NPPBKC">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
           <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
@@ -3267,16 +2955,16 @@
           <Property Name="BASE_UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="IS_FROM_SAP" Type="Boolean" Nullable="false" />
           <Property Name="IS_DELETED" Type="Boolean" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="MATERIAL_UOM" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="MATERIAL_UOM" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -3287,30 +2975,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_MATERIAL">
               <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3361,14 +3025,12 @@
           <Property Name="QTY_APPROVED" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_PBCK1_LACK1_MONTH_FROM" FromRole="PBCK1" ToRole="MONTH" />
           <NavigationProperty Name="MONTH1" Relationship="EMSModel.FK_PBCK1_MONTH" FromRole="PBCK1" ToRole="MONTH" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK1_APPROVED_BY_USER" FromRole="PBCK1" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK1_CREATED_BY_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_PBCK1" FromRole="PBCK1" ToRole="PBCK11" />
           <NavigationProperty Name="PBCK12" Relationship="EMSModel.FK_PBCK1_PBCK1" FromRole="PBCK11" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="PBCK1" ToRole="UOM" />
@@ -3381,6 +3043,8 @@
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" FromRole="PBCK1" ToRole="PBCK1_PROD_PLAN" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="PBCK1" ToRole="CK5" />
           <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" FromRole="PBCK1" ToRole="PBCK1_DECREE_DOC" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK1_APPROVED_BY_USER" FromRole="PBCK1" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK1_CREATED_BY_USER" FromRole="PBCK1" ToRole="USER" />
           </EntityType>
         <Association Name="FK_PBCK1_LACK1_MONTH_FROM">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -3406,30 +3070,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PBCK1_APPROVED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="APPROVED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PBCK1_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
           <End Type="EMSModel.PBCK1" Role="PBCK11" Multiplicity="*" />
@@ -3450,16 +3090,16 @@
           <Property Name="UOM_DESC" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="UOM" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="UOM" ToRole="PBCK1" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
           <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
         </EntityType>
         <Association Name="FK_PBCK1_REQUEST_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
@@ -3482,18 +3122,6 @@
             </Principal>
             <Dependent Role="PBCK1">
               <PropertyRef Name="LATEST_SALDO_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UOM_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="UOM">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3579,17 +3207,17 @@
           <Property Name="IS_FROM_SAP" Type="Boolean" />
           <Property Name="IS_DELETED" Type="Boolean" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MARKET" />
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -3600,30 +3228,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3776,24 +3380,12 @@
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
-          <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
           <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
         </EntityType>
-        <Association Name="FK_WORKFLOW_HISTORY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="WORKFLOW_HISTORY">
-              <PropertyRef Name="ACTION_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EnumType Name="CarriageMethod" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CarriageMethod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EntityType Name="MATERIAL_UOM">
           <Key>
@@ -3865,9 +3457,9 @@
           <Property Name="FINAL_PORT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FINAL_PORT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="STATUS_ID" Type="EMSModel.DocumentStatus" Nullable="false" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="SOURCE_PLANT_NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -3881,14 +3473,15 @@
           <Property Name="DEST_PLANT_ADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="REGISTRATION_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="CK5" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <Property Name="DN_DATE" Type="DateTime" Precision="3" />
           <Property Name="SOURCE_PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="FINAL_PORT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="CK5" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="CK5" ToRole="USER" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
@@ -3913,30 +3506,6 @@
           <Property Name="CONVERTED_UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
         </EntityType>
-        <Association Name="FK_CK5_APPROVED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="APPROVED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
           <End Type="EMSModel.CK5_MATERIAL" Role="CK5_MATERIAL" Multiplicity="*" />
@@ -4004,7 +3573,7 @@
           <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" FromRole="PBCK1_DECREE_DOC" ToRole="PBCK1" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="PBCK1_DECREE_DOC" ToRole="USER" />
         </EntityType>
@@ -4017,18 +3586,6 @@
             </Principal>
             <Dependent Role="PBCK1_DECREE_DOC">
               <PropertyRef Name="PBCK1_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_DECREE_DOC_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.PBCK1_DECREE_DOC" Role="PBCK1_DECREE_DOC" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK1_DECREE_DOC">
-              <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4055,17 +3612,17 @@
           <Property Name="GOV_STATUS" Type="Int32" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="APPROVED_BY" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1_DOCUMENT" Relationship="EMSModel.FK_LACK1_DOCUMENT_LACK1" FromRole="LACK1" ToRole="LACK1_DOCUMENT" />
           <NavigationProperty Name="LACK1_ITEM" Relationship="EMSModel.FK_LACK1_ITEM_LACK1" FromRole="LACK1" ToRole="LACK1_ITEM" />
           <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="LACK1" ToRole="MONTH" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="LACK1" ToRole="UOM" />
+          <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="LACK1" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="LACK1" ToRole="USER" />
-          <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_LACK1_DOCUMENT_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
@@ -4115,6 +3672,121 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_LACK1_WASTE_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="WASTE_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PHONE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="ADDRESS" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="USER_GROUP_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="USER" ToRole="CK5" />
+          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="USER" ToRole="CK5" />
+          <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER" FromRole="USER" ToRole="HEADER_FOOTER" />
+          <NavigationProperty Name="HEADER_FOOTER1" Relationship="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER" FromRole="USER" ToRole="HEADER_FOOTER" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="USER" ToRole="LACK1" />
+          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="USER" ToRole="LACK1" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_APPROVED_BY_USER" FromRole="USER" ToRole="PBCK1" />
+          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_CREATED_BY_USER" FromRole="USER" ToRole="PBCK1" />
+          <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="USER" ToRole="PBCK1_DECREE_DOC" />
+          <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="USER" ToRole="T001" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="USER" ToRole="T001W" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
+          <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
+          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
+          <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
+          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="USER" ToRole="ZAIDM_EX_NPPBKC" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
+          <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
+        </EntityType>
+        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.CHANGES_HISTORY" Role="CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_APPROVED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HEADER_FOOTER_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="HEADER_FOOTER">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HEADER_FOOTER_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.HEADER_FOOTER" Role="HEADER_FOOTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="HEADER_FOOTER">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_LACK1_USER_APPROVED">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
@@ -4139,15 +3811,343 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_LACK1_WASTE_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+        <Association Name="FK_PBCK1_APPROVED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
             </Principal>
-            <Dependent Role="LACK1">
-              <PropertyRef Name="WASTE_UOM" />
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_DECREE_DOC_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK1_DECREE_DOC" Role="PBCK1_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_DECREE_DOC">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_T001_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.T001" Role="T001" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="T001">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_T001W_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="T001W">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UOM_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="UOM">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_USER_GROUP">
+          <End Type="EMSModel.USER_GROUP" Role="USER_GROUP" Multiplicity="0..1" />
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER_GROUP">
+              <PropertyRef Name="USER_GROUP_ID" />
+            </Principal>
+            <Dependent Role="USER">
+              <PropertyRef Name="USER_GROUP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="VIRTUAL_PLANT_MAP">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_HISTORY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_HISTORY">
+              <PropertyRef Name="ACTION_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="POA">
+          <Key>
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PHONE" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ADDRESS" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="POA_EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MANAGER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="POA_SK" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA" ToRole="POA_SK" />
+        </EntityType>
+        <EntityType Name="POA_MAP">
+          <Key>
+            <PropertyRef Name="POA_MAP_ID" />
+          </Key>
+          <Property Name="POA_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA_MAP" ToRole="POA" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="POA_MAP" ToRole="ZAIDM_EX_NPPBKC" />
+        </EntityType>
+        <Association Name="FK_POA_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_LOGIN_AS_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="LOGIN_AS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="MANAGER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="POA_SK">
+          <Key>
+            <PropertyRef Name="POA_SK_ID" />
+          </Key>
+          <Property Name="POA_SK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA_SK" ToRole="POA" />
+        </EntityType>
+        <Association Name="FK_POA_SK_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_SK" Role="POA_SK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_SK">
+              <PropertyRef Name="POA_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4305,50 +4305,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="POA">
-            <EntityTypeMapping TypeName="EMSModel.POA">
-              <MappingFragment StoreEntitySet="POA">
-                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
-                <ScalarProperty Name="LOGIN_AS" ColumnName="LOGIN_AS" />
-                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
-                <ScalarProperty Name="PRINTED_NAME" ColumnName="PRINTED_NAME" />
-                <ScalarProperty Name="POA_EMAIL" ColumnName="POA_EMAIL" />
-                <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
-                <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
-                <ScalarProperty Name="ID_CARD" ColumnName="ID_CARD" />
-                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="POA_MAP">
-            <EntityTypeMapping TypeName="EMSModel.POA_MAP">
-              <MappingFragment StoreEntitySet="POA_MAP">
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
-                <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="POA_SK">
-            <EntityTypeMapping TypeName="EMSModel.POA_SK">
-              <MappingFragment StoreEntitySet="POA_SK">
-                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
-                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
-                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-                <ScalarProperty Name="POA_SK_ID" ColumnName="POA_SK_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="SUPPLIER_PORT">
             <EntityTypeMapping TypeName="EMSModel.SUPPLIER_PORT">
               <MappingFragment StoreEntitySet="SUPPLIER_PORT">
@@ -4395,23 +4351,6 @@
                 <ScalarProperty Name="ORT01" ColumnName="ORT01" />
                 <ScalarProperty Name="NAME1" ColumnName="NAME1" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="USER">
-            <EntityTypeMapping TypeName="EMSModel.USER">
-              <MappingFragment StoreEntitySet="USER">
-                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
-                <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
-                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
-                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
-                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4720,6 +4659,7 @@
           <EntitySetMapping Name="CK5">
             <EntityTypeMapping TypeName="EMSModel.CK5">
               <MappingFragment StoreEntitySet="CK5">
+                <ScalarProperty Name="FINAL_PORT_NAME" ColumnName="FINAL_PORT_NAME" />
                 <ScalarProperty Name="DEST_PLANT_NAME" ColumnName="DEST_PLANT_NAME" />
                 <ScalarProperty Name="SOURCE_PLANT_NAME" ColumnName="SOURCE_PLANT_NAME" />
                 <ScalarProperty Name="DN_DATE" ColumnName="DN_DATE" />
@@ -4853,6 +4793,66 @@
                 <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
                 <ScalarProperty Name="LACK1_NUMBER" ColumnName="LACK1_NUMBER" />
                 <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER">
+            <EntityTypeMapping TypeName="EMSModel.USER">
+              <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
+                <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA">
+            <EntityTypeMapping TypeName="EMSModel.POA">
+              <MappingFragment StoreEntitySet="POA">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
+                <ScalarProperty Name="LOGIN_AS" ColumnName="LOGIN_AS" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="PRINTED_NAME" ColumnName="PRINTED_NAME" />
+                <ScalarProperty Name="POA_EMAIL" ColumnName="POA_EMAIL" />
+                <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
+                <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
+                <ScalarProperty Name="ID_CARD" ColumnName="ID_CARD" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_MAP">
+            <EntityTypeMapping TypeName="EMSModel.POA_MAP">
+              <MappingFragment StoreEntitySet="POA_MAP">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_SK">
+            <EntityTypeMapping TypeName="EMSModel.POA_SK">
+              <MappingFragment StoreEntitySet="POA_SK">
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="POA_SK_ID" ColumnName="POA_SK_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
