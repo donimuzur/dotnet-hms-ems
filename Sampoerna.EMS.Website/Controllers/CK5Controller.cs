@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult Intercompany(CK5IndexViewModel model)
         {
-            //only use by domestic and importer
+            //only use by domestic and importer!
 
             Enums.CK5Type ck5Type = Enums.CK5Type.Domestic;
 

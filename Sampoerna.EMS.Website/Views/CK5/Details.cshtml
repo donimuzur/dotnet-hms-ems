@@ -175,9 +175,11 @@
 
 
 @section scripts {
+<script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#MenuCK5Domestic').addClass('active');
+            //$('#MenuCK5Domestic').addClass('active');
+            OnReadyFunction('@Model.Ck5Type.ToString()');
         });
 
 

@@ -1,6 +1,19 @@
 ﻿
-function OnReadyFunction() {
-    $('#MenuCK5Domestic').addClass('active');
+function OnReadyFunction(ck5Type) {
+    //alert(ck5Type);
+    if (ck5Type == 'PortToImporter' || ck5Type == 'ImporterToPlant') {
+        $('#MenuCK5Import').addClass('active');
+    }
+    else if (ck5Type == 'Export') {
+        $('#MenuCK5Export').addClass('active');
+    }
+    else if (ck5Type == 'Manual') {
+        $('#MenuCK5Manual').addClass('active');
+    }
+    else {
+        $('#MenuCK5Domestic').addClass('active');
+    }
+   
 
     $('#btnUploadInfo').click(function () {
 
