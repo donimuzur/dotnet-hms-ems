@@ -56,7 +56,7 @@
                     <thead>
                         <tr>
                             <th class="toggle-row">Filter</th>
-                            <th>Username</th>
+                            <th>UserID</th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Phone</th>
@@ -85,7 +85,7 @@
                                     <a href="@Url.Action("Detail", "User", new { id = item.USER_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.USERNAME)
+                                    @Html.DisplayFor(modelItem => item.USER_ID)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FIRST_NAME)

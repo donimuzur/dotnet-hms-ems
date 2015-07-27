@@ -69,6 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
+                    
                     poa.CREATED_BY = CurrentUser.USER_ID;
                     poa.CREATED_DATE = DateTime.Now;
                     poa.IS_ACTIVE = true;
