@@ -23,8 +23,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private Enums.MenuList _mainMenu;
 
 
-        
-        public LACK1Controller(IPageBLL pageBll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll ) 
+
+        public LACK1Controller(IPageBLL pageBll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -33,22 +33,23 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.LACK1;
         }
 
-       
+
         #region Index
         //
         // GET: /LACK1/
         public ActionResult Index()
         {
-            var data =  InitLack1ViewModel(new Lack1IndexViewModel            
+            var data = InitLack1ViewModel(new Lack1IndexViewModel
             {
-               
+
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Type = Enums.LACK1Type.ListByNppbkc,
+                
                 Details = Mapper.Map<List<NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()))
-               
+
             });
-           
+
             return View("Index", data);
         }
 
@@ -63,8 +64,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-       
-        
-        #endregion 
-	}
+        private List<NppbkcData> GetListByNppbkc(Lack1IndexViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get all 
+                var litsByNppbkc = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
+                return Mapper.Map<List<NppbkcData>>(litsByNppbkc);
+            }
+            //get by param
+            var input = Mapper.Map<Lack1GetByParamInput>(filter);
+            var dbData = _lack1Bll.GetAllByParam(input);
+            
+            return  Mapper.Map<List<NppbkcData>>(dbData);
+
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterListByNppbkc(Lack1IndexViewModel model)
+        {
+            model.Details = GetListByNppbkc(model);
+            return PartialView("_Lack1Table", model);
+        }
+
+        #endregion
+    }
 }

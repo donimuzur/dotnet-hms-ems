@@ -1,8 +1,6 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexViewModel
-@using Sampoerna.EMS.Website.Helpers
-
+﻿
 @{
-    ViewBag.Title = "LACK1";
+    ViewBag.Title = "ListByPlant";
 }
 
 <div class="container-wrap title-page">
@@ -109,7 +107,7 @@
     <script type="text/javascript">
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function() {
+            $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
@@ -129,7 +127,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#lack1Table .filters th').each(function() {
+            $('#lack1Table .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -137,8 +135,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -148,11 +146,11 @@
 
             $('#Menulack1ListByNppbkc').addClass('active');
         }
-        
+
         $(document).ready(function () {
             setupDataTables();
         });
-        
+
         function ReloadDataTables() {
             $('.toggle-row').click(function () {
 
@@ -164,4 +162,5 @@
             setupDataTables();
         }
     </script>
-    }
+}
+
