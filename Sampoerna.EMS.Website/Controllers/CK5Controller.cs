@@ -186,6 +186,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CK5Completed()
         {
             var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Completed);
+            model.IsCompletedType = true;
             return View(model);
         }
 

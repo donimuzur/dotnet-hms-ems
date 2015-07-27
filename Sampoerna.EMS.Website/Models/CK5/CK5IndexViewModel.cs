@@ -29,6 +29,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public List<CK5Item> DetailList3 { get; set; } 
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public bool IsCompletedType { get; set; }
     }
 
     public class CK5Item
