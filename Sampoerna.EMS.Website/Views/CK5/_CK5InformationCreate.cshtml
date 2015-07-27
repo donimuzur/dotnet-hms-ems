@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
@@ -32,7 +33,7 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.KppBcCityId, Model.KppBcCityList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -45,7 +46,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                @*<div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Submission Number</label>
                                         <div class="col-md-8">
@@ -66,7 +67,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Number</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -74,20 +75,22 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.RegistrationDate, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RegistrationDate, new { @class = "form-control", @disabled = "disabled" })
+                                            @*<div class="input-group date">
+                                                @Html.TextBoxFor(model => model.RegistrationDate, new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>*@
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Goods Type Group</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.GoodTypeName, Model.GoodTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -95,7 +98,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Settlement</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExciseSettlementId, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +107,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Status</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExciseStatusId, Model.ExciseStatusList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +115,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.RequestTypeId, Model.RequestTypeList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +178,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Address</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.SourceAddress, new { @row = "5", @disabled = "disabled", @class = "form-control" })
+                                            @Html.TextAreaFor(model => model.SourceAddress, new { @rows = "5", @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -247,7 +251,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Address</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.DestAddress, new { @disabled = "disabled", @class = "form-control", @row="5" })
+                                            @Html.TextAreaFor(model => model.DestAddress, new { @disabled = "disabled", @class = "form-control", @rows="5" })
                                             @*<textarea id="DestCompanyAddress" class="form-control" rows="5" disabled></textarea>*@
                                         </div>
                                     </div>
@@ -308,7 +312,7 @@
                                     <div class="row">
                                         <label class="col-md-4 long">PBCK-1 Decree  Number</label>
                                         <div class="col-md-8">
-                                            @*@Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })*@
+                                            @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })
                                            
                                         </div>
                                     </div>
@@ -317,8 +321,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-1 Decree Date</label>
                                         <div class="col-md-8">
-
-                                            <input id="pbck1Date" type="text" class="form-control" disabled>
+                                            @Html.TextBoxFor(model => model.PbckDecreeDate, new { @disabled = "disabled", @class = "form-control" })
+                                            @*<input id="pbck1Date" type="text" class="form-control" disabled>*@
 
 
                                         </div>
@@ -328,7 +332,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.CarriageMethodId, Model.CarriageMethodList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +344,7 @@
                                             @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
-                                            @Html.DropDownListFor(model => model.PackageUomId, Model.PackageUomList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -540,22 +544,23 @@
                                     <div class="row">
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
-                                            <div class="input-group">
+                                            <input type="text" class="form-control" disabled>
+                                            @*<div class="input-group">
                                                 <input type="text" class="form-control">
                                                 <span class=" input-group-addon file-input btn btn-primary btn-file">
                                                     Browse <input type="file" multiple>
                                                 </span>
-                                            </div>
+                                            </div>*@
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="row">
+                                    @*<div class="row">
                                         <label class="col-md-4">Requisitioner</label>
                                         <div class="col-md-8">
                                             <input type="text" class="form-control">
                                         </div>
-                                    </div>
+                                    </div>*@
                                 </div>
                             </div>
                         </div>
