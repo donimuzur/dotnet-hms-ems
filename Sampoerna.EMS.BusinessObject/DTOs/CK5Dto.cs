@@ -78,5 +78,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Nullable<System.DateTime> DN_DATE { get; set; }
         public string SOURCE_PLANT_NAME { get; set; }
         public string DEST_PLANT_NAME { get; set; }
+
+        public string FINAL_PORT_NAME { get; set; }
+
+        public bool IsCk5Export { get; set; }
+        public bool IsCk5Manual { get; set; }
+        public bool IsWaitingGovApproval { get; set; }
     }
 }

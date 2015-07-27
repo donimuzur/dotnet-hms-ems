@@ -25,8 +25,8 @@
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#domestic" onclick="OnShowNew(2);" aria-controls="domestic" role="tab" data-toggle="tab">Port To Importer</a></li>
-                    <li role="presentation"><a href="#intercompany" onclick="OnShowNew(3);" aria-controls="intercompany" role="tab" data-toggle="tab">Importer To Plant</a></li>
+                    <li role="presentation" class="active"><a href="#portToImporter" onclick="ChangeTitle('Port To Importer');" aria-controls="portToImporter" role="tab" data-toggle="tab">Port To Importer</a></li>
+                    <li role="presentation"><a href="#importerToPlant" onclick="ChangeTitle('Importer To Plant');" aria-controls="importerToPlant" role="tab" data-toggle="tab">Importer To Plant</a></li>
 
                 </ul>
 
@@ -86,19 +86,20 @@
 </div>
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
     <script type="text/javascript" language="javascript" class="init">
 
-
         $(document).ready(function () {
-            setupDataTables();
-            setupDataTablesIntercompany();
-            
             $('#MenuCK5Import').addClass('active');
             $('#newPortToImporter').show();
             $('#newImporterToPlant').hide();
+
+            ChangeTitle('Port To Importer');
+            
+            setupDataTables();
+            setupDataTablesIntercompany();
+            
         });
 
 
@@ -112,27 +113,23 @@
             }
 
             table = $('#ck5Table').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "lengthMenu": "Display _MENU_ records per page",
-                        "zeroRecords": "No records found",
-                        "info": "Showing page _PAGE_ of _PAGES_",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
 
-            // Setup - add a text input to each footer cell
+          
             $('#ck5Table .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
-                    var title = $('#ck5Table thead th').eq($(this).index()).text();
-                    //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                    $(this).html('<input type="text"  />');
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
 
-            // Apply the search
+         
             table.columns().eq(0).each(function (colIdx) {
                 $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
@@ -142,7 +139,6 @@
                 });
             });
 
-            $("#ck5Table_filter").hide();
         }
 
         function ReloadDataTables() {
@@ -162,28 +158,23 @@
                 table.destroy();
             }
 
-            table = $('#ck5TableIntercompany').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "lengthMenu": "Display _MENU_ records per page",
-                        "zeroRecords": "No records found",
-                        "info": "Showing page _PAGE_ of _PAGES_",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
 
-            // Setup - add a text input to each footer cell
+            table = $('#ck5TableIntercompany').DataTable(
+                 {
+                     "sDom": "Rlfrtip",
+                     "language": {
+                         "zeroRecords": "No records found",
+                         "infoFiltered": "(filtered from _MAX_ total records)"
+                     }
+                 });
+
             $('#ck5TableIntercompany .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
-                    var title = $('#ck5TableIntercompany thead th').eq($(this).index()).text();
-                    //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                    $(this).html('<input type="text"  />');
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
 
-            // Apply the search
             table.columns().eq(0).each(function (colIdx) {
                 $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
@@ -193,25 +184,28 @@
                 });
             });
 
-            $("#ck5TableIntercompany_filter").hide();
         }
-
+       
         function ChangeTitle(title) {
             $('#lblTitle').text(title);
-        }
-        
-        function OnShowNew(type) {
-            if (type == 2)//PortToImporter
-            {
+            if (title == 'Port To Importer') {
                 $('#newPortToImporter').show();
                 $('#newImporterToPlant').hide();
-            } else {
-                {
-                    $('#newPortToImporter').hide();
-                    $('#newImporterToPlant').show();
-                }
+                
+            } else if (title == 'Intercompany') {
+                $('#newPortToImporter').hide();
+                $('#newImporterToPlant').show();
+               
+
             }
         }
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+     
 
     </script>
 }

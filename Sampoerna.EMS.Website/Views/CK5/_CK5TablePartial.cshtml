@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
 
 <table id="ck5Table" class="display" cellspacing="0" width="100%">
     <thead>
@@ -30,7 +31,10 @@
             <tr>
                 <td class="action">
                     <a href="@Url.Action("Details", "CK5", new { id = item.Ck5Id })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "CK5", new { id = item.Ck5Id })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                    @if (!Model.IsCompletedType)
+                    {
+                        <a href="@Url.Action("Edit", "CK5", new {id = item.Ck5Id})" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                    }
                 </td>
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
                 <td>@Html.DisplayFor(model => item.Qty)</td>
