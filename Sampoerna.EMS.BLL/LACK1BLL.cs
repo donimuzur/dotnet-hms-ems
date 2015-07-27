@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
 
-        private string includeTables = "MONTH, UOM, ";
+        private string includeTables = "MONTH, UOM";
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.NppbKcId))
             {
-                queryFilter = queryFilter.And(c => c.BUKRS == input.NppbKcId);
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbKcId);
             }
             if (!string.IsNullOrEmpty((input.PlantId)))
             {

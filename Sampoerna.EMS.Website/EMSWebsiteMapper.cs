@@ -655,8 +655,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Bukrs))
                 .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType))
                 .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.NppbkcId));
 
+            Mapper.CreateMap<Lack1IndexViewModel, Lack1GetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
 
 
             #endregion
