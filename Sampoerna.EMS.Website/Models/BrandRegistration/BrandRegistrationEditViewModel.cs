@@ -63,23 +63,20 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string CountryId { get; set; }
         public SelectList CountryCodeList { get; set; }
 
-        public decimal? HjeValue
-        {
-            get;
-            set;
-        }
-
+       
         [Required]
         public string HjeValueStr { get; set; }
-
+        public decimal? HjeValue
+        {
+            get; set;
+        }
         [Required]
         public string HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
         public decimal? Tariff
         {
-            get;
-            set;
+            get; set;
         }
         [Required]
         public string TariffValueStr { get; set; }
@@ -100,11 +97,11 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string GoodTypeDescription { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
+      
         public DateTime? StartDate { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
+       
         public DateTime? EndDate { get; set; }
 
 
@@ -122,8 +119,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 
         public decimal? PrintingPrice
         {
-            get;
-            set;
+            get; set;
         }
         
         public string PrintingPriceValueStr { get; set; }
