@@ -35,13 +35,14 @@ namespace Sampoerna.EMS.BusinessObject
         public string WASTE_UOM { get; set; }
         public Nullable<decimal> RETURN_QTY { get; set; }
         public string RETURN_UOM { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
+        public Nullable<int> STATUS { get; set; }
+        public Nullable<int> GOV_STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public string NPPBKC_ID { get; set; }
     
         public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual ICollection<LACK1_ITEM> LACK1_ITEM { get; set; }

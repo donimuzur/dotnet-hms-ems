@@ -22,12 +22,13 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP, USER";
         private ChangesHistoryBLL _changesHistoryBll;
-
+        private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
         public MaterialBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL>();
+            _repositoryUoM = _uow.GetGenericRepository<MATERIAL_UOM>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
         }
 
@@ -42,6 +43,19 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
+        public List<string> getStickerCode()
+        {
+            return _repository.Get(null, null, includeTables).Select(p=>p.STICKER_CODE).Distinct().ToList();
+        }
+
+        public List<T001W> getAllPlant(string materialnumber)
+        {
+            var data =
+                _repository.Get(p => p.STICKER_CODE == materialnumber, null, includeTables)
+                    .Select(p => p.T001W)
+                    .ToList();
+            return data;
+        }
 
 
         public MaterialOutput Save(ZAIDM_EX_MATERIAL data,string userId)
@@ -70,6 +84,18 @@ namespace Sampoerna.EMS.BLL
                 output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
             }
             return output;
+        }
+
+        public void SaveUoM(MATERIAL_UOM data)
+        {
+            try
+            {
+                _repositoryUoM.InsertOrUpdate(data);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public void Delete(string mn, string p, string userId)

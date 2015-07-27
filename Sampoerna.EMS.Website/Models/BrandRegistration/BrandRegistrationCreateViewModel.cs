@@ -52,7 +52,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string SeriesValue { get; set; }
 
         [Required]
-        [RegularExpression("([1-9][0-9]*)")]
         public string Content { get; set; }
 
         [Required]
@@ -110,7 +109,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get { return Convert.ToDecimal(ConversionValueStr); }
             set { value = Conversion; }
         }
-        [Required]
+        
         public string ConversionValueStr
         {
             get;
@@ -122,7 +121,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get { return Convert.ToDecimal(PrintingPriceValueStr); } 
             set { value = PrintingPrice; }
         }
-        [Required]
+       
         public string PrintingPriceValueStr { get; set; }
 
         [StringLength(25)]

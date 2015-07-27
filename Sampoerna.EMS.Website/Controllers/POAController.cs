@@ -281,7 +281,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
                 Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
 
-            sFileName = Constans.MasterDataHeaderFooterFolder + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.PoaSK + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
