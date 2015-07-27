@@ -6,13 +6,13 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IPOABLL
     {
-        POA GetById(int id);
+        POA GetById(string id);
         List<POA> GetAll();
 
         void Save(POA poa);
 
         void Update(POA poa);
-        void Delete(int id);
+        void Delete(string id);
         Core.Enums.UserRole GetUserRole(string userId);
 
     }

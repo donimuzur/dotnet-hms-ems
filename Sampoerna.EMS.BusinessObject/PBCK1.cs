@@ -65,8 +65,6 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
         public virtual UOM UOM { get; set; }
@@ -75,5 +73,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
     }
 }
