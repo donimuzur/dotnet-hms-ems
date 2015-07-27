@@ -547,7 +547,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Requisitioner</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control">
+                                          @Html.TextBoxFor(model => model.CreatedUser, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
