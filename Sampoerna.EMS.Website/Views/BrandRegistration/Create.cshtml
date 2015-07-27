@@ -43,7 +43,7 @@
                                                         <label class="col-md-4">Stiker Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -51,7 +51,11 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "selectpicker form-control" })
+                                                          
+                                                            <select class="form-control" id="PlantId" name="PlantId">
+                                                                <option value="">select</option>
+                                                            </select>
+                                                            @*@Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "selectpicker form-control" })*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -67,7 +71,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Personalization Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -75,28 +79,14 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Product Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Personalization Code Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PersonalizationCodeDescription, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Data Element for Product Type</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.ProductType, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
+                                                
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4 long">Brand Name Registration by KPPBC<span class="red">*</span></label>
@@ -105,14 +95,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Data Element for Product Type Alias</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.ProductAlias, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">SKEP No<span class="red">*</span></label>
@@ -144,14 +127,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Series Value</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SeriesValue, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                              
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Content<span class="red">*</span></label>
@@ -170,14 +146,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Market Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MarketDescription, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Country Key<span class="red">*</span></label>
@@ -239,15 +208,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Exciseable Goods Type Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.GoodTypeDescription, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                               
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Start Date<span class="red">*</span></label>
@@ -336,8 +297,7 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function() {
             $('.datepicker').datepicker({
-                format: 'dd mmm yyyy'
-              
+                format: 'dd mmm yyyy'              
             });
             $('.input-group.date').datepicker({
                 dateFormat: 'dd mmm yyyy',
@@ -486,6 +446,33 @@
                     }
                 });
             }
+
+        }
+
+        $("#StickerCode").change(function() {
+            if ($("#StickerCode").length) {
+                var stickerCode = $(this).find("option:selected").val();
+                $('#PlantId').html('');
+                if (stickerCode != '') {
+                    ajaxGetPlantByStickerCode(stickerCode);
+                }
+            }
+
+        });
+
+        function ajaxGetPlantByStickerCode(sc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByStickerCode", "BrandRegistration")',
+                data: { mn: sc },
+                success: function(data) {
+                    
+                    for (var i = 0; i < data.length; i++) {
+                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value +'-' + data[i].Text + '</option>');
+                    }
+                }
+            });
 
         }
 

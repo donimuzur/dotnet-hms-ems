@@ -20,10 +20,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
+        private IMaterialBLL _materialBll;
 
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
-            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll)
+            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll)
             : base(pageBLL, Enums.MenuList.BrandRegistration)
         {
             _brandRegistrationBll = brandRegistrationBll;
@@ -32,7 +33,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _goodTypeBll = goodTypeBll;
             _changesHistoryBll = changesHistoryBll;
             _plantBll = plantBll;
+            _materialBll = materialBll;
             _mainMenu = Enums.MenuList.MasterData;
+            
         }
 
         //
@@ -70,7 +73,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
-            model.PlantList = GlobalFunctions.GetVirtualPlantList();
+            //model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
             model.ProductCodeList = GlobalFunctions.GetProductCodeList();
             model.SeriesList = GlobalFunctions.GetSeriesCodeList();
@@ -145,10 +148,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+                try
+                {
+                    _brandRegistrationBll.Save(dbBrand);
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                }
+                catch (Exception ex)
+                {
+                    TempData[Constans.SubmitType.Save] = ex.Message;
+                   
+                }
+               
 
-                _brandRegistrationBll.Save(dbBrand);
-
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                
                 return RedirectToAction("Index");
             }
 
@@ -233,36 +245,26 @@ namespace Sampoerna.EMS.Website.Controllers
         private void SetChangesLog(ZAIDM_EX_BRAND origin, BrandRegistrationEditViewModel updatedModel)
         {
             var changesData = new Dictionary<string, bool>();
+            updatedModel.HjeValue = updatedModel.HjeValueStr == null ? 0: Convert.ToDecimal(updatedModel.HjeValueStr);
+            updatedModel.Tariff = updatedModel.TariffValueStr == null ? 0 : Convert.ToDecimal(updatedModel.TariffValueStr);
+            updatedModel.Conversion = updatedModel.ConversionValueStr == null ? 0 : Convert.ToDecimal(updatedModel.ConversionValueStr);
+            updatedModel.PrintingPrice = updatedModel.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(updatedModel.PrintingPriceValueStr);
+
             if (origin.IS_FROM_SAP.HasValue == false || origin.IS_FROM_SAP.Value == false)
             {
 
               
-                if (string.IsNullOrEmpty(origin.STICKER_CODE))
-                    origin.STICKER_CODE = "";
-                if (string.IsNullOrEmpty(origin.FA_CODE))
-                    origin.FA_CODE = "";
-                if (string.IsNullOrEmpty(origin.BRAND_CE))
-                    origin.BRAND_CE = "";
-                if (string.IsNullOrEmpty(origin.SKEP_NO))
-                    origin.SKEP_NO = "";
-                if (string.IsNullOrEmpty(origin.COLOUR))
-                    origin.COLOUR = "";
-                if (string.IsNullOrEmpty(origin.CUT_FILLER_CODE))
-                    origin.CUT_FILLER_CODE = "";
 
-
-                changesData.Add("STICKER_CODE",origin.STICKER_CODE.Equals(updatedModel.StickerCode));
-                changesData.Add("PlantId", origin.WERKS.Equals(updatedModel.PlantId));
-                changesData.Add("FACode", origin.FA_CODE.Equals(updatedModel.FaCode));
+                changesData.Add("FACode", origin.FA_CODE == null || origin.FA_CODE.Equals(updatedModel.FaCode));
                 changesData.Add("PersonalizationCode", origin.PER_CODE == updatedModel.PersonalizationCode);
-                changesData.Add("BrandName", origin.BRAND_CE.Equals(updatedModel.BrandName));
-                changesData.Add("SkepNo", origin.SKEP_NO.Equals(updatedModel.SkepNo));
+                changesData.Add("BrandName", origin.BRAND_CE == null || origin.BRAND_CE.Equals(updatedModel.BrandName));
+                changesData.Add("SkepNo", origin.SKEP_NO == null || origin.SKEP_NO.Equals(updatedModel.SkepNo));
                 changesData.Add("SkepDate", origin.SKEP_DATE.Equals(updatedModel.SkepDate));
                 changesData.Add("ProductCode", origin.PROD_CODE.Equals(updatedModel.ProductCode));
                 changesData.Add("SeriesId", origin.SERIES_CODE.Equals(updatedModel.SeriesId));
                 changesData.Add("Content", origin.BRAND_CONTENT == updatedModel.Content);
                 changesData.Add("MarketId", origin.MARKET_ID == updatedModel.MarketId);
-                changesData.Add("CountryId", origin.COUNTRY.Equals(updatedModel.CountryId));
+                changesData.Add("CountryId", origin.COUNTRY == null || origin.COUNTRY.Equals(updatedModel.CountryId));
                 changesData.Add("HjeValue", origin.HJE_IDR.Equals(updatedModel.HjeValue));
                 changesData.Add("HjeCurrency", origin.HJE_CURR.Equals(updatedModel.HjeCurrency));
                 changesData.Add("Tariff", origin.TARIFF.Equals(updatedModel.Tariff));
@@ -275,7 +277,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             changesData.Add("Conversion", origin.CONVERSION.Equals(updatedModel.Conversion));
-            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
+            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == null || origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
             changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE.Equals(updatedModel.PrintingPrice));
 
             foreach (var listChange in changesData)
@@ -412,6 +414,12 @@ namespace Sampoerna.EMS.Website.Controllers
             history.MODIFIED_BY = CurrentUser.USER_ID;
 
             _changesHistoryBll.AddHistory(history);
+        }
+        [HttpPost]
+        public JsonResult GetPlantByStickerCode(string mn)
+        {
+           var data =  _materialBll.getAllPlant(mn);
+            return Json(new SelectList(data, "WERKS", "NAME1"));
         }
     }
 }

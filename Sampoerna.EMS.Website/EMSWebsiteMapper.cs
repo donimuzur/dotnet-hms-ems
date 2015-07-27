@@ -535,12 +535,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP))
              .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM));
-                Mapper.CreateMap<MaterialEditViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()
-              .ForMember(dest => dest.BASE_UOM_ID, opt => opt.MapFrom(src => src.UomId))
+            Mapper.CreateMap<MaterialEditViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BASE_UOM_ID, opt => opt.MapFrom(src => src.UomId))
 
                 .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
 
-                .ForMember(dest => dest.EXC_GOOD_TYP, opt => opt.MapFrom(src => src.GoodTypeId))//
+                .ForMember(dest => dest.EXC_GOOD_TYP, opt => opt.MapFrom(src => src.GoodTypeId)) //
 
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.MaterialNumber))
                 .ForMember(dest => dest.MATERIAL_DESC, opt => opt.MapFrom(src => src.MaterialDesc))
@@ -549,8 +549,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ISSUE_STORANGE_LOC, opt => opt.MapFrom(src => src.IssueStorageLoc))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedById))
-                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSap))
-                 .ForMember(dest => dest.MATERIAL_UOM, opt => opt.MapFrom(src => src.MaterialUom));
+                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSap));
+               
 
 
             Mapper.CreateMap<MaterialCreateViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()
@@ -569,22 +569,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MATERIAL_UOM, opt => opt.MapFrom(src => src.MaterialUom));
 
 
-            Mapper.CreateMap<MaterialEditViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.BASE_UOM_ID, opt => opt.MapFrom(src => src.UomId))
-
-                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
-
-                .ForMember(dest => dest.EXC_GOOD_TYP, opt => opt.MapFrom(src => src.GoodTypeId))
-
-                .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.MaterialNumber))
-                .ForMember(dest => dest.MATERIAL_DESC, opt => opt.MapFrom(src => src.MaterialDesc))
-                .ForMember(dest => dest.MATERIAL_GROUP, opt => opt.MapFrom(src => src.MaterialGroup))
-                .ForMember(dest => dest.PURCHASING_GROUP, opt => opt.MapFrom(src => src.PurchasingGroup))
-                .ForMember(dest => dest.ISSUE_STORANGE_LOC, opt => opt.MapFrom(src => src.IssueStorageLoc))
-                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
-                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedById))
-                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSap))
-                .ForMember(dest => dest.MATERIAL_UOM, opt => opt.MapFrom(src => src.MaterialUom));
+            
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDetailViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.BASE_UOM_ID))
