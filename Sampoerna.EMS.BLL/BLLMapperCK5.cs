@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -24,7 +25,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CreatedUser, opt => opt.MapFrom(src => src.USER1.USER_ID))
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
-                .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE));
+                .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
+                .ForMember(dest => dest.IsCk5Export,opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Export))
+                .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
+                .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval));
 
             Mapper.CreateMap<CK5Dto, CK5>().IgnoreAllNonExisting();
 

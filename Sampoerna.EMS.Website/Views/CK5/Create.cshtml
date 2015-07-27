@@ -86,7 +86,7 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            OnReadyFunction();
+            OnReadyFunction('@Model.Ck5Type.ToString()');
 
             var sourcePlant = $('#SourcePlantId').find("option:selected").val();
             
