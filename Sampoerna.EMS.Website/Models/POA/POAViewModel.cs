@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Models.POA
             PoaSk = new List<POA_SK>();
         }
 
-        public int PoaId { get; set; }
+        public string PoaId { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
         [Display(Name = "ID Card")]
