@@ -47,7 +47,8 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Login As<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "selectpicker form-control" })
+                                                        @Html.HiddenFor(x => x.Detail.UserId)
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "form-control", disabled="disabled" })
 
                                                     </div>
                                                 </div>
