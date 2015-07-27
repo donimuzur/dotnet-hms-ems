@@ -94,6 +94,13 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.DEST_PLANT_KPPBC_NAME_OFFICE, opt => opt.MapFrom(src => src.DestKppbcName))
               .ForMember(dest => dest.DEST_PLANT_NAME, opt => opt.MapFrom(src => src.DestPlantName))
 
+              .ForMember(dest => dest.LOADING_PORT, opt => opt.MapFrom(src => src.LoadingPort))
+              .ForMember(dest => dest.LOADING_PORT_NAME, opt => opt.MapFrom(src => src.LoadingPortName))
+              .ForMember(dest => dest.LOADING_PORT_ID, opt => opt.MapFrom(src => src.LoadingPortId))
+              .ForMember(dest => dest.FINAL_PORT, opt => opt.MapFrom(src => src.FinalPort))
+              .ForMember(dest => dest.FINAL_PORT_NAME, opt => opt.MapFrom(src => src.FinalPortName))
+              .ForMember(dest => dest.FINAL_PORT_ID, opt => opt.MapFrom(src => src.FinalPortId))
+
                .ForMember(dest => dest.INVOICE_NUMBER, opt => opt.MapFrom(src => src.InvoiceNumber))
                .ForMember(dest => dest.INVOICE_DATE, opt => opt.MapFrom(src => src.InvoiceDate))
                .ForMember(dest => dest.PBCK1_DECREE_ID, opt => opt.MapFrom(src => src.PbckDecreeId))
@@ -137,6 +144,13 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.DestAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
             .ForMember(dest => dest.DestKppbcName, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
             .ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
+
+             .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
+              .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
+              .ForMember(dest => dest.LoadingPortId, opt => opt.MapFrom(src => src.LOADING_PORT_ID))
+              .ForMember(dest => dest.FinalPort, opt => opt.MapFrom(src => src.FINAL_PORT))
+              .ForMember(dest => dest.FinalPortName, opt => opt.MapFrom(src => src.FINAL_PORT_NAME))
+              .ForMember(dest => dest.FinalPortId, opt => opt.MapFrom(src => src.FINAL_PORT_ID))
 
              .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
              .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.INVOICE_DATE))

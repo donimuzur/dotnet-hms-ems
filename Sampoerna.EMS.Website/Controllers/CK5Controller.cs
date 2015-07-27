@@ -224,9 +224,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DocumentStatus = Enums.DocumentStatus.Draft;
             model = InitCK5List(model);
 
-            //submission date
-           // model.SubmissionDate = DateTime.Now;
-
             return model;
         }
 
@@ -286,12 +283,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CreateExport()
         {
             var model = InitCreateCK5(Enums.CK5Type.Export);
+            model.IsCk5Export = true;
             return View("Create", model);
         }
 
         public ActionResult CreateManual()
         {
             var model = InitCreateCK5(Enums.CK5Type.Manual);
+            model.IsCk5Manual = true;
             return View("Create", model);
         }
 
@@ -432,7 +431,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
-
+            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
