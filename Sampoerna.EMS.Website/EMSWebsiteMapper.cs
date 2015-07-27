@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.Website
 
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.FIRST_NAME, opt => opt.MapFrom(src => src.FIRST_NAME));
 
             ;
@@ -233,6 +233,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PoaSk, opt => opt.MapFrom(src => src.POA_SK));
 
             Mapper.CreateMap<POAViewDetailModel, POA>().IgnoreAllUnmapped()
+                .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ID_CARD, opt => opt.MapFrom(src => src.PoaIdCard))
                 .ForMember(dest => dest.PRINTED_NAME, opt => opt.MapFrom(src => src.PoaPrintedName))
                 .ForMember(dest => dest.POA_PHONE, opt => opt.MapFrom(src => src.PoaPhone))
@@ -643,6 +644,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterInput>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1ProdConverterOutput, Pbck1ProdConvModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting();
+
 
         }
     }
