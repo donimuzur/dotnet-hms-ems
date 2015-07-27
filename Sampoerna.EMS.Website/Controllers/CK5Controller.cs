@@ -98,10 +98,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DetailsList = GetCk5Items(ck5Type);
             if (ck5Type == Enums.CK5Type.Domestic)
             {
-                //model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany);
-                //model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol);
-                model.DetailList2 = model.DetailsList.Where(a=>a.Ck5Type == Enums.CK5Type.Intercompany).ToList();
-                model.DetailList3 = model.DetailsList.Where(a => a.Ck5Type == Enums.CK5Type.DomesticAlcohol).ToList();
+                model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany);
+                model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol);
+                //model.DetailList2 = model.DetailsList.Where(a=>a.Ck5Type == Enums.CK5Type.Intercompany).ToList();
+                //model.DetailList3 = model.DetailsList.Where(a => a.Ck5Type == Enums.CK5Type.DomesticAlcohol).ToList();
             }
             else if (ck5Type == Enums.CK5Type.PortToImporter)
                 model.DetailList2 = GetCk5Items(Enums.CK5Type.ImporterToPlant);

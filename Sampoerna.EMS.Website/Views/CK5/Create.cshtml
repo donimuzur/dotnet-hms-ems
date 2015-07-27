@@ -32,6 +32,8 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
+                        @Html.HiddenFor(model => model.Ck5Type)
+
                         @Html.HiddenFor(model => model.CeOfficeCode)
                         @Html.HiddenFor(model => model.KppBcCityName)
                         @Html.HiddenFor(model => model.SubmissionNumber)

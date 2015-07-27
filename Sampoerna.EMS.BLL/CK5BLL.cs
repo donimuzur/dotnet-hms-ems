@@ -129,13 +129,13 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.NPPBKCOrigin))
             {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.NPPBKCOrigin));
+                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NPPBKCOrigin));
 
             }
 
             if (!string.IsNullOrEmpty(input.NPPBKCDestination))
             {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.Contains(input.NPPBKCDestination));
+                queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NPPBKCDestination));
 
             }
 
