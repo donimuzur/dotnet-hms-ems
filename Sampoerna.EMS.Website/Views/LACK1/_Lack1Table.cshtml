@@ -1,2 +1,57 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.LACK1ViewModel
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexViewModel
+<div class="table-container">
+    <table id="pbck-1" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Company</th>
+                <th>NPPBKC</th>
+                <th>Tobacco Goods Type</th>
+                <th>Supplier</th>
+                <th>Period</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <thead class="filters">
+            <tr>
+                <th>Action</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Details)
+            {
+                <tr>
+                    <td class="action">
+                        <a href="#"><i class="fa fa-eye"></i></a>
+                        <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Company)
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(model => item.Nppbkc)*@
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.TobaccoGoodType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Supplier)
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(model => item.Supplier)*@
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Status)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 

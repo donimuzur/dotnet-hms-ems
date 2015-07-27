@@ -12,8 +12,7 @@ namespace Sampoerna.EMS.Contract
     {
         List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input);
 
-        List<Lack1Dto> GetListByNpbkcParam(Lack1GetListByNppbkcParam input);
+      
 
-        List<Lack1Dto> GetListByPlantParam(Lack1GetListByPlantParam input);
     }
 }

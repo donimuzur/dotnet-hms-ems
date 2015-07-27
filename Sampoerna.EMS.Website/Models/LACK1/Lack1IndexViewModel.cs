@@ -3,32 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class LACK1FilterViewModel
+    public class Lack1IndexViewModel : BaseModel
     {
-        public LACK1FilterViewModel()
+        public Lack1IndexViewModel()
         {
-            NppbkcId = string.Empty;
-            Poa = null;
-            PlantId = null;
-            ReportedOn = null;
-            Creator = null;
+              Details = new List<NppbkcData>();
         }
-
         public string NppbkcId { get; set; }
         public string Poa { get; set; }
         public string PlantId { get; set; }
-        public int? ReportedOn { get; set; }
+        public string ReportedOn { get; set; }
         public string Creator { get; set; }
-
-        /// <summary>
-        /// optional if want to sorting from query
-        /// </summary>
-        public string SortOrderColumn { get; set; }
 
         public SelectList NppbkcIdList { get; set; }
         public SelectList PoaList { get; set; }
@@ -38,5 +27,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public Enums.LACK1Type Lack1Type { get; set; }
 
+        public List<NppbkcData> Details { get; set; }
     }
 }

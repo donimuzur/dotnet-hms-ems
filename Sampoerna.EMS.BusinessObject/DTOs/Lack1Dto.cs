@@ -13,8 +13,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Lack1Number { get; set; }
         public string Bukrs { get; set; }
         public string Butxt { get; set; }
-        public DateTime? PeriodMonth { get; set; }
-        public DateTime? PeriodYears { get; set; }
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYears { get; set; }
         public string LevelPlantId { get; set; }
         public string LevelPlantName { get; set; }
         public DateTime? SubmissionDate { get; set; }
@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal ReturnQty { get; set; }
         public string ReturnUom { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatus GovStatus { get; set; }
+        public Enums.DocumentStatus  GovStatus { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreateBy { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -18,15 +19,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
-    }
+        public Enums.LACK1Type Lack1Type { get; set; }
 
-    public class Lack1GetListByNppbkcParam : Lack1GetByParamInput
-    {
-        
+      
     }
-
-    public class Lack1GetListByPlantParam : Lack1GetByParamInput
-    {
-        
-    }
+   
+   
 }

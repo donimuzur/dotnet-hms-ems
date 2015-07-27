@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -21,7 +22,7 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
 
-        private string includeTables = "MONTH, UOM";
+        private string includeTables = "MONTH, UOM, ";
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -32,64 +33,41 @@ namespace Sampoerna.EMS.BLL
             _monthBll = new MonthBLL(_uow, _logger);
         }
 
-        
+
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
-            var queryFilter = ProcessQueryFilter(input);
-
-            return GetLack1Data(queryFilter, input.SortOrderColumn);
-           
-        }
-        
-
-        public List<Lack1Dto> GetListByNpbkcParam(Lack1GetListByNppbkcParam input)
-        {
-            var queryFilter = ProcessQueryFilter(input);
-            queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
-
-            return GetLack1Data(queryFilter, input.SortOrderColumn);
-
-        }
-
-        public List<Lack1Dto> GetListByPlantParam(Lack1GetListByPlantParam input)
-        {
-            throw new NotImplementedException();
-        }
-
-        private Expression<Func<LACK1, bool>> ProcessQueryFilter(Lack1GetByParamInput input)
-        {
             Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
+
             if (!string.IsNullOrEmpty(input.NppbKcId))
             {
                 queryFilter = queryFilter.And(c => c.BUKRS == input.NppbKcId);
             }
-            if (string.IsNullOrEmpty((input.PlantId)))
+            if (!string.IsNullOrEmpty((input.PlantId)))
             {
                 queryFilter = queryFilter.And(c => c.BUTXT == input.PlantId);
             }
-            if (string.IsNullOrEmpty((input.Creator)))
+            if (!string.IsNullOrEmpty((input.Creator)))
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
             }
-            if (string.IsNullOrEmpty((input.Poa)))
+            if (!string.IsNullOrEmpty((input.Poa)))
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            //minus date reported ON
 
-            return queryFilter;
-        }
-
-        private List<Lack1Dto> GetLack1Data(Expression<Func<LACK1, bool>> queryFilter, string orderColumn)
-        {
             Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
-            if(!string.IsNullOrEmpty(orderColumn))
+
+            if (!string.IsNullOrEmpty(input.SortOrderColumn))
             {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK1>(orderColumn));
-                    
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK1>(input.SortOrderColumn));
+
             }
 
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
 
             var mapResult = Mapper.Map<List<Lack1Dto>>(dbData.ToList());
 

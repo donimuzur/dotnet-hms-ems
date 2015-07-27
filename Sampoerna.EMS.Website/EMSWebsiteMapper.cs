@@ -14,6 +14,7 @@ using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
+using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
@@ -662,6 +663,18 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterInput>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1ProdConverterOutput, Pbck1ProdConvModel>().IgnoreAllNonExisting();
+
+            #region Lack1
+
+            Mapper.CreateMap<Lack1Dto, NppbkcData>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Bukrs))
+                .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType))
+                .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
+
+
+            #endregion
 
         }
     }

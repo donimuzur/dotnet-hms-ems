@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -32,56 +33,38 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.LACK1;
         }
 
-        private List<LACK1Item> GetListByNppbkc(LACK1FilterViewModel filter = null)
-        {
-            if (filter == null)
-            {
-                //get all 
-                var lack1Data = _lack1Bll.GetListByNpbkcParam(new Lack1GetListByNppbkcParam());
-                return Mapper.Map<List<LACK1Item>>(lack1Data);
-            }
-            //getparams
-            var input = Mapper.Map<Lack1GetListByNppbkcParam>(filter);
-            var dbData = _lack1Bll.GetListByNpbkcParam(input);
-            return Mapper.Map<List<LACK1Item>>(dbData);
-        }
-
+       
         #region Index
         //
         // GET: /LACK1/
         public ActionResult Index()
         {
-            var data =  InitLack1ViewModel(new LACK1ViewModel
+            var data =  InitLack1ViewModel(new Lack1IndexViewModel            
             {
+               
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                SearchInput =
-                {
-                    Lack1Type = Enums.LACK1Type.ListByNppbkc
-                }
-
+                Lack1Type = Enums.LACK1Type.ListByNppbkc,
+                Details = Mapper.Map<List<NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()))
+               
             });
            
             return View("Index", data);
         }
 
-        private LACK1ViewModel InitLack1ViewModel(LACK1ViewModel model)
+        private Lack1IndexViewModel InitLack1ViewModel(Lack1IndexViewModel model)
         {
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.SearchInput.PoaList = GlobalFunctions.GetPoaAll();//ask compare pbck1
-            model.SearchInput.PlantIdList = GlobalFunctions.GetPlantAll();
-            model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+            model.PoaList = GlobalFunctions.GetPoaAll();//ask compare pbck1
+            model.PlantIdList = GlobalFunctions.GetPlantAll();
+            model.CreatorList = GlobalFunctions.GetCreatorList();
             //minus reported on
 
             return model;
         }
 
-        [HttpPost]
-        public PartialViewResult FilterListByNppbkc(LACK1ViewModel model)
-        {
-            model.Details = GetListByNppbkc(model.SearchInput);
-            return PartialView("_Lack1Table", model);
-        }
+       
+        
         #endregion 
 	}
 }
