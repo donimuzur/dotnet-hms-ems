@@ -127,3 +127,4 @@ aspnet_client
 
 /Sampoerna.EMS.BLL/*.orig
 /Sampoerna.EMS.BLL/*.orig
+/packages/*.deleteme

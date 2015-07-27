@@ -174,12 +174,22 @@
             worflowmappingdata.EmailTemplateId = $("#EmailTemplateId").val();
             worflowmappingdata.State = $("#ModulState").val();
 
-            $.post('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
-                formid: "@Model.Form_Id" ,
-                actionid: $("#stateid").val(),
-                worflowusers: JSON.stringify(workflowuserdata),
-                mappingdata : worflowmappingdata
-            }, function (data) {
+            $.ajax('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
+                type : "POST"
+                //dataType: "json",
+                //contentType : "application/json",
+                data : {
+                    formid: "@Model.Form_Id" ,
+                    actionid: $("#stateid").val(),
+                    worflowusers: JSON.stringify(workflowuserdata),
+                    mappingdata : worflowmappingdata
+                },
+                success : function (data) {
+                
+                },
+                error : function(data){
+                
+                }
                 
             });
         }

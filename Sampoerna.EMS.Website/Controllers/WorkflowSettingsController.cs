@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveForkflowMapping(int formid,int? actionid, string worflowusers, WorkflowMappingDetails mappingdata) {
+        public JsonResult SaveForkflowMapping(int formid,int? actionid, string worflowusers, WorkflowMappingDetails mappingdata) {
             try
             {
                 var datausers = JsonConvert.DeserializeObject<List<WorkflowUsers>>(worflowusers);
@@ -94,7 +94,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 data.USER = _userBLL.GetUsersByListId(useridlist);
                 _workflowSettingBLL.SaveWorkflowState(data);
-                return RedirectToAction("Edit", formid);
+
+                JsonResult json = new JsonResult();
+                json.ContentType = "Application/json";
+                json.Data = data;
+                return json;
             }
             catch {
                 //JsonResult json = new JsonResult();
