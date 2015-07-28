@@ -27,26 +27,24 @@ namespace Sampoerna.EMS.Website.Controllers
     public class CK5Controller : BaseController
     {
         private ICK5BLL _ck5Bll;
-        private IZaidmExNPPBKCBLL _nppbkcBll;
-        private IMasterDataBLL _masterDataBll;
         private IPBCK1BLL _pbck1Bll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
-            IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
-            IChangesHistoryBLL changesHistoryBll, IWorkflowBLL workflowBll, IPlantBLL plantBll)
+      
+        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
+            IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
+            IWorkflowBLL workflowBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
-            _nppbkcBll = nppbkcBll;
-            _masterDataBll = masterDataBll;
             _pbck1Bll = pbckBll;
             _workflowHistoryBll = workflowHistoryBll;
             _changesHistoryBll = changesHistoryBll;
             _workflowBll = workflowBll;
             _plantBll = plantBll;
+         
         }
 
         #region View Documents
