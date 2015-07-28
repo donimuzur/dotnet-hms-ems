@@ -119,7 +119,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.POA))
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY.Contains(input.POA));
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.POA));
             }
 
             if (!string.IsNullOrEmpty(input.Creator))
@@ -622,8 +622,8 @@ namespace Sampoerna.EMS.BLL
             else if (input.UserRole == Enums.UserRole.Manager)
                 dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -645,8 +645,8 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
             //todo ask
-            dbData.APPROVED_BY = null;
-            dbData.APPROVED_DATE = null;
+            dbData.APPROVED_BY_POA = null;
+            dbData.APPROVED_DATE_POA = null;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -666,8 +666,8 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
@@ -689,8 +689,8 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
