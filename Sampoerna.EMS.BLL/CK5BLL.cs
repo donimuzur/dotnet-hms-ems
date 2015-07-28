@@ -616,7 +616,11 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+            if (input.UserRole == Enums.UserRole.POA)
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+            else if (input.UserRole == Enums.UserRole.Manager)
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 

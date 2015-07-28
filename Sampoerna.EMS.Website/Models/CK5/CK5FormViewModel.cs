@@ -65,17 +65,18 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Required]
         public Enums.ExciseSettlement ExciseSettlement { get; set; }
         public Enums.ExciseSettlement ExciseSettlementList { get; set; }
+        public string ExciseSettlementDesc { get; set; }
 
-       [Required]
+        [Required]
         public Enums.ExciseStatus ExciseStatus { get; set; }
         public Enums.ExciseStatus ExciseStatusList { get; set; }
-        //public string ExciseStatusName { get; set; }
+        public string ExciseStatusDesc { get; set; }
 
         //[Required]
         //public int? RequestTypeId { get; set; }
         public Enums.RequestType RequestType { get; set; }
         public Enums.RequestType RequestTypeList { get; set; }
-        //public string RequestTypeName { get; set; }
+        public string RequestTypeDesc { get; set; }
 
         //ORIGIN PLANT
         [Required(ErrorMessage = "Origin Plant field is required")]
@@ -141,7 +142,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //public int? CarriageMethodId { get; set; }
         public Enums.CarriageMethod? CarriageMethod { get; set; }
         public Enums.CarriageMethod CarriageMethodList { get; set; }
-        //public string CarriageMethodName { get; set; }
+        public string CarriageMethodDesc { get; set; }
 
         [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
@@ -192,12 +193,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
 
-        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        //{
-        //    if (UploadItemModels.Count == 0)
-        //        yield return new ValidationResult("Upload ck5 item required");
-
-
-        //}
+     
     }
 }
