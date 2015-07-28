@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.Poa))
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
             }
 
             if (!string.IsNullOrEmpty(input.Creator))
@@ -805,8 +805,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             dbData.STATUS = Core.Enums.DocumentStatus.WaitingGovApproval;
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -828,8 +828,8 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Core.Enums.DocumentStatus.Draft;
 
             //todo ask
-            dbData.APPROVED_BY = null;
-            dbData.APPROVED_DATE = null;
+            dbData.APPROVED_BY_POA = null;
+            dbData.APPROVED_DATE_POA = null;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -849,8 +849,8 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS = Core.Enums.DocumentStatus.Completed;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.ActionType = Core.Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
@@ -873,8 +873,8 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Core.Enums.DocumentStatus.Completed;
             dbData.STATUS_GOV = Core.Enums.DocumentStatusGov.PartialApproved;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.ActionType = Core.Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
@@ -894,8 +894,8 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS = Core.Enums.DocumentStatus.Draft;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -915,8 +915,8 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS = Core.Enums.DocumentStatus.Completed;
 
-            dbData.APPROVED_BY = input.UserId;
-            dbData.APPROVED_DATE = DateTime.Now;
+            dbData.APPROVED_BY_POA = input.UserId;
+            dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.DocumentNumber = dbData.NUMBER;
 
