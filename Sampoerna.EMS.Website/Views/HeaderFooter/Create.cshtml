@@ -44,7 +44,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Company Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, new { @class = "selectpicker form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)*@
                                                         </div>
                                                     </div>
@@ -138,14 +138,14 @@
     <script type="text/javascript">
 
         $(document).ready(function() {
-            $('#btnCancel').click(function ( e ) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "HeaderFooter")';
             });
-            
-            $("#Detail_COMPANY_ID").change(function () {
+            firstLoad();
+            $("#Detail_COMPANY_ID").change(function() {
                 if ($("#Detail_COMPANY_ID").length) {
                     var company_id = $(this).find("option:selected").val();
-                    console.log(company_id);
+
                     if (company_id != '') {
                         ajaxCompanyLoad({ id: company_id });
                     } else {
@@ -154,13 +154,25 @@
                 }
             });
 
-            $("#HeaderImageFile").change(function () {
+
+            $("#HeaderImageFile").change(function() {
                 readURL(this);
             });
-            
+
             $('#MenuHeaderFooter').addClass('active');
-            
+
         });
+
+        function firstLoad() {
+            var company_id = $("#Detail_COMPANY_ID").find("option:selected").val();
+
+            if (company_id != '') {
+                ajaxCompanyLoad({ id: company_id });
+            } else {
+                $('#Detail_COMPANY_NAME').val('');
+            }
+        }
+
 
         function ajaxCompanyLoad(formData) {
             if (formData.id) {
@@ -192,7 +204,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
 
     </script>
 }
