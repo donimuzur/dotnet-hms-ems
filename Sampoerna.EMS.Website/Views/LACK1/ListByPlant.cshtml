@@ -1,6 +1,8 @@
-﻿
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexPlantViewModel
+@using Sampoerna.EMS.Website.Helpers
+
 @{
-    ViewBag.Title = "ListByPlant";
+    ViewBag.Title = "LACK1";
 }
 
 <div class="container-wrap title-page">
@@ -20,7 +22,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterListByNppbkc", "LACK1",
+                @using (Ajax.BeginForm("FilterListByPlant", "LACK1",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -41,8 +43,11 @@
                         <div class="col-md-4">
                             <div class="row">
                                 <label class="col-md-4">PLANT ID</label>
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset" })
+                                <div id="divPoaList" class="col-md-8 ui-widget">
+                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })*@
+                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
+                                        <option value="">All</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +56,7 @@
                                 <label class="col-md-4">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="ReportedOn">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -65,8 +70,10 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
-                                    <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
+                                    <div id="divPoaList" class="col-md-8 ui-widget">
+                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
+                                            <option value="">All</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +100,7 @@
                 }
             </div>
             <div id="contenttable" class="table-container">
-                @Html.Partial("_Lack1Table")
+                @Html.Partial("_Lack1ListByPlantTable")
             </div>
         </div>
     </div>
@@ -107,17 +114,17 @@
     <script type="text/javascript">
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
+            $('#btn-reset-filter').click(function() {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#lack1Table')) {
-                table = $('#lack1Table').DataTable();
+            if ($.fn.dataTable.isDataTable('#Lack1ListByPlantTable')) {
+                table = $('#Lack1ListByPlantTable').DataTable();
                 table.destroy();
             }
 
-            table = $('#lack1Table').DataTable(
+            table = $('#Lack1ListByPlantTable').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -127,7 +134,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#lack1Table .filters th').each(function () {
+            $('#Lack1ListByPlantTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -135,8 +142,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -144,12 +151,59 @@
                 });
             });
 
-            $('#Menulack1ListByNppbkc').addClass('active');
+            $('#MenuLack1ListByPlant').addClass('active');
         }
+
+        $("#NppbkcId").change(function () {
+            if ($("#NppbkcId").length) {
+                var nbck = $(this).find("option:selected").text();
+                $('#SearchInput_POA option').remove();
+                $('#SearchInput_PlantId option').remove();
+                console.log(nbck);
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_POA').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId').append('<option value="">All</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
+                }
+            }
+
+
+        });
 
         $(document).ready(function () {
             setupDataTables();
         });
+
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.PoaList;
+                        var listPlant = data.PlantIdList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+
+                            }
+                        }
+
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
 
         function ReloadDataTables() {
             $('.toggle-row').click(function () {
@@ -163,4 +217,3 @@
         }
     </script>
 }
-

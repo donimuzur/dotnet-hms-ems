@@ -247,5 +247,15 @@ namespace Sampoerna.EMS.Website.Code
 
         }
 
+        public static SelectList GetPlantByNppbkcId(string nppbkcId)
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plantList = plantBll.GetPlantByNppbkc(nppbkcId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+       
+
      }
 }

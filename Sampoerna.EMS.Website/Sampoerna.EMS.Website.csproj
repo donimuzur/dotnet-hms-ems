@@ -279,8 +279,10 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1Input.cs" />
     <Compile Include="Models\LACK1\LACK1Item.cs" />
     <Compile Include="Models\LACK1\NppbkcData.cs" />
+    <Compile Include="Models\LACK1\PlantData.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />

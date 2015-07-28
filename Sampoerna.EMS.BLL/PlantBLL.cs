@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -182,5 +184,24 @@ namespace Sampoerna.EMS.BLL
             return _plantReceiveMaterialRepository.Get(p => p.PLANT_ID == plantId).ToList();
             
         }
+
+        public List<Plant> GetPlantByNppbkc(string nppbkcId)
+          {
+            Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
+            if (!string.IsNullOrEmpty(nppbkcId))
+            {
+                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
+            }
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            if(dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return Mapper.Map<List<Plant>>(dbData);
+
+
+
+          }
     }
 }

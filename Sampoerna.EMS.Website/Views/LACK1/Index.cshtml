@@ -43,8 +43,11 @@
                         <div class="col-md-4">
                             <div class="row">
                                 <label class="col-md-4">PLANT ID</label>
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset" })
+                                <div id="divPoaList" class="col-md-8 ui-widget">
+                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })*@
+                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
+                                        <option value="">All</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -53,7 +56,7 @@
                                 <label class="col-md-4">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="ReportedOn">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -67,8 +70,10 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
-                                    <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
+                                    <div id="divPoaList" class="col-md-8 ui-widget">
+                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
+                                            <option value="">All</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -149,9 +154,56 @@
             $('#Menulack1ListByNppbkc').addClass('active');
         }
         
+        $("#NppbkcId").change(function () {
+            if ($("#NppbkcId").length) {
+                var nbck = $(this).find("option:selected").text();
+                $('#SearchInput_POA option').remove();
+                $('#SearchInput_PlantId option').remove();
+                console.log(nbck);
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_POA').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId').append('<option value="">All</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
+                } 
+            }
+            
+
+        });
+        
         $(document).ready(function () {
             setupDataTables();
         });
+        
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.PoaList;
+                        var listPlant = data.PlantIdList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                                
+                            }
+                        }
+                        
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+
+                            }
+                        }
+                        
+                    }
+                });
+            }
+        }
         
         function ReloadDataTables() {
             $('.toggle-row').click(function () {

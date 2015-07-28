@@ -32,6 +32,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedBy  { get; set; }
         public DateTime ApprovedDate { get; set; }
         public string NppbkcId { get; set;  }
+        public string ExTypDesc { get; set; }
+        
         
         
     }

@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.BLL
             }
             if (!string.IsNullOrEmpty((input.PlantId)))
             {
-                queryFilter = queryFilter.And(c => c.BUTXT == input.PlantId);
+                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId && c.LEVEL_PLANT_NAME == input.PlantId);
             }
             if (!string.IsNullOrEmpty((input.Creator)))
             {
@@ -53,6 +53,14 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty((input.Poa)))
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+            if (input.PeriodMonth != null)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth);
+            }
+            if (input.PeriodYear != null)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear);
             }
 
             Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;

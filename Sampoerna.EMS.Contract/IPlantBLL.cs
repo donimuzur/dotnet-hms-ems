@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Contract
         string GetPlantNameById(long id);
         
          List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId);
+
+        List<Plant> GetPlantByNppbkc(string nppbkcId);
     }
 }
