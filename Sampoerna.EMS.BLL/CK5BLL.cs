@@ -613,7 +613,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (input.UserRole == Enums.UserRole.POA)
