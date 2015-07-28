@@ -1,10 +1,10 @@
 $(document).ready(function() {
-	//$('.input-group.date').datepicker({
-	//    toggleActive: true,
-	//    autoclose: true,
-	//    format: "dd/M/yyyy",
-	//    todayHighlight: true
-	//});
+	$('.input-group.date').datepicker({
+	    toggleActive: true,
+	    autoclose: true,
+	    format: "dd M yyyy",
+	    todayHighlight: true
+	});
 	$(".action a").tooltip();
 	$('#pbck-1').dataTable( {
 		"scrollY":        "220px",
