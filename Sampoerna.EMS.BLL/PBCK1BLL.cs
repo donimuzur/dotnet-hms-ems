@@ -147,6 +147,7 @@ namespace Sampoerna.EMS.BLL
         public SavePbck1Output Save(Pbck1SaveInput input)
         {
             PBCK1 dbData;
+
             if (input.Pbck1.Pbck1Id > 0)
             {
 
@@ -190,7 +191,7 @@ namespace Sampoerna.EMS.BLL
                 input.Pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
-
+                
                 _repository.Insert(dbData);
 
             }

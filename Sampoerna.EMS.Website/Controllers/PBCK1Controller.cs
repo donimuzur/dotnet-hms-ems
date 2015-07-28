@@ -389,6 +389,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Created
                 };
+                
+                //only add this information from gov approval,
+                //when save create/edit 
+                input.Pbck1.DecreeDate = null;
+                input.Pbck1.QtyApproved = null;
+                input.Pbck1.StatusGov = null;
+                input.Pbck1.Pbck1DecreeDoc = null;
 
                 var saveResult = _pbck1Bll.Save(input);
 

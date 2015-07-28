@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Lack1ToMonthName { get; set; }
         public int? Lack1ToYear { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatusGov StatusGov { get; set; }
+        public Enums.DocumentStatusGov? StatusGov { get; set; }
         public decimal? QtyApproved { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime CreatedDate { get; set; }

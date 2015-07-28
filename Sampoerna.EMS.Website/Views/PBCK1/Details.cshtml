@@ -55,7 +55,13 @@
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    @Html.Partial("_HomeDetails")
+                    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject) {
+                        @Html.Partial("_HomeGovApproval")
+                    }
+                    else {
+                        @Html.Partial("_HomeDetails")
+                    }
+                    
                     @Html.Partial("_PrintOut")
                     @Html.Partial("_ChangeLog")
                 </div>
