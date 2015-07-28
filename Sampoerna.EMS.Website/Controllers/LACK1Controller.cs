@@ -114,11 +114,11 @@ namespace Sampoerna.EMS.Website.Controllers
         
         #endregion
 
-        #region Index List By Nppbkc
+        #region Index List By Plant
 
         public ActionResult ListByPlant()
         {
-            var data = InitLack1ViewModel(new Lack1IndexPlantViewModel
+            var data = InitLack1LiistByPlant(new Lack1IndexPlantViewModel
             {
 
                 MainMenu = _mainMenu,
@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("ListByPlant", data);
         }
 
-        private Lack1IndexPlantViewModel InitLack1ViewModel(Lack1IndexPlantViewModel model)
+        private Lack1IndexPlantViewModel InitLack1LiistByPlant(Lack1IndexPlantViewModel model)
         {
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
             model.PoaList = GlobalFunctions.GetPoaAll();
@@ -157,26 +157,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return Mapper.Map<List<PlantData>>(dbData);
 
         }
-        #endregion
-
-
-
-
-        #region json
-
-        [HttpPost]
-        public JsonResult PoaAndPlantListPartial(string nppbkcId)
-        {
-            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
-            var model = new Lack1IndexViewModel() { PoaList = listPoa, PlantIdList = listPlant };
-            return Json(model);
-        }
 
         [HttpPost]
         public PartialViewResult FilterListByPlant(Lack1Input model)
         {
-            
+
             if (!string.IsNullOrEmpty(model.ReportedOn))
             {
                 var data = Convert.ToDateTime(model.ReportedOn);
@@ -195,8 +180,22 @@ namespace Sampoerna.EMS.Website.Controllers
             viewModel.Details = resultPlant;
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
-            
+
         }
+        #endregion
+
+        #region json
+
+        [HttpPost]
+        public JsonResult PoaAndPlantListPartial(string nppbkcId)
+        {
+            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
+            var model = new Lack1IndexViewModel() { PoaList = listPoa, PlantIdList = listPlant };
+            return Json(model);
+        }
+
+        
         #endregion 
 
     }

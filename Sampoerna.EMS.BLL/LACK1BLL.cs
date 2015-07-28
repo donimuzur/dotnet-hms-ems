@@ -44,7 +44,8 @@ namespace Sampoerna.EMS.BLL
             }
             if (!string.IsNullOrEmpty((input.PlantId)))
             {
-                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId && c.LEVEL_PLANT_NAME == input.PlantId);
+                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
+                //queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId && c.LEVEL_PLANT_NAME == input.PlantId);
             }
             if (!string.IsNullOrEmpty((input.Creator)))
             {

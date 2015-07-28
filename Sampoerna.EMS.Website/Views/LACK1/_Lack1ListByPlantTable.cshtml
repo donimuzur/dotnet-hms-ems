@@ -1,4 +1,5 @@
-﻿
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexPlantViewModel
+
 <table id="lack1Table" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
@@ -34,7 +35,7 @@
                     @Html.DisplayFor(model => item.Company)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Nppbkc)
+                    @Html.DisplayFor(model => item.PlantId)
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.TobaccoGoodType)
@@ -43,7 +44,7 @@
                     @Html.DisplayFor(model => item.Supplier)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.period)
+                    @Html.DisplayFor(model => item.Period)
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.Status)

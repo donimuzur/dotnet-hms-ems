@@ -114,17 +114,17 @@
     <script type="text/javascript">
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function() {
+            $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#Lack1ListByPlantTable')) {
-                table = $('#Lack1ListByPlantTable').DataTable();
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
                 table.destroy();
             }
 
-            table = $('#Lack1ListByPlantTable').DataTable(
+            table = $('#lack1Table').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -134,7 +134,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#Lack1ListByPlantTable .filters th').each(function () {
+            $('#lack1Table .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -142,8 +142,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -152,6 +152,7 @@
             });
 
             $('#MenuLack1ListByPlant').addClass('active');
+
         }
 
         $("#NppbkcId").change(function () {
@@ -164,17 +165,15 @@
                     $('#SearchInput_POA').append('<option value="">All</option>');
                     $('#SearchInput_PlantId').append('<option value="">All</option>');
                 } else {
-                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
                 }
             }
-
 
         });
 
         $(document).ready(function () {
             setupDataTables();
         });
-
         function ajaxSelectNppbck(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({

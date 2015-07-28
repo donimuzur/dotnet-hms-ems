@@ -660,6 +660,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Lack1IndexViewModel, Lack1GetByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
 
             Mapper.CreateMap<Lack1Input, Lack1GetByParamInput>().IgnoreAllNonExisting();
@@ -669,11 +670,12 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
                .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.NppbkcId))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYears + "-" + src.PeriodMonth));
 
             Mapper.CreateMap<Lack1IndexPlantViewModel, Lack1GetByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
 
            #endregion

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
@@ -14,5 +15,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public int? PeriodMonth { get; set; }
         public int? PeriodYear { get; set; }
         public string Creator { get; set; }
+
     }
 }
