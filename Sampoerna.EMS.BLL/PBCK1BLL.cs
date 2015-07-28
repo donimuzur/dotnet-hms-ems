@@ -838,7 +838,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                 dbData.APPROVED_BY_MANAGER = input.UserId;
                 dbData.APPROVED_DATE_MANAGER = DateTime.Now;
             }
