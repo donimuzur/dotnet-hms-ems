@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
@@ -11,27 +9,27 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
 {
-    public class BLLMapper
+    public partial class BLLMapper
     {
         public static void Initialize()
         {
-            //AutoMapper
-            Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
-                .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
-            Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting();
+            InitializeCK5();
+            //Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
+            //    .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
+            //    .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
+            //Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<HEADER_FOOTER, HeaderFooter>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.T1001.BUKRS))
-                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.T1001.BUKRSTXT))
-                .ForMember(dest => dest.COMPANY_NPWP, opt => opt.MapFrom(src => src.T1001.NPWP));
+                .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.T001.BUKRS))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.T001.BUTXT))
+                .ForMember(dest => dest.COMPANY_NPWP, opt => opt.MapFrom(src => src.T001.NPWP));
 
             Mapper.CreateMap<HEADER_FOOTER_FORM_MAP, HeaderFooterMap>().IgnoreAllNonExisting();
-
+    
             Mapper.CreateMap<HEADER_FOOTER, HeaderFooterDetails>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.T1001.BUKRS))
-                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.T1001.BUKRSTXT))
-                .ForMember(dest => dest.COMPANY_NPWP, opt => opt.MapFrom(src => src.T1001.NPWP))
+                .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.T001.BUKRS))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.T001.BUTXT))
+                .ForMember(dest => dest.COMPANY_NPWP, opt => opt.MapFrom(src => src.T001.NPWP))
                 .ForMember(dest => dest.HeaderFooterMapList, opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HEADER_FOOTER_FORM_MAP)));
 
             Mapper.CreateMap<HeaderFooterMap, HEADER_FOOTER_FORM_MAP>().IgnoreAllUnmapped()
@@ -42,51 +40,73 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.HEADER_FOOTER_ID, opt => opt.MapFrom(src => src.HEADER_FOOTER_ID));
 
             Mapper.CreateMap<HeaderFooterDetails, HEADER_FOOTER>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.COMPANY_ID))
                 .ForMember(dest => dest.HEADER_FOOTER_FORM_MAP, opt => opt.MapFrom(src => Mapper.Map<List<HEADER_FOOTER_FORM_MAP>>(src.HeaderFooterMapList)));
 
-            Mapper.CreateMap<T1001W, AutoCompletePlant>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+            Mapper.CreateMap<T001W, AutoCompletePlant>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.WERKS));
 
-            Mapper.CreateMap<Plant, T1001W>().IgnoreAllNonExisting();
-            Mapper.CreateMap<T1001W, Plant>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.NPPBKC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null ? src.ZAIDM_EX_NPPBKC.NPPBKC_NO : string.Empty))
-                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null && src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC != null ? src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER : string.Empty))
+            Mapper.CreateMap<Plant, T001W>().IgnoreAllNonExisting();
+            Mapper.CreateMap<T001W, Plant>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPWP, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.NPWP))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.BUTXT))
+                .ForMember(dest => dest.COMPANY_ADDRESS, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.SPRAS))
+                .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
+               .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
                 ;
 
-            Mapper.CreateMap<PBCK1_PROD_CONVERTER, Pbck1ProdConverter>().IgnoreAllNonExisting()
+            #region PBCK1
+
+            Mapper.CreateMap<PBCK1_PROD_CONVERTER, Pbck1ProdConverterDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1ProdConvId, opt => opt.MapFrom(src => src.PBCK1_PROD_COV_ID))
                 .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
-                .ForMember(dest => dest.ProdTypeId, opt => opt.MapFrom(src => src.PROD_TYPE_ID))
                 .ForMember(dest => dest.ConverterOutput, opt => opt.MapFrom(src => src.CONVERTER_OUTPUT))
                 .ForMember(dest => dest.ConverterOutputUomId, opt => opt.MapFrom(src => src.CONVERTER_UOM_ID))
+                .ForMember(dest => dest.ConverterOutputUomName, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
+                .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProdAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
                 ;
 
-            Mapper.CreateMap<Pbck1ProdConverter, PBCK1_PROD_CONVERTER>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Pbck1ProdConverterDto, PBCK1_PROD_CONVERTER>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PBCK1_PROD_COV_ID, opt => opt.MapFrom(src => src.Pbck1ProdConvId))
                 .ForMember(dest => dest.PBCK1_ID, opt => opt.MapFrom(src => src.Pbck1Id))
-                .ForMember(dest => dest.PROD_TYPE_ID, opt => opt.MapFrom(src => src.ProdTypeId))
+                .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdTypeCode))
+                .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProdTypeName))
+                .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProdAlias))
                 .ForMember(dest => dest.CONVERTER_OUTPUT, opt => opt.MapFrom(src => src.ConverterOutput))
                 .ForMember(dest => dest.CONVERTER_UOM_ID, opt => opt.MapFrom(src => src.ConverterOutputUomId));
 
-            Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ProdPlan>().IgnoreAllNonExisting()
+            Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ProdPlanDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1ProdPlanId, opt => opt.MapFrom(src => src.PBCK1_PROD_PLAN_ID))
                 .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
-                .ForMember(dest => dest.ProdTypeId, opt => opt.MapFrom(src => src.PROD_TYPE_ID))
+                .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProdAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.AMOUNT))
                 .ForMember(dest => dest.BkcRequired, opt => opt.MapFrom(src => src.BKC_REQUIRED))
+                .ForMember(dest => dest.BkcRequiredUomId, opt => opt.MapFrom(src => src.BKC_REQUIRED_UOM_ID))
+                .ForMember(dest => dest.BkcRequiredUomName, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH))
+                .ForMember(dest => dest.MonthName, opt => opt.MapFrom(src => src.MONTH1 != null ? src.MONTH1.MONTH_NAME_ENG : string.Empty))
+                
                 ;
-            Mapper.CreateMap<Pbck1ProdPlan, PBCK1_PROD_PLAN>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Pbck1ProdPlanDto, PBCK1_PROD_PLAN>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PBCK1_PROD_PLAN_ID, opt => opt.MapFrom(src => src.Pbck1ProdPlanId))
                 .ForMember(dest => dest.PBCK1_ID, opt => opt.MapFrom(src => src.Pbck1Id))
-                .ForMember(dest => dest.PROD_TYPE_ID, opt => opt.MapFrom(src => src.ProdTypeId))
+                .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdTypeCode))
+                .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProdTypeName))
+                .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProdAlias))
                 .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
                 .ForMember(dest => dest.BKC_REQUIRED, opt => opt.MapFrom(src => src.BkcRequired))
+                .ForMember(dest => dest.BKC_REQUIRED_UOM_ID, opt => opt.MapFrom(src => src.BkcRequiredUomId))
                 .ForMember(dest => dest.MONTH, opt => opt.MapFrom(src => src.MonthId))
                 ;
 
-            Mapper.CreateMap<PBCK1, Pbck1>().IgnoreAllNonExisting()
+            Mapper.CreateMap<PBCK1, Pbck1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
                 .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.NUMBER))
                 .ForMember(dest => dest.Pbck1Reference, opt => opt.MapFrom(src => src.PBCK1_REF))
@@ -95,20 +115,23 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PeriodTo, opt => opt.MapFrom(src => src.PERIOD_TO))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.REPORTED_ON))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null ? src.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT : string.Empty))
-                .ForMember(dest => dest.NppbkcNo, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC != null ? src.ZAIDM_EX_NPPBKC.NPPBKC_NO : string.Empty))
-                .ForMember(dest => dest.GoodTypeId, opt => opt.MapFrom(src => src.GOODTYPE_ID))
-                .ForMember(dest => dest.GoodTypeDesc, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+                .ForMember(dest => dest.NppbkcCompanyName, opt => opt.MapFrom(src => src.NPPBCK_BUTXT))
+                .ForMember(dest => dest.NppbkcCompanyCode, opt => opt.MapFrom(src => src.NPPBKC_BUKRS))
+                .ForMember(dest => dest.GoodType, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
+                .ForMember(dest => dest.GoodTypeDesc, opt => opt.MapFrom(src => src.EXC_TYP_DESC))
                 .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.SupplierPlantWerks, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
                 .ForMember(dest => dest.SupplierPortId, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
-                .ForMember(dest => dest.SupplierPortName, opt => opt.MapFrom(src => src.SUPPLIER_PORT != null ? src.SUPPLIER_PORT.PORT_NAME : string.Empty))
+                .ForMember(dest => dest.SupplierPortName, opt => opt.MapFrom(src => src.SUPPLIER_PORT_NAME))
                 .ForMember(dest => dest.SupplierAddress, opt => opt.MapFrom(src => src.SUPPLIER_ADDRESS))
                 .ForMember(dest => dest.SupplierPhone, opt => opt.MapFrom(src => src.SUPPLIER_PHONE))
+                .ForMember(dest => dest.SupplierNppbkcId, opt => opt.MapFrom(src => src.SUPPLIER_NPPBKC_ID))
+                .ForMember(dest => dest.SupplierKppbcId, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID))
                 .ForMember(dest => dest.PlanProdFrom, opt => opt.MapFrom(src => src.PLAN_PROD_FROM))
                 .ForMember(dest => dest.PlanProdTo, opt => opt.MapFrom(src => src.PLAN_PROD_TO))
                 .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.REQUEST_QTY))
                 .ForMember(dest => dest.RequestQtyUomId, opt => opt.MapFrom(src => src.REQUEST_QTY_UOM))
-                .ForMember(dest => dest.RequestQtyUomName, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_NAME : string.Empty))
+                .ForMember(dest => dest.RequestQtyUomName, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.Lack1FromMonthId, opt => opt.MapFrom(src => src.LACK1_FROM_MONTH))
                 .ForMember(dest => dest.Lack1FromMonthName, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_ENG))
                 .ForMember(dest => dest.Lack1FormYear, opt => opt.MapFrom(src => src.LACK1_FROM_YEAR))
@@ -121,19 +144,19 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.CreatedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USERNAME : string.Empty))
+                .ForMember(dest => dest.CreatedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.ApprovedById, opt => opt.MapFrom(src => src.APPROVED_BY))
-                .ForMember(dest => dest.ApprovedUsername, opt => opt.MapFrom(src => src.ZAIDM_EX_POA != null && src.ZAIDM_EX_POA.USER != null ? src.ZAIDM_EX_POA.USER.USERNAME : string.Empty))
+                .ForMember(dest => dest.ApprovedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.LatestSaldo, opt => opt.MapFrom(src => src.LATEST_SALDO))
                 .ForMember(dest => dest.LatestSaldoUomId, opt => opt.MapFrom(src => src.LATEST_SALDO_UOM))
-                .ForMember(dest => dest.LatestSaldoUomName, opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_NAME : string.Empty))
-                .ForMember(dest => dest.Pbck1ProdConverter, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdConverter>>(src.PBCK1_PROD_CONVERTER)))
-                .ForMember(dest => dest.Pbck1ProdPlan, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdPlan>>(src.PBCK1_PROD_PLAN)))
+                .ForMember(dest => dest.LatestSaldoUomName, opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_DESC : string.Empty))
+                .ForMember(dest => dest.Pbck1ProdConverter, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdConverterDto>>(src.PBCK1_PROD_CONVERTER)))
+                .ForMember(dest => dest.Pbck1ProdPlan, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdPlanDto>>(src.PBCK1_PROD_PLAN)))
                 ;
 
-            Mapper.CreateMap<Pbck1, PBCK1>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Pbck1Dto, PBCK1>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PBCK1_ID, opt => opt.MapFrom(src => src.Pbck1Id))
                 .ForMember(dest => dest.NUMBER, opt => opt.MapFrom(src => src.Pbck1Number))
                 .ForMember(dest => dest.PBCK1_REF, opt => opt.MapFrom(src => src.Pbck1Reference))
@@ -142,7 +165,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PERIOD_TO, opt => opt.MapFrom(src => src.PeriodTo))
                 .ForMember(dest => dest.REPORTED_ON, opt => opt.MapFrom(src => src.ReportedOn))
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
-                .ForMember(dest => dest.GOODTYPE_ID, opt => opt.MapFrom(src => src.GoodTypeId))
+                .ForMember(dest => dest.NPPBKC_BUKRS, opt => opt.MapFrom(src => src.NppbkcCompanyCode))
+                .ForMember(dest => dest.NPPBCK_BUTXT, opt => opt.MapFrom(src => src.NppbkcCompanyName))
+                .ForMember(dest => dest.EXC_GOOD_TYP, opt => opt.MapFrom(src => src.GoodType))
+                .ForMember(dest => dest.EXC_TYP_DESC, opt => opt.MapFrom(src => src.GoodTypeDesc))
                 .ForMember(dest => dest.SUPPLIER_PLANT, opt => opt.MapFrom(src => src.SupplierPlant))
                 .ForMember(dest => dest.SUPPLIER_PORT_ID, opt => opt.MapFrom(src => src.SupplierPortId))
                 .ForMember(dest => dest.SUPPLIER_ADDRESS, opt => opt.MapFrom(src => src.SupplierAddress))
@@ -166,52 +192,26 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.LATEST_SALDO, opt => opt.MapFrom(src => src.LatestSaldo))
                 .ForMember(dest => dest.LATEST_SALDO_UOM, opt => opt.MapFrom(src => src.LatestSaldoUomId))
+                .ForMember(dest => dest.SUPPLIER_PORT_NAME, opt => opt.MapFrom(src => src.SupplierPortName))
+                .ForMember(dest => dest.SUPPLIER_NPPBKC_ID, opt => opt.MapFrom(src => src.SupplierNppbkcId))
+                .ForMember(dest => dest.SUPPLIER_KPPBC_ID, opt => opt.MapFrom(src => src.SupplierKppbcId))
+                .ForMember(dest => dest.SUPPLIER_PLANT_WERKS, opt => opt.MapFrom(src => src.SupplierPlantWerks))
                 .ForMember(dest => dest.PBCK1_PROD_CONVERTER, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_CONVERTER>>(src.Pbck1ProdConverter)))
                 .ForMember(dest => dest.PBCK1_PROD_PLAN, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_PLAN>>(src.Pbck1ProdPlan)))
                 ;
 
-            #region CK5
-
-            Mapper.CreateMap<CK5MaterialInput, CK5MaterialOutput>().IgnoreAllNonExisting();
-
-            Mapper.CreateMap<CK5, CK5Dto>().IgnoreAllNonExisting()
-                //.ForMember(dest => dest.KppbcCityName,opt => opt.MapFrom(src => (src.ZAIDM_EX_KPPBC.ZAIDM_EX_NPPBKC).FirstOrDefault().CITY))
-                //todo nppkbc atau kppbc
-                .ForMember(dest => dest.GoodTypeDesc, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
-                .ForMember(dest => dest.ExSettlementName,
-                    opt => opt.MapFrom(src => src.EX_SETTLEMENT.EX_SETTLEMENT_NAME))
-                .ForMember(dest => dest.ExStatusName, opt => opt.MapFrom(src => src.EX_STATUS.EX_STATUS_NAME))
-                .ForMember(dest => dest.RequestTypeName, opt => opt.MapFrom(src => src.REQUEST_TYPE.REQUEST_TYPE_NAME))
-                .ForMember(dest => dest.SourcePlantName, opt => opt.MapFrom(src => src.T1001W.NAME1))
-                .ForMember(dest => dest.SourcePlantWerks, opt => opt.MapFrom(src => src.T1001W.WERKS))
-                .ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.T1001W1.NAME1))
-                .ForMember(dest => dest.DestPlantWerks, opt => opt.MapFrom(src => src.T1001W1.WERKS))
-                .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
-                .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
-                .ForMember(dest => dest.CarriageMethodName,opt => opt.MapFrom(src => src.CARRIAGE_METHOD.CARRIAGE_METHOD_NAME))
-                .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
-                .ForMember(dest => dest.KppbcCityName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
-                .ForMember(dest => dest.CeOfficeCode,opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_NUMBER))
-
-                .ForMember(dest => dest.SourceNpwp, opt => opt.MapFrom(src => src.T1001W.ZAIDM_EX_NPPBKC.T1001.NPWP))
-                .ForMember(dest => dest.SourceNppbkcId, opt => opt.MapFrom(src => src.T1001W.ZAIDM_EX_NPPBKC.NPPBKC_ID))
-                    .ForMember(dest => dest.SourceCompanyName, opt => opt.MapFrom(src => src.T1001W.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT))
-                    .ForMember(dest => dest.SourceAddress, opt => opt.MapFrom(src => src.T1001W.ADDRESS))
-                    .ForMember(dest => dest.SourceKppbcName, opt => opt.MapFrom(src => src.T1001W.NAME1))
-
-                .ForMember(dest => dest.DestNpwp, opt => opt.MapFrom(src => src.T1001W1.ZAIDM_EX_NPPBKC.T1001.NPWP))
-                .ForMember(dest => dest.DestNppbkcId, opt => opt.MapFrom(src => src.T1001W1.ZAIDM_EX_NPPBKC.NPPBKC_ID))
-                .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.T1001W1.ZAIDM_EX_NPPBKC.T1001.BUKRSTXT))
-                .ForMember(dest => dest.DestAddress, opt => opt.MapFrom(src => src.T1001W1.ZAIDM_EX_NPPBKC.T1001.NPWP))
-                    .ForMember(dest => dest.DestKppbcName, opt => opt.MapFrom(src => src.T1001W1.NAME1));
-
-            Mapper.CreateMap<CK5Dto, CK5>().IgnoreAllNonExisting();
-
-            Mapper.CreateMap<CK5MaterialDto, CK5_MATERIAL>().IgnoreAllNonExisting();
-
-            Mapper.CreateMap<CK5_MATERIAL, CK5MaterialDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1WorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))
+                .ForMember(dest => dest.FORM_NUMBER, opt => opt.MapFrom(src => src.DocumentNumber))
+                .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dest => dest.COMMENT, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
+                ;
 
             #endregion
+
+        
 
             #region Workflow History
 
@@ -220,6 +220,15 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<WorkflowHistoryDto, WORKFLOW_HISTORY>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Pbck1ProdConv
+
+            Mapper.CreateMap<Pbck1ProdConverterInput, Pbck1ProdConverterOutput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdPlanInput, Pbck1ProdPlanOutput>().IgnoreAllNonExisting();
+
+            #endregion
+
+
         }
     }
 }

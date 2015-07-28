@@ -49,19 +49,19 @@ namespace Sampoerna.EMS.BLL.Test
 
             var nppbkc = new ZAIDM_EX_NPPBKC()
             {
-                NPPBKC_ID = 1, CITY_ALIAS = "MLG",
-                T1001 = new T1001() { BUKRSTXT = "HMS-E", BUKRS = "3006" }
+                NPPBKC_ID = "1", CITY_ALIAS = "MLG",
+                T001 = new T001() { BUTXT = "HMS-E", BUKRS = "3006" }
             };
 
             var input = new GenerateDocNumberInput()
             {
-                Month = 1, Year = 1, NppbkcId = 1
+                Month = 1, Year = 1, NppbkcId = "1"
             };
 
             _repository.Get().ReturnsForAnyArgs(new List<DOC_NUMBER_SEQ>() { docNumberSeq });
-            _nppbkcRepository.GetByID(input.NppbkcId).Returns(nppbkc);
+            _nppbkcRepository.Get().ReturnsForAnyArgs(new List<ZAIDM_EX_NPPBKC>{nppbkc});
 
-            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + nppbkc.T1001.BUKRSTXT + "/" + nppbkc.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + nppbkc.T001.BUTXT + "/" + nppbkc.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             //act
             var result = _bll.GenerateNumber(input);

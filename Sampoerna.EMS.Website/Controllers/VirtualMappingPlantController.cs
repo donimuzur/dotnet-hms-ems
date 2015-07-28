@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -18,14 +19,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMasterDataBLL _masterDataBll;
         private IChangesHistoryBLL _changesHistoryBLL;
         //private List<AutoCompletePlant> _plantList;
+        private Enums.MenuList _mainMenu;
+       
 
         public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
-            : base(pageBLL, Enums.MenuList.MasterData)
+            : base(pageBLL, Enums.MenuList.VirtualMappingPlant)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
             _masterDataBll = masterData;
             _changesHistoryBLL = changeLogHistoryBLL;
             //_plantList = _masterDataBll.get;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -33,7 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new VirtualMappingPlantIndexViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var dbData = _virtualMappingPlanBll.GetAll();
@@ -44,7 +48,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private VirtualMappingPlantCreateViewModel InitCreateModel(VirtualMappingPlantCreateViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
@@ -62,6 +66,45 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Create", model);
         }
+        private void SetChanges(VIRTUAL_PLANT_MAP origin, VirtualMappingPlantEditViewModel data, string userId)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("COMPANY_ID", origin.COMPANY_ID.Equals(data.CompanyId));
+            changesData.Add("EXPORT_PLANT", origin.EXPORT_PLANT_ID.Equals(data.ExportPlantId));
+            changesData.Add("IMPORT_PLANT",origin.IMPORT_PLANT_ID.Equals(data.ImportPlantId));
+          
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value == false)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.VirtualMappingPlant,
+                        FORM_ID = data.VirtualMapId.ToString(),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "COMPANY_ID":
+                            changes.OLD_VALUE = origin.COMPANY_ID ;
+                            changes.NEW_VALUE = data.CompanyId;
+                            break;
+                        case "EXPORT_PLANT":
+                            changes.OLD_VALUE = origin.EXPORT_PLANT_ID;
+                            changes.NEW_VALUE = data.ExportPlantId;
+                            break;
+                        case "IMPORT_PLANT":
+                            changes.OLD_VALUE = origin.IMPORT_PLANT_ID;
+                            changes.NEW_VALUE = data.ImportPlantId;
+                            break;
+                        
+                    }
+                    _changesHistoryBLL.AddHistory(changes);
+                }
+            }
+        }
 
 
         [HttpPost]
@@ -72,7 +115,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 //var dbVirtual = new VIRTUAL_PLANT_MAP();
 
                 var dbVirtual = AutoMapper.Mapper.Map<VIRTUAL_PLANT_MAP>(model);
-
+                dbVirtual.CREATED_DATE = DateTime.Now;
+                dbVirtual.CREATED_BY = CurrentUser.USER_ID;
                 _virtualMappingPlanBll.Save(dbVirtual);
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                 return RedirectToAction("Index");
@@ -83,27 +127,30 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        public ActionResult Details(long id)
+        public ActionResult Details(int id)
         {
             var model = new VirtualMappingPlantDetailsViewModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBLL.GetByFormTypeAndFormId(Enums.MenuList.MasterData, id.ToString()));
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
             model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
-            model.CompanyName = dbVirtual.T1001.BUKRSTXT;
-            model.ImportPlanName = dbVirtual.T1001W.WERKS;
-            model.ExportPlanName = dbVirtual.T1001W1.WERKS;
+            model.CompanyName = dbVirtual.T001.BUTXT;
+            model.ImportPlanName = dbVirtual.T001W.WERKS;
+            model.ExportPlanName = dbVirtual.T001W1.WERKS;
             model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
-            
+            var changeHistoryList = _changesHistoryBLL.GetByFormTypeId(Enums.MenuList.VirtualMappingPlant);
+           
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
+         
 
             return View(model);
         }
 
         private VirtualMappingPlantEditViewModel InitEditModel(VirtualMappingPlantEditViewModel model)
         {
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             model.CompanyNameList = GlobalFunctions.GetCompanyList();
@@ -128,11 +175,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     var modeldetail = new VirtualMappingPlantDetailsViewModel();
                     modeldetail.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
-                    if (dbVirtual.COMPANY_ID.HasValue)
-                        modeldetail.CompanyName = dbVirtual.T1001.BUKRSTXT;
+                    if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
+                        modeldetail.CompanyName = dbVirtual.T001.BUTXT;
 
-                    modeldetail.ImportPlanName = dbVirtual.T1001W.WERKS;
-                    modeldetail.ExportPlanName = dbVirtual.T1001W1.WERKS;
+                    modeldetail.ImportPlanName = dbVirtual.T001W.WERKS;
+                    modeldetail.ExportPlanName = dbVirtual.T001W1.WERKS;
 
                     
                     return View("Details",modeldetail);
@@ -140,11 +187,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 else {
                     model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
-                    if (dbVirtual.COMPANY_ID.HasValue)
-                        model.CompanyId = dbVirtual.COMPANY_ID.Value;
+                    if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
+                        model.CompanyId = dbVirtual.COMPANY_ID;
 
-                    model.ImportPlantId = dbVirtual.T1001W.PLANT_ID;
-                    model.ExportPlantId = dbVirtual.T1001W1.PLANT_ID;
+                    model.ImportPlantId = dbVirtual.T001W.WERKS;
+                    model.ExportPlantId = dbVirtual.T001W1.WERKS;
 
                     return View(model);
                 }
@@ -180,8 +227,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     return View("Edit", model);
                 }
-
-
+                var origin = AutoMapper.Mapper.Map<VIRTUAL_PLANT_MAP>(dbVirtual);
+                SetChanges(origin, model, CurrentUser.USER_ID);
                 dbVirtual.COMPANY_ID = model.CompanyId;
                 dbVirtual.IMPORT_PLANT_ID = model.ImportPlantId;
                 dbVirtual.EXPORT_PLANT_ID = model.ExportPlantId;

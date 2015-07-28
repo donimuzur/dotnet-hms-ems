@@ -64,7 +64,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>HEADER FOOTER</h3>
+            <h3>Header Footer</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "HeaderFooter")"><button class="btn btn-blue">NEW</button></a>
                 <a data-toggle="modal" data-target=".menu-maping-type">
@@ -112,7 +112,7 @@
                                     <a href="@Url.Action("Details", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                     <a href="@Url.Action("Edit", "HeaderFooter", new { id = item.HEADER_FOOTER_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
-                                <td class="last">@Html.DisplayFor(model => item.COMPANY_CODE)</td>
+                                <td class="last">@Html.DisplayFor(model => item.COMPANY_ID)</td>
                                 <td>@Html.DisplayFor(model => item.COMPANY_NAME)
                                 <td>
                                     @if (!string.IsNullOrEmpty(item.HEADER_IMAGE_PATH))
@@ -142,12 +142,12 @@
 <!--modal-->
 <input id="btn-headerfooter-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
-<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Success</h3>
+                <h4 class="modal-title">Success</h4>
             </div>
             <div class="modal-body" id="modal-headerfooter-message">
 

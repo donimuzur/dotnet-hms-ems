@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private SelectList GetCompanyList()
         {
             var data = _companyBll.GetMasterData();
-            return new SelectList(data, "COMPANY_ID", "BUKRS");
+            return new SelectList(data, "BUKRS", "BUKRS");
         }
 
         //
@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu,
                 Detail = Mapper.Map<HeaderFooterDetailItem>(data),
-                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()))
             };
             return View(model);
         }
@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu,
                 Detail = Mapper.Map<HeaderFooterDetailItem>(data),
-                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id.ToString()))
             };
             return InitialEdit(model);
         }
@@ -159,7 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
                     return RedirectToAction("Index");
                 }
 
@@ -179,7 +179,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         
         [HttpPost]
-        public JsonResult GetCompanyDetail(long id)
+        public JsonResult GetCompanyDetail(string id)
         {
             var data = _companyBll.GetById(id);
             return Json(data);

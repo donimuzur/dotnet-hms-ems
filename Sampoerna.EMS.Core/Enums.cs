@@ -29,7 +29,9 @@ namespace Sampoerna.EMS.Core
             BrandRegistration = 22,
             VirtualMappingPlant = 23,
             MaterialMaster = 24,
-            MasterPlant = 25
+            MasterPlant = 25,
+            Uom = 27,
+            GoodsTypeGroup =26
         }
         public enum PBCK1Type
         {
@@ -51,6 +53,12 @@ namespace Sampoerna.EMS.Core
             Completed = 7
         }
 
+        public enum Pbck1DocumentType
+        {
+            OpenDocument = 1,
+            CompletedDocument = 2
+        }
+
         public enum DocumentStatus
         {
             [Description("Draft")]
@@ -59,6 +67,8 @@ namespace Sampoerna.EMS.Core
             Revised = 5,
             [Description("Waiting for Approval")]
             WaitingForApproval = 10,
+            [Description("Waiting for Approval")]
+            WaitingForApprovalManager = 11,
             [Description("Approved")]
             Approved = 15,
             [Description("Rejected")]
@@ -112,19 +122,21 @@ namespace Sampoerna.EMS.Core
         public enum FormType
         {
             [Description("PBCK-1")]
-            PBKC1 = 1,
+            PBCK1 = 1,
             [Description("CK-5")]
             CK5 = 2,
             [Description("PBCK-4")]
-            PBKC4 = 3,
+            PBCK4 = 3,
             [Description("PBCK-3")]
-            PBKC3 = 4
+            PBCK3 = 4
         }
 
         public enum ActionType
         {
             [Description("Created")]
             Created = 1,
+            [Description("Cancel")]
+            Cancel = 2,
             [Description("Modified")]
             Modified = 5,
             [Description("Submit")]
@@ -158,7 +170,7 @@ namespace Sampoerna.EMS.Core
         {
             User = 1,
             POA = 2,
-            Manager =3
+            Manager = 3
         }
 
         public enum FormViewType
@@ -167,6 +179,38 @@ namespace Sampoerna.EMS.Core
             Create = 2,
             Edit = 3,
             Detail = 4
+        }
+
+        public enum ExciseSettlement
+        {
+            [Description("Pembayaran")]
+            Pembayaran = 1,
+            [Description("Pita Cukai")]
+            PitaCukai = 2
+        }
+
+        public enum ExciseStatus
+        {
+            [Description("Belum Dilunasi")]
+            BelumDilunasi = 1,
+            [Description("Sudah Dilunasi")]
+            SudahDilunasi = 2
+        }
+
+        public enum RequestType
+        {
+            [Description("Tunai")]
+            Tunai = 1,
+            [Description("Tunda")]
+            Tunda = 2
+        }
+
+        public enum CarriageMethod
+        {
+            [Description("Darat")]
+            Darat = 1,
+            [Description("Laut")]
+            Laut = 2
         }
     }
 }

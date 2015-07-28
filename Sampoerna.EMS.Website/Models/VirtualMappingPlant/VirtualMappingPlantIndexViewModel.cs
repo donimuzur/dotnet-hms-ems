@@ -18,13 +18,13 @@ namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
     {
         public long VirtualPlantMapId { get; set; }
 
-        public long CompanyId { get; set; }
+        public string CompanyId { get; set; }
         public string CompanyName { get; set; }
 
-        public long ImportPlantId { get; set; }
+        public string ImportPlantId { get; set; }
         public string ImportPlanName { get; set; }
 
-        public long ExportPlantId { get; set; }
+        public string ExportPlantId { get; set; }
         public string ExportPlanName { get; set; }
 
         public bool IsDeleted { get; set; }

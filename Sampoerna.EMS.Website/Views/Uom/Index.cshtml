@@ -1,0 +1,134 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.UOM.UomIndexViewModel
+@{
+    ViewBag.Title = "New Unit Of Measure";
+}
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+
+            // Setup - add a text input to each footer cell
+            $('#uomtable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 3) {
+                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                }
+            });
+
+            // DataTable
+            var table = $('#uomtable').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+             @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-uom-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-uom-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-uom-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-uom-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-uom-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-uom-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
+
+
+            $('#MenuUOM').addClass('active');
+        });
+    </script>
+}
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">UOM<span>Unit Of Measurement </span></h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "Uom")"><button class="btn btn-blue">NEW</button></a>
+                <a data-toggle="modal" data-target=".menu-maping-type">
+
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="uomtable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row">Filter</th>
+                            <th>Uom Code</th>
+                            <th>Uom Description</th>
+
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
+                            
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Details", "Uom", new { id = item.UomId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Uom", new { id = item.UomId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td class="last">@Html.DisplayFor(model => item.UomId)</td>
+                                <td>@Html.DisplayFor(model => item.UomName)</td>
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--modal-->
+<input id="btn-uom-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body" id="modal-uom-message">
+
+            </div>
+        </div>
+    </div>
+</div>
+

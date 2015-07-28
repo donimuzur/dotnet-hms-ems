@@ -7,7 +7,7 @@
 }
 
 @section scripts {
-   <script src="~/Scripts/js/custom.js"></script>
+<script src="~/Scripts/js/custom.js"></script>
    <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
 
@@ -39,20 +39,20 @@
 
           @if (TempData[Constans.SubmitType.Save] != null)
                {
-               @: $('#modal-nppbkc-message').html('@TempData[Constans.SubmitType.Save]');
-               @: $('#btn-nppbkc-modal').click();
+               @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
+               @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Save] = null;
             }
                else if (TempData[Constans.SubmitType.Update] != null)
                {
-              @: $('#modal-nppbkc-message').html('@TempData[Constans.SubmitType.Update]');
-               @: $('#btn-nppbkc-modal').click();
+              @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
+               @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Update] = null;
              }
                else if (TempData[Constans.SubmitType.Delete] != null)
                {
-                @: $('#modal-nppbkc-message').html('@TempData[Constans.SubmitType.Delete]');
-                 @: $('#btn-nppbkc-modal').click();
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
+                 @: $('#btn-poa-modal').click();
                @:TempData[Constans.SubmitType.Delete] = null;
             }
 
@@ -113,11 +113,11 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "NPPBKC", new { id = item.VirtualNppbckId })"data-toggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "NPPBKC", new { id = item.VirtualNppbckId })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.NppbckNo)
+                                    @Html.DisplayFor(modelItem => item.VirtualNppbckId)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Address1)
@@ -143,16 +143,16 @@
     </div>
 </div>
 <!--modal-->
-<input id="btn-nppbkc-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+<input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
-<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Success</h3>
+                <h4 class="modal-title">Success</h4>
             </div>
-            <div class="modal-body" id="modal-nppbkc-message">
+            <div class="modal-body" id="modal-poa-message">
 
             </div>
         </div>

@@ -14,10 +14,14 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class EX_GROUP_TYPE
     {
+        public EX_GROUP_TYPE()
+        {
+            this.EX_GROUP_TYPE_DETAILS = new HashSet<EX_GROUP_TYPE_DETAILS>();
+        }
+    
         public int EX_GROUP_TYPE_ID { get; set; }
         public string GROUP_NAME { get; set; }
-        public Nullable<int> EX_GOODTYP_ID { get; set; }
     
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+        public virtual ICollection<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
     }
 }

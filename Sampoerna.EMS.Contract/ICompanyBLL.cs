@@ -5,11 +5,11 @@ namespace Sampoerna.EMS.Contract
 {
     public interface ICompanyBLL
     {
-       List<T1001> GetMasterData();
+        List<T001> GetMasterData();
 
-        List<T1001> GetAllData();
+        List<T001> GetAllData();
 
- 	 T1001 GetById(long id);
+        T001 GetById(string id);
 
     }
 }

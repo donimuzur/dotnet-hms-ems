@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -16,17 +20,21 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private IZaidmExPOAMapBLL _poaMapBll;
-        private IZaidmExPOABLL _poaBll;
-        private IUserBLL _userBll;
+        private POABLL _poaBll;
+        private IUserBLL  _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
-        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, IZaidmExPOABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
-            )
-            : base(pageBLL, Enums.MenuList.MasterData)
+        private IPOASKBLL _poaskbll;
+        private Enums.MenuList _mainMenu;
+        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
+            ,IPOASKBLL poaskbll)
+            : base(pageBLL, Enums.MenuList.POA)
         {
             _poaMapBll = poadMapBll;
             _poaBll = poaBll;
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;
+            _poaskbll = poaskbll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
@@ -35,7 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var poa = new POAViewModel
             {
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<POAViewDetailModel>>(_poaBll.GetAll())
             };
@@ -48,7 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var poa = new POAFormModel();
-            poa.MainMenu = Enums.MenuList.MasterData;
+            poa.MainMenu = _mainMenu;
             poa.CurrentMenu = PageInfo;
             poa.Users = GlobalFunctions.GetCreatorList();
             return View(poa);
@@ -60,9 +68,28 @@ namespace Sampoerna.EMS.Website.Controllers
            
                 try
                 {
-                    var poa = AutoMapper.Mapper.Map<ZAIDM_EX_POA>(model.Detail);
-                    poa.IS_FROM_SAP = false;
+                    var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
+                    
+                    poa.CREATED_BY = CurrentUser.USER_ID;
+                    poa.CREATED_DATE = DateTime.Now;
+                    poa.IS_ACTIVE = true;
+                    if (model.Detail.PoaSKFile != null)
+                    {
+                        foreach (var sk in model.Detail.PoaSKFile)
+                        {
+                            if (sk != null)
+                            {
+                                var poa_sk = new POA_SK();
+                                poa_sk.FILE_NAME = sk.FileName;
+                                poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                                poa.POA_SK.Add(poa_sk);
+                              
+                            }
+                        }
+                    }
+                    
                     _poaBll.Save(poa);
+                   
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
                 }
@@ -79,7 +106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var poa = _poaBll.GetById(id);
 
@@ -90,31 +117,30 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (poa.IS_DELETED == true)
-            {
-                return RedirectToAction("Detail", "POA", new {id = poa.POA_ID});
-            }
+            
             var model = new POAFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
             
             model.Managers = detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(detail.Manager.USER_ID);
             model.Users = detail.User == null? GlobalFunctions.GetCreatorList(): GlobalFunctions.GetCreatorList(detail.User.USER_ID); 
             model.Detail = detail;
+            
             return View(model);
         }
-        private void SetChanges(POAViewDetailModel origin, ZAIDM_EX_POA poa)
+        private void SetChanges(POAViewDetailModel origin, POA poa)
         {
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("TITLE", (origin.Title == null ? true : origin.Title.Equals(poa.TITLE)));
-            changesData.Add("USER", (origin.UserId == null ? true : origin.UserId.Equals(poa.USER_ID)));
+            changesData.Add("USER", (origin.UserId == null ? true : origin.UserId.Equals(poa.LOGIN_AS)));
             changesData.Add("MANAGER", (origin.ManagerId == null ? true : origin.ManagerId.Equals(poa.MANAGER_ID)));
             changesData.Add("PHONE", (origin.PoaPhone == null ? true : origin.PoaPhone.Equals(poa.POA_PHONE)));
-            changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.EMAIL)));
+            changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.POA_EMAIL)));
             changesData.Add("ADDRESS", (origin.PoaAddress == null ? true : origin.PoaAddress.Equals(poa.POA_ADDRESS)));
-            changesData.Add("ID_CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.POA_ID_CARD))); ;
+            changesData.Add("ID CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.ID_CARD))); ;
+            changesData.Add("PRINTED NAME", (origin.PoaPrintedName == null ? true : origin.PoaPrintedName.Equals(poa.PRINTED_NAME))); ;
 
             foreach (var listChange in changesData)
             {
@@ -122,7 +148,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var changes = new CHANGES_HISTORY();
                     changes.FORM_TYPE_ID = Enums.MenuList.POA;
-                    changes.FORM_ID = poa.POA_ID;
+                    changes.FORM_ID = poa.POA_ID.ToString();
                     changes.FIELD_NAME = listChange.Key;
                     changes.MODIFIED_BY = CurrentUser.USER_ID;
                     changes.MODIFIED_DATE = DateTime.Now;
@@ -133,12 +159,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.NEW_VALUE = poa.TITLE;
                             break;
                         case "USER":
-                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(Convert.ToInt32(origin.UserId)).USERNAME;
-                            changes.NEW_VALUE = poa.USER_ID == null ? null : _userBll.GetUserById(Convert.ToInt32(poa.USER_ID)).USERNAME;
+                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USER_ID;
+                            changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : poa.LOGIN_AS;
                             break;
                         case "MANAGER":
-                            changes.OLD_VALUE = origin.ManagerId == null ? null : _userBll.GetUserById(Convert.ToInt32(origin.ManagerId)).USERNAME;
-                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : _userBll.GetUserById(Convert.ToInt32(poa.MANAGER_ID)).USERNAME;
+                            changes.OLD_VALUE = origin.ManagerId == null ? null : origin.ManagerId;
+                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : poa.MANAGER_ID;
                             break;
                         case "PHONE":
                             changes.OLD_VALUE = origin.PoaPhone;
@@ -146,15 +172,15 @@ namespace Sampoerna.EMS.Website.Controllers
                             break;
                         case "EMAIL":
                             changes.OLD_VALUE = origin.Email;
-                            changes.NEW_VALUE = poa.EMAIL;
+                            changes.NEW_VALUE = poa.POA_EMAIL;
                             break;
                         case "ADDRESS":
                             changes.OLD_VALUE = origin.PoaAddress;
                             changes.NEW_VALUE = poa.POA_ADDRESS;
                             break;
-                        case "ID_CARD":
+                        case "ID CARD":
                             changes.OLD_VALUE = origin.PoaIdCard;
-                            changes.NEW_VALUE = poa.POA_ID_CARD;
+                            changes.NEW_VALUE = poa.ID_CARD;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
@@ -162,6 +188,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
             }
+            
 
 
 
@@ -174,11 +201,25 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
+                if (model.Detail.PoaSKFile != null)
+                {
+                    foreach (var sk in model.Detail.PoaSKFile)
+                    {
+                        if (sk != null)
+                        {
+                            var poa_sk = new POA_SK();
+                            poa_sk.FILE_NAME = sk.FileName;
+                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                            poa_sk.POA_ID = poaId;
+                            _poaskbll.Save(poa_sk);
+                        }
+                    }
+                }
                 var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                  AutoMapper.Mapper.Map(model.Detail, poa);
                  SetChanges(origin,poa);
               
-                _poaBll.Update(poa);
+                _poaBll.Save(poa);
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
@@ -190,7 +231,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
         
-        public ActionResult Detail(int id)
+        public ActionResult Detail(string id)
         {
             var poa = _poaBll.GetById(id);
             if (poa == null)
@@ -200,7 +241,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.POA);
            
             var model = new POAFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
             model.Users = GlobalFunctions.GetCreatorList();
@@ -210,7 +251,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             try
             {
@@ -226,10 +267,29 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetUser(string userId)
         {
-            var id = Convert.ToInt32(userId);
-            return Json(_userBll.GetUserById(id));
+           
+            return Json(_userBll.GetUserById(userId));
         }
 
-       
+        private string SaveUploadedFile(HttpPostedFileBase file, string PoaIdCard)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+            //initialize folders in case deleted by an test publish profile
+            if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
+                Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
+
+            sFileName = Constans.PoaSK + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
     }
 }

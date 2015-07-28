@@ -11,12 +11,17 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IMaterialBLL
     {
-        ZAIDM_EX_MATERIAL getByID(long materialId);
+        ZAIDM_EX_MATERIAL getByID(string materialnumber,string plant);
 
         List<ZAIDM_EX_MATERIAL> getAll();
+        List<string> getStickerCode();
 
-        MaterialOutput Save(ZAIDM_EX_MATERIAL data, int userId);
+        List<T001W> getAllPlant(string materialnumber);
 
-        void Delete(int id, int userId);
+        MaterialOutput Save(ZAIDM_EX_MATERIAL data, string userId);
+
+        void SaveUoM(MATERIAL_UOM data);
+
+        void Delete(string materialnumber, string plant, string userId);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Validations;
 
@@ -9,6 +8,17 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1Item
     {
+        public Pbck1Item()
+        {
+            Pbck1ProdConverter = new List<Pbck1ProdConvModel>();
+            Pbck1ProdPlan = new List<Pbck1ProdPlanModel>();
+            PeriodFrom = DateTime.Now;
+            PeriodTo = DateTime.Now;
+            ReportedOn = DateTime.Now;
+            PlanProdFrom = DateTime.Now;
+            PlanProdTo = DateTime.Now;
+            DecreeDate = DateTime.Now;
+        }
         public long Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
@@ -38,28 +48,28 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public DateTime ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long NppbkcId { get; set; }
+        public string NppbkcId { get; set; }
 
-        public string CompanyName { get; set; }
+        public string NppbkcCompanyCode { get; set; }
+        public string NppbkcCompanyName { get; set; }
         
         public string PoaList { get; set; }
 
-        public string NppbkcNo { get; set; }
-
         [Required, Display(Name = "Exciseable Goods Description")]
-        public int GoodTypeId { get; set; }
-
+        public string GoodType { get; set; }
         public string GoodTypeDesc { get; set; }
 
         [Required, Display(Name = "Supplier Plant")]
         public string SupplierPlant { get; set; }
+
+        public string SupplierPlantWerks { get; set; }
         
         [Display(Name = "Supplier Port")]
         public int? SupplierPortId { get; set; }
 
-        public string SupplierNppbkc { get; set; }
+        public string SupplierNppbkcId { get; set; }
 
-        public string HiddenSupplierNppbkc { get; set; }
+        public string HiddenSupplierNppbkcId { get; set; }
 
         public string SupplierPortName { get; set; }
 
@@ -71,9 +81,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [Display(Name = "Supplier Phone")]
         public string SupplierPhone { get; set; }
 
-        public string SupplierKppbc { get; set; }
+        public string SupplierKppbcId { get; set; }
 
-        public string HiddenSupplierKppbc { get; set; }
+        public string HiddenSupplierKppbcId { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
         [UIHint("FormatDateTime")]
@@ -88,7 +98,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public decimal RequestQty { get; set; }
 
         [Required]
-        public int RequestQtyUomId { get; set; }
+        public string RequestQtyUomId { get; set; }
 
         public string RequestQtyUomName { get; set; }
 
@@ -124,11 +134,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         
         public DateTime CreatedDate { get; set; }
         
-        public int? CreatedById { get; set; }
+        public string CreatedById { get; set; }
 
         public string CreatedUsername { get; set; }
 
-        public int? ApprovedById { get; set; }
+        public string ApprovedById { get; set; }
 
         public string ApprovedUsername { get; set; }
 
@@ -138,7 +148,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public decimal LatestSaldo { get; set; }
 
-        public int LatestSaldoUomId { get; set; }
+        public string LatestSaldoUomId { get; set; }
 
         public string LatestSaldoUomName { get; set; }
 
@@ -146,9 +156,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public Pbck1Item Pbck1Parent { get; set; }
 
-        public List<Pbck1ProdConverter> Pbck1ProdConverter { get; set; }
+        public List<Pbck1ProdConvModel> Pbck1ProdConverter { get; set; }
 
-        public List<Pbck1ProdPlan> Pbck1ProdPlan { get; set; }
+        public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
+
+        public string Comment { get; set; }
         
     }
 }

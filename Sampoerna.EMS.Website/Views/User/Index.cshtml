@@ -7,13 +7,13 @@
 
 @section scripts
 {
-   <script src="~/Scripts/js/custom.js"></script>
+<script src="~/Scripts/js/custom.js"></script>
    <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
+                if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
                 }
             });
@@ -43,7 +43,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>DATA USER</h3>
+            <h3>Master User</h3>
         </div>
     </div>
 </div>
@@ -56,7 +56,7 @@
                     <thead>
                         <tr>
                             <th class="toggle-row">Filter</th>
-                            <th>Username</th>
+                            <th>UserID</th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Phone</th>
@@ -85,7 +85,7 @@
                                     <a href="@Url.Action("Detail", "User", new { id = item.USER_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.USERNAME)
+                                    @Html.DisplayFor(modelItem => item.USER_ID)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FIRST_NAME)

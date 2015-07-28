@@ -1,6 +1,8 @@
 ﻿@model Sampoerna.EMS.Website.Models.Material.MaterialEditViewModel
 @{
     ViewBag.Title = "Edit";
+   
+                                                      
 }
 @using (Html.BeginForm("Edit", "Material", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
@@ -8,7 +10,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Update Master Material</h3>
+                <h3> Material Master </h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Cancel</a>
@@ -27,7 +29,7 @@
                                 <div class="panel-heading" role="tab" id="headingOne">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Master Material
+                                            Update Master Material
                                             <i class="fa fa-caret-down"></i>
                                         </a>
                                     </h4>
@@ -38,169 +40,223 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Material Number</label>
+                                                        <label class="col-md-4">Material Number<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
-                                                        </div>
+                                                            @Html.HiddenFor(model => model.MaterialNumber)
+                                                            @Html.TextBox("materialNumber", Model.MaterialNumber, new { @class = "form-control", maxlength = "18", disabled = "disabled" })
+                                                           </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Material Group</label>
+                                                        <label class="col-md-4">Material Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialGroup)*@
+                                                            @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
+                                                         
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4 long">Material Description</label>
+                                                        <label class="col-md-4 long">Material Description<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control" })
+                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50", rows = "5" })
                                                             @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Purchasing Group</label>
+                                                        <label class="col-md-4">Purchasing Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.PurchasingGroup)*@
+                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
+
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Plant</label>
+                                                        <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "select", new { @class = "selectpicker form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.PlantId)*@
+                                                            @Html.HiddenFor(model => model.PlantId)
+                                                            @Html.DropDownList("plantid", Model.PlantList, "select", new { @class = "selectpicker form-control", disabled= "disabled" })
+
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Base UOM</label>
+                                                        <label class="col-md-4">Base UOM (SAP)<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.UomId)*@
+
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Excisable Good Type</label>
+                                                        <label class="col-md-4">Excisable Good Type<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
                                                             @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.GoodTypeId)*@
+
 
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Issue Storage Loc</label>
+                                                        <label class="col-md-4">Issue Storage Loc<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
-                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.IssueStorageLoc)*@
+                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
 
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Conversion</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Convertion, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.Convertion)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Create By</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                            @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedBy)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Changed By</label>
-                                                        <div class="col-md-8">
-
-                                                            @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                            @Html.HiddenFor(model => model.ChangedById, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedBy)*@
 
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Created On</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedDate)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                          
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Last Change On</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
-                                                            @*@Html.ValidationMessageFor(model => model.ChangedDate)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-1">Plant Deletion</label>
-                                                        <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "form-control" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-1">Client Deletion</label>
-                                                        <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "form-control" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body">
+                                @*<div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Converted UOM(EMS)<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("uom-list", Model.BaseUOM, "select", new { @class = "form-control" })
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Convertion<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
+                                             </div>
+                                        </div>
+                                    </div>
+
+                                </div>*@
+
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 col-md-offset-4">
+                                            @*<button class="btn btn-blue full" type="button" id="material-uom-add-btn">Add</button>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-wrap">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div id="contenttable" class="table-container">
+                                                <table id="material-uom" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            @*<th>&nbsp;</th>*@
+                                                            <th> Converted UOM </th>
+                                                            <th> Conversion </th>
+
+                                                        </tr>
+
+                                                    </thead>
+
+
+                                                    <tbody>
+                                                        @if (Model.MaterialUom != null)
+                                                        {
+                                                            for (int i = 0; i < Model.MaterialUom.Count; i++)
+                                                            {
+                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].Id)
+                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].MaterialNumber)
+                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].Plant)
+
+                                                                 <tr>
+                                                                     @*<td><a href="javascript:void(0)" onclick="deleteUom(@itemIndex)">delete</a></td>*@
+                                                              
+                                                                     <td>
+                                                                         <span id="field1">@Html.DisplayFor( x => Model.MaterialUom[i].Meinh)</span>
+
+                                                                     </td>
+                                                                     <td>
+                                                                         <span id="field2">@Html.DisplayFor(x=> Model.MaterialUom[i].UmrenStr)</span>
+                                                                     </td>
+                                                                 </tr>
+
+
+
+
+
+                                                             }
+                                                        }
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                       
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+
+                </div>
+            </div>
+        </div>
+    </footer>
 }
 @section scripts{
-    <script type="text/javascript" language="javascript" class="init">
-        $('#MenuMasterMaterial').addClass('active');
+<script src="~/Scripts/thousand-separator.js"></script>
+
+    <script type="text/javascript" language="javascript">
+
+    $('#MenuMasterMaterial').addClass('active');
+    var arrayUom = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MaterialUom)));
+    
+    $('#material-uom-add-btn').click(function () {
+        var meinh = $('#uom-list').find("option:selected").val();
+        if (meinh !== '') {
+            var umren = $('#ConversionValueStr').val();
+
+            var objUom = { Meinh: meinh, Umren: umren };
+            arrayUom.push(objUom);
+            CreateUomList();
+        }
+    });
+
+    function CreateUomList() {
+        $('#material-uom tbody tr').remove();
+
+        for (var i = 0; i < arrayUom.length; i++) {
+            $('#material-uom tbody').append('<tr><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + arrayUom[i].Meinh + '</td><td>' + arrayUom[i].Umren + '</td></tr>');
+        }
+    }
+
+    function deleteUom(index) {
+        arrayUom.splice(index, 1);
+        CreateUomList();
+    }
     </script>
 }

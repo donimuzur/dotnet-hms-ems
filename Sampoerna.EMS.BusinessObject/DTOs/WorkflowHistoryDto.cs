@@ -1,4 +1,5 @@
 ﻿using System;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -9,10 +10,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public long FORM_ID { get; set; }
         public string FORM_NUMBER { get; set; }
         public Core.Enums.ActionType ACTION { get; set; }
-        public int ACTION_BY { get; set; }
+        public string ACTION_BY { get; set; }
         public DateTime? ACTION_DATE { get; set; }
         public string COMMENT { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.UserRole> ROLE { get; set; }
+        public Enums.UserRole ROLE { get; set; }
         public USER USER { get; set; }
     }
 }

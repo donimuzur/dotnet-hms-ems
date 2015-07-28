@@ -9,8 +9,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialDetailViewModel : BaseModel
     {
-        public long MaterialId { get; set; }
-
+     
         [Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -99,10 +98,20 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public Nullable<bool> IsDeleted;
 
-        // list for dropdown in the form
-        public SelectList PlantList { get; set; }
-        public SelectList GoodTypeList { get; set; }
-        public SelectList BaseUOM { get; set; }
+        public decimal? Conversion
+        {
+            get;
+            set;
+        }
+        [Required]
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
+       
+
+        public List<MaterialUomDetails> MaterialUom { get; set; } 
         
     }
 }

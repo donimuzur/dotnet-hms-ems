@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialCreateViewModel : BaseModel
     {
-        public long MaterialId { get; set; }
-
+        
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -26,18 +26,18 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         [Required, Display(Name = "Plant")]
-        public Nullable<int> PlantId { get; set; }
+        public string[] PlantId { get; set; }
         public string PlantName { get; set; }
 
         [Required, Display(Name = "Excisable Good Type")]
-        public Nullable<int> GoodTypeId { get; set; }
+        public string GoodTypeId { get; set; }
         public string GoodTypeName { get; set; }
 
         [Required, Display(Name = "Issue Storace Loc")]
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public Nullable<int> UomId { get; set; }
+        public string UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         [Display(Name = "Changed On"), Editable(false)]
         public Nullable<System.DateTime> ChangedDate { get; set; }
-
+       
 
         public Nullable<int> ChangedById { get; set; }
 
@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
 
         private Nullable<bool> _isPlantDelete;
-        [Required, Display(Name = "Plant Deletion")]
+        [Display(Name = "Plant Deletion")]
         public bool IsPlantDelete
         {
             get
@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         private Nullable<bool> _isClientDelete;
 
-        [Required, Display(Name = "Client Deletion")]
+        [ Display(Name = "Client Deletion")]
         public bool IsClientDelete
         {
             get
@@ -100,14 +100,28 @@ namespace Sampoerna.EMS.Website.Models.Material
             }
         }
 
-        [Required, Display(Name = "Convertion")]
-        public decimal? Convertion { get; set; }
+        public decimal? Conversion
+        {
+            get { return Convert.ToDecimal(ConversionValueStr); }
+            set { value = Conversion; }
+        }
+        
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
 
+       
         // list for dropdown in the form
-        public SelectList PlantList { get; set; }
+        public MultiSelectList PlantList { get; set; }
         public SelectList GoodTypeList { get; set; }
         public SelectList BaseUOM { get; set; }
 
+        public string ConversionUom { get; set; }
         
+        public SelectList ConversionUomList { get; set; }
+
+        public List<MaterialUomDetails> MaterialUom { get; set; }       
     }
 }

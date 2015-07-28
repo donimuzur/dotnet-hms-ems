@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IPBCK1BLL _pbck1Bll;
 
-        private string includeTables = "T1001W.ZAIDM_EX_NPPBKC.T1001,CK5_MATERIAL, ZAIDM_EX_NPPBKC.T1001,ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC, ZAIDM_EX_NPPBKC, ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,T1001W, T1001W1, PBCK1,CARRIAGE_METHOD,COUNTRY, UOM, USER, CK5_MATERIAL";
+        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.BLL
 
         public CK5 GetByIdIncludeTables(long id)
         {
-            includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
+            //includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
             var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -85,10 +85,6 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5Dto> GetAll()
         {
-            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
-            //return _repository.Get(null, null, includeTables).ToList();
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
-
             var dtData = _repository.Get(null, null, includeTables).ToList();
 
             return Mapper.Map<List<CK5Dto>>(dtData);
@@ -97,13 +93,13 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5> GetCK5ByType(Enums.CK5Type ck5Type)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
+            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
             return _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
         }
 
         public List<CK5Dto> GetInitDataListIndex(Enums.CK5Type ck5Type)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
+           // includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
 
             var dtData = _repository.Get(null, null, includeTables).ToList();
 
@@ -112,7 +108,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5Dto> GetCK5ByParam(CK5GetByParamInput input)
         {
-            includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1,UOM";
+            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1,UOM";
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
@@ -121,33 +117,35 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
             }
 
-            if (input.POA.HasValue)
+            if (!string.IsNullOrEmpty(input.POA))
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY.HasValue && c.APPROVED_BY.Value == input.POA.Value);
+                queryFilter = queryFilter.And(c => c.APPROVED_BY.Contains(input.POA));
             }
 
-            if (input.Creator.HasValue)
+            if (!string.IsNullOrEmpty(input.Creator))
             {
-                queryFilter = queryFilter.And(c => c.CREATED_BY.HasValue && c.CREATED_BY.Value == input.Creator.Value);
+                queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
             }
 
-            if (input.NPPBKCOrigin.HasValue)
+            if (!string.IsNullOrEmpty(input.NPPBKCOrigin))
             {
-                //queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.HasValue && c.SOURCE_PLANT_ID.Value == input.NPPBKCOrigin.Value);
-                queryFilter = queryFilter.And(c => c.T1001W.NPPBCK_ID == input.NPPBKCOrigin.Value);
+                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NPPBKCOrigin));
 
             }
 
-            if (input.NPPBKCDestination.HasValue)
+            if (!string.IsNullOrEmpty(input.NPPBKCDestination))
             {
-                //queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.HasValue && c.DEST_PLANT_ID.Value == input.NPPBKCDestination.Value);
-                queryFilter = queryFilter.And(c => c.T1001W1.NPPBCK_ID == input.NPPBKCDestination.Value);
+                queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NPPBKCDestination));
+
             }
 
-
-            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
-
-
+            if (input.Ck5Type == Enums.CK5Type.Completed)
+                queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+            else
+                queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Completed 
+                                    && c.CK5_TYPE == input.Ck5Type);
+                
+            
             Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
             {
@@ -179,112 +177,87 @@ namespace Sampoerna.EMS.BLL
                 dbData = _repository.Get(c => c.CK5_ID == input.Ck5Dto.CK5_ID, null, includeTables).FirstOrDefault();
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-
-
+                
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
                 SetChangesHistory(origin, input.Ck5Dto, input.UserId);
 
-                //todo mapper
-                //Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
-                dbData.REQUEST_TYPE_ID = input.Ck5Dto.REQUEST_TYPE_ID;
-                dbData.STATUS_ID = Enums.DocumentStatus.Draft;
-                dbData.CK5_TYPE = input.Ck5Dto.CK5_TYPE;
-                dbData.KPPBC_CITY = input.Ck5Dto.KPPBC_CITY;
+               
+                Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
-                dbData.REGISTRATION_NUMBER = input.Ck5Dto.REGISTRATION_NUMBER;
-                dbData.EX_GOODS_TYPE_ID = input.Ck5Dto.EX_GOODS_TYPE_ID;
-                dbData.EX_SETTLEMENT_ID = input.Ck5Dto.EX_SETTLEMENT_ID;
-                dbData.EX_STATUS_ID = input.Ck5Dto.EX_STATUS_ID;
-                dbData.REQUEST_TYPE_ID = input.Ck5Dto.REQUEST_TYPE_ID;
-
-                dbData.SOURCE_PLANT_ID = input.Ck5Dto.SOURCE_PLANT_ID;
-                dbData.DEST_PLANT_ID = input.Ck5Dto.DEST_PLANT_ID;
-                dbData.INVOICE_NUMBER = input.Ck5Dto.INVOICE_NUMBER;
-                dbData.PBCK1_DECREE_ID = input.Ck5Dto.PBCK1_DECREE_ID;
-                dbData.CARRIAGE_METHOD_ID = input.Ck5Dto.CARRIAGE_METHOD_ID;
-                dbData.GRAND_TOTAL_EX = input.Ck5Dto.GRAND_TOTAL_EX;
-                dbData.INVOICE_DATE = input.Ck5Dto.INVOICE_DATE;
-                dbData.PACKAGE_UOM_ID = input.Ck5Dto.PACKAGE_UOM_ID;
+                //no change status for edit 2015-07-24
+                //dbData.STATUS_ID = Enums.DocumentStatus.Revised;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 //delete child first
                 foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
                 {
                     _repositoryCK5Material.Delete(ck5Material);
                 }
-
-
+                
                 inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
+
+                //insert new data
+                foreach (var ck5Item in input.Ck5Material)
+                {
+                    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                    dbData.CK5_MATERIAL.Add(ck5Material);
+                }
+
             }
             else
             {
                 //create new ck5 documents
-
-                long plantId = 0;
-                if (input.Ck5Dto.SOURCE_PLANT_ID.HasValue)
-                    plantId = input.Ck5Dto.SOURCE_PLANT_ID.Value;
-
-                var plant = _masterDataBll.GetPlantById(plantId);
-                long nppbkc = 0;
-                if (plant.NPPBCK_ID.HasValue)
-                    nppbkc = plant.NPPBCK_ID.Value;
-
                 var generateNumberInput = new GenerateDocNumberInput()
                 {
                     Year = DateTime.Now.Year,
                     Month = DateTime.Now.Month,
-                    NppbkcId = nppbkc
+                    NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID
                 };
+
                 input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+                input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
                 input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
                 input.Ck5Dto.CREATED_DATE = DateTime.Now;
                 input.Ck5Dto.CREATED_BY = input.UserId;
 
                 dbData = new CK5();
 
-                //Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
-                dbData.CK5_TYPE = input.Ck5Dto.CK5_TYPE;
-                dbData.KPPBC_CITY = input.Ck5Dto.KPPBC_CITY;
-                dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
-                dbData.REGISTRATION_NUMBER = input.Ck5Dto.REGISTRATION_NUMBER;
-                dbData.EX_GOODS_TYPE_ID = input.Ck5Dto.EX_GOODS_TYPE_ID;
-                dbData.EX_SETTLEMENT_ID = input.Ck5Dto.EX_SETTLEMENT_ID;
-                dbData.EX_STATUS_ID = input.Ck5Dto.EX_STATUS_ID;
-                dbData.REQUEST_TYPE_ID = input.Ck5Dto.REQUEST_TYPE_ID;
-
-                dbData.SOURCE_PLANT_ID = input.Ck5Dto.SOURCE_PLANT_ID;
-                dbData.DEST_PLANT_ID = input.Ck5Dto.DEST_PLANT_ID;
-                dbData.INVOICE_NUMBER = input.Ck5Dto.INVOICE_NUMBER;
-                dbData.PBCK1_DECREE_ID = input.Ck5Dto.PBCK1_DECREE_ID;
-                dbData.CARRIAGE_METHOD_ID = input.Ck5Dto.CARRIAGE_METHOD_ID;
-                dbData.GRAND_TOTAL_EX = input.Ck5Dto.GRAND_TOTAL_EX;
-                dbData.INVOICE_DATE = input.Ck5Dto.INVOICE_DATE;
-                dbData.PACKAGE_UOM_ID = input.Ck5Dto.PACKAGE_UOM_ID;
-
+            
+                Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
+            
                 dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
                 inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+                foreach (var ck5Item in input.Ck5Material)
+                {
+                    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                    dbData.CK5_MATERIAL.Add(ck5Material);
+                }
+
+
+                _repository.Insert(dbData);
+
             }
 
-            dbData.CREATED_DATE = DateTime.Now;
-            dbData.CREATED_BY = input.UserId;
+            
 
-            //insert child
-            //insert the data
-            foreach (var ck5Item in input.Ck5Material)
-            {
-                var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-                ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
-                dbData.CK5_MATERIAL.Add(ck5Material);
-            }
-
-
-            _repository.InsertOrUpdate(dbData);
-
+            ////insert child
+            ////insert the data
+            //foreach (var ck5Item in input.Ck5Material)
+            //{
+            //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+            //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+            //    dbData.CK5_MATERIAL.Add(ck5Material);
+            //}
 
            
+            //_repository.InsertOrUpdate(dbData);
+
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;
             inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
             inputWorkflowHistory.UserId = input.UserId;
@@ -297,7 +270,6 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
 
             return Mapper.Map<CK5Dto>(dbData);
-
 
 
         }
@@ -322,13 +294,13 @@ namespace Sampoerna.EMS.BLL
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
 
-                if (!_uomBll.IsUomNameExist(ck5MaterialInput.Uom))
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
                     messageList.Add("UOM not exist");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
                     messageList.Add("Convertion not valid");
 
-                if (!_uomBll.IsUomNameExist(ck5MaterialInput.ConvertedUom))
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.ConvertedUom))
                     messageList.Add("ConvertedUom not valid");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
@@ -367,11 +339,18 @@ namespace Sampoerna.EMS.BLL
 
                 output.ConvertedQty = Convert.ToInt32(output.Qty) * Convert.ToInt32(output.Convertion);
 
-                var dbBrand = _brandRegistrationBll.GetByFaCode(output.Brand);
-
-                output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
-                output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
-
+                var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(output.Plant, output.Brand);
+                if (dbBrand == null)
+                {
+                    output.Hje = 0;
+                    output.Tariff = 0;
+                }
+                else
+                {
+                    output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                    output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+                }
+                
                 output.ExciseValue = output.ConvertedQty * output.Tariff;
 
             }
@@ -379,14 +358,15 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        private void SetChangesHistory(CK5Dto origin, CK5Dto data, int userId)
+        private void SetChangesHistory(CK5Dto origin, CK5Dto data, string userId)
         {
+            //todo check the new value
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(data.KPPBC_CITY));
             changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
 
-            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_ID.Equals(data.EX_GOODS_TYPE_ID));
+            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_DESC.Equals(data.EX_GOODS_TYPE_DESC));
             changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(data.EX_SETTLEMENT_ID));
             changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(data.EX_STATUS_ID));
             changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(data.REQUEST_TYPE_ID));
@@ -400,62 +380,52 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(data.CARRIAGE_METHOD_ID));
 
             changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(data.GRAND_TOTAL_EX));
-            changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID));
+           
+            changesData.Add("PACKAGE_UOM_ID", !string.IsNullOrEmpty(origin.PACKAGE_UOM_ID) ? origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID) : (!string.IsNullOrEmpty(data.PACKAGE_UOM_ID) ? false : true));
+
 
             foreach (var listChange in changesData)
             {
                 if (listChange.Value) continue;
                 var changes = new CHANGES_HISTORY();
                 changes.FORM_TYPE_ID = Enums.MenuList.CK5;
-                changes.FORM_ID = origin.CK5_ID;
+                changes.FORM_ID = origin.CK5_ID.ToString();
                 changes.FIELD_NAME = listChange.Key;
                 changes.MODIFIED_BY = userId;
                 changes.MODIFIED_DATE = DateTime.Now;
                 switch (listChange.Key)
                 {
                     case "KPPBC_CITY":
-                        long city = 0;
-                        if (data.KPPBC_CITY.HasValue)
-                            city = data.KPPBC_CITY.Value;
-
-                        changes.OLD_VALUE = origin.KppbcCityName;
-                        changes.NEW_VALUE = _nppbkcBll.GetCityByNppbkcId(city);
+                        changes.OLD_VALUE = origin.KPPBC_CITY;
+                        changes.NEW_VALUE = data.KPPBC_CITY;
                         break;
                     case "REGISTRATION_NUMBER":
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
                         changes.NEW_VALUE = data.REGISTRATION_NUMBER;
                         break;
                     case "EX_GOODS_TYPE_ID":
-                        changes.OLD_VALUE = origin.GoodTypeDesc;
-                        changes.NEW_VALUE = _goodTypeBll.GetGoodTypeDescById(data.EX_GOODS_TYPE_ID);
+                        changes.OLD_VALUE = origin.EX_GOODS_TYPE_DESC;
+                        changes.NEW_VALUE = data.EX_GOODS_TYPE_DESC;
                         break;
                     case "EX_SETTLEMENT_ID":
-                        changes.OLD_VALUE = origin.ExSettlementName;
-                        changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_SETTLEMENT_ID);
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_SETTLEMENT_ID);
                         break;
                     case "EX_STATUS_ID":
-                        changes.OLD_VALUE = origin.ExStatusName;
-                        changes.NEW_VALUE = _masterDataBll.GetExSettlementsNameById(data.EX_STATUS_ID);
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_STATUS_ID);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_STATUS_ID);
                         break;
                     case "REQUEST_TYPE_ID":
-                        changes.OLD_VALUE = origin.RequestTypeName;
-                        changes.NEW_VALUE = _masterDataBll.GetRequestTypeNameById(data.REQUEST_TYPE_ID);
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.REQUEST_TYPE_ID);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.REQUEST_TYPE_ID);
                         break;
                     case "SOURCE_PLANT_ID":
-                        long sourcePlant = 0;
-                        if (data.SOURCE_PLANT_ID.HasValue)
-                            sourcePlant = data.SOURCE_PLANT_ID.Value;
-
-                        changes.OLD_VALUE = origin.SourcePlantName;
-                        changes.NEW_VALUE = _plantBll.GetPlantNameById(sourcePlant);
+                        changes.OLD_VALUE = origin.SOURCE_PLANT_ID;
+                        changes.NEW_VALUE = data.SOURCE_PLANT_ID;
                         break;
                     case "DEST_PLANT_ID":
-                        long destPlant = 0;
-                        if (data.DEST_PLANT_ID.HasValue)
-                            destPlant = data.DEST_PLANT_ID.Value;
-
-                        changes.OLD_VALUE = origin.DestPlantName;
-                        changes.NEW_VALUE = _plantBll.GetPlantNameById(destPlant);
+                        changes.OLD_VALUE = origin.DEST_PLANT_ID;
+                        changes.NEW_VALUE = data.DEST_PLANT_ID;
                         break;
                     case "INVOICE_NUMBER":
                         changes.OLD_VALUE = origin.INVOICE_NUMBER;
@@ -466,17 +436,14 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.INVOICE_DATE != null ? data.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         break;
                     case "PBCK1_DECREE_ID":
-                        long pbck1 = 0;
-                        if (data.PBCK1_DECREE_ID.HasValue)
-                            pbck1 = data.PBCK1_DECREE_ID.Value;
-
+                      
                         changes.OLD_VALUE = origin.PbckNumber;
-                        changes.NEW_VALUE = _pbck1Bll.GetPbckNumberById(pbck1);
+                        changes.NEW_VALUE = data.PbckNumber;
                         break;
 
                     case "CARRIAGE_METHOD_ID":
-                        changes.OLD_VALUE = origin.CarriageMethodName;
-                        changes.NEW_VALUE = _masterDataBll.GetCarriageMethodeNameById(data.CARRIAGE_METHOD_ID);
+                        changes.OLD_VALUE = origin.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(origin.CARRIAGE_METHOD_ID) : "NULL";
+                        changes.NEW_VALUE = data.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(data.CARRIAGE_METHOD_ID) : "NULL";
                         break;
 
                     case "GRAND_TOTAL_EX":
@@ -486,7 +453,7 @@ namespace Sampoerna.EMS.BLL
 
                     case "PACKAGE_UOM_ID":
                         changes.OLD_VALUE = origin.PackageUomName;
-                        changes.NEW_VALUE = _uomBll.GetUomNameById(data.PACKAGE_UOM_ID);
+                        changes.NEW_VALUE = data.PackageUomName;
                         break;
 
 
@@ -495,42 +462,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
-        {
-            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
-            inputWorkflowHistory.ActionType = input.ActionType;
-            inputWorkflowHistory.FormNumber = input.DocumentNumber;
-
-            WorkflowHistoryDto dbData = null;
-
-            //todo ask ... for save should be same like others
-            //if yes then remove this function only use one function
-            //only save can be update, else insert new one
-            if (input.ActionType == Enums.ActionType.Modified)
-                dbData = _workflowHistoryBll.GetByActionAndFormNumber(inputWorkflowHistory);
-
-
-            if (dbData == null)
-            {
-                dbData = new WorkflowHistoryDto()
-                {
-                    ACTION = input.ActionType,
-                    FORM_NUMBER = input.DocumentNumber,
-                    FORM_TYPE_ID = Core.Enums.FormType.CK5
-                };
-            }
-            dbData.FORM_ID = input.DocumentId;
-            if (!string.IsNullOrEmpty(input.Comment))
-                dbData.COMMENT = input.Comment;
-
-
-            dbData.ACTION_BY = input.UserId;
-            dbData.ROLE = input.UserRole;
-            dbData.ACTION_DATE = DateTime.Now;
-
-            _workflowHistoryBll.Save(dbData);
-        }
-
+       
         public CK5DetailsOutput GetDetailsCK5(long id)
         {
             var output = new CK5DetailsOutput();
@@ -545,7 +477,7 @@ namespace Sampoerna.EMS.BLL
             output.Ck5MaterialDto = Mapper.Map<List<CK5MaterialDto>>(dtData.CK5_MATERIAL);
 
             //change history data
-            output.ListChangesHistorys = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, output.Ck5Dto.CK5_ID);
+            output.ListChangesHistorys = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, output.Ck5Dto.CK5_ID.ToString());
 
             //workflow history
 
@@ -567,10 +499,52 @@ namespace Sampoerna.EMS.BLL
 
         #region workflow
 
+        private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
+        {
+            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
+            inputWorkflowHistory.ActionType = input.ActionType;
+            inputWorkflowHistory.FormNumber = input.DocumentNumber;
+
+            //WorkflowHistoryDto dbData = null;
+
+            //remark 2015-07-24
+            // ... for save should be same like others
+            //if yes then remove this function only use one function
+            //only save can be update, else insert new one
+            //if (input.ActionType == Enums.ActionType.Modified)
+            //    dbData = _workflowHistoryBll.GetByActionAndFormNumber(inputWorkflowHistory);
+
+
+            //if (dbData == null)
+            //{
+            //    dbData = new WorkflowHistoryDto()
+            //    {
+            //        ACTION = input.ActionType,
+            //        FORM_NUMBER = input.DocumentNumber,
+            //        FORM_TYPE_ID = Core.Enums.FormType.CK5
+            //    };
+            //}
+            var dbData = new WorkflowHistoryDto();
+            dbData.ACTION = input.ActionType;
+            dbData.FORM_NUMBER = input.DocumentNumber;
+            dbData.FORM_TYPE_ID = Enums.FormType.CK5;
+
+            dbData.FORM_ID = input.DocumentId;
+            if (!string.IsNullOrEmpty(input.Comment))
+                dbData.COMMENT = input.Comment;
+
+
+            dbData.ACTION_BY = input.UserId;
+            dbData.ROLE = input.UserRole;
+            dbData.ACTION_DATE = DateTime.Now;
+
+            _workflowHistoryBll.Save(dbData);
+        }
+
+
         private void AddWorkflowHistory(CK5WorkflowDocumentInput input)
         {
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
-
 
             inputWorkflowHistory.DocumentId = input.DocumentId;
             inputWorkflowHistory.DocumentNumber = input.DocumentNumber;
@@ -578,20 +552,6 @@ namespace Sampoerna.EMS.BLL
             inputWorkflowHistory.UserRole = input.UserRole;
             inputWorkflowHistory.ActionType = input.ActionType;
             inputWorkflowHistory.Comment = input.Comment;
-
-            //var dbData = new WorkflowHistoryDto();
-
-            //dbData.ACTION = input.ActionType;
-            //dbData.FORM_NUMBER = input.DocumentNumber;
-            //dbData.FORM_TYPE_ID = Core.Enums.FormType.CK5;
-
-            //dbData.FORM_ID = input.DocumentId;
-            //if (!string.IsNullOrEmpty(input.Comment))
-            //    dbData.COMMENT = input.Comment;
-
-            //dbData.ACTION_BY = input.UserId;
-            //dbData.ROLE = input.UserRole;
-            //dbData.ACTION_DATE = DateTime.Now;
 
             AddWorkflowHistory(inputWorkflowHistory);
         }
@@ -617,6 +577,9 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovCancel:
                     GovCancelledDocument(input);
+                    break;
+                case Enums.ActionType.Cancel:
+                    CancelledDocument(input);
                     break;
             }
 
@@ -653,7 +616,11 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+            if (input.UserRole == Enums.UserRole.POA)
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+            else if (input.UserRole == Enums.UserRole.Manager)
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 
@@ -745,6 +712,24 @@ namespace Sampoerna.EMS.BLL
             //dbData.APPROVED_BY = input.UserId;
             //dbData.APPROVED_DATE = DateTime.Now;
 
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            AddWorkflowHistory(input);
+        }
+
+        private void CancelledDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+
+          
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);

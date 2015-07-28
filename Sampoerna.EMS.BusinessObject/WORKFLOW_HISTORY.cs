@@ -19,10 +19,10 @@ namespace Sampoerna.EMS.BusinessObject
         public long FORM_ID { get; set; }
         public string FORM_NUMBER { get; set; }
         public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
-        public int ACTION_BY { get; set; }
+        public string ACTION_BY { get; set; }
         public Nullable<System.DateTime> ACTION_DATE { get; set; }
         public string COMMENT { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.UserRole> ROLE { get; set; }
+        public Sampoerna.EMS.Core.Enums.UserRole ROLE { get; set; }
     
         public virtual USER USER { get; set; }
     }

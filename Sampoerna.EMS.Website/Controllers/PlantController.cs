@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
@@ -44,7 +45,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult Edit(long id)
+        public ActionResult Edit(string id)
         {
             var plant = _plantBll.GetId(id);
 
@@ -57,7 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = new PlantFormModel
             {
-                Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID),
+                Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
             };
             return InitialEdit(model);
@@ -67,7 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", model.Detail.NPPBCK_ID);
+            model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
             return View("Edit", model);
         }
@@ -82,6 +83,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
+
+                if (checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks)
+                {
+                    TempData[Constans.SubmitType.DataExist] = Constans.SubmitMessage.DataExist;
+                    return InitialEdit(model);
+                }
+
+
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
@@ -89,12 +99,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception exception)
             {
                 return InitialEdit(model);
             }
         }
-        public ActionResult Detail(int id)
+        public ActionResult Detail(string id)
         {
             var plant = _plantBll.GetId(id);
 
@@ -109,7 +119,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_NO", plant.NPPBCK_ID),
+                Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
             };
 
@@ -127,28 +137,25 @@ namespace Sampoerna.EMS.Website.Controllers
         private List<PlantReceiveMaterialItemModel> GetPlantReceiveMaterial(DetailPlantT1001W plant)
         {
             var goodTypes = _goodTypeBll.GetAll();
-            var rc = (from x in goodTypes
-                select new PlantReceiveMaterialItemModel()
+
+            var planReceives = new List<PlantReceiveMaterialItemModel>();
+            
+                var recieve = _plantBll.GetReceiveMaterials(plant.Werks);
+                foreach (var goodType in goodTypes)
                 {
-                    PLANT_ID = plant.PlantId,
-                    PLANT_MATERIAL_ID = 0,
-                    EXC_GOOD_TYP = x.EXC_GOOD_TYP, 
-                    GOODTYPE_ID = x.GOODTYPE_ID,
-                    EXT_TYP_DESC = x.EXT_TYP_DESC, 
-                    IsChecked = false
-                }).ToList();
-            if (plant.ReceiveMaterials != null && plant.ReceiveMaterials.Count > 0)
-            {
-                foreach (var plantReceiveMaterialItemModel in rc)
-                {
-                    var isFound = plant.ReceiveMaterials.FirstOrDefault(c => c.GOODTYPE_ID == plantReceiveMaterialItemModel.GOODTYPE_ID);
-                    if (isFound != null)
+                    var planReceive = new PlantReceiveMaterialItemModel();
+                    planReceive.EXC_GOOD_TYP = goodType.EXC_GOOD_TYP;
+                    planReceive.PLANT_ID = plant.Werks;
+                    planReceive.EXT_TYP_DESC = goodType.EXT_TYP_DESC;
+                    planReceive.IsChecked = false;
+                    if(recieve.Any(x => x.EXC_GOOD_TYP.Equals(goodType.EXC_GOOD_TYP)))
                     {
-                        plantReceiveMaterialItemModel.IsChecked = true;
+                        planReceive.IsChecked = true;
                     }
+                    planReceives.Add(planReceive);
                 }
-            }
-            return rc;
+            
+            return planReceives;
         }
         
     }

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private Enums.MenuList _mainMenu;
 
-        public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MasterData){
+        public MaterialController(IPageBLL pageBLL,IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MaterialMaster){
             _materialBll = materialBll;
             _changesHistoryBll = changesHistoryBll;
             _mainMenu = Enums.MenuList.MasterData;
@@ -31,10 +31,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            
-            model.PlantList = GlobalFunctions.GetVirtualPlantList();
+
+            model.PlantList = GlobalFunctions.GetVirtualPlantListMultiSelect();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -55,20 +56,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Material/Details/5
-        public ActionResult Details(long id)
+        public ActionResult Details(string mn, string p)
         {
 
             var model = new MaterialDetailViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            var data = _materialBll.getByID(id);
+            var data = _materialBll.getByID(mn, p);
             Mapper.Map(data,model);
             
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, id));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, mn+p));
+            model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             InitDetailModel(model);
             return View("Details",model);
         }
+         
 
         private MaterialEditViewModel InitEditModel(MaterialEditViewModel model)
         {
@@ -79,6 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.BaseUOM = GlobalFunctions.GetUomList();
+            model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
 
@@ -88,9 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
 
-            model.PlantList = GlobalFunctions.GetVirtualPlantList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
-            model.BaseUOM = GlobalFunctions.GetUomList();
+             
             return model;
         }
 
@@ -99,31 +101,108 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             var model = new MaterialCreateViewModel();
-            InitCreateModel(model);
+           InitCreateModel(model);
             return View(model);
         }
+        private void SetChanges(MaterialEditViewModel origin, ZAIDM_EX_MATERIAL data)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("MATERIAL_DESC", origin.MaterialDesc.Equals(data.MATERIAL_DESC));
+            changesData.Add("PURCHASING_GROUP", origin.PurchasingGroup.Equals(data.PURCHASING_GROUP));
+            changesData.Add("MATERIAL_GROUP", origin.MaterialGroup.Equals(data.MATERIAL_GROUP));
+            changesData.Add("BASE_UOM", origin.UomId.Equals(data.BASE_UOM_ID));
+            changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
+            changesData.Add("EX_GOODTYP", origin.GoodTypeId.Equals(data.EXC_GOOD_TYP));
 
-        //
-        // POST: /Material/Create
+            
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                        FORM_ID = data.STICKER_CODE+data.WERKS,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = CurrentUser.USER_ID,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                       
+                        case "MATERIAL_DESC":
+                            changes.OLD_VALUE = origin.MaterialDesc;
+                            changes.NEW_VALUE = data.MATERIAL_DESC;
+                            break;
+                        case "PURCHASING_GROUP":
+                            changes.OLD_VALUE = origin.PurchasingGroup;
+                            changes.NEW_VALUE = data.PURCHASING_GROUP;
+                            break;
+                        case "MATERIAL_GROUP":
+                            changes.OLD_VALUE = origin.MaterialGroup;
+                            changes.NEW_VALUE = data.MATERIAL_GROUP;
+                            break;
+
+                        case "BASE_UOM":
+                            changes.OLD_VALUE = origin.UomId;
+                            changes.NEW_VALUE = data.BASE_UOM_ID;
+                            break;
+                        case "ISSUE_STORANGE_LOC":
+                            changes.OLD_VALUE = origin.IssueStorageLoc;
+                            changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
+                            break;
+                        case "EX_GOODTYP":
+                            changes.OLD_VALUE = origin.GoodTypeId;
+                            changes.NEW_VALUE = data.EXC_GOOD_TYP;
+                            break;
+                        
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
+
+        
+       //  POST: /Material/Create
         [HttpPost]
         public ActionResult Create(MaterialCreateViewModel data)
         {
+
             try
             {
                 // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                    var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                    //model.CREATED_BY = CurrentUser.USER_ID;
-                    //model.CREATED_DATE = DateTime.Now;
-                    MaterialOutput output = _materialBll.Save(model,CurrentUser.USER_ID);
+                //if (ModelState.IsValid)
+                //{
+                    var plantIds = data.PlantId;
+                    foreach (var plant in plantIds)
+                    {
+                        var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
+                  
 
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
-                    return RedirectToAction("Index");    
-                }
+                        model.WERKS = plant;
+                        foreach (var uom in model.MATERIAL_UOM)
+                        {
+                            uom.STICKER_CODE = model.STICKER_CODE;
+                            uom.WERKS = model.WERKS;
 
-                InitCreateModel(data);
-                return View(data);
+                        }
+                        model.CREATED_BY = CurrentUser.USER_ID;
+                        model.CREATED_DATE = DateTime.Now;
+                        var  output = _materialBll.Save(model, CurrentUser.USER_ID);
+                        if (!output.Success)
+                        {
+                            TempData[Constans.SubmitType.Save] = output.ErrorMessage;
+                        }
+                        else
+                        {
+                            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                        }
+                        
+                    }
+                return RedirectToAction("Index");    
+                //}
+
+                //return RedirectToAction("Create"); 
                 
             }
             catch(Exception ex)
@@ -136,29 +215,25 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Material/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string mn, string p)
         {
-            var data = _materialBll.getByID(id);
+            var data = _materialBll.getByID(mn, p);
             
             
 
-            if (data.IS_FROM_SAP.HasValue && data.IS_FROM_SAP.Value)
+            if (data.IS_FROM_SAP)
             {
-                var model = Mapper.Map<MaterialDetailViewModel>(data);
-                model.MainMenu = Enums.MenuList.MasterData;
-                model.CurrentMenu = PageInfo;
-                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
-                model.MaterialId = id;
-                //InitEditModel(model);
-
-                return View("Details", model);
+             
+                return RedirectToAction("Details", new {mn=mn, p=p});
             }
             else {
+
                 var model = Mapper.Map<MaterialEditViewModel>(data);
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
-                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id));
-                model.MaterialId = id;
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, mn+p));
+                model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
+
                 InitEditModel(model);
 
                 return View("Edit", model);
@@ -170,51 +245,57 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Material/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, MaterialEditViewModel model)
+        public ActionResult Edit(MaterialEditViewModel model)
         {
             try
             {
                 // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
-                    var data = _materialBll.getByID(id);
+               
+                    var data = _materialBll.getByID(model.MaterialNumber, model.PlantId);
                     
                     model.ChangedById = CurrentUser.USER_ID;
                     model.ChangedDate = DateTime.Now;
                     //model.ChangesHistoryList =  Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
                     if (data == null) {
-                        ModelState.AddModelError("Details", "Data Not Found");
-                        InitEditModel(model);
-
-                        return View("Edit", model);
+                       return RedirectToAction("Index");
                     }
 
-                    //data = Mapper.Map<ZAIDM_EX_MATERIAL>(model);
-                    //data.MATERIAL_ID = id;
+                    foreach (var matUom in model.MaterialUom)
+                    {
+                        var uom = new MATERIAL_UOM();
+                        uom.STICKER_CODE = matUom.MaterialNumber;
+                        uom.WERKS = matUom.Plant;
+                        uom.UMREN = matUom.Umren;
+                        uom.UMREZ = matUom.Umrez;
+                        uom.MEINH = matUom.Meinh;
 
-                    if (!data.IS_FROM_SAP.Value) {
-                        data.MATERIAL_DESC = model.MaterialDesc;
-                        data.BASE_UOM = model.UomId;
-                        data.EX_GOODTYP = model.GoodTypeId;
-                        data.ISSUE_STORANGE_LOC = model.IssueStorageLoc;
-                        data.MATERIAL_DESC = model.MaterialDesc;
-                        data.MATERIAL_GROUP = model.MaterialGroup;
-                        data.MATERIAL_NUMBER = model.MaterialNumber;
-                        data.PLANT_ID = model.PlantId;
-                        data.PURCHASING_GROUP = model.PurchasingGroup;
-                        //data.CHANGED_BY = CurrentUser.USER_ID;
-                        //data.CHANGED_DATE = DateTime.Now;
+                        _materialBll.SaveUoM(uom);
                     }
+                    var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
+                    AutoMapper.Mapper.Map(model, data);
+                    data.MODIFIED_BY = CurrentUser.USER_ID;
+                    data.MODIFIED_DATE = DateTime.Now;
+                    data.CREATED_DATE = origin.CreatedDate;
+                    data.CREATED_BY = origin.CreatedById;
                     
-                    _materialBll.Save(data,CurrentUser.USER_ID);
-                }
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    SetChanges(origin, data);
+                    var output = _materialBll.Save(data,CurrentUser.USER_ID);
+                    if (!output.Success)
+                    {
+                        TempData[Constans.SubmitType.Update] = output.ErrorMessage;
+                    }
+                    else
+                    {
+                        TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    }
+
+
+               
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
-                InitEditModel(model);
-                return View(model);
+                return RedirectToAction("Index");
             }
         }
 
@@ -223,12 +304,12 @@ namespace Sampoerna.EMS.Website.Controllers
         //
         // POST: /Material/Delete/5
         
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(string mn, string p)
         {
             try
             {
                 // TODO: Add delete logic here
-                _materialBll.Delete(id, CurrentUser.USER_ID);
+                _materialBll.Delete(mn, p, CurrentUser.USER_ID);
                 TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
                 return RedirectToAction("Index");
             }

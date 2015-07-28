@@ -16,25 +16,30 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public UOM()
         {
-            this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
-            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
-            this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
+            this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.CK5 = new HashSet<CK5>();
+            this.LACK1 = new HashSet<LACK1>();
+            this.LACK11 = new HashSet<LACK1>();
         }
     
-        public int UOM_ID { get; set; }
-        public string UOM_NAME { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
+        public string UOM_ID { get; set; }
+        public string UOM_DESC { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
     
-        public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
-        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
-        public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual ICollection<LACK1> LACK1 { get; set; }
+        public virtual ICollection<LACK1> LACK11 { get; set; }
+        public virtual USER USER { get; set; }
     }
 }
