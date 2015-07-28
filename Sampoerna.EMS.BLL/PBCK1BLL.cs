@@ -788,8 +788,18 @@ namespace Sampoerna.EMS.BLL
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
 
-            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
-
+            switch (input.UserRole)
+            {
+                case Enums.UserRole.User:
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                    break;
+                case Enums.UserRole.POA:
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    break;
+                default:
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            }
+            
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
@@ -819,8 +829,19 @@ namespace Sampoerna.EMS.BLL
             dbData.APPROVED_DATE_POA = DateTime.Now;
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-            dbData.STATUS = input.UserRole == Enums.UserRole.POA ? Enums.DocumentStatus.WaitingForApprovalManager : Enums.DocumentStatus.WaitingGovApproval;
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                dbData.APPROVED_BY_POA = input.UserId;
+                dbData.APPROVED_DATE_POA = DateTime.Now;
+            }
+            else
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                dbData.APPROVED_BY_MANAGER = input.UserId;
+                dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+            }
 
             input.DocumentNumber = dbData.NUMBER;
 

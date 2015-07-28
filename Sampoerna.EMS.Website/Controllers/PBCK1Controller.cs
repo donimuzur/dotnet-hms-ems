@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Web;
 using System.Linq;
@@ -244,7 +245,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     return View(ModelInitial(model));
                 }
-                model.Detail.Status = Enums.DocumentStatus.Revised;
+
+                //model.Detail.Status = Enums.DocumentStatus.Revised;
                 model = CleanSupplierInfo(model);
 
                 //process save
@@ -255,6 +257,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Modified
                 };
+
+                //set null, set this field only from Gov Approval
+                input.Pbck1.DecreeDate = null;
+                input.Pbck1.QtyApproved = null;
+                input.Pbck1.StatusGov = null;
+                input.Pbck1.Pbck1DecreeDoc = null;
+
                 var saveResult = _pbck1Bll.Save(input);
 
                 if (saveResult.Success)
@@ -382,6 +391,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //process save
                 var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
                 dataToSave.CreatedById = CurrentUser.USER_ID;
+                dataToSave.GoodTypeDesc = !string.IsNullOrEmpty(dataToSave.GoodTypeDesc) ? dataToSave.GoodTypeDesc.Split('-')[1] : string.Empty;
 
                 var input = new Pbck1SaveInput()
                 {
@@ -404,6 +414,22 @@ namespace Sampoerna.EMS.Website.Controllers
                     return RedirectToAction("Edit", new { id = saveResult.Id });
                 }
 
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
             }
             catch (Exception exception)
             {
