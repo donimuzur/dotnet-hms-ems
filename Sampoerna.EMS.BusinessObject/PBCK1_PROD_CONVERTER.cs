@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> CONVERTER_OUTPUT { get; set; }
         public string CONVERTER_UOM_ID { get; set; }
     
-        public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
     }
 }
