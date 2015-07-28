@@ -27,26 +27,24 @@ namespace Sampoerna.EMS.Website.Controllers
     public class CK5Controller : BaseController
     {
         private ICK5BLL _ck5Bll;
-        private IZaidmExNPPBKCBLL _nppbkcBll;
-        private IMasterDataBLL _masterDataBll;
         private IPBCK1BLL _pbck1Bll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll, IZaidmExNPPBKCBLL nppbkcBll,
-            IMasterDataBLL masterDataBll, IPBCK1BLL pbckBll, IWorkflowHistoryBLL workflowHistoryBll,
-            IChangesHistoryBLL changesHistoryBll, IWorkflowBLL workflowBll, IPlantBLL plantBll)
+      
+        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
+            IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
+            IWorkflowBLL workflowBll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
-            _nppbkcBll = nppbkcBll;
-            _masterDataBll = masterDataBll;
             _pbck1Bll = pbckBll;
             _workflowHistoryBll = workflowHistoryBll;
             _changesHistoryBll = changesHistoryBll;
             _workflowBll = workflowBll;
             _plantBll = plantBll;
+         
         }
 
         #region View Documents
@@ -132,7 +130,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult Intercompany(CK5IndexViewModel model)
         {
-            //only use by domestic and importer
+            //only use by domestic and importer!
 
             Enums.CK5Type ck5Type = Enums.CK5Type.Domestic;
 
@@ -186,6 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CK5Completed()
         {
             var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Completed);
+            model.IsCompletedType = true;
             return View(model);
         }
 
@@ -222,9 +221,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Ck5Type = ck5Type;
             model.DocumentStatus = Enums.DocumentStatus.Draft;
             model = InitCK5List(model);
-
-            //submission date
-           // model.SubmissionDate = DateTime.Now;
 
             return model;
         }
@@ -285,12 +281,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CreateExport()
         {
             var model = InitCreateCK5(Enums.CK5Type.Export);
+            model.IsCk5Export = true;
             return View("Create", model);
         }
 
         public ActionResult CreateManual()
         {
             var model = InitCreateCK5(Enums.CK5Type.Manual);
+            model.IsCk5Manual = true;
             return View("Create", model);
         }
 
@@ -431,7 +429,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
-
+            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();

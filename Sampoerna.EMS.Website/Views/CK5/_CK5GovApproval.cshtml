@@ -2,7 +2,7 @@
 
 @Html.HiddenFor(model => model.SubmissionNumber)
 @Html.HiddenFor(model => model.SubmissionDate)
-
+@Html.HiddenFor(model => model.IsWaitingGovApproval)
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
@@ -68,7 +68,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Number</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.RegistrationNumber, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -76,7 +76,12 @@
                                     <div class="row">
                                         <label class="col-md-4">Registration Date</label>
                                         <div class="col-md-8">
-                                            @Html.EditorFor(model => model.RegistrationDate)
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.RegistrationDate, new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -453,41 +458,41 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            @Html.LabelFor(model => model.StoSenderNumber, new {@class = "col-md-4"})
+                                            @Html.LabelFor(model => model.StoSenderNumber, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.StoSenderNumber, new {@class = "form-control", @disabled = "true"})
+                                                @Html.TextBoxFor(model => model.StoSenderNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            @Html.LabelFor(model => model.DnDate, new {@class = "col-md-4"})
+                                            @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.DnDate, new {@class = "form-control", @disabled = "true"})
+                                                @Html.TextBoxFor(model => model.DnDate, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            @Html.LabelFor(model => model.StoReceiverNumber, new {@class = "col-md-4"})
+                                            @Html.LabelFor(model => model.StoReceiverNumber, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.StoReceiverNumber, new {@class = "form-control", @disabled = "true"})
+                                                @Html.TextBoxFor(model => model.StoReceiverNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-md-offset-6">
                                         <div class="row">
-                                            @Html.LabelFor(model => model.StobNumber, new {@class = "col-md-4"})
+                                            @Html.LabelFor(model => model.StobNumber, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.StobNumber, new {@class = "form-control", @disabled = "true"})
+                                                @Html.TextBoxFor(model => model.StobNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            @Html.LabelFor(model => model.GiDate, new {@class = "col-md-4"})
+                                            @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.GiDate, new {@class = "form-control", @disabled = "true"})
+                                                @Html.TextBoxFor(model => model.GiDate, new { @class = "form-control", @disabled = "true" })
 
 
                                             </div>
@@ -504,7 +509,7 @@
                                         </div>
                                     </div>
                                 }
-                                
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
@@ -541,7 +546,12 @@
                                     <div class="row">
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control" disabled="">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control">
+                                                <span class=" input-group-addon file-input btn btn-primary btn-file">
+                                                    Browse <input type="file" multiple>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

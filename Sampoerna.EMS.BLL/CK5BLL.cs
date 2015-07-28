@@ -139,10 +139,13 @@ namespace Sampoerna.EMS.BLL
 
             }
 
-
-            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
-
-
+            if (input.Ck5Type == Enums.CK5Type.Completed)
+                queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+            else
+                queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Completed 
+                                    && c.CK5_TYPE == input.Ck5Type);
+                
+            
             Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
             {
@@ -613,7 +616,11 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+            if (input.UserRole == Enums.UserRole.POA)
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+            else if (input.UserRole == Enums.UserRole.Manager)
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+
             dbData.APPROVED_BY = input.UserId;
             dbData.APPROVED_DATE = DateTime.Now;
 

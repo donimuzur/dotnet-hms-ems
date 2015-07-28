@@ -94,6 +94,13 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.DEST_PLANT_KPPBC_NAME_OFFICE, opt => opt.MapFrom(src => src.DestKppbcName))
               .ForMember(dest => dest.DEST_PLANT_NAME, opt => opt.MapFrom(src => src.DestPlantName))
 
+              .ForMember(dest => dest.LOADING_PORT, opt => opt.MapFrom(src => src.LoadingPort))
+              .ForMember(dest => dest.LOADING_PORT_NAME, opt => opt.MapFrom(src => src.LoadingPortName))
+              .ForMember(dest => dest.LOADING_PORT_ID, opt => opt.MapFrom(src => src.LoadingPortId))
+              .ForMember(dest => dest.FINAL_PORT, opt => opt.MapFrom(src => src.FinalPort))
+              .ForMember(dest => dest.FINAL_PORT_NAME, opt => opt.MapFrom(src => src.FinalPortName))
+              .ForMember(dest => dest.FINAL_PORT_ID, opt => opt.MapFrom(src => src.FinalPortId))
+
                .ForMember(dest => dest.INVOICE_NUMBER, opt => opt.MapFrom(src => src.InvoiceNumber))
                .ForMember(dest => dest.INVOICE_DATE, opt => opt.MapFrom(src => src.InvoiceDate))
                .ForMember(dest => dest.PBCK1_DECREE_ID, opt => opt.MapFrom(src => src.PbckDecreeId))
@@ -119,8 +126,11 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
             .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
             .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => src.EX_SETTLEMENT_ID))
+            .ForMember(dest => dest.ExciseSettlementDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_SETTLEMENT_ID)))
             .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => src.EX_STATUS_ID))
+            .ForMember(dest => dest.ExciseStatusDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
             .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.REQUEST_TYPE_ID))
+            .ForMember(dest => dest.RequestTypeDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
 
             .ForMember(dest => dest.SourcePlantId, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
             .ForMember(dest => dest.SourceNpwp, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPWP))
@@ -138,11 +148,19 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.DestKppbcName, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
             .ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
 
+             .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
+              .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
+              .ForMember(dest => dest.LoadingPortId, opt => opt.MapFrom(src => src.LOADING_PORT_ID))
+              .ForMember(dest => dest.FinalPort, opt => opt.MapFrom(src => src.FINAL_PORT))
+              .ForMember(dest => dest.FinalPortName, opt => opt.MapFrom(src => src.FINAL_PORT_NAME))
+              .ForMember(dest => dest.FinalPortId, opt => opt.MapFrom(src => src.FINAL_PORT_ID))
+
              .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
              .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.INVOICE_DATE))
              .ForMember(dest => dest.PbckDecreeId, opt => opt.MapFrom(src => src.PBCK1_DECREE_ID))
              .ForMember(dest => dest.PbckDecreeNumber, opt => opt.MapFrom(src => src.PbckNumber))
              .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => src.CARRIAGE_METHOD_ID))
+             .ForMember(dest => dest.CarriageMethodDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CARRIAGE_METHOD_ID)))
              .ForMember(dest => dest.GrandTotalEx, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
             .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.PACKAGE_UOM_ID))
 

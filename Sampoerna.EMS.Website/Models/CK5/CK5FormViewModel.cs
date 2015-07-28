@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Validations;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -47,8 +48,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("DateTime")]
         public DateTime? SubmissionDate { get; set; }
 
+        [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationNumber")]
         public string RegistrationNumber { get; set; }
 
+        [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationDate")]
         [UIHint("DateTime")]
         public DateTime? RegistrationDate { get; set; }
 
@@ -62,17 +65,18 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Required]
         public Enums.ExciseSettlement ExciseSettlement { get; set; }
         public Enums.ExciseSettlement ExciseSettlementList { get; set; }
+        public string ExciseSettlementDesc { get; set; }
 
-       [Required]
+        [Required]
         public Enums.ExciseStatus ExciseStatus { get; set; }
         public Enums.ExciseStatus ExciseStatusList { get; set; }
-        //public string ExciseStatusName { get; set; }
+        public string ExciseStatusDesc { get; set; }
 
         //[Required]
         //public int? RequestTypeId { get; set; }
         public Enums.RequestType RequestType { get; set; }
         public Enums.RequestType RequestTypeList { get; set; }
-        //public string RequestTypeName { get; set; }
+        public string RequestTypeDesc { get; set; }
 
         //ORIGIN PLANT
         [Required(ErrorMessage = "Origin Plant field is required")]
@@ -96,9 +100,34 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestAddress { get; set; }
         public string DestKppbcName { get; set; }
 
+        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Loading Port")]
+        [StringLength(50, ErrorMessage = "Max Length : 50")]
+        public string LoadingPort { get; set; }
+
+        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Loading Port Name")]
+        [StringLength(50, ErrorMessage = "Max Length : 50")]
+        public string LoadingPortName { get; set; }
+
+        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Loading Port Id")]
+        [StringLength(10, ErrorMessage = "Max Length : 10")]
+        public string LoadingPortId { get; set; }
+
+        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Final Port")]
+        [StringLength(50, ErrorMessage = "Max Length : 50")]
+        public string FinalPort { get; set; }
+
+        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Final Port Name")]
+        [StringLength(50, ErrorMessage = "Max Length : 50")]
+        public string FinalPortName { get; set; }
+
+        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Final Port Id")]
+        [StringLength(10, ErrorMessage = "Max Length : 10")]
+        public string FinalPortId { get; set; }
+
 
         //NOTIF DATA
 
+        [StringLength(50, ErrorMessage = "Max Length : 50")]
         public string InvoiceNumber { get; set; }
         [UIHint("FormatDateTime")]
         public DateTime? InvoiceDate { get; set; }
@@ -107,12 +136,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList PbckDecreeList { get; set; }
         public string PbckDecreeNumber { get; set; }
 
+        [UIHint("DateTime")]
         public DateTime? PbckDecreeDate { get; set; }
 
         //public int? CarriageMethodId { get; set; }
         public Enums.CarriageMethod? CarriageMethod { get; set; }
         public Enums.CarriageMethod CarriageMethodList { get; set; }
-        //public string CarriageMethodName { get; set; }
+        public string CarriageMethodDesc { get; set; }
 
         [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
@@ -159,13 +189,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "Unsealing Notification Date")]
         public DateTime? UnsealingNotifDate { get; set; }
 
+        public bool IsCk5Export { get; set; }
+        public bool IsCk5Manual { get; set; }
+        public bool IsWaitingGovApproval { get; set; }
 
-        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        //{
-        //    if (UploadItemModels.Count == 0)
-        //        yield return new ValidationResult("Upload ck5 item required");
-
-
-        //}
+     
     }
 }

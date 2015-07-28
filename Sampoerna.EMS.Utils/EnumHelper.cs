@@ -10,6 +10,9 @@ namespace Sampoerna.EMS.Utils
     {
         public static string GetDescription(Enum en)
         {
+            if (en == null) 
+                return string.Empty;
+
             Type type = en.GetType();
 
             MemberInfo[] memInfo = type.GetMember(en.ToString());
