@@ -35,15 +35,6 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
         
-        private bool IsOneGroup(string createdUser, string currentUserGroup)
-        {
-            var dbCreatedUser = _userBll.GetUserById(createdUser);
-            if (dbCreatedUser == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            return dbCreatedUser.USER_GROUP_ID == currentUserGroup;
-        }
-
         /// <summary>
         /// Is in NPPBKC
         /// </summary>
