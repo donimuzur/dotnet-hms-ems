@@ -1,6 +1,8 @@
 ﻿@model Sampoerna.EMS.Website.Models.Material.MaterialEditViewModel
 @{
     ViewBag.Title = "Edit";
+   
+                                                      
 }
 @using (Html.BeginForm("Edit", "Material", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
@@ -123,14 +125,13 @@
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
                             <div class="panel-body">
-                                <div class="row">
+                                @*<div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Converted UOM(EMS)<span class="red">*</span></label>
                                             <div class="col-md-8">
                                                 @Html.DropDownList("uom-list", Model.BaseUOM, "select", new { @class = "form-control" })
-                                                @*@Html.ValidationMessageFor(model => model.Convertion)*@
-                                            </div>
+                                                </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -138,18 +139,17 @@
                                             <label class="col-md-4">Convertion<span class="red">*</span></label>
                                             <div class="col-md-8">
                                                 @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
-                                                @*@Html.ValidationMessageFor(model => model.Convertion)*@
-                                            </div>
+                                             </div>
                                         </div>
                                     </div>
 
-                                </div>
+                                </div>*@
 
 
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 col-md-offset-4">
-                                            <button class="btn btn-blue full" type="button" id="material-uom-add-btn">Add</button>
+                                            @*<button class="btn btn-blue full" type="button" id="material-uom-add-btn">Add</button>*@
                                         </div>
                                     </div>
                                 </div>
@@ -160,7 +160,7 @@
                                                 <table id="material-uom" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
-                                                            <th>&nbsp;</th>
+                                                            @*<th>&nbsp;</th>*@
                                                             <th> Converted UOM </th>
                                                             <th> Conversion </th>
 
@@ -170,19 +170,31 @@
 
 
                                                     <tbody>
-                                                        @foreach (var item in Model.MaterialUom)
+                                                        @if (Model.MaterialUom != null)
                                                         {
-                                                            <tr>
-                                                                <td><a href="javascript:void(0)">delete</a></td>
+                                                            for (int i = 0; i < Model.MaterialUom.Count; i++)
+                                                            {
+                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].Id)
+                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].MaterialNumber)
+                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].Plant)
 
-                                                                <td>
-                                                                    <span id="field1">@Html.DisplayFor(modelItem => item.Meinh)</span>
+                                                                 <tr>
+                                                                     @*<td><a href="javascript:void(0)" onclick="deleteUom(@itemIndex)">delete</a></td>*@
+                                                              
+                                                                     <td>
+                                                                         <span id="field1">@Html.DisplayFor( x => Model.MaterialUom[i].Meinh)</span>
 
-                                                                </td>
-                                                                <td>
-                                                                    <span id="field2">@Html.DisplayFor(modelItem => item.Umren)</span>
-                                                                </td>
-                                                            </tr>
+                                                                     </td>
+                                                                     <td>
+                                                                         <span id="field2">@Html.DisplayFor(x=> Model.MaterialUom[i].UmrenStr)</span>
+                                                                     </td>
+                                                                 </tr>
+
+
+
+
+
+                                                             }
                                                         }
                                                     </tbody>
 
@@ -199,84 +211,7 @@
                             </div>
                         </div>
 
-                        <div class="panel-group" id="accordionThree" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingThree">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                                            Information
-                                            <i class="fa fa-caret-down"></i>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
-                                    <div class="panel-body">
-                                        <form class="form-excise" role="form">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Create By</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                            @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control" })
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Changed By</label>
-                                                        <div class="col-md-8">
-
-                                                            @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                            @Html.HiddenFor(model => model.ChangedById, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedBy)*@
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Created On</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedDate)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Last Change On</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ChangedDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
-                                                            @*@Html.ValidationMessageFor(model => model.ChangedDate)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Plant Deletion</label>
-                                                        <div class="col-md-6">
-                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Client Deletion</label>
-                                                        <div class="col-md-6">
-                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
@@ -293,7 +228,35 @@
     </footer>
 }
 @section scripts{
-    <script type="text/javascript" language="javascript" class="init">
-        $('#MenuMasterMaterial').addClass('active');
+<script src="~/Scripts/thousand-separator.js"></script>
+
+    <script type="text/javascript" language="javascript">
+
+    $('#MenuMasterMaterial').addClass('active');
+    var arrayUom = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MaterialUom)));
+    
+    $('#material-uom-add-btn').click(function () {
+        var meinh = $('#uom-list').find("option:selected").val();
+        if (meinh !== '') {
+            var umren = $('#ConversionValueStr').val();
+
+            var objUom = { Meinh: meinh, Umren: umren };
+            arrayUom.push(objUom);
+            CreateUomList();
+        }
+    });
+
+    function CreateUomList() {
+        $('#material-uom tbody tr').remove();
+
+        for (var i = 0; i < arrayUom.length; i++) {
+            $('#material-uom tbody').append('<tr><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + arrayUom[i].Meinh + '</td><td>' + arrayUom[i].Umren + '</td></tr>');
+        }
+    }
+
+    function deleteUom(index) {
+        arrayUom.splice(index, 1);
+        CreateUomList();
+    }
     </script>
 }

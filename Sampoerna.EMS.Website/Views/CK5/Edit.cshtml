@@ -4,6 +4,8 @@
 
 @using (Html.BeginForm("Edit", "CK5"))
 {
+     @Html.AntiForgeryToken()
+    
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -12,6 +14,7 @@
                 <div class="action-button">
                    
                     <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" />
                     
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
@@ -32,10 +35,15 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.HiddenFor(model=>model.Ck5Id)
+                        @Html.HiddenFor(model => model.Ck5Id)
+                        @Html.HiddenFor(model => model.Ck5Type)
+                        @Html.HiddenFor(model => model.DocumentStatusDescription)
+                        @Html.HiddenFor(model => model.DocumentStatus)
                         @Html.HiddenFor(model => model.CreatedBy)
+                        @Html.HiddenFor(model => model.CreatedDate)
                         @Html.HiddenFor(model => model.DocumentStatus)
                         @Html.HiddenFor(model => model.CeOfficeCode)
+                        @Html.HiddenFor(model => model.KppBcCityName)
                         @Html.HiddenFor(model => model.SubmissionNumber)
                         @Html.HiddenFor(model => model.SubmissionDate)
                        
@@ -44,13 +52,17 @@
                         @Html.HiddenFor(model => model.SourceCompanyName)
                         @Html.HiddenFor(model => model.SourceAddress)
                         @Html.HiddenFor(model => model.SourceKppbcName)
-                        
+                        @Html.HiddenFor(model => model.SourcePlantName)
+
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyName)
                         @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
-                        
+                        @Html.HiddenFor(model => model.DestPlantName)
+
+                        @Html.HiddenFor(model => model.PbckDecreeNumber)
+
                         @Html.HiddenFor(model => model.DnNumber)
                         @Html.HiddenFor(model => model.StoSenderNumber)
                         @Html.HiddenFor(model => model.DnDate)
@@ -95,6 +107,37 @@
     </div>
 </div>
 
+<div id="Ck5ModalCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Cancel document</h4>
+            </div>
+            @using (Html.BeginForm("CancelDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmCancel" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -102,92 +145,127 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            OnReadyFunction();
-            //enable upload
-            $('#btnUploadInfo').enable();
-            $('#CK5UploadSubmitBtn').enable();
-        });
-
-        $("#PbckDecreeId").change(function () {
-            if ($("#PbckDecreeId").length) {
-                var pbck1 = $(this).find("option:selected").val();
-                if (pbck1 == '') {
-                    $("input[name='PbckDecreeDate']").val('');
-                } else {
-                    ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
-                }
+    $(document).ready(function () {
+        OnReadyFunction('@Model.Ck5Type.ToString()');
+        //enable upload
+        $('#btnUploadInfo').enable();
+        $('#CK5UploadSubmitBtn').enable();
+       
+        $("#KppBcCity option").each(function () {
+            if ($(this).text() == $("input[name='KppBcCityName']").val()) {
+                $(this).attr('selected', 'selected');
             }
-
         });
-
-        var plantOriginal = '@Model.SourcePlantId';
         
-        $("#DestPlantId").change(function () {
-            if ($("#DestPlantId").length) {
-                var destPlant = $(this).find("option:selected").val();
-                if (destPlant == '') {
-                    $("input[name='DestNpwp']").val('');
-                    $("input[name='DestNppbkcId']").val('');
-                    $("input[name='DestCompanyName']").val('');
-                    $("input[name='DestAddress']").val('');
-                    $("input[name='DestKppbcName']").val('');
-                } else {
-                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
-                    
-                }
+
+        $("#btnCancelDocument").click(function () {
+            $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+            $('#Comment').val('');
+
+            $('#Ck5ModalCancel').modal('show');
+
+        });
+        
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmCancel').attr('disabled', 'disabled');
+           
+            if (this.value.length) {
+                $('#btnConfirmCancel').removeAttr('disabled');
             }
         });
 
-        $("#SourcePlantId").change(function () {
-            if ($("#SourcePlantId").length) {
-                var sourcePlant = $(this).find("option:selected").val();
 
-                //remove table
-                RemoveTable();
+    });
 
-                if (sourcePlant == '') {
-                    $("input[name='SourceNpwp']").val('');
-                    $("input[name='SourceNppbkcId']").val('');
-                    $("input[name='SourceCompanyName']").val('');
-                    $("input[name='SourceAddress']").val('');
-                    $("input[name='SourceKppbcName']").val('');
+    $("#PbckDecreeId").change(function () {
+        if ($("#PbckDecreeId").length) {
+            var pbck1 = $(this).find("option:selected").val();
+            var pbck1Number = $('option:selected', $(this)).text();
+            if (pbck1 == '') {
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+            } else {
+                ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+                $("input[name='PbckDecreeNumber']").val(pbck1Number);
+            }
+        }
 
-                    //enable upload
-                    $('#btnUploadInfo').enable(false);
-                    $('#CK5UploadSubmitBtn').enable(false);
+    });
+
+    var plantOriginal = '@Model.SourcePlantId';
+
+    $("#DestPlantId").change(function () {
+        if ($("#DestPlantId").length) {
+            var destPlant = $(this).find("option:selected").val();
+            if (destPlant == '') {
+                $("input[name='DestNpwp']").val('');
+                $("input[name='DestNppbkcId']").val('');
+                $("input[name='DestCompanyName']").val('');
+                $("*[name='DestAddress']").val('');
+                $("input[name='DestKppbcName']").val('');
+                $("input[name='DestPlantName']").val('');
+            } else {
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+
+            }
+        }
+    });
+
+    $("#SourcePlantId").change(function () {
+        if ($("#SourcePlantId").length) {
+            var sourcePlant = $(this).find("option:selected").val();
+
+            //remove table
+            RemoveTable();
+
+            if (sourcePlant == '') {
+                $("input[name='SourceNpwp']").val('');
+                $("input[name='SourceNppbkcId']").val('');
+                $("input[name='SourceCompanyName']").val('');
+                $("*[name='SourceAddress']").val('');
+                $("input[name='SourceKppbcName']").val('');
+                $("input[name='SourcePlantName']").val('');
+                //enable upload
+                $('#btnUploadInfo').enable(false);
+                $('#CK5UploadSubmitBtn').enable(false);
 
 
-                } else {
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+            } else {
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
 
                     ChangeBackSourceMaterial(sourcePlant);
                 }
             }
         });
 
-        $("#KppBcCityId").change(function () {
-            if ($("#KppBcCityId").length) {
+      $("#KppBcCity").change(function () {
+            if ($("#KppBcCity").length) {
                 var nppBkcCity = $(this).find("option:selected").val();
+                var cityName = $('option:selected', $(this)).text();
                 if (nppBkcCity == '') {
                     $("input[name='CeOfficeCode']").val('');
+                    $("input[name='KppBcCityName']").val('');
                 } else {
-                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });
+                    $("input[name='CeOfficeCode']").val(nppBkcCity);
+                    $("input[name='KppBcCityName']").val(cityName);
+
+                    @*ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });*@
                 }
             }
 
         });
-        
         $("#btnSubmitDocument").click(function () {
             $('#Ck5Modal').modal('show');
             @*var r = confirm("Submit Documents ?");
             if (r == true) {
                 window.location = "@Url.Action("Delete", "CK5", new {id = @Model.Ck5Id})";
             }*@
-        });
+    });
 
-        $("#btnSubmitConfirm").click(function() {
-            window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
-        });
+    $("#btnSubmitConfirm").click(function() {
+        window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
+    });
 </script>
 }

@@ -16,10 +16,11 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK1()
         {
+            this.CK5 = new HashSet<CK5>();
+            this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
-            this.CK5 = new HashSet<CK5>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -49,29 +50,33 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> LACK1_TO_MONTH { get; set; }
         public Nullable<int> LACK1_TO_YEAR { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
-        public Sampoerna.EMS.Core.Enums.DocumentStatusGov STATUS_GOV { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> STATUS_GOV { get; set; }
         public Nullable<decimal> QTY_APPROVED { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
-        public string APPROVED_BY { get; set; }
-        public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public string APPROVED_BY_POA { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_POA { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string SUPPLIER_PORT_NAME { get; set; }
         public string SUPPLIER_NPPBKC_ID { get; set; }
         public string SUPPLIER_KPPBC_ID { get; set; }
         public string SUPPLIER_PLANT_WERKS { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
     
+        public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
+        public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
-        public virtual UOM UOM { get; set; }
-        public virtual UOM UOM1 { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual ICollection<CK5> CK5 { get; set; }
+        public virtual UOM UOM { get; set; }
+        public virtual UOM UOM1 { get; set; }
+        public virtual USER USER2 { get; set; }
     }
 }

@@ -69,6 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
+                    
                     poa.CREATED_BY = CurrentUser.USER_ID;
                     poa.CREATED_DATE = DateTime.Now;
                     poa.IS_ACTIVE = true;
@@ -105,7 +106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var poa = _poaBll.GetById(id);
 
@@ -158,12 +159,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.NEW_VALUE = poa.TITLE;
                             break;
                         case "USER":
-                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USERNAME;
-                            changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : _userBll.GetUserById(poa.LOGIN_AS).USERNAME;
+                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USER_ID;
+                            changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : poa.LOGIN_AS;
                             break;
                         case "MANAGER":
-                            changes.OLD_VALUE = origin.ManagerId == null ? null : _userBll.GetUserById(origin.ManagerId).USERNAME;
-                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : _userBll.GetUserById(poa.MANAGER_ID).USERNAME;
+                            changes.OLD_VALUE = origin.ManagerId == null ? null : origin.ManagerId;
+                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : poa.MANAGER_ID;
                             break;
                         case "PHONE":
                             changes.OLD_VALUE = origin.PoaPhone;
@@ -230,7 +231,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
         
-        public ActionResult Detail(int id)
+        public ActionResult Detail(string id)
         {
             var poa = _poaBll.GetById(id);
             if (poa == null)
@@ -250,7 +251,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             try
             {
@@ -281,7 +282,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
                 Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
 
-            sFileName = Constans.MasterDataHeaderFooterFolder + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.PoaSK + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded

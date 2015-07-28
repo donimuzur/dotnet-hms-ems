@@ -60,7 +60,7 @@ namespace Sampoerna.EMS.XMLReader
         public void InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
-            
+            var errorCount = 0;
             try
             {
                 foreach (var item in items)
@@ -69,16 +69,21 @@ namespace Sampoerna.EMS.XMLReader
                     repo.InsertOrUpdate(item);
                     uow.SaveChanges();
                 }
-                MoveFile();
+              
             }
             
             catch (Exception ex)
             {
+                errorCount++;
                 logger.Error(ex.Message);
                 uow.RevertChanges();
             }
-         
-           
+            if (errorCount == 0)
+            {
+                MoveFile();
+                
+            }
+
         }
         public void InsertToDatabase<T>(T data) where T : class
         {

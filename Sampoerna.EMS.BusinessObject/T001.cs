@@ -34,11 +34,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string SPRAS { get; set; }
     
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
-        public virtual USER USER { get; set; }
         public virtual ICollection<T001K> T001K { get; set; }
         public virtual ICollection<T001K> T001K1 { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC1 { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

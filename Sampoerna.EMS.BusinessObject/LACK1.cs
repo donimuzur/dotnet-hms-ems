@@ -42,13 +42,15 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public string NPPBKC_ID { get; set; }
+        public string EX_TYP_DESC { get; set; }
     
         public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual ICollection<LACK1_ITEM> LACK1_ITEM { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual UOM UOM1 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual UOM UOM1 { get; set; }
     }
 }

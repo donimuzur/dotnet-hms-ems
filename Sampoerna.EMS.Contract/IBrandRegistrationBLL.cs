@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_BRAND GetByFaCode(string faCode);
 
-        ZAIDM_EX_BRAND GetByPlantIdAndFaCode(long plantId, string faCode);
+        ZAIDM_EX_BRAND GetByPlantIdAndFaCode(string plantId, string faCode);
     }
 
 }

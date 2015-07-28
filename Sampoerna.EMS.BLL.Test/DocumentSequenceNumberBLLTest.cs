@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.BLL.Test
             };
 
             _repository.Get().ReturnsForAnyArgs(new List<DOC_NUMBER_SEQ>() { docNumberSeq });
-            _nppbkcRepository.GetByID(input.NppbkcId).Returns(nppbkc);
+            _nppbkcRepository.Get().ReturnsForAnyArgs(new List<ZAIDM_EX_NPPBKC>{nppbkc});
 
             string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + nppbkc.T001.BUTXT + "/" + nppbkc.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 

@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.UserName))
             {
-                queryFilter = queryFilter.And(s => s.USERNAME.Contains(input.UserName));
+                queryFilter = queryFilter.And(s => s.USER_ID.Contains(input.UserName));
             }
 
             if (!string.IsNullOrEmpty(input.FirstName))
@@ -94,7 +94,7 @@ namespace Sampoerna.EMS.BLL
 
         public Login GetLogin(string userName)
         {
-            return Mapper.Map<Login>(_repository.Get(c => c.USERNAME == userName).FirstOrDefault());
+            return Mapper.Map<Login>(_repository.GetByID(userName));
         } 
 
 

@@ -33,12 +33,16 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<decimal> HJE { get; set; }
+        public string HJE_CURR { get; set; }
+        public Nullable<decimal> TARIFF { get; set; }
+        public string TARIFF_CURR { get; set; }
     
         public virtual T001W T001W { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
     }
 }

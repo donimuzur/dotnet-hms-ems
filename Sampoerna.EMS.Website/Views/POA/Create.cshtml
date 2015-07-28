@@ -48,7 +48,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Login As<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select",new { @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, null,new { @class = "selectpicker form-control" })
 
                                                        
                                                     </div>
@@ -60,7 +60,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Manager<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Users, "select", new { @class="selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Users, null, new { @class="selectpicker form-control" })
 
                                                     </div>
                                                 </div>
@@ -153,12 +153,13 @@
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/poa/form.js"></script>
     <script type="text/javascript">
-        $('#Detail_UserId').click(function () {
-            $(this).addClass('selectpicker');
-            $(this).selectpicker();
+        
+        $(function () {
+            OnChangeUser($('#Detail_UserId option:selected').val());
         });
+
         function OnChangeUser(id) {
-           
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetUser", "POA")',
@@ -170,7 +171,6 @@
                 }
             });
         }
-        
 
     </script>
 } 

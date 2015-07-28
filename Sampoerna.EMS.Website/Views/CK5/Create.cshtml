@@ -5,6 +5,8 @@
 
 @using (Html.BeginForm("SaveCK5", "CK5"))
 {
+     @Html.AntiForgeryToken()
+    
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -30,7 +32,10 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
+                        @Html.HiddenFor(model => model.Ck5Type)
+
                         @Html.HiddenFor(model => model.CeOfficeCode)
+                        @Html.HiddenFor(model => model.KppBcCityName)
                         @Html.HiddenFor(model => model.SubmissionNumber)
                         @Html.HiddenFor(model => model.SubmissionDate)
                         
@@ -39,12 +44,14 @@
                         @Html.HiddenFor(model => model.SourceCompanyName)
                         @Html.HiddenFor(model => model.SourceAddress)
                         @Html.HiddenFor(model => model.SourceKppbcName)
+                        @Html.HiddenFor(model => model.SourcePlantName)
 
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyName)
                         @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
+                        @Html.HiddenFor(model => model.DestPlantName)
 
                         @Html.HiddenFor(model => model.PbckDecreeDate)
 
@@ -79,14 +86,24 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            OnReadyFunction();
+            OnReadyFunction('@Model.Ck5Type.ToString()');
+
+            var sourcePlant = $('#SourcePlantId').find("option:selected").val();
+            
+            if (sourcePlant != '') {
+                //enable upload
+                $('#btnUploadInfo').enable(true);
+                $('#CK5UploadSubmitBtn').enable(true);
+            }
+                
+                
         });
 
         $("#PbckDecreeId").change(function () {
             if ($("#PbckDecreeId").length) {
                 var pbck1 = $(this).find("option:selected").val();
                 if (pbck1 == '') {
-                    $("input[name='pbck1Date']").val('');
+                    $("input[name='PbckDecreeDate']").val('');
                 } else {
                     ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
                 }
@@ -101,8 +118,9 @@
                     $("input[name='DestNpwp']").val('');
                     $("input[name='DestNppbkcId']").val('');
                     $("input[name='DestCompanyName']").val('');
-                    $("input[name='DestAddress']").val('');
+                    $("*[name='DestAddress']").val('');
                     $("input[name='DestKppbcName']").val('');
+                    $("input[name='DestPlantName']").val('');
                 } else {
                     ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
                 }
@@ -120,9 +138,9 @@
                     $("input[name='SourceNpwp']").val('');
                     $("input[name='SourceNppbkcId']").val('');
                     $("input[name='SourceCompanyName']").val('');
-                    $("input[name='SourceAddress']").val('');
+                    $("*[name='SourceAddress']").val('');
                     $("input[name='SourceKppbcName']").val('');
-
+                    $("input[name='SourcePlantName']").val('');
                     //enable upload
                     $('#btnUploadInfo').enable(false);
                     $('#CK5UploadSubmitBtn').enable(false);
@@ -134,13 +152,18 @@
             }
         });
 
-        $("#KppBcCityId").change(function () {
-            if ($("#KppBcCityId").length) {
+        $("#KppBcCity").change(function () {
+            if ($("#KppBcCity").length) {
                 var nppBkcCity = $(this).find("option:selected").val();
+                var cityName = $('option:selected', $(this)).text();
                 if (nppBkcCity == '') {
                     $("input[name='CeOfficeCode']").val('');
+                    $("input[name='KppBcCityName']").val('');
                 } else {
-                    ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });
+                    $("input[name='CeOfficeCode']").val(nppBkcCity);
+                    $("input[name='KppBcCityName']").val(cityName);
+                    
+                    @*ajaxGetCeOfficeCode('@Url.Action("CeOfficeCodePartial", "CK5")', { nppBkcCityId: nppBkcCity });*@
                 }
             }
 

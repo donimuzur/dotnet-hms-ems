@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string BKC_REQUIRED_UOM_ID { get; set; }
     
         public virtual MONTH MONTH1 { get; set; }
-        public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
     }
 }
