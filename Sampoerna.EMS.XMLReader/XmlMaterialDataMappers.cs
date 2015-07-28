@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.XMLReader
                     if (E1MARCM != null)
                     {
                         item.WERKS = E1MARCM.Element("WERKS").Value;
-                        item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? null : E1MARCM.Element("LGPRO").Value;
+                        item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? string.Empty : E1MARCM.Element("LGPRO").Value;
                         var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
                         if (exGoodType != null)
                         {
@@ -81,6 +81,8 @@ namespace Sampoerna.EMS.XMLReader
                     }
 
                 }
+                
+                
                 return items;
             }
 

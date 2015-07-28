@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public POA GetById(int id)
+        public POA GetById(string id)
         {
             return _repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault();
         }
@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.BLL
 
         }
         
-        public void Delete(int id)
+        public void Delete(string id)
         {
             var existingPoa = GetById(id);
             if (existingPoa.IS_ACTIVE == true)

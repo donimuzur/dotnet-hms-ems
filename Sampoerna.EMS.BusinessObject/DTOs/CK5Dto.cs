@@ -56,8 +56,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string FINAL_PORT { get; set; }
         public string FINAL_PORT_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS_ID { get; set; }
-        public string CREATED_BY { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
+        
+       public string CREATED_BY { get; set; }
+       public string CreatedUser { get; set; }
+
+       public System.DateTime CREATED_DATE { get; set; }
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
@@ -72,5 +75,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DEST_PLANT_ADDRESS { get; set; }
         public string DEST_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
+        public Nullable<System.DateTime> DN_DATE { get; set; }
+        public string SOURCE_PLANT_NAME { get; set; }
+        public string DEST_PLANT_NAME { get; set; }
+
+        public string FINAL_PORT_NAME { get; set; }
+
+        public bool IsCk5Export { get; set; }
+        public bool IsCk5Manual { get; set; }
+        public bool IsWaitingGovApproval { get; set; }
     }
 }

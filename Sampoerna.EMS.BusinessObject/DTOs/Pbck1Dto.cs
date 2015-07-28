@@ -43,9 +43,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? DecreeDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedById { get; set; }
-        public string CreatedUsername { get; set; }
         public string ApprovedById { get; set; }
-        public string ApprovedUsername { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public decimal? LatestSaldo { get; set; }

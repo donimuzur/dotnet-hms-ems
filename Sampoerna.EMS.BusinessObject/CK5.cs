@@ -76,11 +76,14 @@ namespace Sampoerna.EMS.BusinessObject
         public string DEST_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
         public Nullable<System.DateTime> DN_DATE { get; set; }
+        public string SOURCE_PLANT_NAME { get; set; }
+        public string DEST_PLANT_NAME { get; set; }
+        public string FINAL_PORT_NAME { get; set; }
     
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual UOM UOM { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
     }
 }

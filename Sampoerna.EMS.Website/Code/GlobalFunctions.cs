@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
@@ -121,29 +122,52 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetDataPersonalization();
-            return new SelectList(data, "PER_CODE", "PER_DESC");
+            var selectList = from s in data
+                             select new SelectListItem
+                             {
+                                 Value = s.PER_CODE,
+                                 Text = s.PER_CODE + "-" + s.PER_DESC
+                             };
+            return new SelectList(selectList, "Value", "Text");
         }
 
         public static SelectList GetProductCodeList()
         {
             IZaidmExProdTypeBLL productBll = MvcApplication.GetInstance<ZaidmExProdTypeBLL>();
             var data = productBll.GetAll();
-            //var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(data, "PROD_CODE", "PRODUCT_TYPE");
+            var selectList = from s in data
+                             select new SelectListItem
+                             {
+                                 Value = s.PROD_CODE,
+                                 Text = s.PROD_CODE + "-" + s.PRODUCT_TYPE + " ["+s.PRODUCT_ALIAS+"]"
+                             };
+            return new SelectList(selectList, "Value", "Text");
         }
 
         public static SelectList GetSeriesCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataSeries();
-            return new SelectList(data, "SERIES_CODE", "SERIES_VALUE");
+            var selectList = from s in data
+                                         select new SelectListItem
+                                                    {
+                                                      Value = s.SERIES_CODE,
+                                                      Text = s.SERIES_CODE + "-" + s.SERIES_VALUE
+                                                    };
+            return new SelectList(selectList, "Value", "Text");
         }
 
         public static SelectList GetMarketCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataMarket();
-            return new SelectList(data, "MARKET_ID", "MARKET_DESC");
+            var selectList = from s in data
+                             select new SelectListItem
+                             {
+                                 Value = s.MARKET_ID,
+                                 Text = s.MARKET_ID + "-" + s.MARKET_DESC
+                             };
+            return new SelectList(selectList, "Value", "Text");
         }
 
         public static SelectList GetCountryList()
@@ -167,11 +191,51 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
-        public static SelectList GetConversionUomList()
+            public static SelectList GetConversionUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
             var data = uomBll.GetAll();
-            return new SelectList(data, "UOM_ID", "UOM_ID");
+            var selectList = from s in data
+                             select new SelectListItem
+                             {
+                                 Value = s.UOM_ID,
+                                 Text = s.UOM_ID + "-" + s.UOM_DESC
+                             };
+            return new SelectList(selectList, "Value", "Text");
+        }
+        
+        public static SelectList GetKppBcCityList()
+        {
+            IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            var data = nppbkcBll.GetAll();
+            return new SelectList(data, "KPPBC_ID", "CITY");
+        }
+
+        public static SelectList GetGoodTypeGroupList()
+        {
+            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            var goodTypes = goodTypeBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+            //return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
+        }
+
+        public static SelectList GetSourcePlantList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plant = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plant);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
+        }
+
+        public static SelectList GetPbck1CompletedList()
+        {
+            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
+            var input = new Pbck1GetByParamInput();
+            var data = pbck1.GetAllByParam(input);
+            return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
      }

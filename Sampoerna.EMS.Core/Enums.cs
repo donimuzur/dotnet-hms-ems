@@ -135,6 +135,8 @@ namespace Sampoerna.EMS.Core
         {
             [Description("Created")]
             Created = 1,
+            [Description("Cancel")]
+            Cancel = 2,
             [Description("Modified")]
             Modified = 5,
             [Description("Submit")]
