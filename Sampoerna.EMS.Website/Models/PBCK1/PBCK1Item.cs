@@ -135,13 +135,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public DateTime CreatedDate { get; set; }
         
         public string CreatedById { get; set; }
-
-        public string CreatedUsername { get; set; }
-
+        
         public string ApprovedById { get; set; }
-
-        public string ApprovedUsername { get; set; }
-
+        
         public DateTime? ApprovedDate { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
@@ -161,6 +157,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
 
         public string Comment { get; set; }
+
+        //public ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         
     }
 }

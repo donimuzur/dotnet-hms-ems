@@ -1,5 +1,4 @@
-﻿using System;
-using Sampoerna.EMS.BusinessObject.Inputs;
+﻿using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
@@ -13,6 +12,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IUserBLL _userBll;
         private IPOABLL _poabll;
+        private IZaidmExPOAMapBLL _poaMapBll;
 
         public WorkflowBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BLL
 
             _userBll = new UserBLL(_uow,_logger);
             _poabll = new POABLL(_uow,_logger);
-            
+            _poaMapBll = new ZaidmExPOAMapBLL(_uow, _logger);
         }
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BLL
 
             return true;
         }
-
+        
         private bool IsOneGroup(string createdUser, string currentUserGroup)
         {
             var dbCreatedUser = _userBll.GetUserById(createdUser);
@@ -42,6 +42,20 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             return dbCreatedUser.USER_GROUP_ID == currentUserGroup;
+        }
+
+        /// <summary>
+        /// Is in NPPBKC
+        /// </summary>
+        /// <param name="createdUser"></param>
+        /// <param name="approvalUser"></param>
+        /// <returns></returns>
+        private bool IsOneNPPBKC(string createdUser, string approvalUser)
+        {
+            var poaCreatedUserData = _poaMapBll.GetByUserLogin(createdUser);
+            var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
+            return poaCreatedUserData != null && poaApprovalUserData != null &&
+                   poaApprovalUserData.NPPBKC_ID == poaCreatedUserData.NPPBKC_ID;
         }
 
         /// <summary>
@@ -53,44 +67,33 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.CreatedUser == input.CurrentUser)
                 return false;
-
-
-            //need approve by POA only
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
-            {
-                if (input.UserRole != Enums.UserRole.POA)
-                    return false;
-
-                //created user need to as user
-                if (_poabll.GetUserRole(input.CreatedUser) != Enums.UserRole.User)
-                    return false;
-            }
-            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            {
-                if (input.UserRole != Enums.UserRole.Manager)
-                    return false;
-            }
-            else
+            
+            if (input.DocumentStatus != Enums.DocumentStatus.WaitingForApproval)
                 return false;
 
-            return IsOneGroup(input.CreatedUser, input.CurrentUserGroup);
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
+            {
+                if (input.UserRole == Enums.UserRole.Manager) //manager need one group
+                    //return IsOneGroup(input.CreatedUser, input.CurrentUserGroup);
+                    return IsOneNPPBKC(input.CreatedUser, input.CurrentUser);
+                
+                //if user = poa , should only approve that created by user
+                if (input.UserRole == Enums.UserRole.POA)
+                {
+                    //if created user = poa , false
+                    if (_poabll.GetUserRole(input.CreatedUser) == Enums.UserRole.POA)
+                        return false;
 
-            //if (input.UserRole == Enums.UserRole.Manager) //manager need one group
-            //    return IsOneGroup(input.CreatedUser, input.CurrentUserGroup);
+                    //if document is created by user in one group then true
+                    //else false
+                    //return IsOneGroup(input.CreatedUser, input.CurrentUserGroup);
+                    return IsOneNPPBKC(input.CreatedUser, input.CurrentUser);
+                }
 
-            ////if user = poa , should only approve that created by user
-            //if (input.UserRole == Enums.UserRole.POA)
-            //{
-            //    //if created user = poa , false
-            //    if (_poabll.GetUserRole(input.CreatedUser) == Enums.UserRole.POA)
-            //        return false;
+                return false;
+            }
 
-            //    //if document is created by user in one group then true
-            //    //else false
-            //    return IsOneGroup(input.CreatedUser, input.CurrentUserGroup);
-            //}
-
-            //return false;
+            return false;
         }
 
         public bool AllowGovApproveAndReject(WorkflowAllowApproveAndRejectInput input)
@@ -110,5 +113,7 @@ namespace Sampoerna.EMS.BLL
             return false;
 
         }
+
+
     }
 }

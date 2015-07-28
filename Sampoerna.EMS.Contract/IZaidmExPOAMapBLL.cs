@@ -6,6 +6,7 @@ namespace Sampoerna.EMS.Contract
     public interface IZaidmExPOAMapBLL
     {
         List<POA> GetPOAByNPPBKCID(string NPPBKCID);
+        POA_MAP GetByUserLogin(string userLogin);
 
     }
 }

@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Core.Exceptions
             NppbkcNotFound
 
         }
-
+        
         /// <summary>
         /// Security Exceptions for wcf responses
         /// </summary>

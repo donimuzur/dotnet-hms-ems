@@ -62,9 +62,11 @@
   <ItemGroup>
     <Compile Include="BLLMapper.cs" />
     <Compile Include="BLLMapperCK5.cs" />
+    <Compile Include="BLLMapperPBCK1.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
+    <Compile Include="Pbck1DecreeDocBLL.cs" />
     <Compile Include="Pbck1ProdConverterBLL.cs" />
     <Compile Include="EmailTemplateBLL.cs" />
     <Compile Include="Pbck1ProdPlanBLL.cs" />

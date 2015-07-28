@@ -7,9 +7,9 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>PBCK-1 Form</h3>
-            <label class="status">Draft</label>
+            <label class="status">@Model.Detail.StatusName</label>
             <div class="action-button">
-                
+
                 @if (Model.AllowApproveAndReject)
                 {
                     <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -24,19 +24,21 @@
 
                         <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
 
-                        <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />
+                        <input type="button" class="btn btn-danger" value="GovPartialApprove" id="btnGovPartApprove" />
                     }
                 }
-                
+
                 <input type="button" class="btn btn-grey" value="Print Preview" />
 
-                @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed) {
+                @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
+                {
                     <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
                 }
-                else {
+                else
+                {
                     <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
                 }
-                
+
             </div>
         </div>
     </div>
@@ -98,7 +100,7 @@
                         <div class="row">
                             <label class="col-md-3">Add Comment<span class="red">*</span></label>
                             <div class="col-md-9">
-                                @*@Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })*@
+                                @Html.TextAreaFor(model => model.Detail.Comment, new { @rows = "5", @class = "col-md-9" })
                             </div>
                         </div>
                     </div>
@@ -128,7 +130,7 @@
                         <div class="row">
                             <label class="col-md-3">Add Comment<span class="red">*</span></label>
                             <div class="col-md-9">
-                                @*@Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })*@
+                                @Html.TextAreaFor(model => model.Detail.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
                             </div>
                         </div>
                     </div>
@@ -143,14 +145,14 @@
     </div>
 </div>
 
-<div id="Pbck1ModalGovCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div id="Pbck1ModalGovPartApprove" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Government Cancel document</h4>
+                <h4 class="modal-title">Government Partial Approve document</h4>
             </div>
-            @using (Html.BeginForm("GovCancelDocument", "PBCK1"))
+            @using (Html.BeginForm("GovPartialApproveDocument", "PBCK1"))
             {
                 <div class="modal-body">
                     @Html.HiddenFor(model => model.Detail.Pbck1Id)
@@ -158,7 +160,7 @@
                         <div class="row">
                             <label class="col-md-3">Add Comment<span class="red">*</span></label>
                             <div class="col-md-9">
-                                @*@Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })*@
+                                @Html.TextAreaFor(model => model.Detail.Comment, new { @rows = "5", @class = "col-md-9 GovPartApprove" })
                             </div>
                         </div>
                     </div>
@@ -166,7 +168,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmGovCancel" />
+                    <input type="submit" class="btn btn-danger" value="Partial Approve" disabled id="btnConfirmGovPartApprove" />
                 </div>
             }
         </div>
@@ -179,7 +181,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#MenuPBCK1OpenListDocument').addClass('active');
             $('#btn-back-open-doc').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
@@ -196,12 +198,12 @@
             $('#btn-changelog-export-xls').click(function () {
                 alert('export on progress');
             });
-            
+
             var nppbkcid = $('#Detail_NppbkcId').val();
             ajaxLoadPoa({ nppbkcId: nppbkcid });
-            
+
             $("#btnApprove").click(function () {
-           
+
                 $('#btnConfirm').show();
                 $('#btnConfirmGovApprove').hide();
                 $("#lblTitleModal").text('Approval');
@@ -217,33 +219,33 @@
 
             $("#btnReject").click(function () {
                 $('#btnConfirmReject').attr('disabled', 'disabled');
-            
-                $('#Comment').val('');
-            
+
+                $('#Detail_Comment').val('');
+
                 $('#Pbck1ModalReject').modal('show');
 
             });
-        
-            $('#Comment').bind('input propertychange', function () {
+
+            $('#Detail_Comment').bind('input propertychange', function () {
 
                 $('#btnConfirmReject').attr('disabled', 'disabled');
                 $('#btnConfirmGovReject').attr('disabled', 'disabled');
-                $('#btnConfirmGovCancel').attr('disabled', 'disabled');
-            
+                $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
+
                 if (this.value.length) {
                     $('#btnConfirmReject').removeAttr('disabled');
                     $('#btnConfirmGovReject').removeAttr('disabled');
-                    $('#btnConfirmGovCancel').removeAttr('disabled');
+                    $('#btnConfirmGovPartApprove').removeAttr('disabled');
                 }
             });
 
-            $('.GovCancel').bind('input propertychange', function () {
-                $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            $('.GovPartApprove').bind('input propertychange', function () {
+                $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
                 if (this.value.length) {
-                    $('#btnConfirmGovCancel').removeAttr('disabled');
+                    $('#btnConfirmGovPartApprove').removeAttr('disabled');
                 }
             });
-        
+
             $('.GovReject').bind('input propertychange', function () {
                 $('#btnConfirmGovReject').attr('disabled', 'disabled');
                 if (this.value.length) {
@@ -251,7 +253,7 @@
                 }
             });
 
-     
+
             $("#btnGovApprove").click(function () {
                 $('#btnConfirm').hide();
                 $('#btnConfirmGovApprove').show();
@@ -271,16 +273,16 @@
                 $('#Pbck1ModalGovReject').modal('show');
 
             });
-        
-            $("#btnGovCancel").click(function () {
-                $('#btnConfirmGovCancel').attr('disabled', 'disabled');
-                $('.GovCancel').val('');
-                $('#Pbck1ModalGovCancel').modal('show');
+
+            $("#btnGovPartApprove").click(function () {
+                $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
+                $('.GovPartApprove').val('');
+                $('#Pbck1ModalGovPartApprove').modal('show');
 
             });
 
         });
-        
+
         function ajaxLoadPoa(formData) {
             $.ajax({
                 type: 'POST',
