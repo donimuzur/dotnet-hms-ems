@@ -572,6 +572,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
                 input.CurrentUser = CurrentUser.USER_ID;
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
+                input.DocumentNumber = model.SubmissionNumber;
+                input.NppbkcId = model.SourceNppbkcId;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);

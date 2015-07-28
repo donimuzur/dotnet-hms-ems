@@ -145,9 +145,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.CreatedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
+               // .ForMember(dest => dest.CreatedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.ApprovedById, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
-                .ForMember(dest => dest.ApprovedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
+               // .ForMember(dest => dest.ApprovedUsername, opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.LatestSaldo, opt => opt.MapFrom(src => src.LATEST_SALDO))
@@ -217,7 +217,10 @@ namespace Sampoerna.EMS.BLL
 
             #region Workflow History
 
-            Mapper.CreateMap<WORKFLOW_HISTORY, WorkflowHistoryDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<WORKFLOW_HISTORY, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER.USER_ID))
+                .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
+                .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.USER.LAST_NAME));
 
             Mapper.CreateMap<WorkflowHistoryDto, WORKFLOW_HISTORY>().IgnoreAllNonExisting();
 
@@ -231,6 +234,8 @@ namespace Sampoerna.EMS.BLL
 
             #endregion
 
+            Mapper.CreateMap<POA_MAP, POA_MAPDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
 
         }
     }

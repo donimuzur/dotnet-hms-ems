@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
@@ -24,7 +25,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<POA_MAP>();
         }
 
-        public List<POA> GetPOAByNPPBKCID(string NPPBKCID)
+        public List<POADto> GetPOAByNPPBKCID(string NPPBKCID)
         {
             Expression<Func<POA_MAP, bool>> queryFilter = PredicateHelper.True<POA_MAP>();
 
@@ -39,15 +40,22 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            return dbData.Select(s => s.POA).Distinct().ToList();
+            return AutoMapper.Mapper.Map<List<POADto>>(dbData.Select(s => s.POA).Distinct().ToList());
 
         }
 
-        public POA_MAP GetByUserLogin(string userLogin)
+        public POA_MAPDto GetByUserLogin(string userLogin)
         {
             var rc =
                 _repository.Get(c => c.POA != null && c.POA.LOGIN_AS == userLogin, null, includeTables).FirstOrDefault();
-            return rc;
+            return AutoMapper.Mapper.Map<POA_MAPDto>(rc);
         }
+
+        //public List<POA_MAPDto> GetPoaIdByPlantAndNppbkc(string plantId, string nppbkcId)
+        //{
+        //    return
+        //        AutoMapper.Mapper.Map<List<POA_MAPDto>>(
+        //            _repository.Get(c => c.NPPBKC_ID == nppbkcId && c.WERKS == plantId, null, includeTables).ToList());
+        //}
     }
 }

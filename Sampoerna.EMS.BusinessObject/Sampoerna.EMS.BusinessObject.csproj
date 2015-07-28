@@ -75,6 +75,8 @@
     <Compile Include="DTOs\Pbck1Dto.cs" />
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
     <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
+    <Compile Include="DTOs\POADto.cs" />
+    <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
