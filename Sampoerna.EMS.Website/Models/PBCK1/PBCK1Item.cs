@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Validations;
 
@@ -122,13 +123,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string StatusName { get; set; }
 
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
         public Enums.DocumentStatusGov StatusGov { get; set; }
-
+        
         public string StatusGovName { get; set; }
 
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Qty Approved")]
         [UIHint("FormatQty")]
         public decimal QtyApproved { get; set; }
-        
+
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Date")]
         [UIHint("FormatDateTime")]
         public DateTime DecreeDate { get; set; }
         
@@ -159,7 +163,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string Comment { get; set; }
 
-        //public ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
         
     }
 }

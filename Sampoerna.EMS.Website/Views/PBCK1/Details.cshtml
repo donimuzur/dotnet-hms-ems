@@ -55,13 +55,15 @@
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject) {
+                    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                    {
                         @Html.Partial("_HomeGovApproval")
                     }
-                    else {
+                    else
+                    {
                         @Html.Partial("_HomeDetails")
                     }
-                    
+
                     @Html.Partial("_PrintOut")
                     @Html.Partial("_ChangeLog")
                 </div>
@@ -84,6 +86,7 @@
             <div class="modal-footer">
                 <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
                 <input type="button" id="btnConfirmGovApprove" class="btn btn-blue" value="Yes" />
+                <input type="button" id="btnConfirmGovPartApprove" class="btn btn-blue" value="Yes" />
                 <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
             </div>
         </div>
@@ -151,40 +154,16 @@
     </div>
 </div>
 
-<div id="Pbck1ModalGovPartApprove" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Government Partial Approve document</h4>
-            </div>
-            @using (Html.BeginForm("GovPartialApproveDocument", "PBCK1"))
-            {
-                <div class="modal-body">
-                    @Html.HiddenFor(model => model.Detail.Pbck1Id)
-                    <div class="form-excise" role="form">
-                        <div class="row">
-                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                            <div class="col-md-9">
-                                @Html.TextAreaFor(model => model.Detail.Comment, new { @rows = "5", @class = "col-md-9 GovPartApprove" })
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Partial Approve" disabled id="btnConfirmGovPartApprove" />
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+
+    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+    { 
+        <script src="~/Scripts/pbck1/docupload.js"></script>
+    }
+
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -212,6 +191,7 @@
 
                 $('#btnConfirm').show();
                 $('#btnConfirmGovApprove').hide();
+                $('#btnConfirmGovPartApprove').hide();
                 $("#lblTitleModal").text('Approval');
                 $("#lblMessageModal").text('Approve Documents ?');
                 $('#Pbck1Modal').modal('show');
@@ -259,9 +239,9 @@
                 }
             });
 
-
             $("#btnGovApprove").click(function () {
                 $('#btnConfirm').hide();
+                $('#btnConfirmGovPartApprove').hide();
                 $('#btnConfirmGovApprove').show();
                 $("#lblTitleModal").text('GovApproval');
                 $("#lblMessageModal").text('GovApprove Documents ?');
@@ -287,7 +267,19 @@
 
             });
 
+            openGovStatusBlock();
+
         });
+        
+        function openGovStatusBlock() {
+            var docStatus = '@Model.Detail.Status.ToString()';
+            var isAllow = '@Model.AllowGovApproveAndReject';
+            if (docStatus == '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() == 'true') {
+                $('#home-tab').addClass('active');
+                $('#home').addClass('active');
+                $('#collapseFour').addClass("in");
+            }
+        }
 
         function ajaxLoadPoa(formData) {
             $.ajax({
