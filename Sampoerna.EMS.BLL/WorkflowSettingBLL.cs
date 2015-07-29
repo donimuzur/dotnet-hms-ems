@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.BLL
 
                 old.ACTION_NAME = data.ACTION_NAME;
                 old.EMAIL_TEMPLATE_ID = data.EMAIL_TEMPLATE_ID;
-                old.USER = data.USER;
+                old.WORKFLOW_STATE_USERS = data.WORKFLOW_STATE_USERS;
 
                 _repository.Update(old);
             }
@@ -52,10 +52,10 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-        public List<USER> GetAllUsersById(long id)
+        public List<WORKFLOW_STATE_USERS> GetAllUsersById(long id)
         {
 
-            return _repository.GetByID(id).USER.ToList();
+            return _repository.GetByID(id).WORKFLOW_STATE_USERS.ToList();
         }
     }
 }

@@ -123,12 +123,7 @@
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="1.5" PointX="10.5" PointY="21.125" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_LACK1_MONTH_FROM" />
-        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE" Width="1.5" PointX="5.25" PointY="20.875" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_MONTH" />
-        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" />
-        <AssociationConnector Association="EMSModel.WORKFLOW_STATE_USERS" />
-        <EntityTypeShape EntityType="EMSModel.DOC_NUMBER_SEQ" Width="1.5" PointX="10.5" PointY="44.125" />
-        <AssociationConnector Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_APPROVED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" />
@@ -138,6 +133,10 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_REQUEST_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_SALDO_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_USER" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE" Width="1.5" PointX="3" PointY="6.75" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE_USERS" Width="1.5" PointX="5.25" PointY="7" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

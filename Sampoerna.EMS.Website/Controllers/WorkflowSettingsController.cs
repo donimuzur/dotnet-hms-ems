@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     useridlist.Add(user.User_Id);
                 }
-                data.USER = _userBLL.GetUsersByListId(useridlist);
+                //data.WORKFLOW_STATE_USERS = _userBLL.GetUsersByListId(useridlist);
                 _workflowSettingBLL.SaveWorkflowState(data);
 
                 JsonResult json = new JsonResult();
@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Modul = page.MENU_NAME;
                 model.StateMappingId = wfstate.ACTION_ID.ToString();
                 model.State = wfstate.ACTION_NAME;
-                model.ListUser = AutoMapper.Mapper.Map<List<WorkflowUsers>>(wfstate.USER.ToList());
+                model.ListUser = AutoMapper.Mapper.Map<List<WorkflowUsers>>(wfstate.WORKFLOW_STATE_USERS.ToList());
                 //model.
                 //model.
             }

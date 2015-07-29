@@ -42,7 +42,7 @@
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -93,17 +93,17 @@
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -111,10 +111,10 @@
           <Key>
             <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
           </Key>
+          <Property Name="DOC_NUMBER_SEQ_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DOC_NUMBER_SEQ_LAST" Type="bigint" Nullable="false" />
           <Property Name="MONTH" Type="int" />
           <Property Name="YEAR" Type="int" />
-          <Property Name="DOC_NUMBER_SEQ_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="EMAIL_TEMPLATE">
           <Key>
@@ -244,8 +244,8 @@
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -311,9 +311,9 @@
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -321,7 +321,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -355,7 +355,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -471,7 +471,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -538,8 +538,6 @@
           <Property Name="FORM_ID" Type="bigint" />
           <Property Name="EMAIL_TEMPLATE_ID" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="WORKFLOW_STATE_USERS">
           <Key>
             <PropertyRef Name="ACTION_ID" />
@@ -565,15 +563,15 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="0" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="0" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -633,7 +631,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
@@ -1470,18 +1468,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_WORKFLOW_STATE_USERS_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="WORKFLOW_STATE_USERS">
-              <PropertyRef Name="USER_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
           <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="1" />
           <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
@@ -1749,6 +1735,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
@@ -1758,12 +1745,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [WORKFLOW_STATE_USERS].[ACTION_ID] AS [ACTION_ID], 
-    [WORKFLOW_STATE_USERS].[USER_ID] AS [USER_ID]
-    FROM [dbo].[WORKFLOW_STATE_USERS] AS [WORKFLOW_STATE_USERS]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
@@ -2023,10 +2004,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="Self.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
             <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
-          </AssociationSet>
-          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_USER" Association="Self.FK_WORKFLOW_STATE_USERS_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="Self.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
@@ -2444,17 +2421,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
-          <EntitySet Name="WORKFLOW_STATE" EntityType="EMSModel.WORKFLOW_STATE" />
-          <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
-            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
-            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
-          </AssociationSet>
-          <AssociationSet Name="WORKFLOW_STATE_USERS" Association="EMSModel.WORKFLOW_STATE_USERS">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
-          </AssociationSet>
-          <EntitySet Name="DOC_NUMBER_SEQ" EntityType="EMSModel.DOC_NUMBER_SEQ" />
-          <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH">
+          <AssociationSet Name="FK_PBCK1_MONTH" Association="EMSModel.FK_PBCK1_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
@@ -2493,6 +2460,16 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <AssociationSet Name="FK_PBCK1_USER" Association="EMSModel.FK_PBCK1_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <EntitySet Name="WORKFLOW_STATE" EntityType="EMSModel.WORKFLOW_STATE" />
+          <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="EMSModel.WORKFLOW_STATE_USERS" />
+          <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2718,50 +2695,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="T001W" ToRole="USER" />
         </EntityType>
-        <EntityType Name="USER">
-          <Key>
-            <PropertyRef Name="USER_ID" />
-          </Key>
-          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="USERNAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PHONE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="EMAIL" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="ADDRESS" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="USER_GROUP_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACTIVE" Type="Boolean" />
-          <NavigationProperty Name="CHANGES_HISTORY" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="USER" ToRole="CHANGES_HISTORY" />
-          <NavigationProperty Name="HEADER_FOOTER" Relationship="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER" FromRole="USER" ToRole="HEADER_FOOTER" />
-          <NavigationProperty Name="HEADER_FOOTER1" Relationship="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER" FromRole="USER" ToRole="HEADER_FOOTER" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="USER" ToRole="T001" />
-          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="USER" ToRole="T001W" />
-          <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
-          <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
-          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="USER" ToRole="ZAIDM_EX_NPPBKC" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_APPROVED_BY_USER" FromRole="USER" ToRole="PBCK1" />
-          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_CREATED_BY_USER" FromRole="USER" ToRole="PBCK1" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="USER" ToRole="LACK1" />
-          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="USER" ToRole="LACK1" />
-          <NavigationProperty Name="WORKFLOW_HISTORY" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="USER" ToRole="WORKFLOW_HISTORY" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="USER" ToRole="CK5" />
-          <NavigationProperty Name="CK51" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="USER" ToRole="CK5" />
-          <NavigationProperty Name="WORKFLOW_STATE" Relationship="EMSModel.WORKFLOW_STATE_USERS" FromRole="USER" ToRole="WORKFLOW_STATE" />
-          </EntityType>
         <EntityType Name="USER_GROUP">
           <Key>
             <PropertyRef Name="USER_GROUP_ID" />
@@ -4036,7 +3969,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           </Key>
           <Property Name="CK5_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CK5_TYPE" Type="EMSModel.CK5Type" Nullable="false" />
-          <Property Name="KPPBC_CITY" Type="String" FixedLength="false" Unicode="true" Nullable="false" MaxLength="50" />
+          <Property Name="KPPBC_CITY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CE_OFFICE_CODE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
@@ -4048,8 +3981,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
           <Property Name="STO_SENDER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SOURCE_PLANT_ID" Type="String" FixedLength="false" Unicode="true" Nullable="false" MaxLength="4" />
-          <Property Name="DEST_PLANT_ID" Type="String" FixedLength="false" Unicode="true" Nullable="false" MaxLength="4" />
+          <Property Name="SOURCE_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="DEST_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
           <Property Name="PBCK1_DECREE_ID" Type="Int32" />
@@ -4163,34 +4096,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="WORKFLOW_STATE">
-          <Key>
-            <PropertyRef Name="ACTION_ID" />
-          </Key>
-          <Property Name="ACTION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ACTION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="FORM_ID" Type="Int64" />
-          <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
-          <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="WORKFLOW_STATE" ToRole="EMAIL_TEMPLATE" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.WORKFLOW_STATE_USERS" FromRole="WORKFLOW_STATE" ToRole="USER" />
-        </EntityType>
-        <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
-          <End Type="EMSModel.EMAIL_TEMPLATE" Role="EMAIL_TEMPLATE" Multiplicity="0..1" />
-          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMAIL_TEMPLATE">
-              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
-            </Principal>
-            <Dependent Role="WORKFLOW_STATE">
-              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="WORKFLOW_STATE_USERS">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="*" />
-          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
-        </Association>
-        <EntityType Name="DOC_NUMBER_SEQ">
+        <EntityType Name="PBCK1">
           <Key>
             <PropertyRef Name="PBCK1_ID" />
           </Key>
@@ -4393,12 +4299,56 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WORKFLOW_STATE">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACTION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FORM_ID" Type="Int64" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
+          <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="WORKFLOW_STATE" ToRole="EMAIL_TEMPLATE" />
+          <NavigationProperty Name="WORKFLOW_STATE_USERS" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" FromRole="WORKFLOW_STATE" ToRole="WORKFLOW_STATE_USERS" />
+        </EntityType>
+        <EntityType Name="WORKFLOW_STATE_USERS">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="Int32" Nullable="false" />
+          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="WORKFLOW_STATE" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" FromRole="WORKFLOW_STATE_USERS" ToRole="WORKFLOW_STATE" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+          <End Type="EMSModel.EMAIL_TEMPLATE" Role="EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_STATE_USERS" Role="WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WORKFLOW_STATE">
+              <PropertyRef Name="ACTION_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="ACTION_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping CdmEntityContainer="EMSEntities" StorageEntityContainer="EMSModelStoreContainer">
+        <EntityContainerMapping StorageEntityContainer="EMSModelStoreContainer" CdmEntityContainer="EMSEntities" >
           <EntitySetMapping Name="CHANGES_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.CHANGES_HISTORY">
               <MappingFragment StoreEntitySet="CHANGES_HISTORY">
@@ -5060,24 +5010,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WORKFLOW_STATE">
-            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE">
-              <MappingFragment StoreEntitySet="WORKFLOW_STATE">
-                <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
-                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
-                <ScalarProperty Name="ACTION_NAME" ColumnName="ACTION_NAME" />
-                <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <AssociationSetMapping Name="WORKFLOW_STATE_USERS" TypeName="EMSModel.WORKFLOW_STATE_USERS" StoreEntitySet="WORKFLOW_STATE_USERS">
-            <EndProperty Name="WORKFLOW_STATE">
-              <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
-            </EndProperty>
-            <EndProperty Name="USER">
-              <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
-            </EndProperty>
-          </AssociationSetMapping>
           <EntitySetMapping Name="PBCK1">
             <EntityTypeMapping TypeName="EMSModel.PBCK1">
               <MappingFragment StoreEntitySet="PBCK1">
@@ -5125,26 +5057,21 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CK5_MATERIAL">
-            <EntityTypeMapping TypeName="EMSModel.CK5_MATERIAL">
-              <MappingFragment StoreEntitySet="CK5_MATERIAL">
-                <ScalarProperty Name="CONVERTED_UOM" ColumnName="CONVERTED_UOM" />
-                <ScalarProperty Name="NOTE" ColumnName="NOTE" />
-                <ScalarProperty Name="USD_VALUE" ColumnName="USD_VALUE" />
-                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
-                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
-                <ScalarProperty Name="HJE" ColumnName="HJE" />
-                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
-                <ScalarProperty Name="UOM" ColumnName="UOM" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="BRAND" ColumnName="BRAND" />
-                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
-                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
-                <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
+          <EntitySetMapping Name="WORKFLOW_STATE">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE">
+              <MappingFragment StoreEntitySet="WORKFLOW_STATE">
+                <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+                <ScalarProperty Name="ACTION_NAME" ColumnName="ACTION_NAME" />
+                <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_STATE_USERS">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE_USERS">
+              <MappingFragment StoreEntitySet="WORKFLOW_STATE_USERS">
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

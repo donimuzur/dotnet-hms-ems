@@ -605,7 +605,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.ACTION_NAME))
                 .ForMember(dest => dest.EmailTemplateId, opt => opt.MapFrom(src => src.EMAIL_TEMPLATE_ID))
                 .ForMember(dest => dest.EmailTemplateName, opt => opt.MapFrom(src => src.EMAIL_TEMPLATE.TEMPLATE_NAME))
-                .ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.USER));
+                .ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.WORKFLOW_STATE_USERS));
 
             Mapper.CreateMap<WorkflowMappingDetails, WORKFLOW_STATE>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION_ID, opt => opt.MapFrom(src => src.StateMappingId))

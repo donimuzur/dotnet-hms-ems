@@ -12,19 +12,11 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class WORKFLOW_STATE
+    public partial class WORKFLOW_STATE_USERS
     {
-        public WORKFLOW_STATE()
-        {
-            this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
-        }
-    
         public int ACTION_ID { get; set; }
-        public string ACTION_NAME { get; set; }
-        public Nullable<long> FORM_ID { get; set; }
-        public Nullable<int> EMAIL_TEMPLATE_ID { get; set; }
+        public string USER_ID { get; set; }
     
-        public virtual EMAIL_TEMPLATE EMAIL_TEMPLATE { get; set; }
-        public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
+        public virtual WORKFLOW_STATE WORKFLOW_STATE { get; set; }
     }
 }

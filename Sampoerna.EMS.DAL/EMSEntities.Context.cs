@@ -65,7 +65,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
-        public virtual DbSet<WORKFLOW_STATE> WORKFLOW_STATE { get; set; }
         public virtual DbSet<LACK1> LACK1 { get; set; }
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<POA> POA { get; set; }
@@ -73,5 +72,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<WORKFLOW_STATE> WORKFLOW_STATE { get; set; }
+        public virtual DbSet<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
     }
 }
