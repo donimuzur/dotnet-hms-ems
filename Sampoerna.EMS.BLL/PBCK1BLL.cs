@@ -735,6 +735,7 @@ namespace Sampoerna.EMS.BLL
 
         public void Pbck1Workflow(Pbck1WorkflowDocumentInput input)
         {
+            var isNeedSendNotif = true;
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
@@ -748,17 +749,21 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
+                    isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
+                    isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovPartialApprove:
                     GovPartialApproveDocument(input);
+                    isNeedSendNotif = false;
                     break;
             }
 
             //todo sent mail
-            SendEmailWorkflow(input);
+            if(isNeedSendNotif)
+                SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
 
