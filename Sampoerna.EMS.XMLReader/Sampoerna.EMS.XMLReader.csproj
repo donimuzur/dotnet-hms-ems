@@ -64,6 +64,7 @@
     <Compile Include="Service.cs" />
     <Compile Include="XmlBrandDataMappers.cs" />
     <Compile Include="XmlCK5DataWriter.cs" />
+    <Compile Include="XmlUoMDataMappers.cs" />
     <Compile Include="XmlT001KDataMappers.cs" />
     <Compile Include="XmlPCodeDataMappers .cs" />
     <Compile Include="XmlMaterialDataMappers.cs" />
