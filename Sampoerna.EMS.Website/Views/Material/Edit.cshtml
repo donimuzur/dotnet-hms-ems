@@ -44,7 +44,7 @@
                                                         <div class="col-md-8">
                                                             @Html.HiddenFor(model => model.MaterialNumber)
                                                             @Html.TextBox("materialNumber", Model.MaterialNumber, new { @class = "form-control", maxlength = "18", disabled = "disabled" })
-                                                           </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -52,7 +52,7 @@
                                                         <label class="col-md-4">Material Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
-                                                         
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -81,7 +81,7 @@
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.HiddenFor(model => model.PlantId)
-                                                            @Html.DropDownList("plantid", Model.PlantList, "select", new { @class = "selectpicker form-control", disabled= "disabled" })
+                                                            @Html.DropDownList("plantid", Model.PlantList, "select", new { @class = "selectpicker form-control", disabled = "disabled" })
 
                                                         </div>
                                                     </div>
@@ -123,27 +123,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
-                            <div class="panel-body">
-                                @*<div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Converted UOM(EMS)<span class="red">*</span></label>
-                                            <div class="col-md-8">
-                                                @Html.DropDownList("uom-list", Model.BaseUOM, "select", new { @class = "form-control" })
-                                                </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Convertion<span class="red">*</span></label>
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
-                                             </div>
-                                        </div>
-                                    </div>
-
-                                </div>*@
+                        <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            Convertion List
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
 
 
                                 <div class="col-md-6">
@@ -174,27 +163,27 @@
                                                         {
                                                             for (int i = 0; i < Model.MaterialUom.Count; i++)
                                                             {
-                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].Id)
-                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].MaterialNumber)
-                                                                 @Html.HiddenFor(x => Model.MaterialUom[i].Plant)
+                                                                @Html.HiddenFor(x => Model.MaterialUom[i].Id)
+                                                                @Html.HiddenFor(x => Model.MaterialUom[i].MaterialNumber)
+                                                                @Html.HiddenFor(x => Model.MaterialUom[i].Plant)
 
-                                                                 <tr>
-                                                                     @*<td><a href="javascript:void(0)" onclick="deleteUom(@itemIndex)">delete</a></td>*@
-                                                              
-                                                                     <td>
-                                                                         <span id="field1">@Html.DisplayFor( x => Model.MaterialUom[i].Meinh)</span>
+                                                                <tr>
+                                                                    @*<td><a href="javascript:void(0)" onclick="deleteUom(@itemIndex)">delete</a></td>*@
 
-                                                                     </td>
-                                                                     <td>
-                                                                         <span id="field2">@Html.DisplayFor(x=> Model.MaterialUom[i].UmrenStr)</span>
-                                                                     </td>
-                                                                 </tr>
+                                                                    <td>
+                                                                        <span id="field1">@Html.DisplayFor(x => Model.MaterialUom[i].Meinh)</span>
 
-
+                                                                    </td>
+                                                                    <td>
+                                                                        <span id="field2">@Html.DisplayFor(x => Model.MaterialUom[i].UmrenStr)</span>
+                                                                    </td>
+                                                                </tr>
 
 
 
-                                                             }
+
+
+                                                            }
                                                         }
                                                     </tbody>
 
@@ -211,7 +200,7 @@
                             </div>
                         </div>
 
-                       
+
                     </div>
                 </div>
             </div>

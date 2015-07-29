@@ -3177,7 +3177,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.WORKFLOW_STATE_USERS' does not have a
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="UOM_DESC" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="UOM_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />

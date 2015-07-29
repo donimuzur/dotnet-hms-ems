@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -28,8 +29,10 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IPbck1ProdConverterBLL _prodConverterBll;
         private IPbck1ProdPlanBLL _prodPlanBll;
+        private IPbck1DecreeDocBLL _decreeDocBll;
         private IPOABLL _poaBll;
-
+        private IWorkflowBLL _workflowBll;
+        private IMessageService _messageService;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
@@ -47,6 +50,9 @@ namespace Sampoerna.EMS.BLL
             _prodPlanBll = new Pbck1ProdPlanBLL(_uow, _logger);
             _prodConverterBll = new Pbck1ProdConverterBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
+            _decreeDocBll = new Pbck1DecreeDocBLL(_uow, _logger);
+            _workflowBll = new WorkflowBLL(_uow, _logger);
+            _messageService = new MessageService(_logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -92,7 +98,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.Poa))
             {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+                queryFilter = queryFilter.And(c => (!string.IsNullOrEmpty(c.APPROVED_BY_POA) && c.APPROVED_BY_POA == input.Poa) || c.CREATED_BY == input.Poa);
             }
 
             if (!string.IsNullOrEmpty(input.Creator))
@@ -130,7 +136,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck1Dto GetById(long id)
         {
-            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM";
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
             var mapResult = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData != null)
@@ -143,16 +149,21 @@ namespace Sampoerna.EMS.BLL
 
         public SavePbck1Output Save(Pbck1SaveInput input)
         {
-            PBCK1 dbData = null;
+            PBCK1 dbData;
+
             if (input.Pbck1.Pbck1Id > 0)
             {
 
                 //update
                 dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
 
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
                 //delete first
                 _prodConverterBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
                 _prodPlanBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
+                _decreeDocBll.DeleteByPbck1Id(input.Pbck1.Pbck1Id);
 
                 //set changes history
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
@@ -161,9 +172,11 @@ namespace Sampoerna.EMS.BLL
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
                 dbData.PBCK1_PROD_CONVERTER = null;
                 dbData.PBCK1_PROD_PLAN = null;
+                dbData.PBCK1_DECREE_DOC = null;
 
                 dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
                 dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
+                dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.Pbck1.Pbck1DecreeDoc);
 
             }
             else
@@ -177,11 +190,11 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 input.Pbck1.Pbck1Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
-                input.Pbck1.Status = Core.Enums.DocumentStatus.Draft;
+                input.Pbck1.Status = Enums.DocumentStatus.Draft;
                 input.Pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
-
+                
                 _repository.Insert(dbData);
 
             }
@@ -195,9 +208,8 @@ namespace Sampoerna.EMS.BLL
             output.Pbck1Number = dbData.NUMBER;
 
             //set workflow history
-            //AddWorkflowHistory(output.Id, output.Pbck1Number, input.WorkflowActionType, input.UserId);
             var getUserRole = _poaBll.GetUserRole(input.UserId);
-            
+
             var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
             {
                 DocumentId = output.Id,
@@ -222,7 +234,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
             {
                 _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
-                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
             else
             {
@@ -266,7 +278,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     var changes = new CHANGES_HISTORY
                     {
-                        FORM_TYPE_ID = Core.Enums.MenuList.PBCK1,
+                        FORM_TYPE_ID = Enums.MenuList.PBCK1,
                         FORM_ID = data.Pbck1Id.ToString(),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
@@ -409,7 +421,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.GetByID(id);
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
-        
+
         public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs)
         {
             var messageList = new List<string>();
@@ -519,7 +531,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                
+
                 #region -------------- Month Validation -----------
 
                 string monthName;
@@ -553,7 +565,7 @@ namespace Sampoerna.EMS.BLL
                     output.IsValid = false;
                     messageList.AddRange(messages);
                 }
-                
+
                 #endregion
 
                 #region ------------------ BKC Required UOM -------
@@ -622,7 +634,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             #endregion
-            
+
             message = messageList;
 
             return valResult;
@@ -633,7 +645,7 @@ namespace Sampoerna.EMS.BLL
             monthName = string.Empty;
             var valResult = false;
             var messageList = new List<string>();
-            
+
             if (string.IsNullOrEmpty(month))
             {
                 messageList.Add("Month is empty");
@@ -715,7 +727,7 @@ namespace Sampoerna.EMS.BLL
             {
                 messageList.Add("UOM is empty");
             }
-            
+
             message = messageList;
 
             return valResult;
@@ -723,54 +735,46 @@ namespace Sampoerna.EMS.BLL
 
         public void Pbck1Workflow(Pbck1WorkflowDocumentInput input)
         {
+            var isNeedSendNotif = true;
             switch (input.ActionType)
             {
-                case Core.Enums.ActionType.Submit:
+                case Enums.ActionType.Submit:
                     SubmitDocument(input);
                     break;
-                case Core.Enums.ActionType.Approve:
+                case Enums.ActionType.Approve:
                     ApproveDocument(input);
                     break;
-                case Core.Enums.ActionType.Reject:
+                case Enums.ActionType.Reject:
                     RejectDocument(input);
                     break;
-                case Core.Enums.ActionType.GovApprove:
+                case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
+                    isNeedSendNotif = false;
                     break;
-                case Core.Enums.ActionType.GovReject:
+                case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
+                    isNeedSendNotif = false;
                     break;
-                case Core.Enums.ActionType.GovCancel:
-                    GovCancelledDocument(input);
+                case Enums.ActionType.GovPartialApprove:
+                    GovPartialApproveDocument(input);
+                    isNeedSendNotif = false;
                     break;
             }
 
             //todo sent mail
-
+            if(isNeedSendNotif)
+                SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
-        
+
         #region workflow
 
         private void AddWorkflowHistory(Pbck1WorkflowDocumentInput input)
         {
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
-            
-            if (input.ActionType == Core.Enums.ActionType.Modified)
-            {
-                //check if exist
-                var history = _workflowHistoryBll.GetByActionAndFormNumber(new GetByActionAndFormNumberInput()
-                {
-                    FormNumber = input.DocumentNumber,
-                    ActionType = input.ActionType
-                });
-                if (history != null)
-                {
-                    dbData = history;
-                }
-            }
 
             dbData.ACTION_DATE = DateTime.Now;
+            dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
 
             _workflowHistoryBll.Save(dbData);
 
@@ -783,11 +787,27 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.Draft)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.WaitingForApproval;
+            if (dbData.CREATED_BY != input.UserId)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
+
+            switch (input.UserRole)
+            {
+                case Enums.UserRole.User:
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                    break;
+                case Enums.UserRole.POA:
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    break;
+                default:
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            }
+            
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
@@ -801,12 +821,35 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingForApproval)
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                                    {
+                                        CreatedUser = dbData.CREATED_BY,
+                                        CurrentUser = input.UserId,
+                                        DocumentStatus = dbData.STATUS,
+                                        UserRole = input.UserRole
+                                    });
+
+            if(!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.WaitingGovApproval;
+            //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
             dbData.APPROVED_BY_POA = input.UserId;
             dbData.APPROVED_DATE_POA = DateTime.Now;
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                dbData.APPROVED_BY_POA = input.UserId;
+                dbData.APPROVED_DATE_POA = DateTime.Now;
+            }
+            else
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                dbData.APPROVED_BY_MANAGER = input.UserId;
+                dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+            }
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -821,11 +864,22 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingForApproval)
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                                    {
+                                        CreatedUser = dbData.CREATED_BY,
+                                        CurrentUser = input.UserId,
+                                        DocumentStatus = dbData.STATUS,
+                                        UserRole = input.UserRole
+                                    });
+
+            if(!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+
             //change back to draft
-            dbData.STATUS = Core.Enums.DocumentStatus.Draft;
+            dbData.STATUS = Enums.DocumentStatus.Draft;
 
             //todo ask
             dbData.APPROVED_BY_POA = null;
@@ -844,19 +898,29 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
+
+            dbData.STATUS = Enums.DocumentStatus.Completed;
+
+            //todo: update remaining quota and necessary data
+            dbData.PBCK1_DECREE_DOC = null;
+            dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
+            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+            dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
 
             dbData.APPROVED_BY_POA = input.UserId;
             dbData.APPROVED_DATE_POA = DateTime.Now;
 
-            input.ActionType = Core.Enums.ActionType.Completed;
+            //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
-
+            
             AddWorkflowHistory(input);
-
 
         }
 
@@ -867,17 +931,26 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
-            dbData.STATUS_GOV = Core.Enums.DocumentStatusGov.PartialApproved;
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
+            
+            //input.ActionType = Enums.ActionType.Completed;
+            input.DocumentNumber = dbData.NUMBER;
+
+            //todo: update remaining quota and necessary data
+            dbData.PBCK1_DECREE_DOC = null;
+            dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
+            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+            dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
 
             dbData.APPROVED_BY_POA = input.UserId;
             dbData.APPROVED_DATE_POA = DateTime.Now;
-
-            input.ActionType = Core.Enums.ActionType.Completed;
-            input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
         }
@@ -889,10 +962,14 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Draft;
+            //Add Changes
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.Rejected);
+
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
 
             dbData.APPROVED_BY_POA = input.UserId;
             dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -903,24 +980,50 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private void GovCancelledDocument(Pbck1WorkflowDocumentInput input)
+        private void WorkflowStatusAddChanges(Pbck1WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
-            var dbData = _repository.GetByID(input.DocumentId);
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.PBCK1,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "STATUS",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
+            _changesHistoryBll.AddHistory(changes);
+        }
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        private void WorkflowStatusGovAddChanges(Pbck1WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        {
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.PBCK1,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "STATUS_GOV",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
 
-            if (dbData.STATUS != Core.Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            _changesHistoryBll.AddHistory(changes);
+        }
 
-            dbData.STATUS = Core.Enums.DocumentStatus.Completed;
+        private void SendEmailWorkflow(Pbck1WorkflowDocumentInput input)
+        {
+            //todo: body message from email template
+            //todo: to = ?
+            //todo: subject = from email template
+            var to = "irmansulaeman41@gmail.com";
+            var subject = "this is subject for " + input.DocumentNumber;
+            var body = "this is body message for " + input.DocumentNumber;
+            var from = "a@gmail.com";
 
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
-
-            input.DocumentNumber = dbData.NUMBER;
-
-            AddWorkflowHistory(input);
+            _messageService.SendEmail(from, to, subject, body, true);
         }
 
         #endregion

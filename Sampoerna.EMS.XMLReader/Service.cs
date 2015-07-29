@@ -25,13 +25,17 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("T001_"))
+            if (xmlfile.Contains("COY"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
             if (xmlfile.Contains("T001K"))
             {
                 return new XmlT001KDataMapper(xmlfile);
+            }
+            if (xmlfile.Contains("UOM"))
+            {
+                return new XmlUoMDataMapper(xmlfile);
             }
             if (xmlfile.Contains("NPPBKC"))
             {
