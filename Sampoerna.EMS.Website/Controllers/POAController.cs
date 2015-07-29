@@ -288,7 +288,7 @@ namespace Sampoerna.EMS.Website.Controllers
             // file is uploaded
             file.SaveAs(path);
 
-            return sFileName;
+            return path;
         }
 
     }
