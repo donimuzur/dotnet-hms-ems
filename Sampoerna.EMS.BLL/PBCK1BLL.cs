@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -31,6 +32,7 @@ namespace Sampoerna.EMS.BLL
         private IPbck1DecreeDocBLL _decreeDocBll;
         private IPOABLL _poaBll;
         private IWorkflowBLL _workflowBll;
+        private IMessageService _messageService;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
@@ -50,6 +52,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow, _logger);
             _decreeDocBll = new Pbck1DecreeDocBLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _messageService = new MessageService(_logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -755,7 +758,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
-
+            SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
 
@@ -1003,6 +1006,19 @@ namespace Sampoerna.EMS.BLL
             };
 
             _changesHistoryBll.AddHistory(changes);
+        }
+
+        private void SendEmailWorkflow(Pbck1WorkflowDocumentInput input)
+        {
+            //todo: body message from email template
+            //todo: to = ?
+            //todo: subject = from email template
+            var to = "irmansulaeman41@gmail.com";
+            var subject = "this is subject for " + input.DocumentNumber;
+            var body = "this is body message for " + input.DocumentNumber;
+            var from = "a@gmail.com";
+
+            _messageService.SendEmail(from, to, subject, body, true);
         }
 
         #endregion

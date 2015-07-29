@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.MessagingService
@@ -25,7 +26,7 @@ namespace Sampoerna.EMS.MessagingService
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="throwError"></param>
-        public void SendEmailToList(string @from, List<string> to, string subject, string body, bool throwError = false)
+        public void SendEmailToList(string from, List<string> to, string subject, string body, bool throwError = false)
         {
             try
             {
@@ -41,6 +42,11 @@ namespace Sampoerna.EMS.MessagingService
                 //}
 
                 var smtpClient = new SmtpClient();
+                //var config = EmailConfiguration.GetConfig();
+                //smtpClient.Credentials = new System.Net.NetworkCredential(config.User, config.Password);
+                //smtpClient.Host = config.Host;
+                //smtpClient.Port = config.Port;
+
                 var mailMessage = new MailMessage {IsBodyHtml = true};
                 actualTo.ForEach(s => mailMessage.To.Add(s.Trim()));
                 mailMessage.From = new MailAddress(from);
@@ -79,7 +85,7 @@ namespace Sampoerna.EMS.MessagingService
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="throwError"></param>
-        public void SendEmail(string @from, string to, string subject, string body, bool throwError = false)
+        public void SendEmail(string from, string to, string subject, string body, bool throwError = false)
         {
             var actualTo = new List<string> { to };
             SendEmailToList(from, actualTo, subject, body, throwError);
