@@ -4,6 +4,7 @@
     {
         public const string MasterDataHeaderFooterFolder = "~/Content/upload/header/";
         public const string UploadPath = "~/files_upload/";
+        public const string Pbck1DecreeDocFolderPath = "~/Content/upload/pbck1decreedoc/";
         
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
