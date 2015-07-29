@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Sampoerna.EMS.BusinessObject.DTOs;
+using System.Web;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Validations;
 
@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             PlanProdTo = DateTime.Now;
             DecreeDate = DateTime.Now;
         }
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
         public string Pbck1Number { get; set; }
@@ -162,9 +162,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
 
         public string Comment { get; set; }
+        
+        public List<Pbck1DecreeDocModel> Pbck1DecreeDoc { get; set; }
 
-        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
-        public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
+        //[RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        public List<HttpPostedFileBase> Pbck1DecreeFiles { get; set; }
+
+        public Enums.DocumentStatusGov DocStatusGov { get; set; }
+
+        public Enums.ActionType GovApprovalActionType { get; set; }
         
     }
 }

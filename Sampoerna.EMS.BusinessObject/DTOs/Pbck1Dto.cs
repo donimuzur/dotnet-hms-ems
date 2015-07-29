@@ -6,7 +6,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Pbck1Dto
     {
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
         public long? Pbck1Reference { get; set; }
         public Enums.PBCK1Type Pbck1Type { get; set; }

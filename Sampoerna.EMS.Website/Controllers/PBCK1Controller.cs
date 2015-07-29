@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI;
 using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -141,7 +142,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ----- Edit -----
 
-        public ActionResult Edit(long? id)
+        public ActionResult Edit(int? id)
         {
 
             if (!id.HasValue)
@@ -224,7 +225,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     Enums.MessageInfoType.Error);
                 return false;
             }
-            
+
             return true;
 
         }
@@ -298,7 +299,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ------ details ----
 
-        public ActionResult Details(long? id)
+        public ActionResult Details(int? id)
         {
             if (!id.HasValue)
             {
@@ -399,7 +400,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Created
                 };
-                
+
                 //only add this information from gov approval,
                 //when save create/edit 
                 input.Pbck1.DecreeDate = null;
@@ -605,7 +606,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }
 
-        public void ExportClientsListToExcel(long id)
+        public void ExportClientsListToExcel(int id)
         {
 
             var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.ToString());
@@ -677,7 +678,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Workflow
 
-        private void Pbck1Workflow(long id, Enums.ActionType actionType, string comment)
+        private void Pbck1Workflow(int id, Enums.ActionType actionType, string comment)
         {
             var input = new Pbck1WorkflowDocumentInput
             {
@@ -691,7 +692,27 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll.Pbck1Workflow(input);
         }
 
-        public ActionResult SubmitDocument(long? id)
+        private void Pbck1WorkflowGovApprove(Pbck1Item pbck1Data, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = pbck1Data.Pbck1Id,
+                ActionType = actionType,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = pbck1Data.Pbck1Number,
+                Comment = comment,
+                AdditionalDocumentData = new Pbck1WorkflowDocumentData()
+                {
+                    DecreeDate = pbck1Data.DecreeDate, 
+                    QtyApproved = pbck1Data.QtyApproved, 
+                    Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
+                }
+            };
+            _pbck1Bll.Pbck1Workflow(input);
+        }
+
+        public ActionResult SubmitDocument(int? id)
         {
             if (!id.HasValue)
             {
@@ -718,78 +739,135 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "Pbck1", new { id });
         }
 
-        public ActionResult ApproveDocument(long id)
+        public ActionResult ApproveDocument(int? id)
         {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            bool isSuccess = false;
             try
             {
-                Pbck1Workflow(id, Enums.ActionType.Approve, string.Empty);
-                AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
+                Pbck1Workflow(id.Value, Enums.ActionType.Approve, string.Empty);
+                isSuccess = true;
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("Details", "Pbck1", new { id });
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id});
+            AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
         }
 
         public ActionResult RejectDocument(Pbck1ItemViewModel model)
         {
+            bool isSuccess = false;
             try
             {
                 Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.Reject, model.Detail.Comment);
-                AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+                isSuccess = true;
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id = model.Detail.Pbck1Id});
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
         }
 
-        public ActionResult GovApproveDocument(long id)
+        [HttpPost]
+        public ActionResult GovApproveDocument(Pbck1ItemViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            }
+
+            if (model.Detail.Pbck1DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            }
+
+            bool isSuccess = false;
+            var currentUserId = CurrentUser;
             try
             {
-                Pbck1Workflow(id, Enums.ActionType.GovApprove, "");
-                AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+                model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
+                if (model.Detail.Pbck1DecreeFiles != null)
+                {
+                    foreach (var item in model.Detail.Pbck1DecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var decreeDoc = new Pbck1DecreeDocModel()
+                            {
+                                FILE_NAME = item.FileName,
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                CREATED_BY = currentUserId.USER_ID
+                            };
+                            model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                        }
+                    }
+                }
+                Pbck1WorkflowGovApprove(model.Detail, model.Detail.GovApprovalActionType, "");
+                isSuccess = true;
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("Details", "Pbck1", new { id });
+
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id = model.Detail.Pbck1Id});
+            AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
         }
 
         public ActionResult GovRejectDocument(Pbck1ItemViewModel model)
         {
+            bool isSuccess = false;
             try
             {
                 Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovReject, model.Detail.Comment);
-                AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+                
+                isSuccess = true;
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
-        }
-
-        public ActionResult GovPartialApproveDocument(Pbck1ItemViewModel model)
-        {
-            try
+            if (!isSuccess)
             {
-                Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovPartialApprove, model.Detail.Comment);
-                AddMessageInfo("Success GovPartialApprove Document", Enums.MessageInfoType.Success);
+                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-            }
-            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
         }
-
+        
         #endregion
 
+        private string SaveUploadedFile(HttpPostedFileBase file, int pbck1Id)
+        {
+            if (file == null || file.FileName == "")
+                return "";
 
+            string sFileName = "";
+
+            //initialize folders in case deleted by an test publish profile
+            if (!Directory.Exists(Server.MapPath(Constans.Pbck1DecreeDocFolderPath)))
+                Directory.CreateDirectory(Server.MapPath(Constans.Pbck1DecreeDocFolderPath));
+
+            sFileName = Constans.Pbck1DecreeDocFolderPath + Path.GetFileName(pbck1Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+        
     }
 }

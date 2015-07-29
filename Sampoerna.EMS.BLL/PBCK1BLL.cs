@@ -895,10 +895,7 @@ namespace Sampoerna.EMS.BLL
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            if (dbData.STATUS_GOV != null)
-            {
-                WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV.Value, Enums.DocumentStatusGov.FullApproved);
-            }
+            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
 
             dbData.STATUS = Enums.DocumentStatus.Completed;
 
@@ -907,12 +904,12 @@ namespace Sampoerna.EMS.BLL
             dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
-            dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
+            dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
 
             dbData.APPROVED_BY_POA = input.UserId;
             dbData.APPROVED_DATE_POA = DateTime.Now;
 
-            input.ActionType = Enums.ActionType.Completed;
+            //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
             
             AddWorkflowHistory(input);
@@ -930,14 +927,15 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
             
-            input.ActionType = Enums.ActionType.Completed;
+            //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
             //todo: update remaining quota and necessary data
             dbData.PBCK1_DECREE_DOC = null;
+            dbData.STATUS = Enums.DocumentStatus.Completed;
             dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);

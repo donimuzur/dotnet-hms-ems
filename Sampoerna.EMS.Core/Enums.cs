@@ -145,11 +145,11 @@ namespace Sampoerna.EMS.Core
             Approve = 15,
             [Description("Reject")]
             Reject = 20,
-            [Description("GovApprove")]
+            [Description("Gov Approve")]
             GovApprove = 25,
-            [Description("GovPartialApprove")]
+            [Description("Gov Partial Approve")]
             GovPartialApprove = 26,
-            [Description("GovReject")]
+            [Description("Gov Reject")]
             GovReject = 30,
             [Description("GovCancel")]
             GovCancel = 35,
