@@ -1,5 +1,5 @@
 ﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
-<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div id="modal-upload-sk" class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,15 +18,13 @@
                             <div class="col-sm-9">
                                 <input type="file" id="Detail_PoaSKFile_0_" name="Detail.PoaSKFile[0]" class="form-control">
                                </div>
-                            <div class="col-sm-3">
-                                <button type="button" class="btn btn-danger full">Remove</button>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
             </div>
         </div>
     </div>
