@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.Core;
@@ -14,6 +15,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Bukrs { get; set; }
         public string Butxt { get; set; }
         public int? PeriodMonth { get; set; }
+        public string PeriodNameInd { get; set; }
+        public string PerionNameEng { get; set; }
         public int? PeriodYears { get; set; }
         public string LevelPlantId { get; set; }
         public string LevelPlantName { get; set; }

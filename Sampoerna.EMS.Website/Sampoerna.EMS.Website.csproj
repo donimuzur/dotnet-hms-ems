@@ -784,6 +784,7 @@
     <Content Include="Views\LACK1\_Lack1Table.cshtml" />
     <Content Include="Views\LACK1\ListByPlant.cshtml" />
     <Content Include="Views\LACK1\_Lack1ListByPlantTable.cshtml" />
+    <Content Include="Views\LACK1\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
