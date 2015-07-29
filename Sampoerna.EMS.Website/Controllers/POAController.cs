@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
-                    
+                    poa.POA_ID = model.Detail.UserId;
                     poa.CREATED_BY = CurrentUser.USER_ID;
                     poa.CREATED_DATE = DateTime.Now;
                     poa.IS_ACTIVE = true;
@@ -278,11 +278,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             string sFileName = "";
 
-            //initialize folders in case deleted by an test publish profile
-            if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
-                Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
+            ////initialize folders in case deleted by an test publish profile
+            //if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
+            //    Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
 
-            sFileName = Constans.PoaSK + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.UploadPath + Path.GetFileName( PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded

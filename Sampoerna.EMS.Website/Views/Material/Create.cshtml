@@ -79,7 +79,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.ListBoxFor(model => model.PlantId, Model.PlantList, new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "selectpicker form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.PlantId)*@
                                                         </div>
                                                     </div>
@@ -88,7 +88,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Base UOM(SAP)<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, null, new { @class = "selectpicker form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -138,7 +138,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Converted UOM(EMS)<span class="red">*</span></label>
                                                             <div class="col-md-8">
-                                                                @Html.DropDownList("uom-list", Model.BaseUOM, "select", new { @class = "form-control" })
+                                                                @Html.DropDownList("uom-list", Model.BaseUOM, null, new { @class = "selectpicker form-control" })
                                                                 @*@Html.ValidationMessageFor(model => model.Convertion)*@
                                                             </div>
                                                         </div>
