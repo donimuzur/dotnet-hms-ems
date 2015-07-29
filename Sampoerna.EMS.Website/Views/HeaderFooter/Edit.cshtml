@@ -50,7 +50,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Company Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "form-control" })
+                                                            @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "selectpicker form-control" })
                                                             @*@Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)*@
                                                         </div>
                                                     </div>
@@ -208,7 +208,7 @@
             var isFooterSet = $(elementFooterId).is(':checked');
 
             var url = '/HeaderFooter/PrintPreview/' + id + '?isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
-            window.open(url, '_blank', 'width=1200,height=600');
+            window.open(url, '_blank', '"toolbar=yes, scrollbars=yes, resizable=yes, top=500, left=500, width=800, height=600"');
 
         }
 

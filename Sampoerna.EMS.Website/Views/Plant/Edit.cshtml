@@ -3,8 +3,8 @@
 
 @{
     ViewBag.Title = "Edit Master Plant";
-    var isCheckYes = Model.Detail.IsMainPlant ? new { @checked = "checked"} : null;
-    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked" };
+    var checkYes = Model.Detail.IsMainPlant ? new { @checked = "checked"} : null;
+    var checkNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked" };
 }
 @using (Html.BeginForm("Edit", "Plant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
@@ -53,7 +53,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">NPPBKC ID<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.Nppbkc, "Select", new { @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.Nppbkc, null, new { @class = "selectpicker form-control" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -98,11 +98,14 @@
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-4">Main Plant</label>
-                                                    <div class="col-md-2">
-                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, isCheckYes)Yes
+                                                    <div class="col-md-2" id="isMainPlantCheck">
+                                                       
+                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, checkYes)@:Yes
+                                                        
+                                                        
                                                     </div>
                                                     <div class="col-md-2">
-                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, isCheckNo)No
+                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, checkNo)No
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,7 +133,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Phone</label>
+                                                    <label class="col-md-3">Phone<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control" })
                                                     </div>
@@ -172,7 +175,22 @@
 {
 <script src="~/Scripts/js/custom.js"></script>
 <script type="text/javascript" language="javascript" class="init">
- 
+    $(function () {
+        OnChangeUser($('#Detail_UserId option:selected').val());
+    });
+
+    function OnChangeUser(id) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ShowMainPlant", "Plant")',
+            data: { userId: id },
+            success: function (data) {
+                //$('#isMainPlantCheck').val(data);
+               
+            }
+        });
+    }
         $(document).ready(function() {
 
             $('#btnCancel').click(function(e) {

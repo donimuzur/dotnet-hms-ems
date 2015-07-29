@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAll())
+                Details = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAllPlant())
             };
             ViewBag.Message = TempData["message"];
             return View("Index", plant);
@@ -61,6 +61,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
             };
+            
             return InitialEdit(model);
         }
 
@@ -71,6 +72,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
             return View("Edit", model);
+        }
+
+        public JsonResult ShowMainPlant(string id, string nppbck1, bool isMainPlant)
+        {
+            var checkIfExist = _plantBll.GetT001W(nppbck1, isMainPlant);
+
+            var IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != id;
+            return Json(IsMainPlantExist);
         }
 
         [HttpPost]
@@ -85,11 +94,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
 
-                if (checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks)
-                {
-                    TempData[Constans.SubmitType.DataExist] = Constans.SubmitMessage.DataExist;
-                    return InitialEdit(model);
-                }
+                model.IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks;
 
 
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();

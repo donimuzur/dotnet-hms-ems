@@ -126,8 +126,11 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
             .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
             .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => src.EX_SETTLEMENT_ID))
+            .ForMember(dest => dest.ExciseSettlementDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_SETTLEMENT_ID)))
             .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => src.EX_STATUS_ID))
+            .ForMember(dest => dest.ExciseStatusDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
             .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.REQUEST_TYPE_ID))
+            .ForMember(dest => dest.RequestTypeDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
 
             .ForMember(dest => dest.SourcePlantId, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
             .ForMember(dest => dest.SourceNpwp, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPWP))
@@ -157,6 +160,7 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.PbckDecreeId, opt => opt.MapFrom(src => src.PBCK1_DECREE_ID))
              .ForMember(dest => dest.PbckDecreeNumber, opt => opt.MapFrom(src => src.PbckNumber))
              .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => src.CARRIAGE_METHOD_ID))
+             .ForMember(dest => dest.CarriageMethodDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CARRIAGE_METHOD_ID)))
              .ForMember(dest => dest.GrandTotalEx, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
             .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.PACKAGE_UOM_ID))
 
