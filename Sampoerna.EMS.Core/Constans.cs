@@ -41,6 +41,7 @@
             public const string PrintPreview = "PrintPreview";
             public const string Delete = "Delete";
             public const string DataExist = "DataExist";
+            public const string DataExistPlant = "Main Plant With NPPBKC ID is Already Exists";
         }
         public class SubmitMessage
         {
@@ -48,6 +49,7 @@
             public const string Updated = "Update Succefully";
             public const string Deleted = "Delete Succefully";
             public const string DataExist = "Data Already Exist";
+            public const string DataExistPlant = "Main Plant With NPPBKC ID is Already Exists";
         }
 
     }
