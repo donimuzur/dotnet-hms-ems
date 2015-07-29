@@ -336,7 +336,7 @@
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="brandDelete();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="deleteBrand();">Delete</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -345,17 +345,22 @@
 
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
-            $('.check-box').attr('disabled', 'disabled');
-            $('#MenuMasterBrandRegistration').addClass('active');
-        });
+        
+    @*console.log(@Model.FaCode);*@
+    $(document).ready(function () {
+        $('.check-box').attr('disabled', 'disabled');
+        $('#MenuMasterBrandRegistration').addClass('active');
+    });
+    var confirmDeleteBrand = function () {
+        $('#btn-delete-brand').click();
+    };
+    var deleteBrand = function () {
+        var faCode = '@Model.FaCode';
+        window.location = "@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode = '"' + @Model.FaCode + '"' })";
 
-        var deleteBrand = function () {
-            if (confirm('Are You Sure')) {
-                window.location = "@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode=@Model.FaCode })";
-            }
 
-        };
+    };
+
     </script>
 }
 
