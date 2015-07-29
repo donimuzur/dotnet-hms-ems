@@ -47,8 +47,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
-            var plant = _plantBll.GetId(id);
 
+            
+            var plant = _plantBll.GetId(id);
+            
             if (plant == null)
             {
                 return HttpNotFound();
@@ -58,8 +60,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = new PlantFormModel
             {
+              
                 Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
+                
             };
             
             return InitialEdit(model);
@@ -74,17 +78,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Edit", model);
         }
 
-        public JsonResult ShowMainPlant(string id, string nppbck1, bool isMainPlant)
+        [HttpPost]
+        public JsonResult ShowMainPlant(string nppbck1, bool? isMainPlant)
         {
             var checkIfExist = _plantBll.GetT001W(nppbck1, isMainPlant);
-
-            var IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != id;
+            var IsMainPlantExist = checkIfExist != null;
             return Json(IsMainPlantExist);
         }
 
         [HttpPost]
         public ActionResult Edit(PlantFormModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 return InitialEdit(model);

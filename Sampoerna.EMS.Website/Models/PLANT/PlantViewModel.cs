@@ -61,6 +61,8 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }
         [Required]
         public string Phone { get; set; }
+
+
     }
 
 }
