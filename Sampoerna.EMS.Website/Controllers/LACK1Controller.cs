@@ -41,6 +41,8 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /LACK1/
         public ActionResult Index()
         {
+            var x = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
+
             var data = InitLack1ViewModel(new Lack1IndexViewModel
             {
 
