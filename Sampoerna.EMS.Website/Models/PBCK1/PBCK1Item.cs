@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Validations;
 
@@ -19,7 +20,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             PlanProdTo = DateTime.Now;
             DecreeDate = DateTime.Now;
         }
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
 
         [Display(Name = "PBCK-1 No")]
         public string Pbck1Number { get; set; }
@@ -122,23 +123,27 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string StatusName { get; set; }
 
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
         public Enums.DocumentStatusGov StatusGov { get; set; }
-
+        
         public string StatusGovName { get; set; }
 
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Qty Approved")]
         [UIHint("FormatQty")]
         public decimal QtyApproved { get; set; }
-        
+
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Date")]
         [UIHint("FormatDateTime")]
         public DateTime DecreeDate { get; set; }
         
         public DateTime CreatedDate { get; set; }
         
         public string CreatedById { get; set; }
-        
-        public string ApprovedById { get; set; }
-        
-        public DateTime? ApprovedDate { get; set; }
+
+        public string ApprovedByPoaId { get; set; }
+        public string ApprovedByManagerId { get; set; }
+        public DateTime? ApprovedByPoaDate { get; set; }
+        public DateTime? ApprovedByManagerDate { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
 
@@ -157,8 +162,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
 
         public string Comment { get; set; }
+        
+        public List<Pbck1DecreeDocModel> Pbck1DecreeDoc { get; set; }
 
-        //public ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
+        //[RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        public List<HttpPostedFileBase> Pbck1DecreeFiles { get; set; }
+
+        public Enums.DocumentStatusGov DocStatusGov { get; set; }
+
+        public Enums.ActionType GovApprovalActionType { get; set; }
         
     }
 }

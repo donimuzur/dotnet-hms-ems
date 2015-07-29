@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.BLL
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
         }
 
-        public T001W GetT001W(string NppbkcId, bool IsPlant)
+        public T001W GetT001W(string NppbkcId, bool? IsPlant)
         {
             var query = PredicateHelper.True<T001W>();
 
@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
             {
                 query = query.And(p => p.IS_MAIN_PLANT == IsPlant);    
             }
-
+            
             return _t001WRepository.Get(query).FirstOrDefault();
         }
 
@@ -61,8 +61,8 @@ namespace Sampoerna.EMS.BLL
         public List<Plant> GetAll()
         {
 
-            return Mapper.Map<List<Plant>>(_repository.Get(null, null, includeTables).ToList());
-            //return Mapper.Map<List<Plant>>(_repository.Get().ToList());
+           // return Mapper.Map<List<Plant>>(_repository.Get(null, null, includeTables).ToList());
+            return Mapper.Map<List<Plant>>(_repository.Get().ToList());
 
         }
 
@@ -119,11 +119,12 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(T001W origin, Plant data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("NPPBKC_ID", string.IsNullOrEmpty(origin.NPPBKC_ID)  && ! string.IsNullOrEmpty(data.NPPBKC_ID) ? origin.NPPBKC_ID.Equals(data.NPPBKC_ID) : true);
-            changesData.Add("CITY", !string.IsNullOrEmpty(origin.ORT01) && !string.IsNullOrEmpty(data.ORT01) ? origin.ORT01.Equals(data.ORT01) : true);
-            changesData.Add("ADDRESS", !string.IsNullOrEmpty(origin.ADDRESS) && !string.IsNullOrEmpty(data.ADDRESS) ? origin.ADDRESS.Equals(data.ADDRESS) : true);
-            changesData.Add("SKEPTIS", !string.IsNullOrEmpty(origin.SKEPTIS) && !string.IsNullOrEmpty(data.SKEPTIS) ? origin.SKEPTIS.Equals(data.SKEPTIS) : true);
-            changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT.Equals(data.IS_MAIN_PLANT));
+            
+            changesData.Add("NPPBKC_ID", origin.NPPBKC_ID == data.NPPBKC_ID);
+            changesData.Add("CITY", origin.ORT01 == data.ORT01);
+            changesData.Add("ADDRESS",origin.ADDRESS == data.ADDRESS );
+            changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS );
+            changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
 
             foreach (var listChange in changesData)
             {
@@ -140,7 +141,7 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "NPPBKC_NO":
-                            changes.OLD_VALUE = origin.ZAIDM_EX_NPPBKC != null ? origin.ZAIDM_EX_NPPBKC.NPPBKC_ID : "NULL";
+                            changes.OLD_VALUE = origin.ZAIDM_EX_NPPBKC != null ? origin.NPPBKC_ID : "NULL";
                             changes.NEW_VALUE = data.NPPBKC_ID;
                             break;
                         case "CITY":
@@ -182,5 +183,13 @@ namespace Sampoerna.EMS.BLL
             return _plantReceiveMaterialRepository.Get(p => p.PLANT_ID == plantId).ToList();
             
         }
+
+          public List<T001W> GetAllPlant()
+          {
+              return _repository.Get().ToList();
+              
+          }
+
+        
     }
 }

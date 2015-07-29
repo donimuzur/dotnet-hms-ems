@@ -285,6 +285,7 @@
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
@@ -638,6 +639,7 @@
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
+    <Content Include="Scripts\pbck1\docupload.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -774,7 +776,9 @@
     <Content Include="Views\PBCK1\_DecreeDocUpload.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />    
     <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>

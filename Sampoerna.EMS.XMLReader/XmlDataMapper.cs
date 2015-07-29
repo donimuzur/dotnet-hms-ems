@@ -61,11 +61,12 @@ namespace Sampoerna.EMS.XMLReader
         {
             var repo = uow.GetGenericRepository<T>();
             var errorCount = 0;
+            var itemToInsert = 0;
             try
             {
                 foreach (var item in items)
                 {
-                   
+                    itemToInsert++;
                     repo.InsertOrUpdate(item);
                     uow.SaveChanges();
                 }
@@ -78,7 +79,7 @@ namespace Sampoerna.EMS.XMLReader
                 logger.Error(ex.Message);
                 uow.RevertChanges();
             }
-            if (errorCount == 0)
+            if (errorCount == 0 && itemToInsert > 0)
             {
                 MoveFile();
                 
