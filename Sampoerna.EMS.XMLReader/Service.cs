@@ -33,6 +33,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlT001KDataMapper(xmlfile);
             }
+            if (xmlfile.Contains("UOM"))
+            {
+                return new XmlUoMDataMapper(xmlfile);
+            }
             if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);

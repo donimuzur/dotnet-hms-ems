@@ -266,6 +266,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IMPORT_PLANT_ID, opt => opt.MapFrom(src => src.ImportPlantId))
                 .ForMember(dest => dest.EXPORT_PLANT_ID, opt => opt.MapFrom(src => src.ExportPlantId));
 
+            Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetailsViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
+            
+
             #endregion
 
             #region BrandRegistration
