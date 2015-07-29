@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var xElement in xmlItems)
                 {
                     var item = new UOM();
-                    item.UOM_ID = xElement.Element("MSEHT").Value;
+                    item.UOM_ID = xElement.Element("MSEHI").Value;
                     item.UOM_DESC = xElement.Element("MSEHL").Value;
                     var existingData = GetUoM(item.UOM_ID);
                     if (existingData != null)
