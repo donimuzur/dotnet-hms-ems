@@ -43,6 +43,7 @@
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK4C_BLL.cs" />
     <Compile Include="ICK5BLL.cs" />
+    <Compile Include="IMessageService.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
