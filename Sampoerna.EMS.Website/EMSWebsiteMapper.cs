@@ -62,6 +62,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.POA_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PRINTED_NAME));
 
+            Mapper.CreateMap<POADto, SelectItemModel>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.POA_ID))
+              .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.PRINTED_NAME));
+
             Mapper.CreateMap<ZAIDM_EX_NPPBKC, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NPPBKC_ID));
@@ -591,9 +595,9 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<WorkflowHistoryDto, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.ACTION)))
-                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.USER.USER_ID))
-                .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
-                .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME));
+                .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.UserFirstName))
+                .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.UserLastName));
 
             #endregion
 

@@ -197,6 +197,7 @@
         
 
         $("#btnConfirm").click(function () {
+
             window.location = "@Url.Action("ApproveDocument", "CK5", new { id = @Model.Ck5Id })";
         });
 
@@ -204,13 +205,13 @@
         $("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
             
-            $('#Detail_Comment').val('');
+            $('#Comment').val('');
             
             $('#Ck5ModalReject').modal('show');
 
         });
         
-        $('#Detail_Comment').bind('input propertychange', function () {
+        $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmReject').attr('disabled', 'disabled');
             $('#btnConfirmGovReject').attr('disabled', 'disabled');

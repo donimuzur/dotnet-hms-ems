@@ -4,6 +4,7 @@ using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
@@ -59,14 +60,29 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             
+            
             #region Workflow History
 
-            Mapper.CreateMap<WORKFLOW_HISTORY, WorkflowHistoryDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<WORKFLOW_HISTORY, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER.USER_ID))
+                .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
+                .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.USER.LAST_NAME));
 
             Mapper.CreateMap<WorkflowHistoryDto, WORKFLOW_HISTORY>().IgnoreAllNonExisting();
 
             #endregion
             
+
+            #region Pbck1ProdConv
+
+            Mapper.CreateMap<Pbck1ProdConverterInput, Pbck1ProdConverterOutput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1ProdPlanInput, Pbck1ProdPlanOutput>().IgnoreAllNonExisting();
+
+            #endregion
+
+            Mapper.CreateMap<POA_MAP, POA_MAPDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
+
         }
     }
 }
