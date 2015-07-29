@@ -141,6 +141,8 @@ namespace Sampoerna.EMS.Core
             Modified = 5,
             [Description("Submit")]
             Submit = 10,
+            [Description("Waiting for Approval")]
+            WaitingForApproval = 11,
             [Description("Approve")]
             Approve = 15,
             [Description("Reject")]

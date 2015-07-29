@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using AutoMapper;
+using Microsoft.Ajax.Utilities;
 using NLog.LayoutRenderers;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
@@ -15,6 +16,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -572,6 +574,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
                 input.CurrentUser = CurrentUser.USER_ID;
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
+                input.DocumentNumber = model.SubmissionNumber;
+                input.NppbkcId = model.SourceNppbkcId;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -855,5 +859,166 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region CK5 Summary Report Forms
+
+        public ActionResult SummaryReports()
+        {
+            CK5SummaryReportsViewModel model;
+            try
+            {
+
+                model = new CK5SummaryReportsViewModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+
+                model.SearchView.CompanyCodeList = GlobalFunctions.GetCompanyList();
+                model.SearchView.YearFromList = GetYearListCK5(true);
+                model.SearchView.YearToList = GetYearListCK5(false);
+                model.SearchView.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+
+                //view all data ck5 completed document
+                model.DetailsList = SearchSummaryReports();
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new CK5SummaryReportsViewModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("CK5SummaryReport", model);
+        }
+
+        private List<CK5SummaryReportsItem> SearchSummaryReports(CK5SearchSummaryReportsViewModel filter = null)
+        {
+            CK5GetByParamInput input;
+            List<CK5Dto> dbData;
+            if (filter == null)
+            {
+                //Get All
+                input = new CK5GetByParamInput();
+                input.Ck5Type = Enums.CK5Type.Completed;
+
+                dbData = _ck5Bll.GetCK5ByParam(input);
+                return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
+            }
+
+            //getbyparams
+
+            input = Mapper.Map<CK5GetByParamInput>(filter);
+            input.Ck5Type = Enums.CK5Type.Completed;
+
+            dbData = _ck5Bll.GetCK5ByParam(input);
+            return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
+        }
+        private SelectList GetYearListCK5(bool isFrom)
+        {
+            var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
+                select new Models.SelectItemModel()
+                {
+                    ValueField = x.SUBMISSION_DATE.Value.Year,
+                    TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
+                };
+            else
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
+                    select new Models.SelectItemModel()
+                    {
+                        ValueField = x.SUBMISSION_DATE.Value.Year,
+                        TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReports(CK5SummaryReportsViewModel model)
+        {
+            model.DetailsList = SearchSummaryReports(model.SearchView);
+            return PartialView("_CK5ListSummaryReport", model);
+        }
+
+        public ActionResult ExportSummaryReports(CK5SummaryReportsViewModel model)
+        {
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
+                //AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("SummaryReports");
+        }
+
+        public void ExportXlsSummaryReports(long ck5Id)
+        {
+          
+            var pathFile = CreateXlsFileSummaryReports(ck5Id);
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);// "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFileSummaryReports(long ck5Id)
+        {
+            var slDocument = new SLDocument();
+
+            //todo check
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            int iRow = 1;
+
+            //create header
+            slDocument.SetCellValue(iRow, 1, "DATE");
+            slDocument.SetCellValue(iRow, 2, "FIELD");
+            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
+            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
+            slDocument.SetCellValue(iRow, 5, "USER");
+
+            iRow++;
+
+            foreach (var changesHistoryItemModel in model)
+            {
+                slDocument.SetCellValue(iRow, 1,
+                    changesHistoryItemModel.MODIFIED_DATE.HasValue
+                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
+                        : string.Empty);
+                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
+                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
+                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
+                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+
+                iRow++;
+            }
+            var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        #endregion
     }
 }
