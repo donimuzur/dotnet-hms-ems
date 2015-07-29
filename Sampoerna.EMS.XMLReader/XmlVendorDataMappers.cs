@@ -30,7 +30,8 @@ namespace Sampoerna.EMS.XMLReader
          get
             {
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
-                var xmlItems = xmlRoot.Elements("Z1A_MARKET");
+                var xmlItems = xmlRoot.Elements("E1LFA1M");
+                
                 var items = new List<LFA1>();
                 foreach (var xElement in xmlItems)
                 {
@@ -38,15 +39,13 @@ namespace Sampoerna.EMS.XMLReader
                     var vendorCodeXml = xElement.Element("LIFNR").Value;
 
                     var exsitingVendor = GetExVendor(vendorCodeXml);
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     item.LIFNR = vendorCodeXml;
                     item.NAME1 = xElement.Element("NAME1").Value;
-                    item.NAME2 = xElement.Element("NAME2").Value;
                     
                     if (exsitingVendor != null)
                     {
                         item.CREATED_DATE = exsitingVendor.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
+                        item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
                      
                     }
