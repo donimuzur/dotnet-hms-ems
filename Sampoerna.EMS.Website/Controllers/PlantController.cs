@@ -74,6 +74,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
+            var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
+            model.IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks;
+
+
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
             return View("Edit", model);
         }
@@ -97,11 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
-
-                model.IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks;
-
-
+               
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
