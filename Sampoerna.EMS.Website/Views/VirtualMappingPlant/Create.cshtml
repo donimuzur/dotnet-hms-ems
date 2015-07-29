@@ -52,7 +52,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Import Virtual Plant<span class="red">*</span></label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, null, new { @class = "selectpicker form-control" })
                                                         
                                                     </div>
                                                 </div>
@@ -61,7 +61,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Export Virtual Plant<span class="red">*</span></label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, null, new { @class = "selectpicker form-control" })
                                                        
                                                     </div>
                                                 </div>
