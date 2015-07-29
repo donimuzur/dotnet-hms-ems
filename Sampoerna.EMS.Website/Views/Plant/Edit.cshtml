@@ -98,9 +98,12 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-4">Main Plant</label>
+                                                @if (!Model.IsMainPlantExist)
+                                                {
                                                     <div class="col-md-2" id="isMainPlantCheck">
                                                         @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, checkYes)Yes
                                                     </div>
+                                                }
                                                 <div class="col-md-2">
                                                     @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, checkNo)No
                                                 </div>
