@@ -267,6 +267,7 @@
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
+    <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
@@ -773,6 +774,8 @@
     <Content Include="Views\PBCK1\_DecreeDocUpload.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
+    <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -19,23 +19,7 @@ namespace Sampoerna.EMS.Website
         public static void InitializeCK5()
         {
            
-            //Mapper.CreateMap<CK5, CK5Item>().IgnoreAllNonExisting()
-            //    .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
-            //    .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX)) //todo ask
-            //    .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.UOM.UOM_NAME))
-            //    .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.CK5_TYPE));
-            ////.ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.po)) //todo ask
-            //.ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.T1001W.ZAIDM_EX_NPPBKC.NPPBKC_NO))//todo ask
-            // .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.T1001W.CITY)) //todo ask
-            //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.)) //todo ask
-            // .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS.STATUS_NAME));
-
-            //Mapper.CreateMap<CK5SearchViewModel, CK5Input>().IgnoreAllNonExisting();
-            //Mapper.CreateMap<SUPPLIER_PORT, SelectItemModel>().IgnoreAllNonExisting()
-            //    .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID + "-" + src.PORT_NAME))
-            //    .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
-            //    ;
-
+          
             Mapper.CreateMap<CK5MaterialOutput, CK5UploadViewModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<CK5Dto, CK5Item>().IgnoreAllNonExisting()
@@ -198,8 +182,20 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.ExciseValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.EXCISE_VALUE))
                .ForMember(dest => dest.UsdValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.USD_VALUE))
                .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM));
-                
-            
+
+
+
+
+            Mapper.CreateMap<CK5Dto, CK5SummaryReportsItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_NAME))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPPBKC_ID))
+                .ForMember(dest => dest.Kppbc, opt => opt.MapFrom(src => src.CE_OFFICE_CODE))
+                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.SOURCE_PLANT_ADDRESS));
+
+            Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5GetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPPBKCOrigin, opt => opt.MapFrom(src => src.NppbkcId));
         }
     }
 }

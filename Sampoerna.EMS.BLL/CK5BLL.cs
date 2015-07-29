@@ -660,9 +660,11 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+         
             //change back to draft
             dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
@@ -686,7 +688,7 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
            
-            input.ActionType = Enums.ActionType.Completed;
+            //input.ActionType = Enums.ActionType.GovApprove;
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
@@ -704,7 +706,9 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+           // input.ActionType = Enums.ActionType.GovReject;
 
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -726,7 +730,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
-
+            //input.ActionType = Enums.ActionType.GovCancel;
             //dbData.APPROVED_BY = input.UserId;
             //dbData.APPROVED_DATE = DateTime.Now;
 

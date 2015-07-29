@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Contract
 
         List<WorkflowHistoryDto> GetByFormNumber(GetByFormNumberInput input);
 
-        string GetRejectedPoaByDocumentNumber(string documentNumber);
+        string GetApprovedRejectedPoaByDocumentNumber(string documentNumber);
 
         string GetPoaByDocumentNumber(string documentNumber);
     }

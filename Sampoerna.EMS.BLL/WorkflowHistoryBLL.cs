@@ -91,7 +91,8 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
             {
-                var rejected = dbData.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject);
+                //find history that approve or rejected by POA
+                var rejected = dbData.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve && c.ROLE == Enums.UserRole.POA);
                 
                 if (rejected != null)
                 {
@@ -121,6 +122,7 @@ namespace Sampoerna.EMS.BLL
             if (input.IsRejected)
             {
                 displayUserId = input.RejectedBy;
+                newRecord.ROLE = Enums.UserRole.POA;
             }
             else
             {
@@ -174,15 +176,15 @@ namespace Sampoerna.EMS.BLL
             return newRecord;
         }
 
-        public string GetRejectedPoaByDocumentNumber(string documentNumber)
+        public string GetApprovedRejectedPoaByDocumentNumber(string documentNumber)
         {
             string result = "";
 
             var dbData =
                 _repository.Get(
                     c =>
-                        c.FORM_NUMBER == documentNumber && c.ACTION == Enums.ActionType.Reject &&
-                        c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+                        c.FORM_NUMBER == documentNumber && c.ACTION == Enums.ActionType.Reject ||
+                        c.ACTION == Enums.ActionType.Approve && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
 
             if (dbData != null)
                 result = dbData.ACTION_BY;

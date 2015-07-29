@@ -76,7 +76,7 @@ namespace Sampoerna.EMS.BLL
                     return false;
 
                 //if document was rejected then must approve by poa that rejected
-                var rejectedPoa = _workflowHistoryBll.GetRejectedPoaByDocumentNumber(input.DocumentNumber);
+                var rejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
                 if (rejectedPoa != "")
                 {
                     if (input.CurrentUser != rejectedPoa)
@@ -121,8 +121,9 @@ namespace Sampoerna.EMS.BLL
                 if (input.UserRole == Enums.UserRole.Manager)
                     return false;
 
-                if (input.CreatedUser == input.CurrentUser)
+                if (input.CreatedUser == input.CurrentUser || input.UserRole == Enums.UserRole.POA)
                     return true;
+
             }
 
             return false;
