@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new UomDetailViewModel();
 
-            var data = _uomBLL.GetById(id);
+            var data = _uomBLL.GetById(HttpUtility.UrlDecode(id));
 
             model = Mapper.Map<UomDetailViewModel>(data);
             model.CurrentMenu = PageInfo;
@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new UomDetailViewModel();
 
-            var data = _uomBLL.GetById(id);
+            var data = _uomBLL.GetById(HttpUtility.UrlDecode(id));
             model = Mapper.Map<UomDetailViewModel>(data);
 
             model.MainMenu = _mainMenu;
