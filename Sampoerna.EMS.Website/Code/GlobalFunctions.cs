@@ -98,14 +98,14 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetVirtualPlantList()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var data = plantBll.GetAll();
+            var data = plantBll.GetAllPlant();
             var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
         public static MultiSelectList GetVirtualPlantListMultiSelect()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var data = plantBll.GetAll();
+            var data = plantBll.GetAllPlant();
             var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
             return new MultiSelectList(selectItemSource, "ValueField", "TextField");
         }

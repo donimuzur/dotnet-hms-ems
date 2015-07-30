@@ -89,6 +89,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<POA_MAP, POA_MAPDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting();
+
         }
     }
 }

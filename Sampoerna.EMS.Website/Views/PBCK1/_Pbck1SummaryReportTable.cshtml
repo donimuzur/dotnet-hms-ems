@@ -1,0 +1,61 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1SummaryReportViewModel
+
+<table id="pbckTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Company</th>
+            <th>NPPBKC</th>
+            <th>KPPBC</th>
+            <th>PBCK-1 Number</th>
+            <th>Address</th>
+            <th>Original NPPBKC</th>
+            <th>Original KPPBC</th>
+            <th>Original Address</th>
+            <th>Exc. Goods Amount</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                    <td>
+                        @Html.DisplayFor(model => item.NppbkcKppbcId)
+                    </td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>
+                        <ol>
+                            @foreach (var plant in item.NppbkcPlants)
+                            {
+                                <li>@plant.ADDRESS</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        @item.SupplierNppbkcId
+                    </td>
+                    <td>
+                        @item.SupplierKppbcId
+                    </td>
+                    <td>
+                        @item.SupplierAddress
+                    </td>
+                    <td>
+                        @item.QtyApproved
+                    </td>
+                    <td>
+                        @item.StatusName
+                    </td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>

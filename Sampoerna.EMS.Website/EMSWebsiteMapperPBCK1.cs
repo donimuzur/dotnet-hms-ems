@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Models.PLANT;
 
 namespace Sampoerna.EMS.Website
 {
@@ -85,6 +86,15 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck1DecreeDocDto, Pbck1DecreeDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1DecreeDocModel, Pbck1DecreeDocDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1FilterSummaryReportViewModel, Pbck1GetSummaryReportByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1SummaryReportDto, Pbck1SummaryReportsItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbkcPlants, opt => opt.MapFrom(src => Mapper.Map<List<T001WModel>>(src.NppbkcPlants)))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGov)))
+                ;
 
         }
     }

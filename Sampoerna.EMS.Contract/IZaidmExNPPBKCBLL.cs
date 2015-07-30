@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         string GetCeOfficeCodeByNppbcId(string nppBkcId);
 
+        ZAIDM_EX_NPPBKC GetDetailsById(string id);
+
     }
 }
