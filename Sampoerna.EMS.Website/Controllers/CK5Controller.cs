@@ -1125,29 +1125,29 @@ namespace Sampoerna.EMS.Website.Controllers
             dbData = _ck5Bll.GetCK5ByParam(input);
             return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
         }
-        private SelectList GetYearListCK5(bool isFrom)
-        {
-            var listCk5 = _ck5Bll.GetAll();
+        //private SelectList GetYearListCK5(bool isFrom)
+        //{
+        //    var listCk5 = _ck5Bll.GetAll();
 
-            IEnumerable<SelectItemModel> query;
-            if (isFrom)
-                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
-                select new Models.SelectItemModel()
-                {
-                    ValueField = x.SUBMISSION_DATE.Value.Year,
-                    TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
-                };
-            else
-                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
-                    select new Models.SelectItemModel()
-                    {
-                        ValueField = x.SUBMISSION_DATE.Value.Year,
-                        TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
-                    };
+        //    IEnumerable<SelectItemModel> query;
+        //    if (isFrom)
+        //        query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
+        //        select new Models.SelectItemModel()
+        //        {
+        //            ValueField = x.SUBMISSION_DATE.Value.Year,
+        //            TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
+        //        };
+        //    else
+        //        query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
+        //            select new Models.SelectItemModel()
+        //            {
+        //                ValueField = x.SUBMISSION_DATE.Value.Year,
+        //                TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
+        //            };
 
-            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        //    return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
 
-        }
+        //}
 
         [HttpPost]
         public PartialViewResult SearchSummaryReports(CK5SummaryReportsViewModel model)

@@ -4,24 +4,19 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
-            <th>Company</th>
-            <th>NPPBKC</th>
-            <th>KPPBC</th>
-            <th>Document Number</th>
-            <th>Address</th>
+            <th>Excise Status</th>
+            <th>Unpaid Excise Facility Number</th>
+            <th>Unpaid Excise Facility Date</th>
+            <th>Sealing Notification Date</th>
+            <th>Sealing Notification Number</th>
+            <th>Unsealing Notification Date</th>
+            <th>Unsealing Notification Number</th>
+            <th>Reported to LACK-1 Month</th>
+            <th>Reported to LACK-2 Month</th>
+            
         </tr>
     </thead>
-    @*<thead class="filters">
-            <tr>
-                <th> No</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-
-            </tr>
-        </thead>*@
+   
     <tbody>
         @{
             int row = 1;
@@ -30,14 +25,15 @@
             {
                 <tr>
                     <td>@row</td>
-                    <td>@Html.DisplayFor(model => item.Company)</td>
-                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
-                    <td>
-                        @Html.DisplayFor(model => item.Kppbc)
-                    </td>
+                    <td>@Html.DisplayFor(model => item.ExciseStatus)</td>
                     <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
-
-                    <td class="last">@Html.DisplayFor(model => item.Address)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                    <td>@Html.DisplayFor(model => item.SealingNotifDate)</td>
+                    <td>@Html.DisplayFor(model => item.SealingNotifNumber)</td>
+                    <td>@Html.DisplayFor(model => item.UnSealingNotifDate)</td>
+                    <td>@Html.DisplayFor(model => item.UnSealingNotifNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Lack1Number)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Lack2Number)</td>
                 </tr>
                 row = row + 1;
             }

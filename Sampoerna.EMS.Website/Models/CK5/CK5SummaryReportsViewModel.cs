@@ -69,13 +69,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string UnSealingNotifDate { get; set; }
 
-        public string unSealingNotifNumber { get; set; }
+        public string UnSealingNotifNumber { get; set; }
 
-        public string Kppbc { get; set; }
+        public string Lack1Number { get; set; }
 
-      
-
-        public string Address { get; set; }
+        public string Lack2Number { get; set; }
 
     }
 
