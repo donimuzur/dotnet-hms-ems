@@ -1,0 +1,246 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Summary Report</h3>
+        </div>
+    </div>
+</div>
+
+
+    
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            @using (Ajax.BeginForm("SearchSummaryReports", "CK5",
+                new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "contenttable",
+                    OnComplete = "ReloadDataTables"
+
+                }))
+            {
+                <div class="white-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-5">Company Code</label>
+                                    <div class="col-md-7">
+                                        @if (Model.SearchView.CompanyCodeList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new {@class = "form-control selectreset"})
+                                        }
+                                    </div>
+
+                                    @*<div class="col-md-7">
+                                    <select class="form-control">
+                                        <option>3066</option>
+                                        <option>3067</option>
+                                        <option>3068</option>
+                                        <option>3069</option>
+                                    </select>
+                                </div>*@
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">From - To</label>
+                                    <div class="col-md-8 year-from">
+                                        @if (Model.SearchView.YearFromList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.YearFrom, Model.SearchView.YearFromList, "All", new {@class = "form-control selectreset"})
+                                        }
+                                    
+                                        @if (Model.SearchView.YearToList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.YearTo, Model.SearchView.YearToList, "All", new {@class = "form-control selectreset"})
+                                        }
+
+                                        @*<select class="form-control">
+                                        <option>2014</option>
+                                        <option>2015</option>
+                                    </select>
+                                    <select class="form-control">
+                                        <option>2015</option>
+                                        <option>2016</option>
+                                    </select>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC</label>
+                                    <div class="col-md-8">
+                                        @if (Model.SearchView.NppbkcIdList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new {@class = "form-control selectreset"})
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div>
+                                    Toggle column: <a class="toggle-vis" data-column="0">No</a> - <a class="toggle-vis" data-column="1">Company</a> - <a class="toggle-vis" data-column="2">NPPBKC</a> - <a class="toggle-vis" data-column="3">KPPBC</a> - <a class="toggle-vis" data-column="4">Document Number</a> - <a class="toggle-vis" data-column="5">Address</a>
+                                </div>
+                            </div>
+                            <div class="last-form">
+                                <div class="col-md-2 col-md-offset-8">
+                                    <button class="btn btn-blue full">FILTER</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+            
+
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_CK5ListSummaryReport")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    @using (Html.BeginForm("ExportSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+{
+        @Html.HiddenFor(model => model.ExportModel.CompanyCode)      
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3><span id="lblTitleModal">Export</span> </h3>
+                </div>
+                <div class="modal-body">
+                
+                    <span id="lblMessageModal">Column : </span><br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked" })Company<br/>
+                    @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked" })NPPBKC<br/>
+                    @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked" })KPPBC<br/>
+                    @Html.CheckBoxFor(model => model.ExportModel.DocumentNumber, new { @checked = "checked" })Document Number<br/>
+                  
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Cancel" />
+                </div>
+            </div>
+        </div>
+}	
+</div>
+    
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+           
+            setupDataTables();
+            
+
+           
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#ck5Table')) {
+                table = $('#ck5Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#ck5Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+       
+            //$('#ck5Table .filters th').each(function () {
+            //    var idx = $(this).index();
+            //    if (idx != 0) {
+            //        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            //    }
+            //});
+
+        
+            //table.columns().eq(0).each(function (colIdx) {
+            //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            //        table
+            //            .column(colIdx)
+            //            .search(this.value)
+            //            .draw();
+            //    });
+            //});
+            
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+      
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+        
+        $("#btnExport").click(function () {
+            $('#Ck5Modal').modal('show');
+
+        });
+
+      
+        $("#btnConfirm").click(function () {
+
+            //('#SearchView_CompanyCode').Text = 'aa';
+            $("input[name='ExportModel.CompanyCode']").val($('#SearchView_CompanyCode').find("option:selected").val());
+            //alert($("input[name='SearchView_CompanyCode']").val());
+           // alert($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportSummaryReportsForms').submit();
+            @*window.location = "@Url.Action("ApproveDocument", "CK5", new { model = formData })";*@
+          
+            
+        });
+        
+    </script>
+}

@@ -15,5 +15,7 @@ namespace Sampoerna.EMS.Contract
         void Delete(string id);
         Core.Enums.UserRole GetUserRole(string userId);
 
+        string GetManagerIdByPoaId(string poaId);
+
     }
 }

@@ -84,6 +84,19 @@
           <Property Name="FINAL_PORT_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
+          <Property Name="SOURCE_PLANT_COMPANY_CODE" Type="nvarchar" MaxLength="4" />
+          <Property Name="DEST_PLANT_COMPANY_CODE" Type="nvarchar" MaxLength="4" />
+        </EntityType>
+        <EntityType Name="CK5_FILE_UPLOAD">
+          <Key>
+            <PropertyRef Name="CK5_FILE_UPLOAD_ID" />
+          </Key>
+          <Property Name="CK5_FILE_UPLOAD_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CK5_ID" Type="bigint" Nullable="false" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
@@ -703,6 +716,30 @@
               <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="CK5">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD">
+          <End Role="CK5" Type="Self.CK5" Multiplicity="1" />
+          <End Role="CK5_FILE_UPLOAD" Type="Self.CK5_FILE_UPLOAD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK5">
+              <PropertyRef Name="CK5_ID" />
+            </Principal>
+            <Dependent Role="CK5_FILE_UPLOAD">
+              <PropertyRef Name="CK5_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_FILE_UPLOAD_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="CK5_FILE_UPLOAD" Type="Self.CK5_FILE_UPLOAD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CK5_FILE_UPLOAD">
               <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
@@ -1660,6 +1697,7 @@
         <EntityContainer Name="EMSModelStoreContainer">
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CK5_FILE_UPLOAD" EntityType="Self.CK5_FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_MATERIAL" EntityType="Self.CK5_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMAIL_TEMPLATE" EntityType="Self.EMAIL_TEMPLATE" Schema="dbo" store:Type="Tables" />
@@ -1715,6 +1753,14 @@
           <AssociationSet Name="FK_CK5_CREATED_BY_USER" Association="Self.FK_CK5_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" Association="Self.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD">
+            <End Role="CK5" EntitySet="CK5" />
+            <End Role="CK5_FILE_UPLOAD" EntitySet="CK5_FILE_UPLOAD" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_FILE_UPLOAD_USER" Association="Self.FK_CK5_FILE_UPLOAD_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CK5_FILE_UPLOAD" EntitySet="CK5_FILE_UPLOAD" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="Self.FK_CK5_MATERIAL_CK5">
             <End Role="CK5" EntitySet="CK5" />
@@ -2150,16 +2196,7 @@
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
-          <EntitySet Name="UOM" EntityType="EMSModel.UOM" />
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
           <EntitySet Name="PBCK1_PROD_CONVERTER" EntityType="EMSModel.PBCK1_PROD_CONVERTER" />
-          <AssociationSet Name="FK_PBCK1_PROD_CONVERTER_UOM" Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
-          </AssociationSet>
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T001W" Association="EMSModel.FK_ZAIDM_EX_BRAND_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -2190,10 +2227,6 @@
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
-          </AssociationSet>
           <EntitySet Name="LACK1_DOCUMENT" EntityType="EMSModel.LACK1_DOCUMENT" />
           <EntitySet Name="LACK1_ITEM" EntityType="EMSModel.LACK1_ITEM" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="EMSModel.WORKFLOW_HISTORY" />
@@ -2220,14 +2253,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_MONTH" Association="EMSModel.FK_LACK1_MONTH">
             <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="LACK1" EntitySet="LACK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="EMSModel.FK_LACK1_RETURN_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="LACK1" EntitySet="LACK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
-            <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
           <EntitySet Name="USER" EntityType="EMSModel.USER" />
@@ -2262,10 +2287,6 @@
           <AssociationSet Name="FK_T001W_MODIFIED_BY_USER" Association="EMSModel.FK_T001W_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="T001W" EntitySet="T001W" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="EMSModel.FK_UOM_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="UOM" EntitySet="UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_USER_USER_GROUP" Association="EMSModel.FK_USER_USER_GROUP">
             <End Role="USER_GROUP" EntitySet="USER_GROUP" />
@@ -2355,10 +2376,6 @@
             <End Role="CK5" EntitySet="CK5" />
             <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
           </AssociationSet>
-          <AssociationSet Name="FK_CK5_UOM" Association="EMSModel.FK_CK5_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
           <AssociationSet Name="FK_CK5_USER" Association="EMSModel.FK_CK5_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CK5" EntitySet="CK5" />
@@ -2400,6 +2417,32 @@
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_USER" Association="EMSModel.FK_PBCK1_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <EntitySet Name="CK5_FILE_UPLOAD" EntityType="EMSModel.CK5_FILE_UPLOAD" />
+          <AssociationSet Name="FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" Association="EMSModel.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD">
+            <End Role="CK5" EntitySet="CK5" />
+            <End Role="CK5_FILE_UPLOAD" EntitySet="CK5_FILE_UPLOAD" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK5_FILE_UPLOAD_USER" Association="EMSModel.FK_CK5_FILE_UPLOAD_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CK5_FILE_UPLOAD" EntitySet="CK5_FILE_UPLOAD" />
+          </AssociationSet>
+          <EntitySet Name="UOM" EntityType="EMSModel.UOM" />
+          <AssociationSet Name="FK_CK5_UOM" Association="EMSModel.FK_CK5_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="EMSModel.FK_LACK1_RETURN_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_REQUEST_UOM" Association="EMSModel.FK_PBCK1_REQUEST_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1" EntitySet="PBCK1" />
@@ -2408,9 +2451,21 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_USER" Association="EMSModel.FK_PBCK1_USER">
+          <AssociationSet Name="FK_PBCK1_PROD_CONVERTER_UOM" Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="EMSModel.FK_UOM_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="UOM" EntitySet="UOM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3012,7 +3067,6 @@
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="MATERIAL_UOM" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="MATERIAL_UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
@@ -3022,6 +3076,7 @@
           <Property Name="TARIFF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="CLIENT_DELETION" Type="Boolean" />
           <Property Name="PLANT_DELETION" Type="Boolean" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -3047,37 +3102,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="UOM">
-          <Key>
-            <PropertyRef Name="UOM_ID" />
-          </Key>
-          <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="UOM_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
-          <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
-          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
-          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="UOM" ToRole="PBCK1" />
-          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="UOM" ToRole="PBCK1" />
-        </EntityType>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="BASE_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="PBCK1_PROD_CONVERTER">
           <Key>
             <PropertyRef Name="PBCK1_PROD_COV_ID" />
@@ -3089,21 +3113,9 @@
           <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="CONVERTER_OUTPUT" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="PBCK1_PROD_CONVERTER" ToRole="UOM" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" FromRole="PBCK1_PROD_CONVERTER" ToRole="PBCK1" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="PBCK1_PROD_CONVERTER" ToRole="UOM" />
         </EntityType>
-        <Association Name="FK_PBCK1_PROD_CONVERTER_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1_PROD_CONVERTER" Role="PBCK1_PROD_CONVERTER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="PBCK1_PROD_CONVERTER">
-              <PropertyRef Name="CONVERTER_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
             <PropertyRef Name="WERKS" />
@@ -3235,8 +3247,8 @@
           <Property Name="MONTH" Type="Int32" />
           <Property Name="BKC_REQUIRED_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="MONTH1" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_MONTH" FromRole="PBCK1_PROD_PLAN" ToRole="MONTH" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="PBCK1_PROD_PLAN" ToRole="UOM" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" FromRole="PBCK1_PROD_PLAN" ToRole="PBCK1" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="PBCK1_PROD_PLAN" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_PBCK1_PROD_PLAN_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -3247,18 +3259,6 @@
             </Principal>
             <Dependent Role="PBCK1_PROD_PLAN">
               <PropertyRef Name="MONTH" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_PROD_PLAN_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="PBCK1_PROD_PLAN">
-              <PropertyRef Name="BKC_REQUIRED_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3418,11 +3418,11 @@
           <NavigationProperty Name="LACK1_DOCUMENT" Relationship="EMSModel.FK_LACK1_DOCUMENT_LACK1" FromRole="LACK1" ToRole="LACK1_DOCUMENT" />
           <NavigationProperty Name="LACK1_ITEM" Relationship="EMSModel.FK_LACK1_ITEM_LACK1" FromRole="LACK1" ToRole="LACK1_ITEM" />
           <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="LACK1" ToRole="MONTH" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="LACK1" ToRole="UOM" />
-          <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="LACK1" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="LACK1" ToRole="USER" />
           <Property Name="EX_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="LACK1" ToRole="UOM" />
+          <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_LACK1_DOCUMENT_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
@@ -3460,30 +3460,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_LACK1_RETURN_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="LACK1">
-              <PropertyRef Name="RETURN_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK1_WASTE_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="LACK1">
-              <PropertyRef Name="WASTE_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="USER">
           <Key>
             <PropertyRef Name="USER_ID" />
@@ -3506,7 +3482,6 @@
           <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="USER" ToRole="PBCK1_DECREE_DOC" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="USER" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="USER" ToRole="T001W" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="USER_GROUP" Relationship="EMSModel.FK_USER_USER_GROUP" FromRole="USER" ToRole="USER_GROUP" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="VIRTUAL_PLANT_MAP1" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="VIRTUAL_PLANT_MAP" />
@@ -3528,6 +3503,8 @@
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_APPROVED_BY_USER" FromRole="USER" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_CREATED_BY_USER" FromRole="USER" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK12" Relationship="EMSModel.FK_PBCK1_USER" FromRole="USER" ToRole="PBCK1" />
+          <NavigationProperty Name="CK5_FILE_UPLOAD" Relationship="EMSModel.FK_CK5_FILE_UPLOAD_USER" FromRole="USER" ToRole="CK5_FILE_UPLOAD" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -3621,18 +3598,6 @@
               <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="T001W">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UOM_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="UOM">
               <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
@@ -3974,9 +3939,12 @@
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_APPROVED_BY_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="CK5_MATERIAL" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5" ToRole="CK5_MATERIAL" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_CK5_PBCK1" FromRole="CK5" ToRole="PBCK1" />
+          <NavigationProperty Name="CK5_FILE_UPLOAD" Relationship="EMSModel.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" FromRole="CK5" ToRole="CK5_FILE_UPLOAD" />
+          <Property Name="SOURCE_PLANT_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="DEST_PLANT_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_CK5_APPROVED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -4011,18 +3979,6 @@
             </Principal>
             <Dependent Role="CK5_MATERIAL">
               <PropertyRef Name="CK5_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK5_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="PACKAGE_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4093,9 +4049,9 @@
           <NavigationProperty Name="PBCK12" Relationship="EMSModel.FK_PBCK1_PBCK1" FromRole="PBCK11" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" FromRole="PBCK1" ToRole="PBCK1_PROD_CONVERTER" />
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" FromRole="PBCK1" ToRole="PBCK1_PROD_PLAN" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="PBCK1" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
-          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
         </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -4205,6 +4161,110 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK1_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CK5_FILE_UPLOAD">
+          <Key>
+            <PropertyRef Name="CK5_FILE_UPLOAD_ID" />
+          </Key>
+          <Property Name="CK5_FILE_UPLOAD_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK5_ID" Type="Int64" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" FromRole="CK5_FILE_UPLOAD" ToRole="CK5" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK5_FILE_UPLOAD_USER" FromRole="CK5_FILE_UPLOAD" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD">
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="1" />
+          <End Type="EMSModel.CK5_FILE_UPLOAD" Role="CK5_FILE_UPLOAD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK5">
+              <PropertyRef Name="CK5_ID" />
+            </Principal>
+            <Dependent Role="CK5_FILE_UPLOAD">
+              <PropertyRef Name="CK5_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK5_FILE_UPLOAD_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.CK5_FILE_UPLOAD" Role="CK5_FILE_UPLOAD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CK5_FILE_UPLOAD">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UOM">
+          <Key>
+            <PropertyRef Name="UOM_ID" />
+          </Key>
+          <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="UOM_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="UOM" ToRole="PBCK1" />
+          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="UOM" ToRole="PBCK1" />
+          <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
+          <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_CK5_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="PACKAGE_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_RETURN_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="RETURN_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_WASTE_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="WASTE_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK1_REQUEST_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
@@ -4229,15 +4289,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PBCK1_USER">
+        <Association Name="FK_PBCK1_PROD_CONVERTER_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1_PROD_CONVERTER" Role="PBCK1_PROD_CONVERTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_PROD_CONVERTER">
+              <PropertyRef Name="CONVERTER_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_PROD_PLAN_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_PROD_PLAN">
+              <PropertyRef Name="BKC_REQUIRED_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UOM_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
             </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            <Dependent Role="UOM">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="BASE_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4583,17 +4679,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UOM">
-            <EntityTypeMapping TypeName="EMSModel.UOM">
-              <MappingFragment StoreEntitySet="UOM">
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="UOM_DESC" ColumnName="UOM_DESC" />
-                <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK1_PROD_CONVERTER">
             <EntityTypeMapping TypeName="EMSModel.PBCK1_PROD_CONVERTER">
               <MappingFragment StoreEntitySet="PBCK1_PROD_CONVERTER">
@@ -4845,6 +4930,8 @@
           <EntitySetMapping Name="CK5">
             <EntityTypeMapping TypeName="EMSModel.CK5">
               <MappingFragment StoreEntitySet="CK5">
+                <ScalarProperty Name="DEST_PLANT_COMPANY_CODE" ColumnName="DEST_PLANT_COMPANY_CODE" />
+                <ScalarProperty Name="SOURCE_PLANT_COMPANY_CODE" ColumnName="SOURCE_PLANT_COMPANY_CODE" />
                 <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
                 <ScalarProperty Name="FINAL_PORT_NAME" ColumnName="FINAL_PORT_NAME" />
@@ -4954,6 +5041,29 @@
                 <ScalarProperty Name="PBCK1_REF" ColumnName="PBCK1_REF" />
                 <ScalarProperty Name="NUMBER" ColumnName="NUMBER" />
                 <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK5_FILE_UPLOAD">
+            <EntityTypeMapping TypeName="EMSModel.CK5_FILE_UPLOAD">
+              <MappingFragment StoreEntitySet="CK5_FILE_UPLOAD">
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+                <ScalarProperty Name="CK5_FILE_UPLOAD_ID" ColumnName="CK5_FILE_UPLOAD_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UOM">
+            <EntityTypeMapping TypeName="EMSModel.UOM">
+              <MappingFragment StoreEntitySet="UOM">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="UOM_DESC" ColumnName="UOM_DESC" />
+                <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

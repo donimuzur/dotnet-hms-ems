@@ -209,13 +209,13 @@
                                     </div>
                                     <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
                                         <div class="panel-body">
-                                            <form class="form-excise" role="form">
+                                            <div class="form-excise" role="form">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <label class="col-md-4">Plant Deletion</label>
                                                             <div class="col-md-8">
-                                                                @Html.DisplayFor(model => model.IsPlantDelete, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.CheckBoxFor(model => model.IsPlantDelete)
                                                             </div>
                                                         </div>
                                                     </div>
@@ -223,13 +223,13 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Client Deletion</label>
                                                             <div class="col-md-8">
-                                                                @Html.DisplayFor(model => model.IsClientDelete, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.CheckBoxFor(model => model.IsClientDelete)
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -269,7 +269,7 @@
                 if (meinh !== '') {
                     var umren = $('#ConversionValueStr').val();
                    
-                    var objUom = { meinh: meinh, umren: umren };
+                    var objUom = { meinh: encodeURI(meinh), umren: umren };
                     arrayUom.push(objUom);
                     CreateUomList();
                 }
@@ -279,7 +279,7 @@
                 $('#material-uom tbody tr').remove();
 
                 for (var i = 0; i < arrayUom.length; i++) {
-                    $('#material-uom tbody').append('<tr><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + arrayUom[i].meinh + '</td><td>' + arrayUom[i].umren + '</td></tr>');
+                    $('#material-uom tbody').append('<tr><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + decodeURI(arrayUom[i].meinh) + '</td><td>' + arrayUom[i].umren + '</td></tr>');
                 }
             }
 

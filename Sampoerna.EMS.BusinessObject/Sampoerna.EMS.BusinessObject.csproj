@@ -62,6 +62,9 @@
     <Compile Include="CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK5_FILE_UPLOAD.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK5_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -71,9 +74,12 @@
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
+    <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Pbck1Dto.cs" />
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
     <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
+    <Compile Include="DTOs\POADto.cs" />
+    <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>

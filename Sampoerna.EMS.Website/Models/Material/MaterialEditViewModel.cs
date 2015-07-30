@@ -57,48 +57,18 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Display(Name = "Changed By"), Editable(false)]
         public string ChangedBy { get; set; }
 
-        private Nullable<bool> _isPlantDelete;
         [Display(Name = "Plant Deletion")]
         public bool IsPlantDelete
         {
-            get
-            {
-                if (this._isPlantDelete.HasValue)
-                {
-                    return this._isPlantDelete.Value;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            set
-            {
-                this._isPlantDelete = value;
-            }
+            get; set;
         }
 
 
-        private Nullable<bool> _isClientDelete;
-
+        
         [Display(Name = "Client Deletion")]
         public bool IsClientDelete
         {
-            get
-            {
-                if (this._isClientDelete.HasValue)
-                {
-                    return this._isClientDelete.Value;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            set
-            {
-                this._isClientDelete = value;
-            }
+            get; set;
         }
 
 
