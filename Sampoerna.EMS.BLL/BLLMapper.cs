@@ -81,9 +81,9 @@ namespace Sampoerna.EMS.BLL
             #endregion
 
             Mapper.CreateMap<POA_MAP, POA_MAPDto>().IgnoreAllNonExisting();
-            #region LACK1
             Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
 
+            #region LACK1
             Mapper.CreateMap<LACK1, Lack1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack1Id, opt => opt.MapFrom(src => src.LACK1_ID))
                 .ForMember(dest => dest.Lack1Number, opt => opt.MapFrom(src => src.LACK1_NUMBER))
