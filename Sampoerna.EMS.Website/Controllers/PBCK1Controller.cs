@@ -6,6 +6,7 @@ using System.Web;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using AutoMapper;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -922,13 +923,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetCompletedDocumentByParam(new Pbck1GetCompletedDocumentByParamInput());
+                var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput());
                 return Mapper.Map<List<Pbck1SummaryReportsItem>>(pbck1Data);
             }
 
             //getbyparams
-            var input = Mapper.Map<Pbck1GetCompletedDocumentByParamInput>(filter);
-            var dbData = _pbck1Bll.GetCompletedDocumentByParam(input);
+            var input = Mapper.Map<Pbck1GetSummaryReportByParamInput>(filter);
+            var dbData = _pbck1Bll.GetSummaryReportByParam(input);
             return Mapper.Map<List<Pbck1SummaryReportsItem>>(dbData);
         }
 
@@ -964,12 +965,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck1SummaryReportTable", model);
         }
 
+        [HttpPost]
         public ActionResult ExportSummaryReports(Pbck1SummaryReportViewModel model)
         {
             try
             {
-                //CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
-                //AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+                ExportSummaryReportsToExcel(model);
             }
             catch (Exception ex)
             {
@@ -978,65 +979,135 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("SummaryReports");
         }
 
-        public void ExportXlsSummaryReports(long pbck1Id)
+        public void ExportSummaryReportsToExcel(Pbck1SummaryReportViewModel model)
         {
+            var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
-            var pathFile = CreateXlsFileSummaryReports(pbck1Id);
-            var newFile = new FileInfo(pathFile);
+            //todo: to automapper
+            var src = (from d in dataSummaryReport
+                select new ExportSummaryDataModel()
+                {
+                    Company = d.NppbkcCompanyName,
+                    Nppbkc = "'" + d.NppbkcId,
+                    Kppbc = "'" + d.NppbkcKppbcId,
+                    Pbck1Number = "'" + d.Pbck1Number,
+                    Address = string.Join(",", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
+                    OriginalNppbkc = "'" + d.SupplierNppbkcId,
+                    OriginalKppbc = "'" + d.SupplierKppbcId,
+                    OriginalAddress = d.SupplierAddress,
+                    // ReSharper disable once PossibleInvalidOperationException
+                    ExcGoodsAmount = d.QtyApproved.Value.ToString("N0"),
+                    Status = d.StatusName
+                }).ToList();
 
-            var fileName = Path.GetFileName(pathFile);// "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
-
-            string attachment = string.Format("attachment; filename={0}", fileName);
-            Response.Clear();
-            Response.AddHeader("content-disposition", attachment);
-            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            Response.WriteFile(newFile.FullName);
-            Response.Flush();
-            newFile.Delete();
-            Response.End();
-        }
-
-        private string CreateXlsFileSummaryReports(long pbck1Id)
-        {
-            var slDocument = new SLDocument();
-
-            //todo check
-            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, pbck1Id.ToString());
-
-            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
-
-            int iRow = 1;
-
-            //create header
-            slDocument.SetCellValue(iRow, 1, "DATE");
-            slDocument.SetCellValue(iRow, 2, "FIELD");
-            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
-            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
-            slDocument.SetCellValue(iRow, 5, "USER");
-
-            iRow++;
-
-            foreach (var changesHistoryItemModel in model)
+            var grid = new System.Web.UI.WebControls.GridView
             {
-                slDocument.SetCellValue(iRow, 1,
-                    changesHistoryItemModel.MODIFIED_DATE.HasValue
-                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
-                        : string.Empty);
-                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
-                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
-                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
-                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+                DataSource = src,
+                AutoGenerateColumns = false
+            };
 
-                iRow++;
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Nppbkc"
+                });
             }
-            var fileName = "Pbck1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            if (model.ExportModel.Company)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Company",
+                    HeaderText = "Company"
+                });
+            }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Kppbc",
+                    HeaderText = "Kppbc"
+                });
+            }
+            if (model.ExportModel.Pbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "Pbck1Number"
+                });
+            }
+            if (model.ExportModel.Address)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Address",
+                    HeaderText = "Address"
+                });
+            }
+            if (model.ExportModel.OriginalNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriginalNppbkc",
+                    HeaderText = "OriginalNppbkc"
+                });
+            }
+            if (model.ExportModel.OriginalKppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriginalKppbc",
+                    HeaderText = "OriginalKppbc"
+                });
+            }
+            if (model.ExportModel.OriginalAddress)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriginalAddress",
+                    HeaderText = "OriginalAddress"
+                });
+            }
+            if (model.ExportModel.ExcGoodsAmount)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExcGoodsAmount",
+                    HeaderText = "ExcGoodsAmount"
+                });
+            }
+            if (model.ExportModel.Status)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Status",
+                    HeaderText = "Status"
+                });
+            }
 
-            var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+            grid.DataBind();
 
-            //var outpu = new 
-            slDocument.SaveAs(path);
+            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-            return path;
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
         }
 
         #endregion

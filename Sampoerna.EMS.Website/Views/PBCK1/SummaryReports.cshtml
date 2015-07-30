@@ -87,7 +87,18 @@
                                 <div class="col-md-4">
                                     <div>
                                         @* ReSharper disable UnknownCssClass *@
-                                        Toggle column: <a class="toggle-vis" data-column="0">No</a> - <a class="toggle-vis" data-column="1">Company</a> - <a class="toggle-vis" data-column="2">NPPBKC</a> - <a class="toggle-vis" data-column="3">KPPBC</a> - <a class="toggle-vis" data-column="4">Document Number</a> - <a class="toggle-vis" data-column="5">Address</a>
+                                        Toggle column: 
+                                        <a class="toggle-vis" data-column="0">No</a> - 
+                                        <a class="toggle-vis" data-column="1">Company</a> - 
+                                        <a class="toggle-vis" data-column="2">NPPBKC</a> - 
+                                        <a class="toggle-vis" data-column="3">KPPBC</a> - 
+                                        <a class="toggle-vis" data-column="4">PBCK-1 Number</a> - 
+                                        <a class="toggle-vis" data-column="5">Address</a> - 
+                                        <a class="toggle-vis" data-column="6">Original NPPBKC</a> - 
+                                        <a class="toggle-vis" data-column="7">Original KPPBC</a> - 
+                                        <a class="toggle-vis" data-column="8">Original Address</a> - 
+                                        <a class="toggle-vis" data-column="9">Exc. Goods Amount</a> - 
+                                        <a class="toggle-vis" data-column="10">Status</a>
                                         @* ReSharper restore UnknownCssClass *@
                                     </div>
                                 </div>
@@ -117,9 +128,12 @@
 @* ReSharper disable UnknownCssClass *@
 <div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
 @* ReSharper restore UnknownCssClass *@
-    @using (Html.BeginForm("ExportSummaryReports", "Pbck1", FormMethod.Post, new { @id = "ExportSummaryReportsForm" }))
+    @using (Html.BeginForm("ExportSummaryReports", "Pbck1", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
     {
         @Html.HiddenFor(model => model.ExportModel.CompanyCode)
+        @Html.HiddenFor(model => model.ExportModel.YearFrom)
+        @Html.HiddenFor(model => model.ExportModel.YearTo)
+        @Html.HiddenFor(model => model.ExportModel.NppbkcId)
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -132,8 +146,13 @@
                     @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked" })Company<br />
                     @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked" })NPPBKC<br />
                     @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked" })KPPBC<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.DocumentNumber, new { @checked = "checked" })Document Number<br />
-
+                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Number, new { @checked = "checked" })PBCK-1 Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Address, new { @checked = "checked" })Address<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.OriginalNppbkc, new { @checked = "checked" })Original NPPBKC<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.OriginalKppbc, new { @checked = "checked" })Original KPPBC<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.OriginalAddress, new { @checked = "checked" })Original Address<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsAmount, new { @checked = "checked" })Exc. Goods Amount<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked" })Status<br />
                 </div>
                 <div class="modal-footer">
                     <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
@@ -143,7 +162,6 @@
         </div>
     }
 </div>
-
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -200,9 +218,13 @@
 
       
         $("#btnConfirm").click(function () {
-            $("input[name='ExportModel.CompanyCode']").val($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportModel_CompanyCode').val($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportModel_YearFrom').val($('#SearchView_YearFrom').find("option:selected").val());
+            $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
+            $('#ExportModel_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
+            $('#Pbck1Modal').modal('hide');
             $('#ExportSummaryReportsForms').submit();
-            
+            preventDefault();
         });
         
     </script>

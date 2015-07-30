@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Models.PLANT;
 
 namespace Sampoerna.EMS.Website
 {
@@ -86,17 +87,13 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck1DecreeDocDto, Pbck1DecreeDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1DecreeDocModel, Pbck1DecreeDocDto>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<Pbck1FilterSummaryReportViewModel, Pbck1GetCompletedDocumentByParamInput>()
+            Mapper.CreateMap<Pbck1FilterSummaryReportViewModel, Pbck1GetSummaryReportByParamInput>()
                 .IgnoreAllNonExisting();
 
-            Mapper.CreateMap<Pbck1Dto, Pbck1SummaryReportsItem>().IgnoreAllUnmapped()
-                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.Pbck1Id))
-                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.NppbkcCompanyCode))
-                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.NppbkcCompanyName))
-                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.NppbkcId))
-                .ForMember(dest => dest.Kppbc, opt => opt.MapFrom(src => src.SupplierKppbcId))
-                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Pbck1Number))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.SupplierAddress))
+            Mapper.CreateMap<Pbck1SummaryReportDto, Pbck1SummaryReportsItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbkcPlants, opt => opt.MapFrom(src => Mapper.Map<List<T001WModel>>(src.NppbkcPlants)))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGov)))
                 ;
 
         }

@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poaBll;
         private IWorkflowBLL _workflowBll;
         private IMessageService _messageService;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
 
@@ -53,13 +54,14 @@ namespace Sampoerna.EMS.BLL
             _decreeDocBll = new Pbck1DecreeDocBLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _messageService = new MessageService(_logger);
+            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
         {
             var queryFilter = ProcessQueryFilter(input);
 
-            return GetPbck1Data(queryFilter, input.SortOrderColumn);
+            return Mapper.Map<List<Pbck1Dto>>(GetPbck1Data(queryFilter, input.SortOrderColumn));
         }
 
         public List<Pbck1Dto> GetOpenDocumentByParam(Pbck1GetOpenDocumentByParamInput input)
@@ -69,7 +71,7 @@ namespace Sampoerna.EMS.BLL
 
             queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
 
-            return GetPbck1Data(queryFilter, input.SortOrderColumn);
+            return Mapper.Map<List<Pbck1Dto>>(GetPbck1Data(queryFilter, input.SortOrderColumn));
 
         }
 
@@ -78,19 +80,8 @@ namespace Sampoerna.EMS.BLL
             var queryFilter = ProcessQueryFilter(input);
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
-
-            //adding new condition
-            //date : 2015-07-30 15:24
-            if (input.YearFrom.HasValue)
-                queryFilter =
-                    queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
-            if(input.YearTo.HasValue)
-                queryFilter =
-                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
-            if (!string.IsNullOrEmpty(input.CompanyCode))
-                queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
-
-            return GetPbck1Data(queryFilter, input.SortOrderColumn);
+            
+            return Mapper.Map<List<Pbck1Dto>>(GetPbck1Data(queryFilter, input.SortOrderColumn));
         }
         
         private Expression<Func<PBCK1, bool>> ProcessQueryFilter(Pbck1GetByParamInput input)
@@ -130,7 +121,7 @@ namespace Sampoerna.EMS.BLL
             return queryFilter;
         }
 
-        private List<Pbck1Dto> GetPbck1Data(Expression<Func<PBCK1, bool>> queryFilter, string orderColumn)
+        private List<PBCK1> GetPbck1Data(Expression<Func<PBCK1, bool>> queryFilter, string orderColumn)
         {
             Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
             if (!string.IsNullOrEmpty(orderColumn))
@@ -140,9 +131,7 @@ namespace Sampoerna.EMS.BLL
 
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
 
-            var mapResult = Mapper.Map<List<Pbck1Dto>>(dbData.ToList());
-
-            return mapResult;
+            return dbData.ToList();
         }
 
         public Pbck1Dto GetById(long id)
@@ -1039,6 +1028,48 @@ namespace Sampoerna.EMS.BLL
             var from = "a@gmail.com";
 
             _messageService.SendEmail(from, to, subject, body, true);
+        }
+
+        #endregion
+
+        #region Summary Reports 
+        
+        public List<Pbck1SummaryReportDto> GetSummaryReportByParam(Pbck1GetSummaryReportByParamInput input)
+        {
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+            if (input.YearFrom.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
+            if (input.YearTo.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+                queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+
+            var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
+
+            if(pbck1Data == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //todo: ask the cleanest way
+            var rc = Mapper.Map<List<Pbck1SummaryReportDto>>(pbck1Data);
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (int i = 0; i < rc.Count; i++)
+            {
+                var nppbckData = _nppbkcbll.GetDetailsById(rc[i].NppbkcId);
+                if (nppbckData != null)
+                {
+                    rc[i].NppbkcKppbcId = nppbckData.KPPBC_ID;
+                    rc[i].NppbkcPlants = Mapper.Map<List<T001WDto>>(nppbckData.T001W);
+                }
+            }
+            
+            return rc;
         }
 
         #endregion

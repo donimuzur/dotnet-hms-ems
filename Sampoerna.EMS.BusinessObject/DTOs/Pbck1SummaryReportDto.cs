@@ -1,25 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
 using Sampoerna.EMS.Core;
-using Sampoerna.EMS.Website.Models.PLANT;
 
-namespace Sampoerna.EMS.Website.Models.PBCK1
+namespace Sampoerna.EMS.BusinessObject.DTOs
 {
-    public class Pbck1SummaryReportViewModel : BaseModel
+    public class Pbck1SummaryReportDto
     {
-        public Pbck1SummaryReportViewModel()
+        public Pbck1SummaryReportDto()
         {
-            SearchView = new Pbck1FilterSummaryReportViewModel();
-            DetailsList = new List<Pbck1SummaryReportsItem>();
+            NppbkcPlants = new List<T001WDto>();
         }
-        public Pbck1FilterSummaryReportViewModel SearchView { get; set; }
-        public List<Pbck1SummaryReportsItem> DetailsList { get; set; }
-        public Pbck1ExportSummaryReportsViewModel ExportModel { get; set; }
-    }
-
-    public class Pbck1SummaryReportsItem
-    {
         public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
         public long? Pbck1Reference { get; set; }
@@ -53,9 +43,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Lack1ToMonthName { get; set; }
         public int? Lack1ToYear { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public string StatusName { get; set; }
         public Enums.DocumentStatusGov? StatusGov { get; set; }
-        public string StatusGovName { get; set; }
         public decimal? QtyApproved { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -68,56 +56,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public decimal? LatestSaldo { get; set; }
         public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
-        public List<T001WModel> NppbkcPlants { get; set; }
+        public List<T001WDto> NppbkcPlants { get; set; }
+
     }
-
-    public class Pbck1ExportSummaryReportsViewModel
-    {
-        public bool Company { get; set; }
-        public bool Nppbkc { get; set; }
-        public bool Kppbc { get; set; }
-        public bool Pbck1Number { get; set; }
-        public bool Address { get; set; }
-        public bool OriginalNppbkc { get; set; }
-        public bool OriginalKppbc { get; set; }
-        public bool OriginalAddress { get; set; }
-        public bool ExcGoodsAmount { get; set; }
-        public bool Status { get; set; }
-
-        public string CompanyCode { get; set; }
-        public int? YearFrom { get; set; }
-        public int? YearTo { get; set; }
-        public string NppbkcId { get; set; }
-    }
-
-    public class Pbck1FilterSummaryReportViewModel
-    {
-        public string CompanyCode { get; set; }
-        public SelectList CompanyCodeList { get; set; }
-
-        public int? YearFrom { get; set; }
-        public SelectList YearFromList { get; set; }
-
-        public int? YearTo { get; set; }
-        public SelectList YearToList { get; set; }
-
-
-        public string NppbkcId { get; set; }
-        public SelectList NppbkcIdList { get; set; }
-    }
-
-    public class ExportSummaryDataModel
-    {
-        public string Company { get; set; }
-        public string Nppbkc { get; set; }
-        public string Kppbc { get; set; }
-        public string Pbck1Number { get; set; }
-        public string Address { get; set; }
-        public string OriginalNppbkc { get; set; }
-        public string OriginalKppbc { get; set; }
-        public string OriginalAddress { get; set; }
-        public string ExcGoodsAmount { get; set; }
-        public string Status { get; set; }
-    }
-
 }
