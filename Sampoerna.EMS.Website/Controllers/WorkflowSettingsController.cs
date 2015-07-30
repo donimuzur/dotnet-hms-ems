@@ -79,10 +79,11 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveForkflowMapping(int formid,int? actionid, string worflowusers, WorkflowMappingDetails mappingdata) {
+        public JsonResult SaveForkflowMapping(int formid,int? actionid, List<WorkflowUsers> worflowusers, WorkflowMappingDetails mappingdata) {
             try
             {
-                var datausers = JsonConvert.DeserializeObject<List<WorkflowUsers>>(worflowusers);
+                var datausers = worflowusers;
+                //var datausers = JsonConvert.DeserializeObject<List<WorkflowUsers>>(worflowusers);
                 var data = AutoMapper.Mapper.Map<WORKFLOW_STATE>(mappingdata);
                 if (actionid.HasValue) {
                     data.ACTION_ID = actionid.Value;
@@ -156,7 +157,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Modul = page.MENU_NAME;
             }
             
-            model.UserList = new SelectList(_userBLL.GetUsers(), "EMAIL", "USERNAME");
+            model.UserSelectList = new SelectList(_userBLL.GetUsers(), "EMAIL", "USERNAME");
             model.EmailTemplateList = new SelectList(_emailTemplateBLL.getAllEmailTemplates(), "EMAIL_TEMPLATE_ID", "TEMPLATE_NAME");
             return PartialView("GetMappingPartial",model);
         }

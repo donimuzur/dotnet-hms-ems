@@ -16,7 +16,9 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public int ACTION_ID { get; set; }
         public string USER_ID { get; set; }
+        public long WF_STATE_USER_ID { get; set; }
     
+        public virtual USER USER { get; set; }
         public virtual WORKFLOW_STATE WORKFLOW_STATE { get; set; }
     }
 }

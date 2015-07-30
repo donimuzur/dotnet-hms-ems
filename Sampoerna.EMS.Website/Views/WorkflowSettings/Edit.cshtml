@@ -175,15 +175,15 @@
             worflowmappingdata.State = $("#ModulState").val();
 
             $.ajax('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
-                type : "POST"
+                type : "POST",
                 //dataType: "json",
                 //contentType : "application/json",
-                data : {
+                data : JSON.stringify( {
                     formid: "@Model.Form_Id" ,
                     actionid: $("#stateid").val(),
-                    worflowusers: JSON.stringify(workflowuserdata),
+                    worflowusers: workflowuserdata,
                     mappingdata : worflowmappingdata
-                },
+                }),
                 success : function (data) {
                 
                 },

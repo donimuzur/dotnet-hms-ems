@@ -136,9 +136,10 @@
         <EntityTypeShape EntityType="EMSModel.CK5_FILE_UPLOAD" Width="1.5" PointX="20.75" PointY="40.625" />
         <AssociationConnector Association="EMSModel.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" />
         <AssociationConnector Association="EMSModel.FK_CK5_FILE_UPLOAD_USER" />
-        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE" Width="1.5" PointX="3" PointY="6.75" />
-        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE_USERS" Width="1.5" PointX="5.25" PointY="7" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE" Width="1.5" PointX="6" PointY="44.25" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE_USERS" Width="1.5" PointX="8.25" PointY="34.25" />
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_USER" />
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" />
         </Diagram>
     </edmx:Diagrams>
