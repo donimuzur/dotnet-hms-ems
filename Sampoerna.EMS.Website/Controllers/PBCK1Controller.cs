@@ -7,7 +7,6 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI;
 using AutoMapper;
-using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -21,6 +20,7 @@ using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
+using SpreadsheetLight;
 
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -97,6 +97,210 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(years, "ValueField", "TextField");
         }
+
+        [HttpPost]
+        public JsonResult PoaListPartial(string nppbkcId)
+        {
+            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
+            var model = new Pbck1ViewModel { SearchInput = { PoaList = listPoa } };
+            return Json(model);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterOpenDocument(Pbck1ViewModel model)
+        {
+            model.Details = GetOpenDocument(model.SearchInput);
+            return PartialView("_Pbck1Table", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
+            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new Pbck1ProdConvModel();
+
+                    try
+                    {
+                        uploadItem.ProductCode = datarow[0];
+                        uploadItem.ConverterOutput = datarow[1];
+                        uploadItem.ConverterUom = datarow[2];
+
+                        model.Detail.Pbck1ProdConverter.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+                }
+            }
+
+            var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input);
+
+            model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
+
+            return PartialView("_ProdConvList", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
+            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new Pbck1ProdPlanModel();
+
+                    try
+                    {
+                        uploadItem.Month = datarow[0];
+                        uploadItem.ProductCode = datarow[1];
+                        uploadItem.Amount = datarow[2];
+                        uploadItem.BkcRequired = datarow[3];
+                        uploadItem.BkcRequiredUomId = datarow[4];
+
+                        model.Detail.Pbck1ProdPlan.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+                }
+            }
+
+            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
+
+            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
+
+            return PartialView("_ProdPlanList", model);
+        }
+
+        private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
+        {
+
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.MonthList = GlobalFunctions.GetMonthList();
+            model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
+            model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.UomList = GlobalFunctions.GetUomList();
+
+            var pbck1RefList = GetCompletedDocument();
+
+            if (model.Detail != null && model.Detail.Pbck1Reference.HasValue)
+            {
+                //exclude current pbck1 document on list
+                pbck1RefList = pbck1RefList.Where(c => c.Pbck1Id != model.Detail.Pbck1Reference.Value).ToList();
+            }
+
+            model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
+
+            model.YearList = CreateYearList();
+            return model;
+        }
+
+        private Pbck1ItemViewModel CleanSupplierInfo(Pbck1ItemViewModel model)
+        {
+            if (model != null && model.Detail != null)
+            {
+                if (string.IsNullOrEmpty(model.Detail.SupplierKppbcId)
+                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierKppbcId))
+                {
+                    model.Detail.SupplierKppbcId = model.Detail.HiddenSupplierKppbcId;
+                }
+                if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
+                    !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
+                {
+                    model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
+                }
+                if (string.IsNullOrEmpty(model.Detail.SupplierNppbkcId)
+                    && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId))
+                {
+                    model.Detail.SupplierNppbkcId = model.Detail.HiddenSupplierNppbkcId;
+                }
+            }
+            return model;
+        }
+
+        [HttpPost]
+        public JsonResult GetSupplierPlant()
+        {
+            return Json(GlobalFunctions.GetSupplierPlantList());
+        }
+
+        [HttpPost]
+        public JsonResult GetNppbkcDetail(string nppbkcid)
+        {
+            var data = GlobalFunctions.GetNppbkcById(nppbkcid);
+            return Json(Mapper.Map<CompanyDetail>(data.T001));
+        }
+
+        [HttpPost]
+        public JsonResult GetSupplierPlantDetail(string plantid)
+        {
+            var data = _plantBll.GetId(plantid);
+            return Json(Mapper.Map<DetailPlantT1001W>(data));
+        }
+
+        public void ExportClientsListToExcel(int id)
+        {
+
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            var grid = new System.Web.UI.WebControls.GridView
+            {
+                DataSource = from d in model
+                             select new
+                             {
+                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty,
+                                 FieldName = d.FIELD_NAME,
+                                 OldValue = d.OLD_VALUE,
+                                 NewValue = d.NEW_VALUE,
+                                 User = d.USERNAME
+
+                             }
+            };
+
+            grid.DataBind();
+
+            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+
+        }
+
 
         #region ------- index ---------
 
@@ -350,8 +554,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CreatedUser = pbck1Data.CreatedById,
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
-                DocumentNumber =  model.Detail.Pbck1Number,
-                NppbkcId =  model.Detail.NppbkcId
+                DocumentNumber = model.Detail.Pbck1Number,
+                NppbkcId = model.Detail.NppbkcId
             };
 
             ////workflow
@@ -457,209 +661,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-        [HttpPost]
-        public JsonResult PoaListPartial(string nppbkcId)
-        {
-            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var model = new Pbck1ViewModel { SearchInput = { PoaList = listPoa } };
-            return Json(model);
-        }
-
-        [HttpPost]
-        public PartialViewResult FilterOpenDocument(Pbck1ViewModel model)
-        {
-            model.Details = GetOpenDocument(model.SearchInput);
-            return PartialView("_Pbck1Table", model);
-        }
-
-        [HttpPost]
-        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
-        {
-            var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
-            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
-            if (data != null)
-            {
-                foreach (var datarow in data.DataRows)
-                {
-                    var uploadItem = new Pbck1ProdConvModel();
-
-                    try
-                    {
-                        uploadItem.ProductCode = datarow[0];
-                        uploadItem.ConverterOutput = datarow[1];
-                        uploadItem.ConverterUom = datarow[2];
-
-                        model.Detail.Pbck1ProdConverter.Add(uploadItem);
-
-                    }
-                    catch (Exception)
-                    {
-                        continue;
-
-                    }
-                }
-            }
-
-            var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input);
-
-            model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
-
-            return PartialView("_ProdConvList", model);
-        }
-
-        [HttpPost]
-        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
-        {
-            var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
-            var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
-            if (data != null)
-            {
-                foreach (var datarow in data.DataRows)
-                {
-                    var uploadItem = new Pbck1ProdPlanModel();
-
-                    try
-                    {
-                        uploadItem.Month = datarow[0];
-                        uploadItem.ProductCode = datarow[1];
-                        uploadItem.Amount = datarow[2];
-                        uploadItem.BkcRequired = datarow[3];
-                        uploadItem.BkcRequiredUomId = datarow[4];
-
-                        model.Detail.Pbck1ProdPlan.Add(uploadItem);
-
-                    }
-                    catch (Exception)
-                    {
-                        continue;
-
-                    }
-                }
-            }
-
-            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
-
-            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
-
-            return PartialView("_ProdPlanList", model);
-        }
-
-        private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
-        {
-
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
-            model.MonthList = GlobalFunctions.GetMonthList();
-            model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
-            model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
-            model.UomList = GlobalFunctions.GetUomList();
-
-            var pbck1RefList = GetCompletedDocument();
-
-            if (model.Detail != null && model.Detail.Pbck1Reference.HasValue)
-            {
-                //exclude current pbck1 document on list
-                pbck1RefList = pbck1RefList.Where(c => c.Pbck1Id != model.Detail.Pbck1Reference.Value).ToList();
-            }
-
-            model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
-
-            model.YearList = CreateYearList();
-            return model;
-        }
-
-        private Pbck1ItemViewModel CleanSupplierInfo(Pbck1ItemViewModel model)
-        {
-            if (model != null && model.Detail != null)
-            {
-                if (string.IsNullOrEmpty(model.Detail.SupplierKppbcId)
-                && !string.IsNullOrEmpty(model.Detail.HiddenSupplierKppbcId))
-                {
-                    model.Detail.SupplierKppbcId = model.Detail.HiddenSupplierKppbcId;
-                }
-                if (string.IsNullOrEmpty(model.Detail.SupplierAddress) &&
-                    !string.IsNullOrEmpty(model.Detail.HiddendSupplierAddress))
-                {
-                    model.Detail.SupplierAddress = model.Detail.HiddendSupplierAddress;
-                }
-                if (string.IsNullOrEmpty(model.Detail.SupplierNppbkcId)
-                    && !string.IsNullOrEmpty(model.Detail.HiddenSupplierNppbkcId))
-                {
-                    model.Detail.SupplierNppbkcId = model.Detail.HiddenSupplierNppbkcId;
-                }
-            }
-            return model;
-        }
-
-        [HttpPost]
-        public JsonResult GetSupplierPlant()
-        {
-            return Json(GlobalFunctions.GetSupplierPlantList());
-        }
-
-        [HttpPost]
-        public JsonResult GetNppbkcDetail(string nppbkcid)
-        {
-            var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T001));
-        }
-
-        [HttpPost]
-        public JsonResult GetSupplierPlantDetail(string plantid)
-        {
-            var data = _plantBll.GetId(plantid);
-            return Json(Mapper.Map<DetailPlantT1001W>(data));
-        }
-
-        public void ExportClientsListToExcel(int id)
-        {
-
-            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.ToString());
-
-            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
-
-            var grid = new System.Web.UI.WebControls.GridView
-            {
-                DataSource = from d in model
-                             select new
-                             {
-                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty,
-                                 FieldName = d.FIELD_NAME,
-                                 OldValue = d.OLD_VALUE,
-                                 NewValue = d.NEW_VALUE,
-                                 User = d.USERNAME
-
-                             }
-            };
-
-            grid.DataBind();
-
-            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-            //'Excel 2003 : "application/vnd.ms-excel"
-            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-            var sw = new StringWriter();
-            var htw = new HtmlTextWriter(sw);
-
-            grid.RenderControl(htw);
-
-            Response.Output.Write(sw.ToString());
-
-            Response.Flush();
-
-            Response.End();
-
-        }
-
         #region Completed Document
 
         public ActionResult CompletedDocument()
@@ -713,8 +714,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 Comment = comment,
                 AdditionalDocumentData = new Pbck1WorkflowDocumentData()
                 {
-                    DecreeDate = pbck1Data.DecreeDate, 
-                    QtyApproved = pbck1Data.QtyApproved, 
+                    DecreeDate = pbck1Data.DecreeDate,
+                    QtyApproved = pbck1Data.QtyApproved,
                     Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
                 }
             };
@@ -764,7 +765,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id});
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -782,7 +783,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
-            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id = model.Detail.Pbck1Id});
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -816,7 +817,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 FILE_NAME = item.FileName,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
-                                CREATED_BY = currentUserId.USER_ID, 
+                                CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
@@ -831,7 +832,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
-            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id = model.Detail.Pbck1Id});
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -842,7 +843,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovReject, model.Detail.Comment);
-                
+
                 isSuccess = true;
             }
             catch (Exception ex)
@@ -856,8 +857,6 @@ namespace Sampoerna.EMS.Website.Controllers
             AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
-        
-        #endregion
 
         private string SaveUploadedFile(HttpPostedFileBase file, int pbck1Id)
         {
@@ -878,6 +877,169 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return sFileName;
         }
-        
+
+        #endregion
+
+        #region ---------- Summary Report ---------------
+
+        public ActionResult SummaryReports()
+        {
+            Pbck1SummaryReportViewModel model;
+            try
+            {
+
+                model = new Pbck1SummaryReportViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    SearchView =
+                    {
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        YearFromList = GetYearListPbck1(true),
+                        YearToList = GetYearListPbck1(false),
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                    },
+                    //view all data pbck1 completed document
+                    DetailsList = SearchSummaryReports()
+                };
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck1SummaryReportViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+            }
+
+            return View("SummaryReports", model);
+        }
+
+        private List<Pbck1SummaryReportsItem> SearchSummaryReports(Pbck1FilterSummaryReportViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var pbck1Data = _pbck1Bll.GetCompletedDocumentByParam(new Pbck1GetCompletedDocumentByParamInput());
+                return Mapper.Map<List<Pbck1SummaryReportsItem>>(pbck1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetCompletedDocumentByParamInput>(filter);
+            var dbData = _pbck1Bll.GetCompletedDocumentByParam(input);
+            return Mapper.Map<List<Pbck1SummaryReportsItem>>(dbData);
+        }
+
+        private SelectList GetYearListPbck1(bool isFrom)
+        {
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in pbck1List.OrderBy(c => c.PeriodFrom)
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.PeriodFrom.Year,
+                            TextField = x.PeriodFrom.ToString("yyyy")
+                        };
+            else
+                query = from x in pbck1List.Where(c => c.PeriodTo.HasValue).OrderBy(c => c.PeriodFrom)
+                        select new SelectItemModel()
+                        {
+                            // ReSharper disable once PossibleInvalidOperationException
+                            ValueField = x.PeriodTo.Value.Year,
+                            TextField = x.PeriodTo.Value.ToString("yyyy")
+                        };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReports(Pbck1SummaryReportViewModel model)
+        {
+            model.DetailsList = SearchSummaryReports(model.SearchView);
+            return PartialView("_Pbck1SummaryReportTable", model);
+        }
+
+        public ActionResult ExportSummaryReports(Pbck1SummaryReportViewModel model)
+        {
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
+                //AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("SummaryReports");
+        }
+
+        public void ExportXlsSummaryReports(long pbck1Id)
+        {
+
+            var pathFile = CreateXlsFileSummaryReports(pbck1Id);
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);// "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFileSummaryReports(long pbck1Id)
+        {
+            var slDocument = new SLDocument();
+
+            //todo check
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, pbck1Id.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            int iRow = 1;
+
+            //create header
+            slDocument.SetCellValue(iRow, 1, "DATE");
+            slDocument.SetCellValue(iRow, 2, "FIELD");
+            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
+            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
+            slDocument.SetCellValue(iRow, 5, "USER");
+
+            iRow++;
+
+            foreach (var changesHistoryItemModel in model)
+            {
+                slDocument.SetCellValue(iRow, 1,
+                    changesHistoryItemModel.MODIFIED_DATE.HasValue
+                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
+                        : string.Empty);
+                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
+                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
+                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
+                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+
+                iRow++;
+            }
+            var fileName = "Pbck1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        #endregion
+
     }
 }

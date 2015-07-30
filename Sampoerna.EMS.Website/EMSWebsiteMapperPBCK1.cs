@@ -86,6 +86,19 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck1DecreeDocDto, Pbck1DecreeDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1DecreeDocModel, Pbck1DecreeDocDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<Pbck1FilterSummaryReportViewModel, Pbck1GetCompletedDocumentByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1Dto, Pbck1SummaryReportsItem>().IgnoreAllUnmapped()
+                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.Pbck1Id))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.NppbkcCompanyCode))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.NppbkcCompanyName))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.Kppbc, opt => opt.MapFrom(src => src.SupplierKppbcId))
+                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Pbck1Number))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.SupplierAddress))
+                ;
+
         }
     }
 }

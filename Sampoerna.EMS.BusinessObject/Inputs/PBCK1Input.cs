@@ -28,9 +28,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Pbck1GetCompletedDocumentByParamInput : Pbck1GetByParamInput
     {
-        
+        public string CompanyCode { get; set; }
+        public int? YearFrom { get; set; }
+        public int? YearTo { get; set; }
     }
-    
+
     public class Pbck1SaveInput 
     {
         public Pbck1Dto Pbck1 { get; set; }

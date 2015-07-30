@@ -79,9 +79,20 @@ namespace Sampoerna.EMS.BLL
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
 
+            //adding new condition
+            //date : 2015-07-30 15:24
+            if (input.YearFrom.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
+            if(input.YearTo.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+                queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
+
             return GetPbck1Data(queryFilter, input.SortOrderColumn);
         }
-
+        
         private Expression<Func<PBCK1, bool>> ProcessQueryFilter(Pbck1GetByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
