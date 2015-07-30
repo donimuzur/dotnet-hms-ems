@@ -120,27 +120,45 @@
 
                                                 <div class="col-md-8">
                                                     <div class="row">
-                                                        <div class="col-md-6">
-                                                            <button type="button" class="btn btn-grey full" data-toggle="modal" data-target=".view-files">View Files</button>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
-                                                        </div>
+                                                            <div class="col-md-6">
+                                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                             </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-8" id="poa-files">
-
-                                                </div>
+                                               
 
                                             </div>
                                         </div>
 
                                         
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <span class="red">*</span> ) This Field Required
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
                                         </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" id="poa-files">
+                                                        @if (Model.Detail.PoaSk != null)
+                                                        {
+
+                                                            foreach (var file in Model.Detail.PoaSk)
+                                                            {
+  
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <i class="fa fa-file"></i>
+                                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                    </div>
+                                                                    <div class="col-sm-2">
+                                                                        <a href="javascript:void(0)" onclick="removeSK(@file.POA_SK_ID, '@Url.Action("RemoveSk", "POA")', this)">remove</a>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+
+                                        </div>
+                                    </div>
 
                                     
                                 </div>
@@ -167,11 +185,13 @@
                                 foreach (var file in Model.Detail.PoaSk)
                                 {
                                     <div class="row">
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-8">
                                             <i class="fa fa-file"></i>
                                             <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
                                         </div>
-
+                                        <div class="col-sm-4">
+                                           <a href="javascript:void(0)" onclick="removeSK(@file.POA_SK_ID, '@Url.Action("RemoveSk", "POA")', this)">remove</a>
+                                        </div>
                                     </div>
                                 }
                             }
