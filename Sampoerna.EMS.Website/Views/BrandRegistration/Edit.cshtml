@@ -67,15 +67,10 @@
                                                         <div class="row">
                                                             <label class="col-md-4">FA Code<span class="red">*</span></label>
                                                             <div class="col-md-8">
-                                                                @if (Model.IsFromSAP)
-                                                                {
-                                                                    @Html.HiddenFor(model=>model.FaCode)
-                                                                    @Html.TextBox("facode",Model.FaCode,new {@class = "form-control", disabled="disabled"})
-                                                                }
-                                                                else
-                                                                {
-                                                                    @Html.TextBoxFor(model => model.FaCode, new {@class = "form-control", @maxlength = "18"})
-                                                                }
+                                                                @Html.HiddenFor(model => model.FaCode)
+                                                                 
+                                                                @Html.TextBox("facode",Model.FaCode,new {@class = "form-control", disabled="disabled"})
+                                                               
                                                             </div>
                                                         </div>
                                                     </div>
@@ -240,7 +235,7 @@
                                                                 }
                                                                 else
                                                                 {
-                                                                    @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new {@class = "form-control"})
+                                                                    @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList,"select", new {@class = "form-control"})
                                                                 }
                                                               </div>
                                                         </div>

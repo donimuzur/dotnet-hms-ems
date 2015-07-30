@@ -10,7 +10,7 @@
                 </a>
                 @if (Model.IsDeleted.Equals("No"))
                 {
-                     <a href="javascript:void(0);" onclick="confirmDeleteBrand() " class="btn btn-danger">Delete</a>
+                    <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
                 }
             </div>
         </div>
@@ -336,7 +336,7 @@
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="deleteBrand();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href = '@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode = @Url.Encode(Model.FaCode) })'">Delete</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -345,8 +345,8 @@
 
 @section scripts {
     <script type="text/javascript" language="javascript">
-        
-    @*console.log(@Model.FaCode);*@
+
+    
     $(document).ready(function () {
         $('.check-box').attr('disabled', 'disabled');
         $('#MenuMasterBrandRegistration').addClass('active');
@@ -354,13 +354,8 @@
     var confirmDeleteBrand = function () {
         $('#btn-delete-brand').click();
     };
-    var deleteBrand = function () {
-        var faCode = '@Model.FaCode';
-        window.location = "@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode = '"' + @Model.FaCode + '"' })";
+  
 
-
-    };
-
-    </script>
+</script>
 }
 

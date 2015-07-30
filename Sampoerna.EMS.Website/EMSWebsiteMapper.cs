@@ -332,6 +332,10 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS));
 
+            Mapper.CreateMap<T001W, SelectItemModelVirtualPlant>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
+             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS));
+
             Mapper.CreateMap<VirtualMappingPlantCreateViewModel, VIRTUAL_PLANT_MAP>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
                 .ForMember(dest => dest.IMPORT_PLANT_ID, opt => opt.MapFrom(src => src.ImportPlantId))

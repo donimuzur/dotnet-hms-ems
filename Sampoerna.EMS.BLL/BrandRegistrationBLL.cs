@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -80,7 +81,7 @@ namespace Sampoerna.EMS.BLL
             return result.ToList();
         }
 
-        public void Save(ZAIDM_EX_BRAND brandRegistration)
+        public string Save(ZAIDM_EX_BRAND brandRegistration)
         {
 
             _repository.InsertOrUpdate(brandRegistration);
@@ -92,9 +93,11 @@ namespace Sampoerna.EMS.BLL
             }
             catch (Exception exception)
             {
-                _logger.Error(exception);
+                return exception.Message;
 
             }
+            return Constans.SubmitMessage.Updated;
+
         }
 
         public void Delete(string plant, string facode)
