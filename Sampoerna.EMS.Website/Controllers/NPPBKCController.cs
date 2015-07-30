@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Plant = Mapper.Map<List<T001W>>(_plantBll.GetAll());
+            model.Plant = _plantBll.Get(id);
 
 
             

@@ -107,8 +107,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             dbBrand.IS_DELETED = true;
-
-
+            //_repository.Update(dbBrand);
             _uow.SaveChanges();
 
 
