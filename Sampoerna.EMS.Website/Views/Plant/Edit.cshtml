@@ -136,7 +136,7 @@
                                             <div class="row">
                                                 <label class="col-md-3">Phone<span class="red">*</span></label>
                                                 <div class="col-md-9">
-                                                    @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control", @maxlength = "25" })
                                                 </div>
                                             </div>
                                         </div>

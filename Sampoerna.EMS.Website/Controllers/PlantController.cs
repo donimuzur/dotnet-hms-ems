@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                
-                var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked == true).ToList();
+                var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
