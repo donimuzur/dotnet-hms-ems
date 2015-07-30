@@ -118,7 +118,7 @@
                                                             @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].EXC_GOOD_TYP)
                                                             @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
                                                             <div class="col-md-12">
-                                                                @Html.EditorFor(x => x.Detail.ReceiveMaterials[i].IsChecked)
+                                                                @Html.CheckBoxFor(x => x.Detail.ReceiveMaterials[i].IsChecked)
                                                                 @Html.Label(Model.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
                                                             </div>
 

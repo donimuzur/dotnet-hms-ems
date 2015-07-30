@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks;
 
 
-                var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
+                var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked == true).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
