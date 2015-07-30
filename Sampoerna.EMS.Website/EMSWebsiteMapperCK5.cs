@@ -34,14 +34,15 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting();
 
 
-            Mapper.CreateMap<Plant, CK5PlantModel>().IgnoreAllNonExisting()
+            Mapper.CreateMap<T001WDto, CK5PlantModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.NAME1))
-                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.NPWP))
+                .ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.Npwp))
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
-                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.COMPANY_ADDRESS))
-                .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.KPPBC_CITY + "-" + src.KPPBC_NO ));
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CompanyAddress))
+                .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.KppbcCity + "-" + src.KppbcNo ));
 
             Mapper.CreateMap<CK5FormViewModel, CK5Dto>().IgnoreAllNonExisting()
               .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id))

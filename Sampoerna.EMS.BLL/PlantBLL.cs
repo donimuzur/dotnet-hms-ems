@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -190,6 +191,11 @@ namespace Sampoerna.EMS.BLL
               
           }
 
-        
+          public T001WDto GetT001ById(string id)
+          {
+              return Mapper.Map<T001WDto>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
+          }
+
+
     }
 }

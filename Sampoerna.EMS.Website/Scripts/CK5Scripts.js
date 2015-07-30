@@ -155,6 +155,7 @@ function ajaxGetDestPlantDetails(url, formData) {
             success: function (data) {
                 $("input[name='DestNpwp']").val(data.PlantNpwp);
                 $("input[name='DestNppbkcId']").val(data.NPPBCK_ID);
+                $("input[name='DestCompanyCode']").val(data.CompanyCode);
                 $("input[name='DestCompanyName']").val(data.CompanyName);
                 $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
@@ -180,6 +181,7 @@ function ajaxGetPlantDetails(url, formData) {
             success: function (data) {
                 $("input[name='SourceNpwp']").val(data.PlantNpwp);
                 $("input[name='SourceNppbkcId']").val(data.NPPBCK_ID);
+                $("input[name='SourceCompanyCode']").val(data.CompanyCode);
                 $("input[name='SourceCompanyName']").val(data.CompanyName);
                 $("*[name='SourceAddress']").val(data.CompanyAddress);
                 $("input[name='SourceKppbcName']").val(data.KppBcName);
@@ -207,6 +209,18 @@ function ajaxGetCeOfficeCode(url, formData) {
     }
 }
 
+function ajaxGetCompanyCode(url, formData) {
+    if (formData.nppBkcCityId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                $("input[name='CompanyCode']").val(data);
+            }
+        });
+    }
+}
 
 function ChangeBackSourceMaterial(plantId) {
     if (plantId == plantOriginal) {

@@ -309,10 +309,19 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
+        public JsonResult GetCompanyCode(string nppBkcCityId)
+        {
+            var companyCode = "";
+            var data = GlobalFunctions.GetNppbkcById(nppBkcCityId);
+            if (data != null)
+                companyCode = data.BUKRS;
+            return Json(companyCode);
+        }
+
+        [HttpPost]
         public JsonResult GetSourcePlantDetails(string plantId)
         {
-            //todo check
-            var dbPlant = _plantBll.GetId(plantId);
+            var dbPlant = _plantBll.GetT001ById(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
             return Json(model);
         }
