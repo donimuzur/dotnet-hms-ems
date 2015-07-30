@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.BLL
                 input.Pbck1.CreatedDate = DateTime.Now;
                 dbData = new PBCK1();
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
-                
+
                 _repository.Insert(dbData);
 
             }
@@ -246,31 +246,31 @@ namespace Sampoerna.EMS.BLL
         private void SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("PBCK1_REF", origin.Pbck1Reference.Equals(data.Pbck1Reference));
-            changesData.Add("PBCK1_TYPE", origin.Pbck1Type.Equals(data.Pbck1Type));
+            changesData.Add("PBCK1_REF", origin.Pbck1Reference == data.Pbck1Reference);
+            changesData.Add("PBCK1_TYPE", origin.Pbck1Type == data.Pbck1Type);
             changesData.Add("PERIOD_FROM", origin.PeriodFrom.Equals(data.PeriodFrom));
-            changesData.Add("PERIOD_TO", origin.PeriodTo.HasValue ? origin.PeriodTo.Equals(data.PeriodTo) : false);
-            changesData.Add("REPORTED_ON", origin.ReportedOn.HasValue ? origin.ReportedOn.Equals(data.ReportedOn) : false);
-            changesData.Add("NPPBKC_ID", origin.NppbkcId.Equals(data.NppbkcId));
-            changesData.Add("EXC_GOOD_TYP", !string.IsNullOrEmpty(origin.GoodType) ? origin.GoodType.Equals(data.GoodType) : false);
-            changesData.Add("SUPPLIER_PLANT", !string.IsNullOrEmpty(origin.SupplierPlant) ? origin.SupplierPlant.Equals(data.SupplierPlant) : (!string.IsNullOrEmpty(data.SupplierPlant) ? false : true));
-            changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId.HasValue ? origin.SupplierPortId.Equals(data.SupplierPortId) : (data.SupplierPortId.HasValue ? false : true));
-            changesData.Add("SUPPLIER_ADDRESS", !string.IsNullOrEmpty(origin.SupplierAddress) ? origin.SupplierAddress.Equals(data.SupplierAddress) : (!string.IsNullOrEmpty(data.SupplierAddress) ? false : true));
-            changesData.Add("SUPPLIER_PHONE", !string.IsNullOrEmpty(origin.SupplierPhone) ? origin.SupplierPhone.Equals(data.SupplierPhone) : (!string.IsNullOrEmpty(data.SupplierPhone) ? false : true));
-            changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Equals(data.PlanProdFrom) : false);
-            changesData.Add("PLAN_PROD_TO", origin.PlanProdTo.HasValue ? origin.PlanProdTo.Equals(data.PlanProdTo) : false);
-            changesData.Add("REQUEST_QTY", origin.RequestQty.HasValue ? origin.RequestQty.Equals(data.RequestQty) : false);
-            changesData.Add("REQUEST_QTY_UOM", !string.IsNullOrEmpty(origin.RequestQtyUomId) ? origin.RequestQtyUomId.Equals(data.RequestQtyUomId) : false);
-            changesData.Add("LACK1_FROM_MONTH", origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthId.Equals(data.Lack1FromMonthId) : false);
-            changesData.Add("LACK1_FROM_YEAR", origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Equals(data.Lack1FormYear) : false);
-            changesData.Add("LACK1_TO_MONTH", origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthId.Equals(data.Lack1ToMonthId) : false);
-            changesData.Add("LACK1_TO_YEAR", origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Equals(data.Lack1ToYear) : false);
-            changesData.Add("STATUS", origin.Status.Equals(data.Status));
-            changesData.Add("STATUS_GOV", origin.StatusGov.Equals(data.StatusGov));
-            changesData.Add("QTY_APPROVED", origin.QtyApproved.HasValue ? origin.QtyApproved.Equals(data.QtyApproved) : false);
-            changesData.Add("DECREE_DATE", origin.DecreeDate.HasValue ? origin.DecreeDate.Equals(data.DecreeDate) : false);
-            changesData.Add("LATEST_SALDO", origin.LatestSaldo.HasValue ? origin.LatestSaldo.Equals(data.LatestSaldo) : false);
-            changesData.Add("LATEST_SALDO_UOM", !string.IsNullOrEmpty(origin.LatestSaldoUomId) ? origin.LatestSaldoUomId.Equals(data.LatestSaldoUomId) : false);
+            changesData.Add("PERIOD_TO", origin.PeriodTo == data.PeriodTo);
+            changesData.Add("REPORTED_ON", origin.ReportedOn == data.ReportedOn);
+            changesData.Add("NPPBKC_ID", origin.NppbkcId == data.NppbkcId);
+            changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
+            changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
+            changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId == data.SupplierPortId);
+            changesData.Add("SUPPLIER_ADDRESS", origin.SupplierAddress == data.SupplierAddress);
+            changesData.Add("SUPPLIER_PHONE", origin.SupplierPhone == data.SupplierPhone);
+            changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom == data.PlanProdFrom);
+            changesData.Add("PLAN_PROD_TO", origin.PlanProdTo == data.PlanProdTo);
+            changesData.Add("REQUEST_QTY", origin.RequestQty == data.RequestQty);
+            changesData.Add("REQUEST_QTY_UOM", origin.RequestQtyUomId == data.RequestQtyUomId);
+            changesData.Add("LACK1_FROM_MONTH", origin.Lack1FromMonthId == data.Lack1FromMonthId);
+            changesData.Add("LACK1_FROM_YEAR", origin.Lack1FormYear == data.Lack1FormYear);
+            changesData.Add("LACK1_TO_MONTH", origin.Lack1ToMonthId == data.Lack1ToMonthId);
+            changesData.Add("LACK1_TO_YEAR", origin.Lack1ToYear == data.Lack1ToYear);
+            changesData.Add("STATUS", origin.Status == data.Status);
+            changesData.Add("STATUS_GOV", origin.StatusGov == data.StatusGov);
+            changesData.Add("QTY_APPROVED", origin.QtyApproved == data.QtyApproved);
+            changesData.Add("DECREE_DATE", origin.DecreeDate == data.DecreeDate);
+            changesData.Add("LATEST_SALDO", origin.LatestSaldo == data.LatestSaldo);
+            changesData.Add("LATEST_SALDO_UOM", origin.LatestSaldoUomId == data.LatestSaldoUomId);
 
             foreach (var listChange in changesData)
             {
@@ -386,7 +386,7 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.QtyApproved.HasValue
                                 ? origin.QtyApproved.Value.ToString("N0")
                                 : "NULL";
-                            changes.NEW_VALUE = data.QtyApproved.Value.ToString("N0");
+                            changes.NEW_VALUE = data.QtyApproved.HasValue ? data.QtyApproved.Value.ToString("N0") : "NULL";
                             break;
                         case "DECREE_DATE":
                             changes.OLD_VALUE = origin.DecreeDate.HasValue
@@ -762,7 +762,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
-            if(isNeedSendNotif)
+            if (isNeedSendNotif)
                 SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
@@ -807,7 +807,7 @@ namespace Sampoerna.EMS.BLL
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
-            
+
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
@@ -826,10 +826,12 @@ namespace Sampoerna.EMS.BLL
                                         CreatedUser = dbData.CREATED_BY,
                                         CurrentUser = input.UserId,
                                         DocumentStatus = dbData.STATUS,
-                                        UserRole = input.UserRole
+                                        UserRole = input.UserRole,
+                                        NppbkcId = dbData.NPPBKC_ID,
+                                        DocumentNumber = dbData.NUMBER
                                     });
 
-            if(!isOperationAllow)
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
@@ -869,10 +871,12 @@ namespace Sampoerna.EMS.BLL
                                         CreatedUser = dbData.CREATED_BY,
                                         CurrentUser = input.UserId,
                                         DocumentStatus = dbData.STATUS,
-                                        UserRole = input.UserRole
+                                        UserRole = input.UserRole,
+                                        DocumentNumber = dbData.NUMBER,
+                                        NppbkcId = dbData.NPPBKC_ID
                                     });
 
-            if(!isOperationAllow)
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -919,7 +923,7 @@ namespace Sampoerna.EMS.BLL
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
-            
+
             AddWorkflowHistory(input);
 
         }
@@ -937,7 +941,7 @@ namespace Sampoerna.EMS.BLL
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
-            
+
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 

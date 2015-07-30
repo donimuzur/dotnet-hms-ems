@@ -179,11 +179,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
 
-                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-                {
-                    FormId = id.Value,
-                    FormType = Enums.FormType.PBCK1
-                }));
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = pbck1Data.Pbck1Number;
+                workflowInput.DocumentStatus = pbck1Data.Status;
+                workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
@@ -269,7 +271,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveResult.Success)
                 {
-                    return RedirectToAction("Index");
+                    //return RedirectToAction("Index");
+                    return RedirectToAction("Edit", new { id = model.Detail.Pbck1Id });
                 }
 
             }
@@ -282,11 +285,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, model.Detail.Pbck1Id.ToString()));
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-            {
-                FormId = model.Detail.Pbck1Id,
-                FormType = Enums.FormType.PBCK1
-            }));
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Detail.Pbck1Number;
+            workflowInput.DocumentStatus = model.Detail.Status;
+            workflowInput.NPPBKC_Id = model.Detail.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
             model.WorkflowHistory = workflowHistory;
             model.ChangesHistoryList = changeHistory;
@@ -312,11 +317,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-            {
-                FormId = id.Value,
-                FormType = Enums.FormType.PBCK1
-            }));
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = pbck1Data.Pbck1Number;
+            workflowInput.DocumentStatus = pbck1Data.Status;
+            workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
@@ -342,7 +349,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 UserRole = CurrentUser.UserRole,
                 CreatedUser = pbck1Data.CreatedById,
                 CurrentUser = CurrentUser.USER_ID,
-                CurrentUserGroup = CurrentUser.USER_GROUP_ID
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber =  model.Detail.Pbck1Number,
+                NppbkcId =  model.Detail.NppbkcId
             };
 
             ////workflow
