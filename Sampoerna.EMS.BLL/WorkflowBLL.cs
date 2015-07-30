@@ -121,8 +121,24 @@ namespace Sampoerna.EMS.BLL
                 if (input.UserRole == Enums.UserRole.Manager)
                     return false;
 
-                if (input.CreatedUser == input.CurrentUser || input.UserRole == Enums.UserRole.POA)
+                //if (input.CreatedUser == input.CurrentUser && input.UserRole == Enums.UserRole.User)
+                //    return true;
+
+                //allow poa and creator
+                if (input.CreatedUser == input.CurrentUser)
                     return true;
+
+                if (input.UserRole == Enums.UserRole.POA)
+                {
+                   
+                    //get poa that already approve or reject
+                    var poaId = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    if (string.IsNullOrEmpty(poaId))
+                        return false;
+
+                    if (poaId == input.CurrentUser)
+                        return true;
+                }
 
             }
 
