@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Web;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -704,8 +706,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 Comment = comment,
                 AdditionalDocumentData = new Pbck1WorkflowDocumentData()
                 {
-                    DecreeDate = pbck1Data.DecreeDate, 
-                    QtyApproved = pbck1Data.QtyApproved, 
+                    DecreeDate = pbck1Data.DecreeDate,
+                    QtyApproved = pbck1Data.QtyApproved,
                     Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
                 }
             };
@@ -755,7 +757,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id});
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -773,7 +775,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
-            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id = model.Detail.Pbck1Id});
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -821,7 +823,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
-            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new {id = model.Detail.Pbck1Id});
+            if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -832,7 +834,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.GovReject, model.Detail.Comment);
-                
+
                 isSuccess = true;
             }
             catch (Exception ex)
@@ -846,7 +848,7 @@ namespace Sampoerna.EMS.Website.Controllers
             AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
-        
+
         #endregion
 
         private string SaveUploadedFile(HttpPostedFileBase file, int pbck1Id)
@@ -868,6 +870,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return sFileName;
         }
-        
+
+        public ActionResult PrintOut(int? id)
+        {
+            //DataTable dt = new DataTable();
+            ReportClass rpt = new ReportClass();
+            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
+            rpt.Load();
+            //rpt.SetDataSource(dt);
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+
     }
 }
