@@ -186,19 +186,16 @@
                                                                 {
                                                                     for (int i = 0; i < Model.MaterialUom.Count; i++)
                                                                     {
-                                                                        @Html.HiddenFor(x => Model.MaterialUom[i].Id)
-                                                                        @Html.HiddenFor(x => Model.MaterialUom[i].MaterialNumber)
-                                                                        @Html.HiddenFor(x => Model.MaterialUom[i].Plant)
-
+                                                                       
                                                                         <tr id="uom-exist-@Model.MaterialUom[i].Id">
                                                                             <td><a href="javascript:void(0)" onclick="deleteExistingUom(@Model.MaterialUom[i].Id)">delete</a></td>
 
                                                                             <td>
-                                                                                <span id="field1">@Html.DisplayFor(x => Model.MaterialUom[i].Meinh)</span>
+                                                                                <span id="field1">@Html.Raw(Model.MaterialUom[i].Meinh)</span>
 
                                                                             </td>
                                                                             <td>
-                                                                                <span id="field2">@Html.DisplayFor(x => Model.MaterialUom[i].UmrenStr)</span>
+                                                                                <span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>
                                                                             </td>
                                                                         </tr>
 
@@ -238,13 +235,15 @@
                                 </div>
                                 <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
                                     <div class="panel-body">
-                                        <form class="form-excise" role="form">
+                                        <div class="form-excise" role="form">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Plant Deletion</label>
                                                         <div class="col-md-8">
-                                                            @Html.DisplayFor(model => model.IsPlantDelete, new { @class = "form-control", @disabled = "disabled" })
+                                                            @Html.CheckBoxFor(model=>model.IsPlantDelete)
+                                                          
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -252,13 +251,16 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Client Deletion</label>
                                                         <div class="col-md-8">
-                                                            @Html.DisplayFor(model => model.IsClientDelete, new { @class = "form-control", @disabled = "disabled" })
+                                                            @Html.CheckBoxFor(model => model.IsClientDelete)
+
+
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -287,22 +289,28 @@
     <script type="text/javascript" language="javascript">
 
         $('#MenuMasterMaterial').addClass('active');
+
+       
+        
+        
         var arrayUom = [];
         $('#material-uom-add-btn').click(function() {
             var meinh = $('#uom-list').find("option:selected").val();
-            if (meinh !== '' && $('#ConversionValueStr').val() !=='') {
+            if (meinh !== '' && $('#ConversionValueStr').val() !== '') {
                 var umren = $('#ConversionValueStr').val();
 
-                var objUom = { Meinh: meinh, Umren: umren };
+                var objUom = { Meinh: encodeURI(meinh), Umren: umren };
                 arrayUom.push(objUom);
                 CreateUomList();
             }
         });
 
         function CreateUomList() {
-            
+            for (var j = 0; j < arrayUom.length; j++) {
+                $('#mat-uom' + j).remove();
+            }
             for (var i = 0; i < arrayUom.length; i++) {
-                $('#material-uom tbody').append('<tr id="mat-uom' + i + '"><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + arrayUom[i].Meinh + '</td><td>' + arrayUom[i].Umren + '</td></tr>');
+                $('#material-uom tbody').append('<tr id="mat-uom' + i + '"><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + decodeURI(arrayUom[i].Meinh) + '</td><td>' + arrayUom[i].Umren + '</td></tr>');
             }
         }
 
@@ -317,9 +325,9 @@
                 type: 'POST',
                 url: '@Url.Action("RemoveMaterialUom", "Material")',
                 data: { materialUomId: id },
-                success: function (data) {
-                    $('#uom-exist-'+id).remove();
-                   
+                success: function(data) {
+                    $('#uom-exist-' + id).remove();
+
                 }
             });
         }

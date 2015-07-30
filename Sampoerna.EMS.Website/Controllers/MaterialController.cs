@@ -180,11 +180,14 @@ namespace Sampoerna.EMS.Website.Controllers
                   
 
                         model.WERKS = plant;
-                        foreach (var uom in model.MATERIAL_UOM)
+                        if (model.MATERIAL_UOM != null)
                         {
-                            uom.STICKER_CODE = model.STICKER_CODE;
-                            uom.WERKS = model.WERKS;
-
+                            foreach (var uom in model.MATERIAL_UOM)
+                            {
+                                uom.STICKER_CODE = model.STICKER_CODE;
+                                uom.WERKS = model.WERKS;
+                                uom.MEINH = HttpUtility.UrlDecode(uom.MEINH);
+                            }
                         }
                         model.CREATED_BY = CurrentUser.USER_ID;
                         model.CREATED_DATE = DateTime.Now;
@@ -260,7 +263,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (data == null) {
                        return RedirectToAction("Index");
                     }
-                   
+                if (model.MaterialUom != null)
+                {
                     foreach (var matUom in model.MaterialUom)
                     {
                         var uom = new MATERIAL_UOM();
@@ -268,11 +272,12 @@ namespace Sampoerna.EMS.Website.Controllers
                         uom.WERKS = model.PlantId;
                         uom.UMREN = matUom.Umren;
                         uom.UMREZ = matUom.Umrez;
-                        uom.MEINH = matUom.Meinh;
+                        uom.MEINH = HttpUtility.UrlDecode(matUom.Meinh);
 
                         _materialBll.SaveUoM(uom);
                     }
-                    var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
+                }
+                var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
                     AutoMapper.Mapper.Map(model, data);
                     data.MODIFIED_BY = CurrentUser.USER_ID;
                     data.MODIFIED_DATE = DateTime.Now;
