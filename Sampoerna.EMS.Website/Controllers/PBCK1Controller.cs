@@ -816,7 +816,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 FILE_NAME = item.FileName,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
-                                CREATED_BY = currentUserId.USER_ID
+                                CREATED_BY = currentUserId.USER_ID, 
+                                CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
                         }
