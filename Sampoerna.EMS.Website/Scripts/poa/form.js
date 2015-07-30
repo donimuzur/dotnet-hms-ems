@@ -25,9 +25,24 @@ function uploadSk() {
         poa_sk.push(name);
     }
     
-    $('#poa-files').html("");
+    //$('#poa-files').html("");
+    for (var k = 0; k < poa_sk.length; k++) {
+        $('#poa_sk' + k).remove();
+    }
     for (var j = 0; j < poa_sk.length; j++) {
-        $('#poa-files').append('<p id="poa_sk'+j+'">' + poa_sk[j] + '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ')">-</button></p>');
+
+
+        var mm = '<div class="row" id="poa_sk' + j + '"><div class="col-sm-10">' +
+            '<i>'+ poa_sk[j] +'</i>' +
+            '</div>' +
+            '<div class="col-sm-2">' +
+            '<button class="btn btn-danger full" type="button" onclick="removeUploadButton(' + j + ')"><i class="fa fa-times"></i></button>' +
+            '</div>' +
+            '</div>';
+
+
+       
+        $('#poa-files').append(mm);
     }
 }
 
@@ -44,5 +59,21 @@ function removeUploadButton(index) {
                         '</div><div class="col-sm-3"></div></div>');
 
         }
+    
+}
+
+function removeSK(id, url, obj) {
+
+   
+    
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: { skid: id },
+            success: function (data) {
+                var objParent = ($(obj).parent().parent());
+                objParent.remove();
+            }
+        });
     
 }
