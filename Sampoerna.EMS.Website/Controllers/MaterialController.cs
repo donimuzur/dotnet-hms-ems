@@ -229,6 +229,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else {
 
                 var model = Mapper.Map<MaterialEditViewModel>(data);
+
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, mn+p));
@@ -259,12 +260,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (data == null) {
                        return RedirectToAction("Index");
                     }
-
+                   
                     foreach (var matUom in model.MaterialUom)
                     {
                         var uom = new MATERIAL_UOM();
-                        uom.STICKER_CODE = matUom.MaterialNumber;
-                        uom.WERKS = matUom.Plant;
+                        uom.STICKER_CODE = model.MaterialNumber;
+                        uom.WERKS = model.PlantId;
                         uom.UMREN = matUom.Umren;
                         uom.UMREZ = matUom.Umrez;
                         uom.MEINH = matUom.Meinh;
@@ -317,6 +318,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        public JsonResult RemoveMaterialUom(int materialUomId)
+        {
+            return Json(_materialBll.DeleteMaterialUom(materialUomId));
         }
     }
 }

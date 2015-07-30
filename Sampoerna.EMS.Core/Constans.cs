@@ -3,7 +3,7 @@
     public class Constans
     {
         public const string MasterDataHeaderFooterFolder = "~/Content/upload/header/";
-        public const string PoaSK = "~/Content/upload/poa_sk/";
+        public const string UploadPath = "~/files_upload/";
         
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
@@ -51,6 +51,7 @@
             public const string DataExist = "Data Already Exist";
             public const string DataExistPlant = "Main Plant With NPPBKC ID is Already Exists";
         }
+
 
     }
 }
