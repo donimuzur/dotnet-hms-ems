@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Website.Models.ChangesHistory
         public string NEW_VALUE { get; set; }
      
         public DateTime? MODIFIED_DATE { get; set; }
-        public int? MODIFIED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
         public string USERNAME { get; set; }
         public string USER_FIRST_NAME { get; set; }
         public string USER_LAST_NAME { get; set; }
