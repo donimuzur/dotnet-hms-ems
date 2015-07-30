@@ -84,5 +84,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsCk5Export { get; set; }
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
+
+        public List<CK5_FILE_UPLOADDto> Ck5FileUploadDtos { get; set; }
     }
 }

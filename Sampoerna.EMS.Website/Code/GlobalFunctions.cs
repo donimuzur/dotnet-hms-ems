@@ -220,6 +220,15 @@ namespace Sampoerna.EMS.Website.Code
             //return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
         }
 
+        public static SelectList GetGoodTypeGroupListByDescValue()
+        {
+            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            var goodTypes = goodTypeBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
+           // return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
+        }
+
         public static SelectList GetSourcePlantList()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();

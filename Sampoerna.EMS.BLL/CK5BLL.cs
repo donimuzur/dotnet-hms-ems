@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IPBCK1BLL _pbck1Bll;
 
-        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1";
+        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -685,10 +685,22 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+            if (input.AdditionalDocumentData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (string.IsNullOrEmpty(input.AdditionalDocumentData.RegistrationNumber))
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (input.AdditionalDocumentData.RegistrationDate == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            dbData.REGISTRATION_NUMBER = input.AdditionalDocumentData.RegistrationNumber;
+
+            dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
+            dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
 
            
-            //input.ActionType = Enums.ActionType.GovApprove;
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);

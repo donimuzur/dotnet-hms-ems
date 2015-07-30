@@ -235,3 +235,37 @@ function ChangeBackSourceMaterial(plantId) {
 function OnSubmitWorkflow(id) {
     
 }
+
+function ValidateGovInput() {
+    var result = true;
+    
+    if ($('#RegistrationNumber').val() == '') {
+        AddValidationClass(false, 'RegistrationNumber');
+        result = false;
+    }
+    
+    if ($('#RegistrationDate').val() == '') {
+        AddValidationClass(false, 'RegistrationDate');
+        result = false;
+    }
+
+    if ($('.ck5Attachment').length == 0) {
+        AddValidationClass(false, 'poa-files');
+        
+        if (result)
+            alert("Attach your files");
+        result = false;
+    }
+    
+    return result;
+}
+
+function AddValidationClass(isValid, objName) {
+    if (isValid) {
+        $('#' + objName).removeClass('input-validation-error');
+        $('#' + objName).addClass('valid');
+    } else {
+        $('#' + objName).removeClass('valid');
+        $('#' + objName).addClass('input-validation-error');
+    }
+}
