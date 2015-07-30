@@ -28,13 +28,18 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
                 .ForMember(dest => dest.IsCk5Export,opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Export))
                 .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
-                .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval));
+                .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval))
+                .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)));
 
             Mapper.CreateMap<CK5Dto, CK5>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<CK5MaterialDto, CK5_MATERIAL>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<CK5_MATERIAL, CK5MaterialDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5_FILE_UPLOAD, CK5_FILE_UPLOADDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5_FILE_UPLOAD>().IgnoreAllNonExisting();
 
             #endregion
         }

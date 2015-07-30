@@ -74,6 +74,7 @@
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
+    <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Pbck1Dto.cs" />
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
