@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -23,15 +24,13 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<CK5_MATERIAL> _repositoryCK5Material;
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private IMasterDataBLL _masterDataBll;
+      
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
-        private IZaidmExNPPBKCBLL _nppbkcBll;
-        private IZaidmExGoodTypeBLL _goodTypeBll;
-        private IPlantBLL _plantBll;
-        private IPBCK1BLL _pbck1Bll;
+     
+        private IMessageService _messageService;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -44,15 +43,13 @@ namespace Sampoerna.EMS.BLL
             _repositoryCK5Material = _uow.GetGenericRepository<CK5_MATERIAL>();
 
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
-            _masterDataBll = new MasterDataBLL(_uow);
+          
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
-            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
-            _goodTypeBll = new ZaidmExGoodTypeBLL(_uow, _logger);
-            _plantBll = new PlantBLL(_uow, _logger);
-            _pbck1Bll = new PBCK1BLL(_uow, _logger);
+
+            _messageService = new MessageService(_logger);
         }
 
         public CK5Dto GetById(long id)
@@ -562,16 +559,21 @@ namespace Sampoerna.EMS.BLL
 
         public void CK5Workflow(CK5WorkflowDocumentInput input)
         {
+            var isNeedSendNotif = false;
+
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     SubmitDocument(input);
+                    isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.Approve:
                     ApproveDocument(input);
+                    isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.Reject:
                     RejectDocument(input);
+                    isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
@@ -588,9 +590,25 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
+            if (isNeedSendNotif)
+                SendEmailWorkflow(input);
 
             _uow.SaveChanges();
         }
+
+        private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
+        {
+            //todo: body message from email template
+            //todo: to = ?
+            //todo: subject = from email template
+            var to = "irmansulaeman41@gmail.com";
+            var subject = "this is subject for " + input.DocumentNumber;
+            var body = "this is body message for " + input.DocumentNumber;
+            //var from = "a@gmail.com";
+
+            _messageService.SendEmail( to, subject, body, true);
+        }
+
 
         private void SubmitDocument(CK5WorkflowDocumentInput input)
         {

@@ -9,10 +9,35 @@
                 <h3>@Model.Ck5Type.ToString()</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
-                    <a href="@Url.Action("Index", "CK5")">
-                        <button class="btn btn-blue">Back</button>
-                    </a>
-
+                    @switch (Model.Ck5Type)
+                    {
+                        case Enums.CK5Type.Manual:
+                            <a href="@Url.Action("CK5Manual", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                        case Enums.CK5Type.PortToImporter:
+                        case Enums.CK5Type.ImporterToPlant:
+                            <a href="@Url.Action("CK5Import", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                        case Enums.CK5Type.Export:
+                            <a href="@Url.Action("CK5Export", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                         case Enums.CK5Type.Completed:
+                            <a href="@Url.Action("CK5Completed", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                        default:
+                        <a href="@Url.Action("Index", "CK5")">
+                            <input type="button" class="btn btn-blue" value="Back">
+                        </a>
+                            break;
+                    }
                     <input type="button" class="btn btn-grey" value="Print Preview" />
 
                     @if (Model.AllowApproveAndReject)
@@ -209,7 +234,7 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             //$('#MenuCK5Domestic').addClass('active');
             OnReadyFunction('@Model.Ck5Type.ToString()');
 
@@ -223,14 +248,14 @@
                 $('#home').addClass('active');
                 $('#home-tab').addClass('active');
                 $('#collapseFour').addClass("in");
-                
+
                 $('#RegistrationNumber').bind('input propertychange', function () {
                     AddValidationClass(false, 'RegistrationNumber');
                     if (this.value.length) {
                         AddValidationClass(true, 'RegistrationNumber');
                     }
                 });
-                
+
                 $('#RegistrationDate').bind('input change', function () {
                     AddValidationClass(false, 'RegistrationDate');
                     if (this.value.length) {
@@ -240,7 +265,7 @@
             }
         }
 
-        $("#btnApprove").click(function() {
+        $("#btnApprove").click(function () {
 
             $('#btnConfirm').show();
             $('#btnConfirmGovApprove').hide();
@@ -251,13 +276,13 @@
         });
 
 
-        $("#btnConfirm").click(function() {
+        $("#btnConfirm").click(function () {
 
             window.location = "@Url.Action("ApproveDocument", "CK5", new {id = @Model.Ck5Id})";
         });
 
 
-        $("#btnReject").click(function() {
+        $("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
 
             $('#Comment').val('');
@@ -266,7 +291,7 @@
 
         });
 
-        $('#Comment').bind('input propertychange', function() {
+        $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmReject').attr('disabled', 'disabled');
             $('#btnConfirmGovReject').attr('disabled', 'disabled');
@@ -279,14 +304,14 @@
             }
         });
 
-        $('.GovCancel').bind('input propertychange', function() {
+        $('.GovCancel').bind('input propertychange', function () {
             $('#btnConfirmGovCancel').attr('disabled', 'disabled');
             if (this.value.length) {
                 $('#btnConfirmGovCancel').removeAttr('disabled');
             }
         });
 
-        $('.GovReject').bind('input propertychange', function() {
+        $('.GovReject').bind('input propertychange', function () {
             $('#btnConfirmGovReject').attr('disabled', 'disabled');
             if (this.value.length) {
                 $('#btnConfirmGovReject').removeAttr('disabled');
@@ -295,34 +320,34 @@
 
 
         $("#btnGovApprove").click(function () {
-           // alert('1');
+            // alert('1');
             if (ValidateGovInput()) {
-              //  alert('2');
+                //  alert('2');
                 $('#btnConfirm').hide();
                 $('#btnConfirmGovApprove').show();
                 $("#lblTitleModal").text('GovApproval');
                 $("#lblMessageModal").text('GovApprove Documents ?');
                 $('#Ck5Modal').modal('show');
             }
-           // alert('3');
+            // alert('3');
         });
 
-        $("#btnConfirmGovApprove").click(function() {
-                        @*window.location = "@Url.Action("GovApproveDocument", "CK5", new { id = @Model.Ck5Id })";*@
+        $("#btnConfirmGovApprove").click(function () {
+            @*window.location = "@Url.Action("GovApproveDocument", "CK5", new { id = @Model.Ck5Id })";*@
             $('#Ck5Modal').modal('hide');
             $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
             $('#GovApproveForm').submit();
         });
 
 
-        $("#btnGovReject").click(function() {
+        $("#btnGovReject").click(function () {
             $('#btnConfirmGovReject').attr('disabled', 'disabled');
             $('.GovReject').val('');
             $('#Ck5ModalGovReject').modal('show');
 
         });
 
-        $("#btnGovCancel").click(function() {
+        $("#btnGovCancel").click(function () {
             $('#btnConfirmGovCancel').attr('disabled', 'disabled');
             $('.GovCancel').val('');
             $('#Ck5ModalGovCancel').modal('show');

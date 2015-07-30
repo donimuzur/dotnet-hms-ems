@@ -1023,7 +1023,7 @@ namespace Sampoerna.EMS.BLL
             var body = "this is body message for " + input.DocumentNumber;
             var from = "a@gmail.com";
 
-            _messageService.SendEmail(from, to, subject, body, true);
+            _messageService.SendEmail(to, subject, body, true);
         }
 
         #endregion
