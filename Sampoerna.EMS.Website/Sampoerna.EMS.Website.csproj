@@ -249,12 +249,14 @@
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
+    <Compile Include="Filters\EncryptedParameterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AuthorizeADAttribute.cs" />
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
     <Compile Include="Helpers\LDAPHelper.cs" />
+    <Compile Include="Helpers\UrlHelperExtensions.cs" />
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />

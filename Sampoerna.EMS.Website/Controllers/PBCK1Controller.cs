@@ -17,6 +17,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PBCK1;
@@ -871,6 +872,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return sFileName;
         }
 
+        [EncryptedParameter]
         public ActionResult PrintOut(int? id)
         {
             //DataTable dt = new DataTable();
