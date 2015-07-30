@@ -32,24 +32,16 @@ function uploadSk() {
     for (var j = 0; j < poa_sk.length; j++) {
 
 
-        var mm = '<div class="row" id="poa_sk' + j + '"><div class="col-sm-9">' +
-            '<a href="#">'+ poa_sk[j] +'</a>' +
+        var mm = '<div class="row" id="poa_sk' + j + '"><div class="col-sm-10">' +
+            '<i>'+ poa_sk[j] +'</i>' +
             '</div>' +
-            '<div class="col-sm-3">' +
+            '<div class="col-sm-2">' +
             '<button class="btn btn-danger full" type="button" onclick="removeUploadButton(' + j + ')"><i class="fa fa-times"></i></button>' +
             '</div>' +
             '</div>';
 
 
-        //var m = '<div id="poa_sk'+j+'" class="row">'+
-        //        '<div class="col-sm-4">'+
-        //            '<i class="fa fa-file"></i>'+
-        //             '<i>' + poa_sk[j] + '</i>'+
-        //        '</div>'+
-        //        '<div class="col-sm-2">'+
-        //            '<a href="javascript:void" onclick="removeUploadButton(' + j + ')">remove</a>' +
-        //    '</div></div>';
-        //$('#poa-files').append('<p id="poa_sk'+j+'">' + poa_sk[j] + '<a href="javascript:void" onclick="removeUploadButton(' + j + ')">remove</a></p>');
+       
         $('#poa-files').append(mm);
     }
 }
