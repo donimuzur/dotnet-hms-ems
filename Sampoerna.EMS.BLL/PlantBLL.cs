@@ -125,6 +125,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("ADDRESS", origin.ADDRESS == data.ADDRESS);
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
+            changesData.Add("PHONE", origin.PHONE == data.PHONE);
 
             foreach (var listChange in changesData)
             {
@@ -140,7 +141,7 @@ namespace Sampoerna.EMS.BLL
                     };
                     switch (listChange.Key)
                     {
-                        case "NPPBKC_NO":
+                        case "NPPBKC_ID":
                             changes.OLD_VALUE = origin.ZAIDM_EX_NPPBKC != null ? origin.NPPBKC_ID : "NULL";
                             changes.NEW_VALUE = data.NPPBKC_ID;
                             break;
@@ -159,6 +160,10 @@ namespace Sampoerna.EMS.BLL
                         case "IS_MAIN_PLANT":
                             changes.OLD_VALUE = origin.IS_MAIN_PLANT.HasValue ? origin.IS_MAIN_PLANT.Value.ToString() : "NULL";
                             changes.NEW_VALUE = data.IS_MAIN_PLANT.HasValue ? data.IS_MAIN_PLANT.Value.ToString() : "NULL";
+                            break;
+                        case "PHONE":
+                            changes.OLD_VALUE = origin.PHONE;
+                            changes.NEW_VALUE = data.PHONE;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
