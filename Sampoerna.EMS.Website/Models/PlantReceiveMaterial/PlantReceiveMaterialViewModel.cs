@@ -1,4 +1,6 @@
-﻿namespace Sampoerna.EMS.Website.Models.PlantReceiveMaterial
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sampoerna.EMS.Website.Models.PlantReceiveMaterial
 {
 
     public class PlantReceiveMaterialItemModel
