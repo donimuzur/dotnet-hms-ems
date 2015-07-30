@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_NPPBKC GetDetailsById(string id)
         {
-            return _repository.Get(c => c.NPPBKC_ID == id, null, "T001, ZAIDM_EX_KPPBC").FirstOrDefault();
+            return _repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T001, ZAIDM_EX_KPPBC").FirstOrDefault();
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()

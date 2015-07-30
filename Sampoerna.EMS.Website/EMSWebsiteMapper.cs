@@ -618,6 +618,7 @@ namespace Sampoerna.EMS.Website
            
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<T001WDto, T001WModel>().IgnoreAllNonExisting();
 
         }
     }
