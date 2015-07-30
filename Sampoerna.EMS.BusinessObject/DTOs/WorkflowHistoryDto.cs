@@ -14,6 +14,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ACTION_DATE { get; set; }
         public string COMMENT { get; set; }
         public Enums.UserRole ROLE { get; set; }
-        public USER USER { get; set; }
+        //public USER USER { get; set; }
+        public string UserId { get; set; }
+        public string UserFirstName { get; set; }
+        public string UserLastName { get; set; }
     }
 }

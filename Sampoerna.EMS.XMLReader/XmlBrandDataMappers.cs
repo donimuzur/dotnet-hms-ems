@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.WERKS = plantCode;
                         item.FA_CODE = xElement.Element("FA_CODE").Value;
                         item.COUNTRY = xElement.Element("COUNTRY").Value;
-
+                        item.BRAND_CONTENT = xElement.Element("CONTENT").Value;
                         var pcodeCode = xElement.Element("PER_CODE").Value;
                         var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
                         if (pCode == null)

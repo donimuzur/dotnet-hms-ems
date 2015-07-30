@@ -12,6 +12,6 @@ namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
         public string ImportPlanName { get; set; }
         public string ExportPlanName { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

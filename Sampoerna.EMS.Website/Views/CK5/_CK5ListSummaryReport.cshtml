@@ -1,0 +1,47 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+
+<table id="ck5Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Company</th>
+            <th>NPPBKC</th>
+            <th>KPPBC</th>
+            <th>Document Number</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    @*<thead class="filters">
+            <tr>
+                <th> No</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+
+            </tr>
+        </thead>*@
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Company)</td>
+                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>
+                        @Html.DisplayFor(model => item.Kppbc)
+                    </td>
+                    <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
+
+                    <td class="last">@Html.DisplayFor(model => item.Address)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+

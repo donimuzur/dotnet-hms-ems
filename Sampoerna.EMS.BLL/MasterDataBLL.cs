@@ -172,8 +172,6 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repositoryProduct.GetByID(id);
             return dbData == null ? string.Empty : dbData.PROD_CODE + " - " + dbData.PRODUCT_TYPE;
         }
-
-
         
     }
 }

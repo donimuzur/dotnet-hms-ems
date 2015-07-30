@@ -139,7 +139,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyName = dbVirtual.T001.BUTXT;
             model.ImportPlanName = dbVirtual.T001W.WERKS;
             model.ExportPlanName = dbVirtual.T001W1.WERKS;
-            model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
+            //model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
             var changeHistoryList = _changesHistoryBLL.GetByFormTypeId(Enums.MenuList.VirtualMappingPlant);
            
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
@@ -165,14 +165,18 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             var model = new VirtualMappingPlantEditViewModel();
+           
             InitEditModel(model);
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
+           
             if (dbVirtual != null)
             {
                 if (dbVirtual.IS_DELETED == true)
                 {
                     var modeldetail = new VirtualMappingPlantDetailsViewModel();
+                    modeldetail.MainMenu = _mainMenu;
+                    modeldetail.CurrentMenu = PageInfo;
                     modeldetail.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
                     if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))

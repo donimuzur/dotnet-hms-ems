@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BLL
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
         }
 
-        public T001W GetT001W(string NppbkcId, bool IsPlant)
+        public T001W GetT001W(string NppbkcId, bool? IsPlant)
         {
             var query = PredicateHelper.True<T001W>();
 
@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.BLL
             {
                 query = query.And(p => p.IS_MAIN_PLANT == IsPlant);
             }
-
+            
             return _t001WRepository.Get(query).FirstOrDefault();
         }
 
@@ -212,5 +212,6 @@ namespace Sampoerna.EMS.BLL
 
 
        
+        
     }
 }

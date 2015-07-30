@@ -6,7 +6,7 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IPlantBLL
     {
-        T001W GetT001W(string NppbkcId, bool IsPlant);
+        T001W GetT001W(string NppbkcId, bool? IsPlant);
         Plant GetId(string id);
         List<Plant> GetAll();
 

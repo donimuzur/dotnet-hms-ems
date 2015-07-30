@@ -72,5 +72,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
+        public virtual DbSet<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
     }
 }

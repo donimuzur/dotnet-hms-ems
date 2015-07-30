@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.BusinessObject;
@@ -17,12 +18,28 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA_SK>();
+          
         }
 
 
         public void Save(POA_SK poaSK)
         {
            _repository.InsertOrUpdate(poaSK);
+        }
+
+        public int RemovePoaSk(int poaSkId)
+        {
+            try
+            {
+                _repository.Delete(poaSkId);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            return 0;
+
         }
     }
 }

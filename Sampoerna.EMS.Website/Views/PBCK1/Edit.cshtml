@@ -9,11 +9,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <h3>PBCK-1 Form</h3>
-                <label class="status">Draft</label>
+                <label class="status">@Model.Detail.StatusName</label>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-grey" value="Print Preview" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
             </div>
         </div>
@@ -23,6 +24,7 @@
             <div class="col-sm-12">
                 <div role="tabpanel">
                     <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
@@ -45,6 +47,24 @@
         </div>
     </div>
 }
+
+<div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -101,6 +121,14 @@
             
             $('#Detail_NppbkcId').change(function () {
                 nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
+            });
+            
+            $("#btnSubmitDocument").click(function () {
+                $('#Pbck1Modal').modal('show');
+            });
+
+            $("#btnSubmitConfirm").click(function() {
+                window.location = "@Url.Action("SubmitDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
             });
 
         });

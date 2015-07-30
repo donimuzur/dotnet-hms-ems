@@ -141,13 +141,17 @@ namespace Sampoerna.EMS.Core
             Modified = 5,
             [Description("Submit")]
             Submit = 10,
+            [Description("Waiting for Approval")]
+            WaitingForApproval = 11,
             [Description("Approve")]
             Approve = 15,
             [Description("Reject")]
             Reject = 20,
-            [Description("GovApprove")]
+            [Description("Gov Approve")]
             GovApprove = 25,
-            [Description("GovReject")]
+            [Description("Gov Partial Approve")]
+            GovPartialApprove = 26,
+            [Description("Gov Reject")]
             GovReject = 30,
             [Description("GovCancel")]
             GovCancel = 35,
