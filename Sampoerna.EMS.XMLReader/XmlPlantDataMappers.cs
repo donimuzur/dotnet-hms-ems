@@ -31,13 +31,7 @@ namespace Sampoerna.EMS.XMLReader
                     item.WERKS = xElement.Element("WERKS").Value;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.ORT01 = xElement.Element("ORT01").Value;
-                    //item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                    //var nppbck = new XmlNPPBKCDataMapper(null).GetNPPBKC(item.NPPBKC_ID);
-                    //if (nppbck == null)
-                    //{
-
-                    //}
-                    //var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    item.ADDRESS = xElement.Element("SPRAS").Value + " " + item.ORT01;
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {
