@@ -786,12 +786,13 @@
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
     <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />    
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\LACK1\_Lack1Table.cshtml" />
     <Content Include="Views\LACK1\ListByPlant.cshtml" />
     <Content Include="Views\LACK1\_Lack1ListByPlantTable.cshtml" />
     <Content Include="Views\LACK1\Create.cshtml" />
+    <Content Include="Views\LACK1\_HomeCreate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

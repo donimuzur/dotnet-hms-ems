@@ -620,8 +620,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Lack1IndexViewModel, Lack1GetByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
-                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator))
-;
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
 
             Mapper.CreateMap<Lack1Input, Lack1GetByParamInput>().IgnoreAllNonExisting();
 

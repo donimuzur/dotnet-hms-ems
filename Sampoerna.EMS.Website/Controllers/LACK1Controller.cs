@@ -22,9 +22,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private Enums.MenuList _mainMenu;
-
-
-
+        
         public LACK1Controller(IPageBLL pageBll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
@@ -41,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /LACK1/
         public ActionResult Index()
         {
-            var x = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
+            //var x = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
 
             var data = InitLack1ViewModel(new Lack1IndexViewModel
             {

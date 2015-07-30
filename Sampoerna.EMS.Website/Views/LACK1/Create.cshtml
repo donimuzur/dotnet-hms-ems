@@ -1,7 +1,40 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Create";
 }
-
-<h2>Create</h2>
+{
+<<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>List by NPPBKC</h3>
+            <label class="status">Draft</label>
+            <div class="action-button">
+                <button class="btn btn-blue">Save</button>
+                <button class="btn btn-grey">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                @Html.AntiForgeryToken()
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    @*@Html.Partial("_HomeCreate")
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_ProdPlanUpload")
+                        @Html.Partial("_ProdConvUpload")*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
 

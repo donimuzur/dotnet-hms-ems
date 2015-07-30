@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear);
             }
-
+           
             Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
 
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
