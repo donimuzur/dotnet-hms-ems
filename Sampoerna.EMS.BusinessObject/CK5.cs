@@ -82,6 +82,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string FINAL_PORT_NAME { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public string SOURCE_PLANT_COMPANY_CODE { get; set; }
+        public string DEST_PLANT_COMPANY_CODE { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }

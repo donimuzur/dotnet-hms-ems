@@ -271,6 +271,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_userBll.GetUserById(userId));
         }
 
+        [HttpPost]
+        public JsonResult RemoveSk(int skid)
+        {
+
+            return Json(_poaskbll.RemovePoaSk(skid));
+        }
+
         private string SaveUploadedFile(HttpPostedFileBase file, string PoaIdCard)
         {
             if (file == null || file.FileName == "")
