@@ -58,42 +58,19 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Display(Name = "Convertion")]
         public decimal? Convertion { get; set; }
 
-        public Nullable<bool> isPlantDeleteTemp;
         [Required, Display(Name = "Plant Deletion")]
-        public string IsPlantDelete
+        public bool IsPlantDelete
         {
-            get
-            {
-                if (this.isPlantDeleteTemp.HasValue)
-                {
-                    return this.isPlantDeleteTemp.Value ? "Yes" : "No";
-                }
-                else
-                {
-                    return "No";
-                }
-            }
-            
+            get; set;
+
         }
 
 
-        public Nullable<bool> isClientDeleteTemp;
-
         [Required, Display(Name = "Client Deletion")]
-        public string IsClientDelete
+        public bool IsClientDelete
         {
-            get
-            {
-                if (this.isClientDeleteTemp.HasValue)
-                {
-                    return this.isClientDeleteTemp.Value ? "Yes" : "No";
-                }
-                else
-                {
-                    return "No";
-                }
-            }
-            
+            get; set;
+
         }
 
         public Nullable<bool> IsDeleted;

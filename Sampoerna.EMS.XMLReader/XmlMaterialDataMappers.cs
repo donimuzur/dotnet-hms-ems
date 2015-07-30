@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         item.WERKS = E1MARCM.Element("WERKS").Value;
                         item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? string.Empty : E1MARCM.Element("LGPRO").Value;
+                        item.PURCHASING_GROUP = E1MARCM.Element("EKGRP") == null ? string.Empty : E1MARCM.Element("EKGRP").Value;
                         var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
                         if (exGoodType != null)
                         {

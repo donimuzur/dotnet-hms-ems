@@ -8,6 +8,7 @@ namespace Sampoerna.EMS.Contract
     {
         T001W GetT001W(string NppbkcId, bool? IsPlant);
         Plant GetId(string id);
+
         List<Plant> GetAll();
 
         List<T001W> GetAllPlant();
@@ -17,6 +18,7 @@ namespace Sampoerna.EMS.Contract
 
         string GetPlantNameById(long id);
         
-         List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId);
+        List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId);
+        List<T001W> Get(string nppbkcId);
     }
 }
