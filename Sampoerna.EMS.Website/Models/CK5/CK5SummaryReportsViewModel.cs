@@ -24,18 +24,32 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5SearchSummaryReportsViewModel
     {
        
-        public string CompanyCode { get; set; }
-        public SelectList CompanyCodeList { get; set; }
+        public string CompanyCodeSource { get; set; }
+        public SelectList CompanyCodeSourceList { get; set; }
 
-        public int? YearFrom { get; set; }
-        public SelectList YearFromList { get; set; }
+        public string CompanyCodeDest { get; set; }
+        public SelectList CompanyCodeDestList { get; set; }
 
-        public int? YearTo { get; set; }
-        public SelectList YearToList { get; set; }
+        public string NppbkcIdSource { get; set; }
+        public SelectList NppbkcIdSourceList { get; set; }
+
+        public string NppbkcIdDest { get; set; }
+        public SelectList NppbkcIdDestList { get; set; }
+
+        public string PlantSource { get; set; }
+        public SelectList PlantSourceList { get; set; }
+
+        public string PlantDest { get; set; }
+        public SelectList PlantDestList { get; set; }
+
+        public DateTime DateFrom { get; set; }
+        public SelectList DateFromList { get; set; }
+
+        public DateTime DateTo { get; set; }
+        public SelectList DateToList { get; set; }
 
        
-        public string NppbkcId { get; set; }
-        public SelectList NppbkcIdList { get; set; }
+      
 
     }
 
@@ -43,13 +57,23 @@ namespace Sampoerna.EMS.Website.Models.CK5
     {
         public long Ck5Id { get; set; }
 
-        public string Company { get; set; }
+        public string ExciseStatus { get; set; }
 
-        public string Nppbkc { get; set; }
+        public string DocumentNumber { get; set; }
+
+        public string SubmissionDate { get; set; }
+
+        public string SealingNotifDate { get; set; }
+
+        public string SealingNotifNumber { get; set; }
+
+        public string UnSealingNotifDate { get; set; }
+
+        public string unSealingNotifNumber { get; set; }
 
         public string Kppbc { get; set; }
 
-        public string DocumentNumber { get; set; }
+      
 
         public string Address { get; set; }
 

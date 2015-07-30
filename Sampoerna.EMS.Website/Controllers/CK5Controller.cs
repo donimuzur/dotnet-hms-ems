@@ -959,8 +959,116 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region CK5 Summary Report Forms
 
+        private SelectList GetCompanyList(bool isSource, List<CK5Dto> listCk5)
+        {
+          //  var listCk5 = _ck5Bll.GetAll();
+            
+            IEnumerable<SelectItemModel> query;
+            if (isSource)
+            {
+                query = from x in listCk5
+                    select new Models.SelectItemModel()
+                    {
+                        ValueField = x.SOURCE_PLANT_COMPANY_CODE,
+                        TextField = x.SOURCE_PLANT_COMPANY_CODE
+                    };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_COMPANY_CODE,
+                            TextField = x.DEST_PLANT_COMPANY_CODE
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetNppbkcList(bool isSource, List<CK5Dto> listCk5)
+        {
+            //  var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query;
+            if (isSource)
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SOURCE_PLANT_NPPBKC_ID,
+                            TextField = x.SOURCE_PLANT_NPPBKC_ID
+                        };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_NPPBKC_ID,
+                            TextField = x.DEST_PLANT_NPPBKC_ID
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetPlantList(bool isSource, List<CK5Dto> listCk5)
+        {
+            //  var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query;
+            if (isSource)
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SOURCE_PLANT_ID,
+                            TextField = x.SOURCE_PLANT_ID + " - " + x.SOURCE_PLANT_NAME
+                        };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_ID,
+                            TextField = x.DEST_PLANT_ID + " - " + x.DEST_PLANT_NAME
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetSubmissionDateListCK5(bool isFrom, List<CK5Dto> listCk5)
+        {
+          
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null)
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SUBMISSION_DATE,
+                            TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
+                        };
+            else
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE)
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SUBMISSION_DATE,
+                            TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
+                        };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
         public ActionResult SummaryReports()
         {
+
             CK5SummaryReportsViewModel model;
             try
             {
@@ -969,10 +1077,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.MainMenu = Enums.MenuList.CK5;
                 model.CurrentMenu = PageInfo;
 
-                model.SearchView.CompanyCodeList = GlobalFunctions.GetCompanyList();
-                model.SearchView.YearFromList = GetYearListCK5(true);
-                model.SearchView.YearToList = GetYearListCK5(false);
-                model.SearchView.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+                var listCk5 = _ck5Bll.GetAll();
+
+                model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
+                model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
+                model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
+                model.SearchView.NppbkcIdDestList = GetNppbkcList(false, listCk5);
+                model.SearchView.PlantSourceList = GetPlantList(true, listCk5);
+                model.SearchView.PlantDestList = GetPlantList(false, listCk5);
+                model.SearchView.DateFromList = GetSubmissionDateListCK5(true, listCk5);
+                model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
 
                 //view all data ck5 completed document
                 model.DetailsList = SearchSummaryReports();
