@@ -245,6 +245,7 @@
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -266,6 +267,7 @@
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
+    <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
@@ -283,6 +285,7 @@
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
@@ -636,6 +639,7 @@
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
+    <Content Include="Scripts\pbck1\docupload.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -744,8 +748,6 @@
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
-    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
-    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
     <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
@@ -771,8 +773,13 @@
     <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
+    <Content Include="Views\PBCK1\_DecreeDocUpload.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
+    <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />    
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

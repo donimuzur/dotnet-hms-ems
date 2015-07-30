@@ -98,5 +98,15 @@ namespace Sampoerna.EMS.BLL
 
             return Core.Enums.UserRole.User;
         }
+
+        public string GetManagerIdByPoaId(string poaId)
+        {
+            var result = "";
+            var dtData = _repository.Get(c => c.POA_ID == poaId).FirstOrDefault();
+            if (dtData != null)
+                result = dtData.MANAGER_ID;
+
+            return result;
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Pbck1Dto
     {
-        public long Pbck1Id { get; set; }
+        public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
         public long? Pbck1Reference { get; set; }
         public Enums.PBCK1Type Pbck1Type { get; set; }
@@ -38,15 +38,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Lack1ToMonthName { get; set; }
         public int? Lack1ToYear { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatusGov StatusGov { get; set; }
+        public Enums.DocumentStatusGov? StatusGov { get; set; }
         public decimal? QtyApproved { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedById { get; set; }
-        public string CreatedUsername { get; set; }
-        public string ApprovedById { get; set; }
-        public string ApprovedUsername { get; set; }
-        public DateTime? ApprovedDate { get; set; }
+        public string ApprovedByPoaId { get; set; }
+        public string ApprovedByManagerId { get; set; }
+        public DateTime? ApprovedByPoaDate { get; set; }
+        public DateTime? ApprovedByManagerDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public decimal? LatestSaldo { get; set; }
         public string LatestSaldoUomId { get; set; }
@@ -57,5 +57,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Pbck1ProdConverterDto> Pbck1ProdConverter { get; set; }
         public List<Pbck1ProdPlanDto> Pbck1ProdPlan { get; set; }
+        public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
+        
     }
 }
