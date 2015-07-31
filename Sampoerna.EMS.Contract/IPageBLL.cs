@@ -7,5 +7,7 @@ namespace Sampoerna.EMS.Contract
     {
         PAGE GetPageByID(int id);
         List<PAGE> GetPages();
+
+        List<PAGE> GetModulePages();
     }
 }

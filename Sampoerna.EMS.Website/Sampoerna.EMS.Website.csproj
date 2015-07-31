@@ -243,6 +243,7 @@
     <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
+    <Compile Include="Controllers\WorkflowSettingsController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
@@ -414,6 +416,7 @@
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\CK5Scripts.js" />
+    <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
@@ -775,6 +778,11 @@
     <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
     <Content Include="Views\EmailTemplate\Edit.cshtml" />
     <Content Include="Views\DocumentSequence\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Edit.cshtml" />
+    <Content Include="Views\WorkflowSettings\Details.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMapping.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMappingPartial.cshtml" />
     <Content Include="Views\PBCK1\_DecreeDocUpload.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />

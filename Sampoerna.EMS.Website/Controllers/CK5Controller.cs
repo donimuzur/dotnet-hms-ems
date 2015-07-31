@@ -234,7 +234,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
           
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
@@ -309,10 +309,19 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
+        public JsonResult GetCompanyCode(string nppBkcCityId)
+        {
+            var companyCode = "";
+            var data = GlobalFunctions.GetNppbkcById(nppBkcCityId);
+            if (data != null)
+                companyCode = data.BUKRS;
+            return Json(companyCode);
+        }
+
+        [HttpPost]
         public JsonResult GetSourcePlantDetails(string plantId)
         {
-            //todo check
-            var dbPlant = _plantBll.GetId(plantId);
+            var dbPlant = _plantBll.GetT001ById(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
             return Json(model);
         }
@@ -427,7 +436,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
@@ -587,7 +596,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 }
                
-
+                //gov approval purpose
+                if (model.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+                    model.KppBcCity = model.KppBcCityName;
             }
             catch (Exception ex)
             {
@@ -759,6 +770,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _ck5Bll.CK5Workflow(input);
         }
+
+
+    
         public ActionResult SubmitDocument(long id)
         {
             try
@@ -801,19 +815,103 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new {id = model.Ck5Id });
         }
 
-        public ActionResult GovApproveDocument(long id)
+        [HttpPost]
+        public ActionResult GovApproveDocument(CK5FormViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+               // return View("Details", model);
+                return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+            }
+
             try
             {
-                CK5Workflow(id, Enums.ActionType.GovApprove, "");
+                var currentUserId = CurrentUser.USER_ID;
+
+                model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
+                if (model.Ck5FileUploadFileList != null)
+                {
+                    foreach (var item in model.Ck5FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var ck5UploadFile = new CK5FileUploadViewModel
+                            {
+                                FILE_NAME = item.FileName,
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                CREATED_DATE = DateTime.Now,
+                                CREATED_BY = currentUserId
+                            };
+                            model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                        }
+                      
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+                CK5WorkflowGovApproval(model);
                 AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("Details", "CK5", new { id });
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
+
+        private void  CK5WorkflowGovApproval(CK5FormViewModel model)
+        {
+            //var input = new CK5WorkflowDocumentInput();
+            //input.DocumentId = id;
+            //input.UserId = CurrentUser.USER_ID;
+            //input.UserRole = CurrentUser.UserRole;
+            //input.ActionType = actionType;
+            //input.Comment = comment;
+            DateTime registrationDate = DateTime.Now;
+            if (model.RegistrationDate.HasValue)
+                registrationDate = model.RegistrationDate.Value;
+
+            var input = new CK5WorkflowDocumentInput()
+            {
+                DocumentId = model.Ck5Id,
+                ActionType = Enums.ActionType.GovApprove,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                AdditionalDocumentData = new CK5WorkflowDocumentData()
+                {
+                    RegistrationNumber = model.RegistrationNumber,
+                    RegistrationDate = registrationDate,
+                    Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList)
+                }
+            };
+            _ck5Bll.CK5Workflow(input);
+        }
+
+        private string SaveUploadedFile(HttpPostedFileBase file, long ck5Id)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+            //initialize folders in case deleted by an test publish profile
+            if (!Directory.Exists(Server.MapPath(Constans.CK5FolderPath)))
+                Directory.CreateDirectory(Server.MapPath(Constans.CK5FolderPath));
+
+            sFileName = Constans.CK5FolderPath + Path.GetFileName(ck5Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
 
         public ActionResult GovRejectDocument(CK5FormViewModel model)
         {
@@ -861,8 +959,116 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region CK5 Summary Report Forms
 
+        private SelectList GetCompanyList(bool isSource, List<CK5Dto> listCk5)
+        {
+          //  var listCk5 = _ck5Bll.GetAll();
+            
+            IEnumerable<SelectItemModel> query;
+            if (isSource)
+            {
+                query = from x in listCk5
+                    select new Models.SelectItemModel()
+                    {
+                        ValueField = x.SOURCE_PLANT_COMPANY_CODE,
+                        TextField = x.SOURCE_PLANT_COMPANY_CODE
+                    };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_COMPANY_CODE,
+                            TextField = x.DEST_PLANT_COMPANY_CODE
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetNppbkcList(bool isSource, List<CK5Dto> listCk5)
+        {
+            //  var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query;
+            if (isSource)
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SOURCE_PLANT_NPPBKC_ID,
+                            TextField = x.SOURCE_PLANT_NPPBKC_ID
+                        };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_NPPBKC_ID,
+                            TextField = x.DEST_PLANT_NPPBKC_ID
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetPlantList(bool isSource, List<CK5Dto> listCk5)
+        {
+            //  var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query;
+            if (isSource)
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SOURCE_PLANT_ID,
+                            TextField = x.SOURCE_PLANT_ID + " - " + x.SOURCE_PLANT_NAME
+                        };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_ID,
+                            TextField = x.DEST_PLANT_ID + " - " + x.DEST_PLANT_NAME
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetSubmissionDateListCK5(bool isFrom, List<CK5Dto> listCk5)
+        {
+          
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null)
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SUBMISSION_DATE,
+                            TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
+                        };
+            else
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE)
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SUBMISSION_DATE,
+                            TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
+                        };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
         public ActionResult SummaryReports()
         {
+
             CK5SummaryReportsViewModel model;
             try
             {
@@ -871,10 +1077,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.MainMenu = Enums.MenuList.CK5;
                 model.CurrentMenu = PageInfo;
 
-                model.SearchView.CompanyCodeList = GlobalFunctions.GetCompanyList();
-                model.SearchView.YearFromList = GetYearListCK5(true);
-                model.SearchView.YearToList = GetYearListCK5(false);
-                model.SearchView.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+                var listCk5 = _ck5Bll.GetAll();
+
+                model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
+                model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
+                model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
+                model.SearchView.NppbkcIdDestList = GetNppbkcList(false, listCk5);
+                model.SearchView.PlantSourceList = GetPlantList(true, listCk5);
+                model.SearchView.PlantDestList = GetPlantList(false, listCk5);
+                model.SearchView.DateFromList = GetSubmissionDateListCK5(true, listCk5);
+                model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
 
                 //view all data ck5 completed document
                 model.DetailsList = SearchSummaryReports();
@@ -913,29 +1125,29 @@ namespace Sampoerna.EMS.Website.Controllers
             dbData = _ck5Bll.GetCK5ByParam(input);
             return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
         }
-        private SelectList GetYearListCK5(bool isFrom)
-        {
-            var listCk5 = _ck5Bll.GetAll();
+        //private SelectList GetYearListCK5(bool isFrom)
+        //{
+        //    var listCk5 = _ck5Bll.GetAll();
 
-            IEnumerable<SelectItemModel> query;
-            if (isFrom)
-                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
-                select new Models.SelectItemModel()
-                {
-                    ValueField = x.SUBMISSION_DATE.Value.Year,
-                    TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
-                };
-            else
-                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
-                    select new Models.SelectItemModel()
-                    {
-                        ValueField = x.SUBMISSION_DATE.Value.Year,
-                        TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
-                    };
+        //    IEnumerable<SelectItemModel> query;
+        //    if (isFrom)
+        //        query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
+        //        select new Models.SelectItemModel()
+        //        {
+        //            ValueField = x.SUBMISSION_DATE.Value.Year,
+        //            TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
+        //        };
+        //    else
+        //        query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
+        //            select new Models.SelectItemModel()
+        //            {
+        //                ValueField = x.SUBMISSION_DATE.Value.Year,
+        //                TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
+        //            };
 
-            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        //    return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
 
-        }
+        //}
 
         [HttpPost]
         public PartialViewResult SearchSummaryReports(CK5SummaryReportsViewModel model)

@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Registration Number</label>
+                                        <label class="col-md-4">Registration Number<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control" })
                                         </div>
@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Registration Date</label>
+                                        <label class="col-md-4">Registration Date<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.TextBoxFor(model => model.RegistrationDate, new { @class = "form-control" })
@@ -544,14 +544,24 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Attachment</label>
+                                        <label class="col-md-4">Attachment<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            <div class="input-group">
+                                            @*<div class="input-group">
                                                 <input type="text" class="form-control">
                                                 <span class=" input-group-addon file-input btn btn-primary btn-file">
                                                     Browse <input type="file" multiple>
                                                 </span>
+                                            </div>*@
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                </div>
+                                                
+                                                <div class="col-md-8" id="poa-files">
+
+                                                </div>
                                             </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -595,3 +605,38 @@
 
     </div>
 </div>
+
+@* Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">CK5 Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" id="Ck5FileUploadFileList_0_" name="Ck5FileUploadFileList[0]" class="form-control">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* end Modal upload dialog *@

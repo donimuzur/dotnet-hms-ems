@@ -216,5 +216,15 @@ namespace Sampoerna.EMS.Core
             [Description("Laut")]
             Laut = 2
         }
+
+        public enum CK5TransType
+        {
+            [Description("Created")]
+            Created = 1,
+            [Description("Modified")]
+            Modified = 2,
+            [Description("Cancelled")]
+            Cancelled = 3
+        }
     }
 }

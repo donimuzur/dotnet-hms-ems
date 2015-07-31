@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.BLL
         public void Delete(int id, string userId)
         {
             var existingData = _repository.GetByID(id);
-            existingData.IS_DELETED = true;
+           
             _repository.Update(existingData);
 
             var changes = new CHANGES_HISTORY
@@ -133,7 +133,7 @@ namespace Sampoerna.EMS.BLL
                 OLD_VALUE = existingData.IS_DELETED.HasValue ? existingData.IS_DELETED.Value.ToString() : "NULL",
                 NEW_VALUE = true.ToString()
             };
-            
+            existingData.IS_DELETED = true;
             _changesHistoryBll.AddHistory(changes);
             _uow.SaveChanges();
         }
@@ -163,8 +163,8 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "COMPANY_ID":
-                            changes.OLD_VALUE = string.IsNullOrEmpty(origin.BUKRS) ? origin.BUKRS : "NULL";
-                            changes.NEW_VALUE = string.IsNullOrEmpty(data.BUKRS)  ? data.BUKRS: "NULL";
+                            changes.OLD_VALUE = origin.BUKRS;
+                            changes.NEW_VALUE = data.BUKRS;
                             break;
                         case "HEADER_IMAGE_PATH":
                             changes.OLD_VALUE = origin.HEADER_IMAGE_PATH;
@@ -178,10 +178,10 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.IS_ACTIVE.HasValue ? origin.IS_ACTIVE.Value.ToString() : "NULL";
                             changes.NEW_VALUE = data.IS_ACTIVE.HasValue ? data.IS_ACTIVE.Value.ToString() : "NULL";
                             break;
-                        case "IS_DELETED":
-                            changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
-                            changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
-                            break;
+                        //case "IS_DELETED":
+                        //    changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
+                        //    changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
+                        //    break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }
