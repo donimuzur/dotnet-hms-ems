@@ -29,5 +29,9 @@ namespace Sampoerna.EMS.BLL
             return _pageRepository.GetByID(id);
         }
 
+        public List<PAGE> GetModulePages() {
+            return _pageRepository.Get(q => q.PARENT_PAGE_ID != null && q.PARENT_PAGE_ID != 1, null, "").ToList();
+        }
+
     }
 }

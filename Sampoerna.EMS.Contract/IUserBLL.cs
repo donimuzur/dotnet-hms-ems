@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.Contract
 
         List<USER> GetUsers();
 
+        List<USER> GetUsersByListId(List<string> useridlist);
         
         List<UserTree> GetUserTree();
 

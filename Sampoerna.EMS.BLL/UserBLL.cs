@@ -104,6 +104,14 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-      
+
+
+
+        public List<USER> GetUsersByListId(List<string> useridlist)
+        {
+            var data = _repository.Get(obj => useridlist.Contains(obj.USER_ID),null,"").ToList();
+
+            return data;
+        }
     }
 }
