@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -19,6 +20,9 @@ namespace Sampoerna.EMS.Contract
         string GetPlantNameById(long id);
         
         List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId);
+
         List<T001W> Get(string nppbkcId);
+        
+        T001WDto GetT001ById(string id);
     }
 }

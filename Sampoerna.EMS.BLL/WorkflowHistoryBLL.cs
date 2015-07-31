@@ -183,8 +183,7 @@ namespace Sampoerna.EMS.BLL
             var dbData =
                 _repository.Get(
                     c =>
-                        c.FORM_NUMBER == documentNumber && c.ACTION == Enums.ActionType.Reject ||
-                        c.ACTION == Enums.ActionType.Approve && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+                        c.FORM_NUMBER == documentNumber && (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
 
             if (dbData != null)
                 result = dbData.ACTION_BY;

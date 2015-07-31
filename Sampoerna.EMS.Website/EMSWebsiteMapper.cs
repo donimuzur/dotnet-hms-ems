@@ -21,6 +21,8 @@ using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Settings;
+using Sampoerna.EMS.Website.Models.WorkflowSetting;
+using Sampoerna.EMS.Website.Models.EmailTemplate;
 
 namespace Sampoerna.EMS.Website
 {
@@ -605,7 +607,29 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MonthName_Eng, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_ENG))
                 .ForMember(dest => dest.MonthName_Ind, opt => opt.MapFrom(src => src.MONTH1.MONTH_NAME_IND))
                 .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.YEAR));
+
+
             #region Workflow History
+            Mapper.CreateMap<PAGE, WorkflowDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Form_Id, opt => opt.MapFrom(src => src.PAGE_ID))
+                .ForMember(dest => dest.Modul, opt => opt.MapFrom(src => src.MENU_NAME));
+
+            Mapper.CreateMap<WORKFLOW_STATE, WorkflowMappingDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.StateMappingId, opt => opt.MapFrom(src => src.ACTION_ID))
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.ACTION_NAME))
+                .ForMember(dest => dest.EmailTemplateId, opt => opt.MapFrom(src => src.EMAIL_TEMPLATE_ID))
+                .ForMember(dest => dest.EmailTemplateName, opt => opt.MapFrom(src => src.EMAIL_TEMPLATE.TEMPLATE_NAME))
+                .ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.WORKFLOW_STATE_USERS));
+
+            Mapper.CreateMap<WorkflowMappingDetails, WORKFLOW_STATE>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION_ID, opt => opt.MapFrom(src => src.StateMappingId))
+                .ForMember(dest => dest.ACTION_NAME, opt => opt.MapFrom(src => src.State))
+                .ForMember(dest => dest.EMAIL_TEMPLATE_ID, opt => opt.MapFrom(src => src.EmailTemplateId));
+                //.ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.USER));
+
+            Mapper.CreateMap<USER, WorkflowUsers>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.User_Id, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EMAIL));
 
             Mapper.CreateMap<WorkflowHistoryDto, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.ACTION)))
@@ -618,7 +642,30 @@ namespace Sampoerna.EMS.Website
            
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<T001WDto, T001WModel>().IgnoreAllNonExisting();
 
+            #region Email Template
+            Mapper.CreateMap<EMAIL_TEMPLATE, EmailTemplateModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EmailTemplateId,
+                    opt => opt.MapFrom(src => src.EMAIL_TEMPLATE_ID))
+                .ForMember(dest => dest.EmailTemplateName,
+                    opt => opt.MapFrom(src => src.TEMPLATE_NAME))
+                .ForMember(dest => dest.EmailTemplateSubject,
+                    opt => opt.MapFrom(src => src.SUBJECT))
+                .ForMember(dest => dest.EmailTemplateBody,
+                    opt => opt.MapFrom(src => src.BODY));
+            //.ForMember(dest => dest.;
+
+            Mapper.CreateMap<EmailTemplateModel, EMAIL_TEMPLATE>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EMAIL_TEMPLATE_ID,
+                    opt => opt.MapFrom(src => src.EmailTemplateId))
+                .ForMember(dest => dest.TEMPLATE_NAME,
+                    opt => opt.MapFrom(src => src.EmailTemplateName))
+                .ForMember(dest => dest.SUBJECT,
+                    opt => opt.MapFrom(src => src.EmailTemplateSubject))
+                .ForMember(dest => dest.BODY,
+                    opt => opt.MapFrom(src => src.EmailTemplateBody));
+            #endregion
         }
     }
 

@@ -42,7 +42,7 @@
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -106,17 +106,17 @@
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -257,8 +257,8 @@
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -324,9 +324,9 @@
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -334,7 +334,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -368,7 +368,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -542,6 +542,23 @@
           <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
           <Property Name="ROLE" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="WORKFLOW_STATE">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACTION_NAME" Type="varchar" MaxLength="50" />
+          <Property Name="FORM_ID" Type="bigint" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="WORKFLOW_STATE_USERS">
+          <Key>
+            <PropertyRef Name="WF_STATE_USER_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="int" Nullable="false" />
+          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WF_STATE_USER_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
             <PropertyRef Name="WERKS" />
@@ -559,15 +576,15 @@
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="0" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="0" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -1478,6 +1495,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+          <End Role="EMAIL_TEMPLATE" Type="Self.EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+          <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="1" />
+          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WORKFLOW_STATE">
+              <PropertyRef Name="ACTION_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="ACTION_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1733,6 +1786,8 @@
           <EntitySet Name="USER_GROUP" EntityType="Self.USER_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
@@ -2005,6 +2060,18 @@
           <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="Self.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_USER" Association="Self.FK_WORKFLOW_STATE_USERS_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="Self.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -2467,6 +2534,20 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
+          <EntitySet Name="WORKFLOW_STATE" EntityType="EMSModel.WORKFLOW_STATE" />
+          <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="EMSModel.WORKFLOW_STATE_USERS" />
+          <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_USER" Association="EMSModel.FK_WORKFLOW_STATE_USERS_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2497,6 +2578,7 @@
           <Property Name="SUBJECT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BODY" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="WORKFLOW_STATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="EMAIL_TEMPLATE" ToRole="WORKFLOW_STATE" />
         </EntityType>
         <EntityType Name="EX_GROUP_TYPE">
           <Key>
@@ -3505,6 +3587,7 @@
           <NavigationProperty Name="PBCK12" Relationship="EMSModel.FK_PBCK1_USER" FromRole="USER" ToRole="PBCK1" />
           <NavigationProperty Name="CK5_FILE_UPLOAD" Relationship="EMSModel.FK_CK5_FILE_UPLOAD_USER" FromRole="USER" ToRole="CK5_FILE_UPLOAD" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
+          <NavigationProperty Name="WORKFLOW_STATE_USERS" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_USER" FromRole="USER" ToRole="WORKFLOW_STATE_USERS" />
         </EntityType>
         <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -4337,33 +4420,797 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WORKFLOW_STATE">
+          <Key>
+            <PropertyRef Name="ACTION_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACTION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FORM_ID" Type="Int64" />
+          <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
+          <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="WORKFLOW_STATE" ToRole="EMAIL_TEMPLATE" />
+          <NavigationProperty Name="WORKFLOW_STATE_USERS" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" FromRole="WORKFLOW_STATE" ToRole="WORKFLOW_STATE_USERS" />
+        </EntityType>
+        <EntityType Name="WORKFLOW_STATE_USERS">
+          <Key>
+            <PropertyRef Name="WF_STATE_USER_ID" />
+          </Key>
+          <Property Name="ACTION_ID" Type="Int32" Nullable="false" />
+          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WF_STATE_USER_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_USER" FromRole="WORKFLOW_STATE_USERS" ToRole="USER" />
+          <NavigationProperty Name="WORKFLOW_STATE" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" FromRole="WORKFLOW_STATE_USERS" ToRole="WORKFLOW_STATE" />
+        </EntityType>
+        <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
+          <End Type="EMSModel.EMAIL_TEMPLATE" Role="EMAIL_TEMPLATE" Multiplicity="0..1" />
+          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMAIL_TEMPLATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE">
+              <PropertyRef Name="EMAIL_TEMPLATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_STATE_USERS" Role="WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
+          <End Type="EMSModel.WORKFLOW_STATE" Role="WORKFLOW_STATE" Multiplicity="1" />
+          <End Type="EMSModel.WORKFLOW_STATE_USERS" Role="WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WORKFLOW_STATE">
+              <PropertyRef Name="ACTION_ID" />
+            </Principal>
+            <Dependent Role="WORKFLOW_STATE_USERS">
+              <PropertyRef Name="ACTION_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="EMSModelStoreContainer" CdmEntityContainer="EMSEntities" >
-          <EntitySetMapping Name="CHANGES_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.CHANGES_HISTORY">
-              <MappingFragment StoreEntitySet="CHANGES_HISTORY">
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="NEW_VALUE" ColumnName="NEW_VALUE" />
-                <ScalarProperty Name="OLD_VALUE" ColumnName="OLD_VALUE" />
-                <ScalarProperty Name="FIELD_NAME" ColumnName="FIELD_NAME" />
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EMSModelStoreContainer" CdmEntityContainer="EMSEntities">
+    <EntitySetMapping Name="CHANGES_HISTORY">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CHANGES_HISTORY)">
+        <MappingFragment StoreEntitySet="CHANGES_HISTORY">
+          <ScalarProperty Name="CHANGES_HISTORY_ID" ColumnName="CHANGES_HISTORY_ID" />
+          <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+          <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+          <ScalarProperty Name="FIELD_NAME" ColumnName="FIELD_NAME" />
+          <ScalarProperty Name="OLD_VALUE" ColumnName="OLD_VALUE" />
+          <ScalarProperty Name="NEW_VALUE" ColumnName="NEW_VALUE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EMAIL_TEMPLATE">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.EMAIL_TEMPLATE)">
+        <MappingFragment StoreEntitySet="EMAIL_TEMPLATE">
+          <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
+          <ScalarProperty Name="TEMPLATE_NAME" ColumnName="TEMPLATE_NAME" />
+          <ScalarProperty Name="SUBJECT" ColumnName="SUBJECT" />
+          <ScalarProperty Name="BODY" ColumnName="BODY" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EX_GROUP_TYPE">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.EX_GROUP_TYPE)">
+        <MappingFragment StoreEntitySet="EX_GROUP_TYPE">
+          <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
+          <ScalarProperty Name="GROUP_NAME" ColumnName="GROUP_NAME" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EX_GROUP_TYPE_DETAILS">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.EX_GROUP_TYPE_DETAILS)">
+        <MappingFragment StoreEntitySet="EX_GROUP_TYPE_DETAILS">
+          <ScalarProperty Name="EX_GROUP_TYPE_DETAIL_ID" ColumnName="EX_GROUP_TYPE_DETAIL_ID" />
+          <ScalarProperty Name="EX_GROUP_TYPE_ID" ColumnName="EX_GROUP_TYPE_ID" />
+          <ScalarProperty Name="GOODTYPE_ID" ColumnName="GOODTYPE_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FILE_UPLOAD">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.FILE_UPLOAD)">
+        <MappingFragment StoreEntitySet="FILE_UPLOAD">
+          <ScalarProperty Name="FILE_ID" ColumnName="FILE_ID" />
+          <ScalarProperty Name="FORM_TYEP_ID" ColumnName="FORM_TYEP_ID" />
+          <ScalarProperty Name="FORM_NO" ColumnName="FORM_NO" />
+          <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+          <ScalarProperty Name="UPLOAD_DATE" ColumnName="UPLOAD_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HEADER_FOOTER">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.HEADER_FOOTER)">
+        <MappingFragment StoreEntitySet="HEADER_FOOTER">
+          <ScalarProperty Name="HEADER_FOOTER_ID" ColumnName="HEADER_FOOTER_ID" />
+          <ScalarProperty Name="FORM_NAME" ColumnName="FORM_NAME" />
+          <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+          <ScalarProperty Name="HEADER_IMAGE_PATH" ColumnName="HEADER_IMAGE_PATH" />
+          <ScalarProperty Name="FOOTER_CONTENT" ColumnName="FOOTER_CONTENT" />
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HEADER_FOOTER_FORM_MAP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.HEADER_FOOTER_FORM_MAP)">
+        <MappingFragment StoreEntitySet="HEADER_FOOTER_FORM_MAP">
+          <ScalarProperty Name="HEADER_FOOTER_FORM_MAP_ID" ColumnName="HEADER_FOOTER_FORM_MAP_ID" />
+          <ScalarProperty Name="HEADER_FOOTER_ID" ColumnName="HEADER_FOOTER_ID" />
+          <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+          <ScalarProperty Name="IS_HEADER_SET" ColumnName="IS_HEADER_SET" />
+          <ScalarProperty Name="IS_FOOTER_SET" ColumnName="IS_FOOTER_SET" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LFA1">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.LFA1)">
+        <MappingFragment StoreEntitySet="LFA1">
+          <ScalarProperty Name="LIFNR" ColumnName="LIFNR" />
+          <ScalarProperty Name="NAME1" ColumnName="NAME1" />
+          <ScalarProperty Name="NAME2" ColumnName="NAME2" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MENGETAHUI">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.MENGETAHUI)">
+        <MappingFragment StoreEntitySet="MENGETAHUI">
+          <ScalarProperty Name="MENGETAHUI_ID" ColumnName="MENGETAHUI_ID" />
+          <ScalarProperty Name="MENGETAHUI_CODE" ColumnName="MENGETAHUI_CODE" />
+          <ScalarProperty Name="MENGETAHUI_DESC" ColumnName="MENGETAHUI_DESC" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MONTH">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.MONTH)">
+        <MappingFragment StoreEntitySet="MONTH">
+          <ScalarProperty Name="MONTH_ID" ColumnName="MONTH_ID" />
+          <ScalarProperty Name="MONTH_NAME_IND" ColumnName="MONTH_NAME_IND" />
+          <ScalarProperty Name="MONTH_NAME_ENG" ColumnName="MONTH_NAME_ENG" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PAGE">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PAGE)">
+        <MappingFragment StoreEntitySet="PAGE">
+          <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+          <ScalarProperty Name="PAGE_NAME" ColumnName="PAGE_NAME" />
+          <ScalarProperty Name="PAGE_URL" ColumnName="PAGE_URL" />
+          <ScalarProperty Name="MENU_NAME" ColumnName="MENU_NAME" />
+          <ScalarProperty Name="PARENT_PAGE_ID" ColumnName="PARENT_PAGE_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PAGE_MAP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PAGE_MAP)">
+        <MappingFragment StoreEntitySet="PAGE_MAP">
+          <ScalarProperty Name="PAGE_MAP_ID" ColumnName="PAGE_MAP_ID" />
+          <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+          <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PARAMATER">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PARAMATER)">
+        <MappingFragment StoreEntitySet="PARAMATER">
+          <ScalarProperty Name="PARAMETER_ID" ColumnName="PARAMETER_ID" />
+          <ScalarProperty Name="PARAMETER_CODE" ColumnName="PARAMETER_CODE" />
+          <ScalarProperty Name="PARAMETER_NAME" ColumnName="PARAMETER_NAME" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PLANT_RECEIVE_MATERIAL">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PLANT_RECEIVE_MATERIAL)">
+        <MappingFragment StoreEntitySet="PLANT_RECEIVE_MATERIAL">
+          <ScalarProperty Name="PLANT_MATERIAL_ID" ColumnName="PLANT_MATERIAL_ID" />
+          <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+          <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SUPPLIER_PORT">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.SUPPLIER_PORT)">
+        <MappingFragment StoreEntitySet="SUPPLIER_PORT">
+          <ScalarProperty Name="SUPPLIER_PORT_ID" ColumnName="SUPPLIER_PORT_ID" />
+          <ScalarProperty Name="PORT_NAME" ColumnName="PORT_NAME" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="T001">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.T001)">
+        <MappingFragment StoreEntitySet="T001">
+          <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+          <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
+          <ScalarProperty Name="NPWP" ColumnName="NPWP" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="ORT01" ColumnName="ORT01" />
+          <ScalarProperty Name="SPRAS" ColumnName="SPRAS" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="T001K">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.T001K)">
+        <MappingFragment StoreEntitySet="T001K">
+          <ScalarProperty Name="BWKEY" ColumnName="BWKEY" />
+          <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="T001W">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.T001W)">
+        <MappingFragment StoreEntitySet="T001W">
+          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="NAME1" ColumnName="NAME1" />
+          <ScalarProperty Name="ORT01" ColumnName="ORT01" />
+          <ScalarProperty Name="PHONE" ColumnName="PHONE" />
+          <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
+          <ScalarProperty Name="SKEPTIS" ColumnName="SKEPTIS" />
+          <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="IS_MAIN_PLANT" ColumnName="IS_MAIN_PLANT" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="USER_GROUP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.USER_GROUP)">
+        <MappingFragment StoreEntitySet="USER_GROUP">
+          <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
+          <ScalarProperty Name="GROUP_DESCRIPTION" ColumnName="GROUP_DESCRIPTION" />
+          <ScalarProperty Name="ROLE_NAME" ColumnName="ROLE_NAME" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="VIRTUAL_PLANT_MAP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.VIRTUAL_PLANT_MAP)">
+        <MappingFragment StoreEntitySet="VIRTUAL_PLANT_MAP">
+          <ScalarProperty Name="VIRTUAL_PLANT_MAP_ID" ColumnName="VIRTUAL_PLANT_MAP_ID" />
+          <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+          <ScalarProperty Name="IMPORT_PLANT_ID" ColumnName="IMPORT_PLANT_ID" />
+          <ScalarProperty Name="EXPORT_PLANT_ID" ColumnName="EXPORT_PLANT_ID" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_GOODTYP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_GOODTYP)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_GOODTYP">
+          <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+          <ScalarProperty Name="EXT_TYP_DESC" ColumnName="EXT_TYP_DESC" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_MARKET">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_MARKET)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_MARKET">
+          <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
+          <ScalarProperty Name="MARKET_DESC" ColumnName="MARKET_DESC" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_PCODE">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_PCODE)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_PCODE">
+          <ScalarProperty Name="PER_CODE" ColumnName="PER_CODE" />
+          <ScalarProperty Name="PER_DESC" ColumnName="PER_DESC" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_PRODTYP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_PRODTYP)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_PRODTYP">
+          <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+          <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
+          <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_SERIES">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_SERIES)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_SERIES">
+          <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
+          <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_KPPBC">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_KPPBC)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_KPPBC">
+          <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
+          <ScalarProperty Name="KPPBC_TYPE" ColumnName="KPPBC_TYPE" />
+          <ScalarProperty Name="MENGETAHUI" ColumnName="MENGETAHUI" />
+          <ScalarProperty Name="CK1_KEP_HEADER" ColumnName="CK1_KEP_HEADER" />
+          <ScalarProperty Name="CK1_KEP_FOOTER" ColumnName="CK1_KEP_FOOTER" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_NPPBKC">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_NPPBKC)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_NPPBKC">
+          <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+          <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
+          <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
+          <ScalarProperty Name="CITY" ColumnName="CITY" />
+          <ScalarProperty Name="CITY_ALIAS" ColumnName="CITY_ALIAS" />
+          <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
+          <ScalarProperty Name="REGION" ColumnName="REGION" />
+          <ScalarProperty Name="REGION_DGCE" ColumnName="REGION_DGCE" />
+          <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
+          <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+          <ScalarProperty Name="TEXT_TO" ColumnName="TEXT_TO" />
+          <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
+          <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_MATERIAL)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+          <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
+          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
+          <ScalarProperty Name="MATERIAL_GROUP" ColumnName="MATERIAL_GROUP" />
+          <ScalarProperty Name="PURCHASING_GROUP" ColumnName="PURCHASING_GROUP" />
+          <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+          <ScalarProperty Name="ISSUE_STORANGE_LOC" ColumnName="ISSUE_STORANGE_LOC" />
+          <ScalarProperty Name="BASE_UOM_ID" ColumnName="BASE_UOM_ID" />
+          <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="HJE" ColumnName="HJE" />
+          <ScalarProperty Name="HJE_CURR" ColumnName="HJE_CURR" />
+          <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+          <ScalarProperty Name="TARIFF_CURR" ColumnName="TARIFF_CURR" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UOM">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.UOM)">
+        <MappingFragment StoreEntitySet="UOM">
+          <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
+          <ScalarProperty Name="UOM_DESC" ColumnName="UOM_DESC" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PBCK1_PROD_CONVERTER">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1_PROD_CONVERTER)">
+        <MappingFragment StoreEntitySet="PBCK1_PROD_CONVERTER">
+          <ScalarProperty Name="PBCK1_PROD_COV_ID" ColumnName="PBCK1_PROD_COV_ID" />
+          <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+          <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+          <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
+          <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+          <ScalarProperty Name="CONVERTER_OUTPUT" ColumnName="CONVERTER_OUTPUT" />
+          <ScalarProperty Name="CONVERTER_UOM_ID" ColumnName="CONVERTER_UOM_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ZAIDM_EX_BRAND">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_BRAND)">
+        <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
+          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+          <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
+          <ScalarProperty Name="PER_CODE" ColumnName="PER_CODE" />
+          <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+          <ScalarProperty Name="SKEP_NO" ColumnName="SKEP_NO" />
+          <ScalarProperty Name="SKEP_DATE" ColumnName="SKEP_DATE" />
+          <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+          <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
+          <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
+          <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
+          <ScalarProperty Name="COUNTRY" ColumnName="COUNTRY" />
+          <ScalarProperty Name="HJE_IDR" ColumnName="HJE_IDR" />
+          <ScalarProperty Name="HJE_CURR" ColumnName="HJE_CURR" />
+          <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+          <ScalarProperty Name="TARIF_CURR" ColumnName="TARIF_CURR" />
+          <ScalarProperty Name="COLOUR" ColumnName="COLOUR" />
+          <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+          <ScalarProperty Name="CUT_FILLER_CODE" ColumnName="CUT_FILLER_CODE" />
+          <ScalarProperty Name="PRINTING_PRICE" ColumnName="PRINTING_PRICE" />
+          <ScalarProperty Name="CONVERSION" ColumnName="CONVERSION" />
+          <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
+          <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="IS_FROM_SAP" ColumnName="IS_FROM_SAP" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PBCK1_PROD_PLAN">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1_PROD_PLAN)">
+        <MappingFragment StoreEntitySet="PBCK1_PROD_PLAN">
+          <ScalarProperty Name="PBCK1_PROD_PLAN_ID" ColumnName="PBCK1_PROD_PLAN_ID" />
+          <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+          <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+          <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
+          <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+          <ScalarProperty Name="AMOUNT" ColumnName="AMOUNT" />
+          <ScalarProperty Name="BKC_REQUIRED" ColumnName="BKC_REQUIRED" />
+          <ScalarProperty Name="MONTH" ColumnName="MONTH" />
+          <ScalarProperty Name="BKC_REQUIRED_UOM_ID" ColumnName="BKC_REQUIRED_UOM_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LACK1_DOCUMENT">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.LACK1_DOCUMENT)">
+        <MappingFragment StoreEntitySet="LACK1_DOCUMENT">
+          <ScalarProperty Name="LACK1_DOCUMENT_ID" ColumnName="LACK1_DOCUMENT_ID" />
+          <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+          <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+          <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LACK1_ITEM">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.LACK1_ITEM)">
+        <MappingFragment StoreEntitySet="LACK1_ITEM">
+          <ScalarProperty Name="LACK1_ITEM_ID" ColumnName="LACK1_ITEM_ID" />
+          <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+          <ScalarProperty Name="BEGINNING_BALANCE" ColumnName="BEGINNING_BALANCE" />
+          <ScalarProperty Name="INCOME" ColumnName="INCOME" />
+          <ScalarProperty Name="USAGE" ColumnName="USAGE" />
+          <ScalarProperty Name="PRODUCTION" ColumnName="PRODUCTION" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WORKFLOW_HISTORY">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.WORKFLOW_HISTORY)">
+        <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
+          <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
+          <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+          <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
+          <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
+          <ScalarProperty Name="ACTION" ColumnName="ACTION" />
+          <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
+          <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
+          <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+          <ScalarProperty Name="ROLE" ColumnName="ROLE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MATERIAL_UOM">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.MATERIAL_UOM)">
+        <MappingFragment StoreEntitySet="MATERIAL_UOM">
+          <ScalarProperty Name="MATERIAL_UOM_ID" ColumnName="MATERIAL_UOM_ID" />
+          <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
+          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="MEINH" ColumnName="MEINH" />
+          <ScalarProperty Name="UMREZ" ColumnName="UMREZ" />
+          <ScalarProperty Name="UMREN" ColumnName="UMREN" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CK5_MATERIAL">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5_MATERIAL)">
+        <MappingFragment StoreEntitySet="CK5_MATERIAL">
+          <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
+          <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+          <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+          <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
+          <ScalarProperty Name="QTY" ColumnName="QTY" />
+          <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
+          <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
+          <ScalarProperty Name="BRAND" ColumnName="BRAND" />
+          <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+          <ScalarProperty Name="UOM" ColumnName="UOM" />
+          <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
+          <ScalarProperty Name="HJE" ColumnName="HJE" />
+          <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+          <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
+          <ScalarProperty Name="USD_VALUE" ColumnName="USD_VALUE" />
+          <ScalarProperty Name="NOTE" ColumnName="NOTE" />
+          <ScalarProperty Name="CONVERTED_UOM" ColumnName="CONVERTED_UOM" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DOC_NUMBER_SEQ">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.DOC_NUMBER_SEQ)">
+        <MappingFragment StoreEntitySet="DOC_NUMBER_SEQ">
+          <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
+          <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
+          <ScalarProperty Name="MONTH" ColumnName="MONTH" />
+          <ScalarProperty Name="YEAR" ColumnName="YEAR" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PBCK1_DECREE_DOC">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1_DECREE_DOC)">
+        <MappingFragment StoreEntitySet="PBCK1_DECREE_DOC">
+          <ScalarProperty Name="PBCK1_DECREE_DOC_ID" ColumnName="PBCK1_DECREE_DOC_ID" />
+          <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+          <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+          <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LACK1">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.LACK1)">
+        <MappingFragment StoreEntitySet="LACK1">
+          <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+          <ScalarProperty Name="LACK1_NUMBER" ColumnName="LACK1_NUMBER" />
+          <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+          <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
+          <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+          <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+          <ScalarProperty Name="LEVEL_PLANT_ID" ColumnName="LEVEL_PLANT_ID" />
+          <ScalarProperty Name="LEVEL_PLANT_NAME" ColumnName="LEVEL_PLANT_NAME" />
+          <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+          <ScalarProperty Name="SUPPLIER_PLANT" ColumnName="SUPPLIER_PLANT" />
+          <ScalarProperty Name="EX_GOODTYP" ColumnName="EX_GOODTYP" />
+          <ScalarProperty Name="WASTE_QTY" ColumnName="WASTE_QTY" />
+          <ScalarProperty Name="WASTE_UOM" ColumnName="WASTE_UOM" />
+          <ScalarProperty Name="RETURN_QTY" ColumnName="RETURN_QTY" />
+          <ScalarProperty Name="RETURN_UOM" ColumnName="RETURN_UOM" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+          <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+          <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+          <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+          <ScalarProperty Name="EX_TYP_DESC" ColumnName="EX_TYP_DESC" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="USER">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.USER)">
+        <MappingFragment StoreEntitySet="USER">
+          <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+          <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+          <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+          <ScalarProperty Name="PHONE" ColumnName="PHONE" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
+          <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="POA">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.POA)">
+        <MappingFragment StoreEntitySet="POA">
+          <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+          <ScalarProperty Name="ID_CARD" ColumnName="ID_CARD" />
+          <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
+          <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
+          <ScalarProperty Name="POA_EMAIL" ColumnName="POA_EMAIL" />
+          <ScalarProperty Name="PRINTED_NAME" ColumnName="PRINTED_NAME" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="LOGIN_AS" ColumnName="LOGIN_AS" />
+          <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="POA_MAP">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.POA_MAP)">
+        <MappingFragment StoreEntitySet="POA_MAP">
+          <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
+          <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="POA_SK">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.POA_SK)">
+        <MappingFragment StoreEntitySet="POA_SK">
+          <ScalarProperty Name="POA_SK_ID" ColumnName="POA_SK_ID" />
+          <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+          <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+          <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CK5">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
+        <MappingFragment StoreEntitySet="CK5">
+          <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+          <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
+          <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
+          <ScalarProperty Name="CE_OFFICE_CODE" ColumnName="CE_OFFICE_CODE" />
+          <ScalarProperty Name="SUBMISSION_NUMBER" ColumnName="SUBMISSION_NUMBER" />
+          <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+          <ScalarProperty Name="REGISTRATION_NUMBER" ColumnName="REGISTRATION_NUMBER" />
+          <ScalarProperty Name="EX_GOODS_TYPE_DESC" ColumnName="EX_GOODS_TYPE_DESC" />
+          <ScalarProperty Name="EX_SETTLEMENT_ID" ColumnName="EX_SETTLEMENT_ID" />
+          <ScalarProperty Name="EX_STATUS_ID" ColumnName="EX_STATUS_ID" />
+          <ScalarProperty Name="REQUEST_TYPE_ID" ColumnName="REQUEST_TYPE_ID" />
+          <ScalarProperty Name="STO_SENDER_NUMBER" ColumnName="STO_SENDER_NUMBER" />
+          <ScalarProperty Name="STO_RECEIVER_NUMBER" ColumnName="STO_RECEIVER_NUMBER" />
+          <ScalarProperty Name="STOB_NUMBER" ColumnName="STOB_NUMBER" />
+          <ScalarProperty Name="SOURCE_PLANT_ID" ColumnName="SOURCE_PLANT_ID" />
+          <ScalarProperty Name="DEST_PLANT_ID" ColumnName="DEST_PLANT_ID" />
+          <ScalarProperty Name="INVOICE_NUMBER" ColumnName="INVOICE_NUMBER" />
+          <ScalarProperty Name="INVOICE_DATE" ColumnName="INVOICE_DATE" />
+          <ScalarProperty Name="PBCK1_DECREE_ID" ColumnName="PBCK1_DECREE_ID" />
+          <ScalarProperty Name="CARRIAGE_METHOD_ID" ColumnName="CARRIAGE_METHOD_ID" />
+          <ScalarProperty Name="GRAND_TOTAL_EX" ColumnName="GRAND_TOTAL_EX" />
+          <ScalarProperty Name="PACKAGE_UOM_ID" ColumnName="PACKAGE_UOM_ID" />
+          <ScalarProperty Name="DEST_COUNTRY_ID" ColumnName="DEST_COUNTRY_ID" />
+          <ScalarProperty Name="HARBOUR" ColumnName="HARBOUR" />
+          <ScalarProperty Name="OFFICE_HARBOUR" ColumnName="OFFICE_HARBOUR" />
+          <ScalarProperty Name="LAST_SHELTER_HARBOUR" ColumnName="LAST_SHELTER_HARBOUR" />
+          <ScalarProperty Name="OFFICE_SHELTER" ColumnName="OFFICE_SHELTER" />
+          <ScalarProperty Name="DN_NUMBER" ColumnName="DN_NUMBER" />
+          <ScalarProperty Name="GR_DATE" ColumnName="GR_DATE" />
+          <ScalarProperty Name="GI_DATE" ColumnName="GI_DATE" />
+          <ScalarProperty Name="SEALING_NOTIF_NUMBER" ColumnName="SEALING_NOTIF_NUMBER" />
+          <ScalarProperty Name="UNSEALING_NOTIF_NUMBER" ColumnName="UNSEALING_NOTIF_NUMBER" />
+          <ScalarProperty Name="SEALING_NOTIF_DATE" ColumnName="SEALING_NOTIF_DATE" />
+          <ScalarProperty Name="UNSEALING_NOTIF_DATE" ColumnName="UNSEALING_NOTIF_DATE" />
+          <ScalarProperty Name="LOADING_PORT" ColumnName="LOADING_PORT" />
+          <ScalarProperty Name="LOADING_PORT_NAME" ColumnName="LOADING_PORT_NAME" />
+          <ScalarProperty Name="LOADING_PORT_ID" ColumnName="LOADING_PORT_ID" />
+          <ScalarProperty Name="FINAL_PORT" ColumnName="FINAL_PORT" />
+          <ScalarProperty Name="FINAL_PORT_ID" ColumnName="FINAL_PORT_ID" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="APPROVED_BY_POA" ColumnName="APPROVED_BY_POA" />
+          <ScalarProperty Name="APPROVED_DATE_POA" ColumnName="APPROVED_DATE_POA" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="SOURCE_PLANT_NPWP" ColumnName="SOURCE_PLANT_NPWP" />
+          <ScalarProperty Name="SOURCE_PLANT_NPPBKC_ID" ColumnName="SOURCE_PLANT_NPPBKC_ID" />
+          <ScalarProperty Name="SOURCE_PLANT_COMPANY_NAME" ColumnName="SOURCE_PLANT_COMPANY_NAME" />
+          <ScalarProperty Name="SOURCE_PLANT_ADDRESS" ColumnName="SOURCE_PLANT_ADDRESS" />
+          <ScalarProperty Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" ColumnName="SOURCE_PLANT_KPPBC_NAME_OFFICE" />
+          <ScalarProperty Name="DEST_PLANT_NPWP" ColumnName="DEST_PLANT_NPWP" />
+          <ScalarProperty Name="DEST_PLANT_NPPBKC_ID" ColumnName="DEST_PLANT_NPPBKC_ID" />
+          <ScalarProperty Name="DEST_PLANT_COMPANY_NAME" ColumnName="DEST_PLANT_COMPANY_NAME" />
+          <ScalarProperty Name="DEST_PLANT_ADDRESS" ColumnName="DEST_PLANT_ADDRESS" />
+          <ScalarProperty Name="DEST_PLANT_KPPBC_NAME_OFFICE" ColumnName="DEST_PLANT_KPPBC_NAME_OFFICE" />
+          <ScalarProperty Name="REGISTRATION_DATE" ColumnName="REGISTRATION_DATE" />
+          <ScalarProperty Name="DN_DATE" ColumnName="DN_DATE" />
+          <ScalarProperty Name="SOURCE_PLANT_NAME" ColumnName="SOURCE_PLANT_NAME" />
+          <ScalarProperty Name="DEST_PLANT_NAME" ColumnName="DEST_PLANT_NAME" />
+          <ScalarProperty Name="FINAL_PORT_NAME" ColumnName="FINAL_PORT_NAME" />
+          <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
+          <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
+          <ScalarProperty Name="SOURCE_PLANT_COMPANY_CODE" ColumnName="SOURCE_PLANT_COMPANY_CODE" />
+          <ScalarProperty Name="DEST_PLANT_COMPANY_CODE" ColumnName="DEST_PLANT_COMPANY_CODE" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PBCK1">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1)">
+        <MappingFragment StoreEntitySet="PBCK1">
+          <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+          <ScalarProperty Name="NUMBER" ColumnName="NUMBER" />
+          <ScalarProperty Name="PBCK1_REF" ColumnName="PBCK1_REF" />
+          <ScalarProperty Name="PBCK1_TYPE" ColumnName="PBCK1_TYPE" />
+          <ScalarProperty Name="PERIOD_FROM" ColumnName="PERIOD_FROM" />
+          <ScalarProperty Name="PERIOD_TO" ColumnName="PERIOD_TO" />
+          <ScalarProperty Name="REPORTED_ON" ColumnName="REPORTED_ON" />
+          <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+          <ScalarProperty Name="NPPBKC_BUKRS" ColumnName="NPPBKC_BUKRS" />
+          <ScalarProperty Name="NPPBCK_BUTXT" ColumnName="NPPBCK_BUTXT" />
+          <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+          <ScalarProperty Name="EXC_TYP_DESC" ColumnName="EXC_TYP_DESC" />
+          <ScalarProperty Name="SUPPLIER_PLANT" ColumnName="SUPPLIER_PLANT" />
+          <ScalarProperty Name="SUPPLIER_PORT_ID" ColumnName="SUPPLIER_PORT_ID" />
+          <ScalarProperty Name="SUPPLIER_ADDRESS" ColumnName="SUPPLIER_ADDRESS" />
+          <ScalarProperty Name="SUPPLIER_PHONE" ColumnName="SUPPLIER_PHONE" />
+          <ScalarProperty Name="PLAN_PROD_FROM" ColumnName="PLAN_PROD_FROM" />
+          <ScalarProperty Name="PLAN_PROD_TO" ColumnName="PLAN_PROD_TO" />
+          <ScalarProperty Name="REQUEST_QTY" ColumnName="REQUEST_QTY" />
+          <ScalarProperty Name="REQUEST_QTY_UOM" ColumnName="REQUEST_QTY_UOM" />
+          <ScalarProperty Name="LATEST_SALDO" ColumnName="LATEST_SALDO" />
+          <ScalarProperty Name="LATEST_SALDO_UOM" ColumnName="LATEST_SALDO_UOM" />
+          <ScalarProperty Name="LACK1_FROM_MONTH" ColumnName="LACK1_FROM_MONTH" />
+          <ScalarProperty Name="LACK1_FROM_YEAR" ColumnName="LACK1_FROM_YEAR" />
+          <ScalarProperty Name="LACK1_TO_MONTH" ColumnName="LACK1_TO_MONTH" />
+          <ScalarProperty Name="LACK1_TO_YEAR" ColumnName="LACK1_TO_YEAR" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="STATUS_GOV" ColumnName="STATUS_GOV" />
+          <ScalarProperty Name="QTY_APPROVED" ColumnName="QTY_APPROVED" />
+          <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="APPROVED_BY_POA" ColumnName="APPROVED_BY_POA" />
+          <ScalarProperty Name="APPROVED_DATE_POA" ColumnName="APPROVED_DATE_POA" />
+          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+          <ScalarProperty Name="SUPPLIER_PORT_NAME" ColumnName="SUPPLIER_PORT_NAME" />
+          <ScalarProperty Name="SUPPLIER_NPPBKC_ID" ColumnName="SUPPLIER_NPPBKC_ID" />
+          <ScalarProperty Name="SUPPLIER_KPPBC_ID" ColumnName="SUPPLIER_KPPBC_ID" />
+          <ScalarProperty Name="SUPPLIER_PLANT_WERKS" ColumnName="SUPPLIER_PLANT_WERKS" />
+          <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
+          <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CK5_FILE_UPLOAD">
+      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5_FILE_UPLOAD)">
+        <MappingFragment StoreEntitySet="CK5_FILE_UPLOAD">
+          <ScalarProperty Name="CK5_FILE_UPLOAD_ID" ColumnName="CK5_FILE_UPLOAD_ID" />
+          <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+          <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+          <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+          <EntitySetMapping Name="WORKFLOW_STATE">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE">
+              <MappingFragment StoreEntitySet="WORKFLOW_STATE">
                 <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
-                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
-                <ScalarProperty Name="CHANGES_HISTORY_ID" ColumnName="CHANGES_HISTORY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMAIL_TEMPLATE">
-            <EntityTypeMapping TypeName="EMSModel.EMAIL_TEMPLATE">
-              <MappingFragment StoreEntitySet="EMAIL_TEMPLATE">
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="BODY" ColumnName="BODY" />
-                <ScalarProperty Name="SUBJECT" ColumnName="SUBJECT" />
-                <ScalarProperty Name="TEMPLATE_NAME" ColumnName="TEMPLATE_NAME" />
+                <ScalarProperty Name="ACTION_NAME" ColumnName="ACTION_NAME" />
+                <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
                 <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -4765,121 +5612,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WORKFLOW_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
-              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
-                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
-                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
-                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
-                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
-                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
-                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
-                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
-                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
-                <ScalarProperty Name="WORKFLOW_HISTORY_ID" ColumnName="WORKFLOW_HISTORY_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MATERIAL_UOM">
-            <EntityTypeMapping TypeName="EMSModel.MATERIAL_UOM">
-              <MappingFragment StoreEntitySet="MATERIAL_UOM">
-                <ScalarProperty Name="UMREN" ColumnName="UMREN" />
-                <ScalarProperty Name="UMREZ" ColumnName="UMREZ" />
-                <ScalarProperty Name="MEINH" ColumnName="MEINH" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
-                <ScalarProperty Name="MATERIAL_UOM_ID" ColumnName="MATERIAL_UOM_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CK5_MATERIAL">
-            <EntityTypeMapping TypeName="EMSModel.CK5_MATERIAL">
-              <MappingFragment StoreEntitySet="CK5_MATERIAL">
-                <ScalarProperty Name="CONVERTED_UOM" ColumnName="CONVERTED_UOM" />
-                <ScalarProperty Name="NOTE" ColumnName="NOTE" />
-                <ScalarProperty Name="USD_VALUE" ColumnName="USD_VALUE" />
-                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
-                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
-                <ScalarProperty Name="HJE" ColumnName="HJE" />
-                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
-                <ScalarProperty Name="UOM" ColumnName="UOM" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="BRAND" ColumnName="BRAND" />
-                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
-                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
-                <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DOC_NUMBER_SEQ">
-            <EntityTypeMapping TypeName="EMSModel.DOC_NUMBER_SEQ">
-              <MappingFragment StoreEntitySet="DOC_NUMBER_SEQ">
-                <ScalarProperty Name="YEAR" ColumnName="YEAR" />
-                <ScalarProperty Name="MONTH" ColumnName="MONTH" />
-                <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
-                <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PBCK1_DECREE_DOC">
-            <EntityTypeMapping TypeName="EMSModel.PBCK1_DECREE_DOC">
-              <MappingFragment StoreEntitySet="PBCK1_DECREE_DOC">
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
-                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
-                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
-                <ScalarProperty Name="PBCK1_DECREE_DOC_ID" ColumnName="PBCK1_DECREE_DOC_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LACK1">
-            <EntityTypeMapping TypeName="EMSModel.LACK1">
-              <MappingFragment StoreEntitySet="LACK1">
-                <ScalarProperty Name="EX_TYP_DESC" ColumnName="EX_TYP_DESC" />
-                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
-                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
-                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
-                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="RETURN_UOM" ColumnName="RETURN_UOM" />
-                <ScalarProperty Name="RETURN_QTY" ColumnName="RETURN_QTY" />
-                <ScalarProperty Name="WASTE_UOM" ColumnName="WASTE_UOM" />
-                <ScalarProperty Name="WASTE_QTY" ColumnName="WASTE_QTY" />
-                <ScalarProperty Name="EX_GOODTYP" ColumnName="EX_GOODTYP" />
-                <ScalarProperty Name="SUPPLIER_PLANT" ColumnName="SUPPLIER_PLANT" />
-                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
-                <ScalarProperty Name="LEVEL_PLANT_NAME" ColumnName="LEVEL_PLANT_NAME" />
-                <ScalarProperty Name="LEVEL_PLANT_ID" ColumnName="LEVEL_PLANT_ID" />
-                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
-                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
-                <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
-                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
-                <ScalarProperty Name="LACK1_NUMBER" ColumnName="LACK1_NUMBER" />
-                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="USER">
-            <EntityTypeMapping TypeName="EMSModel.USER">
-              <MappingFragment StoreEntitySet="USER">
-                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="USER_GROUP_ID" ColumnName="USER_GROUP_ID" />
-                <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
-                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+          <EntitySetMapping Name="WORKFLOW_STATE_USERS">
+            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE_USERS">
+              <MappingFragment StoreEntitySet="WORKFLOW_STATE_USERS">
+                <ScalarProperty Name="WF_STATE_USER_ID" ColumnName="WF_STATE_USER_ID" />
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="ACTION_ID" ColumnName="ACTION_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5083,7 +5821,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>
