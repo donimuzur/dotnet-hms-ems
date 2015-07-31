@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using NLog.LayoutRenderers;
 using Sampoerna.EMS.BLL;
@@ -698,6 +699,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 iRow++;
             }
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //SLStyle styleHeader = slDocument.CreateStyle();
+            //styleHeader.Font.Bold = true;
+
+            slDocument.AutoFitColumn(1, 5);
+            slDocument.SetCellStyle(1, 1, iRow - 1, 5, styleBorder);
+            //slDocument.SetCellStyle(1, 1, 1, iColumn - 1, styleHeader);
+
             var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
 
             var path = Path.Combine(Server.MapPath("~/Content/upload/"),fileName);
@@ -967,7 +983,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (isSource)
             {
                 query = from x in listCk5
-                    select new Models.SelectItemModel()
+                    select new SelectItemModel()
                     {
                         ValueField = x.SOURCE_PLANT_COMPANY_CODE,
                         TextField = x.SOURCE_PLANT_COMPANY_CODE
@@ -976,7 +992,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 query = from x in listCk5
-                        select new Models.SelectItemModel()
+                        select new SelectItemModel()
                         {
                             ValueField = x.DEST_PLANT_COMPANY_CODE,
                             TextField = x.DEST_PLANT_COMPANY_CODE
@@ -1062,10 +1078,33 @@ namespace Sampoerna.EMS.Website.Controllers
                             TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
                         };
 
-            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+            return new SelectList(query.DistinctBy(c => c.TextField), "ValueField", "TextField");
 
         }
 
+        private CK5SummaryReportsViewModel InitSummaryReports(CK5SummaryReportsViewModel model)
+        {
+            var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
+            //var input = new CK5SearchSummaryReportsViewModel();
+            //input.Ck5Type = Enums.CK5Type.Domestic;
+
+            //var listCk5 = SearchDataSummaryReports(input);
+
+
+            model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
+            model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
+            model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
+            model.SearchView.NppbkcIdDestList = GetNppbkcList(false, listCk5);
+            model.SearchView.PlantSourceList = GetPlantList(true, listCk5);
+            model.SearchView.PlantDestList = GetPlantList(false, listCk5);
+            model.SearchView.DateFromList = GetSubmissionDateListCK5(true, listCk5);
+            model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
+
+            //view all data ck5 completed document
+            model.DetailsList = SearchDataSummaryReports();
+
+            return model;
+        }
         public ActionResult SummaryReports()
         {
 
@@ -1077,19 +1116,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.MainMenu = Enums.MenuList.CK5;
                 model.CurrentMenu = PageInfo;
 
-                var listCk5 = _ck5Bll.GetAll();
+                model.Ck5Type = Enums.CK5Type.Domestic;
 
-                model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
-                model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
-                model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
-                model.SearchView.NppbkcIdDestList = GetNppbkcList(false, listCk5);
-                model.SearchView.PlantSourceList = GetPlantList(true, listCk5);
-                model.SearchView.PlantDestList = GetPlantList(false, listCk5);
-                model.SearchView.DateFromList = GetSubmissionDateListCK5(true, listCk5);
-                model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
-
-                //view all data ck5 completed document
-                model.DetailsList = SearchSummaryReports();
+                model = InitSummaryReports(model);
 
             }
             catch (Exception ex)
@@ -1103,77 +1132,50 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5SummaryReport", model);
         }
 
-        private List<CK5SummaryReportsItem> SearchSummaryReports(CK5SearchSummaryReportsViewModel filter = null)
+        private List<CK5SummaryReportsItem> SearchDataSummaryReports(CK5SearchSummaryReportsViewModel filter = null)
         {
-            CK5GetByParamInput input;
+            CK5GetSummaryReportByParamInput input;
             List<CK5Dto> dbData;
             if (filter == null)
             {
                 //Get All
-                input = new CK5GetByParamInput();
-                input.Ck5Type = Enums.CK5Type.Completed;
+                input = new CK5GetSummaryReportByParamInput();
 
-                dbData = _ck5Bll.GetCK5ByParam(input);
+                dbData = _ck5Bll.GetSummaryReportsByParam(input);
                 return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
             }
 
             //getbyparams
 
-            input = Mapper.Map<CK5GetByParamInput>(filter);
-            input.Ck5Type = Enums.CK5Type.Completed;
+            input = Mapper.Map<CK5GetSummaryReportByParamInput>(filter);
 
-            dbData = _ck5Bll.GetCK5ByParam(input);
+            dbData = _ck5Bll.GetSummaryReportsByParam(input);
             return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
         }
-        //private SelectList GetYearListCK5(bool isFrom)
-        //{
-        //    var listCk5 = _ck5Bll.GetAll();
-
-        //    IEnumerable<SelectItemModel> query;
-        //    if (isFrom)
-        //        query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
-        //        select new Models.SelectItemModel()
-        //        {
-        //            ValueField = x.SUBMISSION_DATE.Value.Year,
-        //            TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
-        //        };
-        //    else
-        //        query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE) 
-        //            select new Models.SelectItemModel()
-        //            {
-        //                ValueField = x.SUBMISSION_DATE.Value.Year,
-        //                TextField = x.SUBMISSION_DATE.Value.ToString("yyyy")
-        //            };
-
-        //    return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
-
-        //}
+      
 
         [HttpPost]
         public PartialViewResult SearchSummaryReports(CK5SummaryReportsViewModel model)
         {
-            model.DetailsList = SearchSummaryReports(model.SearchView);
+            model.DetailsList = SearchDataSummaryReports(model.SearchView);
             return PartialView("_CK5ListSummaryReport", model);
         }
 
-        public ActionResult ExportSummaryReports(CK5SummaryReportsViewModel model)
+        public void ExportSummaryReports(CK5SummaryReportsViewModel model)
         {
-            try
-            {
-                //CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
-                //AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
-            }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-            }
-            return RedirectToAction("SummaryReports");
+            ExportXlsSummaryReports(model.ExportModel); 
         }
+     
 
-        public void ExportXlsSummaryReports(long ck5Id)
+        public void ExportXlsSummaryReports(CK5ExportSummaryReportsViewModel modelExport)
         {
-          
-            var pathFile = CreateXlsFileSummaryReports(ck5Id);
+            string pathFile = "";
+
+            //var pathFile = CreateXlsFileSummaryReports(modelExport);
+
+            if (modelExport.Ck5Type == Enums.CK5Type.Domestic)
+                pathFile = CreateXlsSummaryReportsDomesticType(modelExport);
+
             var newFile = new FileInfo(pathFile);
 
             var fileName = Path.GetFileName(pathFile);// "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
@@ -1188,42 +1190,161 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
         }
 
-        private string CreateXlsFileSummaryReports(long ck5Id)
+        private string CreateXlsSummaryReportsDomesticType(CK5ExportSummaryReportsViewModel modelExport)
         {
+            var dataSummaryReport = SearchDataSummaryReports(modelExport);
+            
+            int iRow = 1;
             var slDocument = new SLDocument();
 
-            //todo check
-            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK5, ck5Id.ToString());
-
-            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
-
-            int iRow = 1;
-
             //create header
-            slDocument.SetCellValue(iRow, 1, "DATE");
-            slDocument.SetCellValue(iRow, 2, "FIELD");
-            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
-            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
-            slDocument.SetCellValue(iRow, 5, "USER");
+            slDocument = CreateHeaderExcelDomesticType(slDocument, modelExport);
 
             iRow++;
-
-            foreach (var changesHistoryItemModel in model)
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
             {
-                slDocument.SetCellValue(iRow, 1,
-                    changesHistoryItemModel.MODIFIED_DATE.HasValue
-                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
-                        : string.Empty);
-                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
-                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
-                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
-                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+
+                iColumn = 1;
+                if (modelExport.ExciseStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ExciseStatus);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.DocumentNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck1Number);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.SubmissionDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SubmissionDate);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.SealingNotifDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SealingNotifDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.SealingNotifNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SealingNotifNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.UnSealingNotifDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.UnSealingNotifDate);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.UnSealingNotifNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.UnSealingNotifNumber);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Lack1Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Lack1Number);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Lack2Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Lack2Number);
+                    iColumn = iColumn + 1;
+                }
+
 
                 iRow++;
             }
-            var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
 
-            var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+            return CreateXlsFileSummaryReports(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcelDomesticType(SLDocument slDocument, CK5ExportSummaryReportsViewModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.ExciseStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Excise Status");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.DocumentNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Unpaid Excise Facility Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.SubmissionDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Unpaid Excise Facility Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.SealingNotifDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Sealing Notification Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.SealingNotifNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Sealing Notification Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.UnSealingNotifDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Unsealing Notification Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.UnSealingNotifNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Unsealing Notification Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Lack1Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Reported to LACK-1 Month");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Lack2Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Reported to LACK-2 Month");
+                iColumn = iColumn + 1;
+            }
+
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileSummaryReports(SLDocument slDocument, int iColumn, int iRow)
+        {
+        
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //SLStyle styleHeader = slDocument.CreateStyle();
+            //styleHeader.Font.Bold = true;
+
+            slDocument.AutoFitColumn(1, iColumn-1);
+            slDocument.SetCellStyle(1, 1, iRow-1, iColumn-1, styleBorder);
+            //slDocument.SetCellStyle(1, 1, 1, iColumn - 1, styleHeader);
+
+            var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            //var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
 
             //var outpu = new 
             slDocument.SaveAs(path);

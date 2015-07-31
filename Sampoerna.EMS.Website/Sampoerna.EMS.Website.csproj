@@ -650,6 +650,7 @@
     <Content Include="Scripts\thousand-separator.js" />
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
@@ -782,8 +783,6 @@
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
     <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
   </ItemGroup>

@@ -9,7 +9,7 @@
 </div>
 
 
-    
+
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
@@ -30,12 +30,12 @@
                                 <div class="row">
                                     <label class="col-md-4">Company Source - Origin</label>
                                     <div class="col-md-8 year-from">
-                                        @(Model.SearchView.CompanyCodeSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>()) 
-                                        : Html.DropDownListFor(model => model.SearchView.CompanyCodeSource, Model.SearchView.CompanyCodeSourceList, "All", new {@class = "form-control selectreset"}))
+                                        @(Model.SearchView.CompanyCodeSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        : Html.DropDownListFor(model => model.SearchView.CompanyCodeSource, Model.SearchView.CompanyCodeSourceList, "All", new { @class = "form-control selectreset" }))
 
-                                        @(Model.SearchView.CompanyCodeDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>()) 
-                                        : Html.DropDownListFor(model => model.SearchView.CompanyCodeDest, Model.SearchView.CompanyCodeDestList, "All", new {@class = "form-control selectreset"}))
-                                        
+                                        @(Model.SearchView.CompanyCodeDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        : Html.DropDownListFor(model => model.SearchView.CompanyCodeDest, Model.SearchView.CompanyCodeDestList, "All", new { @class = "form-control selectreset" }))
+
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
 
                                         @(Model.SearchView.NppbkcIdDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                         : Html.DropDownListFor(model => model.SearchView.NppbkcIdDest, Model.SearchView.NppbkcIdDestList, "All", new { @class = "form-control selectreset" }))
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +83,18 @@
 
                             <div class="col-md-4">
                                 <div>
-                                    Toggle column: <a class="toggle-vis" data-column="0">No</a> - <a class="toggle-vis" data-column="1">Company</a> - <a class="toggle-vis" data-column="2">NPPBKC</a> - <a class="toggle-vis" data-column="3">KPPBC</a> - <a class="toggle-vis" data-column="4">Document Number</a> - <a class="toggle-vis" data-column="5">Address</a>
+                                    Toggle column:
+                                    <a class="toggle-vis" data-column="0">No</a> -
+                                    <a class="toggle-vis" data-column="1">Excise Status</a> -
+                                    <a class="toggle-vis" data-column="2">Unpaid Excise Facility Number</a> -
+                                    <a class="toggle-vis" data-column="3">Unpaid Excise Facility Date</a> -
+                                    <a class="toggle-vis" data-column="4">Sealing Notification Date</a> -
+                                    <a class="toggle-vis" data-column="5">Sealing Notification Number</a>
+
+                                    <a class="toggle-vis" data-column="6">Unsealing Notification Date</a> -
+                                    <a class="toggle-vis" data-column="7">Unsealing Notification Number</a> -
+                                    <a class="toggle-vis" data-column="8">Reported to LACK-1 Month</a> -
+                                    <a class="toggle-vis" data-column="9">Reported to LACK-2 Month</a>
                                 </div>
                             </div>
                             <div class="last-form">
@@ -91,7 +102,7 @@
                                     <button class="btn btn-blue full">FILTER</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT"/>
+                                    <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
                                 </div>
                             </div>
                         </div>
@@ -99,7 +110,7 @@
                 </div>
 
             }
-            
+
 
             <div id="contenttable" class="table-container">
                 @Html.Partial("_CK5ListSummaryReport")
@@ -110,8 +121,16 @@
 
 <div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     @using (Html.BeginForm("ExportSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
-{
-        @Html.HiddenFor(model => model.ExportModel.CompanyCode)      
+    {
+        @Html.HiddenFor(model => model.ExportModel.CompanyCodeSource)
+        @Html.HiddenFor(model => model.ExportModel.CompanyCodeDest)
+        @Html.HiddenFor(model => model.ExportModel.NppbkcIdSource)
+        @Html.HiddenFor(model => model.ExportModel.NppbkcIdDest)
+        @Html.HiddenFor(model => model.ExportModel.PlantSource)
+        @Html.HiddenFor(model => model.ExportModel.PlantDest)
+        @Html.HiddenFor(model => model.ExportModel.DateFrom)
+        @Html.HiddenFor(model => model.ExportModel.DateTo)
+
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -119,13 +138,17 @@
                     <h3><span id="lblTitleModal">Export</span> </h3>
                 </div>
                 <div class="modal-body">
-                
                     <span id="lblMessageModal">Column : </span><br />
-                    @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked" })Company<br/>
-                    @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked" })NPPBKC<br/>
-                    @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked" })KPPBC<br/>
-                    @Html.CheckBoxFor(model => model.ExportModel.DocumentNumber, new { @checked = "checked" })Document Number<br/>
-                  
+                    @Html.CheckBoxFor(model => model.ExportModel.ExciseStatus, new { @checked = "checked" })Excise Status<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.DocumentNumber, new { @checked = "checked" })Unpaid Excise Facility Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SubmissionDate, new { @checked = "checked" })Unpaid Excise Facility Date<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SealingNotifDate, new { @checked = "checked" })Sealing Notification Date<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SealingNotifNumber, new { @checked = "checked" })Sealing Notification Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.UnSealingNotifDate, new { @checked = "checked" })Unsealing Notification Date<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.UnSealingNotifNumber, new { @checked = "checked" })Unsealing Notification Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Lack1Number, new { @checked = "checked" })Reported to LACK-1 Month<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Lack2Number, new { @checked = "checked" })Reported to LACK-2 Month<br />
+
                 </div>
                 <div class="modal-footer">
                     <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
@@ -133,20 +156,20 @@
                 </div>
             </div>
         </div>
-}	
+    }
 </div>
-    
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
     <script type="text/javascript" language="javascript" class="init">
 
         $(document).ready(function () {
-           
-            setupDataTables();
-            
 
-           
+            setupDataTables();
+
+            $('#Ck5Modal').modal('hide');
+
         });
 
 
@@ -168,24 +191,9 @@
                     }
                 });
 
-       
-            //$('#ck5Table .filters th').each(function () {
-            //    var idx = $(this).index();
-            //    if (idx != 0) {
-            //        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
-            //    }
-            //});
 
-        
-            //table.columns().eq(0).each(function (colIdx) {
-            //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-            //        table
-            //            .column(colIdx)
-            //            .search(this.value)
-            //            .draw();
-            //    });
-            //});
-            
+
+
             $('a.toggle-vis').on('click', function (e) {
                 e.preventDefault();
 
@@ -201,29 +209,36 @@
         function ReloadDataTables() {
             setupDataTables();
         }
-      
+
         function OnReset() {
 
             $(".selectreset").val($(".selectreset option:first").val());
         }
-        
+
         $("#btnExport").click(function () {
             $('#Ck5Modal').modal('show');
 
         });
 
-      
+
         $("#btnConfirm").click(function () {
 
-            //('#SearchView_CompanyCode').Text = 'aa';
-            $("input[name='ExportModel.CompanyCode']").val($('#SearchView_CompanyCode').find("option:selected").val());
-            //alert($("input[name='SearchView_CompanyCode']").val());
-           // alert($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportModel_CompanyCodeSource').val($('#SearchView_CompanyCodeSource').find("option:selected").val());
+            $('#ExportModel_CompanyCodeDest').val($('#SearchView_CompanyCodeDest').find("option:selected").val());
+
+            $('#ExportModel_NppbkcIdSource').val($('#SearchView_NppbkcIdSource').find("option:selected").val());
+            $('#ExportModel_NppbkcIdDestt').val($('#SearchView_NppbkcIdDest').find("option:selected").val());
+            $('#ExportModel_PlantSource').val($('#SearchView_PlantSource').find("option:selected").val());
+            $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
+            $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
+            $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
+
+
             $('#ExportSummaryReportsForms').submit();
-            @*window.location = "@Url.Action("ApproveDocument", "CK5", new { model = formData })";*@
-          
-            
+
+
+
         });
-        
+
     </script>
 }

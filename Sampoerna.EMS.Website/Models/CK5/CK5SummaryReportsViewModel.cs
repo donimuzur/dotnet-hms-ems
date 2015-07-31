@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -19,11 +21,14 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public List<CK5SummaryReportsItem> DetailsList { get; set; }
 
         public CK5ExportSummaryReportsViewModel ExportModel { get; set; }
+
+        public Enums.CK5Type Ck5Type { get; set; }
     }
 
     public class CK5SearchSummaryReportsViewModel
     {
-       
+        public Enums.CK5Type Ck5Type { get; set; }
+
         public string CompanyCodeSource { get; set; }
         public SelectList CompanyCodeSourceList { get; set; }
 
@@ -42,10 +47,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string PlantDest { get; set; }
         public SelectList PlantDestList { get; set; }
 
-        public DateTime DateFrom { get; set; }
+        public DateTime? DateFrom { get; set; }
         public SelectList DateFromList { get; set; }
 
-        public DateTime DateTo { get; set; }
+        public DateTime? DateTo { get; set; }
         public SelectList DateToList { get; set; }
 
        
@@ -56,10 +61,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5SummaryReportsItem
     {
         public long Ck5Id { get; set; }
+        
+        #region domestic
 
         public string ExciseStatus { get; set; }
 
-        public string DocumentNumber { get; set; }
+        public string Pbck1Number { get; set; }
 
         public string SubmissionDate { get; set; }
 
@@ -74,16 +81,51 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Lack1Number { get; set; }
 
         public string Lack2Number { get; set; }
+        
+        #endregion
 
     }
 
-    public class CK5ExportSummaryReportsViewModel
+    public class CK5ExportSummaryReportsViewModel : CK5SearchSummaryReportsViewModel
     {
-        public bool Company { get; set; }
-        public bool Nppbkc { get; set; }
-        public bool Kppbc { get; set; }
+        public bool ExciseStatus { get; set; }
+
         public bool DocumentNumber { get; set; }
 
-        public string CompanyCode { get; set; }
+        public bool SubmissionDate { get; set; }
+
+        public bool SealingNotifDate { get; set; }
+
+        public bool SealingNotifNumber { get; set; }
+
+        public bool UnSealingNotifDate { get; set; }
+
+        public bool UnSealingNotifNumber { get; set; }
+
+        public bool Lack1Number { get; set; }
+
+        public bool Lack2Number { get; set; }
     }
+
+    public class CK5ExportSummaryReportsTypeExportViewModel : CK5SearchSummaryReportsViewModel
+    {
+        public bool ExciseStatus { get; set; }
+
+        public bool DocumentNumber { get; set; }
+
+        public bool SubmissionDate { get; set; }
+
+        public bool SealingNotifDate { get; set; }
+
+        public bool SealingNotifNumber { get; set; }
+
+        public bool UnSealingNotifDate { get; set; }
+
+        public bool UnSealingNotifNumber { get; set; }
+
+        public bool Lack1Number { get; set; }
+
+        public bool Lack2Number { get; set; }
+    }
+
 }

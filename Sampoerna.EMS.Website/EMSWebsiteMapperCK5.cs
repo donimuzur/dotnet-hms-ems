@@ -195,19 +195,20 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5Dto, CK5SummaryReportsItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
-                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.PbckNumber))
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue ? src.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.SealingNotifDate, opt => opt.MapFrom(src => src.SEALING_NOTIF_DATE))
                 .ForMember(dest => dest.SealingNotifNumber, opt => opt.MapFrom(src => src.SEALING_NOTIF_NUMBER))
                 .ForMember(dest => dest.UnSealingNotifNumber, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_NUMBER))
                 .ForMember(dest => dest.UnSealingNotifDate, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_DATE));
-                
 
-            Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5GetByParamInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5SummaryReportsItem>().IgnoreAllNonExisting();
                 //.ForMember(dest => dest.NPPBKCOrigin, opt => opt.MapFrom(src => src.NppbkcId));
 
             Mapper.CreateMap<CK5FileUploadViewModel, CK5_FILE_UPLOADDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5GetSummaryReportByParamInput>().IgnoreAllNonExisting();
 
         }
     }
