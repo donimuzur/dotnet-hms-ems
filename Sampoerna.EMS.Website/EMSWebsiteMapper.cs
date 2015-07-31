@@ -328,7 +328,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
                 .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED))
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
-                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT));
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
+                .ForMember(dest => dest.HjeValueStr, opt => opt.MapFrom(src => src.HJE_IDR))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS));
 
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationEditViewModel>().IgnoreAllNonExisting()
