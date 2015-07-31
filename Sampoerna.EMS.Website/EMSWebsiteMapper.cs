@@ -615,15 +615,15 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Modul, opt => opt.MapFrom(src => src.MENU_NAME));
 
             Mapper.CreateMap<WORKFLOW_STATE, WorkflowMappingDetails>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.StateMappingId, opt => opt.MapFrom(src => src.ACTION_ID))
-                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.ACTION_NAME))
+                .ForMember(dest => dest.StateMappingId, opt => opt.MapFrom(src => src.ACTION))
+                //.ForMember(dest => dest.State, opt => opt.MapFrom(src => src.ACTION.ToString()))
                 .ForMember(dest => dest.EmailTemplateId, opt => opt.MapFrom(src => src.EMAIL_TEMPLATE_ID))
                 .ForMember(dest => dest.EmailTemplateName, opt => opt.MapFrom(src => src.EMAIL_TEMPLATE.TEMPLATE_NAME))
                 .ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.WORKFLOW_STATE_USERS));
 
             Mapper.CreateMap<WorkflowMappingDetails, WORKFLOW_STATE>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.ACTION_ID, opt => opt.MapFrom(src => src.StateMappingId))
-                .ForMember(dest => dest.ACTION_NAME, opt => opt.MapFrom(src => src.State))
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.StateMappingId))
+                //.ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => intsrc.State))
                 .ForMember(dest => dest.EMAIL_TEMPLATE_ID, opt => opt.MapFrom(src => src.EmailTemplateId));
                 //.ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.USER));
 

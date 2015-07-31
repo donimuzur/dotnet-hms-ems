@@ -24,11 +24,11 @@ namespace Sampoerna.EMS.BLL
         }
         public void SaveWorkflowState(WORKFLOW_STATE data)
         {
-            if (data.ACTION_ID != 0)
+            if (data.ACTION != 0)
             {
-                var old = _repository.GetByID(data.ACTION_ID);
+                var old = _repository.GetByID(data.ACTION);
 
-                old.ACTION_NAME = data.ACTION_NAME;
+                //old = data.ACTION_NAME;
                 old.EMAIL_TEMPLATE_ID = data.EMAIL_TEMPLATE_ID;
                 old.WORKFLOW_STATE_USERS = data.WORKFLOW_STATE_USERS;
 
@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<WORKFLOW_STATE> GetAllByFormId(long id)
         {
-            return _repository.Get(obj => obj.FORM_ID == id, null, "EMAIL_TEMPLATE,WORKFLOW_STATE_USERS").ToList();
+            return _repository.Get(obj => obj.MENU_ID == id, null, "EMAIL_TEMPLATE,WORKFLOW_STATE_USERS").ToList();
         }
 
         public WORKFLOW_STATE GetAllById(long id)
