@@ -7,6 +7,8 @@ namespace Sampoerna.EMS.Contract
    public interface IExGroupTypeBLL
    {
        void SaveGroup(List<EX_GROUP_TYPE> listGroupTypes);
+       void Save(EX_GROUP_TYPE GroupTypes);
+      
        void UpdateGroupByGroupName(List<EX_GROUP_TYPE> listGroupTypes, string groupName);
        EX_GROUP_TYPE GetGroupTypeByName(string name);
        EX_GROUP_TYPE GetById(int id);
