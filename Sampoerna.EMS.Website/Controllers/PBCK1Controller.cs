@@ -991,7 +991,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     Nppbkc = "'" + d.NppbkcId,
                     Kppbc = "'" + d.NppbkcKppbcId,
                     Pbck1Number = "'" + d.Pbck1Number,
-                    Address = string.Join(",", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
+                    Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                     OriginalNppbkc = "'" + d.SupplierNppbkcId,
                     OriginalKppbc = "'" + d.SupplierKppbcId,
                     OriginalAddress = d.SupplierAddress,
@@ -1043,7 +1043,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Address",
-                    HeaderText = "Address"
+                    HeaderText = "Address", 
+                    HtmlEncode = false
                 });
             }
             if (model.ExportModel.OriginalNppbkc)
@@ -1111,6 +1112,155 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+        
+        #region Monitoring Usage
 
+        public ActionResult MonitoringUsage()
+        {
+            Pbck1MonitoringUsageViewModel model;
+            try
+            {
+
+                model = new Pbck1MonitoringUsageViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    SearchView =
+                    {
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        YearFromList = GetYearListPbck1(true),
+                        YearToList = GetYearListPbck1(false),
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                    },
+                    DetailsList = SearchMonitoringUsages()
+                };
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck1MonitoringUsageViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+            }
+
+            return View("MonitoringUsage", model);
+        }
+
+        private List<Pbck1MonitoringUsageItem> SearchMonitoringUsages(Pbck1FilterMonitoringUsageViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
+                return Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
+            var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
+            return Mapper.Map<List<Pbck1MonitoringUsageItem>>(dbData);
+        }
+        
+        [HttpPost]
+        public PartialViewResult SearchMonitoringUsage(Pbck1MonitoringUsageViewModel model)
+        {
+            model.DetailsList = SearchMonitoringUsages(model.SearchView);
+            return PartialView("_Pbck1MonitoringUsageTable", model);
+        }
+
+        [HttpPost]
+        public ActionResult ExportMonitoringUsage(Pbck1MonitoringUsageViewModel model)
+        {
+            try
+            {
+                ExportMonitoringUsageToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("MonitoringUsage");
+        }
+
+        public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
+        {
+            var dataToExport = SearchMonitoringUsages(model.SearchView);
+
+            //todo: to automapper
+            var src = (from d in dataToExport
+                       select new ExportSummaryDataModel()
+                       {
+                           Company = d.NppbkcCompanyName,
+                           Nppbkc = "'" + d.NppbkcId,
+                           Kppbc = "'" + d.NppbkcKppbcId,
+                           Pbck1Number = "'" + d.Pbck1Number
+                       }).ToList();
+
+            var grid = new GridView
+            {
+                DataSource = src,
+                AutoGenerateColumns = false
+            };
+
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.Company)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Company",
+                    HeaderText = "Company"
+                });
+            }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Kppbc",
+                    HeaderText = "Kppbc"
+                });
+            }
+            if (model.ExportModel.Pbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "Pbck1Number"
+                });
+            }
+            
+            grid.DataBind();
+
+            var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+        
+        #endregion
     }
 }

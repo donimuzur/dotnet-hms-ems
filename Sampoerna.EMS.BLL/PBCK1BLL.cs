@@ -1074,5 +1074,38 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
+        #region Monitoring Usages 
+
+        public List<Pbck1MonitoringUsageDto> GetMonitoringUsageByParam(Pbck1GetMonitoringUsageByParamInput input)
+        {
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed 
+                && c.PBCK1_TYPE == Enums.PBCK1Type.New);
+
+            if (input.YearFrom.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
+
+            if (input.YearTo.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+                queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+
+            var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
+
+            if (pbck1Data == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+        }
+
+        #endregion
+
     }
 }

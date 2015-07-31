@@ -70,6 +70,7 @@
     <Compile Include="Pbck1ProdConverterBLL.cs" />
     <Compile Include="EmailTemplateBLL.cs" />
     <Compile Include="Pbck1ProdPlanBLL.cs" />
+    <Compile Include="Pbck1QuotaBLL.cs" />
     <Compile Include="POASKBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="DocumentSequenceNumberBLL.cs" />

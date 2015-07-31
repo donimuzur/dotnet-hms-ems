@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -232,6 +234,30 @@ namespace Sampoerna.EMS.BLL
                     opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_DESC : string.Empty));
 
             #endregion
+
+            #region Monitoring Usage
+
+            Mapper.CreateMap<PBCK1, Pbck1MonitoringUsageDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.NUMBER))
+                .ForMember(dest => dest.PeriodFrom, opt => opt.MapFrom(src => src.PERIOD_FROM))
+                .ForMember(dest => dest.PeriodTo, opt => opt.MapFrom(src => src.PERIOD_TO))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                //todo: ubah ke column NPPBKC_KPPBC_ID(new column)
+                .ForMember(dest => dest.NppbkcKppbcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.NppbkcCompanyCode, opt => opt.MapFrom(src => src.NPPBKC_BUKRS))
+                .ForMember(dest => dest.NppbkcCompanyName, opt => opt.MapFrom(src => src.NPPBCK_BUTXT))
+                .ForMember(dest => dest.ExGoodsQuota, opt => opt.MapFrom(src => src.QTY_APPROVED))
+                .ForMember(dest => dest.PreviousFinalBalance, opt => opt.MapFrom(src => src.LATEST_SALDO))
+                .ForMember(dest => dest.AdditionalExGoodsQuota, opt => opt.MapFrom(src => src.PBCK11 != null ? 
+                    src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed 
+                    && c.QTY_APPROVED.HasValue).Sum(s => s.QTY_APPROVED != null ? s.QTY_APPROVED.Value : 0) : 0))
+                    //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
+                    .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.QTY_APPROVED))
+                ;
+
+            #endregion
+
         }
     }
 }

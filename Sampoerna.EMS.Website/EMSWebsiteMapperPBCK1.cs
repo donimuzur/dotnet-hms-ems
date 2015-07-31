@@ -96,6 +96,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGov)))
                 ;
 
+            Mapper.CreateMap<Pbck1FilterMonitoringUsageViewModel, Pbck1GetMonitoringUsageByParamInput>()
+                .IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1MonitoringUsageDto, Pbck1MonitoringUsageItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.PreviousFinalBalance)))
+                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.PreviousFinalBalance - src.Received)))
+                ;
+
         }
     }
 }
