@@ -75,5 +75,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<WORKFLOW_STATE> WORKFLOW_STATE { get; set; }
         public virtual DbSet<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
+        public virtual DbSet<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
     }
 }

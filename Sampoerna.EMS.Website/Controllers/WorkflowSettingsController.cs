@@ -86,7 +86,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //var datausers = JsonConvert.DeserializeObject<List<WorkflowUsers>>(worflowusers);
                 var data = AutoMapper.Mapper.Map<WORKFLOW_STATE>(mappingdata);
                 if (actionid.HasValue) {
-                    data.ACTION_ID = actionid.Value;
+                    //data.ACTION_ID = actionid.Value;
                 }
                 List<string> useridlist = new List<string>();
                 foreach (var user in datausers)
@@ -144,8 +144,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new WorkflowMappingDetails();
                 model.Form_Id = page.PAGE_ID;
                 model.Modul = page.MENU_NAME;
-                model.StateMappingId = wfstate.ACTION_ID.ToString();
-                model.State = wfstate.ACTION_NAME;
+                //model.StateMappingId = wfstate.ACTION_ID.ToString();
+                //model.State = wfstate.ACTION_NAME;
                 model.ListUser = AutoMapper.Mapper.Map<List<WorkflowUsers>>(wfstate.WORKFLOW_STATE_USERS.ToList());
                 //model.
                 //model.
