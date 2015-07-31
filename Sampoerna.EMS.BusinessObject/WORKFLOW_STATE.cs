@@ -19,10 +19,11 @@ namespace Sampoerna.EMS.BusinessObject
             this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
         }
     
-        public int ACTION_ID { get; set; }
-        public string ACTION_NAME { get; set; }
-        public Nullable<long> FORM_ID { get; set; }
+        public long WORKFLOW_STATE_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.MenuList> MENU_ID { get; set; }
         public Nullable<int> EMAIL_TEMPLATE_ID { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
     
         public virtual EMAIL_TEMPLATE EMAIL_TEMPLATE { get; set; }
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }

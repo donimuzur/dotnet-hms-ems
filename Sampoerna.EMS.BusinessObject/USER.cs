@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK5_FILE_UPLOAD = new HashSet<CK5_FILE_UPLOAD>();
             this.UOM = new HashSet<UOM>();
             this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
+            this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
         }
     
         public string USER_ID { get; set; }
@@ -92,5 +93,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
         public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
+        public virtual ICollection<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
     }
 }
