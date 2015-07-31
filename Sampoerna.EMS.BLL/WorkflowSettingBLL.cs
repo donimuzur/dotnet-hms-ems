@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<WORKFLOW_STATE> GetAllByFormId(long id)
         {
-            return _repository.Get(obj => obj.FORM_ID == id, null, "USER,EMAIL_TEMPLATE").ToList();
+            return _repository.Get(obj => obj.FORM_ID == id, null, "EMAIL_TEMPLATE,WORKFLOW_STATE_USERS").ToList();
         }
 
         public WORKFLOW_STATE GetAllById(long id)

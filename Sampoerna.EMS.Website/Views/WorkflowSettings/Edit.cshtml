@@ -159,80 +159,82 @@
 @section scripts{
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
-        var worflowmappingdata = {};
-        var workflowuserdata = [];
+    var mainmodel = JSON.parse(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))));
+    var worflowmappingdata = {};
+    var workflowuserdata = [];
 
-        function saveData() {
-            worflowmappingdata = {};
-            workflowuserdata = [];
-            $("#tbluser tr").each(function (index,el) {
-                var workflowuser = {};
-                workflowuser.User_Id = $(this).find("th.userid").html().trim();
-                workflowuser.Email = $(this).find("th.emailuser").html().trim();
-                workflowuserdata.push(workflowuser);
-            });
-            worflowmappingdata.EmailTemplateId = $("#EmailTemplateId").val();
-            worflowmappingdata.State = $("#ModulState").val();
+    function saveData() {
+        worflowmappingdata = {};
+        workflowuserdata = [];
+        $("#tbluser tr").each(function (index,el) {
+            var workflowuser = {};
+            workflowuser.User_Id = $(this).find("th.userid").html().trim();
+            workflowuser.Email = $(this).find("th.emailuser").html().trim();
+            workflowuserdata.push(workflowuser);
+        });
+        worflowmappingdata.EmailTemplateId = $("#EmailTemplateId").val();
+        worflowmappingdata.State = $("#ModulState").val();
 
-            $.ajax('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
-                type : "POST",
-                //dataType: "json",
-                //contentType : "application/json",
-                data : JSON.stringify( {
-                    formid: "@Model.Form_Id" ,
-                    actionid: $("#stateid").val(),
-                    worflowusers: workflowuserdata,
-                    mappingdata : worflowmappingdata
-                }),
-                success : function (data) {
-                
-                },
-                error : function(data){
-                
-                }
-                
-            });
-        }
+        $.ajax('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
+            type: "POST",
+            dataType: "json",
+            traditional: true,
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify( {
+                'formid': "@Model.Form_Id" ,
+                'actionid': $("#stateid").val(),
+                'worflowusers': workflowuserdata,
+                'mappingdata' : worflowmappingdata
+            }),
+            success : function (data) {
 
-        function addUser() {
-            //debugger;
-            var email = $("#userid").val();
-            var userid = $("#userid").children("option:selected").html();
+            },
+            error : function(data){
 
-            if (checkexisting(userid)) {
-                return;
-            } else {
-                var count = $("#tbluser tr.datarow").length;
-                var row =
-                    "<tr class='datarow'> \
+            }
+
+        });
+    }
+
+    function addUser() {
+        //debugger;
+        var email = $("#userid").val();
+        var userid = $("#userid").children("option:selected").html();
+
+        if (checkexisting(userid)) {
+            return;
+        } else {
+            var count = $("#tbluser tr.datarow").length;
+            var row =
+                "<tr class='datarow'> \
                     <th>"+ (count + 1).toString() + "</th>\
                     <th class='userid'>"+ userid + " </th>\
                     <th class='emailuser'>"+ email + " </th>\
                 </tr>";
-                if (count == 0) {
-                    $("#tbluser").html(row);
-                } else {
-                    $("#tbluser").append(row);
-                }
+            if (count == 0) {
+                $("#tbluser").html(row);
+            } else {
+                $("#tbluser").append(row);
             }
-
-            
         }
 
 
-        function checkexisting(userid) {
-            var isexist = false;
+    }
 
-            $("th.userid").each(function (obj) {
 
-                if ($(this).html().trim() === userid.trim()) {
-                    isexist = true;
-                    return false;
-                }
-            });
+    function checkexisting(userid) {
+        var isexist = false;
 
-            return isexist;
-        }
+        $("th.userid").each(function (obj) {
+
+            if ($(this).html().trim() === userid.trim()) {
+                isexist = true;
+                return false;
+            }
+        });
+
+        return isexist;
+    }
     </script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuWorkflowSettings').addClass('active');
