@@ -82,6 +82,7 @@ namespace Sampoerna.EMS.Website
         protected void Application_Start()
         {
             //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
+            //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

@@ -265,6 +265,10 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS));
 
+            Mapper.CreateMap<T001W, SelectItemModelVirtualPlant>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
+             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS));
+
             Mapper.CreateMap<VirtualMappingPlantCreateViewModel, VIRTUAL_PLANT_MAP>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
                 .ForMember(dest => dest.IMPORT_PLANT_ID, opt => opt.MapFrom(src => src.ImportPlantId))
@@ -476,6 +480,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialGroup, opt => opt.MapFrom(src => src.MATERIAL_GROUP))
                 .ForMember(dest => dest.PurchasingGroup, opt => opt.MapFrom(src => src.PURCHASING_GROUP))
                 .ForMember(dest => dest.IssueStorageLoc, opt => opt.MapFrom(src => src.ISSUE_STORANGE_LOC))
+                .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
+                .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => false));
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialEditViewModel>().IgnoreAllNonExisting()
@@ -494,6 +500,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.USER.FIRST_NAME + " " + src.USER.LAST_NAME))
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP))
+                .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
+                .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION))
+               
              .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM));
             Mapper.CreateMap<MaterialEditViewModel, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BASE_UOM_ID, opt => opt.MapFrom(src => src.UomId))
@@ -509,7 +518,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ISSUE_STORANGE_LOC, opt => opt.MapFrom(src => src.IssueStorageLoc))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedById))
-                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSap));
+                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSap))
+                .ForMember(dest => dest.PLANT_DELETION, opt => opt.MapFrom(src => src.IsPlantDelete))
+                .ForMember(dest => dest.CLIENT_DELETION, opt => opt.MapFrom(src => src.IsClientDelete));
                
 
 
@@ -529,7 +540,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MATERIAL_UOM, opt => opt.MapFrom(src => src.MaterialUom));
 
 
-            
+
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDetailViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.BASE_UOM_ID))
@@ -545,7 +556,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
                 .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
-                .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM));
+                .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM))
+                .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
+                .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION));
+               
 
             Mapper.CreateMap<MATERIAL_UOM, MaterialUomDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.MATERIAL_UOM_ID))

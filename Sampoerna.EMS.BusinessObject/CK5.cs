@@ -82,13 +82,15 @@ namespace Sampoerna.EMS.BusinessObject
         public string FINAL_PORT_NAME { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public string SOURCE_PLANT_COMPANY_CODE { get; set; }
+        public string DEST_PLANT_COMPANY_CODE { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
-        public virtual UOM UOM { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
         public virtual ICollection<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
+        public virtual UOM UOM { get; set; }
     }
 }

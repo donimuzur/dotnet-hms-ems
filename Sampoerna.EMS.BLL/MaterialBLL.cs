@@ -135,7 +135,21 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-       
-        
+        public int DeleteMaterialUom(int id)
+        {
+            try
+            {
+                _repositoryUoM.Delete(id);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                
+                return -1;
+                
+            }
+            return 0;
+
+        }
     }
 }
