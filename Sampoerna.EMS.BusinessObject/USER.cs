@@ -24,7 +24,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
             this.T001 = new HashSet<T001>();
             this.T001W = new HashSet<T001W>();
-            this.UOM = new HashSet<UOM>();
             this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.VIRTUAL_PLANT_MAP1 = new HashSet<VIRTUAL_PLANT_MAP>();
             this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
@@ -46,6 +45,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK12 = new HashSet<PBCK1>();
             this.CK5_FILE_UPLOAD = new HashSet<CK5_FILE_UPLOAD>();
+            this.UOM = new HashSet<UOM>();
             this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
         }
     
@@ -68,7 +68,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual ICollection<T001> T001 { get; set; }
         public virtual ICollection<T001W> T001W { get; set; }
-        public virtual ICollection<UOM> UOM { get; set; }
         public virtual USER_GROUP USER_GROUP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
@@ -91,6 +90,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<PBCK1> PBCK12 { get; set; }
         public virtual ICollection<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
+        public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
     }
 }

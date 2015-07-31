@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -15,13 +16,13 @@ namespace Sampoerna.EMS.BLL
 
         private IGenericRepository<T001W> _repository;
         private IGenericRepository<PLANT_RECEIVE_MATERIAL> _plantReceiveMaterialRepository;
-        private IGenericRepository<T001W> _t001WRepository; 
+        private IGenericRepository<T001W> _t001WRepository;
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
         private IUnitOfWork _uow;
         //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
         private string includeTables = "ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKC.T001";
-       
+
         private IZaidmExNPPBKCBLL _nppbkcbll;
 
         public PlantBLL(IUnitOfWork uow, ILogger logger)
@@ -47,9 +48,9 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                query = query.And(p => p.IS_MAIN_PLANT == IsPlant);    
+                query = query.And(p => p.IS_MAIN_PLANT == IsPlant);
             }
-            
+
             return _t001WRepository.Get(query).FirstOrDefault();
         }
 
@@ -61,7 +62,7 @@ namespace Sampoerna.EMS.BLL
         public List<Plant> GetAll()
         {
 
-           // return Mapper.Map<List<Plant>>(_repository.Get(null, null, includeTables).ToList());
+            // return Mapper.Map<List<Plant>>(_repository.Get(null, null, includeTables).ToList());
             return Mapper.Map<List<Plant>>(_repository.Get().ToList());
 
         }
@@ -74,7 +75,7 @@ namespace Sampoerna.EMS.BLL
                 var origin =
                     _repository.Get(c => c.WERKS == plantT1001W.WERKS, null, includeTables).FirstOrDefault();
 
-               // plantT1001W.NPPBKC_ID = _nppbkcbll.GetById(plantT1001W.WERKS).NPPBKC_ID;
+                // plantT1001W.NPPBKC_ID = _nppbkcbll.GetById(plantT1001W.WERKS).NPPBKC_ID;
 
                 SetChanges(origin, plantT1001W, userId);
 
@@ -90,7 +91,7 @@ namespace Sampoerna.EMS.BLL
 
                 //todo automapper for update data ???
                 Mapper.Map<Plant, T001W>(plantT1001W, origin);
-             
+
                 //origin.PLANT_RECEIVE_MATERIAL = plantT1001W.PLANT_RECEIVE_MATERIAL;
             }
             else
@@ -99,7 +100,7 @@ namespace Sampoerna.EMS.BLL
                 var origin = Mapper.Map<T001W>(plantT1001W);
                 origin.CREATED_DATE = DateTime.Now;
                 _repository.Insert(origin);
-                
+
             }
 
             try
@@ -119,11 +120,11 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(T001W origin, Plant data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
-            
+
             changesData.Add("NPPBKC_ID", origin.NPPBKC_ID == data.NPPBKC_ID);
             changesData.Add("CITY", origin.ORT01 == data.ORT01);
-            changesData.Add("ADDRESS",origin.ADDRESS == data.ADDRESS );
-            changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS );
+            changesData.Add("ADDRESS", origin.ADDRESS == data.ADDRESS);
+            changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
 
             foreach (var listChange in changesData)
@@ -177,19 +178,28 @@ namespace Sampoerna.EMS.BLL
             var dbPlant = _repository.GetByID(id);
             return dbPlant == null ? string.Empty : dbPlant.NAME1;
         }
-        
-          public List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId)
+
+        public List<PLANT_RECEIVE_MATERIAL> GetReceiveMaterials(string plantId)
         {
             return _plantReceiveMaterialRepository.Get(p => p.PLANT_ID == plantId).ToList();
-            
+
         }
 
-          public List<T001W> GetAllPlant()
+        public List<T001W> GetAllPlant()
+        {
+            return _repository.Get().ToList();
+
+        }
+        
+          public T001WDto GetT001ById(string id)
           {
-              return _repository.Get().ToList();
-              
+              return Mapper.Map<T001WDto>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
           }
 
-        
+
+        List<T001W> IPlantBLL.Get(string nppbkcId)
+        {
+            return _repository.Get(c => c.NPPBKC_ID == nppbkcId).ToList();
+        }
     }
 }

@@ -75,8 +75,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual PBCK1 PBCK12 { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
+        public virtual USER USER2 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
-        public virtual USER USER2 { get; set; }
     }
 }

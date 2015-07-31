@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("GovApproveDocument", "PBCK1", FormMethod.Post, new { @id = "GovApproveForm" }))
+@using (Html.BeginForm("GovApproveDocument", "PBCK1", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
