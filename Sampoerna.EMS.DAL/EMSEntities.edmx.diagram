@@ -136,6 +136,11 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM" />
         <AssociationConnector Association="EMSModel.FK_UOM_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE" Width="1.5" PointX="6" PointY="44.25" />
+        <EntityTypeShape EntityType="EMSModel.WORKFLOW_STATE_USERS" Width="1.5" PointX="8.25" PointY="34.25" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_USER" />
+        <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
