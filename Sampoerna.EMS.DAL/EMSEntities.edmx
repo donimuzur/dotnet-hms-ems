@@ -5612,19 +5612,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WORKFLOW_HISTORY">
-            <EntityTypeMapping TypeName="EMSModel.WORKFLOW_HISTORY">
-              <MappingFragment StoreEntitySet="WORKFLOW_HISTORY">
-                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
-                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
-                <ScalarProperty Name="ACTION_DATE" ColumnName="ACTION_DATE" />
-                <ScalarProperty Name="ACTION_BY" ColumnName="ACTION_BY" />
-                <ScalarProperty Name="ACTION" ColumnName="ACTION" />
-                <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
-                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="WORKFLOW_STATE_USERS">
             <EntityTypeMapping TypeName="EMSModel.WORKFLOW_STATE_USERS">
               <MappingFragment StoreEntitySet="WORKFLOW_STATE_USERS">
