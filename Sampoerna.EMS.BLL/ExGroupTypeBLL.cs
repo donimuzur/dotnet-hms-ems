@@ -35,6 +35,12 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
+        public void Save(EX_GROUP_TYPE GroupTypes)
+        {
+            _repository.InsertOrUpdate(GroupTypes);
+            _uow.SaveChanges();
+        }
+
         public void UpdateGroupByGroupName(List<EX_GROUP_TYPE> listGroupTypes, string groupName)
         {
             //delete first
