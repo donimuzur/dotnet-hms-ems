@@ -11,7 +11,7 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
+          <Property Name="FORM_ID" Type="varchar" MaxLength="50" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
           <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
@@ -42,7 +42,7 @@
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -106,17 +106,17 @@
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -257,8 +257,8 @@
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -324,9 +324,9 @@
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -334,7 +334,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -347,6 +347,7 @@
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
+          <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -368,7 +369,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -384,6 +385,22 @@
           <Property Name="BKC_REQUIRED" Type="decimal" Precision="18" Scale="2" />
           <Property Name="MONTH" Type="int" />
           <Property Name="BKC_REQUIRED_UOM_ID" Type="nvarchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="PBCK1_QUOTA">
+          <Key>
+            <PropertyRef Name="PBCK1_QUOTA_ID" />
+          </Key>
+          <Property Name="PBCK1_QUOTA_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK1_ID" Type="int" Nullable="false" />
+          <Property Name="CK5_ID" Type="bigint" Nullable="false" />
+          <Property Name="CK5_TRANS_TYPE" Type="int" Nullable="false" />
+          <Property Name="CK5_GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="PBCK1_QTY_APPROVED" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="PREV_REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="RECEIVED_AMOUNT" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TOTAL_REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="PLANT_RECEIVE_MATERIAL">
           <Key>
@@ -451,8 +468,8 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
-          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
+          <Property Name="ORT01" Type="varchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -484,7 +501,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -577,15 +594,15 @@
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="0" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -645,12 +662,12 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="HJE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="CLIENT_DELETION" Type="bit" />
           <Property Name="PLANT_DELETION" Type="bit" />
+          <Property Name="CLIENT_DELETION" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -1169,6 +1186,42 @@
             </Principal>
             <Dependent Role="PBCK1_PROD_PLAN">
               <PropertyRef Name="BKC_REQUIRED_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_QUOTA_CK5">
+          <End Role="CK5" Type="Self.CK5" Multiplicity="1" />
+          <End Role="PBCK1_QUOTA" Type="Self.PBCK1_QUOTA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK5">
+              <PropertyRef Name="CK5_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_QUOTA">
+              <PropertyRef Name="CK5_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_QUOTA_PBCK1">
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="1" />
+          <End Role="PBCK1_QUOTA" Type="Self.PBCK1_QUOTA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_QUOTA">
+              <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_QUOTA_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="PBCK1_QUOTA" Type="Self.PBCK1_QUOTA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_QUOTA">
+              <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1774,6 +1827,7 @@
           <EntitySet Name="PBCK1_DECREE_DOC" EntityType="Self.PBCK1_DECREE_DOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_PROD_CONVERTER" EntityType="Self.PBCK1_PROD_CONVERTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_PROD_PLAN" EntityType="Self.PBCK1_PROD_PLAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PBCK1_QUOTA" EntityType="Self.PBCK1_QUOTA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
@@ -1953,6 +2007,18 @@
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="Self.FK_PBCK1_PROD_PLAN_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_QUOTA_CK5" Association="Self.FK_PBCK1_QUOTA_CK5">
+            <End Role="CK5" EntitySet="CK5" />
+            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_QUOTA_PBCK1" Association="Self.FK_PBCK1_QUOTA_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_QUOTA_USER" Association="Self.FK_PBCK1_QUOTA_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_REQUEST_UOM" Association="Self.FK_PBCK1_REQUEST_UOM">
             <End Role="UOM" EntitySet="UOM" />
@@ -2549,6 +2615,19 @@
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
             <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
           </AssociationSet>
+          <EntitySet Name="PBCK1_QUOTA" EntityType="EMSModel.PBCK1_QUOTA" />
+          <AssociationSet Name="FK_PBCK1_QUOTA_CK5" Association="EMSModel.FK_PBCK1_QUOTA_CK5">
+            <End Role="CK5" EntitySet="CK5" />
+            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_QUOTA_PBCK1" Association="EMSModel.FK_PBCK1_QUOTA_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_QUOTA_USER" Association="EMSModel.FK_PBCK1_QUOTA_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2562,7 +2641,7 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
-          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -2736,8 +2815,8 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
-          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="T001" ToRole="USER" />
           </EntityType>
         <EntityType Name="T001K">
@@ -3218,7 +3297,7 @@
           <Property Name="COUNTRY" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="TARIF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
@@ -3589,6 +3668,7 @@
           <NavigationProperty Name="CK5_FILE_UPLOAD" Relationship="EMSModel.FK_CK5_FILE_UPLOAD_USER" FromRole="USER" ToRole="CK5_FILE_UPLOAD" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="WORKFLOW_STATE_USERS" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_USER" FromRole="USER" ToRole="WORKFLOW_STATE_USERS" />
+          <NavigationProperty Name="PBCK1_QUOTA" Relationship="EMSModel.FK_PBCK1_QUOTA_USER" FromRole="USER" ToRole="PBCK1_QUOTA" />
         </EntityType>
         <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -4029,6 +4109,7 @@
           <Property Name="SOURCE_PLANT_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="DEST_PLANT_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
+          <NavigationProperty Name="PBCK1_QUOTA" Relationship="EMSModel.FK_PBCK1_QUOTA_CK5" FromRole="CK5" ToRole="PBCK1_QUOTA" />
         </EntityType>
         <Association Name="FK_CK5_APPROVED_BY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -4136,6 +4217,8 @@
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="PBCK1" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
+          <Property Name="REMAINING_QUOTA" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="PBCK1_QUOTA" Relationship="EMSModel.FK_PBCK1_QUOTA_PBCK1" FromRole="PBCK1" ToRole="PBCK1_QUOTA" />
         </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -4299,7 +4382,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="UOM_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4426,10 +4509,10 @@
             <PropertyRef Name="WORKFLOW_STATE_ID" />
           </Key>
           <Property Name="WORKFLOW_STATE_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ACTION" Type="Int32" Nullable="false" />
-          <Property Name="MENU_ID" Type="Int32" />
+          <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
+          <Property Name="MENU_ID" Type="EMSModel.MenuList" />
           <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" />
           <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="WORKFLOW_STATE" ToRole="EMAIL_TEMPLATE" />
           <NavigationProperty Name="WORKFLOW_STATE_USERS" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" FromRole="WORKFLOW_STATE" ToRole="WORKFLOW_STATE_USERS" />
         </EntityType>
@@ -4479,6 +4562,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PBCK1_QUOTA">
+          <Key>
+            <PropertyRef Name="PBCK1_QUOTA_ID" />
+          </Key>
+          <Property Name="PBCK1_QUOTA_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK1_ID" Type="Int32" Nullable="false" />
+          <Property Name="CK5_ID" Type="Int64" Nullable="false" />
+          <Property Name="CK5_TRANS_TYPE" Type="EMSModel.CK5TransType" Nullable="false" />
+          <Property Name="CK5_GRAND_TOTAL_EX" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="PBCK1_QTY_APPROVED" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="PREV_REMAINING_QUOTA" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="RECEIVED_AMOUNT" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="TOTAL_REMAINING_QUOTA" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_PBCK1_QUOTA_CK5" FromRole="PBCK1_QUOTA" ToRole="CK5" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_QUOTA_PBCK1" FromRole="PBCK1_QUOTA" ToRole="PBCK1" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK1_QUOTA_USER" FromRole="PBCK1_QUOTA" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_PBCK1_QUOTA_CK5">
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="1" />
+          <End Type="EMSModel.PBCK1_QUOTA" Role="PBCK1_QUOTA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK5">
+              <PropertyRef Name="CK5_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_QUOTA">
+              <PropertyRef Name="CK5_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_QUOTA_PBCK1">
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="1" />
+          <End Type="EMSModel.PBCK1_QUOTA" Role="PBCK1_QUOTA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_QUOTA">
+              <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_QUOTA_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK1_QUOTA" Role="PBCK1_QUOTA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_QUOTA">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="CK5TransType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5TransType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5142,7 +5281,8 @@
     <EntitySetMapping Name="PBCK1">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1)">
         <MappingFragment StoreEntitySet="PBCK1">
-          <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+          <ScalarProperty Name="REMAINING_QUOTA" ColumnName="REMAINING_QUOTA" />
+                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
           <ScalarProperty Name="NUMBER" ColumnName="NUMBER" />
           <ScalarProperty Name="PBCK1_REF" ColumnName="PBCK1_REF" />
           <ScalarProperty Name="PBCK1_TYPE" ColumnName="PBCK1_TYPE" />
@@ -5226,6 +5366,23 @@
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
                 <ScalarProperty Name="WORKFLOW_STATE_ID" ColumnName="WORKFLOW_STATE_ID" />
                 <ScalarProperty Name="WF_STATE_USER_ID" ColumnName="WF_STATE_USER_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK1_QUOTA">
+            <EntityTypeMapping TypeName="EMSModel.PBCK1_QUOTA">
+              <MappingFragment StoreEntitySet="PBCK1_QUOTA">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="TOTAL_REMAINING_QUOTA" ColumnName="TOTAL_REMAINING_QUOTA" />
+                <ScalarProperty Name="RECEIVED_AMOUNT" ColumnName="RECEIVED_AMOUNT" />
+                <ScalarProperty Name="PREV_REMAINING_QUOTA" ColumnName="PREV_REMAINING_QUOTA" />
+                <ScalarProperty Name="PBCK1_QTY_APPROVED" ColumnName="PBCK1_QTY_APPROVED" />
+                <ScalarProperty Name="CK5_GRAND_TOTAL_EX" ColumnName="CK5_GRAND_TOTAL_EX" />
+                <ScalarProperty Name="CK5_TRANS_TYPE" ColumnName="CK5_TRANS_TYPE" />
+                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+                <ScalarProperty Name="PBCK1_QUOTA_ID" ColumnName="PBCK1_QUOTA_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -141,6 +141,10 @@
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" />
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_USER" />
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" />
+        <EntityTypeShape EntityType="EMSModel.PBCK1_QUOTA" Width="1.5" PointX="24.75" PointY="30.5" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_QUOTA_CK5" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_QUOTA_PBCK1" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_QUOTA_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

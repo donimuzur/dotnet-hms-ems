@@ -20,10 +20,10 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public long WORKFLOW_STATE_ID { get; set; }
-        public int ACTION { get; set; }
-        public Nullable<int> MENU_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.MenuList> MENU_ID { get; set; }
         public Nullable<int> EMAIL_TEMPLATE_ID { get; set; }
-        public Nullable<int> FORM_TYPE_ID { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
     
         public virtual EMAIL_TEMPLATE EMAIL_TEMPLATE { get; set; }
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }

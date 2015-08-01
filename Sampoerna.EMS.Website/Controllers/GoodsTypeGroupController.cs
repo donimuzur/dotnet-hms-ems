@@ -134,23 +134,23 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View("Create", model);
                 }
 
-                var listGroup = new List<EX_GROUP_TYPE>();
+                var listGroup = new List<EX_GROUP_TYPE_DETAILS>();
 
                 foreach (var detail in model.Details.Where(detail => detail.IsChecked))
                 {
 
-                    var groupType = new EX_GROUP_TYPE();
-                    groupType.GROUP_NAME = model.GroupName;
                     var detailGroupType = new EX_GROUP_TYPE_DETAILS();
                     detailGroupType.GOODTYPE_ID = detail.GoodTypeId;
-                    groupType.EX_GROUP_TYPE_DETAILS.Add(detailGroupType);
-                    listGroup.Add(groupType);
+                  
+                    listGroup.Add(detailGroupType);
                 }
-
+                var groupType = new EX_GROUP_TYPE();
+                groupType.GROUP_NAME = model.GroupName;
+                groupType.EX_GROUP_TYPE_DETAILS = listGroup;  
                 if (listGroup.Count > 0)
                 {
 
-                    _exGroupTypeBll.SaveGroup(listGroup);
+                    _exGroupTypeBll.Save(groupType);
 
                     TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
                     return RedirectToAction("Index");
