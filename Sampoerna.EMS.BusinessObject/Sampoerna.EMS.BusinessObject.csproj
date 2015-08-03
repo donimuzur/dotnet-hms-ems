@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BROLE_MAP.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
@@ -215,7 +218,7 @@
     <Compile Include="USER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="USER_GROUP.cs">
+    <Compile Include="USER_BROLE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">
