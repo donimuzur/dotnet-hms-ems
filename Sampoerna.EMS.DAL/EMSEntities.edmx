@@ -3298,7 +3298,7 @@
           <Property Name="COUNTRY" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="TARIF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />

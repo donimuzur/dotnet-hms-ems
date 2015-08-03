@@ -36,12 +36,12 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_MATERIAL();
                     item.STICKER_CODE = xElement.Element("MATNR").Value;
-                    item.MATERIAL_DESC = string.Empty;
                     item.BASE_UOM_ID = xElement.Element("MEINS").Value;
                     item.MATERIAL_GROUP = xElement.Element("MATKL").Value;
                     var E1MARCM = xElement.Element("E1MARCM");
                     if (E1MARCM != null)
                     {
+                        
                         item.WERKS = E1MARCM.Element("WERKS").Value;
                         item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? string.Empty : E1MARCM.Element("LGPRO").Value;
                         item.PURCHASING_GROUP = E1MARCM.Element("EKGRP") == null ? string.Empty : E1MARCM.Element("EKGRP").Value;
@@ -51,6 +51,11 @@ namespace Sampoerna.EMS.XMLReader
                             item.EXC_GOOD_TYP = exGoodType.Element("EXC_GOOD_TYP").Value;
                            
                         }
+                    }
+                    var E1MAKTM = xElement.Element("E1MAKTM");
+                    if (E1MAKTM != null)
+                    {
+                        item.MATERIAL_DESC = E1MAKTM.Element("MAKTX") == null ? string.Empty : E1MAKTM.Element("MAKTX").Value;
                     }
                     //uom
                     var uomList = xElement.Elements("E1MARMM");
