@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 catch (Exception ex)
                 {
                     TempData[Constans.SubmitType.Save] = ex.Message;
-                    return View();
+                    return RedirectToAction("Index");
                 }
                 
             
