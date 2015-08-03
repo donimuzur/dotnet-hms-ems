@@ -91,6 +91,9 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<PrintHistoryDto, PRINT_HISTORY>().IgnoreAllNonExisting();
+
         }
     }
 }
