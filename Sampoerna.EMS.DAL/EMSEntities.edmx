@@ -348,6 +348,7 @@
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -4219,6 +4220,7 @@
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
           <Property Name="REMAINING_QUOTA" Type="Decimal" Precision="18" Scale="0" />
           <NavigationProperty Name="PBCK1_QUOTA" Relationship="EMSModel.FK_PBCK1_QUOTA_PBCK1" FromRole="PBCK1" ToRole="PBCK1_QUOTA" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -5281,7 +5283,8 @@
     <EntitySetMapping Name="PBCK1">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1)">
         <MappingFragment StoreEntitySet="PBCK1">
-          <ScalarProperty Name="REMAINING_QUOTA" ColumnName="REMAINING_QUOTA" />
+          <ScalarProperty Name="NPPBKC_KPPBC_ID" ColumnName="NPPBKC_KPPBC_ID" />
+                <ScalarProperty Name="REMAINING_QUOTA" ColumnName="REMAINING_QUOTA" />
                 <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
           <ScalarProperty Name="NUMBER" ColumnName="NUMBER" />
           <ScalarProperty Name="PBCK1_REF" ColumnName="PBCK1_REF" />
