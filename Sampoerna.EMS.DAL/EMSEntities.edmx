@@ -4707,7 +4707,7 @@
             <PropertyRef Name="PRINT_HOSTORY_ID" />
           </Key>
           <Property Name="PRINT_HOSTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FORM_TYPE_ID" Type="Int32" Nullable="false" />
+          <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PRINT_DATE" Type="DateTime" Nullable="false" Precision="3" />
