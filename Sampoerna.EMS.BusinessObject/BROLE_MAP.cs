@@ -12,16 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class PBCK1_DECREE_DOC
+    public partial class BROLE_MAP
     {
-        public long PBCK1_DECREE_DOC_ID { get; set; }
-        public int PBCK1_ID { get; set; }
-        public string FILE_NAME { get; set; }
-        public string FILE_PATH { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-        public string CREATED_BY { get; set; }
+        public int BROLE_MAP_ID { get; set; }
+        public string BROLE { get; set; }
+        public string MSACCT { get; set; }
+        public Nullable<System.DateTime> START_DATE { get; set; }
+        public Nullable<System.DateTime> END_DATE { get; set; }
     
-        public virtual PBCK1 PBCK1 { get; set; }
         public virtual USER USER { get; set; }
+        public virtual USER_BROLE USER_BROLE { get; set; }
     }
 }

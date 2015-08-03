@@ -36,7 +36,6 @@ namespace Sampoerna.EMS.MessagingService
                
 
                 var smtpClient = new SmtpClient();
-              
 
                 var mailMessage = new MailMessage {IsBodyHtml = true};
                 actualTo.ForEach(s => mailMessage.To.Add(s.Trim()));
@@ -70,7 +69,6 @@ namespace Sampoerna.EMS.MessagingService
         /// <summary>
         /// Sends Email
         /// </summary>
-        /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="subject"></param>
         /// <param name="body"></param>

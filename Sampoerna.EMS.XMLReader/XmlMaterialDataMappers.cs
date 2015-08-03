@@ -38,11 +38,21 @@ namespace Sampoerna.EMS.XMLReader
                     item.STICKER_CODE = xElement.Element("MATNR").Value;
                     item.BASE_UOM_ID = xElement.Element("MEINS").Value;
                     item.MATERIAL_GROUP = xElement.Element("MATKL").Value;
+                    item.CLIENT_DELETION = xElement.Element("LVORM") == null
+                        ? false
+                        : (xElement.Element("LVORM").Value == "X" ? true : false);
+
+
                     var E1MARCM = xElement.Element("E1MARCM");
                     if (E1MARCM != null)
                     {
                         
                         item.WERKS = E1MARCM.Element("WERKS").Value;
+                        item.PLANT_DELETION = xElement.Element("LVORM") == null
+                        ? false
+                        : (xElement.Element("LVORM").Value == "X" ? true : false);
+
+
                         item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? string.Empty : E1MARCM.Element("LGPRO").Value;
                         item.PURCHASING_GROUP = E1MARCM.Element("EKGRP") == null ? string.Empty : E1MARCM.Element("EKGRP").Value;
                         var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
@@ -67,6 +77,7 @@ namespace Sampoerna.EMS.XMLReader
                         matUom.UMREZ = Convert.ToDecimal(element.Element("UMREZ").Value);
                         matUom.UMREN = Convert.ToDecimal(element.Element("UMREN").Value);
                         matUom.MEINH = element.Element("MEINH").Value;
+
                         item.MATERIAL_UOM.Add(matUom);
                     }
 

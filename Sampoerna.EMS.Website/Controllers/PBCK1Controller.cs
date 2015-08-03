@@ -17,6 +17,7 @@ using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -247,7 +248,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetNppbkcDetail(string nppbkcid)
         {
             var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T001));
+            return Json(Mapper.Map<NppbkcItemModel>(data));
         }
 
         [HttpPost]
@@ -991,7 +992,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     Nppbkc = "'" + d.NppbkcId,
                     Kppbc = "'" + d.NppbkcKppbcId,
                     Pbck1Number = "'" + d.Pbck1Number,
-                    Address = string.Join(",", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
+                    Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                     OriginalNppbkc = "'" + d.SupplierNppbkcId,
                     OriginalKppbc = "'" + d.SupplierKppbcId,
                     OriginalAddress = d.SupplierAddress,
@@ -1043,7 +1044,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Address",
-                    HeaderText = "Address"
+                    HeaderText = "Address", 
+                    HtmlEncode = false
                 });
             }
             if (model.ExportModel.OriginalNppbkc)
@@ -1111,6 +1113,201 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+        
+        #region Monitoring Usage
 
+        public ActionResult MonitoringUsage()
+        {
+            Pbck1MonitoringUsageViewModel model;
+            try
+            {
+
+                model = new Pbck1MonitoringUsageViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    SearchView =
+                    {
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        YearFromList = GetYearListPbck1(true),
+                        YearToList = GetYearListPbck1(false),
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                    },
+                    DetailsList = SearchMonitoringUsages()
+                };
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck1MonitoringUsageViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+            }
+
+            return View("MonitoringUsage", model);
+        }
+
+        private List<Pbck1MonitoringUsageItem> SearchMonitoringUsages(Pbck1FilterMonitoringUsageViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
+                return Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
+            var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
+            return Mapper.Map<List<Pbck1MonitoringUsageItem>>(dbData);
+        }
+        
+        [HttpPost]
+        public PartialViewResult SearchMonitoringUsage(Pbck1MonitoringUsageViewModel model)
+        {
+            model.DetailsList = SearchMonitoringUsages(model.SearchView);
+            return PartialView("_Pbck1MonitoringUsageTable", model);
+        }
+
+        [HttpPost]
+        public ActionResult ExportMonitoringUsage(Pbck1MonitoringUsageViewModel model)
+        {
+            try
+            {
+                ExportMonitoringUsageToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("MonitoringUsage");
+        }
+
+        public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
+        {
+            var dataToExport = SearchMonitoringUsages(model.SearchView);
+            
+            var grid = new GridView
+            {
+                DataSource = dataToExport,
+                AutoGenerateColumns = false
+            };
+
+            if (model.ExportModel.Pbck1Decree)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "Pbck-1 Decree"
+                });
+            }
+
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcId",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.Company)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcCompanyName",
+                    HeaderText = "Company"
+                });
+            }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcKppbcId",
+                    HeaderText = "Kppbc"
+                });
+            }
+            if (model.ExportModel.Pbck1Period)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1PeriodDisplay",
+                    HeaderText = "Pbck-1 Period"
+                });
+            }
+            if (model.ExportModel.ExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExGoodsQuota",
+                    HeaderText = "Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "AdditionalExGoodsQuota",
+                    HeaderText = "Additional Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PreviousFinalBalance",
+                    HeaderText = "Prev Years Final Balance"
+                });
+            }
+            if (model.ExportModel.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total Pbck-1 Quota"
+                });
+            }
+            if (model.ExportModel.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Received"
+                });
+            }
+            if (model.ExportModel.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "Quota Remaining"
+                });
+            }
+            grid.DataBind();
+
+            var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+        
+        #endregion
     }
 }

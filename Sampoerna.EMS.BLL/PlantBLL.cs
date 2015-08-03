@@ -74,10 +74,10 @@ namespace Sampoerna.EMS.BLL
                 //update
                 var origin =
                     _repository.Get(c => c.WERKS == plantT1001W.WERKS, null, includeTables).FirstOrDefault();
-
+                var originMaterialReceive = _plantReceiveMaterialRepository.Get(x => x.PLANT_ID == origin.WERKS).ToList();
                 // plantT1001W.NPPBKC_ID = _nppbkcbll.GetById(plantT1001W.WERKS).NPPBKC_ID;
 
-                SetChanges(origin, plantT1001W, userId);
+                SetChanges(origin, plantT1001W, userId, originMaterialReceive);
 
                 //hapus dulu aja ya ? //todo ask the cleanist way
                 var dataToDelete =
@@ -117,7 +117,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void SetChanges(T001W origin, Plant data, string userId)
+        private void SetChanges(T001W origin, Plant data, string userId, List<PLANT_RECEIVE_MATERIAL> originReceive)
         {
             var changesData = new Dictionary<string, bool>();
 
@@ -127,7 +127,39 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
             changesData.Add("PHONE", origin.PHONE == data.PHONE);
+            var originMaterialDesc = string.Empty;
+            if (originReceive != null)
+            {
+                var orLength = originReceive.Count;
+                var currOr = 0;
+                foreach (var or in originReceive)
+                {
+                    currOr++;
+                    originMaterialDesc += or.EXC_GOOD_TYP;
+                    if (currOr < orLength)
+                    {
+                        originMaterialDesc += ", ";
+                    }
+                }
+               
+            }
+            var editMaterialDesc = string.Empty;
+            if (data.PLANT_RECEIVE_MATERIAL != null)
+            {
+                var orLength = data.PLANT_RECEIVE_MATERIAL.Count;
+                var currOr = 0;
+                foreach (var or in data.PLANT_RECEIVE_MATERIAL)
+                {
+                    currOr++;
+                    editMaterialDesc += or.EXC_GOOD_TYP;
+                    if (currOr < orLength)
+                    {
+                        editMaterialDesc += ", ";
+                    }
+                }
 
+            }
+            changesData.Add("RECEIVE_MATERIAL", originMaterialDesc == editMaterialDesc);
             foreach (var listChange in changesData)
             {
                 if (!listChange.Value)
@@ -165,6 +197,10 @@ namespace Sampoerna.EMS.BLL
                         case "PHONE":
                             changes.OLD_VALUE = origin.PHONE;
                             changes.NEW_VALUE = data.PHONE;
+                            break;
+                        case "RECEIVE_MATERIAL":
+                            changes.OLD_VALUE = originMaterialDesc;
+                            changes.NEW_VALUE = editMaterialDesc;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);

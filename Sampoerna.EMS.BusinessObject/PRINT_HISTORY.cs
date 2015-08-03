@@ -12,16 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class PBCK1_DECREE_DOC
+    public partial class PRINT_HISTORY
     {
-        public long PBCK1_DECREE_DOC_ID { get; set; }
-        public int PBCK1_ID { get; set; }
-        public string FILE_NAME { get; set; }
-        public string FILE_PATH { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-        public string CREATED_BY { get; set; }
+        public long PRINT_HOSTORY_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.FormType FORM_TYPE_ID { get; set; }
+        public long FORM_ID { get; set; }
+        public string FORM_NUMBER { get; set; }
+        public System.DateTime PRINT_DATE { get; set; }
+        public string PRINT_BY { get; set; }
     
-        public virtual PBCK1 PBCK1 { get; set; }
         public virtual USER USER { get; set; }
     }
 }
