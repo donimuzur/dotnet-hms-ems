@@ -1188,22 +1188,21 @@ namespace Sampoerna.EMS.Website.Controllers
         public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
         {
             var dataToExport = SearchMonitoringUsages(model.SearchView);
-
-            //todo: to automapper
-            var src = (from d in dataToExport
-                       select new ExportSummaryDataModel()
-                       {
-                           Company = d.NppbkcCompanyName,
-                           Nppbkc = "'" + d.NppbkcId,
-                           Kppbc = "'" + d.NppbkcKppbcId,
-                           Pbck1Number = "'" + d.Pbck1Number
-                       }).ToList();
-
+            
             var grid = new GridView
             {
-                DataSource = src,
+                DataSource = dataToExport,
                 AutoGenerateColumns = false
             };
+
+            if (model.ExportModel.Pbck1Decree)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "Pbck-1 Decree"
+                });
+            }
 
             if (model.ExportModel.Nppbkc)
             {
@@ -1217,7 +1216,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Company",
+                    DataField = "NppbkcCompanyName",
                     HeaderText = "Company"
                 });
             }
@@ -1229,15 +1228,54 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Kppbc"
                 });
             }
-            if (model.ExportModel.Pbck1Number)
+            if (model.ExportModel.Pbck1Period)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Pbck1Number",
-                    HeaderText = "Pbck1Number"
+                    DataField = "Pbck1PeriodDisplay",
+                    HeaderText = "Pbck-1 Period"
                 });
             }
-            
+            if (model.ExportModel.ExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExcGoodsQuota",
+                    HeaderText = "Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "AdditionalExGoodsQuota",
+                    HeaderText = "Additional Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total Pbck-1 Quota"
+                });
+            }
+            if (model.ExportModel.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Received"
+                });
+            }
+            if (model.ExportModel.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "Quota Remaining"
+                });
+            }
             grid.DataBind();
 
             var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";

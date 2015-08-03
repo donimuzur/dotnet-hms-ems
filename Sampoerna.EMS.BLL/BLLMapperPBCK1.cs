@@ -253,7 +253,7 @@ namespace Sampoerna.EMS.BLL
                     src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed 
                     && c.QTY_APPROVED.HasValue).Sum(s => s.QTY_APPROVED != null ? s.QTY_APPROVED.Value : 0) : 0))
                     //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
-                    .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.QTY_APPROVED))
+                    .ForMember(dest => dest.Received, opt => opt.MapFrom(src => 0))
                 ;
 
             #endregion

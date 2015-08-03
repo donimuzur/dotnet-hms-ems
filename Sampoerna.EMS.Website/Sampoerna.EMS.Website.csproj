@@ -794,6 +794,7 @@
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

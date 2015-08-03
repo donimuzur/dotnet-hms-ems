@@ -11,7 +11,7 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            @using (Ajax.BeginForm("MonitoringUsage", "Pbck1",
+            @using (Ajax.BeginForm("SearchMonitoringUsage", "Pbck1",
                 new AjaxOptions
                 {
                     HttpMethod = "POST",
@@ -89,16 +89,17 @@
                                         @* ReSharper disable UnknownCssClass *@
                                         Toggle column:
                                         <a class="toggle-vis" data-column="0">No</a> -
-                                        <a class="toggle-vis" data-column="1">Company</a> -
-                                        <a class="toggle-vis" data-column="2">NPPBKC</a> -
-                                        <a class="toggle-vis" data-column="3">KPPBC</a> -
-                                        <a class="toggle-vis" data-column="4">PBCK-1 Number</a> -
-                                        <a class="toggle-vis" data-column="5">Address</a> -
-                                        <a class="toggle-vis" data-column="6">Original NPPBKC</a> -
-                                        <a class="toggle-vis" data-column="7">Original KPPBC</a> -
-                                        <a class="toggle-vis" data-column="8">Original Address</a> -
-                                        <a class="toggle-vis" data-column="9">Exc. Goods Amount</a> -
-                                        <a class="toggle-vis" data-column="10">Status</a>
+                                        <a class="toggle-vis" data-column="1">Pbck-1 Decree</a> -
+                                        <a class="toggle-vis" data-column="2">Company</a> -
+                                        <a class="toggle-vis" data-column="3">NPPBKC</a> -
+                                        <a class="toggle-vis" data-column="4">KPPBC</a> -
+                                        <a class="toggle-vis" data-column="5">Pbck-1 Period</a> -
+                                        <a class="toggle-vis" data-column="6">Exc. Goods Quota</a> -
+                                        <a class="toggle-vis" data-column="7">Additional Exc. Goods Quota</a> -
+                                        <a class="toggle-vis" data-column="8">Previous Years Final Balance</a> -
+                                        <a class="toggle-vis" data-column="9">Total Pbck-1 Quota</a> -
+                                        <a class="toggle-vis" data-column="10">Received</a> -
+                                        <a class="toggle-vis" data-column="11">Quota Remaining</a>
                                         @* ReSharper restore UnknownCssClass *@
                                     </div>
                                 </div>
@@ -125,10 +126,8 @@
     </div>
 </div>
 
-@* ReSharper disable UnknownCssClass *@
 <div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    @* ReSharper restore UnknownCssClass *@
-    @using (Html.BeginForm("ExportSummaryReports", "Pbck1", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+    @using (Html.BeginForm("ExportMonitoringUsage", "Pbck1", FormMethod.Post, new { @id = "ExportMonitoringUsageForms" }))
     {
         @Html.HiddenFor(model => model.ExportModel.CompanyCode)
         @Html.HiddenFor(model => model.ExportModel.YearFrom)
@@ -141,18 +140,18 @@
                     <h3><span id="lblTitleModal">Export</span> </h3>
                 </div>
                 <div class="modal-body">
-
                     <span id="lblMessageModal">Column : </span><br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Decree, new { @checked = "checked" })Pbck-1 Decree<br />
                     @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked" })Company<br />
                     @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked" })NPPBKC<br />
                     @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked" })KPPBC<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Number, new { @checked = "checked" })PBCK-1 Number<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.Address, new { @checked = "checked" })Address<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.OriginalNppbkc, new { @checked = "checked" })Original NPPBKC<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.OriginalKppbc, new { @checked = "checked" })Original KPPBC<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.OriginalAddress, new { @checked = "checked" })Original Address<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsAmount, new { @checked = "checked" })Exc. Goods Amount<br />
-                    @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked" })Status<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Period, new { @checked = "checked" })PBCK-1 Period<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsQuota, new { @checked = "checked" })Excisable Goods Quota<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.AdditionalExcGoodsQuota, new { @checked = "checked" })Additional Excisable Goods Quota<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.PrevYearsFinalBalance, new { @checked = "checked" })Previous Years Final Balance<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.TotalPbck1Quota, new { @checked = "checked" })Total Pbck-1 Quota<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Received, new { @checked = "checked" })Received<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.QuotaRemaining, new { @checked = "checked" })Quota Remaining<br />
                 </div>
                 <div class="modal-footer">
                     <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
@@ -170,7 +169,7 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
             setupDataTables();
-            $('#MenuPBCK1SummaryReports').addClass('active');
+            $('#MenuPBCK1MonitoringUsage').addClass('active');
         });
 
         function setupDataTables() {
@@ -223,7 +222,7 @@
             $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
             $('#ExportModel_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
             $('#Pbck1Modal').modal('hide');
-            $('#ExportSummaryReportsForms').submit();
+            $('#ExportMonitoringUsageForms').submit();
             preventDefault();
         });
 
