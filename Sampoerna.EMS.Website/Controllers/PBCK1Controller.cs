@@ -17,6 +17,7 @@ using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -247,7 +248,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetNppbkcDetail(string nppbkcid)
         {
             var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T001));
+            return Json(Mapper.Map<NppbkcItemModel>(data));
         }
 
         [HttpPost]
@@ -1208,7 +1209,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Nppbkc",
+                    DataField = "NppbkcId",
                     HeaderText = "Nppbkc"
                 });
             }
@@ -1224,7 +1225,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Kppbc",
+                    DataField = "NppbkcKppbcId",
                     HeaderText = "Kppbc"
                 });
             }
@@ -1240,7 +1241,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "ExcGoodsQuota",
+                    DataField = "ExGoodsQuota",
                     HeaderText = "Excisable Goods Quota"
                 });
             }
@@ -1250,6 +1251,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "AdditionalExGoodsQuota",
                     HeaderText = "Additional Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PreviousFinalBalance",
+                    HeaderText = "Prev Years Final Balance"
                 });
             }
             if (model.ExportModel.TotalPbck1Quota)

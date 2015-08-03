@@ -1064,7 +1064,7 @@ namespace Sampoerna.EMS.BLL
                 var nppbckData = _nppbkcbll.GetDetailsById(rc[i].NppbkcId);
                 if (nppbckData != null)
                 {
-                    rc[i].NppbkcKppbcId = nppbckData.KPPBC_ID;
+                    //rc[i].NppbkcKppbcId = nppbckData.KPPBC_ID;
                     rc[i].NppbkcPlants = Mapper.Map<List<T001WDto>>(nppbckData.T001W);
                 }
             }
