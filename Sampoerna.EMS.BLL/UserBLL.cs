@@ -20,7 +20,6 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        private string includeTables = "USER_GROUP";
         
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
@@ -61,7 +60,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<USER>(input.SortOrderColumn)) as IOrderedQueryable<USER>;
             }
 
-            var rc = _repository.Get(queryFilter, orderBy, includeTables);
+            var rc = _repository.Get(queryFilter, orderBy);
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
