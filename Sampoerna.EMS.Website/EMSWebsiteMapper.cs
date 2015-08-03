@@ -278,8 +278,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetailsViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
-            
-
+               
             #endregion
 
             #region BrandRegistration

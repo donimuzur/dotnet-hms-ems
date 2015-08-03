@@ -139,6 +139,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyName = dbVirtual.T001.BUTXT;
             model.ImportPlanName = dbVirtual.T001W.WERKS;
             model.ExportPlanName = dbVirtual.T001W1.WERKS;
+            model.ImportPlantDesc = model.ImportPlanName;
+
             //model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
             var changeHistoryList = _changesHistoryBLL.GetByFormTypeId(Enums.MenuList.VirtualMappingPlant);
            

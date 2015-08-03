@@ -62,7 +62,7 @@
                                                         <div class="row">
                                                             <label class="col-md-2">Import Virtual Plant</label>
                                                             <div class="col-md-4">
-                                                                @Html.TextBoxFor(model => model.ImportPlanName, new { @class = "form-control", disabled="disabled" })
+                                                                @Html.TextBoxFor(model => model.ImportPlanName, Model.ImportPlantDesc, new { @class = "form-control", disabled="disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -70,7 +70,7 @@
                                                         <div class="row">
                                                             <label class="col-md-2">Export Virtual Plant</label>
                                                             <div class="col-md-4">
-                                                                @Html.TextBoxFor(model => model.ExportPlanName, new { @class = "form-control", disabled="disabled" })
+                                                                @Html.TextBoxFor(model => model.ExportPlanName, Model.ExportPlantDesc, new { @class = "form-control", disabled="disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
