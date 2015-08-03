@@ -147,6 +147,8 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" />
+        <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="50.25" />
+        <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

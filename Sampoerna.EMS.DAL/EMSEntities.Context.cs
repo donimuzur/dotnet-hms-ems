@@ -77,5 +77,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_BROLE> USER_BROLE { get; set; }
+        public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
     }
 }
