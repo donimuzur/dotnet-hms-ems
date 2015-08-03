@@ -47,6 +47,7 @@
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
+    <Compile Include="IPbck1QuotaBLL.cs" />
     <Compile Include="IPOASKBLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IDocumentSequenceNumberBLL.cs" />

@@ -297,6 +297,7 @@ function nppbkcIdOnChange(poaUrl, companyUrl) {
         } else {
             $('#Detail_NppbkcCompanyName').val('');
             $('#Detail_NppbkcCompanyCode').val('');
+            $('#Detail_NppbkcKppbcId').val('');
             $('#displayCompanyName').val('');
             $('#Detail_PoaList').val('');
             $('#displayPoaList').val('');
@@ -345,12 +346,14 @@ function ajaxLoadCompany(formData, url) {
             data: formData,
             success: function (data) {
                 if (data != null) {
-                    $('#Detail_NppbkcCompanyName').val(data.DocumentBukrstxt);
-                    $('#Detail_NppbkcCompanyCode').val(data.DocumentBukrs);
-                    $('#displayCompanyName').val(data.DocumentBukrstxt);
+                    $('#Detail_NppbkcCompanyName').val(dataT001.T001.BUTXT);
+                    $('#Detail_NppbkcCompanyCode').val(data.T001.BUKRS);
+                    $('#Detail_NppbkcKppbcId').val(data.KPPBC_ID);
+                    $('#displayCompanyName').val(data.T001.BUKRS);
                 } else {
                     $('#Detail_NppbkcCompanyName').val('');
                     $('#Detail_NppbkcCompanyCode').val('');
+                    $('#Detail_NppbkcKppbcId').val('');
                     $('#displayCompanyName').val('');
                 }
             }

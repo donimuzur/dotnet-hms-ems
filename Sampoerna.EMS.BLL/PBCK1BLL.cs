@@ -835,8 +835,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+            //dbData.APPROVED_BY_POA = input.UserId;
+            //dbData.APPROVED_DATE_POA = DateTime.Now;
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
 
@@ -1025,7 +1025,7 @@ namespace Sampoerna.EMS.BLL
             var to = "irmansulaeman41@gmail.com";
             var subject = "this is subject for " + input.DocumentNumber;
             var body = "this is body message for " + input.DocumentNumber;
-            var from = "a@gmail.com";
+            //var from = "a@gmail.com";
 
             _messageService.SendEmail(to, subject, body, true);
         }
@@ -1064,12 +1064,45 @@ namespace Sampoerna.EMS.BLL
                 var nppbckData = _nppbkcbll.GetDetailsById(rc[i].NppbkcId);
                 if (nppbckData != null)
                 {
-                    rc[i].NppbkcKppbcId = nppbckData.KPPBC_ID;
+                    //rc[i].NppbkcKppbcId = nppbckData.KPPBC_ID;
                     rc[i].NppbkcPlants = Mapper.Map<List<T001WDto>>(nppbckData.T001W);
                 }
             }
             
             return rc;
+        }
+
+        #endregion
+
+        #region Monitoring Usages 
+
+        public List<Pbck1MonitoringUsageDto> GetMonitoringUsageByParam(Pbck1GetMonitoringUsageByParamInput input)
+        {
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed 
+                && c.PBCK1_TYPE == Enums.PBCK1Type.New);
+
+            if (input.YearFrom.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
+
+            if (input.YearTo.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+                queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+
+            var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
+
+            if (pbck1Data == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
         }
 
         #endregion

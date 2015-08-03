@@ -30,5 +30,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1SummaryReportDto> GetSummaryReportByParam(Pbck1GetSummaryReportByParamInput input);
 
+        List<Pbck1MonitoringUsageDto> GetMonitoringUsageByParam(Pbck1GetMonitoringUsageByParamInput input);
+
     }
 }
