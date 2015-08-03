@@ -12,13 +12,15 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class WORKFLOW_STATE_USERS
+    public partial class BROLE_MAP
     {
-        public long WF_STATE_USER_ID { get; set; }
-        public long WORKFLOW_STATE_ID { get; set; }
-        public string USER_ID { get; set; }
+        public int BROLE_MAP_ID { get; set; }
+        public string BROLE { get; set; }
+        public string MSACCT { get; set; }
+        public Nullable<System.DateTime> START_DATE { get; set; }
+        public Nullable<System.DateTime> END_DATE { get; set; }
     
-        public virtual WORKFLOW_STATE WORKFLOW_STATE { get; set; }
         public virtual USER USER { get; set; }
+        public virtual USER_BROLE USER_BROLE { get; set; }
     }
 }

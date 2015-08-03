@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
     
-        public virtual USER USER { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
+        public virtual USER USER { get; set; }
     }
 }
