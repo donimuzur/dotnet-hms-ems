@@ -51,7 +51,8 @@ namespace Sampoerna.EMS.XMLReader
                         item.KPPBC_ID = new XmlKPPBCDataMapper(null
                             ).GetKPPBC(kppbcNo).KPPBC_ID;
 
-                        //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        item.START_DATE = _xmlMapper.GetDate(xElement.Element("START_DATE").Value);
+                        item.END_DATE = _xmlMapper.GetDate(xElement.Element("END_DATE").Value);
                         var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
                         if (exisitingNppbkc != null)
                         {
