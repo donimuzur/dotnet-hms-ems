@@ -52,11 +52,7 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(s => s.LAST_NAME.Contains(input.LastName));
             }
 
-            if (input.IsActive.HasValue)
-            {
-                queryFilter = queryFilter.And(s => s.IS_ACTIVE == input.IsActive);
-            }
-
+            
           
             Func<IQueryable<USER>, IOrderedQueryable<USER>> orderBy = null;
 

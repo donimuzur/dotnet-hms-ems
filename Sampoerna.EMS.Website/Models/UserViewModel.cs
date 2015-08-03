@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.Website.Models
         {
             this.Employees = new List<USER>();
             this.Manager = new USER();
-            this.USER_GROUP = new USER_GROUP();
+           
         }
         public string USER_ID { get; set; }
         public string MANAGER_ID { get; set; }
@@ -24,8 +24,7 @@ namespace Sampoerna.EMS.Website.Models
         public string USER_GROUP_ID { get; set; }
         public List<USER> Employees { get; set; }
         public USER Manager { get; set; }
-        public USER_GROUP USER_GROUP { get; set; }
-
+        
         public string EMAIL { get; set; }
 
         public string PHONE { get; set; }
