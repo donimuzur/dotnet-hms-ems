@@ -66,6 +66,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
         public Nullable<decimal> REMAINING_QUOTA { get; set; }
+        public string NPPBKC_KPPBC_ID { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
