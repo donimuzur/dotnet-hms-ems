@@ -835,8 +835,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+            //dbData.APPROVED_BY_POA = input.UserId;
+            //dbData.APPROVED_DATE_POA = DateTime.Now;
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
 
@@ -1025,7 +1025,7 @@ namespace Sampoerna.EMS.BLL
             var to = "irmansulaeman41@gmail.com";
             var subject = "this is subject for " + input.DocumentNumber;
             var body = "this is body message for " + input.DocumentNumber;
-            var from = "a@gmail.com";
+            //var from = "a@gmail.com";
 
             _messageService.SendEmail(to, subject, body, true);
         }
