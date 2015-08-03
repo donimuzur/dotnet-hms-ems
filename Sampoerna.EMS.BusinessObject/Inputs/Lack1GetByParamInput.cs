@@ -12,8 +12,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbKcId { get; set; }
         public string Poa { get; set; }
         public string PlantId { get; set; }
-        public int? PeriodMonth { get; set; }
-        public int? PeriodYear { get; set; }
+        //public int? PeriodMonth { get; set; }
+        //public int? PeriodYear { get; set; }
         public string Creator { get; set; }
         public string SubmissionDate { get; set; }
 

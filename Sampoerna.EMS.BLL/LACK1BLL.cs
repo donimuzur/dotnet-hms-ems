@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
@@ -55,13 +56,19 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            if (input.PeriodMonth != null)
+            //if (input.PeriodMonth != null)
+            //{
+            //    queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth);
+            //}
+            //if (input.PeriodYear != null)
+            //{
+            //    queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear);
+            //}
+            if (!string.IsNullOrEmpty((input.SubmissionDate)))
             {
-                queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth);
-            }
-            if (input.PeriodYear != null)
-            {
-                queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear);
+                var dt = Convert.ToDateTime(input.SubmissionDate);
+                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
             }
            
             Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;

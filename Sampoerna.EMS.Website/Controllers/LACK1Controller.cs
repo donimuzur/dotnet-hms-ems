@@ -87,13 +87,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
 
-            if (!string.IsNullOrEmpty(model.ReportedOn))
-            {
-                var data = Convert.ToDateTime(model.ReportedOn);
-                model.PeriodMonth = data.Month;
-                model.PeriodYear = data.Year;    
-            }
+            //if (!string.IsNullOrEmpty(model.ReportedOn))
+            //{
+            //    var data = Convert.ToDateTime(model.ReportedOn);
+            //    model.PeriodMonth = data.Month;
+            //    model.PeriodYear = data.Year;    
+            //}
             
+
 
             var input = Mapper.Map<Lack1GetByParamInput>(model);
 
@@ -162,12 +163,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterListByPlant(Lack1Input model)
         {
 
-            if (!string.IsNullOrEmpty(model.ReportedOn))
-            {
-                var data = Convert.ToDateTime(model.ReportedOn);
-                model.PeriodMonth = data.Month;
-                model.PeriodYear = data.Year;
-            }
+            //if (!string.IsNullOrEmpty(model.ReportedOn))
+            //{
+            //    var data = Convert.ToDateTime(model.ReportedOn);
+            //    model.PeriodMonth = data.Month;
+            //    model.PeriodYear = data.Year;
+            //}
 
 
             var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
