@@ -76,7 +76,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.Message);
+                logger.Error(ex.ToString());
                 uow.RevertChanges();
             }
             if (errorCount == 0 && itemToInsert > 0)
@@ -101,7 +101,7 @@ namespace Sampoerna.EMS.XMLReader
 
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                logger.Error(ex.ToString());
                 uow.RevertChanges();
             }
 
