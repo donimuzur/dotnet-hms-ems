@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class PRINT_HISTORY
     {
-        public long PRINT_HOSTORY_ID { get; set; }
+        public long PRINT_HISTORY_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.FormType FORM_TYPE_ID { get; set; }
         public long FORM_ID { get; set; }
         public string FORM_NUMBER { get; set; }
