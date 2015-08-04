@@ -1,19 +1,12 @@
-﻿@*@model IEnumerable<Sampoerna.EMS.Website.Models.PrintHistory.PrintHistoryItemModel>*@
-@model Sampoerna.EMS.Website.Models.BaseModel
+﻿@model Sampoerna.EMS.Website.Models.BaseModel
 
-<table id="printHistoryTable" class="display table table-bordered table-striped" cellspacing="0" width="100%">
+<table id="printHistoryTable" class="table table-bordered table-striped js-options-table" cellspacing="0" width="100%">
     <thead>
         <tr>
             <th class="toggle-row">Date</th>
             <th>User</th>
         </tr>
     </thead>
-    @*<thead class="filters">
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>*@
     <tbody>
         @foreach (var item in Model.PrintHistoryList)
         {

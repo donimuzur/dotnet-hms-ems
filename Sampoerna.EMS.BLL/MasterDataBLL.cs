@@ -144,8 +144,8 @@ namespace Sampoerna.EMS.BLL
         public List<string> GetAllDataCountry()
         {
             var list = new List<string>();
-            list.Add("INA");
-            list.Add("USA");
+            list.Add("ID");
+            list.Add("US");
             list.Add("AUS");
             return list;
 

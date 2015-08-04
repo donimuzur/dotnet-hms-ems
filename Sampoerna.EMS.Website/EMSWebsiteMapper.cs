@@ -670,11 +670,7 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => src.EmailTemplateBody));
             #endregion
 
-            #region Print History
-
             Mapper.CreateMap<PrintHistoryDto, PrintHistoryItemModel>().IgnoreAllNonExisting();
-
-            #endregion
         }
     }
 
