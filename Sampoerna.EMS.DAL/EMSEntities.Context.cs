@@ -78,5 +78,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_BROLE> USER_BROLE { get; set; }
         public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
+        public virtual DbSet<LACK2> LACK2 { get; set; }
+        public virtual DbSet<LACK2_DOCUMENT> LACK2_DOCUMENT { get; set; }
+        public virtual DbSet<LACK2_ITEM> LACK2_ITEM { get; set; }
     }
 }
