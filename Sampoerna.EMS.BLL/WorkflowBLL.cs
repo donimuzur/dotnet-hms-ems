@@ -1,6 +1,6 @@
-﻿using Sampoerna.EMS.BusinessObject.Inputs;
+﻿using System;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -144,6 +144,15 @@ namespace Sampoerna.EMS.BLL
 
             return false;
 
+        }
+
+        public bool AllowPrint(Enums.DocumentStatus documentStatus)
+        {
+            int iStatusAllow = Convert.ToInt32(Enums.DocumentStatus.WaitingGovApproval);
+
+            int currentStatus = Convert.ToInt32(documentStatus);
+
+            return currentStatus >= iStatusAllow;
         }
 
 
