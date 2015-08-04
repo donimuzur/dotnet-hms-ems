@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GoodTypeDescription(int goodTypeId)
+        public JsonResult GoodTypeDescription(string goodTypeId)
         {
             var goodType = _goodTypeBll.GetById(goodTypeId);
             return Json(goodType.EXT_TYP_DESC);

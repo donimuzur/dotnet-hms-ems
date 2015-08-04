@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T001W> _repository;
         private IGenericRepository<PLANT_RECEIVE_MATERIAL> _plantReceiveMaterialRepository;
         private IGenericRepository<T001W> _t001WRepository;
+
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -74,7 +75,7 @@ namespace Sampoerna.EMS.BLL
                 //update
                 var origin =
                     _repository.Get(c => c.WERKS == plantT1001W.WERKS, null, includeTables).FirstOrDefault();
-                var originMaterialReceive = _plantReceiveMaterialRepository.Get(x => x.PLANT_ID == origin.WERKS).ToList();
+                var originMaterialReceive = _plantReceiveMaterialRepository.Get(x => x.PLANT_ID == origin.WERKS, null, "ZAIDM_EX_GOODTYP").ToList();
                 // plantT1001W.NPPBKC_ID = _nppbkcbll.GetById(plantT1001W.WERKS).NPPBKC_ID;
 
                 SetChanges(origin, plantT1001W, userId, originMaterialReceive);
@@ -135,7 +136,7 @@ namespace Sampoerna.EMS.BLL
                 foreach (var or in originReceive)
                 {
                     currOr++;
-                    originMaterialDesc += or.EXC_GOOD_TYP;
+                    originMaterialDesc += or.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
                     if (currOr < orLength)
                     {
                         originMaterialDesc += ", ";
@@ -151,7 +152,7 @@ namespace Sampoerna.EMS.BLL
                 foreach (var or in data.PLANT_RECEIVE_MATERIAL)
                 {
                     currOr++;
-                    editMaterialDesc += or.EXC_GOOD_TYP;
+                    editMaterialDesc += or.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
                     if (currOr < orLength)
                     {
                         editMaterialDesc += ", ";
