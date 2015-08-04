@@ -9,7 +9,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class UserAuthorizationDto
     {
         public string Brole { get; set; }
-
         public string BroleDescription { get; set; }
     }
 }

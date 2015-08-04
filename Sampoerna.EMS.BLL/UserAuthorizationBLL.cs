@@ -16,15 +16,17 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER_BROLE> _repository;
-
+       
         public UserAuthorizationBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
             _uow = uow;
+            _repository = uow.GetGenericRepository<USER_BROLE>();
         }
         public List<UserAuthorizationDto> GetAll()
         {
-            return Mapper.Map<List<UserAuthorizationDto>>(_repository.Get().ToList());
+            var dtData = _repository.Get().ToList();
+            return Mapper.Map<List<UserAuthorizationDto>>(dtData);
         }
 
         public UserAuthorizationDto GetById(string id)

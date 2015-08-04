@@ -21,7 +21,6 @@ namespace Sampoerna.EMS.Website.Models.UserAuthorization
     public class DetailUserAuthorization
     {
         public string Brole { get; set; }
-        public IEnumerable<SelectListItem> BroleList { get; set; }
         public string BroleDescription { get; set; }
     }
 }

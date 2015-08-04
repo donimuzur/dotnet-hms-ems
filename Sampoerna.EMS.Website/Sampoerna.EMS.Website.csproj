@@ -801,6 +801,8 @@
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\UserAuthorization\Index.cshtml" />
     <Content Include="Views\UserAuthorization\Create.cshtml" />
+    <Content Include="Views\UserAuthorization\Edit.cshtml" />
+    <Content Include="Views\UserAuthorization\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
