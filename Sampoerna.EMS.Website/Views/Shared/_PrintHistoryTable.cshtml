@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.PrintHistory.PrintHistoryItemModel>
+
+<table id="printHistoryTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">Date</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PRINT_DATE.ToString("dd MMM yyyy HH:mm:ss")</td>
+                <td>@item.PRINT_BY</td>
+            </tr>
+        }
+    </tbody>
+</table>
