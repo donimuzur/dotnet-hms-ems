@@ -20,6 +20,7 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 using SpreadsheetLight;
@@ -474,7 +475,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
-                
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
+
             }
             catch (Exception ex)
             {
@@ -574,6 +576,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
 
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
+
                 model.CreatedBy = ck5Details.Ck5Dto.CREATED_BY;
 
                 //validate approve and reject
@@ -600,6 +604,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 //gov approval purpose
                 if (model.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
                     model.KppBcCity = model.KppBcCityName;
+
+                model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
             }
             catch (Exception ex)
             {

@@ -29,8 +29,8 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfMeasurementBLL _uomBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
-     
         private IMessageService _messageService;
+        private IPrintHistoryBLL _printHistoryBll;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -48,8 +48,9 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
-
             _messageService = new MessageService(_logger);
+
+            _printHistoryBll = new PrintHistoryBLL(_uow, _logger);
         }
 
         public CK5Dto GetById(long id)
@@ -484,6 +485,9 @@ namespace Sampoerna.EMS.BLL
 
             //output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(dtData.SUBMISSION_NUMBER);
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+
+
+            output.ListPrintHistorys = _printHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, dtData.CK5_ID);
             return output;
         }
 
