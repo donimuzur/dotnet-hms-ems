@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Microsoft.Reporting.WebForms;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -263,10 +264,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(int id)
         {
+           
             _headerFooterBll.Delete(id, CurrentUser.USER_ID);
             TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
             return RedirectToAction("Index");
         }
 
+        
+        
     }
 }

@@ -12,21 +12,18 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class USER_GROUP
+    public partial class USER_BROLE
     {
-        public USER_GROUP()
+        public USER_BROLE()
         {
+            this.BROLE_MAP = new HashSet<BROLE_MAP>();
             this.PAGE_MAP = new HashSet<PAGE_MAP>();
-            this.USER = new HashSet<USER>();
         }
     
-        public string USER_GROUP_ID { get; set; }
-        public string GROUP_DESCRIPTION { get; set; }
-        public string ROLE_NAME { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
-        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string BROLE { get; set; }
+        public string BROLE_DESC { get; set; }
     
+        public virtual ICollection<BROLE_MAP> BROLE_MAP { get; set; }
         public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
-        public virtual ICollection<USER> USER { get; set; }
     }
 }

@@ -101,11 +101,8 @@ namespace Sampoerna.EMS.XMLReader
                 }
                 catch (Exception ex)
                 {
-                    var error = ex.Message;
-                    if (ex.InnerException != null)
-                    {
-                        error = ex.InnerException.Message;
-                    }
+                    var error = ex.ToString();
+                    
                     errorList.Add(string.Format("<b>File: {0} </b> -> Error : {1}", xmlfile, error));
                     continue;
                 }

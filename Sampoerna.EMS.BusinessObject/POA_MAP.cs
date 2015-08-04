@@ -24,8 +24,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual POA POA { get; set; }
+        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
     }
 }

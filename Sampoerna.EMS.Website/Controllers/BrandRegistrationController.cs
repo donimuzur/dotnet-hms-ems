@@ -59,11 +59,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
-
+            model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
-
+            
             return View(model);
         }
 
@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GoodTypeDescription(int goodTypeId)
+        public JsonResult GoodTypeDescription(string goodTypeId)
         {
             var goodType = _goodTypeBll.GetById(goodTypeId);
             return Json(goodType.EXT_TYP_DESC);

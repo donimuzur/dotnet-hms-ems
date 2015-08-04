@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
+            this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -64,19 +65,22 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUPPLIER_PLANT_WERKS { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public Nullable<decimal> REMAINING_QUOTA { get; set; }
+        public string NPPBKC_KPPBC_ID { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
         public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual USER USER2 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
+        public virtual ICollection<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
+        public virtual USER USER2 { get; set; }
     }
 }

@@ -20,7 +20,6 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        private string includeTables = "USER_GROUP";
         
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
@@ -52,11 +51,7 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(s => s.LAST_NAME.Contains(input.LastName));
             }
 
-            if (input.IsActive.HasValue)
-            {
-                queryFilter = queryFilter.And(s => s.IS_ACTIVE == input.IsActive);
-            }
-
+            
           
             Func<IQueryable<USER>, IOrderedQueryable<USER>> orderBy = null;
 
@@ -65,7 +60,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<USER>(input.SortOrderColumn)) as IOrderedQueryable<USER>;
             }
 
-            var rc = _repository.Get(queryFilter, orderBy, includeTables);
+            var rc = _repository.Get(queryFilter, orderBy);
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -104,6 +99,14 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-      
+
+
+
+        public List<USER> GetUsersByListId(List<string> useridlist)
+        {
+            var data = _repository.Get(obj => useridlist.Contains(obj.USER_ID),null,"").ToList();
+
+            return data;
+        }
     }
 }
