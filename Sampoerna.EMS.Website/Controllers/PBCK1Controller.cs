@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -15,15 +16,15 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
-using SpreadsheetLight;
-
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -36,8 +37,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
+        private IPrintHistoryBLL _printHistoryBll;
 
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll)
+        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -46,6 +49,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBll = changesHistoryBll;
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
+            _printHistoryBll = printHistoryBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -265,7 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
 
-            var grid = new System.Web.UI.WebControls.GridView
+            var grid = new GridView
             {
                 DataSource = from d in model
                              select new
@@ -536,13 +540,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
                     id.Value.ToString()));
 
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck1Data.Pbck1Number));
+
             var model = new Pbck1ItemViewModel()
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Detail = Mapper.Map<Pbck1Item>(pbck1Data),
                 ChangesHistoryList = changesHistory,
-                WorkflowHistory = workflowHistory
+                WorkflowHistory = workflowHistory,
+                PrintHistoryList = printHistory
             };
 
             model.DocStatus = model.Detail.Status;
@@ -878,6 +885,18 @@ namespace Sampoerna.EMS.Website.Controllers
             file.SaveAs(path);
 
             return sFileName;
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            //DataTable dt = new DataTable();
+            ReportClass rpt = new ReportClass();
+            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
+            rpt.Load();
+            //rpt.SetDataSource(dt);
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
         }
 
         #endregion
