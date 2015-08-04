@@ -9,6 +9,7 @@
 @section scripts {
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterGoodType').addClass('active');
         $(document).ready(function () {
             
             // Setup - add a text input to each footer cell
@@ -52,7 +53,7 @@
                 @:TempData[Constans.SubmitType.Delete] = null;
             }
 
-            $('#MenuMasterGoodType').addClass('active');
+           
         });
     </script>
 }

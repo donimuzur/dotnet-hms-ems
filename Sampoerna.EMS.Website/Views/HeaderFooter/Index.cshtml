@@ -8,6 +8,7 @@
 @section scripts {
 <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuHeaderFooter').addClass('active');
         $(document).ready(function () {
 
             // Setup - add a text input to each footer cell
@@ -31,7 +32,7 @@
                 });
             });
             
-             @if (TempData[Constans.SubmitType.Save] != null)
+            @if (TempData[Constans.SubmitType.Save] != null)
             {
                 @: $('#modal-headerfooter-message').html('@TempData[Constans.SubmitType.Save]');
                 @: $('#btn-headerfooter-modal').click();
