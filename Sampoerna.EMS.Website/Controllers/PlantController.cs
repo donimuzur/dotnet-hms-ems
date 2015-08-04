@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
-
+        
         public PlantController(IPlantBLL plantBll, IZaidmExNPPBKCBLL nppbkcBll, IZaidmExGoodTypeBLL goodTypeBll, IChangesHistoryBLL changesHistoryBll, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.MasterPlant)
         {
@@ -106,6 +106,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
+                if (t1001w.PLANT_RECEIVE_MATERIAL != null)
+                {
+                    var tempRecieveMaterial = t1001w.PLANT_RECEIVE_MATERIAL;
+                    foreach (var rm in tempRecieveMaterial)
+                    {
+                        rm.ZAIDM_EX_GOODTYP = _goodTypeBll.GetById(rm.EXC_GOOD_TYP);
+                    }
+                    t1001w.PLANT_RECEIVE_MATERIAL = tempRecieveMaterial;
+                }
+                
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
                 TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
                 return RedirectToAction("Index");

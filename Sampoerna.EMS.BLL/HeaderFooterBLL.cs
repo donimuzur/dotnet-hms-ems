@@ -10,19 +10,20 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
     public class HeaderFooterBLL : IHeaderFooterBLL
     {
 
-       private IGenericRepository<HEADER_FOOTER> _repository;
+        private IGenericRepository<HEADER_FOOTER> _repository;
         private IGenericRepository<HEADER_FOOTER_FORM_MAP> _mapRepository;
         private ILogger _logger;
         private IUnitOfWork _uow;
         private string includeTables = "T001, HEADER_FOOTER_FORM_MAP";
         private IChangesHistoryBLL _changesHistoryBll;
-        
+
         public HeaderFooterBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -36,7 +37,7 @@ namespace Sampoerna.EMS.BLL
         {
             return Mapper.Map<HeaderFooterDetails>(_repository.Get(c => c.HEADER_FOOTER_ID == id, null, includeTables).FirstOrDefault());
         }
-        
+
         public HeaderFooter GetById(int id)
         {
             return Mapper.Map<HeaderFooter>(_repository.GetByID(id));
@@ -49,6 +50,7 @@ namespace Sampoerna.EMS.BLL
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
             HEADER_FOOTER dbData = null;
+            
             if (headerFooterData.HEADER_FOOTER_ID > 0)
             {
                 //update
@@ -59,7 +61,7 @@ namespace Sampoerna.EMS.BLL
                 var headerFooterUpdated = Mapper.Map<HEADER_FOOTER>(headerFooterData);
 
                 SetChanges(dbData, headerFooterUpdated, userId);
-
+                
                 //hapus dulu aja ya ? //todo ask the cleanist way
                 var dataToDelete =
                     _mapRepository.Get(c => c.HEADER_FOOTER_ID == headerFooterData.HEADER_FOOTER_ID)
@@ -72,8 +74,9 @@ namespace Sampoerna.EMS.BLL
                 Mapper.Map<HeaderFooterDetails, HEADER_FOOTER>(headerFooterData, dbData);
 
                 dbData.HEADER_FOOTER_FORM_MAP = null;
-                dbData.HEADER_FOOTER_FORM_MAP =
-                    Mapper.Map<List<HEADER_FOOTER_FORM_MAP>>(headerFooterData.HeaderFooterMapList);
+                dbData.HEADER_FOOTER_FORM_MAP = Mapper.Map<List<HEADER_FOOTER_FORM_MAP>>(headerFooterData.HeaderFooterMapList);
+
+               
 
             }
             else
@@ -120,7 +123,7 @@ namespace Sampoerna.EMS.BLL
         public void Delete(int id, string userId)
         {
             var existingData = _repository.GetByID(id);
-           
+
             _repository.Update(existingData);
 
             var changes = new CHANGES_HISTORY
@@ -146,7 +149,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("FOOTER_CONTENT", origin.FOOTER_CONTENT.Equals(data.FOOTER_CONTENT));
             changesData.Add("IS_ACTIVE", origin.IS_ACTIVE.Equals(data.IS_ACTIVE));
             changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
-            //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
+            changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(data.HEADER_FOOTER_FORM_MAP));
 
             foreach (var listChange in changesData)
             {
@@ -178,15 +181,53 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.IS_ACTIVE.HasValue ? origin.IS_ACTIVE.Value.ToString() : "NULL";
                             changes.NEW_VALUE = data.IS_ACTIVE.HasValue ? data.IS_ACTIVE.Value.ToString() : "NULL";
                             break;
-                        //case "IS_DELETED":
-                        //    changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
-                        //    changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
-                        //    break;
+                        case "IS_DELETED":
+                            changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
+                            break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }
             }
-        } 
+        }
+
+        private void SetChanges(HEADER_FOOTER_FORM_MAP origin, HEADER_FOOTER_FORM_MAP data, string userId)
+        {
+            var changeData = new Dictionary<string, bool>();
+            changeData.Add("FORM_TYPE_ID", origin.FORM_TYPE_ID.Equals(data.FORM_TYPE_ID));
+            changeData.Add("IS_HEADER_SET", origin.IS_HEADER_SET.Equals(data.IS_HEADER_SET));
+            changeData.Add("IS_FOOTER_SET", origin.IS_FOOTER_SET.Equals(data.IS_FOOTER_SET));
+
+            foreach (var listchange in changeData)
+            {
+                var change = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Enums.MenuList.HeaderFooter,
+                    FORM_ID = data.HEADER_FOOTER_FORM_MAP_ID.ToString(),
+                    FIELD_NAME = listchange.Key,
+                    MODIFIED_BY = userId,
+                    MODIFIED_DATE = DateTime.Now
+
+                };
+                switch (listchange.Key)
+                {
+                    case "IS_HEADER_SET":
+                        change.OLD_VALUE = origin.IS_HEADER_SET.ToString();
+                        change.NEW_VALUE = data.IS_HEADER_SET.ToString();
+                        break;
+                    case "IS_FOOTER_SET":
+                        change.OLD_VALUE = origin.IS_FOOTER_SET.ToString();
+                        change.NEW_VALUE = origin.IS_FOOTER_SET.ToString();
+                        break;
+                    case "FORM_TYPE_ID":
+                        change.OLD_VALUE = origin.FORM_TYPE_ID.ToString();
+                        change.NEW_VALUE = origin.IS_FOOTER_SET.ToString();
+                        break;
+                }
+                _changesHistoryBll.AddHistory(change);
+
+            }
+        }
 
     }
 }

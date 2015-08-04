@@ -6,6 +6,7 @@
 
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterMaterial').addClass('active');
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
@@ -32,7 +33,7 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterMaterial').addClass('active');
+           
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {

@@ -113,7 +113,8 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("BASE_UOM", origin.UomId.Equals(data.BASE_UOM_ID));
             changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
             changesData.Add("EX_GOODTYP", origin.GoodTypeId.Equals(data.EXC_GOOD_TYP));
-
+            changesData.Add("PLANT_DELETION", origin.IsClientDelete.Equals(data.PLANT_DELETION));
+            changesData.Add("CLIENT_DELETION", origin.IsClientDelete.Equals(data.PLANT_DELETION));
             
             foreach (var listChange in changesData)
             {
@@ -151,9 +152,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.IssueStorageLoc;
                             changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
                             break;
-                        case "EX_GOODTYP":
-                            changes.OLD_VALUE = origin.GoodTypeId;
-                            changes.NEW_VALUE = data.EXC_GOOD_TYP;
+                        case "PLANT_DELETION":
+                            changes.OLD_VALUE = origin.IsPlantDelete.ToString();
+                            changes.NEW_VALUE = data.PLANT_DELETION.ToString();
+                            break;
+                        case "CLIENT_DELETION":
+                            changes.OLD_VALUE = origin.IsClientDelete.ToString();
+                            changes.NEW_VALUE = data.CLIENT_DELETION.ToString();
                             break;
                         
                     }

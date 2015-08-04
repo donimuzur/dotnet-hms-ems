@@ -8,6 +8,7 @@
 @section scripts {
    <script src="~/Scripts/js/custom.js"></script>>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterVirtualMappingPlant').addClass('active');
         $(document).ready(function () {
             
             // Setup - add a text input to each footer cell
@@ -35,7 +36,7 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterVirtualMappingPlant').addClass('active');
+           
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
