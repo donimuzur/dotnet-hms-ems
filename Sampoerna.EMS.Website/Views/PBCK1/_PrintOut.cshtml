@@ -1,4 +1,6 @@
-﻿<div role="tabpanel" class="tab-pane" id="profile">
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+
+<div role="tabpanel" class="tab-pane" id="profile">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
@@ -53,31 +55,6 @@
     </div>
 
     <div class="table-container">
-        <table class="table table-bordered table-striped js-options-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>User</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-            </tbody>
-        </table>
+        @Html.Partial("_PrintHistoryTable", Model.PrintHistoryList)
     </div>
 </div>
