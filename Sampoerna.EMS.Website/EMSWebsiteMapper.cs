@@ -17,6 +17,7 @@ using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.UOM;
+using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -667,6 +668,11 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => src.EmailTemplateSubject))
                 .ForMember(dest => dest.BODY,
                     opt => opt.MapFrom(src => src.EmailTemplateBody));
+            #endregion
+
+            #region User Authorization
+
+           
             #endregion
         }
     }

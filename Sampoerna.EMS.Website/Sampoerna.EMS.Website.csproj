@@ -241,6 +241,7 @@
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UomController.cs" />
+    <Compile Include="Controllers\UserAuthorizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="Controllers\WorkflowSettingsController.cs" />
@@ -306,6 +307,7 @@
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\UserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
@@ -797,6 +799,8 @@
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
+    <Content Include="Views\UserAuthorization\Index.cshtml" />
+    <Content Include="Views\UserAuthorization\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

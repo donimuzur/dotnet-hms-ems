@@ -94,6 +94,15 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<PrintHistoryDto, PRINT_HISTORY>().IgnoreAllNonExisting();
 
+
+            #region UserAuthorization
+
+            Mapper.CreateMap<USER_BROLE, UserAuthorizationDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Brole, opt => opt.MapFrom(src => src.BROLE))
+                .ForMember(dest => dest.BroleDescription, opt => opt.MapFrom(src => src.BROLE_DESC));
+
+
+            #endregion
         }
     }
 }
