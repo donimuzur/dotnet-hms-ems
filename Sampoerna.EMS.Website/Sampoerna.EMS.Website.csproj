@@ -300,6 +300,7 @@
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\PLANT\T001WModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
+    <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
@@ -793,6 +794,7 @@
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
 
+    <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
     <Content Include="Views\CK5\_CK5ListSummaryReportExport.cshtml" />
