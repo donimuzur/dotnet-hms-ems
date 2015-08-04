@@ -144,12 +144,49 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(HEADER_FOOTER origin, HEADER_FOOTER data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("COMPANY_ID", origin.BUKRS.Equals(data.BUKRS));
-            changesData.Add("HEADER_IMAGE_PATH", origin.HEADER_IMAGE_PATH.Equals(data.HEADER_IMAGE_PATH));
-            changesData.Add("FOOTER_CONTENT", origin.FOOTER_CONTENT.Equals(data.FOOTER_CONTENT));
-            changesData.Add("IS_ACTIVE", origin.IS_ACTIVE.Equals(data.IS_ACTIVE));
-            changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
-            changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(data.HEADER_FOOTER_FORM_MAP));
+            changesData.Add("COMPANY_ID", origin.BUKRS == data.BUKRS);
+            changesData.Add("HEADER_IMAGE_PATH", origin.HEADER_IMAGE_PATH == data.HEADER_IMAGE_PATH);
+            changesData.Add("FOOTER_CONTENT", origin.FOOTER_CONTENT == data.FOOTER_CONTENT);
+            changesData.Add("IS_ACTIVE", origin.IS_ACTIVE == data.IS_ACTIVE);
+            changesData.Add("IS_DELETED", origin.IS_DELETED==data.IS_DELETED);
+            var originHeaderFooterCheck = string.Empty;
+            var originIndex = 0;
+            var originMap = origin.HEADER_FOOTER_FORM_MAP;
+            if (originMap != null)
+            {
+                foreach (var orMap in originMap)
+                {
+
+                    originIndex++;
+                    originHeaderFooterCheck += orMap.FORM_TYPE_ID.ToString() + ": Footer Set : " + (orMap.IS_FOOTER_SET == true ? "Yes" : "No") + " Header Set : " + (orMap.IS_HEADER_SET == true ? "Yes" : "No");
+                   
+                    if (originIndex < originMap.Count)
+                    {
+                        originHeaderFooterCheck += ", ";
+                    }
+
+                }
+            }
+            var dataHeaderFooterCheck = string.Empty;
+            var dataIndex = 0;
+            var dataMap = data.HEADER_FOOTER_FORM_MAP;
+            if (dataMap != null)
+            {
+                foreach (var dtMap in dataMap)
+                {
+
+                    dataIndex++;
+                    dataHeaderFooterCheck += dtMap.FORM_TYPE_ID.ToString() + ": Footer Set : " + (dtMap.IS_FOOTER_SET == true ? "Yes" : "No") + " Header Set : " + (dtMap.IS_HEADER_SET == true ? "Yes" : "No");
+                   
+                    if (dataIndex < dataMap.Count)
+                    {
+                        dataHeaderFooterCheck += ", ";
+                    }
+
+                }
+            }
+            changesData.Add("HEADER_FOOTER_FORM_MAP", originHeaderFooterCheck == dataHeaderFooterCheck);
+           
 
             foreach (var listChange in changesData)
             {
@@ -184,6 +221,10 @@ namespace Sampoerna.EMS.BLL
                         case "IS_DELETED":
                             changes.OLD_VALUE = origin.IS_DELETED.HasValue ? origin.IS_DELETED.Value.ToString() : "NULL";
                             changes.NEW_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL";
+                            break;
+                        case "HEADER_FOOTER_FORM_MAP":
+                            changes.OLD_VALUE = originHeaderFooterCheck;
+                            changes.NEW_VALUE = dataHeaderFooterCheck;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
