@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.XMLReader
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {
+                        item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
                         item.CREATED_DATE = exisitingPlant.CREATED_DATE;
                         item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);
