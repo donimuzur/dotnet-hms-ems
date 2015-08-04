@@ -235,6 +235,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DestKppbcName, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
                 .ForMember(dest => dest.DestNameAdress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
                 .ForMember(dest => dest.DestNppbkcId, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
+                .ForMember(dest => dest.DestCompanyAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
+                .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_NAME))
                 //public string DestKppbcName { get; set; } //?
                 .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
                 .ForMember(dest => dest.LoadingPortOffice, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))

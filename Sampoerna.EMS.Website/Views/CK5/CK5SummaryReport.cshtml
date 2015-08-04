@@ -111,6 +111,14 @@
                                 {
                                     @Html.Partial("_CK5SummaryReportToggleExport")
                                 }
+                                else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+                                {
+                                    @Html.Partial("_CK5SummaryReportToggleImport")
+                                }
+                                else if (Model.Ck5Type == Enums.CK5Type.Manual)
+                                {
+                                    @Html.Partial("_CK5SummaryReportToggleManual")
+                                }
 
                             </div>
                             <div class="last-form">
@@ -140,6 +148,14 @@
                 else if (Model.Ck5Type == Enums.CK5Type.Export)
                 {
                     @Html.Partial("_CK5ListSummaryReportExport")
+                }
+                else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+                {
+                    @Html.Partial("_CK5ListSummaryReportImport")
+                }
+                else if (Model.Ck5Type == Enums.CK5Type.Manual)
+                {
+                    @Html.Partial("_CK5ListSummaryReportManual")
                 }
             </div>
         </div>
@@ -200,122 +216,131 @@ else if (Model.Ck5Type == Enums.CK5Type.Export)
 {
     @Html.Partial("_CK5SummaryReportModalExport")
 }
+else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+{
+    @Html.Partial("_CK5SummaryReportModalImport")
+}
+else if (Model.Ck5Type == Enums.CK5Type.Manual)
+{
+    @Html.Partial("_CK5SummaryReportModalManual")
+}
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            setupDataTables();
-          
-            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()') {
-                $('#Ck5Modal').modal('hide');
-            }
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()') {
-                $('#Ck5ModalIntercompany').modal('hide');
-            }
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()') {
-                $('#Ck5ModalExport').modal('hide');
-            }
-           
-        });
+        setupDataTables();
 
+        if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()') {
+            $('#Ck5Modal').modal('hide');
+        }
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()') {
+            $('#Ck5ModalIntercompany').modal('hide');
+        }
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()') {
+            $('#Ck5ModalExport').modal('hide');
+        }
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()') {
+            $('#Ck5ModalImport').modal('hide');
+        }
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()') {
+            $('#Ck5ModalManual').modal('hide');
+        }
 
-        function setupDataTables() {
-
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#ck5Table')) {
-                table = $('#ck5Table').DataTable();
-                table.destroy();
-            }
-
-            table = $('#ck5Table').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
+    });
 
 
+    function setupDataTables() {
 
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#ck5Table')) {
+            table = $('#ck5Table').DataTable();
+            table.destroy();
+        }
 
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-
-                // Get the column API object
-                var column = table.column($(this).attr('data-column'));
-
-                // Toggle the visibility
-                column.visible(!column.visible());
+        table = $('#ck5Table').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
+                }
             });
 
-           
 
-        }
 
-        function ReloadDataTables() {
-            setupDataTables();
-        }
 
-        function OnReset() {
+        $('a.toggle-vis').on('click', function (e) {
+            e.preventDefault();
 
-            $(".selectreset").val($(".selectreset option:first").val());
-        }
+            // Get the column API object
+            var column = table.column($(this).attr('data-column'));
 
-        $("#btnExport").click(function () {
-            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-                $('#Ck5Modal').modal('show');
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-                $('#Ck5ModalIntercompany').modal('show');
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-                $('#Ck5ModalExport').modal('show');
-
+            // Toggle the visibility
+            column.visible(!column.visible());
         });
 
-        function GetSearchSummaryReports() {
-            $('#ExportModel_CompanyCodeSource').val($('#SearchView_CompanyCodeSource').find("option:selected").val());
-            $('#ExportModel_CompanyCodeDest').val($('#SearchView_CompanyCodeDest').find("option:selected").val());
 
-            $('#ExportModel_NppbkcIdSource').val($('#SearchView_NppbkcIdSource').find("option:selected").val());
-            $('#ExportModel_NppbkcIdDestt').val($('#SearchView_NppbkcIdDest').find("option:selected").val());
-            $('#ExportModel_PlantSource').val($('#SearchView_PlantSource').find("option:selected").val());
-            $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
-            $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
-            $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
 
-        }
-       
-        //$("#btnConfirm").click(function () {
-        //    GetSearchSummaryReports();
-        //    $('#ExportSummaryReportsForms').submit();
-        //});
+    }
 
-        //$("#btnConfirmExport").click(function () {
-        //    GetSearchSummaryReports();
-        //    $('#ExportSummaryReportsFormsExport').submit();
-        //});
-        //$("#btnConfirmIntercompany").click(function () {
-        //    GetSearchSummaryReports();
-        //    $('#ExportSummaryReportsFormsIntercompany').submit();
-        //});
+    function ReloadDataTables() {
+        setupDataTables();
+    }
 
-        $("#btnConfirm").click(function () {
-            GetSearchSummaryReports();
-            
-            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+    function OnReset() {
+
+        $(".selectreset").val($(".selectreset option:first").val());
+    }
+
+    $("#btnExport").click(function () {
+        if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+            $('#Ck5Modal').modal('show');
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+            $('#Ck5ModalIntercompany').modal('show');
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+            $('#Ck5ModalExport').modal('show');
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+            $('#Ck5ModalImport').modal('show');
+        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+            $('#Ck5ModalManual').modal('show');
+
+    });
+
+    function GetSearchSummaryReports() {
+        $('#ExportModel_CompanyCodeSource').val($('#SearchView_CompanyCodeSource').find("option:selected").val());
+        $('#ExportModel_CompanyCodeDest').val($('#SearchView_CompanyCodeDest').find("option:selected").val());
+
+        $('#ExportModel_NppbkcIdSource').val($('#SearchView_NppbkcIdSource').find("option:selected").val());
+        $('#ExportModel_NppbkcIdDestt').val($('#SearchView_NppbkcIdDest').find("option:selected").val());
+        $('#ExportModel_PlantSource').val($('#SearchView_PlantSource').find("option:selected").val());
+        $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
+        $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
+        $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
+
+    }
+
+
+
+    $("#btnConfirm").click(function () {
+        GetSearchSummaryReports();
+
+        if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
                 $('#ExportSummaryReportsForms').submit();
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()')
+           else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
                 $('#ExportSummaryReportsFormsIntercompany').submit();
             else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
                 $('#ExportSummaryReportsFormsExport').submit();
-            
-           
-           
-        });
-        
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                $('#ExportSummaryReportsFormsImport').submit();
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                $('#ExportSummaryReportsFormsManual').submit();
+
+
+    });
+
     </script>
 }

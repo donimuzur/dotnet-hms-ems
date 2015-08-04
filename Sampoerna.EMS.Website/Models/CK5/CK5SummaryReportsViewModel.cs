@@ -141,6 +141,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         #endregion
 
+        #region Import
+        public string DestCompanyAddress { get; set; }
+        #endregion
+
+        #region Manual
+        public string DestCompanyName { get; set; }
+        #endregion
     }
 
     public class CK5ExportSummaryReportsViewModel : CK5SearchSummaryReportsViewModel
@@ -219,6 +226,14 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //public string Lack1Number { get; set; }
         //public string Lack2Number { get; set; }
 
+        #endregion
+
+        #region Import
+        public bool DestCompanyAddress { get; set; }
+        #endregion
+
+        #region Manual
+        public bool DestCompanyName { get; set; }
         #endregion
     }
 

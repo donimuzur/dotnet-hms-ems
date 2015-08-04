@@ -791,6 +791,12 @@
     <Content Include="Views\CK5\_CK5SummaryReportModalExport.cshtml" />
     <Content Include="Views\CK5\_CK5ListSummaryReportIntercompany.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportModalIntercompany.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleImport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportImport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalImport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleManual.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
