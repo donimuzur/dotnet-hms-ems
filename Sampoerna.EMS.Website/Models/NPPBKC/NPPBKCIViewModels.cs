@@ -59,4 +59,27 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string Is_Deleted { get; set; }
     }
 
+    public class NppbkcItemModel
+    {
+        public string NPPBKC_ID { get; set; }
+        public string ADDR1 { get; set; }
+        public string ADDR2 { get; set; }
+        public string CITY { get; set; }
+        public string CITY_ALIAS { get; set; }
+        public string KPPBC_ID { get; set; }
+        public string REGION { get; set; }
+        public string REGION_DGCE { get; set; }
+        public string VENDOR_ID { get; set; }
+        public string BUKRS { get; set; }
+        public string TEXT_TO { get; set; }
+        public Nullable<System.DateTime> START_DATE { get; set; }
+        public Nullable<System.DateTime> END_DATE { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+
+        public T001 T001 { get; set; }
+    }
+
 }

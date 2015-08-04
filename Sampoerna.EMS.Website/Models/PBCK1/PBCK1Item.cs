@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [Required, Display(Name = "NPPBKC ID")]
         public string NppbkcId { get; set; }
 
+        public string NppbkcKppbcId { get; set; }
+
         public string NppbkcCompanyCode { get; set; }
         public string NppbkcCompanyName { get; set; }
         

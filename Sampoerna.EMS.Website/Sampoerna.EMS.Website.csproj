@@ -291,6 +291,7 @@
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
+    <Compile Include="Models\PBCK1\Pbck1MonitoringUsageViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
@@ -792,6 +793,8 @@
     <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
+    <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
