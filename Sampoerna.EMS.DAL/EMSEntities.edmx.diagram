@@ -147,8 +147,6 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" />
-        <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="50.25" />
-        <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
         <EntityTypeShape EntityType="EMSModel.LACK2" Width="1.5" PointX="13.5" PointY="36.25" />
         <EntityTypeShape EntityType="EMSModel.LACK2_DOCUMENT" Width="1.5" PointX="15.75" PointY="50.25" />
         <EntityTypeShape EntityType="EMSModel.LACK2_ITEM" Width="1.5" PointX="25.75" PointY="40.25" />
@@ -159,6 +157,8 @@
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_APPROVED_BY" />
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_CREATED_BY" />
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_MODIFIED_BY" />
+        <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="49.5" />
+        <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
