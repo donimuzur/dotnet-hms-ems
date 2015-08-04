@@ -52,7 +52,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-4">Material Number</label>
+                                                            <label class="col-md-4">Sticker Code</label>
                                                             <div class="col-md-8">
                                                                 @Html.TextBox("material-number", Model.MaterialNumber, new { @class = "form-control", @disabled = "disabled" })
 
@@ -192,6 +192,66 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="panel-group" id="accordionThree" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                                Information
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Plant Deletion</label>
+                                                            <div class="col-md-8">
+                                                                @if (Model.IsPlantDelete)
+                                                                {
+                                                                    @Html.CheckBox("cb-plant-del", new {@checked = "checked", disabled = "disabled"})
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.CheckBox("cb-plant-del", new { disabled = "disabled" })
+                                                                }
+                                                              
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Client Deletion</label>
+                                                            <div class="col-md-8">
+                                                                @if (Model.IsClientDelete)
+                                                                {
+                                                                    @Html.CheckBox("cb-client-del", new { @checked = "checked", disabled = "disabled" })
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.CheckBox("cb-client-del", new { disabled = "disabled" })
+                                                                }
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="changes">

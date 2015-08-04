@@ -59,11 +59,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
-
+            model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
-
+            
             return View(model);
         }
 
@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GoodTypeDescription(int goodTypeId)
+        public JsonResult GoodTypeDescription(string goodTypeId)
         {
             var goodType = _goodTypeBll.GetById(goodTypeId);
             return Json(goodType.EXT_TYP_DESC);
@@ -148,16 +148,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
-                try
-                {
-                    _brandRegistrationBll.Save(dbBrand);
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
-                }
-                catch (Exception ex)
-                {
-                    TempData[Constans.SubmitType.Save] = ex.Message;
-                   
-                }
+                
+                 TempData[Constans.SubmitType.Save]  = _brandRegistrationBll.Save(dbBrand);
+                  
                
 
                 
@@ -234,10 +227,10 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
-      
-            _brandRegistrationBll.Save(dbBrand);
+            dbBrand.CREATED_BY = CurrentUser.USER_ID;
+            TempData[Constans.SubmitType.Update]  =_brandRegistrationBll.Save(dbBrand);
 
-            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+          
             return RedirectToAction("Index");
           
         }

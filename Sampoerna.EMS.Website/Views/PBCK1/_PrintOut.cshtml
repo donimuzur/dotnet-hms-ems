@@ -56,31 +56,6 @@
     </div>
 
     <div class="table-container">
-        <table class="table table-bordered table-striped js-options-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>User</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-            </tbody>
-        </table>
+        @Html.Partial("_PrintHistoryTable", Model.PrintHistoryList)
     </div>
 </div>

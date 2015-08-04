@@ -5,7 +5,7 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IZaidmExGoodTypeBLL
     {
-        ZAIDM_EX_GOODTYP GetById(int id);
+        ZAIDM_EX_GOODTYP GetById(string id);
 
         List<ZAIDM_EX_GOODTYP> GetAll();
 

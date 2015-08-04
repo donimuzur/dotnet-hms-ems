@@ -37,14 +37,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
         public virtual DbSet<MONTH> MONTH { get; set; }
         public virtual DbSet<PAGE> PAGE { get; set; }
-        public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual DbSet<PARAMATER> PARAMATER { get; set; }
         public virtual DbSet<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
         public virtual DbSet<SUPPLIER_PORT> SUPPLIER_PORT { get; set; }
         public virtual DbSet<T001> T001 { get; set; }
         public virtual DbSet<T001K> T001K { get; set; }
         public virtual DbSet<T001W> T001W { get; set; }
-        public virtual DbSet<USER_GROUP> USER_GROUP { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_MARKET> ZAIDM_EX_MARKET { get; set; }
@@ -54,7 +52,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual DbSet<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
-        public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
@@ -66,12 +63,20 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual DbSet<LACK1> LACK1 { get; set; }
-        public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<POA> POA { get; set; }
         public virtual DbSet<POA_MAP> POA_MAP { get; set; }
         public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
         public virtual DbSet<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
+        public virtual DbSet<UOM> UOM { get; set; }
+        public virtual DbSet<WORKFLOW_STATE> WORKFLOW_STATE { get; set; }
+        public virtual DbSet<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
+        public virtual DbSet<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
+        public virtual DbSet<BROLE_MAP> BROLE_MAP { get; set; }
+        public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
+        public virtual DbSet<USER> USER { get; set; }
+        public virtual DbSet<USER_BROLE> USER_BROLE { get; set; }
+        public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
     }
 }

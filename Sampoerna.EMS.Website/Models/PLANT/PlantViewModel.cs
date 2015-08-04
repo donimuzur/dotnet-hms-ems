@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }
         [Required]
+        [MaxLength(25)]
         public string Phone { get; set; }
 
 

@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 catch (Exception ex)
                 {
                     TempData[Constans.SubmitType.Save] = ex.Message;
-                    return View();
+                    return RedirectToAction("Index");
                 }
                 
             
@@ -133,14 +133,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("TITLE", (origin.Title == null ? true : origin.Title.Equals(poa.TITLE)));
-            changesData.Add("USER", (origin.UserId == null ? true : origin.UserId.Equals(poa.LOGIN_AS)));
-            changesData.Add("MANAGER", (origin.ManagerId == null ? true : origin.ManagerId.Equals(poa.MANAGER_ID)));
-            changesData.Add("PHONE", (origin.PoaPhone == null ? true : origin.PoaPhone.Equals(poa.POA_PHONE)));
-            changesData.Add("EMAIL", (origin.Email == null ? true : origin.Email.Equals(poa.POA_EMAIL)));
-            changesData.Add("ADDRESS", (origin.PoaAddress == null ? true : origin.PoaAddress.Equals(poa.POA_ADDRESS)));
-            changesData.Add("ID CARD", (origin.PoaIdCard == null ? true : origin.PoaIdCard.Equals(poa.ID_CARD))); ;
-            changesData.Add("PRINTED NAME", (origin.PoaPrintedName == null ? true : origin.PoaPrintedName.Equals(poa.PRINTED_NAME))); ;
+            changesData.Add("TITLE", origin.Title == poa.TITLE);
+            changesData.Add("USER", origin.UserId == poa.LOGIN_AS);
+            changesData.Add("MANAGER", origin.ManagerId == poa.MANAGER_ID);
+            changesData.Add("PHONE", origin.PoaPhone == poa.POA_PHONE);
+            changesData.Add("EMAIL", origin.Email == poa.POA_EMAIL);
+            changesData.Add("ADDRESS", origin.PoaAddress == poa.POA_ADDRESS);
+            changesData.Add("ID CARD", origin.PoaIdCard == poa.ID_CARD) ;
+            changesData.Add("PRINTED NAME", origin.PoaPrintedName == poa.PRINTED_NAME); 
 
             foreach (var listChange in changesData)
             {
@@ -163,8 +163,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : poa.LOGIN_AS;
                             break;
                         case "MANAGER":
-                            changes.OLD_VALUE = origin.ManagerId == null ? null : origin.ManagerId;
-                            changes.NEW_VALUE = poa.MANAGER_ID == null ? null : poa.MANAGER_ID;
+                            changes.OLD_VALUE = origin.ManagerId;
+                            changes.NEW_VALUE = poa.MANAGER_ID;
                             break;
                         case "PHONE":
                             changes.OLD_VALUE = origin.PoaPhone;
@@ -181,6 +181,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "ID CARD":
                             changes.OLD_VALUE = origin.PoaIdCard;
                             changes.NEW_VALUE = poa.ID_CARD;
+                            break;
+                        case "PRINTED NAME":
+                            changes.OLD_VALUE = origin.PoaPrintedName;
+                            changes.NEW_VALUE = poa.PRINTED_NAME;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);

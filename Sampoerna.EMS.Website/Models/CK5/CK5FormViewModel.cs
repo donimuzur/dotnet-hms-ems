@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string KppBcCity { get; set; }
         public string CeOfficeCode { get; set; }
         public string KppBcCityName { get; set; }
-
+        
         public string SubmissionNumber { get; set; }
 
         [UIHint("DateTime")]
@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SourcePlantName { get; set; }
         public string SourceNpwp { get; set; }
         public string SourceNppbkcId { get; set; }
+        public string SourceCompanyCode { get; set; }
         public string SourceCompanyName { get; set; }
         public string SourceAddress { get; set; }
         public string SourceKppbcName { get; set; }
@@ -96,6 +97,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestPlantName { get; set; }
         public string DestNpwp { get; set; }
         public string DestNppbkcId { get; set; }
+        public string DestCompanyCode { get; set; }
         public string DestCompanyName { get; set; }
         public string DestAddress { get; set; }
         public string DestKppbcName { get; set; }
@@ -193,6 +195,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
 
-     
+        public List<HttpPostedFileBase> Ck5FileUploadFileList { get; set; }
+        public List<CK5FileUploadViewModel> Ck5FileUploadModelList { get; set; }
     }
 }

@@ -23,5 +23,7 @@ namespace Sampoerna.EMS.Contract
         void SaveUoM(MATERIAL_UOM data);
 
         void Delete(string materialnumber, string plant, string userId);
+
+        int DeleteMaterialUom(int id);
     }
 }

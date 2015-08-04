@@ -10,7 +10,7 @@
                 </a>
                 @if (Model.IsDeleted.Equals("No"))
                 {
-                     <a href="javascript:void(0);" onclick="confirmDeleteBrand() " class="btn btn-danger">Delete</a>
+                    <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
                 }
             </div>
         </div>
@@ -195,7 +195,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Tariff<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                      @Html.TextBox("tariffvalue", Model.Tariff, new { @class = "form-control", @id = "tariff", disabled = "disabled" })
+                                                                      @Html.TextBox("tariffvalue", Model.TariffValueStr, new { @class = "decimal form-control", @id = "tariff", disabled = "disabled" })
                                                                    
                                                                 </div>
                                                             </div>
@@ -263,7 +263,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Printing Price</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("printing-price",Model.PrintingPrice, new { @class = "decimal form-control" })
+                                                                    @Html.TextBox("printing-price", Model.PrintingPrice, new { @class = "decimal form-control", id = "printingPrice", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -271,7 +271,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Convertion</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("convertion", Model.Conversion, new { @class = "decimal form-control" })
+                                                                    @Html.TextBox("convertion", Model.Conversion, new { @class = "decimal form-control", id = "convertion", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -279,7 +279,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Status</label>
                                                                 <div class="col-md-8">
-                                                                    @*@Html.Editor("active", Model.IsActive, new { @class = "form-control" }) Active*@
+                                                                    @Html.CheckBox("active", Model.IsActive, new { disabled = "disabled" }) Active
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -287,7 +287,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Cut Filler Code</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("cut-fillar", Model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })
+                                                                    @Html.TextBox("cut-fillar", Model.CutFilterCode, new { @class = "form-control", @maxlength = "25", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -336,7 +336,7 @@
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="brandDelete();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href = '@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode = @Url.Encode(Model.FaCode) })'">Delete</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -344,18 +344,22 @@
 </div>
 
 @section scripts {
+<script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
-            $('.check-box').attr('disabled', 'disabled');
-            $('#MenuMasterBrandRegistration').addClass('active');
-        });
 
-        var deleteBrand = function () {
-            if (confirm('Are You Sure')) {
-                window.location = "@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantName, facode=@Model.FaCode })";
-            }
-
-        };
-    </script>
+    
+    $(document).ready(function () {
+        $('.check-box').attr('disabled', 'disabled');
+        $('#MenuMasterBrandRegistration').addClass('active');
+    });
+    var confirmDeleteBrand = function () {
+        $('#btn-delete-brand').click();
+    };
+    $('#tariff').val(ThausandSeperator($('#tariff').val(), 2));
+    $('#printingPrice').val(ThausandSeperator($('#printingPrice').val(), 2));
+    $('#convertion').val(ThausandSeperator($('#convertion').val(), 2));
+    $('#hje').val(ThausandSeperator($('#hje').val(), 2));
+    
+</script>
 }
 

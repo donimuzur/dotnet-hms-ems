@@ -7,9 +7,9 @@ using System.Web;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
-using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -20,10 +20,12 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
+using SpreadsheetLight;
 
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -100,356 +102,6 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(years, "ValueField", "TextField");
         }
-
-        #region ------- index ---------
-
-        //
-        // GET: /PBCK/
-        public ActionResult Index()
-        {
-            var model = InitPbck1ViewModel(new Pbck1ViewModel
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                SearchInput =
-                {
-                    DocumentType = Enums.Pbck1DocumentType.OpenDocument
-
-                },
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
-            });
-            return View("Index", model);
-        }
-
-        public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
-        {
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
-            model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
-            switch (model.SearchInput.DocumentType)
-            {
-                case Enums.Pbck1DocumentType.CompletedDocument:
-                    model.Details = GetCompletedDocument(model.SearchInput);
-                    break;
-                case Enums.Pbck1DocumentType.OpenDocument:
-                    model.Details = GetOpenDocument(model.SearchInput);
-                    break;
-            }
-
-            model.SearchInput.YearList = GetYearList(model.Details);
-
-            return model;
-        }
-
-        #endregion
-
-        #region ----- Edit -----
-
-        public ActionResult Edit(int? id)
-        {
-
-            if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-
-            var pbck1Data = _pbck1Bll.GetById(id.Value);
-
-            if (pbck1Data == null)
-            {
-                return HttpNotFound();
-            }
-
-            var model = new Pbck1ItemViewModel();
-            model = ModelInitial(model);
-
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //redirect to details for approval/rejected
-                return RedirectToAction("Details", new { id });
-            }
-
-            try
-            {
-                model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
-
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("Index");
-                }
-
-                var changeHistory =
-                Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
-
-                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-                {
-                    FormId = id.Value,
-                    FormType = Enums.FormType.PBCK1
-                }));
-
-                model.WorkflowHistory = workflowHistory;
-                model.ChangesHistoryList = changeHistory;
-
-            }
-            catch (Exception exception)
-            {
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
-                return RedirectToAction("Index");
-            }
-
-            return View(model);
-        }
-
-        private bool ValidateEditDocument(Pbck1ItemViewModel model)
-        {
-
-            //check is Allow Edit Document
-            var isAllowEditDocument = _workflowBll.AllowEditDocument(new WorkflowAllowEditAndSubmitInput()
-            {
-                DocumentStatus = model.Detail.Status,
-                CreatedUser = model.Detail.CreatedById,
-                CurrentUser = CurrentUser.USER_ID
-            });
-
-            if (!isAllowEditDocument)
-            {
-                AddMessageInfo(
-                    "Operation not allowed.",
-                    Enums.MessageInfoType.Error);
-                return false;
-            }
-
-            if (model.Detail.Status != Enums.DocumentStatus.Draft)
-            {
-                //can't edit
-                AddMessageInfo(
-                    "Can't modify document with status " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval),
-                    Enums.MessageInfoType.Error);
-                return false;
-            }
-
-            return true;
-
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Pbck1ItemViewModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
-                    return View(ModelInitial(model));
-                }
-
-                if (!ValidateEditDocument(model))
-                {
-                    return View(ModelInitial(model));
-                }
-
-                //model.Detail.Status = Enums.DocumentStatus.Revised;
-                model = CleanSupplierInfo(model);
-
-                //process save
-                var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-                var input = new Pbck1SaveInput()
-                {
-                    Pbck1 = dataToSave,
-                    UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Modified
-                };
-
-                //set null, set this field only from Gov Approval
-                input.Pbck1.DecreeDate = null;
-                input.Pbck1.QtyApproved = null;
-                input.Pbck1.StatusGov = null;
-                input.Pbck1.Pbck1DecreeDoc = null;
-
-                var saveResult = _pbck1Bll.Save(input);
-
-                if (saveResult.Success)
-                {
-                    return RedirectToAction("Index");
-                }
-
-            }
-            catch (Exception exception)
-            {
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
-            }
-
-            var changeHistory =
-                Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, model.Detail.Pbck1Id.ToString()));
-
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-            {
-                FormId = model.Detail.Pbck1Id,
-                FormType = Enums.FormType.PBCK1
-            }));
-
-            model.WorkflowHistory = workflowHistory;
-            model.ChangesHistoryList = changeHistory;
-
-            return View(ModelInitial(model));
-
-        }
-
-        #endregion
-
-        #region ------ details ----
-
-        public ActionResult Details(int? id)
-        {
-            if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-            var pbck1Data = _pbck1Bll.GetById(id.Value);
-
-            if (pbck1Data == null)
-            {
-                return HttpNotFound();
-            }
-
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormTypeAndFormId(new GetByFormTypeAndFormIdInput()
-            {
-                FormId = id.Value,
-                FormType = Enums.FormType.PBCK1
-            }));
-
-            var changesHistory =
-                Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
-                    id.Value.ToString()));
-
-            var model = new Pbck1ItemViewModel()
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
-                ChangesHistoryList = changesHistory,
-                WorkflowHistory = workflowHistory
-            };
-
-            model.DocStatus = model.Detail.Status;
-
-            //validate approve and reject
-            var input = new WorkflowAllowApproveAndRejectInput
-            {
-                DocumentStatus = model.Detail.Status,
-                FormView = Enums.FormViewType.Detail,
-                UserRole = CurrentUser.UserRole,
-                CreatedUser = pbck1Data.CreatedById,
-                CurrentUser = CurrentUser.USER_ID,
-                CurrentUserGroup = CurrentUser.USER_GROUP_ID
-            };
-
-            ////workflow
-            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-            model.AllowApproveAndReject = allowApproveAndReject;
-
-            if (!allowApproveAndReject)
-            {
-                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-            }
-
-            return View(model);
-        }
-
-        #endregion
-
-        #region ----- create -----
-
-        public ActionResult Create()
-        {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //can't create PBCK1 Document
-                AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
-                return RedirectToAction("Index");
-            }
-            return CreateInitial(new Pbck1ItemViewModel()
-            {
-                Detail = new Pbck1Item()
-            });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Pbck1ItemViewModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
-                    return CreateInitial(model);
-                }
-
-                model = CleanSupplierInfo(model);
-
-                //process save
-                var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
-                dataToSave.CreatedById = CurrentUser.USER_ID;
-                dataToSave.GoodTypeDesc = !string.IsNullOrEmpty(dataToSave.GoodTypeDesc) ? dataToSave.GoodTypeDesc.Split('-')[1] : string.Empty;
-
-                var input = new Pbck1SaveInput()
-                {
-                    Pbck1 = dataToSave,
-                    UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Created
-                };
-
-                //only add this information from gov approval,
-                //when save create/edit 
-                input.Pbck1.DecreeDate = null;
-                input.Pbck1.QtyApproved = null;
-                input.Pbck1.StatusGov = null;
-                input.Pbck1.Pbck1DecreeDoc = null;
-
-                var saveResult = _pbck1Bll.Save(input);
-
-                if (saveResult.Success)
-                {
-                    return RedirectToAction("Edit", new { id = saveResult.Id });
-                }
-
-            }
-            catch (DbEntityValidationException ex)
-            {
-                // Retrieve the error messages as a list of strings.
-                var errorMessages = ex.EntityValidationErrors
-                        .SelectMany(x => x.ValidationErrors)
-                        .Select(x => x.ErrorMessage);
-
-                // Join the list to a single string.
-                var fullErrorMessage = string.Join("; ", errorMessages);
-
-                // Combine the original exception message with the new one.
-                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
-
-                // Throw a new DbEntityValidationException with the improved exception message.
-                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
-            }
-            catch (Exception exception)
-            {
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
-            }
-
-            return CreateInitial(model);
-
-        }
-
-        public ActionResult CreateInitial(Pbck1ItemViewModel model)
-        {
-            return View("Create", ModelInitial(model));
-        }
-
-        #endregion
 
         [HttpPost]
         public JsonResult PoaListPartial(string nppbkcId)
@@ -599,7 +251,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetNppbkcDetail(string nppbkcid)
         {
             var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            return Json(Mapper.Map<CompanyDetail>(data.T001));
+            return Json(Mapper.Map<NppbkcItemModel>(data));
         }
 
         [HttpPost]
@@ -653,6 +305,366 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
 
         }
+
+
+        #region ------- index ---------
+
+        //
+        // GET: /PBCK/
+        public ActionResult Index()
+        {
+            var model = InitPbck1ViewModel(new Pbck1ViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                SearchInput =
+                {
+                    DocumentType = Enums.Pbck1DocumentType.OpenDocument
+
+                },
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+            });
+            return View("Index", model);
+        }
+
+        public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
+        {
+            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+            model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
+            switch (model.SearchInput.DocumentType)
+            {
+                case Enums.Pbck1DocumentType.CompletedDocument:
+                    model.Details = GetCompletedDocument(model.SearchInput);
+                    break;
+                case Enums.Pbck1DocumentType.OpenDocument:
+                    model.Details = GetOpenDocument(model.SearchInput);
+                    break;
+            }
+
+            model.SearchInput.YearList = GetYearList(model.Details);
+
+            return model;
+        }
+
+        #endregion
+
+        #region ----- Edit -----
+
+        public ActionResult Edit(int? id)
+        {
+
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var pbck1Data = _pbck1Bll.GetById(id.Value);
+
+            if (pbck1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new Pbck1ItemViewModel();
+            model = ModelInitial(model);
+
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //redirect to details for approval/rejected
+                return RedirectToAction("Details", new { id });
+            }
+
+            try
+            {
+                model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
+
+                if (!ValidateEditDocument(model))
+                {
+                    return RedirectToAction("Index");
+                }
+
+                var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
+
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = pbck1Data.Pbck1Number;
+                workflowInput.DocumentStatus = pbck1Data.Status;
+                workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                model.WorkflowHistory = workflowHistory;
+                model.ChangesHistoryList = changeHistory;
+
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+
+        private bool ValidateEditDocument(Pbck1ItemViewModel model)
+        {
+
+            //check is Allow Edit Document
+            var isAllowEditDocument = _workflowBll.AllowEditDocument(new WorkflowAllowEditAndSubmitInput()
+            {
+                DocumentStatus = model.Detail.Status,
+                CreatedUser = model.Detail.CreatedById,
+                CurrentUser = CurrentUser.USER_ID
+            });
+
+            if (!isAllowEditDocument)
+            {
+                AddMessageInfo(
+                    "Operation not allowed.",
+                    Enums.MessageInfoType.Error);
+                return false;
+            }
+
+            if (model.Detail.Status != Enums.DocumentStatus.Draft)
+            {
+                //can't edit
+                AddMessageInfo(
+                    "Can't modify document with status " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval),
+                    Enums.MessageInfoType.Error);
+                return false;
+            }
+
+            return true;
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Pbck1ItemViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    return View(ModelInitial(model));
+                }
+
+                if (!ValidateEditDocument(model))
+                {
+                    return View(ModelInitial(model));
+                }
+
+                //model.Detail.Status = Enums.DocumentStatus.Revised;
+                model = CleanSupplierInfo(model);
+
+                //process save
+                var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
+                var input = new Pbck1SaveInput()
+                {
+                    Pbck1 = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    WorkflowActionType = Enums.ActionType.Modified
+                };
+
+                //set null, set this field only from Gov Approval
+                input.Pbck1.DecreeDate = null;
+                input.Pbck1.QtyApproved = null;
+                input.Pbck1.StatusGov = null;
+                input.Pbck1.Pbck1DecreeDoc = null;
+
+                var saveResult = _pbck1Bll.Save(input);
+
+                if (saveResult.Success)
+                {
+                    //return RedirectToAction("Index");
+                    return RedirectToAction("Edit", new { id = model.Detail.Pbck1Id });
+                }
+
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+            }
+
+            var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, model.Detail.Pbck1Id.ToString()));
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Detail.Pbck1Number;
+            workflowInput.DocumentStatus = model.Detail.Status;
+            workflowInput.NPPBKC_Id = model.Detail.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            model.WorkflowHistory = workflowHistory;
+            model.ChangesHistoryList = changeHistory;
+
+            return View(ModelInitial(model));
+
+        }
+
+        #endregion
+
+        #region ------ details ----
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            var pbck1Data = _pbck1Bll.GetById(id.Value);
+
+            if (pbck1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = pbck1Data.Pbck1Number;
+            workflowInput.DocumentStatus = pbck1Data.Status;
+            workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
+                    id.Value.ToString()));
+
+            var model = new Pbck1ItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
+                ChangesHistoryList = changesHistory,
+                WorkflowHistory = workflowHistory
+            };
+
+            model.DocStatus = model.Detail.Status;
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Detail.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = pbck1Data.CreatedById,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Detail.Pbck1Number,
+                NppbkcId = model.Detail.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+            }
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region ----- create -----
+
+        public ActionResult Create()
+        {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create PBCK1 Document
+                AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+            return CreateInitial(new Pbck1ItemViewModel()
+            {
+                Detail = new Pbck1Item()
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Pbck1ItemViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    return CreateInitial(model);
+                }
+
+                model = CleanSupplierInfo(model);
+
+                //process save
+                var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
+                dataToSave.CreatedById = CurrentUser.USER_ID;
+                dataToSave.GoodTypeDesc = !string.IsNullOrEmpty(dataToSave.GoodTypeDesc) ? dataToSave.GoodTypeDesc.Split('-')[1] : string.Empty;
+
+                var input = new Pbck1SaveInput()
+                {
+                    Pbck1 = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    WorkflowActionType = Enums.ActionType.Created
+                };
+
+                //only add this information from gov approval,
+                //when save create/edit 
+                input.Pbck1.DecreeDate = null;
+                input.Pbck1.QtyApproved = null;
+                input.Pbck1.StatusGov = null;
+                input.Pbck1.Pbck1DecreeDoc = null;
+
+                var saveResult = _pbck1Bll.Save(input);
+
+                if (saveResult.Success)
+                {
+                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                }
+
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+            }
+
+            return CreateInitial(model);
+
+        }
+
+        public ActionResult CreateInitial(Pbck1ItemViewModel model)
+        {
+            return View("Create", ModelInitial(model));
+        }
+
+        #endregion
 
         #region Completed Document
 
@@ -810,7 +822,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 FILE_NAME = item.FileName,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
-                                CREATED_BY = currentUserId.USER_ID
+                                CREATED_BY = currentUserId.USER_ID,
+                                CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
                         }
@@ -850,8 +863,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        #endregion
-
         private string SaveUploadedFile(HttpPostedFileBase file, int pbck1Id)
         {
             if (file == null || file.FileName == "")
@@ -884,5 +895,434 @@ namespace Sampoerna.EMS.Website.Controllers
             return File(stream, "application/pdf");
         }
 
+        #endregion
+
+        #region ---------- Summary Report ---------------
+
+        public ActionResult SummaryReports()
+        {
+            Pbck1SummaryReportViewModel model;
+            try
+            {
+
+                model = new Pbck1SummaryReportViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    SearchView =
+                    {
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        YearFromList = GetYearListPbck1(true),
+                        YearToList = GetYearListPbck1(false),
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                    },
+                    //view all data pbck1 completed document
+                    DetailsList = SearchSummaryReports()
+                };
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck1SummaryReportViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+            }
+
+            return View("SummaryReports", model);
+        }
+
+        private List<Pbck1SummaryReportsItem> SearchSummaryReports(Pbck1FilterSummaryReportViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput());
+                return Mapper.Map<List<Pbck1SummaryReportsItem>>(pbck1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetSummaryReportByParamInput>(filter);
+            var dbData = _pbck1Bll.GetSummaryReportByParam(input);
+            return Mapper.Map<List<Pbck1SummaryReportsItem>>(dbData);
+        }
+
+        private SelectList GetYearListPbck1(bool isFrom)
+        {
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in pbck1List.OrderBy(c => c.PeriodFrom)
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.PeriodFrom.Year,
+                            TextField = x.PeriodFrom.ToString("yyyy")
+                        };
+            else
+                query = from x in pbck1List.Where(c => c.PeriodTo.HasValue).OrderBy(c => c.PeriodFrom)
+                        select new SelectItemModel()
+                        {
+                            // ReSharper disable once PossibleInvalidOperationException
+                            ValueField = x.PeriodTo.Value.Year,
+                            TextField = x.PeriodTo.Value.ToString("yyyy")
+                        };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReports(Pbck1SummaryReportViewModel model)
+        {
+            model.DetailsList = SearchSummaryReports(model.SearchView);
+            return PartialView("_Pbck1SummaryReportTable", model);
+        }
+
+        [HttpPost]
+        public ActionResult ExportSummaryReports(Pbck1SummaryReportViewModel model)
+        {
+            try
+            {
+                ExportSummaryReportsToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("SummaryReports");
+        }
+
+        public void ExportSummaryReportsToExcel(Pbck1SummaryReportViewModel model)
+        {
+            var dataSummaryReport = SearchSummaryReports(model.SearchView);
+
+            //todo: to automapper
+            var src = (from d in dataSummaryReport
+                select new ExportSummaryDataModel()
+                {
+                    Company = d.NppbkcCompanyName,
+                    Nppbkc = "'" + d.NppbkcId,
+                    Kppbc = "'" + d.NppbkcKppbcId,
+                    Pbck1Number = "'" + d.Pbck1Number,
+                    Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
+                    OriginalNppbkc = "'" + d.SupplierNppbkcId,
+                    OriginalKppbc = "'" + d.SupplierKppbcId,
+                    OriginalAddress = d.SupplierAddress,
+                    // ReSharper disable once PossibleInvalidOperationException
+                    ExcGoodsAmount = d.QtyApproved.Value.ToString("N0"),
+                    Status = d.StatusName
+                }).ToList();
+
+            var grid = new System.Web.UI.WebControls.GridView
+            {
+                DataSource = src,
+                AutoGenerateColumns = false
+            };
+
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.Company)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Company",
+                    HeaderText = "Company"
+                });
+            }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Kppbc",
+                    HeaderText = "Kppbc"
+                });
+            }
+            if (model.ExportModel.Pbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "Pbck1Number"
+                });
+            }
+            if (model.ExportModel.Address)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Address",
+                    HeaderText = "Address", 
+                    HtmlEncode = false
+                });
+            }
+            if (model.ExportModel.OriginalNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriginalNppbkc",
+                    HeaderText = "OriginalNppbkc"
+                });
+            }
+            if (model.ExportModel.OriginalKppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriginalKppbc",
+                    HeaderText = "OriginalKppbc"
+                });
+            }
+            if (model.ExportModel.OriginalAddress)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriginalAddress",
+                    HeaderText = "OriginalAddress"
+                });
+            }
+            if (model.ExportModel.ExcGoodsAmount)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExcGoodsAmount",
+                    HeaderText = "ExcGoodsAmount"
+                });
+            }
+            if (model.ExportModel.Status)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Status",
+                    HeaderText = "Status"
+                });
+            }
+
+            grid.DataBind();
+
+            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+
+        #endregion
+        
+        #region Monitoring Usage
+
+        public ActionResult MonitoringUsage()
+        {
+            Pbck1MonitoringUsageViewModel model;
+            try
+            {
+
+                model = new Pbck1MonitoringUsageViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    SearchView =
+                    {
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        YearFromList = GetYearListPbck1(true),
+                        YearToList = GetYearListPbck1(false),
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                    },
+                    DetailsList = SearchMonitoringUsages()
+                };
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck1MonitoringUsageViewModel
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+            }
+
+            return View("MonitoringUsage", model);
+        }
+
+        private List<Pbck1MonitoringUsageItem> SearchMonitoringUsages(Pbck1FilterMonitoringUsageViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
+                return Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
+            var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
+            return Mapper.Map<List<Pbck1MonitoringUsageItem>>(dbData);
+        }
+        
+        [HttpPost]
+        public PartialViewResult SearchMonitoringUsage(Pbck1MonitoringUsageViewModel model)
+        {
+            model.DetailsList = SearchMonitoringUsages(model.SearchView);
+            return PartialView("_Pbck1MonitoringUsageTable", model);
+        }
+
+        [HttpPost]
+        public ActionResult ExportMonitoringUsage(Pbck1MonitoringUsageViewModel model)
+        {
+            try
+            {
+                ExportMonitoringUsageToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("MonitoringUsage");
+        }
+
+        public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
+        {
+            var dataToExport = SearchMonitoringUsages(model.SearchView);
+            
+            var grid = new GridView
+            {
+                DataSource = dataToExport,
+                AutoGenerateColumns = false
+            };
+
+            if (model.ExportModel.Pbck1Decree)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "Pbck-1 Decree"
+                });
+            }
+
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcId",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.Company)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcCompanyName",
+                    HeaderText = "Company"
+                });
+            }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcKppbcId",
+                    HeaderText = "Kppbc"
+                });
+            }
+            if (model.ExportModel.Pbck1Period)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1PeriodDisplay",
+                    HeaderText = "Pbck-1 Period"
+                });
+            }
+            if (model.ExportModel.ExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExGoodsQuota",
+                    HeaderText = "Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "AdditionalExGoodsQuota",
+                    HeaderText = "Additional Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PreviousFinalBalance",
+                    HeaderText = "Prev Years Final Balance"
+                });
+            }
+            if (model.ExportModel.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total Pbck-1 Quota"
+                });
+            }
+            if (model.ExportModel.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Received"
+                });
+            }
+            if (model.ExportModel.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "Quota Remaining"
+                });
+            }
+            grid.DataBind();
+
+            var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+        
+        #endregion
     }
 }
