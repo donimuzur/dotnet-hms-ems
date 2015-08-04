@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsPbck1" targetNamespace="http://tempuri.org/dsPbck1.xsd" xmlns:mstns="http://tempuri.org/dsPbck1.xsd" xmlns="http://tempuri.org/dsPbck1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsPbck1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsPbck1" msprop:Generator_UserDSName="dsPbck1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Pbck1" msprop:Generator_TableClassName="Pbck1DataTable" msprop:Generator_TableVarName="tablePbck1" msprop:Generator_TablePropName="Pbck1" msprop:Generator_RowDeletingName="Pbck1RowDeleting" msprop:Generator_RowChangingName="Pbck1RowChanging" msprop:Generator_RowEvHandlerName="Pbck1RowChangeEventHandler" msprop:Generator_RowDeletedName="Pbck1RowDeleted" msprop:Generator_UserTableName="Pbck1" msprop:Generator_RowChangedName="Pbck1RowChanged" msprop:Generator_RowEvArgName="Pbck1RowChangeEvent" msprop:Generator_RowClassName="Pbck1Row">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Pbck1Id" msprop:Generator_ColumnVarNameInTable="columnPbck1Id" msprop:Generator_ColumnPropNameInRow="Pbck1Id" msprop:Generator_ColumnPropNameInTable="Pbck1IdColumn" msprop:Generator_UserColumnName="Pbck1Id" type="xs:string" minOccurs="0" />
+              <xs:element name="Pbck1Number" msprop:Generator_ColumnVarNameInTable="columnPbck1Number" msprop:Generator_ColumnPropNameInRow="Pbck1Number" msprop:Generator_ColumnPropNameInTable="Pbck1NumberColumn" msprop:Generator_UserColumnName="Pbck1Number" type="xs:string" minOccurs="0" />
+              <xs:element name="Pbck1Reference" msprop:Generator_ColumnVarNameInTable="columnPbck1Reference" msprop:Generator_ColumnPropNameInRow="Pbck1Reference" msprop:Generator_ColumnPropNameInTable="Pbck1ReferenceColumn" msprop:Generator_UserColumnName="Pbck1Reference" type="xs:string" minOccurs="0" />
+              <xs:element name="Pbck1Type" msprop:Generator_ColumnVarNameInTable="columnPbck1Type" msprop:Generator_ColumnPropNameInRow="Pbck1Type" msprop:Generator_ColumnPropNameInTable="Pbck1TypeColumn" msprop:Generator_UserColumnName="Pbck1Type" type="xs:string" minOccurs="0" />
+              <xs:element name="PeriodFrom" msprop:Generator_ColumnVarNameInTable="columnPeriodFrom" msprop:Generator_ColumnPropNameInRow="PeriodFrom" msprop:Generator_ColumnPropNameInTable="PeriodFromColumn" msprop:Generator_UserColumnName="PeriodFrom" type="xs:string" minOccurs="0" />
+              <xs:element name="PeriodTo" msprop:Generator_ColumnVarNameInTable="columnPeriodTo" msprop:Generator_ColumnPropNameInRow="PeriodTo" msprop:Generator_ColumnPropNameInTable="PeriodToColumn" msprop:Generator_UserColumnName="PeriodTo" type="xs:string" minOccurs="0" />
+              <xs:element name="ReportedOn" msprop:Generator_ColumnVarNameInTable="columnReportedOn" msprop:Generator_ColumnPropNameInRow="ReportedOn" msprop:Generator_ColumnPropNameInTable="ReportedOnColumn" msprop:Generator_UserColumnName="ReportedOn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
