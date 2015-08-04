@@ -3158,7 +3158,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //DataTable dt = new DataTable();
             ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
+            rpt.FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt");
             rpt.Load();
             //rpt.SetDataSource(dt);
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);

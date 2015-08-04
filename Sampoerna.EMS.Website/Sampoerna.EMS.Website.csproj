@@ -320,6 +320,12 @@
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK5\CK5PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -804,7 +810,6 @@
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
-
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
@@ -877,6 +882,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reports\CK5\CK5PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOut.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
