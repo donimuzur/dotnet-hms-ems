@@ -197,5 +197,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public List<HttpPostedFileBase> Ck5FileUploadFileList { get; set; }
         public List<CK5FileUploadViewModel> Ck5FileUploadModelList { get; set; }
+
+        public bool IsAllowPrint { get; set; }
     }
 }
