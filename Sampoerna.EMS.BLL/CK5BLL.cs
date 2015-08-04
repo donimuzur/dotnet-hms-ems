@@ -867,5 +867,10 @@ namespace Sampoerna.EMS.BLL
             var dtData = _repository.Get(c=>c.STATUS_ID == Enums.DocumentStatus.Completed && c.CK5_TYPE == ck5Type, null, includeTables).ToList();
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
+
+        //public void PrintHistory()
+        //{
+        //    _printHistoryBll.AddPrintHistory();
+        //}
     }
 }
