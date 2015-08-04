@@ -101,7 +101,7 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "Uom", new { id = item.UomId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Details", "Uom", new { id = Url.Encode(item.UomId) })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                     <a href="@Url.Action("Edit", "Uom", new { id = Url.Encode(item.UomId) })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td class="last">@Html.DisplayFor(model => item.UomId)</td>
