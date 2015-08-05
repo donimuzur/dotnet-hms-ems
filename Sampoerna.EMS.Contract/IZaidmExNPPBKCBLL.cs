@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         string GetCeOfficeCodeByNppbcId(string nppBkcId);
 
-        ZAIDM_EX_NPPBKC GetDetailsById(string id);
+        ZAIDM_EX_NPPBKCDto GetDetailsById(string id);
 
     }
 }

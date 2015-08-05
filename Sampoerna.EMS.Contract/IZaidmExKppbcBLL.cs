@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sampoerna.EMS.BusinessObject;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Contract
 {
     public  interface IZaidmExKPPBCBLL
     {
-        ZAIDM_EX_KPPBC GetById(long id);
+        ZAIDM_EX_KPPBCDto GetById(string id);
 
-        List<ZAIDM_EX_KPPBC> GetAll();
+        List<ZAIDM_EX_KPPBCDto> GetAll();
         
     }
 }

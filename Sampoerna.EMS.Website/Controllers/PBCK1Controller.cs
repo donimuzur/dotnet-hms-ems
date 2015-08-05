@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Web;
@@ -10,10 +11,12 @@ using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using Microsoft.Ajax.Utilities;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
@@ -887,18 +890,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return sFileName;
         }
 
-        [EncryptedParameter]
-        public ActionResult PrintOut(int? id)
-        {
-            //DataTable dt = new DataTable();
-            ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
-            rpt.Load();
-            //rpt.SetDataSource(dt);
-            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            return File(stream, "application/pdf");
-        }
-
         #endregion
 
         #region ---------- Summary Report ---------------
@@ -1327,6 +1318,124 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
         }
         
+        #endregion
+
+        #region ------------- Print Out -----------
+
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            //Get Report Source
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck1Data = _pbck1Bll.GetPrintOutDataById(id.Value);
+            if (pbck1Data == null)
+                HttpNotFound();
+
+            var dataSet = SetDataSetReport(pbck1Data);
+
+            ReportClass rpt = new ReportClass();
+            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
+            rpt.Load();
+            rpt.SetDataSource(dataSet);
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+
+        private DataSet SetDataSetReport(Pbck1ReportDto pbck1ReportData)
+        {
+            var dsPbck1 = new dsPbck1();
+            dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail);
+            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.ProdPlanList);
+            dsPbck1 = AddDataPbck1ProdConverter(dsPbck1, pbck1ReportData.ProdConverterList);
+            dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
+            return dsPbck1;
+        }
+
+        private dsPbck1 AddDataPbck1Row(dsPbck1 ds, Pbck1ReportInformationDto d)
+        {
+            var detailRow = ds.Pbck1.NewPbck1Row();
+            detailRow.Pbck1Id = d.Pbck1Id.ToString();
+            detailRow.Pbck1Number = d.Pbck1Number;
+            detailRow.Pbck1AdditionalText = d.Pbck1AdditionalText;
+            detailRow.Year = d.Year;
+            detailRow.VendorAliasName = d.VendorAliasName;
+            detailRow.VendorCityName = d.VendorCityName;
+            detailRow.PoaName = d.PoaName;
+            detailRow.PoaTitle = d.PoaTitle;
+            detailRow.CompanyName = d.CompanyName;
+            detailRow.NppbkcId = d.NppbkcId;
+            detailRow.NppbkcAddress = d.NppbkcAddress;
+            detailRow.PlantPhoneNumber = d.PlantPhoneNumber;
+            detailRow.ProdConverterProductType = d.ProdConverterProductType;
+            detailRow.ExcisableGoodsDescription = d.ExcisableGoodsDescription;
+            detailRow.PeriodFrom = d.PeriodFrom;
+            detailRow.PeriodTo = d.PeriodTo;
+            detailRow.ProductConvertedOutputs = d.ProductConvertedOutputs;
+            detailRow.RequestQty = d.RequestQty;
+            detailRow.RequestQtyUom = d.RequestQtyUom;
+            detailRow.LatestSaldo = d.LatestSaldo;
+            detailRow.LatestSaldoUom = d.LatestSaldoUom;
+            detailRow.SupplierCompanyName = d.SupplierCompanyName;
+            detailRow.SupplierNppbkcId = d.SupplierNppbkcId;
+            detailRow.SupplierPlantAddress = d.SupplierPlantAddress;
+            detailRow.SupplierPlantPhone = d.SupplierPlantPhone;
+            detailRow.SupplierKppbcId = d.SupplierKppbcId;
+            detailRow.SupplierKppbcMengetahui = d.SupplierKppbcMengetahui;
+            detailRow.SupplierPortName = d.SupplierPortName;
+            detailRow.NppbkcCity = d.NppbkcCity;
+            detailRow.PrintedDate = d.PrintedDate;
+            detailRow.ExciseManager = d.ExciseManager;
+            ds.Pbck1.AddPbck1Row(detailRow);
+            return ds;
+        }
+
+        private dsPbck1 AddDataPbck1BrandRegistration(dsPbck1 ds, IEnumerable<Pbck1ReportBrandRegistrationDto> brandData)
+        {
+            if (brandData != null)
+            {
+                foreach (var item in brandData)
+                {
+                    var detailRow = ds.Pbck1BrandRegistration.NewPbck1BrandRegistrationRow();
+                    detailRow.Type = item.Type;
+                    detailRow.Brand = item.Brand;
+                    detailRow.Kadar = item.Kadar;
+                    detailRow.Convertion = item.Convertion;
+                    detailRow.ConvertionUom = item.ConvertionUom;
+                    ds.Pbck1BrandRegistration.AddPbck1BrandRegistrationRow(detailRow);
+                }    
+            }
+            return ds;
+        }
+
+        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, IEnumerable<Pbck1ReportProdPlanDto> prodPlan)
+        {
+            if (prodPlan != null)
+            {
+                foreach (var item in prodPlan)
+                {
+                    var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
+                    ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
+                }
+            }
+            return ds;
+        }
+
+        private dsPbck1 AddDataPbck1ProdConverter(dsPbck1 ds, IEnumerable<Pbck1ReportProdConverterDto> prodConverter)
+        {
+            if(prodConverter != null)
+            {
+                foreach (var item in prodConverter)
+                {
+                    var detailRow = ds.Pbck1ProdConv.NewPbck1ProdConvRow();
+                    ds.Pbck1ProdConv.AddPbck1ProdConvRow(detailRow);
+                }
+            }
+            return ds;
+        }
+
         #endregion
     }
 }

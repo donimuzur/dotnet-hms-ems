@@ -671,6 +671,7 @@ namespace Sampoerna.EMS.Website
             #endregion
 
             Mapper.CreateMap<PrintHistoryDto, PrintHistoryItemModel>().IgnoreAllNonExisting();
+
         }
     }
 

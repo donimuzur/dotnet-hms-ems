@@ -34,8 +34,9 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowBLL _workflowBll;
         private IMessageService _messageService;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IZaidmExKPPBCBLL _kppbcbll;
 
-        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
+        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -55,6 +56,7 @@ namespace Sampoerna.EMS.BLL
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _messageService = new MessageService(_logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _kppbcbll = new ZaidmExKPPBCBLL(_logger, _uow);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -1106,6 +1108,103 @@ namespace Sampoerna.EMS.BLL
         }
 
         #endregion
+
+        public Pbck1ReportDto GetPrintOutDataById(int id)
+        {
+            var rc = new Pbck1ReportDto();
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
+            var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
+
+            if(dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            rc.Detail.Pbck1Id = dbData.PBCK1_ID;
+            rc.Detail.Pbck1Number = dbData.NUMBER;
+            rc.Detail.Pbck1AdditionalText = dbData.PBCK1_TYPE == Enums.PBCK1Type.Additional ? "Tambahan" : "";
+            if (dbData.PERIOD_FROM != null) rc.Detail.Year = dbData.PERIOD_FROM.Value.ToString("yyyy");
+            
+            //GET VENDOR BY VENDOR ID ON NPPBKC
+            var nppbkcDetails = _nppbkcbll.GetDetailsById(dbData.NPPBKC_ID);
+            if (nppbkcDetails != null)
+            {
+                rc.Detail.VendorAliasName = nppbkcDetails.LFA1 != null ? nppbkcDetails.LFA1.NAME2 : string.Empty;
+                rc.Detail.VendorCityName = nppbkcDetails.CITY_ALIAS;
+                rc.Detail.NppbkcAddress = string.Join(Environment.NewLine, nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
+                var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
+                if (mainPlant != null)
+                {
+                    rc.Detail.PlantPhoneNumber = mainPlant.PHONE;
+                }
+                rc.Detail.NppbkcCity = nppbkcDetails.CITY;
+            }
+            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
+            {
+                var poaDetails = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
+                rc.Detail.PoaName = poaDetails.PRINTED_NAME;
+                rc.Detail.PoaTitle = poaDetails.TITLE;            
+            }
+            rc.Detail.CompanyName = dbData.NPPBCK_BUTXT;
+            rc.Detail.NppbkcId = dbData.NPPBKC_ID;
+            rc.Detail.ExcisableGoodsDescription = dbData.EXC_TYP_DESC;
+
+            //ambil dari prod converter
+            if (dbData.PBCK1_PROD_CONVERTER != null)
+            {
+                rc.Detail.ProdConverterProductType = string.Join(",",
+                    dbData.PBCK1_PROD_CONVERTER.Select(d => d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").Distinct().ToArray());
+
+                var prodConverterGroup = dbData.PBCK1_PROD_CONVERTER.GroupBy(p => new
+                {
+                    p.PROD_CODE,
+                    p.PRODUCT_TYPE,
+                    p.PRODUCT_ALIAS,
+                    p.CONVERTER_UOM_ID
+                }).Select(g => new
+                {
+                    g.Key.PROD_CODE,
+                    g.Key.PRODUCT_TYPE,
+                    g.Key.PRODUCT_ALIAS,
+                    g.Key.CONVERTER_UOM_ID,
+                    Total = g.Sum(p => p.CONVERTER_OUTPUT)
+                });
+                rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
+                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.CONVERTER_UOM_ID + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+            }
+            if (dbData.PERIOD_FROM.HasValue)
+            {
+                rc.Detail.PeriodFrom = DateReportString(dbData.PERIOD_FROM.Value);
+            }
+            if (dbData.PERIOD_TO.HasValue)
+            {
+                rc.Detail.PeriodTo = DateReportString(dbData.PERIOD_TO.Value);
+            }
+            // ReSharper disable once PossibleInvalidOperationException
+            rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
+            rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
+            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
+            rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
+            rc.Detail.SupplierCompanyName = dbData.SUPPLIER_PLANT;
+            rc.Detail.SupplierNppbkcId = dbData.SUPPLIER_NPPBKC_ID;
+            rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
+            rc.Detail.SupplierPlantPhone = dbData.SUPPLIER_PHONE;
+            rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
+            var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
+            if (kppbcDetail != null)
+            {
+                rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI;
+            }
+            rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
+            rc.Detail.PrintedDate = DateReportString(DateTime.Now);
+            rc.Detail.ExciseManager = dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME;
+            return rc;
+        }
+
+        private string DateReportString(DateTime dt)
+        {
+            var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+            return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                   " " + dt.ToString("yyyy");
+        }
 
     }
 }
