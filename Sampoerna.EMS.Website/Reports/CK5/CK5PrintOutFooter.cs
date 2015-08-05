@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Sampoerna.EMS.Website.Reports.PBCK1 {
+namespace Sampoerna.EMS.Website.Reports.CK5 {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class PBCK1PrintOut : ReportClass {
+    public class CK5PrintOutFooter : ReportClass {
         
-        public PBCK1PrintOut() {
+        public CK5PrintOutFooter() {
         }
         
         public override string ResourceName {
             get {
-                return "PBCK1PrintOut.rpt";
+                return "CK5PrintOutFooter.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.PBCK1.PBCK1PrintOut.rpt";
+                return "Sampoerna.EMS.Website.Reports.CK5.CK5PrintOutFooter.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPBCK1PrintOut : Component, ICachedReport {
+    public class CachedCK5PrintOutFooter : Component, ICachedReport {
         
-        public CachedPBCK1PrintOut() {
+        public CachedCK5PrintOutFooter() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            PBCK1PrintOut rpt = new PBCK1PrintOut();
+            CK5PrintOutFooter rpt = new CK5PrintOutFooter();
             rpt.Site = this.Site;
             return rpt;
         }

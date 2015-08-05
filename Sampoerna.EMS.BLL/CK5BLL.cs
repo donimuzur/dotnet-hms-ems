@@ -868,6 +868,21 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
+        #region Reports
+
+        public CK5ReportDto GetCk5ReportDataById(long id)
+        {
+            var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //var ck5Report = new CK5ReportDto();
+            //ck5Report.ReportDetails = Mapper.Map<>()
+
+            return Mapper.Map<CK5ReportDto>(dtData);
+        }
+
+        #endregion
         //public void PrintHistory()
         //{
         //    _printHistoryBll.AddPrintHistory();

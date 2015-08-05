@@ -37,5 +37,7 @@ namespace Sampoerna.EMS.Contract
        List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input);
 
        List<CK5Dto> GetCk5CompletedByCk5Type(Enums.CK5Type ck5Type);
+
+       CK5ReportDto GetCk5ReportDataById(long id);
    }
 }

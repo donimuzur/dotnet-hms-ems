@@ -326,6 +326,18 @@
       <DependentUpon>CK5PrintOut.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOutFooter.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -885,6 +897,14 @@
     <EmbeddedResource Include="Reports\CK5\CK5PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOut.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CK5\CK5PrintOutFooter.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CK5\CK5PrintOutMaterial.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
