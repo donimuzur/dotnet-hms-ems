@@ -14304,8 +14304,9 @@
 				attach( $(host).empty(), buttons );
 				$('#' + settings.sTableId + '_paginate').append(' <span id="goto_' + settings.sTableId + '" style="margin-left:5px"> <span>go to page</span><input style="width:50px; margin-left:5px" type="text" placeholder=""></span>');
 				$('.paginate_button, span .ellipsis').wrapAll('<div style="float:left"></div>');
-			    $('#goto_' + settings.sTableId + ' input').keyup(function (e) {
+			    $('#goto_' + settings.sTableId + ' input').keypress(function (e) {
 			        if (e.keyCode == 13) {
+			            e.preventDefault();
 			            var m = $(this).val();
 			            if (!isNaN(m)) {
 			                _fnPageChange(settings, Number(m) - 1, true);
