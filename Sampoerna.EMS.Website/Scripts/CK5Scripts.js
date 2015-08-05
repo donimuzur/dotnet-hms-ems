@@ -283,3 +283,4 @@ function AddValidationClass(isValid, objName) {
         $('#' + objName).addClass('input-validation-error');
     }
 }
+

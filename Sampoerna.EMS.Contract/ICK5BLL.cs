@@ -33,5 +33,9 @@ namespace Sampoerna.EMS.Contract
        List<CK5MaterialDto> GetCK5MaterialByCK5Id(long id);
 
        void CK5Workflow(CK5WorkflowDocumentInput input);
+
+       List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input);
+
+       List<CK5Dto> GetCk5CompletedByCk5Type(Enums.CK5Type ck5Type);
    }
 }

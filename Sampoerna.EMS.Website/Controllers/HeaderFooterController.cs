@@ -107,7 +107,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                      );
                     return RedirectToAction("Index");
                 }
 
@@ -163,7 +164,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                         ); 
                     return RedirectToAction("Index");
                 }
 

@@ -31,11 +31,15 @@ namespace Sampoerna.EMS.XMLReader
                     item.WERKS = xElement.Element("WERKS").Value;
                     item.NAME1 = xElement.Element("NAME1").Value;
                     item.ORT01 = xElement.Element("ORT01").Value;
-                    item.ADDRESS = xElement.Element("SPRAS").Value + " " + item.ORT01;
+                    item.ADDRESS = xElement.Element("STRAS").Value + " " + item.ORT01;
                     var exisitingPlant = GetPlant(item.WERKS);
                     if (exisitingPlant != null)
                     {
                         item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
+                        item.PHONE = exisitingPlant.PHONE;
+                        item.SKEPTIS = exisitingPlant.SKEPTIS;
+                        item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
+                        
                         item.CREATED_DATE = exisitingPlant.CREATED_DATE;
                         item.MODIFIED_DATE = DateTime.Now;
                         items.Add(item);

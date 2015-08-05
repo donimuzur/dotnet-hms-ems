@@ -121,11 +121,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                      );
                 return RedirectToAction("Index");
             }
-            catch(Exception exception)
+            catch(Exception ex)
             {
+
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                                       );
+              
                 return InitialEdit(model);
             }
         }
