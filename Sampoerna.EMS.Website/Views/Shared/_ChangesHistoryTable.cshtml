@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ChangesHistoryList)
+        @foreach (var item in Model.ChangesHistoryList.OrderByDescending(x=>x.MODIFIED_DATE))
         {
             <tr>
                 <td>@item.MODIFIED_DATE.Value.ToString("dd MMMM yyyy hh:mm:ss")</td>
