@@ -163,7 +163,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 HttpNotFound();
             }
-            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.NPPBKC);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.NPPBKC, id);
 
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
