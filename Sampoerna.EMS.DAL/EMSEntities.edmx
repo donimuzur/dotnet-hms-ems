@@ -506,9 +506,9 @@
         </EntityType>
         <EntityType Name="PRINT_HISTORY">
           <Key>
-            <PropertyRef Name="PRINT_HOSTORY_ID" />
+            <PropertyRef Name="PRINT_HISTORY_ID" />
           </Key>
-          <Property Name="PRINT_HOSTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PRINT_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="bigint" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
@@ -5033,7 +5033,6 @@
         <EntityType Name="PRINT_HISTORY">
           <Key>
             <PropertyRef Name="PRINT_HISTORY_ID" />
-            <PropertyRef Name="PRINT_HOSTORY_ID" />
           </Key>
           <Property Name="PRINT_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
@@ -5042,7 +5041,6 @@
           <Property Name="PRINT_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="PRINT_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PRINT_HISTORY_USER" FromRole="PRINT_HISTORY" ToRole="USER" />
-          <Property Name="PRINT_HOSTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <Association Name="FK_PRINT_HISTORY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
@@ -5880,12 +5878,12 @@
           <EntitySetMapping Name="PRINT_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.PRINT_HISTORY">
               <MappingFragment StoreEntitySet="PRINT_HISTORY">
-                <ScalarProperty Name="PRINT_HOSTORY_ID" ColumnName="PRINT_HOSTORY_ID" />
                 <ScalarProperty Name="PRINT_BY" ColumnName="PRINT_BY" />
                 <ScalarProperty Name="PRINT_DATE" ColumnName="PRINT_DATE" />
                 <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
                 <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
                 <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="PRINT_HISTORY_ID" ColumnName="PRINT_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
