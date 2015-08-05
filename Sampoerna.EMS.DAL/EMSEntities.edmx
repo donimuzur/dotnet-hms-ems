@@ -52,7 +52,7 @@
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -116,17 +116,17 @@
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -309,8 +309,8 @@
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -376,9 +376,9 @@
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -386,7 +386,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -422,7 +422,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -506,9 +506,9 @@
         </EntityType>
         <EntityType Name="PRINT_HISTORY">
           <Key>
-            <PropertyRef Name="PRINT_HISTORY_ID" />
+            <PropertyRef Name="PRINT_HOSTORY_ID" />
           </Key>
-          <Property Name="PRINT_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PRINT_HOSTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="bigint" Nullable="false" />
           <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
@@ -654,15 +654,15 @@
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -722,12 +722,12 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CLIENT_DELETION" Type="bit" />
+          <Property Name="PLANT_DELETION" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -740,7 +740,7 @@
           <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="10" />
           <Property Name="KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REGION" Type="nvarchar" MaxLength="20" />
-          <Property Name="REGION_DGCE" Type="nvarchar" MaxLength="20" />
+          <Property Name="REGION_DGCE" Type="nvarchar" MaxLength="150" />
           <Property Name="VENDOR_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" />
           <Property Name="TEXT_TO" Type="nvarchar" MaxLength="50" />
@@ -3335,7 +3335,7 @@
           <Property Name="CITY_ALIAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="KPPBC_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="REGION" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="REGION_DGCE" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="REGION_DGCE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUKRS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="TEXT_TO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5033,6 +5033,7 @@
         <EntityType Name="PRINT_HISTORY">
           <Key>
             <PropertyRef Name="PRINT_HISTORY_ID" />
+            <PropertyRef Name="PRINT_HOSTORY_ID" />
           </Key>
           <Property Name="PRINT_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
@@ -5041,6 +5042,7 @@
           <Property Name="PRINT_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="PRINT_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PRINT_HISTORY_USER" FromRole="PRINT_HISTORY" ToRole="USER" />
+          <Property Name="PRINT_HOSTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <Association Name="FK_PRINT_HISTORY_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
@@ -5878,12 +5880,12 @@
           <EntitySetMapping Name="PRINT_HISTORY">
             <EntityTypeMapping TypeName="EMSModel.PRINT_HISTORY">
               <MappingFragment StoreEntitySet="PRINT_HISTORY">
+                <ScalarProperty Name="PRINT_HOSTORY_ID" ColumnName="PRINT_HOSTORY_ID" />
                 <ScalarProperty Name="PRINT_BY" ColumnName="PRINT_BY" />
                 <ScalarProperty Name="PRINT_DATE" ColumnName="PRINT_DATE" />
                 <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
                 <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
                 <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
-                <ScalarProperty Name="PRINT_HISTORY_ID" ColumnName="PRINT_HISTORY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
