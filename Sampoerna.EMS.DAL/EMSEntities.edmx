@@ -743,7 +743,7 @@
           <Property Name="REGION_DGCE" Type="nvarchar" MaxLength="150" />
           <Property Name="VENDOR_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" />
-          <Property Name="TEXT_TO" Type="nvarchar" MaxLength="50" />
+          <Property Name="TEXT_TO" Type="nvarchar" MaxLength="150" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -3338,7 +3338,7 @@
           <Property Name="REGION_DGCE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUKRS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="TEXT_TO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TEXT_TO" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
