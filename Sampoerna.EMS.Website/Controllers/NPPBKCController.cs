@@ -168,6 +168,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.Plant = _plantBll.Get(id);
             var detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
             model.Detail = detail;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);

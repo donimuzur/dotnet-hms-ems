@@ -169,6 +169,29 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="table-container">
+                                    <table class="table table-bordered table-striped js-options-table fix-header" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Plant ID</th>
+                                                <th>Plant City</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Plant)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.WERKS)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.ORT01)
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
