@@ -252,16 +252,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerFooterData.IsHeaderHide = !isHeaderSet;
 
             var srcToConvert = new List<HeaderFooterItem> { headerFooterData };
-            //var headerFooterDataTable =
-            //    DataTableHelper.ConvertToDataTable(srcToConvert.ToArray(), new dsHeaderFooter.HeaderFooterDataTable());
-            //var rptDataSources = new List<ReportDataSource>
-            //{
-            //    new ReportDataSource("ds_headerfooter", headerFooterDataTable)
-            //};
-            
-            ////set session for reporting
-            //Session[Constans.SessionKey.ReportPath] = "Reports/HeaderFooterPreview.rdlc";
-            //Session[Constans.SessionKey.ReportDataSources] = rptDataSources;
+          
             DataSet ds = new DataSet("HeaderFooter");
             
             DataTable dt = new DataTable("DataTable1");
@@ -273,7 +264,10 @@ namespace Sampoerna.EMS.Website.Controllers
             drow = dt.NewRow();
             drow[0] = headerFooterData.FOOTER_CONTENT;
             dt.Rows.Add(drow);
-            dt = GetImageRow(dt, headerFooterData.HEADER_IMAGE_PATH_BEFOREEDIT);
+            if (isHeaderSet)
+            {
+                dt = GetImageRow(dt, headerFooterData.HEADER_IMAGE_PATH_BEFOREEDIT);
+            }
             ds.Tables.Add(dt);
             return ds;
             //return RedirectToAction("ShowReport", "AspxReportViewer");
