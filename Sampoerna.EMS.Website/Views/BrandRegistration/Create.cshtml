@@ -318,7 +318,7 @@
         });
 
 
-        $("#PersonalizationCode").change(function() {
+        @*$("#PersonalizationCode").change(function() {
             if ($("#PersonalizationCode").length) {
                 var personalizationCode = $(this).find("option:selected").val();
                 if (personalizationCode == '') {
@@ -328,22 +328,22 @@
                 }
             }
 
-        });
+        });*@
 
-        function ajaxGetPersonalizationCodeDescription(url, formData) {
-            if (formData.personalizationId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function(data) {
-                        $('#PersonalizationCodeDescription').val(data);
-                    }
-                });
-            }
-        }
+        //function ajaxGetPersonalizationCodeDescription(url, formData) {
+        //    if (formData.personalizationId) {
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: url,
+        //            data: formData,
+        //            success: function(data) {
+        //                $('#PersonalizationCodeDescription').val(data);
+        //            }
+        //        });
+        //    }
+        //}
 
-        $("#ProductCode").change(function() {
+        @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -354,24 +354,24 @@
                 }
             }
 
-        });
+        });*@
 
-        function ajaxGetProductCodeDetails(url, formData) {
-            if (formData.productId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function(data) {
-                        $('#ProductType').val(data.PRODUCT_TYPE);
-                        $('#ProductAlias').val(data.PRODUCT_ALIAS);
-                    }
-                });
-            }
-        }
+        //function ajaxGetProductCodeDetails(url, formData) {
+        //    if (formData.productId) {
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: url,
+        //            data: formData,
+        //            success: function(data) {
+        //                $('#ProductType').val(data.PRODUCT_TYPE);
+        //                $('#ProductAlias').val(data.PRODUCT_ALIAS);
+        //            }
+        //        });
+        //    }
+        //}
 
 
-        $("#SeriesId").change(function() {
+        @*$("#SeriesId").change(function() {
             if ($("#SeriesId").length) {
                 var seriesCode = $(this).find("option:selected").val();
                 if (seriesCode == '') {
@@ -381,7 +381,7 @@
                 }
             }
 
-        });
+        });*@
 
         function ajaxGetSeriesValue(url, formData) {
             if (formData.seriesId) {

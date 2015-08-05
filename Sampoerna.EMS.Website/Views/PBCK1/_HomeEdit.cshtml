@@ -125,6 +125,7 @@
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Detail.NppbkcCompanyName)
                                             @Html.HiddenFor(model => model.Detail.NppbkcCompanyCode)
+                                            @Html.HiddenFor(model => model.Detail.NppbkcKppbcId)
                                             @Html.TextBoxFor(model => model.Detail.NppbkcCompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
                                         </div>
                                     </div>
@@ -325,12 +326,12 @@
                                     {
                                         var item = Model.Detail.Pbck1ProdConverter[i];
                                         <tr>
-                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProductCode" type="hidden" value="@item.ProductCode" />@item.ProductCode</td>
-                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ConverterUom" type="hidden" value="@item.ConverterUom" />@item.ConverterUom</td>
-                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
-                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeName" type="hidden" value="@item.ProdTypeName" />@item.ProdTypeName</td>
-                                            <td><input name="Detail.Pbck1ProdPlan[@i].ConverterOutput" type="hidden" value="@item.ConverterOutput" />@item.ConverterOutput</td>
-                                            <td><input name="Detail.Pbck1ProdPlan[@i].ConverterUomId" type="hidden" value="@item.ConverterUomId" />@item.ConverterUomId</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdConverter[@i].ProductCode" type="hidden" value="@item.ProductCode" />@item.ProductCode</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdConverter[@i].ConverterUom" type="hidden" value="@item.ConverterUom" />@item.ConverterUom</td>
+                                            <td><input name="Detail.Pbck1ProdConverter[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
+                                            <td><input name="Detail.Pbck1ProdConverter[@i].ProdTypeName" type="hidden" value="@item.ProdTypeName" />@item.ProdTypeName</td>
+                                            <td><input name="Detail.Pbck1ProdConverter[@i].ConverterOutput" type="hidden" value="@item.ConverterOutput" />@item.ConverterOutput</td>
+                                            <td><input name="Detail.Pbck1ProdConverter[@i].ConverterUomId" type="hidden" value="@item.ConverterUomId" />@item.ConverterUomId</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -441,9 +442,9 @@
                                         <label class="col-md-4">Decree Doc</label>
                                         <div class="col-md-8">
                                             <div class="input-group">
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" disabled="disabled">
                                                 <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                    Browse <input type="file" multiple>
+                                                    Browse <input type="file" multiple disabled="disabled">
                                                 </span>
                                             </div>
                                         </div>

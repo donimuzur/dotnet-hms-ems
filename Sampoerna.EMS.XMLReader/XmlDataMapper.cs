@@ -68,6 +68,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     itemToInsert++;
                     repo.InsertOrUpdate(item);
+                    
                     uow.SaveChanges();
                 }
               
@@ -76,7 +77,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.Message);
+                logger.Error(ex.ToString());
                 uow.RevertChanges();
             }
             if (errorCount == 0 && itemToInsert > 0)
@@ -84,6 +85,15 @@ namespace Sampoerna.EMS.XMLReader
                 MoveFile();
                 
             }
+
+        }
+        public void InsertOrUpdate<T>(T entity) where T: class 
+        {
+            var repo = uow.GetGenericRepository<T>();
+
+            repo.InsertOrUpdate(entity);
+            uow.SaveChanges();
+
 
         }
         public void InsertToDatabase<T>(T data) where T : class
@@ -101,7 +111,7 @@ namespace Sampoerna.EMS.XMLReader
 
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                logger.Error(ex.ToString());
                 uow.RevertChanges();
             }
 

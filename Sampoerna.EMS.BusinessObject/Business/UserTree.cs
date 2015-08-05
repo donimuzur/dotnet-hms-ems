@@ -8,7 +8,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         {
             this.Employees = new List<USER>();
             this.Manager = new USER();
-            this.USER_GROUP = new USER_GROUP();
+            
         }
 
         public int USER_ID { get; set; }
@@ -20,8 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public int? USER_GROUP_ID { get; set; }
         public List<USER> Employees { get; set; }
         public USER Manager { get; set; }
-        public USER_GROUP USER_GROUP { get; set; }
-
+     
         public string EMAIL { get; set; }
         
     }

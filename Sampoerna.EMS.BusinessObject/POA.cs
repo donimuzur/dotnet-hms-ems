@@ -35,11 +35,11 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<bool> IS_ACTIVE { get; set; }
     
+        public virtual ICollection<POA_MAP> POA_MAP { get; set; }
+        public virtual ICollection<POA_SK> POA_SK { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
-        public virtual ICollection<POA_SK> POA_SK { get; set; }
     }
 }

@@ -80,7 +80,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">Login As</label>
                                                             <div class="col-md-9">
-                                                                @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -91,7 +91,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">Manager</label>
                                                             <div class="col-md-9">
-                                                                @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -148,6 +148,31 @@
                                                         </div>
                                                     </div>
 
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">SK Doc</label>
+                                                        <div class="col-md-8">
+                                                            <div class="file-upload" id="poa-files">
+                                                                @if (Model.Detail.PoaSk != null)
+                                                                {
+
+                                                                    foreach (var file in Model.Detail.PoaSk)
+                                                                    {
+                                                                        <div class="row">
+                                                                            <div class="col-sm-10">
+                                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                            </div>
+                                                                           
+                                                                        </div>
+
+                                                                    }
+                                                                }
+
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                             </form>

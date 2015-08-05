@@ -128,7 +128,9 @@ namespace Sampoerna.EMS.XMLReader
                         var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
                         if (existingMaterial != null)
                         {
-
+                            item.CONVERSION = existingMaterial.CONVERSION;
+                            item.PRINTING_PRICE = existingMaterial.PRINTING_PRICE;
+                            item.CUT_FILLER_CODE = existingMaterial.CUT_FILLER_CODE;
                             item.CREATED_DATE = existingMaterial.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
                             items.Add(item);

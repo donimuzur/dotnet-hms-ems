@@ -6,6 +6,7 @@
 
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterMaterial').addClass('active');
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
@@ -32,7 +33,7 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterMaterial').addClass('active');
+           
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
@@ -81,7 +82,7 @@
                         <tr>
                             <th class="toggle-row"> Filter </th>
                             <th> Plant </th>
-                            <th> Sticker Code </th>
+                            <th> Material Number </th>
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
@@ -94,7 +95,7 @@
                         <tr>
                             <th> Action </th>
                             <th> Plant </th>
-                            <th> Sticker Code </th>
+                            <th> Material Number </th>
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>

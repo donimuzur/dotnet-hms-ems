@@ -16,8 +16,8 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PAGE()
         {
-            this.PAGE_MAP = new HashSet<PAGE_MAP>();
             this.PAGE1 = new HashSet<PAGE>();
+            this.PAGE_MAP = new HashSet<PAGE_MAP>();
         }
     
         public int PAGE_ID { get; set; }
@@ -26,8 +26,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string MENU_NAME { get; set; }
         public Nullable<int> PARENT_PAGE_ID { get; set; }
     
-        public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual ICollection<PAGE> PAGE1 { get; set; }
         public virtual PAGE PAGE2 { get; set; }
+        public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
     }
 }

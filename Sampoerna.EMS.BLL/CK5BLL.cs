@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -23,17 +24,15 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<CK5_MATERIAL> _repositoryCK5Material;
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private IMasterDataBLL _masterDataBll;
+      
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
-        private IZaidmExNPPBKCBLL _nppbkcBll;
-        private IZaidmExGoodTypeBLL _goodTypeBll;
-        private IPlantBLL _plantBll;
-        private IPBCK1BLL _pbck1Bll;
+        private IMessageService _messageService;
+        private IPrintHistoryBLL _printHistoryBll;
 
-        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1";
+        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -44,15 +43,14 @@ namespace Sampoerna.EMS.BLL
             _repositoryCK5Material = _uow.GetGenericRepository<CK5_MATERIAL>();
 
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
-            _masterDataBll = new MasterDataBLL(_uow);
+          
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
-            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
-            _goodTypeBll = new ZaidmExGoodTypeBLL(_uow, _logger);
-            _plantBll = new PlantBLL(_uow, _logger);
-            _pbck1Bll = new PBCK1BLL(_uow, _logger);
+            _messageService = new MessageService(_logger);
+
+            _printHistoryBll = new PrintHistoryBLL(_uow, _logger);
         }
 
         public CK5Dto GetById(long id)
@@ -487,6 +485,9 @@ namespace Sampoerna.EMS.BLL
 
             //output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(dtData.SUBMISSION_NUMBER);
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+
+
+            output.ListPrintHistorys = _printHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, dtData.CK5_ID);
             return output;
         }
 
@@ -562,16 +563,21 @@ namespace Sampoerna.EMS.BLL
 
         public void CK5Workflow(CK5WorkflowDocumentInput input)
         {
+            var isNeedSendNotif = false;
+
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     SubmitDocument(input);
+                    isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.Approve:
                     ApproveDocument(input);
+                    isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.Reject:
                     RejectDocument(input);
+                    isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
@@ -588,9 +594,25 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
+            if (isNeedSendNotif)
+                SendEmailWorkflow(input);
 
             _uow.SaveChanges();
         }
+
+        private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
+        {
+            //todo: body message from email template
+            //todo: to = ?
+            //todo: subject = from email template
+            var to = "irmansulaeman41@gmail.com";
+            var subject = "this is subject for " + input.DocumentNumber;
+            var body = "this is body message for " + input.DocumentNumber;
+            //var from = "a@gmail.com";
+
+            _messageService.SendEmail( to, subject, body, true);
+        }
+
 
         private void SubmitDocument(CK5WorkflowDocumentInput input)
         {
@@ -685,10 +707,22 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+            if (input.AdditionalDocumentData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (string.IsNullOrEmpty(input.AdditionalDocumentData.RegistrationNumber))
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (input.AdditionalDocumentData.RegistrationDate == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            dbData.REGISTRATION_NUMBER = input.AdditionalDocumentData.RegistrationNumber;
+
+            dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
+            dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
 
            
-            //input.ActionType = Enums.ActionType.GovApprove;
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
@@ -759,5 +793,84 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
+        public List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input)
+        {
+          
+            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+
+            if (!string.IsNullOrEmpty(input.CompanyCodeSource))
+            {
+                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_COMPANY_CODE.Contains(input.CompanyCodeSource));
+            }
+
+            if (!string.IsNullOrEmpty(input.CompanyCodeDest))
+            {
+                queryFilter = queryFilter.And(c => c.DEST_PLANT_COMPANY_CODE.Contains(input.CompanyCodeDest));
+            }
+
+            if (!string.IsNullOrEmpty(input.NppbkcIdSource))
+            {
+                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NppbkcIdSource));
+            }
+
+            if (!string.IsNullOrEmpty(input.NppbkcIdDest))
+            {
+                queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NppbkcIdDest));
+
+            }
+
+            if (!string.IsNullOrEmpty(input.PlantSource))
+            {
+                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.PlantSource));
+
+            }
+
+            if (!string.IsNullOrEmpty(input.PlantDest))
+            {
+                queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.Contains(input.PlantDest));
+
+            }
+
+            if (input.DateFrom.HasValue)
+            {
+                input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day,0,0,0);
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE >= input.DateFrom);
+            }
+
+            if (input.DateTo.HasValue)
+            {
+                input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
+            }
+
+
+            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
+
+            queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+          
+
+            var rc = _repository.Get(queryFilter, null, includeTables);
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+
+            return mapResult;
+
+
+        }
+
+        public List<CK5Dto> GetCk5CompletedByCk5Type(Enums.CK5Type ck5Type)
+        {
+            var dtData = _repository.Get(c=>c.STATUS_ID == Enums.DocumentStatus.Completed && c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+            return Mapper.Map<List<CK5Dto>>(dtData);
+        }
+
+        //public void PrintHistory()
+        //{
+        //    _printHistoryBll.AddPrintHistory();
+        //}
     }
 }

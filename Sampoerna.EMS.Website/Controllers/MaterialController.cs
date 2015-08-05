@@ -113,7 +113,8 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("BASE_UOM", origin.UomId.Equals(data.BASE_UOM_ID));
             changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
             changesData.Add("EX_GOODTYP", origin.GoodTypeId.Equals(data.EXC_GOOD_TYP));
-
+            changesData.Add("PLANT_DELETION", origin.IsClientDelete.Equals(data.PLANT_DELETION));
+            changesData.Add("CLIENT_DELETION", origin.IsClientDelete.Equals(data.PLANT_DELETION));
             
             foreach (var listChange in changesData)
             {
@@ -151,9 +152,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.IssueStorageLoc;
                             changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
                             break;
-                        case "EX_GOODTYP":
-                            changes.OLD_VALUE = origin.GoodTypeId;
-                            changes.NEW_VALUE = data.EXC_GOOD_TYP;
+                        case "PLANT_DELETION":
+                            changes.OLD_VALUE = origin.IsPlantDelete.ToString();
+                            changes.NEW_VALUE = data.PLANT_DELETION.ToString();
+                            break;
+                        case "CLIENT_DELETION":
+                            changes.OLD_VALUE = origin.IsClientDelete.ToString();
+                            changes.NEW_VALUE = data.CLIENT_DELETION.ToString();
                             break;
                         
                     }
@@ -180,11 +185,14 @@ namespace Sampoerna.EMS.Website.Controllers
                   
 
                         model.WERKS = plant;
-                        foreach (var uom in model.MATERIAL_UOM)
+                        if (model.MATERIAL_UOM != null)
                         {
-                            uom.STICKER_CODE = model.STICKER_CODE;
-                            uom.WERKS = model.WERKS;
-
+                            foreach (var uom in model.MATERIAL_UOM)
+                            {
+                                uom.STICKER_CODE = model.STICKER_CODE;
+                                uom.WERKS = model.WERKS;
+                                uom.MEINH = HttpUtility.UrlDecode(uom.MEINH);
+                            }
                         }
                         model.CREATED_BY = CurrentUser.USER_ID;
                         model.CREATED_DATE = DateTime.Now;
@@ -229,6 +237,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else {
 
                 var model = Mapper.Map<MaterialEditViewModel>(data);
+
                 model.MainMenu = Enums.MenuList.MasterData;
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, mn+p));
@@ -259,19 +268,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (data == null) {
                        return RedirectToAction("Index");
                     }
-
+                if (model.MaterialUom != null)
+                {
                     foreach (var matUom in model.MaterialUom)
                     {
                         var uom = new MATERIAL_UOM();
-                        uom.STICKER_CODE = matUom.MaterialNumber;
-                        uom.WERKS = matUom.Plant;
+                        uom.STICKER_CODE = model.MaterialNumber;
+                        uom.WERKS = model.PlantId;
                         uom.UMREN = matUom.Umren;
                         uom.UMREZ = matUom.Umrez;
-                        uom.MEINH = matUom.Meinh;
+                        uom.MEINH = HttpUtility.UrlDecode(matUom.Meinh);
 
                         _materialBll.SaveUoM(uom);
                     }
-                    var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
+                }
+                var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
                     AutoMapper.Mapper.Map(model, data);
                     data.MODIFIED_BY = CurrentUser.USER_ID;
                     data.MODIFIED_DATE = DateTime.Now;
@@ -317,6 +328,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        public JsonResult RemoveMaterialUom(int materialUomId)
+        {
+            return Json(_materialBll.DeleteMaterialUom(materialUomId));
         }
     }
 }

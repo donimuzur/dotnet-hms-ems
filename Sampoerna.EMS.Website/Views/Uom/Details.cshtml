@@ -11,7 +11,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3 class="desc">UOM <span>(Out Of Measurement)</span> </h3>
+                <h3 class="desc">UoM <span>(Out Of Measurement)</span> </h3>
                 <div class="action-button">
                     <a href="@Url.Action("Index", "Uom")" class="btn btn-grey">Back</a>
                     @if (!Model.IsDeleted)
@@ -54,7 +54,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="row">
-                                                            <label class="col-md-2">Uom Id</label>
+                                                            <label class="col-md-2">UoM Code</label>
                                                             <div class="col-md-4">
                                                                 @Html.TextBoxFor(model => model.UomId, new { @class = "form-control", @disabled= "disabled" })
                                                             </div>

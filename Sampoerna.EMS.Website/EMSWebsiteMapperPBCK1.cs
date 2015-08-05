@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Models.PLANT;
 
 namespace Sampoerna.EMS.Website
 {
@@ -85,6 +86,23 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck1DecreeDocDto, Pbck1DecreeDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1DecreeDocModel, Pbck1DecreeDocDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1FilterSummaryReportViewModel, Pbck1GetSummaryReportByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1SummaryReportDto, Pbck1SummaryReportsItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbkcPlants, opt => opt.MapFrom(src => Mapper.Map<List<T001WModel>>(src.NppbkcPlants)))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGov)))
+                ;
+
+            Mapper.CreateMap<Pbck1FilterMonitoringUsageViewModel, Pbck1GetMonitoringUsageByParamInput>()
+                .IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck1MonitoringUsageDto, Pbck1MonitoringUsageItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.PreviousFinalBalance)))
+                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.PreviousFinalBalance - src.Received)))
+                .ForMember(dest => dest.Pbck1PeriodDisplay, opt => opt.MapFrom(src => (src.PeriodFrom.ToString("dd MMM yyyy") + " - " + src.PeriodTo.Value.ToString("dd MMM yyyy"))))
+                ;
 
         }
     }

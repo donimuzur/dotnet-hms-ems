@@ -1,0 +1,19 @@
+﻿@model Sampoerna.EMS.Website.Models.BaseModel
+
+<table id="printHistoryTable" class="table table-bordered table-striped js-options-table" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">Date</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PrintHistoryList)
+        {
+            <tr>
+                <td>@item.PRINT_DATE.ToString("dd MMM yyyy HH:mm:ss")</td>
+                <td>@item.PRINT_BY</td>
+            </tr>
+        }
+    </tbody>
+</table>

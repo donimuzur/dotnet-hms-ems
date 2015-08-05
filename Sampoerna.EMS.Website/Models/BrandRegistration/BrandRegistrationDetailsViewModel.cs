@@ -32,7 +32,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [Required]
         public string HjeValueStr { get; set; }
         public string HjeCurrency { get; set; }
-        public decimal Tariff { get; set; }
+        public decimal? Tariff { get; set; }
+
+        public string TariffValueStr { get; set; }
         public string TariffCurrency { get; set; }
         public string ColourName { get; set; }
         public string GoodType { get; set; }
@@ -52,6 +54,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [Required]
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
+        public bool IsActive { get; set; }
 
         
     }

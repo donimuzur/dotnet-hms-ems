@@ -397,7 +397,18 @@
                                         <label class="col-md-4">Decree Doc</label>
                                         <div class="col-md-8">
                                             <div class="input-group">
-                                                <input type="text" class="form-control">
+                                                @if (Model.Detail.Pbck1DecreeDoc != null)
+                                                {
+                                                    foreach (var file in Model.Detail.Pbck1DecreeDoc)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <i class="fa fa-file"></i>
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
                                             </div>
                                         </div>
                                     </div>

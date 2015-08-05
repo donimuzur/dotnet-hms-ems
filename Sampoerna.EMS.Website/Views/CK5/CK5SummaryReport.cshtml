@@ -1,15 +1,16 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3 id="lblTitle">Summary Report</h3>
+            <h3 id="lblTitle">Summary Report @Sampoerna.EMS.Utils.EnumHelper.GetDescription(Model.Ck5Type)</h3>
         </div>
     </div>
 </div>
 
 
-    
+
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
@@ -23,147 +24,254 @@
 
                 }))
             {
+                @Html.HiddenFor(model => model.Ck5Type)
+
                 <div class="white-wrapper">
                     <div class="form-excise" role="form">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="row">
-                                    <label class="col-md-5">Company Code</label>
-                                    <div class="col-md-7">
-                                        @if (Model.SearchView.CompanyCodeList == null)
-                                        {
-                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                        }
-                                        else
-                                        {
-                                            @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new {@class = "form-control selectreset"})
-                                        }
-                                    </div>
-
-                                    @*<div class="col-md-7">
-                                    <select class="form-control">
-                                        <option>3066</option>
-                                        <option>3067</option>
-                                        <option>3068</option>
-                                        <option>3069</option>
-                                    </select>
-                                </div>*@
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">From - To</label>
+                                    <label class="col-md-4">Company Source - Origin</label>
                                     <div class="col-md-8 year-from">
-                                        @if (Model.SearchView.YearFromList == null)
-                                        {
-                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                        }
-                                        else
-                                        {
-                                            @Html.DropDownListFor(model => model.SearchView.YearFrom, Model.SearchView.YearFromList, "All", new {@class = "form-control selectreset"})
-                                        }
-                                    
-                                        @if (Model.SearchView.YearToList == null)
-                                        {
-                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                        }
-                                        else
-                                        {
-                                            @Html.DropDownListFor(model => model.SearchView.YearTo, Model.SearchView.YearToList, "All", new {@class = "form-control selectreset"})
-                                        }
+                                        @(Model.SearchView.CompanyCodeSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.CompanyCodeSource, Model.SearchView.CompanyCodeSourceList, "All", new { @class = "form-control selectreset" }))
 
-                                        @*<select class="form-control">
-                                        <option>2014</option>
-                                        <option>2015</option>
-                                    </select>
-                                    <select class="form-control">
-                                        <option>2015</option>
-                                        <option>2016</option>
-                                    </select>*@
+                                        @(Model.SearchView.CompanyCodeDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.CompanyCodeDest, Model.SearchView.CompanyCodeDestList, "All", new { @class = "form-control selectreset" }))
+
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="row">
-                                    <label class="col-md-4">NPPBKC</label>
-                                    <div class="col-md-8">
-                                        @if (Model.SearchView.NppbkcIdList == null)
-                                        {
-                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                        }
-                                        else
-                                        {
-                                            @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new {@class = "form-control selectreset"})
-                                        }
+                                    <label class="col-md-4">NPPBKC ID Source - Origin</label>
+                                    <div class="col-md-8 year-from">
+                                        @(Model.SearchView.NppbkcIdSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.NppbkcIdSource, Model.SearchView.NppbkcIdSourceList, "All", new { @class = "form-control selectreset" }))
+
+                                        @(Model.SearchView.NppbkcIdDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.NppbkcIdDest, Model.SearchView.NppbkcIdDestList, "All", new { @class = "form-control selectreset" }))
+
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div>
-                                    Toggle column: <a class="toggle-vis" data-column="0">No</a> - <a class="toggle-vis" data-column="1">Company</a> - <a class="toggle-vis" data-column="2">NPPBKC</a> - <a class="toggle-vis" data-column="3">KPPBC</a> - <a class="toggle-vis" data-column="4">Document Number</a> - <a class="toggle-vis" data-column="5">Address</a>
+                                <div class="row">
+                                    <label class="col-md-4">Plant Source - Origin</label>
+                                    <div class="col-md-8 year-from">
+                                        @(Model.SearchView.PlantSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.PlantSource, Model.SearchView.PlantSourceList, "All", new { @class = "form-control selectreset" }))
+
+                                        @(Model.SearchView.PlantDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.PlantDest, Model.SearchView.PlantDestList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Date From - To</label>
+                                    <div class="col-md-8 year-from">
+                                        @(Model.SearchView.DateFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.DateFrom, Model.SearchView.DateFromList, "All", new { @class = "form-control selectreset" }))
+
+                                        @(Model.SearchView.DateToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.DateTo, Model.SearchView.DateToList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="last-form">
-                                <div class="col-md-2 col-md-offset-8">
-                                    <button class="btn btn-blue full">FILTER</button>
-                                </div>
-                                <div class="col-md-2">
-                                    <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT"/>
+                                <div class="col-md-8">
+                                    <div class="row toggle">
+                                        @if (Model.Ck5Type == Enums.CK5Type.Domestic)
+                                        {
+                                            <div class="toggle-title">
+                                                Toggle column:
+                                            </div>
+                                            <div class="col-md-9">
+
+                                                <a class="toggle-vis" data-column="0">No</a> -
+                                                <a class="toggle-vis" data-column="1">Excise Status</a> -
+                                                <a class="toggle-vis" data-column="2">Unpaid Excise Facility Number</a> -
+                                                <a class="toggle-vis" data-column="3">Unpaid Excise Facility Date</a> -
+                                                <a class="toggle-vis" data-column="4">Sealing Notification Date</a> -
+                                                <a class="toggle-vis" data-column="5">Sealing Notification Number</a>
+                                                <a class="toggle-vis" data-column="6">Unsealing Notification Date</a> -
+                                                <a class="toggle-vis" data-column="7">Unsealing Notification Number</a> -
+                                                <a class="toggle-vis" data-column="8">Reported to LACK-1 Month</a> -
+                                                <a class="toggle-vis" data-column="9">Reported to LACK-2 Month</a>
+                                            </div>
+                                        }
+                                        else if (Model.Ck5Type == Enums.CK5Type.Intercompany || Model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                                        {
+                                            @Html.Partial("_CK5SummaryReportToggleIntercompany")
+                                        }
+
+                                        else if (Model.Ck5Type == Enums.CK5Type.Export)
+                                        {
+                                            @Html.Partial("_CK5SummaryReportToggleExport")
+                                        }
+                                        else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+                                        {
+                                            @Html.Partial("_CK5SummaryReportToggleImport")
+                                        }
+                                        else if (Model.Ck5Type == Enums.CK5Type.Manual)
+                                        {
+                                            @Html.Partial("_CK5SummaryReportToggleManual")
+                                        }
+
+                                    </div>
+                                    <div class="last-form">
+                                        <div class="col-md-2 col-md-offset-8">
+                                            <button class="btn btn-blue full">FILTER</button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
 
             }
-            
+
 
             <div id="contenttable" class="table-container">
-                @Html.Partial("_CK5ListSummaryReport")
+                @if (Model.Ck5Type == Enums.CK5Type.Domestic)
+                {
+                    @Html.Partial("_CK5ListSummaryReport")
+                }
+                else if (Model.Ck5Type == Enums.CK5Type.Intercompany || Model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                {
+                    @Html.Partial("_CK5ListSummaryReportIntercompany")
+                }
+                else if (Model.Ck5Type == Enums.CK5Type.Export)
+                {
+                    @Html.Partial("_CK5ListSummaryReportExport")
+                }
+                else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+                {
+                    @Html.Partial("_CK5ListSummaryReportImport")
+                }
+                else if (Model.Ck5Type == Enums.CK5Type.Manual)
+                {
+                    @Html.Partial("_CK5ListSummaryReportManual")
+                }
             </div>
         </div>
     </div>
 </div>
 
-<div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    @using (Html.BeginForm("ExportSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+
+@if (Model.Ck5Type == Enums.CK5Type.Domestic)
 {
-        @Html.HiddenFor(model => model.ExportModel.CompanyCode)      
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h3><span id="lblTitleModal">Export</span> </h3>
-                </div>
-                <div class="modal-body">
-                
-                    <span id="lblMessageModal">Column : </span><br />
-                    @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked" })Company<br/>
-                    @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked" })NPPBKC<br/>
-                    @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked" })KPPBC<br/>
-                    @Html.CheckBoxFor(model => model.ExportModel.DocumentNumber, new { @checked = "checked" })Document Number<br/>
-                  
-                </div>
-                <div class="modal-footer">
-                    <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Cancel" />
+    <div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        @using (Html.BeginForm("ExportXlsSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+        {
+            @Html.HiddenFor(model => model.Ck5Type)
+
+            @Html.HiddenFor(model => model.ExportModel.CompanyCodeSource)
+            @Html.HiddenFor(model => model.ExportModel.CompanyCodeDest)
+            @Html.HiddenFor(model => model.ExportModel.NppbkcIdSource)
+            @Html.HiddenFor(model => model.ExportModel.NppbkcIdDest)
+            @Html.HiddenFor(model => model.ExportModel.PlantSource)
+            @Html.HiddenFor(model => model.ExportModel.PlantDest)
+            @Html.HiddenFor(model => model.ExportModel.DateFrom)
+            @Html.HiddenFor(model => model.ExportModel.DateTo)
+
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h3><span id="lblTitleModal">Export @Sampoerna.EMS.Utils.EnumHelper.GetDescription(Model.Ck5Type)</span> </h3>
+                    </div>
+                    <div class="modal-body">
+                        <span id="lblMessageModal">Column : </span><br />
+                        @Html.CheckBoxFor(model => model.ExportModel.ExciseStatus, new { @checked = "checked" })Excise Status<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.Pbck1Number, new { @checked = "checked" })Unpaid Excise Facility Number<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.PbckDecreeDate, new { @checked = "checked" })Unpaid Excise Facility Date<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.SealingNotifDate, new { @checked = "checked" })Sealing Notification Date<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.SealingNotifNumber, new { @checked = "checked" })Sealing Notification Number<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.UnSealingNotifDate, new { @checked = "checked" })Unsealing Notification Date<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.UnSealingNotifNumber, new { @checked = "checked" })Unsealing Notification Number<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.Lack1Number, new { @checked = "checked" })Reported to LACK-1 Month<br />
+                        @Html.CheckBoxFor(model => model.ExportModel.Lack2Number, new { @checked = "checked" })Reported to LACK-2 Month<br />
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Cancel" />
+                    </div>
                 </div>
             </div>
-        </div>
-}	
-</div>
-    
+        }
+    </div>
+
+}
+else if (Model.Ck5Type == Enums.CK5Type.Intercompany || Model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+{
+    @Html.Partial("_CK5SummaryReportModalIntercompany")
+}
+else if (Model.Ck5Type == Enums.CK5Type.Export)
+{
+    @Html.Partial("_CK5SummaryReportModalExport")
+}
+else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+{
+    @Html.Partial("_CK5SummaryReportModalImport")
+}
+else if (Model.Ck5Type == Enums.CK5Type.Manual)
+{
+    @Html.Partial("_CK5SummaryReportModalManual")
+}
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
     <script type="text/javascript" language="javascript" class="init">
 
         $(document).ready(function () {
-           
-            setupDataTables();
-            
 
-           
+            setupDataTables();
+
+            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()') {
+                $('#Ck5Modal').modal('hide');
+                $('#MenuCK5SummaryReports').addClass('active');
+            }
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()') {
+                $('#Ck5ModalIntercompany').modal('hide');
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()') {
+                    $('#MenuCK5SummaryReportsIntercompany').addClass('active');
+                } else {
+                    $('#MenuCK5SummaryReportsDomesticAlcohol').addClass('active');
+                }
+
+
+            }
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()') {
+                $('#Ck5ModalExport').modal('hide');
+                $('#MenuCK5SummaryReportsExport').addClass('active');
+            }
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()') {
+                $('#Ck5ModalImport').modal('hide');
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()') {
+                    $('#MenuCK5SummaryReportsPortToImporter').addClass('active');
+                } else {
+                    $('#MenuCK5SummaryReportsImporterToPlant').addClass('active');
+                }
+
+            }
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()') {
+                $('#Ck5ModalManual').modal('hide');
+                $('#MenuCK5SummaryReportsManual').addClass('active');
+            }
+
         });
 
 
@@ -185,24 +293,9 @@
                     }
                 });
 
-       
-            //$('#ck5Table .filters th').each(function () {
-            //    var idx = $(this).index();
-            //    if (idx != 0) {
-            //        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
-            //    }
-            //});
 
-        
-            //table.columns().eq(0).each(function (colIdx) {
-            //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-            //        table
-            //            .column(colIdx)
-            //            .search(this.value)
-            //            .draw();
-            //    });
-            //});
-            
+
+
             $('a.toggle-vis').on('click', function (e) {
                 e.preventDefault();
 
@@ -213,34 +306,64 @@
                 column.visible(!column.visible());
             });
 
+
+
         }
 
         function ReloadDataTables() {
             setupDataTables();
         }
-      
+
         function OnReset() {
 
             $(".selectreset").val($(".selectreset option:first").val());
         }
-        
+
         $("#btnExport").click(function () {
-            $('#Ck5Modal').modal('show');
+            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                $('#Ck5Modal').modal('show');
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                $('#Ck5ModalIntercompany').modal('show');
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                $('#Ck5ModalExport').modal('show');
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                $('#Ck5ModalImport').modal('show');
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                $('#Ck5ModalManual').modal('show');
 
         });
 
-      
+        function GetSearchSummaryReports() {
+            $('#ExportModel_CompanyCodeSource').val($('#SearchView_CompanyCodeSource').find("option:selected").val());
+            $('#ExportModel_CompanyCodeDest').val($('#SearchView_CompanyCodeDest').find("option:selected").val());
+
+            $('#ExportModel_NppbkcIdSource').val($('#SearchView_NppbkcIdSource').find("option:selected").val());
+            $('#ExportModel_NppbkcIdDestt').val($('#SearchView_NppbkcIdDest').find("option:selected").val());
+            $('#ExportModel_PlantSource').val($('#SearchView_PlantSource').find("option:selected").val());
+            $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
+            $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
+            $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
+
+        }
+
+
+
         $("#btnConfirm").click(function () {
+            GetSearchSummaryReports();
 
-            //('#SearchView_CompanyCode').Text = 'aa';
-            $("input[name='ExportModel.CompanyCode']").val($('#SearchView_CompanyCode').find("option:selected").val());
-            //alert($("input[name='SearchView_CompanyCode']").val());
-           // alert($('#SearchView_CompanyCode').find("option:selected").val());
-            $('#ExportSummaryReportsForms').submit();
-            @*window.location = "@Url.Action("ApproveDocument", "CK5", new { model = formData })";*@
-          
-            
+            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                $('#ExportSummaryReportsForms').submit();
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                $('#ExportSummaryReportsFormsIntercompany').submit();
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                $('#ExportSummaryReportsFormsExport').submit();
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                $('#ExportSummaryReportsFormsImport').submit();
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                $('#ExportSummaryReportsFormsManual').submit();
+
+
         });
-        
+
     </script>
 }

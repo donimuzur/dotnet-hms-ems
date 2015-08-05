@@ -71,6 +71,7 @@
     <Compile Include="Pbck1ProdConverterBLL.cs" />
     <Compile Include="EmailTemplateBLL.cs" />
     <Compile Include="Pbck1ProdPlanBLL.cs" />
+    <Compile Include="Pbck1QuotaBLL.cs" />
     <Compile Include="POASKBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
     <Compile Include="DocumentSequenceNumberBLL.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="PBCK1BLL.cs" />
     <Compile Include="CK4C_BLL.cs" />
     <Compile Include="PlantBLL.cs" />
+    <Compile Include="PrintHistoryBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SupplierPortBLL.cs" />
     <Compile Include="UnitOfMeasurementBLL.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="VirtualMappingPlantBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="WorkflowHistoryBLL.cs" />
+    <Compile Include="WorkflowSettingBLL.cs" />
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
     <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />

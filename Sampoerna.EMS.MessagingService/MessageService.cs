@@ -21,38 +21,27 @@ namespace Sampoerna.EMS.MessagingService
         /// <summary>
         /// Sends the email.
         /// </summary>
-        /// <param name="from"></param>
+        /// <param></param>
         /// <param name="to"></param>
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="throwError"></param>
-        public void SendEmailToList(string from, List<string> to, string subject, string body, bool throwError = false)
+        public void SendEmailToList(List<string> to, string subject, string body, bool throwError = false)
         {
             try
             {
                 var actualTo = new List<string>();
-                ////If we have the testmode enlabed in config file, use the test address
-                //if (ConfigurationManager.AppSettings["TestMode"] == "1")
-                //{
-                //    actualTo.AddRange(ConfigurationManager.AppSettings["TestMailTo"].Split(','));
-                //}
-                //else
-                //{
+               
                 actualTo.AddRange(to);
-                //}
+               
 
                 var smtpClient = new SmtpClient();
-                //var config = EmailConfiguration.GetConfig();
-                //smtpClient.Credentials = new System.Net.NetworkCredential(config.User, config.Password);
-                //smtpClient.Host = config.Host;
-                //smtpClient.Port = config.Port;
 
                 var mailMessage = new MailMessage {IsBodyHtml = true};
                 actualTo.ForEach(s => mailMessage.To.Add(s.Trim()));
-                mailMessage.From = new MailAddress(from);
+               
                 mailMessage.Body = body;
-                //If the testmode is enabled, specify the original receiver for the mail in the subject
-                //mailMessage.Subject += ConfigurationManager.AppSettings["TestMode"] == "1" ? subject + " _originalReceiver(s) : " + string.Join(", ", to) : subject;
+             
                 mailMessage.Subject = subject;
                 //Make sure the client and the message are disposed when the asynch send is done
                 smtpClient.SendCompleted += (s, e) =>
@@ -80,15 +69,14 @@ namespace Sampoerna.EMS.MessagingService
         /// <summary>
         /// Sends Email
         /// </summary>
-        /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="throwError"></param>
-        public void SendEmail(string from, string to, string subject, string body, bool throwError = false)
+        public void SendEmail(string to, string subject, string body, bool throwError = false)
         {
             var actualTo = new List<string> { to };
-            SendEmailToList(from, actualTo, subject, body, throwError);
+            SendEmailToList(actualTo, subject, body, throwError);
         }
     }
 }

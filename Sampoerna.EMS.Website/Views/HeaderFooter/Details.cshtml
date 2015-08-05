@@ -119,6 +119,7 @@
                                                         </td>
                                                         <td class="last">
                                                             <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID)" />
+                                                            
                                                         </td>
                                                     </tr>
                                                 }
@@ -184,7 +185,8 @@
             var isHeaderSet = $(elementHeaderId).is(':checked');
             var isFooterSet = $(elementFooterId).is(':checked');
 
-            var url = '/HeaderFooter/PrintPreview/' + id + '?isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
+            var url = '@Url.Action("PrintOut", "HeaderFooter")';
+            url += "?id=" + id + '&isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
             window.open(url, '_blank', 'width=1200,height=600');
 
         }

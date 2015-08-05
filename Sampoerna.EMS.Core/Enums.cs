@@ -223,5 +223,14 @@ namespace Sampoerna.EMS.Core
             ListByPlant = 2,
             ComplatedDocument =3
         }
+        public enum CK5TransType
+        {
+            [Description("Created")]
+            Created = 1,
+            [Description("Modified")]
+            Modified = 2,
+            [Description("Cancelled")]
+            Cancelled = 3
+        }
     }
 }
