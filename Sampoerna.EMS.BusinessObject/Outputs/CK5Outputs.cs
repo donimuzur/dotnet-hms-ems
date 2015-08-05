@@ -24,5 +24,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<CHANGES_HISTORY> ListChangesHistorys { get; set; }
         public List<WorkflowHistoryDto> ListWorkflowHistorys { get; set; }
         public List<CK5MaterialDto> Ck5MaterialDto { get; set; }
+
+        public List<PrintHistoryDto> ListPrintHistorys { get; set; }
     }
 }
