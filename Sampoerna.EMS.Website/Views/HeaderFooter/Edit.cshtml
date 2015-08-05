@@ -132,8 +132,8 @@
                                                 @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
                                             </td>
                                             <td>
-                                                <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID)" />
-                                            </td>
+                                                <input type="button" class="btn btn-grey" value="Print Preview" onclick="window.open('@Url.Action("PrintOut", "HeaderFooter", new { id = Model.Detail.HEADER_FOOTER_ID, isHeaderSet = true, isFooterSet = true })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');" />
+                                           </td>
                                         </tr>
                                     }
                                 </tbody>
