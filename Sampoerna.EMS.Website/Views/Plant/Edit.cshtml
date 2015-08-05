@@ -98,12 +98,11 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-4">Main Plant</label>
-                                                @if (!Model.IsMainPlantExist)
-                                                {
+                                              
                                                     <div class="col-md-2" id="isMainPlantCheck">
                                                         @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, checkYes)Yes
                                                     </div>
-                                                }
+                                                
                                                 <div class="col-md-2">
                                                     @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, checkNo)No
                                                 </div>
@@ -207,26 +206,6 @@
             $('#MenuMasterPlant').addClass('active');
         });
 
-        $('#dropdown_nppbkc').change(function () {
-
-            var NppbkcId = $('#dropdown_nppbkc').val();
-
-            //console.log(Id);
-            //console.log(NppbkcId);
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("ShowMainPlant", "Plant")',
-                data: { nppbck1: NppbkcId, isMainPlant: true },
-                success: function (data) {
-                    if (data == true) {
-                        $('#isMainPlantCheck').hide();
-                    } else {
-                        $('#isMainPlantCheck').show();
-                    }
-                    
-                }
-            });
-        });
+       
     </script>
 }

@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.Website.Models
         {
             ChangesHistoryList = new List<ChangesHistoryItemModel>();
             PrintHistoryList = new List<PrintHistoryItemModel>();
+            
         }
         public Enums.MenuList MainMenu { get; set; }
         public PAGE CurrentMenu { get; set; }

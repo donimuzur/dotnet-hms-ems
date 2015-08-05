@@ -75,10 +75,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
-            var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
-            model.IsMainPlantExist = checkIfExist != null && checkIfExist.WERKS != model.Detail.Werks;
-
-
+            model.IsMainPlantExist = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
+                model.Detail.Werks);
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
             return View("Edit", model);
         }
@@ -99,7 +97,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return InitialEdit(model);
             }
-
+            var isAlreadyExistMainPlant = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
+                model.Detail.Werks);
+            if (isAlreadyExistMainPlant)
+            {
+                AddMessageInfo("Main Plant Already Set", Enums.MessageInfoType.Warning);
+                return InitialEdit(model);
+            }
             try
             {
                
@@ -179,7 +183,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return planReceives;
         }
 
-        
-        
+        private bool IsMainPlantAlreadyExist(string nppbkcid, bool IsMainPlant, string plantId)
+        {
+            var checkIfExist = _plantBll.GetT001W(nppbkcid, IsMainPlant);
+            if (checkIfExist == null)
+                return false;
+            if (checkIfExist.WERKS != plantId)
+                return true;
+            return false;
+           
+
+        }
+
+
     }
 }
