@@ -56,6 +56,9 @@ namespace Sampoerna.EMS.XMLReader
                         var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
                         if (exisitingNppbkc != null)
                         {
+                            item.CITY_ALIAS = exisitingNppbkc.CITY_ALIAS;
+                            item.TEXT_TO = exisitingNppbkc.TEXT_TO;
+                            item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
                             item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
                             items.Add(item);
