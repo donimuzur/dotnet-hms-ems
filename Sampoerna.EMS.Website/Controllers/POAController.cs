@@ -249,6 +249,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
             model.Users = GlobalFunctions.GetCreatorList();
+            model.Managers = GlobalFunctions.GetCreatorList();
             model.Detail = detail;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
             return View(model);

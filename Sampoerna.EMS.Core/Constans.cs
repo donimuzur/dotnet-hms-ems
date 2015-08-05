@@ -2,7 +2,7 @@
 {
     public class Constans
     {
-        public const string MasterDataHeaderFooterFolder = "~/Content/upload/header/";
+        public const string MasterDataHeaderFooterFolder = "~/files_upload/";
         public const string UploadPath = "~/files_upload/";
         public const string Pbck1DecreeDocFolderPath = "~/Content/upload/pbck1decreedoc/";
         public const string CK5FolderPath = "~/Content/upload/CK5/";

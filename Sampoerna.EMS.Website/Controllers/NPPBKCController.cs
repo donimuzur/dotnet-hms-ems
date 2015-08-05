@@ -80,9 +80,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("REGION_OFFICE_DGCE", (origin.RegionOfficeOfDGCE == null ? true : origin.RegionOfficeOfDGCE.Equals(nppbkc.REGION_DGCE)));
-            changesData.Add("CITY_ALIAS", (origin.CityAlias == null ? true : origin.CityAlias.Equals(nppbkc.CITY_ALIAS)));
-            changesData.Add("TEXT_TO", (origin.TextTo == null ? true : origin.TextTo.Equals(nppbkc.TEXT_TO)));
+            changesData.Add("REGION_OFFICE_DGCE", origin.RegionOfficeOfDGCE == nppbkc.REGION_DGCE);
+            changesData.Add("CITY_ALIAS",origin.CityAlias == nppbkc.CITY_ALIAS);
+            changesData.Add("TEXT_TO", origin.TextTo == nppbkc.TEXT_TO);
 
 
             foreach (var listChange in changesData)
