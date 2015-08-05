@@ -672,7 +672,9 @@ namespace Sampoerna.EMS.Website
 
             #region User Authorization
 
-            Mapper.CreateMap<UserAuthorizationDto, DetailUserAuthorization>().IgnoreAllNonExisting();
+            Mapper.CreateMap<UserAuthorizationDto, DetailIndexUserAuthorization>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<UserAuthorizationDto, CreateUserAuthorizationViewModel>().IgnoreAllNonExisting();
 
             #endregion
         }

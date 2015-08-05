@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -25,14 +27,33 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /UserAuthorization/
         public ActionResult Index()
         {
-            var model = new UserAuthorizationViewModel
+            var model = new IndexUserAuthorizationViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Detail = Mapper.Map<List<DetailUserAuthorization>>(_userAuthorizationBll.GetAll())
+                Detail = Mapper.Map<List<DetailIndexUserAuthorization>>(_userAuthorizationBll.GetAll())
             };
             
             return View("Index", model);
         }
+
+        public ActionResult Create()
+        {
+            var model = new CreateUserAuthorizationViewModel();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            InitCrateModel(model);
+            return View(model);
+        }
+
+        private CreateUserAuthorizationViewModel InitCrateModel(CreateUserAuthorizationViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.BroleList = GlobalFunctions.GetBroleList();
+
+            return model;
+        }
+
 	}
 }

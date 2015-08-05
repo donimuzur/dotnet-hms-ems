@@ -6,19 +6,19 @@ using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.UserAuthorization
 {
-    public class UserAuthorizationViewModel : BaseModel
+    public class IndexUserAuthorizationViewModel : BaseModel
     {
-        public UserAuthorizationViewModel()
+        public IndexUserAuthorizationViewModel()
         {
-            Detail = new List<DetailUserAuthorization>();
+            Detail = new List<DetailIndexUserAuthorization>();
         }
 
-        public List<DetailUserAuthorization> Detail { get; set; }
+        public List<DetailIndexUserAuthorization> Detail { get; set; }
 
         
     }
 
-    public class DetailUserAuthorization
+    public class DetailIndexUserAuthorization
     {
         public string Brole { get; set; }
         public string BroleDescription { get; set; }

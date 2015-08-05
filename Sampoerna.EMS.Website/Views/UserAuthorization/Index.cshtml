@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.UserAuthorization.UserAuthorizationViewModel
+﻿@model Sampoerna.EMS.Website.Models.UserAuthorization.IndexUserAuthorizationViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -9,7 +9,7 @@
         <div class="col-sm-12">
             <h3>User Authorization</h3>
             <div class="action-button new">
-                <a href="#1.11-user-group-edit.html"><button class="btn btn-blue">NEW</button></a>
+                <a href="@Url.Action("Create", "UserAuthorization")"><button class="btn btn-blue">NEW</button></a>
             </div>
         </div>
     </div>

@@ -307,7 +307,8 @@
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
-    <Compile Include="Models\UserAuthorization\UserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />

@@ -247,5 +247,13 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
+        public static SelectList GetBroleList()
+        {
+            IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
+            var data = userAuthorizationBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+      
      }
 }

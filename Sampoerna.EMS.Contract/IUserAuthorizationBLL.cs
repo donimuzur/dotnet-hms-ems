@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -12,5 +13,6 @@ namespace Sampoerna.EMS.Contract
         List<UserAuthorizationDto> GetAll();
 
         UserAuthorizationDto GetById(string id);
+
     }
 }
