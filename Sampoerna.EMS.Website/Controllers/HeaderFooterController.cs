@@ -17,6 +17,7 @@ using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
+using System.Configuration;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -35,7 +36,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBll = changesHistoryBll;
             _mainMenu = Enums.MenuList.MasterData;
         }
-        
+
         private SelectList GetCompanyList()
         {
             var data = _companyBll.GetMasterData();
@@ -87,22 +88,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 Detail = new HeaderFooterDetailItem() { HeaderFooterMapList = InitialHeaderFooterMapList() }
             });
         }
-        
+
         [HttpPost]
         public ActionResult Create(HeaderFooterItemViewModel model)
         {
-            
+
             if (ModelState.IsValid)
             {
                 //do save
                 model.Detail.FOOTER_CONTENT = model.Detail.FOOTER_CONTENT.Replace(Environment.NewLine, "<br />");
-                
+
                 //do upload image header
                 string imageHeaderUrl = SaveUploadedFile(model.HeaderImageFile, model.Detail.COMPANY_ID.Value.ToString(),
                     model.Detail.COMPANY_CODE);
-                
+
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
-                
+
                 var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
                 if (saveOutput.Success)
@@ -118,7 +119,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return InitialCreate(model);
         }
-        
+
         public ActionResult Edit(int id)
         {
             var data = _headerFooterBll.GetDetailsById(id);
@@ -165,7 +166,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (saveOutput.Success)
                 {
                     AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                         ); 
+                         );
                     return RedirectToAction("Index");
                 }
 
@@ -183,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             return View("Edit", model);
         }
-        
+
         [HttpPost]
         public JsonResult GetCompanyDetail(string id)
         {
@@ -245,7 +246,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public DataSet PrintPreview(int id, bool isHeaderSet, bool isFooterSet)
         {
-            
+
             var headerFooterData = Mapper.Map<HeaderFooterItem>(_headerFooterBll.GetById(id));
             headerFooterData.HEADER_IMAGE_PATH = !string.IsNullOrEmpty(headerFooterData.HEADER_IMAGE_PATH)
                 ? new Uri(Server.MapPath(headerFooterData.HEADER_IMAGE_PATH)).AbsoluteUri
@@ -254,9 +255,9 @@ namespace Sampoerna.EMS.Website.Controllers
             headerFooterData.IsHeaderHide = !isHeaderSet;
 
             var srcToConvert = new List<HeaderFooterItem> { headerFooterData };
-          
+
             DataSet ds = new DataSet("HeaderFooter");
-            
+
             DataTable dt = new DataTable("DataTable1");
 
             // object of data row 
@@ -277,7 +278,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(int id)
         {
-           
+
             _headerFooterBll.Delete(id, CurrentUser.USER_ID);
             TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
             return RedirectToAction("Index");
@@ -288,12 +289,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //DataTable dt = new DataTable();
             ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/HeaderFooter/HeaderFooterPreview.rpt");
-          
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "HeaderFooter\\HeaderFooterPreview.rpt";
+
             var dt = PrintPreview(id, isHeaderSet, isFooterSet);
             rpt.Load();
             rpt.SetDataSource(dt);
-          
+
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
         }
@@ -306,7 +308,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 FileStream fs;
                 BinaryReader br;
 
-                if(System.IO.File.Exists(Server.MapPath(imagePath)))
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
                 {
                     fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 }
@@ -322,7 +324,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 // read the bytes from the binary reader 
                 imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
                 dt.Columns.Add("image", System.Type.GetType("System.Byte[]"));
-            
+
                 dt.Rows[0]["image"] = imgbyte;
 
 
@@ -337,12 +339,25 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception ex)
             {
-              }
+            }
             return dt;
             // Return Datatable After Image Row Insertion
 
         }
-        
-        
+
+        private string IsCompanyAlreadyExist(int headerFooterId, string companyId)
+        {
+            var checkIfExist = _headerFooterBll.GetById(headerFooterId, companyId);
+            if (checkIfExist == null)
+            {
+                return companyId;
+            }
+            if (checkIfExist.COMPANY_ID != null)
+            {
+                return companyId;
+            }
+        }
+
+
     }
 }

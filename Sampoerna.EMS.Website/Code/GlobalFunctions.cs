@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Models;
@@ -246,7 +247,6 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetAllByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
-
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
@@ -254,6 +254,22 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
+        }
+        
+        public static SelectList GetBroleList()
+        {
+            IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
+            var data = userAuthorizationBll.GetAllBRole();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static List<PageDto> GetModuleList()
+        {
+            IPageBLL pageBll = MvcApplication.GetInstance<PageBLL>();
+            var data = pageBll.GetParentPages();
+            var result = Mapper.Map<List<PageDto>>(data);
+            return result;
         }
 
         public static SelectList GetPlantByNppbkcId(string nppbkcId)
@@ -264,7 +280,9 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
         }
+      
+        }
        
 
      }
-}
+

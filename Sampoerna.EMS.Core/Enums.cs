@@ -31,7 +31,8 @@ namespace Sampoerna.EMS.Core
             MaterialMaster = 24,
             MasterPlant = 25,
             Uom = 27,
-            GoodsTypeGroup =26
+            GoodsTypeGroup =26,
+            UserAuthorization = 28
         }
         public enum PBCK1Type
         {

@@ -73,6 +73,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IPbck1ProdPlanBLL, Pbck1ProdPlanBLL>();
             container.Register<ILACK1BLL, LACK1BLL>();
             container.Register<IPrintHistoryBLL, PrintHistoryBLL>();
+            container.Register<IUserAuthorizationBLL, UserAuthorizationBLL>();
           
             // 3. Optionally verify the container's configuration.
             container.Verify();

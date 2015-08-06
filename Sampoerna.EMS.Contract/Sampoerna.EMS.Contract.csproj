@@ -68,6 +68,7 @@
     <Compile Include="ISupplierPortBLL.cs" />
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IUserAuthorizationBLL.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IVirtualMappingPlantBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />

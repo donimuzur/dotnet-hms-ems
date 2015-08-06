@@ -80,7 +80,15 @@ namespace Sampoerna.EMS.Website.Controllers
                             if (sk != null)
                             {
                                 var poa_sk = new POA_SK();
-                                poa_sk.FILE_NAME = sk.FileName;
+                                var filenamecheck = sk.FileName;
+                                if (filenamecheck.Contains("\\"))
+                                {
+                                    poa_sk.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                }
+                                else {
+                                    poa_sk.FILE_NAME = sk.FileName;
+                                }
+                                
                                 poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
                                 poa.POA_SK.Add(poa_sk);
                               
@@ -142,7 +150,8 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("EMAIL", origin.Email == poa.POA_EMAIL);
             changesData.Add("ADDRESS", origin.PoaAddress == poa.POA_ADDRESS);
             changesData.Add("ID CARD", origin.PoaIdCard == poa.ID_CARD) ;
-            changesData.Add("PRINTED NAME", origin.PoaPrintedName == poa.PRINTED_NAME); 
+            changesData.Add("PRINTED NAME", origin.PoaPrintedName == poa.PRINTED_NAME);
+            changesData.Add("IS ACTIVE", origin.Is_Active.Equals(poa.IS_ACTIVE)); 
 
             foreach (var listChange in changesData)
             {
@@ -188,6 +197,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.PoaPrintedName;
                             changes.NEW_VALUE = poa.PRINTED_NAME;
                             break;
+                        case "IS ACTIVE":
+                            changes.OLD_VALUE = origin.Is_Active;
+                            changes.NEW_VALUE = poa.IS_ACTIVE.ToString();
+                            break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                     
@@ -214,7 +227,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (sk != null)
                         {
                             var poa_sk = new POA_SK();
-                            poa_sk.FILE_NAME = sk.FileName;
+                            var filenamecheck = sk.FileName;
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                poa_sk.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+                            else
+                            {
+                                poa_sk.FILE_NAME = sk.FileName;
+                            }
                             poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
                             poa_sk.POA_ID = poaId;
                             _poaskbll.Save(poa_sk);
@@ -248,7 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
-            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.POA);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.POA,id);
            
             var model = new POAFormModel();
             model.MainMenu = _mainMenu;
@@ -257,7 +278,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Users = GlobalFunctions.GetCreatorList();
             model.Managers = GlobalFunctions.GetCreatorList();
             model.Detail = detail;
+
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
+
+            var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
+            AutoMapper.Mapper.Map(model.Detail, poa);
+            SetChanges(origin, poa);
+
             return View(model);
 
         }

@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
@@ -20,6 +21,7 @@ using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.UOM;
+using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -670,6 +672,21 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => src.EmailTemplateSubject))
                 .ForMember(dest => dest.BODY,
                     opt => opt.MapFrom(src => src.EmailTemplateBody));
+            #endregion
+
+            #region User Authorization
+
+            Mapper.CreateMap<BRoleDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.Id + Constans.DelimeterSelectItem + src.Description))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.Id));
+          
+
+            Mapper.CreateMap<UserAuthorizationDto, DetailIndexUserAuthorization>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<UserAuthorizationDto, EditUserAuthorizationViewModel>().IgnoreAllNonExisting();
+
+
+
             #endregion
 
             #region Lack1

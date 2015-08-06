@@ -245,6 +245,7 @@
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\UomController.cs" />
+    <Compile Include="Controllers\UserAuthorizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="Controllers\WorkflowSettingsController.cs" />
@@ -318,6 +319,8 @@
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
@@ -337,6 +340,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -841,6 +845,8 @@
     <Content Include="Views\LACK1\Create.cshtml" />
     <Content Include="Views\LACK1\_HomeCreate.cshtml" />
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
+    <Content Include="Views\UserAuthorization\Index.cshtml" />
+    <Content Include="Views\UserAuthorization\Detail.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
     <Content Include="Views\CK5\_CK5ListSummaryReportExport.cshtml" />
@@ -855,6 +861,7 @@
     <Content Include="Views\CK5\_CK5SummaryReportToggleManual.cshtml" />
     <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
+    <Content Include="Views\UserAuthorization\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -912,10 +919,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
+    <Content Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>HeaderFooterPreview.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>

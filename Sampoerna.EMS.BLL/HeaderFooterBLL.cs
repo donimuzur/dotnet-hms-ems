@@ -38,9 +38,21 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<HeaderFooterDetails>(_repository.Get(c => c.HEADER_FOOTER_ID == id, null, includeTables).FirstOrDefault());
         }
 
-        public HeaderFooter GetById(int id)
+        public HeaderFooter GetById(int id, string companyId)
         {
-            return Mapper.Map<HeaderFooter>(_repository.GetByID(id));
+            var query = PredicateHelper.True<HEADER_FOOTER>();
+            query = query.And(p => p.HEADER_FOOTER_ID == id);
+
+            if (companyId == null)
+            {
+                query = query.And(p => p.BUKRS == companyId || p.BUKRS == null);
+            }
+            else
+            {
+                query = query.And(p => p.BUKRS == companyId);
+            }
+
+            return Mapper.Map<HeaderFooter>(_repository.GetByID(query));
         }
         public List<HeaderFooter> GetAll()
         {
