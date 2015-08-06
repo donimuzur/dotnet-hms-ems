@@ -238,7 +238,12 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<HeaderFooterDetailItem, HeaderFooterDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.HeaderFooterMapList,
                     opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HeaderFooterMapList)))
-                    .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
+                .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
+                    
+
+          
+               
+               
 
 
 

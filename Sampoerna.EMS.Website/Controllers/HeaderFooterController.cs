@@ -103,8 +103,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.Detail.COMPANY_CODE);
 
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
+                var param = Mapper.Map<HeaderFooterDetails>(model.Detail);
+
+                param.HeaderFooterMapList = new List<HeaderFooterMap>();
 
                 var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
+                if (saveOutput.MessageExist == "1")
+                {
+                    AddMessageInfo("Company Code Already Set", Enums.MessageInfoType.Warning);
+                    return InitialCreate(model);
+                }
 
                 if (saveOutput.Success)
                 {
@@ -162,6 +170,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
 
                 var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
+                if (saveOutput.MessageExist == "1")
+                {
+                    AddMessageInfo("Company Code Already Set", Enums.MessageInfoType.Warning);
+                    return InitialCreate(model);
+                }
 
                 if (saveOutput.Success)
                 {
@@ -345,18 +358,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private string IsCompanyAlreadyExist(int headerFooterId, string companyId)
-        {
-            var checkIfExist = _headerFooterBll.GetById(headerFooterId, companyId);
-            if (checkIfExist == null)
-            {
-                return companyId;
-            }
-            if (checkIfExist.COMPANY_ID != null)
-            {
-                return companyId;
-            }
-        }
+        //private string IsCompanyAlreadyExist(int headerFooterId, string companyId)
+        //{
+        //    var checkIfExist = _headerFooterBll.GetById(headerFooterId, companyId);
+        //    if (checkIfExist == null)
+        //    {
+        //        return ;
+        //    }
+        //    if (checkIfExist.COMPANY_ID != null)
+        //    {
+        //        return companyId;
+        //    }
+        //}
 
 
     }

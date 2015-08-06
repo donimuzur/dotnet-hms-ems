@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -38,21 +39,9 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<HeaderFooterDetails>(_repository.Get(c => c.HEADER_FOOTER_ID == id, null, includeTables).FirstOrDefault());
         }
 
-        public HeaderFooter GetById(int id, string companyId)
+        public HeaderFooter GetById(int id)
         {
-            var query = PredicateHelper.True<HEADER_FOOTER>();
-            query = query.And(p => p.HEADER_FOOTER_ID == id);
-
-            if (companyId == null)
-            {
-                query = query.And(p => p.BUKRS == companyId || p.BUKRS == null);
-            }
-            else
-            {
-                query = query.And(p => p.BUKRS == companyId);
-            }
-
-            return Mapper.Map<HeaderFooter>(_repository.GetByID(query));
+           return Mapper.Map<HeaderFooter>(_repository.GetByID(id));
         }
         public List<HeaderFooter> GetAll()
         {
@@ -61,19 +50,30 @@ namespace Sampoerna.EMS.BLL
 
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
-            HEADER_FOOTER dbData = null;
-            
+             HEADER_FOOTER dbData = null;
+             var output = new SaveHeaderFooterOutput();
+
+            var dtcompany = _repository.Get(c => c.BUKRS == headerFooterData.COMPANY_ID).FirstOrDefault();
+             if (dtcompany != null)
+             {
+                 output.MessageExist = "1";
+                 return output;
+             }
+
             if (headerFooterData.HEADER_FOOTER_ID > 0)
             {
+
                 //update
                 dbData =
                     _repository.Get(c => c.HEADER_FOOTER_ID == headerFooterData.HEADER_FOOTER_ID, null, includeTables)
                         .FirstOrDefault();
 
                 var headerFooterUpdated = Mapper.Map<HEADER_FOOTER>(headerFooterData);
+               
 
                 SetChanges(dbData, headerFooterUpdated, userId);
-                
+
+               
                 //hapus dulu aja ya ? //todo ask the cleanist way
                 var dataToDelete =
                     _mapRepository.Get(c => c.HEADER_FOOTER_ID == headerFooterData.HEADER_FOOTER_ID)
@@ -83,12 +83,15 @@ namespace Sampoerna.EMS.BLL
                     _mapRepository.Delete(item);
                 }
 
+               
+
                 Mapper.Map<HeaderFooterDetails, HEADER_FOOTER>(headerFooterData, dbData);
+               
 
                 dbData.HEADER_FOOTER_FORM_MAP = null;
                 dbData.HEADER_FOOTER_FORM_MAP = Mapper.Map<List<HEADER_FOOTER_FORM_MAP>>(headerFooterData.HeaderFooterMapList);
-
                
+
 
             }
             else
@@ -100,7 +103,7 @@ namespace Sampoerna.EMS.BLL
                 _repository.Insert(dbData);
             }
 
-            var output = new SaveHeaderFooterOutput();
+           
 
             try
             {
@@ -160,7 +163,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("HEADER_IMAGE_PATH", origin.HEADER_IMAGE_PATH == data.HEADER_IMAGE_PATH);
             changesData.Add("FOOTER_CONTENT", origin.FOOTER_CONTENT == data.FOOTER_CONTENT);
             changesData.Add("IS_ACTIVE", origin.IS_ACTIVE == data.IS_ACTIVE);
-            changesData.Add("IS_DELETED", origin.IS_DELETED==data.IS_DELETED);
+            changesData.Add("IS_DELETED", origin.IS_DELETED == data.IS_DELETED);
             var originHeaderFooterCheck = string.Empty;
             var originIndex = 0;
             var originMap = origin.HEADER_FOOTER_FORM_MAP;
@@ -171,7 +174,7 @@ namespace Sampoerna.EMS.BLL
 
                     originIndex++;
                     originHeaderFooterCheck += orMap.FORM_TYPE_ID.ToString() + ": Footer Set : " + (orMap.IS_FOOTER_SET == true ? "Yes" : "No") + " Header Set : " + (orMap.IS_HEADER_SET == true ? "Yes" : "No");
-                   
+
                     if (originIndex < originMap.Count)
                     {
                         originHeaderFooterCheck += ", ";
@@ -189,7 +192,7 @@ namespace Sampoerna.EMS.BLL
 
                     dataIndex++;
                     dataHeaderFooterCheck += dtMap.FORM_TYPE_ID.ToString() + ": Footer Set : " + (dtMap.IS_FOOTER_SET == true ? "Yes" : "No") + " Header Set : " + (dtMap.IS_HEADER_SET == true ? "Yes" : "No");
-                   
+
                     if (dataIndex < dataMap.Count)
                     {
                         dataHeaderFooterCheck += ", ";
@@ -198,7 +201,7 @@ namespace Sampoerna.EMS.BLL
                 }
             }
             changesData.Add("HEADER_FOOTER_FORM_MAP", originHeaderFooterCheck == dataHeaderFooterCheck);
-           
+
 
             foreach (var listChange in changesData)
             {
