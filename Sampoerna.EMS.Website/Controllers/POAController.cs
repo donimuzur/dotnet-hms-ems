@@ -90,12 +90,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     
                     _poaBll.Save(poa);
                    
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                        );
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    TempData[Constans.SubmitType.Save] = ex.Message;
+                    AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                         );
                     return RedirectToAction("Index");
                 }
                 
@@ -224,12 +226,16 @@ namespace Sampoerna.EMS.Website.Controllers
                  SetChanges(origin,poa);
               
                 _poaBll.Save(poa);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                       );
                 return RedirectToAction("Index");
             }
 
-            catch
+            catch(Exception ex)
             {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
+                   
                 return View();
             }
 
@@ -249,6 +255,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
             model.Users = GlobalFunctions.GetCreatorList();
+            model.Managers = GlobalFunctions.GetCreatorList();
             model.Detail = detail;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
             return View(model);

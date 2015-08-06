@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using Microsoft.Reporting.WebForms;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -12,6 +14,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
 
@@ -104,7 +107,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                      );
                     return RedirectToAction("Index");
                 }
 
@@ -160,7 +164,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveOutput.Success)
                 {
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                         ); 
                     return RedirectToAction("Index");
                 }
 
@@ -238,7 +243,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        public ActionResult PrintPreview(int id, bool isHeaderSet, bool isFooterSet)
+        public DataSet PrintPreview(int id, bool isHeaderSet, bool isFooterSet)
         {
             
             var headerFooterData = Mapper.Map<HeaderFooterItem>(_headerFooterBll.GetById(id));
@@ -249,17 +254,25 @@ namespace Sampoerna.EMS.Website.Controllers
             headerFooterData.IsHeaderHide = !isHeaderSet;
 
             var srcToConvert = new List<HeaderFooterItem> { headerFooterData };
-            var headerFooterDataTable =
-                DataTableHelper.ConvertToDataTable(srcToConvert.ToArray(), new dsHeaderFooter.HeaderFooterDataTable());
-            var rptDataSources = new List<ReportDataSource>
-            {
-                new ReportDataSource("ds_headerfooter", headerFooterDataTable)
-            };
+          
+            DataSet ds = new DataSet("HeaderFooter");
             
-            //set session for reporting
-            Session[Constans.SessionKey.ReportPath] = "Reports/HeaderFooterPreview.rdlc";
-            Session[Constans.SessionKey.ReportDataSources] = rptDataSources;
-            return RedirectToAction("ShowReport", "AspxReportViewer");
+            DataTable dt = new DataTable("DataTable1");
+
+            // object of data row 
+            DataRow drow;
+            // add the column in table to store the image of Byte array type 
+            dt.Columns.Add("footer", System.Type.GetType("System.String"));
+            drow = dt.NewRow();
+            drow[0] = headerFooterData.FOOTER_CONTENT;
+            dt.Rows.Add(drow);
+            if (isHeaderSet)
+            {
+                dt = GetImageRow(dt, headerFooterData.HEADER_IMAGE_PATH_BEFOREEDIT);
+            }
+            ds.Tables.Add(dt);
+            return ds;
+            //return RedirectToAction("ShowReport", "AspxReportViewer");
         }
 
         public ActionResult Delete(int id)
@@ -270,6 +283,65 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
+        //[EncryptedParameter]
+        public ActionResult PrintOut(int id, bool isHeaderSet, bool isFooterSet)
+        {
+            //DataTable dt = new DataTable();
+            ReportClass rpt = new ReportClass();
+            rpt.FileName = Server.MapPath("/Reports/HeaderFooter/HeaderFooterPreview.rpt");
+          
+            var dt = PrintPreview(id, isHeaderSet, isFooterSet);
+            rpt.Load();
+            rpt.SetDataSource(dt);
+          
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+        private DataTable GetImageRow(DataTable dt, string imagePath)
+        {
+
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if(System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                byte[] imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+                dt.Columns.Add("image", System.Type.GetType("System.Byte[]"));
+            
+                dt.Rows[0]["image"] = imgbyte;
+
+
+                br.Close();
+                // close the binary reader 
+                fs.Close();
+                // close the file stream 
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+              }
+            return dt;
+            // Return Datatable After Image Row Insertion
+
+        }
         
         
     }

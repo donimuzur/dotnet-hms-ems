@@ -80,7 +80,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">Login As</label>
                                                             <div class="col-md-9">
-                                                                @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -91,7 +91,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">Manager</label>
                                                             <div class="col-md-9">
-                                                                @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>

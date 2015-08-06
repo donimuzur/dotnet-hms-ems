@@ -77,11 +77,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = Mapper.Map<UOM>(model);
                 _uomBLL.Save(data,CurrentUser.USER_ID,false);
 
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                     );
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
+              
+               
                 return View(model);
             }
         }
@@ -114,11 +119,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = Mapper.Map<UOM>(model);
              
                 _uomBLL.Save(data,CurrentUser.USER_ID, true);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                        );
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
+
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                                       );
                 return View(model);
             }
         }

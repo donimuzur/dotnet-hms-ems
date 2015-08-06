@@ -330,7 +330,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <SubType>Component</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -643,6 +642,17 @@
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.js" />
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xsc">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
+    <None Include="Reports\HeaderFooter\HeaderFooterDs.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HeaderFooterDs.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xss">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -888,11 +898,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
+    <EmbeddedResource Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>HeaderFooterPreview.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
