@@ -135,11 +135,25 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public int DeleteMaterialUom(int id)
+        public int DeleteMaterialUom(int id, string userId)
         {
             try
             {
                 _repositoryUoM.Delete(id);
+
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                    FORM_ID = "20",
+                    FIELD_NAME = "CONVERTION",
+                    MODIFIED_BY = userId,
+                    MODIFIED_DATE = DateTime.Now,
+                    OLD_VALUE = id.ToString(),
+                    NEW_VALUE = id.ToString()
+                };
+
+                _changesHistoryBll.AddHistory(changes);
+
                 _uow.SaveChanges();
             }
             catch (Exception)

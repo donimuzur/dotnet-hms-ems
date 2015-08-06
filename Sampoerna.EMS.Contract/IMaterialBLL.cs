@@ -24,6 +24,6 @@ namespace Sampoerna.EMS.Contract
 
         void Delete(string materialnumber, string plant, string userId);
 
-        int DeleteMaterialUom(int id);
+        int DeleteMaterialUom(int id, string userId, string materialnumber, string plant);
     }
 }
