@@ -256,10 +256,10 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
-        public static List<PageDto> GetPageList()
+        public static List<PageDto> GetModuleList()
         {
             IPageBLL pageBll = MvcApplication.GetInstance<PageBLL>();
-            var data = pageBll.GetPages();
+            var data = pageBll.GetParentPages();
             var result = Mapper.Map<List<PageDto>>(data);
             return result;
         }

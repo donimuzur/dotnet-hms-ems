@@ -117,14 +117,25 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (controllerName == "Login" && actionName == "Index") return;
 
-            if (CurrentUser == null)
+            if (CurrentUser == null )
             {
-                
                 filterContext.Result = new RedirectToRouteResult(
-                    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
-
+                   new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+                
+             
                 
             }
+            if (CurrentUser.AuthorizePages != null)
+            {
+                
+                if (!CurrentUser.AuthorizePages.Contains(PageInfo.PARENT_PAGE_ID))
+                {
+                    filterContext.Result = new RedirectToRouteResult(
+                   new RouteValueDictionary { { "controller", "UnAuthorize" }, { "action", "Error" } });
+
+                }
+            }
+
 
         }
 

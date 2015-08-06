@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         List<BRoleDto> GetAllBRole();
 
+        List<int?> GetAuthPages(string userid);
 
     }
 }

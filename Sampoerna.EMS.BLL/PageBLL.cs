@@ -45,5 +45,11 @@ namespace Sampoerna.EMS.BLL
         {
             _pageMapRepository.Delete(id);
         }
+
+        public List<PAGE> GetParentPages()
+        {
+            var arrParent = new List<int?>{ 1, 3 };
+            return _pageRepository.Get(p => arrParent.Any(x=>x == p.PARENT_PAGE_ID)).ToList();
+        }
     }
 }

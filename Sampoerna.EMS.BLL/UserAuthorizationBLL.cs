@@ -16,12 +16,14 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER_BROLE> _repository;
+        private IGenericRepository<BROLE_MAP> _repositoryRoleMap;
        
         public UserAuthorizationBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
             _uow = uow;
             _repository = uow.GetGenericRepository<USER_BROLE>();
+            _repositoryRoleMap = uow.GetGenericRepository<BROLE_MAP>();
         }
         public List<UserAuthorizationDto> GetAll()
         {
@@ -40,5 +42,19 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<BRoleDto>>(dtData);
         }
 
+        public List<int?> GetAuthPages(string userid)
+        {
+            var pages = new List<int?>();
+            var broleMaps = _repositoryRoleMap.Get(x => x.MSACCT == userid);
+            foreach (var broleMap in broleMaps)
+            {
+                var brole = GetById(broleMap.BROLE);
+                foreach (var page in brole.PageMaps)
+                {
+                    pages.Add(page.Page.Id);
+                }
+            }
+            return pages;
+        }
     }
 }

@@ -13,5 +13,8 @@ namespace Sampoerna.EMS.Contract
         void Save(PAGE_MAP pageMap);
 
         void DeletePageMap(int id);
+
+        List<PAGE> GetParentPages();
+
     }
 }

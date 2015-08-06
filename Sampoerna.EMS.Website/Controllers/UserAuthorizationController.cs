@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new EditUserAuthorizationViewModel();
             model.RoleAuthorizationDto = _userAuthorizationBll.GetById(id);
-            model.Pages = GlobalFunctions.GetPageList();
+            model.Pages = GlobalFunctions.GetModuleList();
             if (model.RoleAuthorizationDto.PageMaps != null)
             {
                 var pageMaps = model.RoleAuthorizationDto.PageMaps;
