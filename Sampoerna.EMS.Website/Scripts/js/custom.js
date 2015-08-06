@@ -39,4 +39,7 @@ $(document).ready(function() {
 	    var expires = "expires=" + d.toUTCString();
 	    document.cookie = cname + "=" + cvalue + "; " + expires;
 	}
+	$('.menu-claimable').on( 'keypress', function( e ) {
+        $('.menu-claimable').modal({ show: false});
+    });
 });

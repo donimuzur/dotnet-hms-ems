@@ -246,6 +246,7 @@ namespace Sampoerna.EMS.Website.Controllers
             updatedModel.Tariff = updatedModel.TariffValueStr == null ? 0 : Convert.ToDecimal(updatedModel.TariffValueStr);
             updatedModel.Conversion = updatedModel.ConversionValueStr == null ? 0 : Convert.ToDecimal(updatedModel.ConversionValueStr);
             updatedModel.PrintingPrice = updatedModel.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(updatedModel.PrintingPriceValueStr);
+            
 
             if (origin.IS_FROM_SAP.HasValue == false || origin.IS_FROM_SAP.Value == false)
             {
@@ -274,7 +275,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             changesData.Add("Conversion", origin.CONVERSION.Equals(updatedModel.Conversion));
-            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == null || origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
+            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
             changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE.Equals(updatedModel.PrintingPrice));
 
             foreach (var listChange in changesData)
