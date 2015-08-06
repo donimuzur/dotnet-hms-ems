@@ -47,6 +47,9 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
@@ -248,12 +251,14 @@
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
+    <Compile Include="Filters\EncryptedParameterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AuthorizeADAttribute.cs" />
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
     <Compile Include="Helpers\LDAPHelper.cs" />
+    <Compile Include="Helpers\UrlHelperExtensions.cs" />
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
@@ -318,6 +323,23 @@
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\HeaderFooter\HeaderFooterPreview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
@@ -623,6 +645,17 @@
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.js" />
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xsc">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
+    <None Include="Reports\HeaderFooter\HeaderFooterDs.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HeaderFooterDs.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xss">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -656,6 +689,7 @@
     <Content Include="Scripts\thousand-separator.js" />
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
@@ -793,17 +827,24 @@
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
     <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
-    <Content Include="Views\PBCK1\SummaryReports.cshtml" />
-    <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
+
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\UserAuthorization\Index.cshtml" />
     <Content Include="Views\UserAuthorization\Create.cshtml" />
     <Content Include="Views\UserAuthorization\Edit.cshtml" />
     <Content Include="Views\UserAuthorization\Detail.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleExport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalExport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportIntercompany.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalIntercompany.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleImport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportImport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalImport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleManual.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -859,6 +900,19 @@
     <Content Include="Reports\HeaderFooterPreview.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>HeaderFooterPreview.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

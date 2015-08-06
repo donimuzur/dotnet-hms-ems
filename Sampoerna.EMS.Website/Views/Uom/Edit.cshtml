@@ -11,7 +11,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3 class="desc">UOM <span>Unit Of Measurement</span></h3>
+                <h3 class="desc">UoM <span>Unit Of Measurement</span></h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
@@ -40,7 +40,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <label class="col-md-2">UOM Code<span class="red">*</span></label>
+                                                <label class="col-md-2">UoM Code<span class="red">*</span></label>
                                                 <div class="col-md-4">
                                                     @Html.TextBox("uom_id", Model.UomId, new { @class = "form-control", @disabled="disabled" })
                                                     @Html.HiddenFor(x=>x.UomId)
@@ -50,7 +50,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <label class="col-md-2">UOM Description<span class="red">*</span></label>
+                                                <label class="col-md-2">UoM Description<span class="red">*</span></label>
                                                 <div class="col-md-4">
                                                     @Html.TextBoxFor(model => model.UomName, new { @class = "form-control", @maxlength = "200" })
                                                  

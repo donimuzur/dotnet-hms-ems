@@ -49,6 +49,9 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.ZAIDM_EX_MATERIAL1 = new HashSet<ZAIDM_EX_MATERIAL>();
             this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
+            this.LACK2 = new HashSet<LACK2>();
+            this.LACK21 = new HashSet<LACK2>();
+            this.LACK22 = new HashSet<LACK2>();
             this.PRINT_HISTORY = new HashSet<PRINT_HISTORY>();
         }
     
@@ -95,6 +98,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL1 { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
+        public virtual ICollection<LACK2> LACK2 { get; set; }
+        public virtual ICollection<LACK2> LACK21 { get; set; }
+        public virtual ICollection<LACK2> LACK22 { get; set; }
         public virtual ICollection<PRINT_HISTORY> PRINT_HISTORY { get; set; }
     }
 }

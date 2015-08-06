@@ -16,6 +16,7 @@ using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
@@ -677,6 +678,8 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<UserAuthorizationDto, CreateUserAuthorizationViewModel>().IgnoreAllNonExisting();
 
             #endregion
+
+            Mapper.CreateMap<PrintHistoryDto, PrintHistoryItemModel>().IgnoreAllNonExisting();
         }
     }
 

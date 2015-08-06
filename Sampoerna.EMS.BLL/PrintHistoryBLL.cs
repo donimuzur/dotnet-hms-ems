@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.BLL
 
         public PrintHistoryDto GetById(long id)
         {
-            Expression<Func<PRINT_HISTORY, bool>> queryFilter = c => c.PRINT_HOSTORY_ID == id;
+            Expression<Func<PRINT_HISTORY, bool>> queryFilter = c => c.PRINT_HISTORY_ID == id;
             var dbData = _repository.Get(queryFilter, null, includeTables);
             if(dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

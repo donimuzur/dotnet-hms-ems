@@ -59,4 +59,25 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType ActionType { get; set; }
         public string Comment { get; set; }
     }
+
+    public class CK5GetSummaryReportByParamInput
+    {
+        public string CompanyCodeSource { get; set; }
+
+        public string CompanyCodeDest { get; set; }
+        
+        public string NppbkcIdSource { get; set; }
+        
+        public string NppbkcIdDest { get; set; }
+        
+        public string PlantSource { get; set; }
+        
+        public string PlantDest { get; set; }
+        
+        public DateTime? DateFrom { get; set; }
+        
+        public DateTime? DateTo { get; set; }
+
+        public Enums.CK5Type Ck5Type { get; set; }
+    }
 }

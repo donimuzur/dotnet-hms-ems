@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Website.Models.PrintHistory
 
     public class PrintHistoryItemModel
     {
-        public long PRINT_HOSTORY_ID { get; set; }
+        public long PRINT_HISTORY_ID { get; set; }
         public Core.Enums.FormType FORM_TYPE_ID { get; set; }
         public long FORM_ID { get; set; }
         public string FORM_NUMBER { get; set; }
