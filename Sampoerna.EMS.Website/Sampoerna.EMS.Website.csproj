@@ -289,7 +289,7 @@
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
-    <Compile Include="Models\LACK1\LACK1Item.cs" />
+    <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
     <Compile Include="Models\LACK1\NppbkcData.cs" />
     <Compile Include="Models\LACK1\PlantData.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -840,7 +840,6 @@
     <Content Include="Views\LACK1\_Lack1ListByPlantTable.cshtml" />
     <Content Include="Views\LACK1\Create.cshtml" />
     <Content Include="Views\LACK1\_HomeCreate.cshtml" />
-
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />

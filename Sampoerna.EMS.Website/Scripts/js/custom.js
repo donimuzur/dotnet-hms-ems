@@ -22,3 +22,9 @@ $(document).ready(function() {
 		responsive: true
 	} );
 });
+$(document).keypress(function (e) {
+    if (e.which == 13) {
+        $('.bs-example-modal-sm').modal('hide');
+        $('.delete-modal').modal('hide');
+    }
+});

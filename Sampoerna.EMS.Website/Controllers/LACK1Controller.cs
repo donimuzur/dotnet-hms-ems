@@ -196,8 +196,36 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
-        
-        #endregion 
+       #endregion
+
+        private Lack1CreateNppbkcViewModel InitialModel(Lack1CreateNppbkcViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            model.BukrList = GlobalFunctions.GetCompanyList();
+            model.MontList = GlobalFunctions.GetMonthList();
+            //model.YearsList = GlobalFunctions.GetYears();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.SupplierList = GlobalFunctions.GetSupplierPlantList();
+            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.WasteUomList = GlobalFunctions.GetUomList();
+            model.ReturnUomList = GlobalFunctions.GetUomList();
+            //liststatus.
+
+            return (model);
+
+        }
+
+
+        public ActionResult Create()
+        {
+            var model = new Lack1CreateNppbkcViewModel();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return View("Create","");
+        }
 
     }
 }
