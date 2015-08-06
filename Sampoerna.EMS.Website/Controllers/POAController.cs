@@ -248,7 +248,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
-            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.POA);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.POA,id);
            
             var model = new POAFormModel();
             model.MainMenu = _mainMenu;
