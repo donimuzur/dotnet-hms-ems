@@ -148,9 +148,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
                 
-                 TempData[Constans.SubmitType.Save]  = _brandRegistrationBll.Save(dbBrand);
-                  
+ 
                
 
                 
@@ -228,9 +229,12 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            TempData[Constans.SubmitType.Update]  =_brandRegistrationBll.Save(dbBrand);
+            _brandRegistrationBll.Save(dbBrand);
 
-          
+            AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                         );
+                
+
             return RedirectToAction("Index");
           
         }

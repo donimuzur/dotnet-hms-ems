@@ -144,14 +144,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 SetChanges(origin, nppbkc);
                 AutoMapper.Mapper.Map(model.Detail, nppbkc);
                 _nppbkcBll.Save(nppbkc);
-               
-               
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
                 return RedirectToAction("Index");
 
             }
             catch(Exception ex)
             {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
                 return View();
             }
 
@@ -168,6 +171,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.Plant = _plantBll.Get(id);
             var detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
             model.Detail = detail;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
@@ -180,11 +184,13 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 _nppbkcBll.Delete(id);
-                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+                AddMessageInfo(Constans.SubmitMessage.Deleted, Enums.MessageInfoType.Success
+                      );
             }
             catch (Exception ex)
             {
-                TempData[Constans.SubmitType.Delete] = ex.Message;
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                        );
             }
             return RedirectToAction("Index");
         }
