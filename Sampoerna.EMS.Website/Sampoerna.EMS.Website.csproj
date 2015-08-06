@@ -332,7 +332,7 @@
       <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
+    <Compile Include="Controllers\CK5PrintOutMaterial.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
@@ -902,7 +902,7 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\CK5\CK5PrintOutMaterial.rpt">
+    <EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
     </EmbeddedResource>

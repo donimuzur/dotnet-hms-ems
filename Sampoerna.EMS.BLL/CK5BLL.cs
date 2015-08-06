@@ -883,9 +883,24 @@ namespace Sampoerna.EMS.BLL
         }
 
         #endregion
-        //public void PrintHistory()
-        //{
-        //    _printHistoryBll.AddPrintHistory();
-        //}
+
+        public void AddPrintHistory(long id, string userId)
+        {
+            var dtData = _repository.GetByID(id);
+             if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            var printHistory = new PrintHistoryDto();
+            printHistory.FORM_ID = dtData.CK5_ID;
+            printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
+            printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+            printHistory.PRINT_BY = userId;
+            printHistory.PRINT_DATE = DateTime.Now;
+
+
+            _printHistoryBll.AddPrintHistory(printHistory);
+
+            _uow.SaveChanges();
+        }
     }
 }

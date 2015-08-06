@@ -368,6 +368,16 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnUom;
             
+            private global::System.Data.DataColumn columnPemberitahuName;
+            
+            private global::System.Data.DataColumn columnPemberitahuAddress;
+            
+            private global::System.Data.DataColumn columnPemberitahuId;
+            
+            private global::System.Data.DataColumn columnPemberitahuCity;
+            
+            private global::System.Data.DataColumn columnPemberitahuDate;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public dtCk5DataTable() {
@@ -619,6 +629,46 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PemberitahuNameColumn {
+                get {
+                    return this.columnPemberitahuName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PemberitahuAddressColumn {
+                get {
+                    return this.columnPemberitahuAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PemberitahuIdColumn {
+                get {
+                    return this.columnPemberitahuId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PemberitahuCityColumn {
+                get {
+                    return this.columnPemberitahuCity;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PemberitahuDateColumn {
+                get {
+                    return this.columnPemberitahuDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -681,7 +731,12 @@ namespace Sampoerna.EMS.ReportingData {
                         string FacilityDate, 
                         string CarriageMethod, 
                         string Total, 
-                        string Uom) {
+                        string Uom, 
+                        string PemberitahuName, 
+                        string PemberitahuAddress, 
+                        string PemberitahuId, 
+                        string PemberitahuCity, 
+                        string PemberitahuDate) {
                 dtCk5Row rowdtCk5Row = ((dtCk5Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         OfficeName,
@@ -710,7 +765,12 @@ namespace Sampoerna.EMS.ReportingData {
                         FacilityDate,
                         CarriageMethod,
                         Total,
-                        Uom};
+                        Uom,
+                        PemberitahuName,
+                        PemberitahuAddress,
+                        PemberitahuId,
+                        PemberitahuCity,
+                        PemberitahuDate};
                 rowdtCk5Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtCk5Row);
                 return rowdtCk5Row;
@@ -760,6 +820,11 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnCarriageMethod = base.Columns["CarriageMethod"];
                 this.columnTotal = base.Columns["Total"];
                 this.columnUom = base.Columns["Uom"];
+                this.columnPemberitahuName = base.Columns["PemberitahuName"];
+                this.columnPemberitahuAddress = base.Columns["PemberitahuAddress"];
+                this.columnPemberitahuId = base.Columns["PemberitahuId"];
+                this.columnPemberitahuCity = base.Columns["PemberitahuCity"];
+                this.columnPemberitahuDate = base.Columns["PemberitahuDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -819,6 +884,16 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnTotal);
                 this.columnUom = new global::System.Data.DataColumn("Uom", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnUom);
+                this.columnPemberitahuName = new global::System.Data.DataColumn("PemberitahuName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPemberitahuName);
+                this.columnPemberitahuAddress = new global::System.Data.DataColumn("PemberitahuAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPemberitahuAddress);
+                this.columnPemberitahuId = new global::System.Data.DataColumn("PemberitahuId", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPemberitahuId);
+                this.columnPemberitahuCity = new global::System.Data.DataColumn("PemberitahuCity", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPemberitahuCity);
+                this.columnPemberitahuDate = new global::System.Data.DataColumn("PemberitahuDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPemberitahuDate);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1808,6 +1883,86 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PemberitahuName {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.PemberitahuNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PemberitahuName\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.PemberitahuNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PemberitahuAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.PemberitahuAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PemberitahuAddress\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.PemberitahuAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PemberitahuId {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.PemberitahuIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PemberitahuId\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.PemberitahuIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PemberitahuCity {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.PemberitahuCityColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PemberitahuCity\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.PemberitahuCityColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PemberitahuDate {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.PemberitahuDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PemberitahuDate\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.PemberitahuDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsOfficeNameNull() {
                 return this.IsNull(this.tabledtCk5.OfficeNameColumn);
             }
@@ -2128,6 +2283,66 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetUomNull() {
                 this[this.tabledtCk5.UomColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPemberitahuNameNull() {
+                return this.IsNull(this.tabledtCk5.PemberitahuNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPemberitahuNameNull() {
+                this[this.tabledtCk5.PemberitahuNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPemberitahuAddressNull() {
+                return this.IsNull(this.tabledtCk5.PemberitahuAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPemberitahuAddressNull() {
+                this[this.tabledtCk5.PemberitahuAddressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPemberitahuIdNull() {
+                return this.IsNull(this.tabledtCk5.PemberitahuIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPemberitahuIdNull() {
+                this[this.tabledtCk5.PemberitahuIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPemberitahuCityNull() {
+                return this.IsNull(this.tabledtCk5.PemberitahuCityColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPemberitahuCityNull() {
+                this[this.tabledtCk5.PemberitahuCityColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPemberitahuDateNull() {
+                return this.IsNull(this.tabledtCk5.PemberitahuDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPemberitahuDateNull() {
+                this[this.tabledtCk5.PemberitahuDateColumn] = global::System.Convert.DBNull;
             }
         }
         

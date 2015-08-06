@@ -1115,6 +1115,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return model;
         }
+
         public ActionResult SummaryReports()
         {
 
@@ -1150,6 +1151,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.Export;
+                model.SearchView.Ck5Type = Enums.CK5Type.Export;
 
                 model = InitSummaryReports(model);
 
@@ -1175,6 +1177,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.Intercompany;
+                model.SearchView.Ck5Type = Enums.CK5Type.Intercompany;
 
                 model = InitSummaryReports(model);
 
@@ -1200,6 +1203,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.DomesticAlcohol;
+                model.SearchView.Ck5Type = Enums.CK5Type.DomesticAlcohol;
 
                 model = InitSummaryReports(model);
 
@@ -1225,7 +1229,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.PortToImporter;
-
+                model.SearchView.Ck5Type = Enums.CK5Type.PortToImporter;
                 model = InitSummaryReports(model);
 
             }
@@ -1250,6 +1254,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.ImporterToPlant;
+                model.SearchView.Ck5Type = Enums.CK5Type.ImporterToPlant;
 
                 model = InitSummaryReports(model);
 
@@ -1275,6 +1280,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.Manual;
+                model.SearchView.Ck5Type = Enums.CK5Type.Manual;
 
                 model = InitSummaryReports(model);
 
@@ -3154,6 +3160,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region print
 
+
         private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails)
         {
             var detailRow = dsCk5.dtCk5.NewdtCk5Row();
@@ -3184,7 +3191,21 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.FacilityDate = ck5ReportDetails.FacilityDate;
             detailRow.CarriageMethod = ck5ReportDetails.CarriageMethod;
             detailRow.Total = ck5ReportDetails.Total;
-            detailRow.Uom = ck5ReportDetails.Uom;
+            detailRow.Uom = ck5ReportDetails.Uom ?? "Box";
+            //hardcode
+            detailRow.PemberitahuName = "Budi Santoso";
+            detailRow.PemberitahuAddress = "Jl. WR.Supratman No87-89 Pekalongan";
+            detailRow.PemberitahuId = "3375032510750006";
+            detailRow.PemberitahuCity = "Jakarta";
+            detailRow.PemberitahuDate = DateTime.Now.ToString("dd MMMM yyyy");
+
+
+            if (!Utils.ConvertHelper.IsNumeric(detailRow.ExGoodType))
+                detailRow.ExGoodType = "3";
+            if (detailRow.CarriageMethod == "0")
+                detailRow.CarriageMethod = "1";
+
+          
 
             dsCk5.dtCk5.AdddtCk5Row(detailRow);
 
@@ -3239,22 +3260,34 @@ namespace Sampoerna.EMS.Website.Controllers
         [EncryptedParameter]
         public ActionResult PrintOut(long? id)
         {
-            //var sourceTable = new dsCK5Print();
+            try
+            {
+                long idCk5 = 0;
+                if (id.HasValue)
+                    idCk5 = id.Value;
 
-            DataTable dt = new DataTable();
-            long idCk5 = 0;
-            if (id.HasValue)
-                idCk5 = id.Value;
+                var dataSet = GetDataSetReport(idCk5);
 
-            var dataSet = GetDataSetReport(idCk5);
-         
-            ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt");
-            rpt.Load();
-            rpt.SetDataSource(dataSet);
-            
-            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            return File(stream, "application/pdf");
+                //add print history
+                _ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+
+                //eks to report
+                var rpt = new ReportClass
+                {
+                    FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt")
+                };
+                rpt.Load();
+                rpt.SetDataSource(dataSet);
+
+                Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+                return File(stream, "application/pdf"); 
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo("Error : " + ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+           
         }
 
         #endregion
