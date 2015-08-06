@@ -17,6 +17,7 @@ using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.HeaderFooter;
+using System.Configuration;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -288,7 +289,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //DataTable dt = new DataTable();
             ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/HeaderFooter/HeaderFooterPreview.rpt");
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "HeaderFooter\\HeaderFooterPreview.rpt";
           
             var dt = PrintPreview(id, isHeaderSet, isFooterSet);
             rpt.Load();

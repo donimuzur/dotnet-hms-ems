@@ -89,6 +89,7 @@
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />
+    <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
