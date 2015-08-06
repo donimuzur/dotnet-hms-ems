@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -107,6 +109,14 @@ namespace Sampoerna.EMS.BLL
                 result = dtData.MANAGER_ID;
 
             return result;
+        }
+
+        public POADto GetDetailsById(string id)
+        {
+            var dtData =  _repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault();
+            //if (dtData == null)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            return AutoMapper.Mapper.Map<POADto>(dtData);
         }
     }
 }

@@ -31,6 +31,9 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IMessageService _messageService;
         private IPrintHistoryBLL _printHistoryBll;
+        private IMonthBLL _monthBll;
+        private IPOABLL _poaBll;
+
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -51,7 +54,10 @@ namespace Sampoerna.EMS.BLL
             _messageService = new MessageService(_logger);
 
             _printHistoryBll = new PrintHistoryBLL(_uow, _logger);
+            _monthBll = new MonthBLL(_uow, _logger);
+            _poaBll = new POABLL(_uow, _logger);
         }
+        
 
         public CK5Dto GetById(long id)
         {
@@ -878,11 +884,53 @@ namespace Sampoerna.EMS.BLL
 
             //var ck5Report = new CK5ReportDto();
             //ck5Report.ReportDetails = Mapper.Map<>()
+            var result = Mapper.Map<CK5ReportDto>(dtData);
 
-            return Mapper.Map<CK5ReportDto>(dtData);
+
+            if (result.ReportDetails.CarriageMethod == "0")
+                result.ReportDetails.CarriageMethod = "";
+
+            //date convertion
+            if (dtData.SUBMISSION_DATE.HasValue)
+                result.ReportDetails.SubmissionDate = DateReportDisplayString(dtData.SUBMISSION_DATE.Value);
+            if (dtData.REGISTRATION_DATE.HasValue)
+                result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value);
+            if (dtData.PBCK1 != null)
+            {
+                if (dtData.PBCK1.DECREE_DATE.HasValue)
+                    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value);
+            }
+            if (dtData.INVOICE_DATE.HasValue)
+                result.ReportDetails.InvoiceDate = DateReportDisplayString(dtData.INVOICE_DATE.Value);
+
+            result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now);
+
+            //get poa info
+            POADto poaInfo;
+            poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
+            if (poaInfo == null)
+                poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
+
+            if (poaInfo != null)
+            {
+                result.ReportDetails.PoaName = poaInfo.PRINTED_NAME;
+                result.ReportDetails.PoaAddress = poaInfo.POA_ADDRESS;
+                result.ReportDetails.PoaIdCard = poaInfo.ID_CARD;
+                result.ReportDetails.PoaCity = dtData.KPPBC_CITY;
+            }
+
+            return result;
+            //return Mapper.Map<CK5ReportDto>(dtData);
         }
 
         #endregion
+
+        private string DateReportDisplayString(DateTime dt)
+        {
+            var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+            return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                   " " + dt.ToString("yyyy");
+        }
 
         public void AddPrintHistory(long id, string userId)
         {

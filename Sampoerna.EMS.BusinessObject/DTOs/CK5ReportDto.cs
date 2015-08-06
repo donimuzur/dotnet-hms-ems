@@ -54,25 +54,33 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Total { get; set; }
         public string Uom { get; set; }
 
+        public string PrintDate { get; set; }
+        public string PoaName { get; set; }
+        public string PoaAddress { get; set; }
+        public string PoaIdCard { get; set; }
+        public string PoaCity { get; set; }
+        public string InvoiceNumber { get; set; }
+        public string InvoiceDate { get; set; }
     }
 
     public class CK5ReportMaterialDto
     {
         public string Number { get; set; }
-        public string Total { get; set; }
+        public string Qty { get; set; }
         public string Uom { get; set; }
-        public string TotalConverted { get; set; }
-        public string UomConverted { get; set; }
-        public string ExGoodTypeDesc { get; set; }
+        public string Convertion { get; set; }
+        public string ConvertedQty { get; set; }
+        public string ConvertedUom { get; set; }
 
-        public string ConvertionItem { get; set; }
-        public string ConvertionUomItem { get; set; }
+        //public string ConvertionItem { get; set; }
+        //public string ConvertionUomItem { get; set; }
 
         public string Hje { get; set; }
         public string Tariff { get; set; }
         public string ExciseValue { get; set; }
         public string UsdValue { get; set; }
-
         public string Note { get; set; }
+
+
     }
 }

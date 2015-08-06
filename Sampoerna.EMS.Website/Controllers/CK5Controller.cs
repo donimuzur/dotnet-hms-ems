@@ -3191,19 +3191,29 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.FacilityDate = ck5ReportDetails.FacilityDate;
             detailRow.CarriageMethod = ck5ReportDetails.CarriageMethod;
             detailRow.Total = ck5ReportDetails.Total;
-            detailRow.Uom = ck5ReportDetails.Uom ?? "Box";
+            detailRow.Uom = ck5ReportDetails.Uom;
+
+            detailRow.PrintDate = ck5ReportDetails.PrintDate;
+            detailRow.PoaName = ck5ReportDetails.PoaName;
+            detailRow.PoaAddress = ck5ReportDetails.PoaAddress;
+            detailRow.PoaIdCard = ck5ReportDetails.PoaIdCard;
+            detailRow.PoaCity = ck5ReportDetails.PoaCity;
+            detailRow.InvoiceNumber = ck5ReportDetails.InvoiceNumber;
+            detailRow.InvoiceDate = ck5ReportDetails.InvoiceDate;
+
             //hardcode
-            detailRow.PemberitahuName = "Budi Santoso";
-            detailRow.PemberitahuAddress = "Jl. WR.Supratman No87-89 Pekalongan";
-            detailRow.PemberitahuId = "3375032510750006";
-            detailRow.PemberitahuCity = "Jakarta";
-            detailRow.PemberitahuDate = DateTime.Now.ToString("dd MMMM yyyy");
+            //detailRow.PemberitahuName = "Budi Santoso";
+            //detailRow.PemberitahuAddress = "Jl. WR.Supratman No87-89 Pekalongan";
+            //detailRow.PemberitahuId = "3375032510750006";
+            //detailRow.PemberitahuCity = "Jakarta";
 
+            //detailRow.PemberitahuDate = ck5ReportDetails.PrintDate;
 
+            //todo remove
             if (!Utils.ConvertHelper.IsNumeric(detailRow.ExGoodType))
                 detailRow.ExGoodType = "3";
-            if (detailRow.CarriageMethod == "0")
-                detailRow.CarriageMethod = "1";
+            //if (detailRow.CarriageMethod == "0")
+            //    detailRow.CarriageMethod = "1";
 
           
 
@@ -3220,13 +3230,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var detailRow = dsCk5.dtCk5Material.NewdtCk5MaterialRow();
 
                 detailRow.Number = i.ToString();
-                detailRow.Total = materialDto.Total;
+                detailRow.Qty = materialDto.Qty;
                 detailRow.Uom = materialDto.Uom;
-                detailRow.TotalConverted = materialDto.TotalConverted;
-                detailRow.UomConverted = materialDto.UomConverted;
-                detailRow.ExGoodTypeDesc = materialDto.ExGoodTypeDesc;
-                detailRow.ConvertionItem = materialDto.ConvertionItem;
-                detailRow.ConvertionUomItem = materialDto.ConvertionUomItem;
+                detailRow.Convertion = materialDto.Convertion;
+                detailRow.ConvertedQty = materialDto.ConvertedQty;
+                detailRow.ConvertedUom = materialDto.ConvertedUom;
+               
                 detailRow.Hje = materialDto.Hje;
                 detailRow.Tariff = materialDto.Tariff;
                 detailRow.ExciseValue = materialDto.ExciseValue;
@@ -3269,7 +3278,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dataSet = GetDataSetReport(idCk5);
 
                 //add print history
-                _ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+                //_ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
 
                 //eks to report
                 var rpt = new ReportClass
