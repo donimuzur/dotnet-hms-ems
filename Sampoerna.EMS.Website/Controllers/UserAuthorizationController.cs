@@ -114,7 +114,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         
                     }
             }
-
+            AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
 
             return RedirectToAction("Index");
         }
