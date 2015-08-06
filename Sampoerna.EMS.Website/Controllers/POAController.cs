@@ -80,7 +80,15 @@ namespace Sampoerna.EMS.Website.Controllers
                             if (sk != null)
                             {
                                 var poa_sk = new POA_SK();
-                                poa_sk.FILE_NAME = sk.FileName;
+                                var filenamecheck = sk.FileName;
+                                if (filenamecheck.Contains("\\"))
+                                {
+                                    poa_sk.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                }
+                                else {
+                                    poa_sk.FILE_NAME = sk.FileName;
+                                }
+                                
                                 poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
                                 poa.POA_SK.Add(poa_sk);
                               
@@ -214,7 +222,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (sk != null)
                         {
                             var poa_sk = new POA_SK();
-                            poa_sk.FILE_NAME = sk.FileName;
+                            var filenamecheck = sk.FileName;
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                poa_sk.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+                            else
+                            {
+                                poa_sk.FILE_NAME = sk.FileName;
+                            }
                             poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
                             poa_sk.POA_ID = poaId;
                             _poaskbll.Save(poa_sk);
@@ -248,7 +264,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
-            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.POA);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.POA,id);
            
             var model = new POAFormModel();
             model.MainMenu = _mainMenu;

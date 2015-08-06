@@ -330,6 +330,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -826,7 +827,6 @@
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
-
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
@@ -899,10 +899,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
+    <Content Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>HeaderFooterPreview.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
