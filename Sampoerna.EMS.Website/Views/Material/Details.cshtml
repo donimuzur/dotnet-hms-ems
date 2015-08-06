@@ -3,8 +3,7 @@
     ViewBag.Title = "Detail";
 }
 
-@using (Html.BeginForm("Detail", "Material", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
-{
+
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
@@ -278,23 +277,18 @@
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="deleteData();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href ='@Url.Action("Delete", "Material", new { mn = @Model.MaterialNumber, p=@Model.PlantId })'">Delete</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>    
-}
+
 
 @section scripts {
     <script type="text/javascript" language="javascript">
         
-        var deleteData = function () {
-            
-                window.location = "@Url.Action("Delete", "Material", new { id = @Model.MaterialNumber })";
-            
-
-        };
+       
 
         
         var confirmDeleteData = function () {

@@ -330,9 +330,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return RedirectToAction("Detail", new { mn = mn, p=p});
             }
         }
 
