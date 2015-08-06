@@ -1343,6 +1343,19 @@ namespace Sampoerna.EMS.Website.Controllers
             rpt.Load();
             rpt.SetDataSource(dataSet);
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_ID = pbck1Data.Detail.Pbck1Id,
+                FORM_NUMBER = pbck1Data.Detail.Pbck1Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+
             return File(stream, "application/pdf");
         }
 
@@ -1351,8 +1364,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var dsPbck1 = new dsPbck1();
             dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail);
             dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.ProdPlanList);
-            dsPbck1 = AddDataPbck1ProdConverter(dsPbck1, pbck1ReportData.ProdConverterList);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
+            dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData.RealisasiP3Bkc);
             return dsPbck1;
         }
 
@@ -1394,10 +1407,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return ds;
         }
 
-        private dsPbck1 AddDataPbck1BrandRegistration(dsPbck1 ds, IEnumerable<Pbck1ReportBrandRegistrationDto> brandData)
+        private dsPbck1 AddDataPbck1BrandRegistration(dsPbck1 ds, List<Pbck1ReportBrandRegistrationDto> brandData)
         {
-            if (brandData != null)
+            if (brandData != null && brandData.Count > 0)
             {
+                int no = 1;
                 foreach (var item in brandData)
                 {
                     var detailRow = ds.Pbck1BrandRegistration.NewPbck1BrandRegistrationRow();
@@ -1406,34 +1420,152 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Kadar = item.Kadar;
                     detailRow.Convertion = item.Convertion;
                     detailRow.ConvertionUom = item.ConvertionUom;
+// ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                    detailRow.No = no.ToString();
                     ds.Pbck1BrandRegistration.AddPbck1BrandRegistrationRow(detailRow);
-                }    
+                    no++;
+                }
+            }
+            else
+            {
+                var detailRow = ds.Pbck1BrandRegistration.NewPbck1BrandRegistrationRow();
+                detailRow.Type = "";
+                detailRow.Brand = "";
+                detailRow.Kadar = "";
+                detailRow.Convertion = "";
+                detailRow.ConvertionUom = "";
+                // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                detailRow.No = "";
+                ds.Pbck1BrandRegistration.AddPbck1BrandRegistrationRow(detailRow);
             }
             return ds;
         }
 
-        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, IEnumerable<Pbck1ReportProdPlanDto> prodPlan)
+        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, List<Pbck1ReportProdPlanDto> prodPlan)
         {
-            if (prodPlan != null)
+            if (prodPlan != null && prodPlan.Count > 0)
             {
+                int no = 1;
+                decimal totalAmount = 0;
+                decimal totalBkcRequired = 0;
+
                 foreach (var item in prodPlan)
                 {
                     var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
+
+                    detailRow.ProdTypeCode = item.ProdTypeCode;
+                    detailRow.ProdTypeName = item.ProdTypeName;
+                    detailRow.ProdAlias = item.ProdAlias;
+                    if (item.Amount != null)
+                    {
+                        detailRow.Amount = item.Amount.Value.ToString("N0");
+                        totalAmount += item.Amount.Value;
+                    }
+                    if (item.BkcRequired != null)
+                    {
+                        detailRow.BkcRequired = item.BkcRequired.Value.ToString("N0");
+                        totalBkcRequired += item.BkcRequired.Value;
+                    }
+                    detailRow.BkcRequiredUomId = item.BkcRequiredUomId;
+                    detailRow.BkcRequiredUomName = item.BkcRequiredUomName;
+                    // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                    detailRow.MonthId = item.MonthId.ToString();
+                    detailRow.MonthName = item.MonthName;
+// ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                    detailRow.No = no.ToString();
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
                 }
+                var summaryRow = ds.SummaryProdPlan.NewSummaryProdPlanRow();
+                var firstData = prodPlan.FirstOrDefault();
+                if (firstData != null)
+                {
+                    summaryRow.Amount = totalAmount.ToString("N0");
+                    summaryRow.BkcRequired = totalBkcRequired.ToString("N0");
+                    summaryRow.BkcRequiredUomId = firstData.BkcRequiredUomId;
+                    summaryRow.BkcRequiredUomName = firstData.BkcRequiredUomName;
+                    summaryRow.ProdAlias = firstData.ProdAlias;
+                    summaryRow.ProdTypeCode = firstData.ProdTypeCode;
+                    summaryRow.ProdTypeName = firstData.ProdTypeName;
+                }
+                ds.SummaryProdPlan.AddSummaryProdPlanRow(summaryRow);
+            }
+            else
+            {
+                var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
+
+                detailRow.ProdTypeCode = "";
+                detailRow.ProdTypeName = "";
+                detailRow.ProdAlias = "";
+                detailRow.Amount = "";
+                detailRow.BkcRequired = "";
+                detailRow.BkcRequiredUomId = "";
+                detailRow.BkcRequiredUomName = "";
+                // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                detailRow.MonthId = "";
+                detailRow.MonthName = "";
+                // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                detailRow.No = "";
+                ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
+
+                var summaryRow = ds.SummaryProdPlan.NewSummaryProdPlanRow();
+                summaryRow.Amount = "";
+                summaryRow.BkcRequired = "";
+                summaryRow.BkcRequiredUomId = "";
+                summaryRow.BkcRequiredUomName = "";
+                summaryRow.ProdAlias = "";
+                summaryRow.ProdTypeCode = "";
+                summaryRow.ProdTypeName = "";
+                ds.SummaryProdPlan.AddSummaryProdPlanRow(summaryRow);
             }
             return ds;
         }
 
-        private dsPbck1 AddDataPbck1ProdConverter(dsPbck1 ds, IEnumerable<Pbck1ReportProdConverterDto> prodConverter)
+        private dsPbck1 AddDataRealisasiP3Bkc(dsPbck1 ds, List<Pbck1RealisasiP3BkcDto> realisasiP3Bkc)
         {
-            if(prodConverter != null)
+            if (realisasiP3Bkc != null && realisasiP3Bkc.Count > 0)
             {
-                foreach (var item in prodConverter)
+                decimal totalPemasukan = 0;
+                decimal totalPenggunaan = 0;
+                decimal totalAmount = 0;
+
+                foreach (var item in realisasiP3Bkc)
                 {
-                    var detailRow = ds.Pbck1ProdConv.NewPbck1ProdConvRow();
-                    ds.Pbck1ProdConv.AddPbck1ProdConvRow(detailRow);
+                    var detailRow = ds.RealisasiP3BKC.NewRealisasiP3BKCRow();
+                    detailRow.Bulan = item.Bulan;
+                    detailRow.SaldoAwal = item.SaldoAwal.ToString("N0");
+                    detailRow.Pemasukan = item.Pemasukan.ToString("N0");
+                    detailRow.Penggunaan = item.Penggunaan.ToString("N0");
+                    detailRow.Jenis = item.Jenis;
+                    detailRow.Jumlah = item.Jumlah.ToString("N0");
+                    detailRow.SaldoAkhir = item.SaldoAkhir.ToString("N0");
+                    detailRow.Uom = item.Uom;
+                    ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
+
                 }
+                var summaryRow = ds.SummaryRealisasiP3BKC.NewSummaryRealisasiP3BKCRow();
+                var firstData = realisasiP3Bkc.FirstOrDefault();
+                if (firstData != null)
+                {
+                    summaryRow.Pemasukan = totalPemasukan.ToString("N0");
+                    summaryRow.Penggunaan = totalPenggunaan.ToString("N0");
+                    summaryRow.Jenis = firstData.Jenis;
+                    summaryRow.Jumlah = totalAmount.ToString("N0");
+                    summaryRow.Uom = firstData.Uom;
+                }
+                ds.SummaryRealisasiP3BKC.AddSummaryRealisasiP3BKCRow(summaryRow);
+            }
+            else
+            {
+                var detailRow = ds.RealisasiP3BKC.NewRealisasiP3BKCRow();
+                detailRow.Bulan = "";
+                detailRow.SaldoAwal = "";
+                detailRow.Pemasukan = "";
+                detailRow.Penggunaan = "";
+                detailRow.Jenis = "";
+                detailRow.Jumlah = "";
+                detailRow.SaldoAkhir = "";
+                detailRow.Uom = "";
+                ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
             }
             return ds;
         }

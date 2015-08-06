@@ -6,14 +6,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public Pbck1ReportDto()
         {
-            ProdConverterList = new List<Pbck1ReportProdConverterDto>();
             ProdPlanList = new List<Pbck1ReportProdPlanDto>();
             Detail = new Pbck1ReportInformationDto();
+            RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>();
         }
         public Pbck1ReportInformationDto Detail { get; set; }
-        public List<Pbck1ReportProdConverterDto> ProdConverterList { get; set; }
         public List<Pbck1ReportProdPlanDto> ProdPlanList { get; set; }
         public List<Pbck1ReportBrandRegistrationDto> BrandRegistrationList { get; set; }
+        public List<Pbck1RealisasiP3BkcDto> RealisasiP3Bkc { get; set; }
     }
 
     public class Pbck1ReportInformationDto
@@ -111,14 +111,17 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ExciseManager { get; set; }
     }
 
-    public class Pbck1ReportProdConverterDto
-    {
-        
-    }
-
     public class Pbck1ReportProdPlanDto
     {
-        
+        public string ProdTypeCode { get; set; }
+        public string ProdTypeName { get; set; }
+        public string ProdAlias { get; set; }
+        public decimal? Amount { get; set; }
+        public decimal? BkcRequired { get; set; }
+        public string BkcRequiredUomId { get; set; }
+        public string BkcRequiredUomName { get; set; }
+        public int MonthId { get; set; }
+        public string MonthName { get; set; }
     }
 
     public class Pbck1ReportBrandRegistrationDto
@@ -128,5 +131,17 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Kadar { get; set; }
         public string Convertion { get; set; }
         public string ConvertionUom { get; set; }
+    }
+
+    public class Pbck1RealisasiP3BkcDto
+    {
+        public string Bulan { get; set; }
+        public decimal SaldoAwal { get; set; }
+        public decimal Pemasukan { get; set; }
+        public decimal Penggunaan { get; set; }
+        public string Jenis { get; set; }
+        public decimal Jumlah { get; set; }
+        public decimal SaldoAkhir { get; set; }
+        public string Uom { get; set; }
     }
 }

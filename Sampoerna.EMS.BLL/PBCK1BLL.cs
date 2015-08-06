@@ -1196,6 +1196,11 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
             rc.Detail.PrintedDate = DateReportString(DateTime.Now);
             rc.Detail.ExciseManager = dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME;
+
+            //Set ProdPlan
+            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
+            rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
+            rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
             return rc;
         }
 
