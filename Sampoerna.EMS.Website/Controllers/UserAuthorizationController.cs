@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -21,12 +22,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUserAuthorizationBLL _userAuthorizationBll;
         private Enums.MenuList _mainMenu;
         private IPageBLL _pageBll;
-        public UserAuthorizationController(IPageBLL pageBll, IUserAuthorizationBLL userAuthorization) 
+        private IChangesHistoryBLL _changesHistoryBll;
+        public UserAuthorizationController(IPageBLL pageBll, IUserAuthorizationBLL userAuthorization, IChangesHistoryBLL changesHistoryBll) 
             : base (pageBll, Enums.MenuList.UserAuthorization)
         {
             _userAuthorizationBll = userAuthorization;
             _mainMenu = Enums.MenuList.MasterData;
             _pageBll = pageBll;
+            _changesHistoryBll = changesHistoryBll;
         }
 
         //
@@ -43,7 +46,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Edit(string id)
+        private EditUserAuthorizationViewModel SetDetailModel(string id)
         {
             var model = new EditUserAuthorizationViewModel();
             model.RoleAuthorizationDto = _userAuthorizationBll.GetById(id);
@@ -61,6 +64,12 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            return model;
+        }
+
+        public ActionResult Edit(string id)
+        {
+            var model = SetDetailModel(id);
             return View("Edit", model);
         }
         [HttpPost]
@@ -79,39 +88,103 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     }
                 }
-                
+                var listNewPages = new List<PageMapDto>();
                 if (model.Pages != null)
                 {
                     foreach (var page in model.Pages)
                     {
                         if (page.IsChecked)
                         {
-                            //var pageMapDto = new PageMapDto();
-                            //pageMapDto.Page = page;
-                            //pageMapDto.Brole = model.RoleAuthorizationDto.Brole;
-                            //var pageMapToSave = Mapper.Map<PAGE_MAP>(pageMapDto);
-                            var pageMapToSave = new PAGE_MAP();
-                            pageMapToSave.PAGE_ID = page.Id;
-                            pageMapToSave.BROLE = model.RoleAuthorizationDto.Brole;
-                            
-                       
-                            _pageBll.Save(pageMapToSave);
+                            var pageMapDto = new PageMapDto();
+                            pageMapDto.Page = page;
+                            pageMapDto.Brole = model.RoleAuthorizationDto.Brole;
+                            listNewPages.Add(pageMapDto);
+                           
                         }
                     }
                 }
+                    SetChanges(originPageMap,  listNewPages);
+
+                    foreach (var listNewPage in listNewPages)
+                    {
+                         var pageMapToSave = new PAGE_MAP();
+                         pageMapToSave.PAGE_ID = listNewPage.Page.Id;
+                         pageMapToSave.BROLE = listNewPage.Brole;
+                         _pageBll.Save(pageMapToSave);
+                        
+                    }
             }
 
 
             return RedirectToAction("Index");
         }
 
-
-        [HttpPost]
-        public JsonResult GetMapByBroleId(string id)
+        public ActionResult Detail(string id)
         {
-          var result =  _userAuthorizationBll.GetById(id);
-          return Json(result);
-
+            var model = SetDetailModel(id);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.UserAuthorization, id);
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
+          
+            return View("Detail", model);
         }
+
+        private void SetChanges(UserAuthorizationDto origin, List<PageMapDto> New)
+        {
+            var changesData = new Dictionary<string, bool>();
+            var originPageList = string.Empty;
+            if (origin.PageMaps != null)
+            {
+                for (int i = 0; i < origin.PageMaps.Count; i++)
+                {
+                    originPageList += origin.PageMaps[i].Page.PageName;
+                    if (i < (origin.PageMaps.Count - 1))
+                    {
+                        originPageList += ", ";
+                    }
+                }
+            }
+            var newPageList = string.Empty;
+            if (New != null)
+            {
+                for (int i = 0; i < New.Count; i++)
+                {
+                    newPageList += New[i].Page.PageName;
+                    if (i < (New.Count - 1))
+                    {
+                        newPageList += ", ";
+                    }
+                }
+            }
+
+            if (originPageList != newPageList)
+            {
+                var changes = new CHANGES_HISTORY();
+                changes.FORM_TYPE_ID = Enums.MenuList.UserAuthorization;
+                changes.FORM_ID = origin.Brole;
+                changes.FIELD_NAME = "PAGE";
+                changes.MODIFIED_BY = CurrentUser.USER_ID;
+                changes.MODIFIED_DATE = DateTime.Now;
+
+                changes.OLD_VALUE = originPageList;
+                changes.NEW_VALUE = newPageList;
+
+
+                _changesHistoryBll.AddHistory(changes);
+
+            }
+
+                    
+
+
+                
+            
+
+
+
+
+        } 
+    
+       
+       
     }
 }

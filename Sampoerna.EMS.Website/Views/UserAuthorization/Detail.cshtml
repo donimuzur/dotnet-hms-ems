@@ -1,4 +1,4 @@
-﻿
+﻿@model Sampoerna.EMS.Website.Models.UserAuthorization.EditUserAuthorizationViewModel
 @{
     ViewBag.Title = "Detail";
 }
@@ -8,124 +8,130 @@
         <div class="col-sm-12">
             <h3>User Group Form</h3>
             <div class="action-button">
-                <button class="btn btn-blue">Save</button>
-                <button class="btn btn-grey">Cancel</button>
+                <a href="@Url.Action("Index", "UserAuthorization")" class="btn btn-grey"> Back </a>
             </div>
         </div>
     </div>
 </div>
+
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            <div class="white-wrapper">
-                <div class="scroll">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        User Group
-                                        <i class="fa fa-caret-down"></i>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <form class="form-excise" role="form">
-                                        <div class="row">
-                                            <div class="col-md-6">
+            <div role="tabpanel">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                User Group
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <form class="form-excise" role="form">
                                                 <div class="row">
-                                                    <label class="col-md-4">BRole</label>
-                                                    <div class="col-md-8">
-                                                        <select class="form-control">
-                                                            <option>BRole</option>
-                                                            <option>3067</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Description</label>
-                                                    <div class="col-md-8">
-                                                        <textarea class="form-control" rows="5" id="comment" disabled></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Page</label>
-                                                    <div class="col-md-8">
-                                                        <div class="page-role">
-                                                            <div>
-                                                                <input type="checkbox"> Page 1
-                                                            </div>
-                                                            <div>
-                                                                <input type="checkbox"> Page 2
-                                                            </div>
-                                                            <div>
-                                                                <input type="checkbox"> Page 3
-                                                            </div>
-                                                            <div>
-                                                                <input type="checkbox"> Page 4
-                                                            </div>
-                                                            <div>
-                                                                <input type="checkbox"> Page 5
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">BRole</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("brole_id", Model.RoleAuthorizationDto.Brole, new { @class = "form-control", disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Description</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("brole_desc", Model.RoleAuthorizationDto.BroleDescription, new { @class = "form-control", disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Page</label>
+                                                            <div class="col-md-8">
+                                                                <div class="page-role">
+                                                                    @if (Model.Pages != null)
+                                                                    {
+                                                                        for (int i = 0; i < Model.Pages.Count; i++)
+                                                                        {
+                                                                            <div>
+                                                                                @Html.CheckBox("pages", Model.Pages[i].IsChecked, new { @disabled = "disabled" }) @(Model.Pages[i].PageName)
+
+                                                                            </div>
+                                                                        }
+                                                                    }
+
+
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var map in Model.RoleAuthorizationDto.BRoleMaps)
+                                        {
+                                            <tr>
+                                                <td>@map.User.UserId</td>
+                                                <td>@(map.User.UserFirstName + " " + map.User.UserLastName)</td>
+                                                <td>@map.User.UserEmail</td>
+                                                <td>@map.StartDate</td>
+                                                <td>@map.EndDate</td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="table-container">
-                        <table class="table table-bordered table-striped js-options-table">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+            @section Scripts
+{
+                <script type="text/javascript" language="javascript">
+                    $('#MenuUserAuthorization').addClass('active');
+                </script>
 
+            }
 

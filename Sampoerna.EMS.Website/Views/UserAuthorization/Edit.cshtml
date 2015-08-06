@@ -66,6 +66,7 @@
                                                                     {
                                                                         <div>
                                                                             @Html.HiddenFor(x => Model.Pages[i].Id)
+                                                                            @Html.HiddenFor(x => Model.Pages[i].PageName)
                                                                             @Html.CheckBoxFor(x => Model.Pages[i].IsChecked) @(Model.Pages[i].PageName)
                                                                     
                                                                         </div>
