@@ -16,5 +16,8 @@ namespace Sampoerna.EMS.Contract
 
         List<PAGE> GetParentPages();
 
+        List<int?> GetAuthPages(string userid);
+
+
     }
 }

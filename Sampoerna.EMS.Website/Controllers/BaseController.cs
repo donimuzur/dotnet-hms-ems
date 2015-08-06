@@ -125,16 +125,20 @@ namespace Sampoerna.EMS.Website.Controllers
              
                 
             }
-            if (CurrentUser.AuthorizePages != null)
-            {
-                
-                if (!CurrentUser.AuthorizePages.Contains(PageInfo.PARENT_PAGE_ID))
-                {
-                    filterContext.Result = new RedirectToRouteResult(
-                   new RouteValueDictionary { { "controller", "UnAuthorize" }, { "action", "Error" } });
+            //implement later
+            //CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser.USER_ID);
+            //if (CurrentUser.AuthorizePages != null)
+            //{
+            //    if (!CurrentUser.AuthorizePages.Contains(PageInfo.PAGE_ID))
+            //    {
+            //        if (!CurrentUser.AuthorizePages.Contains(PageInfo.PARENT_PAGE_ID))
+            //        {
+            //            filterContext.Result = new RedirectToRouteResult(
+            //                new RouteValueDictionary {{"controller", "UnAuthorize"}, {"action", "Error"}});
 
-                }
-            }
+            //        }
+            //    }
+            //}
 
 
         }
