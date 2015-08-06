@@ -23,10 +23,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MODIFIED_BY { get; set; }
         public bool? IS_DELETED { get; set; }
 
-        public LFA1 LFA1 { get; set; }
-        public T001 T001 { get; set; }
-        public T001 T0011 { get; set; }
-        public ICollection<T001W> T001W { get; set; }
+        public LFA1Dto LFA1 { get; set; }
+        public T001Dto T001 { get; set; }
+        public T001Dto T0011 { get; set; }
+        public ICollection<T001WDto> T001W { get; set; }
         public ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
         public ICollection<POA_MAP> POA_MAP { get; set; }
         public USER USER { get; set; }

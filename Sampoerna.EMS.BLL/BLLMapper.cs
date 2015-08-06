@@ -97,6 +97,9 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKCDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<ZAIDM_EX_KPPBC, ZAIDM_EX_KPPBCDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<T001, T001Dto>().IgnoreAllNonExisting();
+
         }
     }
 }

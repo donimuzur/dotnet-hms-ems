@@ -672,6 +672,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<PrintHistoryDto, PrintHistoryItemModel>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<ZAIDM_EX_NPPBKCDto, NppbkcItemModel>().IgnoreAllNonExisting();
+
         }
     }
 

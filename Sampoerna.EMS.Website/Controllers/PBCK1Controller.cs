@@ -11,7 +11,6 @@ using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using Microsoft.Ajax.Utilities;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -41,9 +40,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPrintHistoryBLL _printHistoryBll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
 
         public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IZaidmExNPPBKCBLL nppbkcbll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _printHistoryBll = printHistoryBll;
+            _nppbkcbll = nppbkcbll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -254,7 +255,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetNppbkcDetail(string nppbkcid)
         {
-            var data = GlobalFunctions.GetNppbkcById(nppbkcid);
+            //var data = GlobalFunctions.GetNppbkcById(nppbkcid);
+            var data = _nppbkcbll.GetDetailsById(nppbkcid);
             return Json(Mapper.Map<NppbkcItemModel>(data));
         }
 
@@ -726,7 +728,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Comment = comment,
                 AdditionalDocumentData = new Pbck1WorkflowDocumentData()
                 {
-                    DecreeDate = pbck1Data.DecreeDate,
+                    DecreeDate = pbck1Data.DecreeDate.Value,
                     QtyApproved = pbck1Data.QtyApproved,
                     Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
                 }

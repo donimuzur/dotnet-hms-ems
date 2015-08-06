@@ -2,7 +2,7 @@ $(document).ready(function() {
 	$('.input-group.date').datepicker({
 	    toggleActive: true,
 	    autoclose: true,
-	    format: "dd MMM yyyy",
+	    format: "dd M yyyy",
 	    todayHighlight: true
 	});
 	$(".action a").tooltip();
