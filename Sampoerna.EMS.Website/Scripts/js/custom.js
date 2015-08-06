@@ -21,4 +21,7 @@ $(document).ready(function() {
 		"paging":         true,
 		responsive: true
 	} );
+	$('.menu-claimable').on( 'keypress', function( e ) {
+        $('.menu-claimable').modal({ show: false});
+    });
 });
