@@ -829,11 +829,8 @@
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
-
     <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
     <Content Include="Views\UserAuthorization\Index.cshtml" />
-    <Content Include="Views\UserAuthorization\Create.cshtml" />
-    <Content Include="Views\UserAuthorization\Edit.cshtml" />
     <Content Include="Views\UserAuthorization\Detail.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportToggleExport.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportModalExport.cshtml" />
@@ -845,6 +842,7 @@
     <Content Include="Views\CK5\_CK5SummaryReportToggleManual.cshtml" />
     <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
+    <Content Include="Views\UserAuthorization\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Models;
@@ -250,9 +251,17 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetBroleList()
         {
             IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
-            var data = userAuthorizationBll.GetAll();
+            var data = userAuthorizationBll.GetAllBRole();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static List<PageDto> GetPageList()
+        {
+            IPageBLL pageBll = MvcApplication.GetInstance<PageBLL>();
+            var data = pageBll.GetPages();
+            var result = Mapper.Map<List<PageDto>>(data);
+            return result;
         }
       
      }

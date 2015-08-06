@@ -14,5 +14,8 @@ namespace Sampoerna.EMS.Contract
 
         UserAuthorizationDto GetById(string id);
 
+        List<BRoleDto> GetAllBRole();
+
+
     }
 }

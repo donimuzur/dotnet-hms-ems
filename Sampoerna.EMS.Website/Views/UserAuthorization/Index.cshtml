@@ -9,8 +9,7 @@
         <div class="col-sm-12">
             <h3>User Authorization</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "UserAuthorization")"><button class="btn btn-blue">NEW</button></a>
-            </div>
+             </div>
         </div>
     </div>
 </div>
@@ -40,7 +39,7 @@
                             <tr>
                                 <td class="action">
                                     <a href="#" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Edit", "UserAuthorization",new {id = item.Brole})" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(model => item.Brole)

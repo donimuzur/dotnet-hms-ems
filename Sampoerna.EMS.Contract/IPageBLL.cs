@@ -9,5 +9,9 @@ namespace Sampoerna.EMS.Contract
         List<PAGE> GetPages();
 
         List<PAGE> GetModulePages();
+
+        void Save(PAGE_MAP pageMap);
+
+        void DeletePageMap(int id);
     }
 }

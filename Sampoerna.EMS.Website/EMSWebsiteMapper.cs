@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
@@ -673,9 +674,16 @@ namespace Sampoerna.EMS.Website
 
             #region User Authorization
 
+            Mapper.CreateMap<BRoleDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.Id + Constans.DelimeterSelectItem + src.Description))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.Id));
+          
+
             Mapper.CreateMap<UserAuthorizationDto, DetailIndexUserAuthorization>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<UserAuthorizationDto, CreateUserAuthorizationViewModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<UserAuthorizationDto, EditUserAuthorizationViewModel>().IgnoreAllNonExisting();
+
+
 
             #endregion
 

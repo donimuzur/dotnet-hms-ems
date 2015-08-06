@@ -31,7 +31,14 @@ namespace Sampoerna.EMS.BLL
 
         public UserAuthorizationDto GetById(string id)
         {
-            return Mapper.Map<UserAuthorizationDto>(_repository.Get(c => c.BROLE == id).FirstOrDefault());
+            return Mapper.Map<UserAuthorizationDto>(_repository.Get(c => c.BROLE == id, null, "BROLE_MAP, BROLE_MAP.USER, PAGE_MAP, PAGE_MAP.PAGE").FirstOrDefault());
         }
+
+        public List<BRoleDto> GetAllBRole()
+        {
+            var dtData = _repository.Get().ToList();
+            return Mapper.Map<List<BRoleDto>>(dtData);
+        }
+
     }
 }
