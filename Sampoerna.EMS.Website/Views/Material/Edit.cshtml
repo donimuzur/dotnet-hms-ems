@@ -188,7 +188,7 @@
                                                                     {
                                                                        
                                                                         <tr id="uom-exist-@Model.MaterialUom[i].Id">
-                                                                            <td><a href="javascript:void(0)" onclick="deleteExistingUom(@Model.MaterialUom[i].Id)">delete</a></td>
+                                                                            <td><a href="javascript:void(0)" onclick="deleteExistingUom(@Model.MaterialUom[i].Id,'@Model.MaterialNumber','@Model.PlantId')">delete</a></td>
 
                                                                             <td>
                                                                                 <span id="field1">@Html.Raw(Model.MaterialUom[i].Meinh)</span>
@@ -320,11 +320,11 @@
             CreateUomList();
         }
 
-        function deleteExistingUom(id) {
+        function deleteExistingUom(id,mn,p) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("RemoveMaterialUom", "Material")',
-                data: { materialUomId: id },
+                data: { materialUomId: id, materialnumber: mn, plant:p },
                 success: function(data) {
                     $('#uom-exist-' + id).remove();
 
