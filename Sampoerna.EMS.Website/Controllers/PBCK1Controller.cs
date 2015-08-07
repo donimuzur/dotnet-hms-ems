@@ -10,6 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -27,6 +28,7 @@ using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
+using System.Configuration;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -1338,8 +1340,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dataSet = SetDataSetReport(pbck1Data);
 
-            ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
+            ReportClass rpt = new ReportClass
+            {
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK1\\PBCK1PrintOut.rpt"
+            };
             rpt.Load();
             rpt.SetDataSource(dataSet);
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
@@ -1366,6 +1370,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.ProdPlanList);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
             dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData.RealisasiP3Bkc);
+            dsPbck1 = AddDataHeaderFooter(dsPbck1, pbck1ReportData.HeaderFooter);
             return dsPbck1;
         }
 
@@ -1429,11 +1434,11 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 var detailRow = ds.Pbck1BrandRegistration.NewPbck1BrandRegistrationRow();
-                detailRow.Type = "";
-                detailRow.Brand = "";
-                detailRow.Kadar = "";
-                detailRow.Convertion = "";
-                detailRow.ConvertionUom = "";
+                detailRow.Type = "test";
+                detailRow.Brand = " ";
+                detailRow.Kadar = " ";
+                detailRow.Convertion = " ";
+                detailRow.ConvertionUom = " ";
                 // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                 detailRow.No = "";
                 ds.Pbck1BrandRegistration.AddPbck1BrandRegistrationRow(detailRow);
@@ -1493,7 +1498,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
 
-                detailRow.ProdTypeCode = "";
+                detailRow.ProdTypeCode = " test";
                 detailRow.ProdTypeName = "";
                 detailRow.ProdAlias = "";
                 detailRow.Amount = "";
@@ -1557,7 +1562,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 var detailRow = ds.RealisasiP3BKC.NewRealisasiP3BKCRow();
-                detailRow.Bulan = "";
+                detailRow.Bulan = " test";
                 detailRow.SaldoAwal = "";
                 detailRow.Pemasukan = "";
                 detailRow.Penggunaan = "";
@@ -1567,6 +1572,63 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Uom = "";
                 ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
             }
+            return ds;
+        }
+
+        private dsPbck1 AddDataHeaderFooter(dsPbck1 ds, HEADER_FOOTER_MAPDto headerFooter)
+        {
+            var dRow = ds.HeaderFooter.NewHeaderFooterRow();
+            if (headerFooter != null)
+            {
+                #region set Image Header
+
+                if (headerFooter.IS_HEADER_SET.HasValue && headerFooter.IS_HEADER_SET.Value)
+                {
+                    //convert to byte image
+                    FileStream fs;
+                    BinaryReader br;
+                    var imagePath = headerFooter.HEADER_IMAGE_PATH;
+                    if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                    {
+                        fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read,
+                            FileShare.ReadWrite);
+                    }
+                    else
+                    {
+                        // if photo does not exist show the nophoto.jpg file 
+                        fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    }
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    byte[] imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+                    dRow.HeaderImage = imgbyte;
+
+                }
+                else
+                {
+                    dRow.HeaderImage = null;
+                }
+
+                #endregion
+
+                #region set Footer Content
+
+                dRow.FooterContent = headerFooter.IS_FOOTER_SET.HasValue && headerFooter.IS_FOOTER_SET.Value
+                    ? headerFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine)
+                    : " ";
+
+                #endregion
+            }
+            else
+            {
+                dRow.HeaderImage = null;
+                dRow.FooterContent = " ";
+            }
+            ds.HeaderFooter.AddHeaderFooterRow(dRow);
             return ds;
         }
 

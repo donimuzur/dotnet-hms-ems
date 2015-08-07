@@ -9,11 +9,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             ProdPlanList = new List<Pbck1ReportProdPlanDto>();
             Detail = new Pbck1ReportInformationDto();
             RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>();
+            HeaderFooter = new HEADER_FOOTER_MAPDto();
         }
         public Pbck1ReportInformationDto Detail { get; set; }
         public List<Pbck1ReportProdPlanDto> ProdPlanList { get; set; }
         public List<Pbck1ReportBrandRegistrationDto> BrandRegistrationList { get; set; }
         public List<Pbck1RealisasiP3BkcDto> RealisasiP3Bkc { get; set; }
+
+        public HEADER_FOOTER_MAPDto HeaderFooter { get; set; }
     }
 
     public class Pbck1ReportInformationDto

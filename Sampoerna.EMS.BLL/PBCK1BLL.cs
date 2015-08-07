@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BLL
         private IMessageService _messageService;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IZaidmExKPPBCBLL _kppbcbll;
+        private IHeaderFooterBLL _headerFooterBll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -57,6 +58,7 @@ namespace Sampoerna.EMS.BLL
             _messageService = new MessageService(_logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
             _kppbcbll = new ZaidmExKPPBCBLL(_logger, _uow);
+            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -1201,6 +1203,15 @@ namespace Sampoerna.EMS.BLL
             rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
             rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.PBCK1, 
+                CompanyCode = dbData.NPPBKC_BUKRS
+            });
+            rc.HeaderFooter = headerFooterData;
+
             return rc;
         }
 
