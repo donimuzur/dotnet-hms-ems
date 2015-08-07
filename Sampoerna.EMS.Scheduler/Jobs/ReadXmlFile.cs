@@ -68,7 +68,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                         
                         logger.Info(err);
                     }
-                    EmailUtility.Email(StringErrorList(errorList), null);
+                    logger.Error(EmailUtility.Email(StringErrorList(errorList), null));
            
                 }
 
