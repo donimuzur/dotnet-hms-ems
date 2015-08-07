@@ -60,9 +60,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_SERIES>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_SERIES>(Items);
         }
 
         public ZAIDM_EX_SERIES GetSeries(string SeriesCode)

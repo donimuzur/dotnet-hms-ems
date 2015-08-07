@@ -56,9 +56,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T001>(Items);
+           return _xmlMapper.InsertToDatabase<T001>(Items);
         }
 
         public T001 GetCompany(string CompanyCode)

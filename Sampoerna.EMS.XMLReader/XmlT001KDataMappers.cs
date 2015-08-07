@@ -62,9 +62,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T001K>(Items);
+           return _xmlMapper.InsertToDatabase<T001K>(Items);
         }
 
         public T001K GetT001K(string id)

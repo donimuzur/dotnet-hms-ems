@@ -69,9 +69,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<LFA1>(Items);
+            return  _xmlMapper.InsertToDatabase<LFA1>(Items);
        
         }
 

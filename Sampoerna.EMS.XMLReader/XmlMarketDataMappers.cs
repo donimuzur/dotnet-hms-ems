@@ -66,11 +66,11 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
             
             
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_MARKET>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_MARKET>(Items);
        
         }
 

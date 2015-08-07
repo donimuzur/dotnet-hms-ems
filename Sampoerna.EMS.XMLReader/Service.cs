@@ -16,11 +16,12 @@ namespace Sampoerna.EMS.XMLReader
         private IXmlDataReader reader = null;
         private readonly string inboundPath = ConfigurationManager.AppSettings["XmlInboundPath"];
         private string[] xmlfiles = null;
-
+        public List<string> filesMoved;
         public Service()
         {
             
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
+            filesMoved = new List<string>();
         }
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
@@ -88,6 +89,7 @@ namespace Sampoerna.EMS.XMLReader
         public List<string> Run()
         {
             var errorList = new List<string>();
+            
             foreach (var xmlfile in xmlfiles)
             {
                 try
@@ -96,7 +98,7 @@ namespace Sampoerna.EMS.XMLReader
                   
                     if (reader != null)
                     {
-                        reader.InsertToDatabase();
+                        filesMoved.Add(reader.InsertToDatabase());
                     }
                 }
                 catch (Exception ex)

@@ -55,9 +55,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_GOODTYP>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_GOODTYP>(Items);
         }
 
         public ZAIDM_EX_GOODTYP GetGoodsType(string Code)

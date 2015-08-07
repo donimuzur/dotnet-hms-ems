@@ -58,9 +58,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<UOM>(Items);
+           return _xmlMapper.InsertToDatabase<UOM>(Items);
         }
 
         public UOM GetUoM(string uomId)

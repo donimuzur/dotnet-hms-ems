@@ -65,9 +65,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_KPPBC>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_KPPBC>(Items);
         }
 
         public ZAIDM_EX_KPPBC GetKPPBC(string KppbcId)
