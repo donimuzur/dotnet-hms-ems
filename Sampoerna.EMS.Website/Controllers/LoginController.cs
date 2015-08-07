@@ -9,12 +9,13 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private IUserBLL _userBll;
         private IPOABLL _poabll;
-
-        public LoginController(IUserBLL userBll, IPageBLL pageBll, IPOABLL poabll)
+        private IUserAuthorizationBLL _userAuthorizationBll;
+        public LoginController(IUserBLL userBll, IPageBLL pageBll, IPOABLL poabll, IUserAuthorizationBLL userAuthorizationBll)
             : base(pageBll, Enums.MenuList.USER)
         {
             _userBll = userBll;
             _poabll = poabll;
+            _userAuthorizationBll = userAuthorizationBll;
         }
 
         //
@@ -36,6 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CurrentUser = loginResult;
                 CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
+                CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
                 return RedirectToAction("Index", "Home");
             }
 
