@@ -9,6 +9,7 @@
 
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
+        public static string DelimeterSelectItem = " - "; 
         /// <summary>
         /// list of SessionKey constanta
         /// </summary>

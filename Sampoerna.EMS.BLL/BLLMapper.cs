@@ -94,6 +94,46 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<PrintHistoryDto, PRINT_HISTORY>().IgnoreAllNonExisting();
 
+
+            #region UserAuthorization
+
+            Mapper.CreateMap<USER, UserDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.FIRST_NAME))
+                .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.LAST_NAME))
+                .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.EMAIL));
+            Mapper.CreateMap<PAGE, PageDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PAGE_ID))
+                .ForMember(dest => dest.PageName, opt => opt.MapFrom(src => src.PAGE_NAME));
+            Mapper.CreateMap<PageDto, PAGE>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PAGE_ID, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.PAGE_NAME, opt => opt.MapFrom(src => src.PageName));
+           
+            Mapper.CreateMap<PAGE_MAP, PageMapDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PAGE_MAP_ID))
+                .ForMember(dest => dest.Page, opt => opt.MapFrom(src => src.PAGE));
+            Mapper.CreateMap<PageMapDto, PAGE_MAP>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.PAGE, opt => opt.MapFrom(src => src.Page))
+               .ForMember(dest => dest.BROLE, opt => opt.MapFrom(src => src.Brole));
+                  
+            Mapper.CreateMap<BROLE_MAP, BRoleMapDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.BROLE_MAP_ID))
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.USER))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE));
+
+            Mapper.CreateMap<USER_BROLE, UserAuthorizationDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Brole, opt => opt.MapFrom(src => src.BROLE))
+                .ForMember(dest => dest.BroleDescription, opt => opt.MapFrom(src => src.BROLE_DESC))
+                .ForMember(dest => dest.BRoleMaps, opt => opt.MapFrom(src => src.BROLE_MAP))
+                .ForMember(dest => dest.PageMaps, opt => opt.MapFrom(src => src.PAGE_MAP));
+
+            Mapper.CreateMap<USER_BROLE, BRoleDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.BROLE))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.BROLE_DESC));
+
+
+            #endregion
         }
     }
 }
