@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
         
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP, USER";
+        private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP";
         private ChangesHistoryBLL _changesHistoryBll;
         private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
         public MaterialBLL(IUnitOfWork uow, ILogger logger)
