@@ -26,19 +26,23 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("POA"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("T001K"))
+            else if (xmlfile.Contains("COY"))
+            {
+                return new XmlCompanyDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("T001K"))
             {
                 return new XmlT001KDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("UOM"))
+            else if (xmlfile.Contains("UOM"))
             {
                 return new XmlUoMDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("NPPBKC"))
+            else if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }

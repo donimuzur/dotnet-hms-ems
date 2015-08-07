@@ -105,7 +105,7 @@ namespace Sampoerna.EMS.XMLReader
             try
             {
                 
-                    repo.InsertOrUpdate(data);
+               repo.InsertOrUpdate(data);
 
                 
                 uow.SaveChanges();
@@ -119,7 +119,8 @@ namespace Sampoerna.EMS.XMLReader
 
             MoveFile();
         }
-        private string MoveFile()
+        
+        public string MoveFile()
         {
             var filenameMoved = string.Empty;
             try
