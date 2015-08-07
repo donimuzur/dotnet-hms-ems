@@ -12,10 +12,11 @@ namespace Sampoerna.EMS.Core
 {
     public class EmailUtility
     {
-        public static void Email(
-                         string body,
+        public static string Email(
+                         string body, 
                          params MailAttachment[] attachments)
         {
+            string error = string.Empty;
             try
             {
                 var config = EmailConfiguration.GetConfig();
@@ -42,9 +43,11 @@ namespace Sampoerna.EMS.Core
             }
             catch(Exception ex)
             {
-               Console.WriteLine(ex.Message);
-                
+                error = ex.ToString();
+
             }
+            return error;
+
         }
         public class MailAttachment
         {
