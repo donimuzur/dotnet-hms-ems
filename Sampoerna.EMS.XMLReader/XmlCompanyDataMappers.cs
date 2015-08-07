@@ -30,8 +30,8 @@ namespace Sampoerna.EMS.XMLReader
                     var item = new T001();
                     var bukrs = xElement.Element("BUKRS").Value;
                     item.BUTXT = xElement.Element("BUTXT").Value;
-                    item.ORT01 = xElement.Element("ORT01").Value;
-                    item.SPRAS = xElement.Element("SPRAS").Value;
+                    item.ORT01 = xElement.Element("ORT01") == null ? null : xElement.Element("ORT01").Value;
+                    item.SPRAS = xElement.Element("SPRAS") == null ? null : xElement.Element("SPRAS").Value;
                     //var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
                     var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
                         .GetByID(bukrs);

@@ -31,51 +31,58 @@ namespace Sampoerna.EMS.XMLReader
                    
                     foreach (var xElement in xmlItems)
                     {
-                        var item = new ZAIDM_EX_NPPBKC();
-                        item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                        item.ADDR1 = xElement.Element("ADDR1") == null ? null : xElement.Element("ADDR1").Value;
-                        item.ADDR2 = xElement.Element("ADDR2") == null ? null : xElement.Element("ADDR2").Value;
-                        item.CITY = xElement.Element("CITY") == null ? null : xElement.Element("CITY").Value;
-                        item.REGION = xElement.Element("REGION") == null ? null : xElement.Element("REGION").Value;
-                        var kppbcNo = xElement.Element("KPPBC_ID") == null ? null : xElement.Element("KPPBC_ID").Value;
-                        var kppbc = new XmlKPPBCDataMapper(null
-                            ).GetKPPBC(kppbcNo);
-                        if (kppbc == null)
+                        try
                         {
-                            //insert kppbc
-                            var kppbcItem = new ZAIDM_EX_KPPBC();
-                            kppbcItem.KPPBC_ID = kppbcNo;
-                            kppbcItem.CREATED_DATE = DateTime.Now;
-                            _xmlMapper.InsertToDatabase(kppbcItem);
-                        }
-                        item.KPPBC_ID = new XmlKPPBCDataMapper(null
-                            ).GetKPPBC(kppbcNo).KPPBC_ID;
+                            var item = new ZAIDM_EX_NPPBKC();
+                            item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
+                            item.ADDR1 = xElement.Element("ADDR1") == null ? null : xElement.Element("ADDR1").Value;
+                            item.ADDR2 = xElement.Element("ADDR2") == null ? null : xElement.Element("ADDR2").Value;
+                            item.CITY = xElement.Element("CITY") == null ? null : xElement.Element("CITY").Value;
+                            item.REGION = xElement.Element("REGION") == null ? null : xElement.Element("REGION").Value;
+                            var kppbcNo = xElement.Element("KPPBC_ID") == null ? null : xElement.Element("KPPBC_ID").Value;
+                            var kppbc = new XmlKPPBCDataMapper(null
+                                ).GetKPPBC(kppbcNo);
+                            if (kppbc == null)
+                            {
+                                //insert kppbc
+                                var kppbcItem = new ZAIDM_EX_KPPBC();
+                                kppbcItem.KPPBC_ID = kppbcNo;
+                                kppbcItem.CREATED_DATE = DateTime.Now;
+                                _xmlMapper.InsertToDatabase(kppbcItem);
+                            }
+                            item.KPPBC_ID = new XmlKPPBCDataMapper(null
+                                ).GetKPPBC(kppbcNo).KPPBC_ID;
 
-                        item.START_DATE = _xmlMapper.GetDate(xElement.Element("START_DATE").Value);
-                        item.END_DATE = _xmlMapper.GetDate(xElement.Element("END_DATE").Value);
-                        var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
-                        if (exisitingNppbkc != null)
-                        {
-                            item.CITY_ALIAS = exisitingNppbkc.CITY_ALIAS;
-                            item.TEXT_TO = exisitingNppbkc.TEXT_TO;
-                            item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
-                            item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
-                            item.MODIFIED_DATE = DateTime.Now;
-                            items.Add(item);
+                            item.START_DATE = _xmlMapper.GetDate(xElement.Element("START_DATE").Value);
+                            item.END_DATE = _xmlMapper.GetDate(xElement.Element("END_DATE").Value);
+                            var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
+                            if (exisitingNppbkc != null)
+                            {
+                                item.CITY_ALIAS = exisitingNppbkc.CITY_ALIAS;
+                                item.TEXT_TO = exisitingNppbkc.TEXT_TO;
+                                item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
+                                item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
+                                item.MODIFIED_DATE = DateTime.Now;
+                                items.Add(item);
 
+                            }
+                            else
+                            {
+                                item.CREATED_DATE = DateTime.Now;
+                                items.Add(item);
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            item.CREATED_DATE = DateTime.Now;
-                            items.Add(item);
+                            continue;
+                            
                         }
                         
-
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    
                 }
                
                 return items;

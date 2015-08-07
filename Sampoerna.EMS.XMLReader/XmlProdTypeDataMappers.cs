@@ -51,7 +51,8 @@ namespace Sampoerna.EMS.XMLReader
                     catch (Exception ex)
                     {
                         
-                        throw;
+                       continue;
+                        
                     }
                  
 

@@ -27,26 +27,34 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<T001K>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T001K();
-                    var bwkey = xElement.Element("BWKEY").Value;
-                    item.BUKRS = xElement.Element("BUKRS").Value;
-                   //var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
-                    var existingData = _xmlMapper.uow.GetGenericRepository<T001K>()
-                        .GetByID(bwkey);
-                    item.BWKEY = bwkey;
-                    if (existingData != null)
+                    try
                     {
-                        item.CREATED_DATE = existingData.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
+                        var item = new T001K();
+                        var bwkey = xElement.Element("BWKEY").Value;
+                        item.BUKRS = xElement.Element("BUKRS").Value;
+                        //var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
+                        var existingData = _xmlMapper.uow.GetGenericRepository<T001K>()
+                            .GetByID(bwkey);
+                        item.BWKEY = bwkey;
+                        if (existingData != null)
+                        {
+                            item.CREATED_DATE = existingData.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
+                   
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
                         
                     }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
-                   
                 }
                 return items;
             }
