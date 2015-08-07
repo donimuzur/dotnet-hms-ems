@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -16,6 +16,8 @@ namespace Sampoerna.EMS.Contract
         Core.Enums.UserRole GetUserRole(string userId);
 
         string GetManagerIdByPoaId(string poaId);
+
+        POADto GetDetailsById(string id);
 
     }
 }

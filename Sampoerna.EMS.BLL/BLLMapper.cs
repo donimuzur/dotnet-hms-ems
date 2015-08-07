@@ -94,6 +94,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<PrintHistoryDto, PRINT_HISTORY>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKCDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_KPPBC, ZAIDM_EX_KPPBCDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<T001, T001Dto>().IgnoreAllNonExisting();
+            
             #region LACK1
             Mapper.CreateMap<LACK1, Lack1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack1Id, opt => opt.MapFrom(src => src.LACK1_ID))
@@ -129,9 +135,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PerionNameEng, opt => opt.MapFrom(src => src.MONTH_NAME_ENG));
             
             #endregion
-
+            
             #region UserAuthorization
-
+            
             Mapper.CreateMap<USER, UserDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.FIRST_NAME))
@@ -169,6 +175,17 @@ namespace Sampoerna.EMS.BLL
 
 
             #endregion
+
+            #region HEADER_FOOTER DTO
+
+            Mapper.CreateMap<HEADER_FOOTER, HEADER_FOOTERDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<HEADER_FOOTER_FORM_MAP, HEADER_FOOTER_MAPDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.HEADER_IMAGE_PATH, opt => opt.MapFrom(src => src.HEADER_FOOTER.HEADER_IMAGE_PATH))
+                .ForMember(dest => dest.FOOTER_CONTENT, opt => opt.MapFrom(src => src.HEADER_FOOTER.FOOTER_CONTENT))
+                ;
+
+            #endregion
+
         }
     }
 }

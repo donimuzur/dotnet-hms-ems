@@ -84,6 +84,9 @@
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
+    <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
+    <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
     <Compile Include="DTOs\Pbck1Dto.cs" />
@@ -91,13 +94,17 @@
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
     <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
+    <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
+    <Compile Include="DTOs\T001Dto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
+    <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
+    <Compile Include="DTOs\ZAIDM_EX_NPPBKCDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -125,6 +132,7 @@
     <Compile Include="Inputs\CK5MaterialInput.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
+    <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -26,6 +28,11 @@ namespace Sampoerna.EMS.BLL
         public POA GetById(string id)
         {
             return _repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault();
+        }
+
+        public POADto GetDetailsById(string id)
+        {
+            return Mapper.Map<POADto>(_repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault());
         }
 
         public List<POA> GetAll()

@@ -13,12 +13,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         {
             Pbck1ProdConverter = new List<Pbck1ProdConvModel>();
             Pbck1ProdPlan = new List<Pbck1ProdPlanModel>();
-            PeriodFrom = DateTime.Now;
-            PeriodTo = DateTime.Now;
-            ReportedOn = DateTime.Now;
-            PlanProdFrom = DateTime.Now;
-            PlanProdTo = DateTime.Now;
-            DecreeDate = DateTime.Now;
+            //PeriodFrom = DateTime.Now;
+            //PeriodTo = DateTime.Now;
+            //ReportedOn = DateTime.Now;
+            //PlanProdFrom = DateTime.Now;
+            //PlanProdTo = DateTime.Now;
+            //DecreeDate = DateTime.Now;
         }
         public int Pbck1Id { get; set; }
 
@@ -35,18 +35,18 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string PbckTypeName { get; set; }
 
         [Required, Display(Name = "Period From")]
-        [UIHint("FormatDateTime")]
-        public DateTime PeriodFrom { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PeriodFrom { get; set; }
 
         [Required, Display(Name = "Period To")]
-        [UIHint("FormatDateTime")]
+        //[UIHint("FormatDateTime")]
         public DateTime? PeriodTo { get; set; }
 
         public string Year { get; set; }
 
         [Required, Display(Name = "Reported On")]
-        [UIHint("FormatDateTime")]
-        public DateTime ReportedOn { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
         public string NppbkcId { get; set; }
@@ -89,16 +89,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string HiddenSupplierKppbcId { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
-        [UIHint("FormatDateTime")]
-        public DateTime PlanProdFrom { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PlanProdFrom { get; set; }
 
         [Required, Display(Name = "Plan Production To")]
-        [UIHint("FormatDateTime")]
-        public DateTime PlanProdTo { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PlanProdTo { get; set; }
         
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
-        public decimal RequestQty { get; set; }
+        public decimal? RequestQty { get; set; }
 
         [Required]
         public string RequestQtyUomId { get; set; }
@@ -135,8 +135,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public decimal QtyApproved { get; set; }
 
         [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Date")]
-        [UIHint("FormatDateTime")]
-        public DateTime DecreeDate { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? DecreeDate { get; set; }
         
         public DateTime CreatedDate { get; set; }
         
