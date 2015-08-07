@@ -45,7 +45,9 @@
                                 <div class="row">
                                     <label class="col-md-3"></label>
                                     <div class="col-md-9">
-                                        <a class="btn btn-blue full" onclick="window.open('@Url.EncryptedAction("PrintOut", "PBCK1", new { id = Model.Detail.Pbck1Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>
+                                        @if (Model.AllowPrintDocument) {
+                                            <a class="btn btn-blue full" onclick="window.open('@Url.EncryptedAction("PrintOut", "PBCK1", new { id = Model.Detail.Pbck1Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>    
+                                        }
                                     </div>
                                 </div>
                             </div>

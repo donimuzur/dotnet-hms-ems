@@ -222,6 +222,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
 
             model.YearList = CreateYearList();
+
+            model.AllowPrintDocument = false;
+
             return model;
         }
 
@@ -407,6 +410,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
 
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
+
             }
             catch (Exception exception)
             {
@@ -582,6 +587,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
             }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
 
             return View(model);
         }
