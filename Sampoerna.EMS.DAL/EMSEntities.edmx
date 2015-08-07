@@ -3442,8 +3442,6 @@
           <Property Name="CLIENT_DELETION" Type="Boolean" />
           <Property Name="PLANT_DELETION" Type="Boolean" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" FromRole="ZAIDM_EX_MATERIAL" ToRole="USER" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -3524,8 +3522,6 @@
           <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="ZAIDM_EX_BRAND" ToRole="USER" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />

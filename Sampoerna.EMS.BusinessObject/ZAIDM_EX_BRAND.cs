@@ -51,7 +51,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_PCODE ZAIDM_EX_PCODE { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
     }
 }
