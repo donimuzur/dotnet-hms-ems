@@ -48,6 +48,11 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<HeaderFooter>>(_repository.Get(null, null, includeTables).ToList());
         }
 
+        public HEADER_FOOTER Get(string companyId)
+        {
+            return null;
+        }
+
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
              HEADER_FOOTER dbData = null;
