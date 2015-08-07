@@ -67,6 +67,7 @@
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="Pbck1DecreeDocBLL.cs" />
+    <Compile Include="LACK1BLL.cs" />
     <Compile Include="Pbck1ProdConverterBLL.cs" />
     <Compile Include="EmailTemplateBLL.cs" />
     <Compile Include="Pbck1ProdPlanBLL.cs" />
