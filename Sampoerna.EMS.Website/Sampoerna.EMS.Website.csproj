@@ -324,6 +324,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5Materials.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5MaterialsExtend.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5MaterialsExtend.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\CK5\CK5PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -902,6 +909,10 @@
     <EmbeddedResource Include="Reports\CK5\CK5Materials.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5Materials.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CK5\CK5MaterialsExtend.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5MaterialsExtend.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\CK5\CK5PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

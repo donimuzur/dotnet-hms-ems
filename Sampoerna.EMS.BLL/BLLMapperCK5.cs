@@ -66,12 +66,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SourceOfficeName, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_NAME))
                 .ForMember(dest => dest.SourceOfficeCode, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_CODE))
 
-                .ForMember(dest => dest.DestPlantNpwp, opt => opt.MapFrom(src => src.DEST_PLANT_NPWP))
-                .ForMember(dest => dest.DestPlantNppbkc, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
-                .ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
-                .ForMember(dest => dest.DestPlantAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
-                .ForMember(dest => dest.DestOfficeName, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_NAME))
-                .ForMember(dest => dest.DestOfficeCode, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE))
+                //.ForMember(dest => dest.DestPlantNpwp, opt => opt.MapFrom(src => src.DEST_PLANT_NPWP))
+                //.ForMember(dest => dest.DestPlantNppbkc, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
+                //.ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
+                //.ForMember(dest => dest.DestPlantAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
+                //.ForMember(dest => dest.DestOfficeName, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_NAME))
+                //.ForMember(dest => dest.DestOfficeCode, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE))
 
                 .ForMember(dest => dest.FacilityNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 //.ForMember(dest => dest.FacilityDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
@@ -80,6 +80,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => (Convert.ToInt32(src.CARRIAGE_METHOD_ID)).ToString()))
 
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString() : "0"))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
+
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
 
                 ;

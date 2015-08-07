@@ -919,6 +919,55 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.PoaCity = dtData.KPPBC_CITY;
             }
 
+            //for export type
+            if (dtData.CK5_TYPE == Enums.CK5Type.Export)
+            {
+                result.ReportDetails.DestPlantNpwp = "-";
+                result.ReportDetails.DestPlantNppbkc = "-";
+                result.ReportDetails.DestPlantName = "-";
+                result.ReportDetails.DestPlantAddress = "-";
+                result.ReportDetails.DestOfficeName = "-";
+                result.ReportDetails.DestOfficeCode = "-";
+
+                result.ReportDetails.DestinationCountry = "-";
+                result.ReportDetails.DestinationCode = "-";
+                result.ReportDetails.DestinationNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
+                result.ReportDetails.DestinationName = dtData.DEST_PLANT_NAME;
+                result.ReportDetails.DestinationAddress = dtData.DEST_PLANT_ADDRESS;
+                result.ReportDetails.DestinationOfficeName = dtData.DEST_PLANT_COMPANY_NAME;
+                result.ReportDetails.DestinationOfficeCode = dtData.DEST_PLANT_COMPANY_CODE;
+
+                result.ReportDetails.LoadingPort = dtData.LOADING_PORT;
+                result.ReportDetails.LoadingPortName = dtData.LOADING_PORT_NAME;
+                result.ReportDetails.LoadingPortId = dtData.LOADING_PORT_ID;
+                result.ReportDetails.FinalPort = dtData.FINAL_PORT;
+                result.ReportDetails.FinalPortName = dtData.FINAL_PORT_NAME;
+                result.ReportDetails.FinalPortId = dtData.FINAL_PORT_ID;
+            }
+            else
+            {
+                result.ReportDetails.DestPlantNpwp = dtData.DEST_PLANT_NPWP;
+                result.ReportDetails.DestPlantNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
+                result.ReportDetails.DestPlantName = dtData.DEST_PLANT_NAME;
+                result.ReportDetails.DestPlantAddress = dtData.DEST_PLANT_ADDRESS;
+                result.ReportDetails.DestOfficeName = dtData.DEST_PLANT_COMPANY_NAME;
+                result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_COMPANY_CODE;
+
+                result.ReportDetails.DestinationCountry = "-";
+                result.ReportDetails.DestinationCode = "-";
+                result.ReportDetails.DestinationNppbkc = "-";
+                result.ReportDetails.DestinationName = "-";
+                result.ReportDetails.DestinationAddress = "-";
+                result.ReportDetails.DestinationOfficeName = "-";
+                result.ReportDetails.DestinationOfficeCode = "-";
+
+                result.ReportDetails.LoadingPort = "-";
+                result.ReportDetails.LoadingPortName = "-";
+                result.ReportDetails.LoadingPortId = "-";
+                result.ReportDetails.FinalPort = "-";
+                result.ReportDetails.FinalPortName = "-";
+                result.ReportDetails.FinalPortId = "-";
+            }
             return result;
             //return Mapper.Map<CK5ReportDto>(dtData);
         }

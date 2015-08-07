@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -17,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
        public CK5ReportDetailsDto ReportDetails { get; set; }
        public List<CK5ReportMaterialDto> ListMaterials { get; set; }
+       public Enums.CK5Type Ck5Type { get; set; }
    }
 
     public class CK5ReportDetailsDto
@@ -61,6 +63,21 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PoaCity { get; set; }
         public string InvoiceNumber { get; set; }
         public string InvoiceDate { get; set; }
+
+        public string DestinationCountry { get; set; }
+        public string DestinationCode { get; set; }
+        public string DestinationNppbkc { get; set; }
+        public string DestinationName { get; set; }
+        public string DestinationAddress { get; set; }
+        public string DestinationOfficeName { get; set; }
+        public string DestinationOfficeCode { get; set; }
+
+        public string LoadingPort { get; set; }
+        public string LoadingPortName { get; set; }
+        public string LoadingPortId { get; set; }
+        public string FinalPort { get; set; }
+        public string FinalPortName { get; set; }
+        public string FinalPortId { get; set; }
     }
 
     public class CK5ReportMaterialDto

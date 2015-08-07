@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class CK5PrintOut : ReportClass {
+    public class CK5MaterialsExtend : ReportClass {
         
-        public CK5PrintOut() {
+        public CK5MaterialsExtend() {
         }
         
         public override string ResourceName {
             get {
-                return "CK5PrintOut.rpt";
+                return "CK5MaterialsExtend.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.CK5.CK5PrintOut.rpt";
+                return "Sampoerna.EMS.Website.Reports.CK5.CK5MaterialsExtend.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
+        public CrystalDecisions.CrystalReports.Engine.Section PageHeaderSection1 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection2 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection5 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,7 +82,7 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection1 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,105 +90,17 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
-            get {
-                return this.ReportDefinition.Sections[5];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection4 {
-            get {
-                return this.ReportDefinition.Sections[6];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection5 {
-            get {
-                return this.ReportDefinition.Sections[7];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection6 {
-            get {
-                return this.ReportDefinition.Sections[8];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection7 {
-            get {
-                return this.ReportDefinition.Sections[9];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection8 {
-            get {
-                return this.ReportDefinition.Sections[10];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection9 {
-            get {
-                return this.ReportDefinition.Sections[11];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection10 {
-            get {
-                return this.ReportDefinition.Sections[12];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection11 {
-            get {
-                return this.ReportDefinition.Sections[13];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection12 {
-            get {
-                return this.ReportDefinition.Sections[14];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[15];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[16];
+                return this.ReportDefinition.Sections[5];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedCK5PrintOut : Component, ICachedReport {
+    public class CachedCK5MaterialsExtend : Component, ICachedReport {
         
-        public CachedCK5PrintOut() {
+        public CachedCK5MaterialsExtend() {
         }
         
         [Browsable(false)]
@@ -225,7 +137,7 @@ namespace Sampoerna.EMS.Website.Reports.CK5 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            CK5PrintOut rpt = new CK5PrintOut();
+            CK5MaterialsExtend rpt = new CK5MaterialsExtend();
             rpt.Site = this.Site;
             return rpt;
         }

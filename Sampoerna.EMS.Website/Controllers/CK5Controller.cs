@@ -3161,7 +3161,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region print
 
 
-        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails)
+        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial)
         {
             var detailRow = dsCk5.dtCk5.NewdtCk5Row();
 
@@ -3201,13 +3201,24 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.InvoiceNumber = ck5ReportDetails.InvoiceNumber;
             detailRow.InvoiceDate = ck5ReportDetails.InvoiceDate;
 
-            //hardcode
-            //detailRow.PemberitahuName = "Budi Santoso";
-            //detailRow.PemberitahuAddress = "Jl. WR.Supratman No87-89 Pekalongan";
-            //detailRow.PemberitahuId = "3375032510750006";
-            //detailRow.PemberitahuCity = "Jakarta";
 
-            //detailRow.PemberitahuDate = ck5ReportDetails.PrintDate;
+            detailRow.TotalMaterial = totalMaterial;
+
+            detailRow.DestinationCountry = ck5ReportDetails.DestinationCountry;
+            detailRow.DestinationCode = ck5ReportDetails.DestinationCode;
+            detailRow.DestinationNppbkc = ck5ReportDetails.DestinationNppbkc;
+            detailRow.DestinationName = ck5ReportDetails.DestinationName;
+            detailRow.DestinationAddress = ck5ReportDetails.DestinationAddress;
+            detailRow.DestinationOfficeName = ck5ReportDetails.DestinationOfficeName;
+            detailRow.DestinationOfficeCode = ck5ReportDetails.DestinationOfficeCode;
+
+            detailRow.LoadingPort = ck5ReportDetails.LoadingPort;
+            detailRow.LoadingPortName = ck5ReportDetails.LoadingPortName;
+            detailRow.LoadingPortCode = ck5ReportDetails.LoadingPortId;
+            detailRow.FinalPort = ck5ReportDetails.FinalPort;
+            detailRow.FinalPortName = ck5ReportDetails.FinalPortName;
+            detailRow.FinalPortCode = ck5ReportDetails.FinalPortId;
+
 
             //todo remove
             if (!Utils.ConvertHelper.IsNumeric(detailRow.ExGoodType))
@@ -3227,6 +3238,8 @@ namespace Sampoerna.EMS.Website.Controllers
             int i = 1;
             foreach (var materialDto in listMaterialDtos)
             {
+                if (i > 2) break;
+
                 var detailRow = dsCk5.dtCk5Material.NewdtCk5MaterialRow();
 
                 detailRow.Number = i.ToString();
@@ -3235,7 +3248,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Convertion = materialDto.Convertion;
                 detailRow.ConvertedQty = materialDto.ConvertedQty;
                 detailRow.ConvertedUom = materialDto.ConvertedUom;
-               
+
                 detailRow.Hje = materialDto.Hje;
                 detailRow.Tariff = materialDto.Tariff;
                 detailRow.ExciseValue = materialDto.ExciseValue;
@@ -3248,7 +3261,37 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return dsCk5;
         }
+
+        private dsCK5Print AddDataCk5MaterialExtendRow(dsCK5Print dsCk5, List<CK5ReportMaterialDto> listMaterialDtos)
+        {
+            int i = 1;
+            foreach (var materialDto in listMaterialDtos)
+            {
+                if (i > 2)
+                {
+                    var detailRow = dsCk5.dtCk5MaterialExtend.NewdtCk5MaterialExtendRow();
+
+                    detailRow.Number = i.ToString();
+                    detailRow.Qty = materialDto.Qty;
+                    detailRow.Uom = materialDto.Uom;
+                    detailRow.Convertion = materialDto.Convertion;
+                    detailRow.ConvertedQty = materialDto.ConvertedQty;
+                    detailRow.ConvertedUom = materialDto.ConvertedUom;
+
+                    detailRow.Hje = materialDto.Hje;
+                    detailRow.Tariff = materialDto.Tariff;
+                    detailRow.ExciseValue = materialDto.ExciseValue;
+                    detailRow.UsdValue = materialDto.UsdValue;
+                    detailRow.Note = materialDto.Note;
+
+                    dsCk5.dtCk5MaterialExtend.AdddtCk5MaterialExtendRow(detailRow);
+                }
+                i++;
+            }
+            return dsCk5;
+        }
         
+
         private DataSet GetDataSetReport(long id)
         {
            
@@ -3259,15 +3302,17 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk5 = new List<CK5ReportDetailsDto>();
             listCk5.Add(ck5ReportDto.ReportDetails);
 
-            dsCk5 = AddDataCk5Row(dsCk5, ck5ReportDto.ReportDetails);
+            dsCk5 = AddDataCk5Row(dsCk5, ck5ReportDto.ReportDetails, ck5ReportDto.ListMaterials.Count);
             dsCk5 = AddDataCk5MaterialRow(dsCk5, ck5ReportDto.ListMaterials);
+            if (ck5ReportDto.ListMaterials.Count > 2)
+                dsCk5 = AddDataCk5MaterialExtendRow(dsCk5, ck5ReportDto.ListMaterials);
 
             return dsCk5;
            
         }
 
         [EncryptedParameter]
-        public ActionResult PrintOut(long? id)
+        public ActionResult PrintOut(int? id)
         {
             try
             {

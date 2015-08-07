@@ -28,6 +28,8 @@ namespace Sampoerna.EMS.ReportingData {
         
         private dtCk5MaterialDataTable tabledtCk5Material;
         
+        private dtCk5MaterialExtendDataTable tabledtCk5MaterialExtend;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -61,6 +63,9 @@ namespace Sampoerna.EMS.ReportingData {
                 }
                 if ((ds.Tables["dtCk5Material"] != null)) {
                     base.Tables.Add(new dtCk5MaterialDataTable(ds.Tables["dtCk5Material"]));
+                }
+                if ((ds.Tables["dtCk5MaterialExtend"] != null)) {
+                    base.Tables.Add(new dtCk5MaterialExtendDataTable(ds.Tables["dtCk5MaterialExtend"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -97,6 +102,16 @@ namespace Sampoerna.EMS.ReportingData {
         public dtCk5MaterialDataTable dtCk5Material {
             get {
                 return this.tabledtCk5Material;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public dtCk5MaterialExtendDataTable dtCk5MaterialExtend {
+            get {
+                return this.tabledtCk5MaterialExtend;
             }
         }
         
@@ -173,6 +188,9 @@ namespace Sampoerna.EMS.ReportingData {
                 if ((ds.Tables["dtCk5Material"] != null)) {
                     base.Tables.Add(new dtCk5MaterialDataTable(ds.Tables["dtCk5Material"]));
                 }
+                if ((ds.Tables["dtCk5MaterialExtend"] != null)) {
+                    base.Tables.Add(new dtCk5MaterialExtendDataTable(ds.Tables["dtCk5MaterialExtend"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -218,6 +236,12 @@ namespace Sampoerna.EMS.ReportingData {
                     this.tabledtCk5Material.InitVars();
                 }
             }
+            this.tabledtCk5MaterialExtend = ((dtCk5MaterialExtendDataTable)(base.Tables["dtCk5MaterialExtend"]));
+            if ((initTable == true)) {
+                if ((this.tabledtCk5MaterialExtend != null)) {
+                    this.tabledtCk5MaterialExtend.InitVars();
+                }
+            }
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -232,6 +256,8 @@ namespace Sampoerna.EMS.ReportingData {
             base.Tables.Add(this.tabledtCk5);
             this.tabledtCk5Material = new dtCk5MaterialDataTable();
             base.Tables.Add(this.tabledtCk5Material);
+            this.tabledtCk5MaterialExtend = new dtCk5MaterialExtendDataTable();
+            base.Tables.Add(this.tabledtCk5MaterialExtend);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -243,6 +269,12 @@ namespace Sampoerna.EMS.ReportingData {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private bool ShouldSerializedtCk5Material() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        private bool ShouldSerializedtCk5MaterialExtend() {
             return false;
         }
         
@@ -306,6 +338,9 @@ namespace Sampoerna.EMS.ReportingData {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public delegate void dtCk5MaterialRowChangeEventHandler(object sender, dtCk5MaterialRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void dtCk5MaterialExtendRowChangeEventHandler(object sender, dtCk5MaterialExtendRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -381,6 +416,34 @@ namespace Sampoerna.EMS.ReportingData {
             private global::System.Data.DataColumn columnInvoiceNumber;
             
             private global::System.Data.DataColumn columnInvoiceDate;
+            
+            private global::System.Data.DataColumn columnTotalMaterial;
+            
+            private global::System.Data.DataColumn columnDestinationCountry;
+            
+            private global::System.Data.DataColumn columnDestinationCode;
+            
+            private global::System.Data.DataColumn columnDestinationNppbkc;
+            
+            private global::System.Data.DataColumn columnDestinationName;
+            
+            private global::System.Data.DataColumn columnDestinationAddress;
+            
+            private global::System.Data.DataColumn columnDestinationOfficeName;
+            
+            private global::System.Data.DataColumn columnDestinationOfficeCode;
+            
+            private global::System.Data.DataColumn columnLoadingPort;
+            
+            private global::System.Data.DataColumn columnLoadingPortName;
+            
+            private global::System.Data.DataColumn columnLoadingPortCode;
+            
+            private global::System.Data.DataColumn columnFinalPort;
+            
+            private global::System.Data.DataColumn columnFinalPortName;
+            
+            private global::System.Data.DataColumn columnFinalPortCode;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -689,6 +752,118 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TotalMaterialColumn {
+                get {
+                    return this.columnTotalMaterial;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationCountryColumn {
+                get {
+                    return this.columnDestinationCountry;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationCodeColumn {
+                get {
+                    return this.columnDestinationCode;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationNppbkcColumn {
+                get {
+                    return this.columnDestinationNppbkc;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationNameColumn {
+                get {
+                    return this.columnDestinationName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationAddressColumn {
+                get {
+                    return this.columnDestinationAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationOfficeNameColumn {
+                get {
+                    return this.columnDestinationOfficeName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DestinationOfficeCodeColumn {
+                get {
+                    return this.columnDestinationOfficeCode;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LoadingPortColumn {
+                get {
+                    return this.columnLoadingPort;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LoadingPortNameColumn {
+                get {
+                    return this.columnLoadingPortName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LoadingPortCodeColumn {
+                get {
+                    return this.columnLoadingPortCode;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FinalPortColumn {
+                get {
+                    return this.columnFinalPort;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FinalPortNameColumn {
+                get {
+                    return this.columnFinalPortName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FinalPortCodeColumn {
+                get {
+                    return this.columnFinalPortCode;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -758,7 +933,21 @@ namespace Sampoerna.EMS.ReportingData {
                         string PoaIdCard, 
                         string PoaCity, 
                         string InvoiceNumber, 
-                        string InvoiceDate) {
+                        string InvoiceDate, 
+                        int TotalMaterial, 
+                        string DestinationCountry, 
+                        string DestinationCode, 
+                        string DestinationNppbkc, 
+                        string DestinationName, 
+                        string DestinationAddress, 
+                        string DestinationOfficeName, 
+                        string DestinationOfficeCode, 
+                        string LoadingPort, 
+                        string LoadingPortName, 
+                        string LoadingPortCode, 
+                        string FinalPort, 
+                        string FinalPortName, 
+                        string FinalPortCode) {
                 dtCk5Row rowdtCk5Row = ((dtCk5Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         OfficeName,
@@ -794,7 +983,21 @@ namespace Sampoerna.EMS.ReportingData {
                         PoaIdCard,
                         PoaCity,
                         InvoiceNumber,
-                        InvoiceDate};
+                        InvoiceDate,
+                        TotalMaterial,
+                        DestinationCountry,
+                        DestinationCode,
+                        DestinationNppbkc,
+                        DestinationName,
+                        DestinationAddress,
+                        DestinationOfficeName,
+                        DestinationOfficeCode,
+                        LoadingPort,
+                        LoadingPortName,
+                        LoadingPortCode,
+                        FinalPort,
+                        FinalPortName,
+                        FinalPortCode};
                 rowdtCk5Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtCk5Row);
                 return rowdtCk5Row;
@@ -851,6 +1054,20 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnPoaCity = base.Columns["PoaCity"];
                 this.columnInvoiceNumber = base.Columns["InvoiceNumber"];
                 this.columnInvoiceDate = base.Columns["InvoiceDate"];
+                this.columnTotalMaterial = base.Columns["TotalMaterial"];
+                this.columnDestinationCountry = base.Columns["DestinationCountry"];
+                this.columnDestinationCode = base.Columns["DestinationCode"];
+                this.columnDestinationNppbkc = base.Columns["DestinationNppbkc"];
+                this.columnDestinationName = base.Columns["DestinationName"];
+                this.columnDestinationAddress = base.Columns["DestinationAddress"];
+                this.columnDestinationOfficeName = base.Columns["DestinationOfficeName"];
+                this.columnDestinationOfficeCode = base.Columns["DestinationOfficeCode"];
+                this.columnLoadingPort = base.Columns["LoadingPort"];
+                this.columnLoadingPortName = base.Columns["LoadingPortName"];
+                this.columnLoadingPortCode = base.Columns["LoadingPortCode"];
+                this.columnFinalPort = base.Columns["FinalPort"];
+                this.columnFinalPortName = base.Columns["FinalPortName"];
+                this.columnFinalPortCode = base.Columns["FinalPortCode"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -924,6 +1141,34 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnInvoiceNumber);
                 this.columnInvoiceDate = new global::System.Data.DataColumn("InvoiceDate", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnInvoiceDate);
+                this.columnTotalMaterial = new global::System.Data.DataColumn("TotalMaterial", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalMaterial);
+                this.columnDestinationCountry = new global::System.Data.DataColumn("DestinationCountry", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationCountry);
+                this.columnDestinationCode = new global::System.Data.DataColumn("DestinationCode", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationCode);
+                this.columnDestinationNppbkc = new global::System.Data.DataColumn("DestinationNppbkc", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationNppbkc);
+                this.columnDestinationName = new global::System.Data.DataColumn("DestinationName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationName);
+                this.columnDestinationAddress = new global::System.Data.DataColumn("DestinationAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationAddress);
+                this.columnDestinationOfficeName = new global::System.Data.DataColumn("DestinationOfficeName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationOfficeName);
+                this.columnDestinationOfficeCode = new global::System.Data.DataColumn("DestinationOfficeCode", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDestinationOfficeCode);
+                this.columnLoadingPort = new global::System.Data.DataColumn("LoadingPort", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLoadingPort);
+                this.columnLoadingPortName = new global::System.Data.DataColumn("LoadingPortName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLoadingPortName);
+                this.columnLoadingPortCode = new global::System.Data.DataColumn("LoadingPortCode", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLoadingPortCode);
+                this.columnFinalPort = new global::System.Data.DataColumn("FinalPort", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFinalPort);
+                this.columnFinalPortName = new global::System.Data.DataColumn("FinalPortName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFinalPortName);
+                this.columnFinalPortCode = new global::System.Data.DataColumn("FinalPortCode", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFinalPortCode);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1411,6 +1656,407 @@ namespace Sampoerna.EMS.ReportingData {
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
                 attribute2.FixedValue = "dtCk5MaterialDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class dtCk5MaterialExtendDataTable : global::System.Data.TypedTableBase<dtCk5MaterialExtendRow> {
+            
+            private global::System.Data.DataColumn columnNumber;
+            
+            private global::System.Data.DataColumn columnQty;
+            
+            private global::System.Data.DataColumn columnUom;
+            
+            private global::System.Data.DataColumn columnConvertion;
+            
+            private global::System.Data.DataColumn columnConvertedQty;
+            
+            private global::System.Data.DataColumn columnConvertedUom;
+            
+            private global::System.Data.DataColumn columnHje;
+            
+            private global::System.Data.DataColumn columnTariff;
+            
+            private global::System.Data.DataColumn columnExciseValue;
+            
+            private global::System.Data.DataColumn columnUsdValue;
+            
+            private global::System.Data.DataColumn columnNote;
+            
+            private global::System.Data.DataColumn columnDescMaterial;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public dtCk5MaterialExtendDataTable() {
+                this.TableName = "dtCk5MaterialExtend";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal dtCk5MaterialExtendDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected dtCk5MaterialExtendDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NumberColumn {
+                get {
+                    return this.columnNumber;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn QtyColumn {
+                get {
+                    return this.columnQty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn UomColumn {
+                get {
+                    return this.columnUom;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ConvertionColumn {
+                get {
+                    return this.columnConvertion;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ConvertedQtyColumn {
+                get {
+                    return this.columnConvertedQty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ConvertedUomColumn {
+                get {
+                    return this.columnConvertedUom;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn HjeColumn {
+                get {
+                    return this.columnHje;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TariffColumn {
+                get {
+                    return this.columnTariff;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ExciseValueColumn {
+                get {
+                    return this.columnExciseValue;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn UsdValueColumn {
+                get {
+                    return this.columnUsdValue;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NoteColumn {
+                get {
+                    return this.columnNote;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DescMaterialColumn {
+                get {
+                    return this.columnDescMaterial;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public dtCk5MaterialExtendRow this[int index] {
+                get {
+                    return ((dtCk5MaterialExtendRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event dtCk5MaterialExtendRowChangeEventHandler dtCk5MaterialExtendRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event dtCk5MaterialExtendRowChangeEventHandler dtCk5MaterialExtendRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event dtCk5MaterialExtendRowChangeEventHandler dtCk5MaterialExtendRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event dtCk5MaterialExtendRowChangeEventHandler dtCk5MaterialExtendRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void AdddtCk5MaterialExtendRow(dtCk5MaterialExtendRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public dtCk5MaterialExtendRow AdddtCk5MaterialExtendRow(string Number, string Qty, string Uom, string Convertion, string ConvertedQty, string ConvertedUom, string Hje, string Tariff, string ExciseValue, string UsdValue, string Note, string DescMaterial) {
+                dtCk5MaterialExtendRow rowdtCk5MaterialExtendRow = ((dtCk5MaterialExtendRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        Number,
+                        Qty,
+                        Uom,
+                        Convertion,
+                        ConvertedQty,
+                        ConvertedUom,
+                        Hje,
+                        Tariff,
+                        ExciseValue,
+                        UsdValue,
+                        Note,
+                        DescMaterial};
+                rowdtCk5MaterialExtendRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowdtCk5MaterialExtendRow);
+                return rowdtCk5MaterialExtendRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                dtCk5MaterialExtendDataTable cln = ((dtCk5MaterialExtendDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new dtCk5MaterialExtendDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal void InitVars() {
+                this.columnNumber = base.Columns["Number"];
+                this.columnQty = base.Columns["Qty"];
+                this.columnUom = base.Columns["Uom"];
+                this.columnConvertion = base.Columns["Convertion"];
+                this.columnConvertedQty = base.Columns["ConvertedQty"];
+                this.columnConvertedUom = base.Columns["ConvertedUom"];
+                this.columnHje = base.Columns["Hje"];
+                this.columnTariff = base.Columns["Tariff"];
+                this.columnExciseValue = base.Columns["ExciseValue"];
+                this.columnUsdValue = base.Columns["UsdValue"];
+                this.columnNote = base.Columns["Note"];
+                this.columnDescMaterial = base.Columns["DescMaterial"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            private void InitClass() {
+                this.columnNumber = new global::System.Data.DataColumn("Number", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNumber);
+                this.columnQty = new global::System.Data.DataColumn("Qty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnQty);
+                this.columnUom = new global::System.Data.DataColumn("Uom", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUom);
+                this.columnConvertion = new global::System.Data.DataColumn("Convertion", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnConvertion);
+                this.columnConvertedQty = new global::System.Data.DataColumn("ConvertedQty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnConvertedQty);
+                this.columnConvertedUom = new global::System.Data.DataColumn("ConvertedUom", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnConvertedUom);
+                this.columnHje = new global::System.Data.DataColumn("Hje", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnHje);
+                this.columnTariff = new global::System.Data.DataColumn("Tariff", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTariff);
+                this.columnExciseValue = new global::System.Data.DataColumn("ExciseValue", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnExciseValue);
+                this.columnUsdValue = new global::System.Data.DataColumn("UsdValue", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUsdValue);
+                this.columnNote = new global::System.Data.DataColumn("Note", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNote);
+                this.columnDescMaterial = new global::System.Data.DataColumn("DescMaterial", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDescMaterial);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public dtCk5MaterialExtendRow NewdtCk5MaterialExtendRow() {
+                return ((dtCk5MaterialExtendRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new dtCk5MaterialExtendRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(dtCk5MaterialExtendRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.dtCk5MaterialExtendRowChanged != null)) {
+                    this.dtCk5MaterialExtendRowChanged(this, new dtCk5MaterialExtendRowChangeEvent(((dtCk5MaterialExtendRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.dtCk5MaterialExtendRowChanging != null)) {
+                    this.dtCk5MaterialExtendRowChanging(this, new dtCk5MaterialExtendRowChangeEvent(((dtCk5MaterialExtendRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.dtCk5MaterialExtendRowDeleted != null)) {
+                    this.dtCk5MaterialExtendRowDeleted(this, new dtCk5MaterialExtendRowChangeEvent(((dtCk5MaterialExtendRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.dtCk5MaterialExtendRowDeleting != null)) {
+                    this.dtCk5MaterialExtendRowDeleting(this, new dtCk5MaterialExtendRowChangeEvent(((dtCk5MaterialExtendRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void RemovedtCk5MaterialExtendRow(dtCk5MaterialExtendRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                dsCK5Print ds = new dsCK5Print();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "dtCk5MaterialExtendDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -2011,6 +2657,230 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int TotalMaterial {
+                get {
+                    try {
+                        return ((int)(this[this.tabledtCk5.TotalMaterialColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TotalMaterial\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.TotalMaterialColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationCountry {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationCountryColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationCountry\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationCountryColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationCode {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationCodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationCode\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationCodeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationNppbkc {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationNppbkcColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationNppbkc\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationNppbkcColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationName {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationName\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationAddress\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationOfficeName {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationOfficeNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationOfficeName\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationOfficeNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DestinationOfficeCode {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DestinationOfficeCodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DestinationOfficeCode\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DestinationOfficeCodeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string LoadingPort {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.LoadingPortColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LoadingPort\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.LoadingPortColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string LoadingPortName {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.LoadingPortNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LoadingPortName\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.LoadingPortNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string LoadingPortCode {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.LoadingPortCodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LoadingPortCode\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.LoadingPortCodeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string FinalPort {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.FinalPortColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'FinalPort\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.FinalPortColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string FinalPortName {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.FinalPortNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'FinalPortName\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.FinalPortNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string FinalPortCode {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.FinalPortCodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'FinalPortCode\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.FinalPortCodeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsOfficeNameNull() {
                 return this.IsNull(this.tabledtCk5.OfficeNameColumn);
             }
@@ -2416,6 +3286,174 @@ namespace Sampoerna.EMS.ReportingData {
             public void SetInvoiceDateNull() {
                 this[this.tabledtCk5.InvoiceDateColumn] = global::System.Convert.DBNull;
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTotalMaterialNull() {
+                return this.IsNull(this.tabledtCk5.TotalMaterialColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTotalMaterialNull() {
+                this[this.tabledtCk5.TotalMaterialColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationCountryNull() {
+                return this.IsNull(this.tabledtCk5.DestinationCountryColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationCountryNull() {
+                this[this.tabledtCk5.DestinationCountryColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationCodeNull() {
+                return this.IsNull(this.tabledtCk5.DestinationCodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationCodeNull() {
+                this[this.tabledtCk5.DestinationCodeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationNppbkcNull() {
+                return this.IsNull(this.tabledtCk5.DestinationNppbkcColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationNppbkcNull() {
+                this[this.tabledtCk5.DestinationNppbkcColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationNameNull() {
+                return this.IsNull(this.tabledtCk5.DestinationNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationNameNull() {
+                this[this.tabledtCk5.DestinationNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationAddressNull() {
+                return this.IsNull(this.tabledtCk5.DestinationAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationAddressNull() {
+                this[this.tabledtCk5.DestinationAddressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationOfficeNameNull() {
+                return this.IsNull(this.tabledtCk5.DestinationOfficeNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationOfficeNameNull() {
+                this[this.tabledtCk5.DestinationOfficeNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDestinationOfficeCodeNull() {
+                return this.IsNull(this.tabledtCk5.DestinationOfficeCodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDestinationOfficeCodeNull() {
+                this[this.tabledtCk5.DestinationOfficeCodeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLoadingPortNull() {
+                return this.IsNull(this.tabledtCk5.LoadingPortColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLoadingPortNull() {
+                this[this.tabledtCk5.LoadingPortColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLoadingPortNameNull() {
+                return this.IsNull(this.tabledtCk5.LoadingPortNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLoadingPortNameNull() {
+                this[this.tabledtCk5.LoadingPortNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLoadingPortCodeNull() {
+                return this.IsNull(this.tabledtCk5.LoadingPortCodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLoadingPortCodeNull() {
+                this[this.tabledtCk5.LoadingPortCodeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFinalPortNull() {
+                return this.IsNull(this.tabledtCk5.FinalPortColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFinalPortNull() {
+                this[this.tabledtCk5.FinalPortColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFinalPortNameNull() {
+                return this.IsNull(this.tabledtCk5.FinalPortNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFinalPortNameNull() {
+                this[this.tabledtCk5.FinalPortNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFinalPortCodeNull() {
+                return this.IsNull(this.tabledtCk5.FinalPortCodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFinalPortCodeNull() {
+                this[this.tabledtCk5.FinalPortCodeColumn] = global::System.Convert.DBNull;
+            }
         }
         
         /// <summary>
@@ -2770,6 +3808,357 @@ namespace Sampoerna.EMS.ReportingData {
         }
         
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class dtCk5MaterialExtendRow : global::System.Data.DataRow {
+            
+            private dtCk5MaterialExtendDataTable tabledtCk5MaterialExtend;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal dtCk5MaterialExtendRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tabledtCk5MaterialExtend = ((dtCk5MaterialExtendDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Number {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.NumberColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Number\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.NumberColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Qty {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.QtyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Qty\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.QtyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Uom {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.UomColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Uom\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.UomColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Convertion {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.ConvertionColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Convertion\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.ConvertionColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ConvertedQty {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.ConvertedQtyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ConvertedQty\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.ConvertedQtyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ConvertedUom {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.ConvertedUomColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ConvertedUom\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.ConvertedUomColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Hje {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.HjeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Hje\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.HjeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Tariff {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.TariffColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Tariff\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.TariffColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ExciseValue {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.ExciseValueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ExciseValue\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.ExciseValueColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string UsdValue {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.UsdValueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'UsdValue\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.UsdValueColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Note {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.NoteColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Note\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.NoteColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DescMaterial {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5MaterialExtend.DescMaterialColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DescMaterial\' in table \'dtCk5MaterialExtend\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5MaterialExtend.DescMaterialColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNumberNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.NumberColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNumberNull() {
+                this[this.tabledtCk5MaterialExtend.NumberColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsQtyNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.QtyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetQtyNull() {
+                this[this.tabledtCk5MaterialExtend.QtyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsUomNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.UomColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetUomNull() {
+                this[this.tabledtCk5MaterialExtend.UomColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsConvertionNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.ConvertionColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetConvertionNull() {
+                this[this.tabledtCk5MaterialExtend.ConvertionColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsConvertedQtyNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.ConvertedQtyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetConvertedQtyNull() {
+                this[this.tabledtCk5MaterialExtend.ConvertedQtyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsConvertedUomNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.ConvertedUomColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetConvertedUomNull() {
+                this[this.tabledtCk5MaterialExtend.ConvertedUomColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsHjeNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.HjeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetHjeNull() {
+                this[this.tabledtCk5MaterialExtend.HjeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTariffNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.TariffColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTariffNull() {
+                this[this.tabledtCk5MaterialExtend.TariffColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsExciseValueNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.ExciseValueColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetExciseValueNull() {
+                this[this.tabledtCk5MaterialExtend.ExciseValueColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsUsdValueNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.UsdValueColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetUsdValueNull() {
+                this[this.tabledtCk5MaterialExtend.UsdValueColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNoteNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.NoteColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNoteNull() {
+                this[this.tabledtCk5MaterialExtend.NoteColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDescMaterialNull() {
+                return this.IsNull(this.tabledtCk5MaterialExtend.DescMaterialColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDescMaterialNull() {
+                this[this.tabledtCk5MaterialExtend.DescMaterialColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -2823,6 +4212,40 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public dtCk5MaterialRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class dtCk5MaterialExtendRowChangeEvent : global::System.EventArgs {
+            
+            private dtCk5MaterialExtendRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public dtCk5MaterialExtendRowChangeEvent(dtCk5MaterialExtendRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public dtCk5MaterialExtendRow Row {
                 get {
                     return this.eventRow;
                 }
