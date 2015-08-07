@@ -83,7 +83,6 @@ namespace Sampoerna.EMS.XMLReader
                     }
 
                     item.IS_FROM_SAP = true;
-
                     var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
                     if (existingMaterial != null)
                     {
