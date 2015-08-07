@@ -27,23 +27,30 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<UOM>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new UOM();
-                    item.UOM_ID = xElement.Element("MSEHI").Value;
-                    item.UOM_DESC = xElement.Element("MSEHL").Value;
-                    var existingData = GetUoM(item.UOM_ID);
-                    if (existingData != null)
+                    try
                     {
-                        item.CREATED_DATE = existingData.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
-                        
+                        var item = new UOM();
+                        item.UOM_ID = xElement.Element("MSEHI").Value;
+                        item.UOM_DESC = xElement.Element("MSEHL").Value;
+                        var existingData = GetUoM(item.UOM_ID);
+                        if (existingData != null)
+                        {
+                            item.CREATED_DATE = existingData.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
+                        continue;
                     }
-                   
+
                 }
                 return items;
             }
@@ -51,9 +58,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<UOM>(Items);
+           return _xmlMapper.InsertToDatabase<UOM>(Items);
         }
 
         public UOM GetUoM(string uomId)

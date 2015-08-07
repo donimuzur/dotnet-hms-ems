@@ -71,6 +71,12 @@
     <Compile Include="CK5_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="COUNTRY.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CURRENCY.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
