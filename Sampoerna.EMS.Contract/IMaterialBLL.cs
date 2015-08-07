@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Contract
     public interface IMaterialBLL
     {
         ZAIDM_EX_MATERIAL getByID(string materialnumber,string plant);
-
+        
         List<ZAIDM_EX_MATERIAL> getAll();
         List<string> getStickerCode();
 

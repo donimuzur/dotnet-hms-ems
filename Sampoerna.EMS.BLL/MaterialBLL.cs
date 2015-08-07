@@ -108,7 +108,7 @@ namespace Sampoerna.EMS.BLL
 
             var changes = new CHANGES_HISTORY
             {
-                FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
+                FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
                 FORM_ID = existingData.STICKER_CODE,
                 FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
@@ -135,21 +135,24 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public int DeleteMaterialUom(int id, string userId)
+        public int DeleteMaterialUom(int id, string userId, string mn, string p)
         {
             try
             {
+                var existingData = _repositoryUoM.GetByID(id);
+                string oldData = string.Format("{0} - {1}", existingData.MEINH, existingData.UMREN);
+
                 _repositoryUoM.Delete(id);
 
                 var changes = new CHANGES_HISTORY
                 {
                     FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                    FORM_ID = "20",
-                    FIELD_NAME = "CONVERTION",
+                    FORM_ID = mn + p,
+                    FIELD_NAME = "CONVERTION_DELETED",
                     MODIFIED_BY = userId,
                     MODIFIED_DATE = DateTime.Now,
-                    OLD_VALUE = id.ToString(),
-                    NEW_VALUE = id.ToString()
+                    OLD_VALUE = oldData,
+                    NEW_VALUE = string.Empty
                 };
 
                 _changesHistoryBll.AddHistory(changes);

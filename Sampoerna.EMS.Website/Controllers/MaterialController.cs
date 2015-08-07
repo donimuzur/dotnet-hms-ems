@@ -337,9 +337,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult RemoveMaterialUom(int materialUomId)
+        public JsonResult RemoveMaterialUom(int materialUomId, string materialnumber, string plant)
         {
-            return Json(_materialBll.DeleteMaterialUom(materialUomId, CurrentUser.USER_ID));
+            return Json(_materialBll.DeleteMaterialUom(materialUomId, CurrentUser.USER_ID, materialnumber, plant));
         }
     }
 }
