@@ -247,7 +247,15 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetAllByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
+        public static SelectList GetPlantAll()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plantIdList = plantBll.GetAll();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
 
+        }
+        
         public static SelectList GetBroleList()
         {
             IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
@@ -263,6 +271,18 @@ namespace Sampoerna.EMS.Website.Code
             var result = Mapper.Map<List<PageDto>>(data);
             return result;
         }
+
+        public static SelectList GetPlantByNppbkcId(string nppbkcId)
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plantList = plantBll.GetPlantByNppbkc(nppbkcId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
       
+        }
+       
+
      }
-}
+

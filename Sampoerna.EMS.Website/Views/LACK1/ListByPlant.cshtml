@@ -1,9 +1,8 @@
-﻿@using Sampoerna.EMS.Website.Helpers
-@using Sampoerna.EMS.Core;
-@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexPlantViewModel
+@using Sampoerna.EMS.Website.Helpers
 
 @{
-    ViewBag.Title = "PBCK-1";
+    ViewBag.Title = "LACK1";
 }
 
 <div class="container-wrap title-page">
@@ -11,10 +10,8 @@
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "PBCK1")">
-                    @if (Model.IsShowNewButton) {
-                        <input type="button" class="btn btn-blue" value="NEW" />
-                    }
+                <a href="#">
+                    <input type="button" class="btn btn-blue" value="NEW" />
                 </a>
             </div>
         </div>
@@ -25,7 +22,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterOpenDocument", "PBCK1",
+                @using (Ajax.BeginForm("FilterListByPlant", "LACK1",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -39,32 +36,42 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                    @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-4">Type</label>
-                                <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control selectreset" })
+                                <label class="col-md-4">PLANT ID</label>
+                                <div id="divPoaList" class="col-md-8 ui-widget">
+                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })*@
+                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
+                                        <option value="">All</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-4">Year</label>
+                                <label class="col-md-4">Reported On</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control selectreset" })
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control" name="ReportedOn">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="last-form">
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
+                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
                                             <option value="">All</option>
                                         </select>
                                     </div>
@@ -74,7 +81,7 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
+                                        @Html.DropDownListFor(model => model.Creator, Model.CreatorList, "All", new { @class = "form-control selectreset" })
                                     </div>
                                 </div>
                             </div>
@@ -93,16 +100,18 @@
                 }
             </div>
             <div id="contenttable" class="table-container">
-                @Html.Partial("_Pbck1Table")
+                @Html.Partial("_Lack1ListByPlantTable")
             </div>
         </div>
     </div>
 </div>
 
-@section scripts {
 
+
+@section Scripts
+{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript" language="javascript">
+    <script type="text/javascript">
 
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
@@ -110,12 +119,12 @@
             });
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#pbckTable')) {
-                table = $('#pbckTable').DataTable();
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
                 table.destroy();
             }
 
-            table = $('#pbckTable').DataTable(
+            table = $('#lack1Table').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -125,7 +134,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#pbckTable .filters th').each(function () {
+            $('#lack1Table .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -142,18 +151,21 @@
                 });
             });
 
-            $('#MenuPBCK1OpenListDocument').addClass('active');
+            $('#MenuLack1ListByPlant').addClass('active');
+
         }
 
-        $("#SearchInput_NppbkcId").change(function () {
-            if ($("#SearchInput_NppbkcId").length) {
+        $("#NppbkcId").change(function () {
+            if ($("#NppbkcId").length) {
                 var nbck = $(this).find("option:selected").text();
                 $('#SearchInput_POA option').remove();
+                $('#SearchInput_PlantId option').remove();
                 console.log(nbck);
                 if (nbck == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_POA').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId').append('<option value="">All</option>');
                 } else {
-                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
                 }
             }
 
@@ -162,7 +174,6 @@
         $(document).ready(function () {
             setupDataTables();
         });
-
         function ajaxSelectNppbck(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
@@ -170,13 +181,24 @@
                     url: url,
                     data: formData,
                     success: function (data) {
-                        var list = data.SearchInput.PoaList;
+                        var list = data.PoaList;
+                        var listPlant = data.PlantIdList;
                         $('#SearchInput_POA').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+
                             }
                         }
+
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+
+                            }
+                        }
+
                     }
                 });
             }
@@ -192,6 +214,5 @@
             });
             setupDataTables();
         }
-
     </script>
 }

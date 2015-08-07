@@ -7,5 +7,6 @@
         public bool? IS_HEADER_SET { get; set; }
         public bool? IS_FOOTER_SET { get; set; }
         public int HEADER_FOOTER_ID { get; set; }
+      
     }
 }
