@@ -16,7 +16,9 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T001W> _repositoryT1001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
         private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
-       private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProduct;
+        private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProduct;
+        private IGenericRepository<COUNTRY> _repositoryCountry;
+        private IGenericRepository<CURRENCY> _repositoryCurrency;
 
         private IUnitOfWork _uow;
 
@@ -29,6 +31,8 @@ namespace Sampoerna.EMS.BLL
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
             _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
            _repositoryProduct = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
+            _repositoryCountry = _uow.GetGenericRepository<COUNTRY>();
+            _repositoryCurrency = _uow.GetGenericRepository<CURRENCY>();
         }
 
         public List<string> GetDataCompany()
@@ -141,21 +145,15 @@ namespace Sampoerna.EMS.BLL
         #region COUNTRY
 
 
-        public List<string> GetAllDataCountry()
+        public List<COUNTRY> GetAllDataCountry()
         {
-            var list = new List<string>();
-            list.Add("ID");
-            list.Add("US");
-            list.Add("AUS");
-            return list;
+          
+            return _repositoryCountry.Get().ToList();
 
         }
-        public List<string> GetAllDataCurrency()
+        public List<CURRENCY> GetAllDataCurrency()
         {
-            var list = new List<string>();
-            list.Add("IDR");
-            list.Add("USD");
-            return list;
+            return _repositoryCurrency.Get().ToList();
 
         }
 

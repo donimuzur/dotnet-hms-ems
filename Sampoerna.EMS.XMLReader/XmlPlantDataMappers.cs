@@ -27,28 +27,36 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<T001W>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T001W();
-                    item.WERKS = xElement.Element("WERKS").Value;
-                    item.NAME1 = xElement.Element("NAME1").Value;
-                    item.ORT01 = xElement.Element("ORT01").Value;
-                    item.ADDRESS = xElement.Element("STRAS").Value + " " + item.ORT01;
-                    var exisitingPlant = GetPlant(item.WERKS);
-                    if (exisitingPlant != null)
+                    try
                     {
-                        item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
-                        item.PHONE = exisitingPlant.PHONE;
-                        item.SKEPTIS = exisitingPlant.SKEPTIS;
-                        item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
-                        
-                        item.CREATED_DATE = exisitingPlant.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
-                       
+                        var item = new T001W();
+                        item.WERKS = xElement.Element("WERKS").Value;
+                        item.NAME1 = xElement.Element("NAME1").Value;
+                        item.ORT01 = xElement.Element("ORT01").Value;
+                        item.ADDRESS = xElement.Element("STRAS").Value + " " + item.ORT01;
+                        var exisitingPlant = GetPlant(item.WERKS);
+                        if (exisitingPlant != null)
+                        {
+                            item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
+                            item.PHONE = exisitingPlant.PHONE;
+                            item.SKEPTIS = exisitingPlant.SKEPTIS;
+                            item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
+
+                            item.CREATED_DATE = exisitingPlant.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
+                        continue;
+                        
                     }
 
                 }
@@ -58,9 +66,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T001W>(Items);
+          return _xmlMapper.InsertToDatabase<T001W>(Items);
         }
 
         public T001W GetPlant(string PlantId)

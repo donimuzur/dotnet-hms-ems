@@ -100,7 +100,7 @@
 </div>
 
 @section scripts {
-    
+
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
 
@@ -127,7 +127,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#pbckTable .filters th').each(function() {
+            $('#pbckTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -135,8 +135,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -145,7 +145,7 @@
             });
         }
 
-        $("#SearchInput_NppbkcId").change(function() {
+        $("#SearchInput_NppbkcId").change(function () {
             if ($("#SearchInput_NppbkcId").length) {
                 var nbck = $(this).find("option:selected").text();
                 $('#SearchInput_POA option').remove();
@@ -159,7 +159,7 @@
 
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             setupDataTables();
         });
 
@@ -169,24 +169,24 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var list = data.SearchInput.PoaList;
                         $('#SearchInput_POA').append('<option value="">All</option>');
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
                             }
-                        } 
+                        }
                     }
                 });
             }
         }
 
         function ReloadDataTables() {
-            $('.toggle-row').click(function() {
+            $('.toggle-row').click(function () {
 
                 var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function() {
+                filter.slideToggle(100).promise().done(function () {
 
                 });
             });
@@ -194,5 +194,4 @@
         }
 
     </script>
-
 }

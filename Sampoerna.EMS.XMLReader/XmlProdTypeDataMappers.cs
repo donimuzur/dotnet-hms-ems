@@ -51,7 +51,8 @@ namespace Sampoerna.EMS.XMLReader
                     catch (Exception ex)
                     {
                         
-                        throw;
+                       continue;
+                        
                     }
                  
 
@@ -62,9 +63,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_PRODTYP>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_PRODTYP>(Items);
         }
 
         public ZAIDM_EX_PRODTYP GetProdType(string ProdTypeCode)

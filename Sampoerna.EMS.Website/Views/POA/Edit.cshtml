@@ -39,6 +39,7 @@
                                                     <label class="col-md-3">ID Card<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(x => x.Detail.PoaId)
+                                                        @Html.HiddenFor(x => x.Detail.Is_Active)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @maxlength = "22" })
                                                     </div>
                                                 </div>

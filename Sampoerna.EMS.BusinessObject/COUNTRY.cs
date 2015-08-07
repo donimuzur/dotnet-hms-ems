@@ -14,17 +14,8 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class COUNTRY
     {
-        public COUNTRY()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.CK5 = new HashSet<CK5>();
-        }
-    
         public int COUNTRY_ID { get; set; }
         public string COUNTRY_CODE { get; set; }
         public string COUNTRY_NAME { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<CK5> CK5 { get; set; }
     }
 }

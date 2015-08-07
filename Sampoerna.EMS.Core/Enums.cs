@@ -218,6 +218,12 @@ namespace Sampoerna.EMS.Core
             Laut = 2
         }
 
+        public enum LACK1Type
+        {
+            ListByNppbkc = 1,
+            ListByPlant = 2,
+            ComplatedDocument =3
+        }
         public enum CK5TransType
         {
             [Description("Created")]

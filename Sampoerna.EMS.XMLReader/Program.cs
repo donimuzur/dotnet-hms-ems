@@ -22,7 +22,6 @@ namespace Sampoerna.EMS.XMLReader
         {
 
             Service svc = new Service();
-          
              svc.Run();
           
              Console.ReadLine();

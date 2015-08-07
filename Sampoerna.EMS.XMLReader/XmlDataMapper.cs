@@ -57,11 +57,12 @@ namespace Sampoerna.EMS.XMLReader
             return _xmlData.Elements(elementName);
         }
        
-        public void InsertToDatabase<T>(List<T> items) where T : class
+        public string InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
             var errorCount = 0;
             var itemToInsert = 0;
+            var fileName = string.Empty;
             try
             {
                 foreach (var item in items)
@@ -82,9 +83,10 @@ namespace Sampoerna.EMS.XMLReader
             }
             if (errorCount == 0 && itemToInsert > 0)
             {
-                MoveFile();
-                
+                fileName = MoveFile();
+                return fileName;
             }
+            return null;
 
         }
         public void InsertOrUpdate<T>(T entity) where T: class 
@@ -103,7 +105,7 @@ namespace Sampoerna.EMS.XMLReader
             try
             {
                 
-                    repo.InsertOrUpdate(data);
+               repo.InsertOrUpdate(data);
 
                 
                 uow.SaveChanges();
@@ -117,8 +119,10 @@ namespace Sampoerna.EMS.XMLReader
 
             MoveFile();
         }
-        private void MoveFile()
+        
+        public string MoveFile()
         {
+            var filenameMoved = string.Empty;
             try
             {
                 string sourcePath = _xmlName;
@@ -126,9 +130,10 @@ namespace Sampoerna.EMS.XMLReader
                 var sourcefileName = Path.GetFileName(sourcePath);
                 var destPath = Path.Combine(archievePath, sourcefileName);
                 if (File.Exists(destPath))
-                    return;
+                    return null;
 
                 File.Move(sourcePath, destPath);
+                return sourcefileName;
             }
             catch (Exception ex)
             {

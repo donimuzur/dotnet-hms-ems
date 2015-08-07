@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Contract
     public interface IMaterialBLL
     {
         ZAIDM_EX_MATERIAL getByID(string materialnumber,string plant);
-
+        
         List<ZAIDM_EX_MATERIAL> getAll();
         List<string> getStickerCode();
 
@@ -24,6 +24,6 @@ namespace Sampoerna.EMS.Contract
 
         void Delete(string materialnumber, string plant, string userId);
 
-        int DeleteMaterialUom(int id);
+        int DeleteMaterialUom(int id, string userId, string materialnumber, string plant);
     }
 }
