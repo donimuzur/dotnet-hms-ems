@@ -45,9 +45,10 @@
                                 <div class="row">
                                     <label class="col-md-3"></label>
                                     <div class="col-md-9">
-                                        @if (Model.AllowPrintDocument) {
-                                            <a class="btn btn-blue full" onclick="window.open('@Url.EncryptedAction("PrintOut", "PBCK1", new { id = Model.Detail.Pbck1Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>    
-                                        }
+                                        @if (Model.AllowPrintDocument)
+{
+    <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintOut", "PBCK1", new { id = @Model.Detail.Pbck1Id })', '@Url.Action("AddPrintHistory", "Pbck1")', @Model.Detail.Pbck1Id)">Print</a>
+}
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +59,7 @@
         </div>
     </div>
 
-    <div class="table-container">
+    <div class="table-container" id="PrintOutHistoryTable">
         @Html.Partial("_PrintHistoryTable")
     </div>
 </div>

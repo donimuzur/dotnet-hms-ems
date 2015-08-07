@@ -104,6 +104,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
 
+        $('#MenuPBCK1OpenListDocument').addClass('active');
+        
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
@@ -141,8 +143,6 @@
                         .draw();
                 });
             });
-
-            $('#MenuPBCK1OpenListDocument').addClass('active');
         }
 
         $("#SearchInput_NppbkcId").change(function() {

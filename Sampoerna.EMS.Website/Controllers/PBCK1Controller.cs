@@ -1354,19 +1354,7 @@ namespace Sampoerna.EMS.Website.Controllers
             rpt.Load();
             rpt.SetDataSource(dataSet);
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-
-            //add to print history
-            var input = new PrintHistoryDto()
-            {
-                FORM_TYPE_ID = Enums.FormType.PBCK1,
-                FORM_ID = pbck1Data.Detail.Pbck1Id,
-                FORM_NUMBER = pbck1Data.Detail.Pbck1Number,
-                PRINT_DATE = DateTime.Now,
-                PRINT_BY = CurrentUser.USER_ID
-            };
-
-            _printHistoryBll.AddPrintHistory(input);
-
+            
             return File(stream, "application/pdf");
         }
 
@@ -1643,5 +1631,32 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck1Data = _pbck1Bll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_ID = pbck1Data.Pbck1Id,
+                FORM_NUMBER = pbck1Data.Pbck1Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck1Data.Pbck1Number));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
+
     }
 }
