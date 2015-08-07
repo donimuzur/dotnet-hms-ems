@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             if (xmlfile.Contains("POA"))
             {
-                return new XmlCompanyDataMapper(xmlfile);
+                return new XmlPoaDataMapper(xmlfile);
             }
             else if (xmlfile.Contains("COY"))
             {
