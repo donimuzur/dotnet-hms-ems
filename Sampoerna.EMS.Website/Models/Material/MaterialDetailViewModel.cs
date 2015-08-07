@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string PurchasingGroup { get; set; }
 
 
-        public int PlantId { get; set; }
+        public string PlantId { get; set; }
         [Display(Name = "Plant")]
         public string PlantName { get; set; }
 

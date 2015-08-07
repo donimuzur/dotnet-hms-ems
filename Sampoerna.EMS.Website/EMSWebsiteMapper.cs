@@ -558,6 +558,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDetailViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.BASE_UOM_ID))
+                  .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.T001W.WERKS))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.WERKS + "-" + src.T001W.NAME1))
                 .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
                 .ForMember(dest => dest.MaterialGroup, opt => opt.MapFrom(src => src.MATERIAL_GROUP))
