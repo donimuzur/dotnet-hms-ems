@@ -175,14 +175,14 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCountry();
-            return new SelectList(data);
+            return new SelectList(data, "COUNTRY_CODE", "COUNTRY_NAME");
         }
 
         public static SelectList GetCurrencyList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCurrency();
-            return new SelectList(data);
+            return new SelectList(data, "CURRENCY_ID", "CURRENCY_ID");
         }
 
         public static SelectList GetStickerCodeList()

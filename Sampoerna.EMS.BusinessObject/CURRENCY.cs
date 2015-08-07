@@ -12,10 +12,9 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class COUNTRY
+    public partial class CURRENCY
     {
-        public int COUNTRY_ID { get; set; }
-        public string COUNTRY_CODE { get; set; }
-        public string COUNTRY_NAME { get; set; }
+        public string CURRENCY_ID { get; set; }
+        public string CURRENCY_NAME { get; set; }
     }
 }

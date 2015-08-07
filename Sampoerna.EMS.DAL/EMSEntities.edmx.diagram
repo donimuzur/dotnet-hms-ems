@@ -159,6 +159,8 @@
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_MODIFIED_BY" />
         <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="49.5" />
         <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
+        <EntityTypeShape EntityType="EMSModel.COUNTRY" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EMSModel.CURRENCY" Width="1.5" PointX="3.375" PointY="6.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
