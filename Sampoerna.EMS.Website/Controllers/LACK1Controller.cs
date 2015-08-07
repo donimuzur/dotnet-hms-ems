@@ -224,7 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            return View("Create","");
+            return View("Create", InitialModel(model));
         }
 
     }
