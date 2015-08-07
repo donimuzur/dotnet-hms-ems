@@ -112,6 +112,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// Pemasok
         /// </summary>
         public string ExciseManager { get; set; }
+        public string ProdPlanPeriode { get; set; }
+        public string Lack1Periode { get; set; }
     }
 
     public class Pbck1ReportProdPlanDto

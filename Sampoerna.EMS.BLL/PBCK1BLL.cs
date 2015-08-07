@@ -1198,6 +1198,10 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
             rc.Detail.PrintedDate = DateReportString(DateTime.Now);
             rc.Detail.ExciseManager = dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME;
+            rc.Detail.ProdPlanPeriode = SetPeriod(dbData.PLAN_PROD_FROM.Value.Month, dbData.PLAN_PROD_FROM.Value.Year,
+                dbData.PLAN_PROD_TO.Value.Month, dbData.PLAN_PROD_TO.Value.Year);
+            rc.Detail.Lack1Periode = SetPeriod(dbData.LACK1_FROM_MONTH.Value, dbData.LACK1_FROM_YEAR.Value,
+                dbData.LACK1_TO_MONTH.Value, dbData.LACK1_TO_YEAR.Value);
 
             //Set ProdPlan
             rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
@@ -1222,5 +1226,11 @@ namespace Sampoerna.EMS.BLL
                                    " " + dt.ToString("yyyy");
         }
 
+        private string SetPeriod(int startMonth, int startYear, int endMonth, int endYear)
+        {
+            var month1 = _monthBll.GetMonth(startMonth);
+            var month2 = _monthBll.GetMonth(endMonth);
+            return month1.MONTH_NAME_IND + " " + startYear + " - " + month2.MONTH_NAME_IND + " " + endYear;
+        }
     }
 }

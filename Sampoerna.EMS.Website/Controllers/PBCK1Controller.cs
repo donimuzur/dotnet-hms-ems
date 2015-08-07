@@ -1408,6 +1408,8 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.NppbkcCity = d.NppbkcCity;
             detailRow.PrintedDate = d.PrintedDate;
             detailRow.ExciseManager = d.ExciseManager;
+            detailRow.ProdPlanPeriod = d.ProdPlanPeriode;
+            detailRow.LackPeriod = d.Lack1Periode;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }
@@ -1434,7 +1436,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 var detailRow = ds.Pbck1BrandRegistration.NewPbck1BrandRegistrationRow();
-                detailRow.Type = "test";
+                detailRow.Type = "";
                 detailRow.Brand = " ";
                 detailRow.Kadar = " ";
                 detailRow.Convertion = " ";
@@ -1479,6 +1481,7 @@ namespace Sampoerna.EMS.Website.Controllers
 // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.No = no.ToString();
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
+                    no++;
                 }
                 var summaryRow = ds.SummaryProdPlan.NewSummaryProdPlanRow();
                 var firstData = prodPlan.FirstOrDefault();
@@ -1498,7 +1501,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
 
-                detailRow.ProdTypeCode = " test";
+                detailRow.ProdTypeCode = "";
                 detailRow.ProdTypeName = "";
                 detailRow.ProdAlias = "";
                 detailRow.Amount = "";
@@ -1562,7 +1565,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 var detailRow = ds.RealisasiP3BKC.NewRealisasiP3BKCRow();
-                detailRow.Bulan = " test";
+                detailRow.Bulan = "";
                 detailRow.SaldoAwal = "";
                 detailRow.Pemasukan = "";
                 detailRow.Penggunaan = "";

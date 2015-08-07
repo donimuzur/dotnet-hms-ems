@@ -551,6 +551,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnExciseManager;
             
+            private global::System.Data.DataColumn columnProdPlanPeriod;
+            
+            private global::System.Data.DataColumn columnLackPeriod;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck1DataTable() {
@@ -834,6 +838,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ProdPlanPeriodColumn {
+                get {
+                    return this.columnProdPlanPeriod;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LackPeriodColumn {
+                get {
+                    return this.columnLackPeriod;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -900,7 +920,9 @@ namespace Sampoerna.EMS.ReportingData {
                         string SupplierPortName, 
                         string NppbkcCity, 
                         string PrintedDate, 
-                        string ExciseManager) {
+                        string ExciseManager, 
+                        string ProdPlanPeriod, 
+                        string LackPeriod) {
                 Pbck1Row rowPbck1Row = ((Pbck1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Pbck1Id,
@@ -933,7 +955,9 @@ namespace Sampoerna.EMS.ReportingData {
                         SupplierPortName,
                         NppbkcCity,
                         PrintedDate,
-                        ExciseManager};
+                        ExciseManager,
+                        ProdPlanPeriod,
+                        LackPeriod};
                 rowPbck1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck1Row);
                 return rowPbck1Row;
@@ -987,6 +1011,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnNppbkcCity = base.Columns["NppbkcCity"];
                 this.columnPrintedDate = base.Columns["PrintedDate"];
                 this.columnExciseManager = base.Columns["ExciseManager"];
+                this.columnProdPlanPeriod = base.Columns["ProdPlanPeriod"];
+                this.columnLackPeriod = base.Columns["LackPeriod"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1054,6 +1080,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnPrintedDate);
                 this.columnExciseManager = new global::System.Data.DataColumn("ExciseManager", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnExciseManager);
+                this.columnProdPlanPeriod = new global::System.Data.DataColumn("ProdPlanPeriod", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProdPlanPeriod);
+                this.columnLackPeriod = new global::System.Data.DataColumn("LackPeriod", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLackPeriod);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3636,6 +3666,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ProdPlanPeriod {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1.ProdPlanPeriodColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ProdPlanPeriod\' in table \'Pbck1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1.ProdPlanPeriodColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string LackPeriod {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1.LackPeriodColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LackPeriod\' in table \'Pbck1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1.LackPeriodColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPbck1IdNull() {
                 return this.IsNull(this.tablePbck1.Pbck1IdColumn);
             }
@@ -4004,6 +4066,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetExciseManagerNull() {
                 this[this.tablePbck1.ExciseManagerColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsProdPlanPeriodNull() {
+                return this.IsNull(this.tablePbck1.ProdPlanPeriodColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetProdPlanPeriodNull() {
+                this[this.tablePbck1.ProdPlanPeriodColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLackPeriodNull() {
+                return this.IsNull(this.tablePbck1.LackPeriodColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLackPeriodNull() {
+                this[this.tablePbck1.LackPeriodColumn] = global::System.Convert.DBNull;
             }
         }
         

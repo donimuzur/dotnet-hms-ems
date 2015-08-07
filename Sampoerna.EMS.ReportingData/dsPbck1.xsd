@@ -46,6 +46,8 @@
               <xs:element name="NppbkcCity" msprop:Generator_ColumnVarNameInTable="columnNppbkcCity" msprop:Generator_ColumnPropNameInRow="NppbkcCity" msprop:Generator_ColumnPropNameInTable="NppbkcCityColumn" msprop:Generator_UserColumnName="NppbkcCity" type="xs:string" minOccurs="0" />
               <xs:element name="PrintedDate" msprop:Generator_ColumnVarNameInTable="columnPrintedDate" msprop:Generator_ColumnPropNameInRow="PrintedDate" msprop:Generator_ColumnPropNameInTable="PrintedDateColumn" msprop:Generator_UserColumnName="PrintedDate" type="xs:string" minOccurs="0" />
               <xs:element name="ExciseManager" msprop:Generator_ColumnVarNameInTable="columnExciseManager" msprop:Generator_ColumnPropNameInRow="ExciseManager" msprop:Generator_ColumnPropNameInTable="ExciseManagerColumn" msprop:Generator_UserColumnName="ExciseManager" type="xs:string" minOccurs="0" />
+              <xs:element name="ProdPlanPeriod" msprop:Generator_ColumnVarNameInTable="columnProdPlanPeriod" msprop:Generator_ColumnPropNameInRow="ProdPlanPeriod" msprop:Generator_ColumnPropNameInTable="ProdPlanPeriodColumn" msprop:Generator_UserColumnName="ProdPlanPeriod" type="xs:string" minOccurs="0" />
+              <xs:element name="LackPeriod" msprop:Generator_ColumnVarNameInTable="columnLackPeriod" msprop:Generator_ColumnPropNameInRow="LackPeriod" msprop:Generator_ColumnPropNameInTable="LackPeriodColumn" msprop:Generator_UserColumnName="LackPeriod" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
