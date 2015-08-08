@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BLL
         private IChangesHistoryBLL _changesHistoryBll;
         private IGenericRepository<EX_GROUP_TYPE_DETAILS> _repositoryDetail;
         private string includeTables = "EX_GROUP_TYPE_DETAILS, EX_GROUP_TYPE_DETAILS.ZAIDM_EX_GOODTYP";
+
         public ExGroupTypeBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -81,7 +82,10 @@ namespace Sampoerna.EMS.BLL
 
         public List<string> GetGoodTypeByGroup(int groupid)
         {
-            return _repositoryDetail.Get(p => p.EX_GROUP_TYPE_ID == groupid, null, "ZAIDM_EX_GOODTYP").Select(p => p.ZAIDM_EX_GOODTYP.EXT_TYP_DESC).ToList();
+            return
+                _repositoryDetail.Get(p => p.EX_GROUP_TYPE_ID == groupid, null, "ZAIDM_EX_GOODTYP")
+                    .Select(p => p.ZAIDM_EX_GOODTYP.EXT_TYP_DESC)
+                    .ToList();
         }
 
         public void DeleteDetails(EX_GROUP_TYPE_DETAILS details)
@@ -103,6 +107,8 @@ namespace Sampoerna.EMS.BLL
             _repositoryDetail.Insert(detail);
             _uow.SaveChanges();
         }
+    }
+}
 
 //        private void SetChange(EX_GROUP_TYPE origin, EX_GROUP_TYPE_DETAILS data, string userId, List<ZAIDM_EX_GOODTYP> originGoodType)
 //        {
@@ -139,7 +145,7 @@ namespace Sampoerna.EMS.BLL
 //                    }
 //                }
 //            }
-            
+
 
 
 //        }

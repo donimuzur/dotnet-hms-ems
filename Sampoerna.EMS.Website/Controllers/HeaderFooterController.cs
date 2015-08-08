@@ -107,13 +107,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 param.HeaderFooterMapList = new List<HeaderFooterMap>();
 
-                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
-                if (saveOutput.MessageExist == "1")
+                var existCompany = _headerFooterBll.GetCompanyId(model.Detail.COMPANY_ID.ToString());
+                if (existCompany.MessageExist == "1")
                 {
                     AddMessageInfo("Company Code Already Set", Enums.MessageInfoType.Warning);
                     return InitialCreate(model);
                 }
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
+               
                 if (saveOutput.Success)
                 {
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success

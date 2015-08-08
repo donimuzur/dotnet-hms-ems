@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Contract
 
         SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId);
 
-        HeaderFooter GetCompanyId(string companyId);
+        SaveHeaderFooterOutput GetCompanyId(string companyId);
         void Delete(int id, string userId);
     }
 }
