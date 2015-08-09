@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -107,48 +109,67 @@ namespace Sampoerna.EMS.BLL
             _repositoryDetail.Insert(detail);
             _uow.SaveChanges();
         }
+
+
+
+        private void SetChange(EX_GROUP_TYPE origin, ExGoodTyp data, string userId,
+            List<EX_GROUP_TYPE_DETAILS> originGoodType)
+        {
+            var changesData = new Dictionary<string, bool>();
+            var originExgoodTyplDesc = string.Empty;
+            if (originGoodType != null)
+            {
+                var orlength = originGoodType.Count;
+                var currOr = 0;
+                foreach (var or in originGoodType)
+                {
+                    currOr++;
+                    originExgoodTyplDesc += or.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
+                    if (currOr < orlength)
+                    {
+                        originExgoodTyplDesc = ",";
+                    }
+
+                }
+
+            }
+            var editExgoodTyplDesc = string.Empty;
+            if (data.ZAIDM_EX_GOODTYP != null)
+            {
+                var orLenght = data.ZAIDM_EX_GOODTYP.Count;
+                var currOr = 0;
+                foreach (var or in data.ZAIDM_EX_GOODTYP)
+                {
+                    currOr++;
+                    editExgoodTyplDesc += or.EXT_TYP_DESC;
+                    if (currOr < orLenght)
+                    {
+                        editExgoodTyplDesc = ",";
+                    }
+                }
+            }
+            changesData.Add("Ex Grop Details", originExgoodTyplDesc == editExgoodTyplDesc);
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MasterPlant,
+                        FORM_ID = data.GROUP_NAME,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "RECEIVE_MATERIAL":
+                            changes.OLD_VALUE = originExgoodTyplDesc;
+                            changes.NEW_VALUE = editExgoodTyplDesc;
+                            break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
     }
-}
-
-//        private void SetChange(EX_GROUP_TYPE origin, EX_GROUP_TYPE_DETAILS data, string userId, List<ZAIDM_EX_GOODTYP> originGoodType)
-//        {
-//            var changeData = new Dictionary<string, bool>();
-//           var originExgoodTyplDesc = string.Empty;
-//            if (originGoodType != null)
-//            {
-//                var orlength = originGoodType.Count;
-//                var currOr = 0;
-//                foreach (var or in originGoodType)
-//                {
-//                    currOr++;
-//                    originExgoodTyplDesc += or.EXT_TYP_DESC;
-//                    if (currOr < orlength)
-//                    {
-//                        originExgoodTyplDesc = ",";
-//                    }
-
-//                }
-
-//            }
-//            var editExgoodTyplDesc = string.Empty;
-//            if (data.EX_GROUP_TYPE_ID != null)
-//            {
-//                var orLenght = data.GOODTYPE_ID.Count;
-//                var currOr = 0;
-//                foreach (var or in data.EX_GROUP_TYPE_DETAILS)
-//                {
-//                    currOr++;
-//                    editExgoodTyplDesc += or.EX_GROUP_TYPE_ID;
-//                    if (currOr < orLenght)
-//                    {
-//                        editExgoodTyplDesc = ",";
-//                    }
-//                }
-//            }
-
-
-
-//        }
-
-//    }
-//}
