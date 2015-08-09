@@ -172,12 +172,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
 
                 var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
-                //if (saveOutput.MessageExist == "1")
-                //{
-                //    AddMessageInfo("Company Code Already Set", Enums.MessageInfoType.Warning);
-                //    return InitialCreate(model);
-                //}
-
+               
                 if (saveOutput.Success)
                 {
                     AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);

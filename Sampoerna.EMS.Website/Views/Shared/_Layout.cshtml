@@ -426,7 +426,9 @@
 
 
                 });
-                var tableHistory = $('#changesHistoryTable').DataTable();
+                var tableHistory = $('#changesHistoryTable').dataTable({
+                    "order": [[0, "desc"]]
+                });
                 // Setup - add a text input to each footer cell
                 if (tableHistory.columns().eq(0) != null) {
                     tableHistory.columns().eq(0).each(function (colIdx) {
