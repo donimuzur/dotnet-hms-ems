@@ -157,9 +157,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
         }
         public ZAIDM_EX_BRAND GetBrand(string plant_id, string fa_code)

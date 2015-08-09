@@ -27,24 +27,32 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<ZAIDM_EX_SERIES>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_SERIES();
-                    item.SERIES_CODE = xElement.Element("SERIES_CODE").Value;
-                    item.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
-                   // var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var existingSeries = GetSeries(item.SERIES_CODE);
-                    if (existingSeries != null)
+                    try
                     {
-                        item.CREATED_DATE = existingSeries.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
+                        var item = new ZAIDM_EX_SERIES();
+                        item.SERIES_CODE = xElement.Element("SERIES_CODE").Value;
+                        item.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
+                        // var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        var existingSeries = GetSeries(item.SERIES_CODE);
+                        if (existingSeries != null)
+                        {
+                            item.CREATED_DATE = existingSeries.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
                         
                     }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
-
                 }
                 return items;
             }
@@ -52,9 +60,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_SERIES>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_SERIES>(Items);
         }
 
         public ZAIDM_EX_SERIES GetSeries(string SeriesCode)

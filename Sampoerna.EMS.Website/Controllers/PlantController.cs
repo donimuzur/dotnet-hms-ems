@@ -190,6 +190,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private bool IsMainPlantAlreadyExist(string nppbkcid, bool IsMainPlant, string plantId)
         {
+            if (!IsMainPlant)
+                return false;
             var checkIfExist = _plantBll.GetT001W(nppbkcid, IsMainPlant);
             if (checkIfExist == null)
                 return false;

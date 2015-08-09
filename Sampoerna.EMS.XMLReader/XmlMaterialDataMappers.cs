@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.XMLReader
                     var item = new ZAIDM_EX_MATERIAL();
                     item.STICKER_CODE = xElement.Element("MATNR").Value;
                     item.BASE_UOM_ID = xElement.Element("MEINS").Value;
-                    item.MATERIAL_GROUP = xElement.Element("MATKL").Value;
+                    item.MATERIAL_GROUP = xElement.Element("MATKL") == null ? null : xElement.Element("MATKL").Value;
                     item.CLIENT_DELETION = xElement.Element("LVORM") == null
                         ? false
                         : (xElement.Element("LVORM").Value == "X" ? true : false);
@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.XMLReader
 
 
                         item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? string.Empty : E1MARCM.Element("LGPRO").Value;
-                        item.PURCHASING_GROUP = E1MARCM.Element("EKGRP") == null ? string.Empty : E1MARCM.Element("EKGRP").Value;
+                        item.PURCHASING_GROUP = E1MARCM.Element("EKGRP") == null ? null : E1MARCM.Element("EKGRP").Value;
                         var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
                         if (exGoodType != null)
                         {
@@ -123,10 +123,10 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
           
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
            
         }
 
