@@ -47,7 +47,7 @@
           <Property Name="STO_RECEIVER_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="STOB_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="SOURCE_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="DEST_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="DEST_PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="INVOICE_NUMBER" Type="nvarchar" MaxLength="50" />
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
@@ -3888,7 +3888,7 @@
           <Property Name="STO_RECEIVER_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STOB_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SOURCE_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="DEST_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="DEST_PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="INVOICE_DATE" Type="DateTime" Precision="3" />
           <Property Name="PBCK1_DECREE_ID" Type="Int32" />
