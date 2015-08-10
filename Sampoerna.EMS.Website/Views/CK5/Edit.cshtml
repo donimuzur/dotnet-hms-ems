@@ -77,7 +77,19 @@
                         @Html.HiddenFor(model => model.UnSealingNotifNumber)
                         @Html.HiddenFor(model => model.SealingNotifDate)
                         @Html.HiddenFor(model => model.UnsealingNotifDate)
+                        
+                      @Html.HiddenFor(model => model.IsCk5Export)
 
+                        @Html.HiddenFor(model => model.CountryCode)
+                        @Html.HiddenFor(model => model.CountryName)
+
+                        @Html.HiddenFor(model => model.LoadingPort)
+                        @Html.HiddenFor(model => model.LoadingPortId)
+                        @Html.HiddenFor(model => model.LoadingPortName)
+                        @Html.HiddenFor(model => model.FinalPort)
+                        @Html.HiddenFor(model => model.FinalPortId)
+                        @Html.HiddenFor(model => model.FinalPortName)
+                        
 
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")

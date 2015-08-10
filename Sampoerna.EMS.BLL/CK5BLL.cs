@@ -242,8 +242,7 @@ namespace Sampoerna.EMS.BLL
                     ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                     dbData.CK5_MATERIAL.Add(ck5Material);
                 }
-
-
+                
                 _repository.Insert(dbData);
 
             }
@@ -410,7 +409,7 @@ namespace Sampoerna.EMS.BLL
                         break;
                     case "EX_GOODS_TYPE":
                         changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
-                        changes.NEW_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_GOODS_TYPE);
                         break;
                     case "EX_SETTLEMENT_ID":
                         changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);

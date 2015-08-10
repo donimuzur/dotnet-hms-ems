@@ -90,7 +90,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SourceKppbcName { get; set; }
 
         //DESTINATION PLANT
-        [Required(ErrorMessage = "Destination Plant field is required")]
+        //[Required(ErrorMessage = "Destination Plant field is required")]
         public string DestPlantId { get; set; }
         public SelectList DestPlantList { get; set; }
         public string DestPlantName { get; set; }
@@ -199,7 +199,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool IsAllowPrint { get; set; }
 
+       [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Country Code")]
         public string CountryCode { get; set; }
+        
+        public SelectList CountryCodeList { get; set; }
+        
         public string CountryName { get; set; }
     }
 }

@@ -249,6 +249,8 @@ namespace Sampoerna.EMS.Website.Controllers
           
             model.PackageUomList = GlobalFunctions.GetUomList();
 
+            model.CountryCodeList = GlobalFunctions.GetCountryList();
+
             return model;
         }
 
@@ -452,6 +454,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PackageUomList = GlobalFunctions.GetUomList();
 
+            model.CountryCodeList = GlobalFunctions.GetCountryList();
+
             return model;
         }
 
@@ -482,6 +486,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
+             
             }
             catch (Exception ex)
             {
