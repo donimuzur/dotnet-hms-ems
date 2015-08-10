@@ -40,6 +40,6 @@ namespace Sampoerna.EMS.Contract
 
        CK5ReportDto GetCk5ReportDataById(long id);
 
-       void AddPrintHistory(long id, string userId);
+       //void AddPrintHistory(long id, string userId);
    }
 }

@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.BLL
                 //.ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue?src.SUBMISSION_DATE.Value.ToString("dd MMMM yyyy") : ""))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 //.ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : ""))
-                .ForMember(dest => dest.ExGoodType, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))//todo add 1 field to get id
+                //.ForMember(dest => dest.ExGoodType, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))//todo add 1 field to get id
                 .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => (Convert.ToInt32(src.EX_SETTLEMENT_ID)).ToString()))
                 .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => (Convert.ToInt32(src.EX_STATUS_ID)).ToString()))
                 .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => (Convert.ToInt32(src.REQUEST_TYPE_ID)).ToString()))

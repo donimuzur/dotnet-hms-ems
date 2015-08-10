@@ -201,9 +201,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
        [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Country Code")]
         public string CountryCode { get; set; }
-        
         public SelectList CountryCodeList { get; set; }
-        
         public string CountryName { get; set; }
+        public string DisplayDetailsDestinationCountry { get; set; }
     }
 }

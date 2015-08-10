@@ -387,6 +387,7 @@ namespace Sampoerna.EMS.BLL
            
             changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID == data.PACKAGE_UOM_ID);
 
+            changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
 
             foreach (var listChange in changesData)
             {
@@ -459,7 +460,10 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.PackageUomName;
                         changes.NEW_VALUE = data.PackageUomName;
                         break;
-
+                    case "DESTINATION_COUNTRY":
+                        changes.OLD_VALUE = origin.DEST_COUNTRY_NAME;
+                        changes.NEW_VALUE = data.DEST_COUNTRY_NAME;
+                        break;
 
                 }
                 _changesHistoryBll.AddHistory(changes);
@@ -886,6 +890,7 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            result.ReportDetails.ExGoodType = (Convert.ToInt32(dtData.EX_GOODS_TYPE)).ToString();
 
             if (result.ReportDetails.CarriageMethod == "0")
                 result.ReportDetails.CarriageMethod = "";
@@ -929,8 +934,8 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.DestOfficeName = "-";
                 result.ReportDetails.DestOfficeCode = "-";
 
-                result.ReportDetails.DestinationCountry = "-";
-                result.ReportDetails.DestinationCode = "-";
+                result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
+                result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
                 result.ReportDetails.DestinationNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
                 result.ReportDetails.DestinationName = dtData.DEST_PLANT_NAME;
                 result.ReportDetails.DestinationAddress = dtData.DEST_PLANT_ADDRESS;
@@ -981,23 +986,23 @@ namespace Sampoerna.EMS.BLL
                                    " " + dt.ToString("yyyy");
         }
 
-        public void AddPrintHistory(long id, string userId)
-        {
-            var dtData = _repository.GetByID(id);
-             if (dtData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //public void AddPrintHistory(long id, string userId)
+        //{
+        //    var dtData = _repository.GetByID(id);
+        //     if (dtData == null)
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var printHistory = new PrintHistoryDto();
-            printHistory.FORM_ID = dtData.CK5_ID;
-            printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
-            printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
-            printHistory.PRINT_BY = userId;
-            printHistory.PRINT_DATE = DateTime.Now;
+        //    var printHistory = new PrintHistoryDto();
+        //    printHistory.FORM_ID = dtData.CK5_ID;
+        //    printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
+        //    printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+        //    printHistory.PRINT_BY = userId;
+        //    printHistory.PRINT_DATE = DateTime.Now;
 
 
-            _printHistoryBll.AddPrintHistory(printHistory);
+        //    _printHistoryBll.AddPrintHistory(printHistory);
 
-            _uow.SaveChanges();
-        }
+        //    _uow.SaveChanges();
+        //}
     }
 }

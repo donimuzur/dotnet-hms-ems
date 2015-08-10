@@ -79,8 +79,9 @@
                         @Html.HiddenFor(model => model.UnsealingNotifDate)
                         
                       @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.CountryName)
 
-                        @Html.HiddenFor(model => model.CountryCode)
+                        @*@Html.HiddenFor(model => model.CountryCode)
                         @Html.HiddenFor(model => model.CountryName)
 
                         @Html.HiddenFor(model => model.LoadingPort)
@@ -88,7 +89,7 @@
                         @Html.HiddenFor(model => model.LoadingPortName)
                         @Html.HiddenFor(model => model.FinalPort)
                         @Html.HiddenFor(model => model.FinalPortId)
-                        @Html.HiddenFor(model => model.FinalPortName)
+                        @Html.HiddenFor(model => model.FinalPortName)*@
                         
 
                         @Html.Partial("_CK5InformationEdit")
@@ -286,5 +287,19 @@
     $("#btnSubmitConfirm").click(function () {
         window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
     });
+    
+        $("#CountryCode").change(function () {
+            if ($("#CountryCode").length) {
+                var countryName = $('option:selected', $(this)).text();
+                if (countryName == '') {
+                    $("input[name='CountryName']").val('');
+                   
+                } else {
+                    $("input[name='CountryName']").val(countryName);
+                 
+                     }
+            }
+
+        });
 </script>
 }

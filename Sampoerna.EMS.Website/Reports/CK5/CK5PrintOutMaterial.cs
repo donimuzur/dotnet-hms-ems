@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Sampoerna.EMS.Website.Controllers {
+namespace Sampoerna.EMS.Website.Reports.CK5 {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Controllers {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Controllers.CK5PrintOutMaterial.rpt";
+                return "Sampoerna.EMS.Website.Reports.CK5.CK5PrintOutMaterial.rpt";
             }
             set {
                 // Do nothing

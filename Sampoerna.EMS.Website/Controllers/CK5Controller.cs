@@ -39,10 +39,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
-      
+        private IPrintHistoryBLL _printHistoryBll;
+
         public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
             IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
-            IWorkflowBLL workflowBll, IPlantBLL plantBll)
+            IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -51,7 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBll = changesHistoryBll;
             _workflowBll = workflowBll;
             _plantBll = plantBll;
-         
+            _printHistoryBll = printHistoryBll;
         }
 
         #region View Documents
@@ -3330,7 +3331,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dataSet = GetDataSetReport(idCk5);
 
                 //add print history
-                _ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+                //_ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
 
                 //eks to report
                 var rpt = new ReportClass
@@ -3351,6 +3352,31 @@ namespace Sampoerna.EMS.Website.Controllers
            
         }
 
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var ck5Data = _ck5Bll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.CK5,
+                FORM_ID = ck5Data.CK5_ID,
+                FORM_NUMBER = ck5Data.SUBMISSION_NUMBER,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck5Data.SUBMISSION_NUMBER));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
         #endregion
     }
 }
