@@ -13,6 +13,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.LACK1;
+using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -22,7 +23,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private Enums.MenuList _mainMenu;
-        
+
         public LACK1Controller(IPageBLL pageBll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
@@ -205,13 +206,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.BukrList = GlobalFunctions.GetCompanyList();
             model.MontList = GlobalFunctions.GetMonthList();
-            //model.YearsList = GlobalFunctions.GetYears();
+            model.YearsList = CreateYearList();
             model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.PlantList = GlobalFunctions.GetSourcePlantList();
             model.SupplierList = GlobalFunctions.GetSupplierPlantList();
             model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.WasteUomList = GlobalFunctions.GetUomList();
             model.ReturnUomList = GlobalFunctions.GetUomList();
-            //liststatus.
 
             return (model);
 
@@ -225,6 +226,17 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             return View("Create", InitialModel(model));
+        }
+
+        private SelectList CreateYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            for (int i = 0; i < 2; i++)
+            {
+                years.Add(new SelectItemModel() { ValueField = currentYear - i, TextField = (currentYear - i).ToString() });
+            }
+            return new SelectList(years, "ValueField", "TextField");
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1CreateNppbkcViewModel
+@using Sampoerna.EMS.Website.Helpers
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
@@ -41,9 +42,7 @@
                                                     @Html.DropDownListFor(model => model.PeriodMonth, Model.MontList, "", new { @class = "form-control" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>2015</option>
-                                                    </select>
+                                                    @Html.DropDownListFor(model => model.PeriodYears, Model.YearsList, new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
@@ -86,7 +85,7 @@
                                                     <input type="radio"> Plant
                                                 </div>
                                                 <div class="col-md-8">
-                                                    @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
+                                                    @Html.DropDownListFor(model => model.LevelPlantId, Model.PlantList, "Select", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
@@ -97,7 +96,7 @@
                                         <label class="col-md-4">Submission Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -221,9 +220,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Status</label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>Approved</option>
-                                            </select>
+                                            @Html.EnumDropDownListFor(model => model.Status, Model.GovStatus, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +229,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
