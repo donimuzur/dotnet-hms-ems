@@ -40,5 +40,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool AllowApproveAndReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
 
+        public bool AllowPrintDocument { get; set; }
+
     }
 }

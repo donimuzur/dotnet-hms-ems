@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
@@ -283,6 +285,19 @@ namespace Sampoerna.EMS.BLL
                 _changesHistoryBll.AddHistory(change);
 
             }
+        }
+
+        public HEADER_FOOTER_MAPDto GetByComanyAndFormType(HeaderFooterGetByComanyAndFormTypeInput input)
+        {
+            Expression<Func<HEADER_FOOTER_FORM_MAP, bool>> queryFilter =
+                c => c.HEADER_FOOTER.BUKRS == input.CompanyCode && c.FORM_TYPE_ID == input.FormTypeId;
+            var dbData = _mapRepository.Get(queryFilter, null, "HEADER_FOOTER").FirstOrDefault();
+            
+            if(dbData == null)
+                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<HEADER_FOOTER_MAPDto>(dbData);
+
         }
 
     }
