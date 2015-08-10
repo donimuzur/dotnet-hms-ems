@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BROLE_MAP">
           <Key>
             <PropertyRef Name="BROLE_MAP_ID" />
@@ -21,7 +21,7 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
+          <Property Name="FORM_ID" Type="varchar" MaxLength="50" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
           <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
@@ -233,7 +233,6 @@
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" />
           <Property Name="EX_GOODTYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
           <Property Name="WASTE_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="WASTE_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="RETURN_QTY" Type="decimal" Precision="15" Scale="2" />
@@ -246,6 +245,7 @@
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -417,8 +417,8 @@
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -547,11 +547,11 @@
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
-          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="ORT01" Type="varchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -583,7 +583,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -663,7 +663,7 @@
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
-          <Property Name="PER_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
+          <Property Name="PER_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" Nullable="false" />
           <Property Name="SKEP_NO" Type="nvarchar" MaxLength="30" />
           <Property Name="SKEP_DATE" Type="datetime" />
@@ -734,18 +734,18 @@
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="IS_FROM_SAP" Type="bit" Nullable="false" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CLIENT_DELETION" Type="bit" />
-          <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="PLANT_DELETION" Type="bit" />
+          <Property Name="CLIENT_DELETION" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -1531,18 +1531,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_POA_MAP_T001W">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T001W">
-              <PropertyRef Name="WERKS" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" />
           <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
@@ -1783,6 +1771,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_T001W">
           <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1819,18 +1831,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE">
-          <End Role="ZAIDM_EX_PCODE" Type="Self.ZAIDM_EX_PCODE" Multiplicity="1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_PCODE">
-              <PropertyRef Name="PER_CODE" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="PER_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
           <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
@@ -1852,6 +1852,30 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="SERIES_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2253,10 +2277,6 @@
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_MAP" EntitySet="POA_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_T001W" Association="Self.FK_POA_MAP_T001W">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="Self.FK_POA_MAP_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="POA_MAP" EntitySet="POA_MAP" />
@@ -2337,6 +2357,14 @@
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
             <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
           </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T001W" Association="Self.FK_ZAIDM_EX_BRAND_T001W">
             <End Role="T001W" EntitySet="T001W" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
@@ -2349,10 +2377,6 @@
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE">
-            <End Role="ZAIDM_EX_PCODE" EntitySet="ZAIDM_EX_PCODE" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
@@ -2360,6 +2384,14 @@
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_MATERIAL_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER" Association="Self.FK_ZAIDM_EX_MATERIAL_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="Self.FK_ZAIDM_EX_MATERIAL_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -2513,10 +2545,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE">
-            <End Role="ZAIDM_EX_PCODE" EntitySet="ZAIDM_EX_PCODE" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
@@ -2869,7 +2897,7 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
-          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -3034,8 +3062,8 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
-          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="T001" ToRole="USER" />
           </EntityType>
         <EntityType Name="T001K">
@@ -3123,7 +3151,6 @@
           <Property Name="PER_DESC" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_PCODE" ToRole="ZAIDM_EX_BRAND" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PRODTYP">
           <Key>
@@ -3468,7 +3495,7 @@
           <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="PER_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="PER_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="SKEP_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="SKEP_DATE" Type="DateTime" Precision="3" />
@@ -3498,7 +3525,6 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MARKET" />
-          <NavigationProperty Name="ZAIDM_EX_PCODE" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PCODE" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
           </EntityType>
@@ -3535,18 +3561,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="MARKET_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE">
-          <End Type="EMSModel.ZAIDM_EX_PCODE" Role="ZAIDM_EX_PCODE" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_PCODE">
-              <PropertyRef Name="PER_CODE" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="PER_CODE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4081,7 +4095,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
