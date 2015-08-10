@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -14,6 +15,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repository;
+        private IGenericRepository<POA_MAP> _poaMapRepository;
         private string includeTables = "POA_MAP, USER, USER1, POA_SK";
         private IChangesHistoryBLL _changesHistoryBll;
         public POABLL(IUnitOfWork uow, ILogger logger)
@@ -21,6 +23,7 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA>();
+            _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
@@ -115,5 +118,14 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        public List<POADto> GetPoaByNppbkcId(string nppbkcId)
+        {
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.NPPBKC_ID == nppbkcId;
+            var dbData = _poaMapRepository.Get(queryFilter, null, "POA");
+            var poaList = dbData.ToList().Select(d => d.POA);
+            return Mapper.Map<List<POADto>>(poaList.ToList());
+        }
+
     }
 }
