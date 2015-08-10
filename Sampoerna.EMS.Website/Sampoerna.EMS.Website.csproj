@@ -248,6 +248,7 @@
     <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserAuthorizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VendorController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="Controllers\WorkflowSettingsController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
@@ -325,6 +326,8 @@
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
@@ -370,7 +373,7 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-     <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
+    <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
@@ -382,7 +385,6 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
@@ -900,6 +902,8 @@
     <Content Include="Views\Uom\Index.cshtml" />
     <Content Include="Views\POAMap\Index.cshtml" />
     <Content Include="Views\POAMap\Detail.cshtml" />
+    <Content Include="Views\Vendor\Details.cshtml" />
+    <Content Include="Views\Vendor\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -980,9 +984,9 @@
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>   
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-     <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
+    <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
