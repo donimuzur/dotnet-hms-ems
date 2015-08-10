@@ -258,6 +258,18 @@ namespace Sampoerna.EMS.BLL
                     .ForMember(dest => dest.Received, opt => opt.MapFrom(src => 0))
                 ;
 
+            Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProdAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.AMOUNT))
+                .ForMember(dest => dest.BkcRequired, opt => opt.MapFrom(src => src.BKC_REQUIRED))
+                .ForMember(dest => dest.BkcRequiredUomId, opt => opt.MapFrom(src => src.BKC_REQUIRED_UOM_ID))
+                .ForMember(dest => dest.BkcRequiredUomName, opt => opt.MapFrom(src => src.BKC_REQUIRED_UOM_ID))
+                .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH.Value))
+                .ForMember(dest => dest.MonthName, opt => opt.MapFrom(src => src.MONTH1 != null ? src.MONTH1.MONTH_NAME_IND : string.Empty))
+                ;
+
             #endregion
 
         }

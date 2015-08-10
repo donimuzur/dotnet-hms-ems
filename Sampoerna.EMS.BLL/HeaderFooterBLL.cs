@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
@@ -48,18 +50,22 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<HeaderFooter>>(_repository.Get(null, null, includeTables).ToList());
         }
 
+        public SaveHeaderFooterOutput GetCompanyId(string companyId)
+        {
+            var output = new SaveHeaderFooterOutput();
+            var dtCompany = Mapper.Map<HEADER_FOOTER>(_repository.Get(c => c.BUKRS == companyId).FirstOrDefault());
+            if (dtCompany != null)
+            {
+                output.MessageExist = "1";
+                return output;
+            }
+            return output;
+        }
+        
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
-             HEADER_FOOTER dbData = null;
-             var output = new SaveHeaderFooterOutput();
-
-            var dtcompany = _repository.Get(c => c.BUKRS == headerFooterData.COMPANY_ID).FirstOrDefault();
-             if (dtcompany != null)
-             {
-                 output.MessageExist = "1";
-                 return output;
-             }
-
+            HEADER_FOOTER dbData = null;
+           
             if (headerFooterData.HEADER_FOOTER_ID > 0)
             {
 
@@ -103,8 +109,8 @@ namespace Sampoerna.EMS.BLL
                 _repository.Insert(dbData);
             }
 
-           
 
+            var output = new SaveHeaderFooterOutput();
             try
             {
                 _uow.SaveChanges();
@@ -285,5 +291,21 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
+        public HEADER_FOOTER_MAPDto GetByComanyAndFormType(HeaderFooterGetByComanyAndFormTypeInput input)
+        {
+            Expression<Func<HEADER_FOOTER_FORM_MAP, bool>> queryFilter =
+                c => c.HEADER_FOOTER.BUKRS == input.CompanyCode && c.FORM_TYPE_ID == input.FormTypeId;
+            var dbData = _mapRepository.Get(queryFilter, null, "HEADER_FOOTER").FirstOrDefault();
+            
+            if(dbData == null)
+                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<HEADER_FOOTER_MAPDto>(dbData);
+
+        }
+
+
+
+       
     }
 }

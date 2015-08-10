@@ -16,6 +16,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
@@ -26,7 +27,7 @@ using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 using SpreadsheetLight;
-
+using System.Data;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -1114,6 +1115,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return model;
         }
+
         public ActionResult SummaryReports()
         {
 
@@ -1149,6 +1151,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.Export;
+                model.SearchView.Ck5Type = Enums.CK5Type.Export;
 
                 model = InitSummaryReports(model);
 
@@ -1174,6 +1177,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.Intercompany;
+                model.SearchView.Ck5Type = Enums.CK5Type.Intercompany;
 
                 model = InitSummaryReports(model);
 
@@ -1199,6 +1203,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.DomesticAlcohol;
+                model.SearchView.Ck5Type = Enums.CK5Type.DomesticAlcohol;
 
                 model = InitSummaryReports(model);
 
@@ -1224,7 +1229,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.PortToImporter;
-
+                model.SearchView.Ck5Type = Enums.CK5Type.PortToImporter;
                 model = InitSummaryReports(model);
 
             }
@@ -1249,6 +1254,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.ImporterToPlant;
+                model.SearchView.Ck5Type = Enums.CK5Type.ImporterToPlant;
 
                 model = InitSummaryReports(model);
 
@@ -1274,6 +1280,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new CK5SummaryReportsViewModel();
 
                 model.Ck5Type = Enums.CK5Type.Manual;
+                model.SearchView.Ck5Type = Enums.CK5Type.Manual;
 
                 model = InitSummaryReports(model);
 
@@ -3153,16 +3160,188 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region print
 
+
+        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial)
+        {
+            var detailRow = dsCk5.dtCk5.NewdtCk5Row();
+
+            detailRow.OfficeName = ck5ReportDetails.OfficeName;
+            detailRow.OfficeCode = ck5ReportDetails.OfficeCode;
+            detailRow.SubmissionNumber= ck5ReportDetails.SubmissionNumber;
+            detailRow.SubmissionDate = ck5ReportDetails.SubmissionDate;
+            detailRow.RegistrationNumber = ck5ReportDetails.RegistrationNumber;
+            detailRow.RegistrationDate = ck5ReportDetails.RegistrationDate;
+            detailRow.ExGoodType = ck5ReportDetails.ExGoodType;
+            detailRow.ExciseSettlement = ck5ReportDetails.ExciseSettlement;
+            detailRow.ExciseStatus = ck5ReportDetails.ExciseStatus;
+            detailRow.RequestType = ck5ReportDetails.RequestType;
+            detailRow.SourcePlantNpwp = ck5ReportDetails.SourcePlantNpwp;
+            detailRow.SourcePlantNppbkc = ck5ReportDetails.SourcePlantNppbkc;
+            detailRow.SourcePlantName = ck5ReportDetails.SourcePlantName;
+            detailRow.SourcePlantAddress = ck5ReportDetails.SourcePlantAddress;
+            detailRow.SourceOfficeName = ck5ReportDetails.SourceOfficeName;
+            detailRow.SourceOfficeCode = ck5ReportDetails.SourceOfficeCode;
+            detailRow.DestPlantNpwp = ck5ReportDetails.DestPlantNpwp;
+            detailRow.DestPlantNppbkc = ck5ReportDetails.DestPlantNppbkc;
+            detailRow.DestPlantName = ck5ReportDetails.DestPlantName;
+            detailRow.DestPlantAddress = ck5ReportDetails.DestPlantAddress;
+            detailRow.DestOfficeName = ck5ReportDetails.DestOfficeName;
+            detailRow.DestOfficeCode = ck5ReportDetails.DestOfficeCode;
+            detailRow.FacilityNumber = ck5ReportDetails.FacilityNumber;
+            detailRow.FacilityDate = ck5ReportDetails.FacilityDate;
+            detailRow.CarriageMethod = ck5ReportDetails.CarriageMethod;
+            detailRow.Total = ck5ReportDetails.Total;
+            detailRow.Uom = ck5ReportDetails.Uom;
+
+            detailRow.PrintDate = ck5ReportDetails.PrintDate;
+            detailRow.PoaName = ck5ReportDetails.PoaName;
+            detailRow.PoaAddress = ck5ReportDetails.PoaAddress;
+            detailRow.PoaIdCard = ck5ReportDetails.PoaIdCard;
+            detailRow.PoaCity = ck5ReportDetails.PoaCity;
+            detailRow.InvoiceNumber = ck5ReportDetails.InvoiceNumber;
+            detailRow.InvoiceDate = ck5ReportDetails.InvoiceDate;
+
+
+            detailRow.TotalMaterial = totalMaterial;
+
+            detailRow.DestinationCountry = ck5ReportDetails.DestinationCountry;
+            detailRow.DestinationCode = ck5ReportDetails.DestinationCode;
+            detailRow.DestinationNppbkc = ck5ReportDetails.DestinationNppbkc;
+            detailRow.DestinationName = ck5ReportDetails.DestinationName;
+            detailRow.DestinationAddress = ck5ReportDetails.DestinationAddress;
+            detailRow.DestinationOfficeName = ck5ReportDetails.DestinationOfficeName;
+            detailRow.DestinationOfficeCode = ck5ReportDetails.DestinationOfficeCode;
+
+            detailRow.LoadingPort = ck5ReportDetails.LoadingPort;
+            detailRow.LoadingPortName = ck5ReportDetails.LoadingPortName;
+            detailRow.LoadingPortCode = ck5ReportDetails.LoadingPortId;
+            detailRow.FinalPort = ck5ReportDetails.FinalPort;
+            detailRow.FinalPortName = ck5ReportDetails.FinalPortName;
+            detailRow.FinalPortCode = ck5ReportDetails.FinalPortId;
+
+
+            //todo remove
+            if (!Utils.ConvertHelper.IsNumeric(detailRow.ExGoodType))
+                detailRow.ExGoodType = "3";
+            //if (detailRow.CarriageMethod == "0")
+            //    detailRow.CarriageMethod = "1";
+
+          
+
+            dsCk5.dtCk5.AdddtCk5Row(detailRow);
+
+            return dsCk5;
+        }
+
+        private dsCK5Print AddDataCk5MaterialRow(dsCK5Print dsCk5, List<CK5ReportMaterialDto> listMaterialDtos)
+        {
+            int i = 1;
+            foreach (var materialDto in listMaterialDtos)
+            {
+                if (i > 2) break;
+
+                var detailRow = dsCk5.dtCk5Material.NewdtCk5MaterialRow();
+
+                detailRow.Number = i.ToString();
+                detailRow.Qty = materialDto.Qty;
+                detailRow.Uom = materialDto.Uom;
+                detailRow.Convertion = materialDto.Convertion;
+                detailRow.ConvertedQty = materialDto.ConvertedQty;
+                detailRow.ConvertedUom = materialDto.ConvertedUom;
+
+                detailRow.Hje = materialDto.Hje;
+                detailRow.Tariff = materialDto.Tariff;
+                detailRow.ExciseValue = materialDto.ExciseValue;
+                detailRow.UsdValue = materialDto.UsdValue;
+                detailRow.Note = materialDto.Note;
+
+                dsCk5.dtCk5Material.AdddtCk5MaterialRow(detailRow);
+
+                i++;
+            }
+            return dsCk5;
+        }
+
+        private dsCK5Print AddDataCk5MaterialExtendRow(dsCK5Print dsCk5, List<CK5ReportMaterialDto> listMaterialDtos)
+        {
+            int i = 1;
+            foreach (var materialDto in listMaterialDtos)
+            {
+                if (i > 2)
+                {
+                    var detailRow = dsCk5.dtCk5MaterialExtend.NewdtCk5MaterialExtendRow();
+
+                    detailRow.Number = i.ToString();
+                    detailRow.Qty = materialDto.Qty;
+                    detailRow.Uom = materialDto.Uom;
+                    detailRow.Convertion = materialDto.Convertion;
+                    detailRow.ConvertedQty = materialDto.ConvertedQty;
+                    detailRow.ConvertedUom = materialDto.ConvertedUom;
+
+                    detailRow.Hje = materialDto.Hje;
+                    detailRow.Tariff = materialDto.Tariff;
+                    detailRow.ExciseValue = materialDto.ExciseValue;
+                    detailRow.UsdValue = materialDto.UsdValue;
+                    detailRow.Note = materialDto.Note;
+
+                    dsCk5.dtCk5MaterialExtend.AdddtCk5MaterialExtendRow(detailRow);
+                }
+                i++;
+            }
+            return dsCk5;
+        }
+        
+
+        private DataSet GetDataSetReport(long id)
+        {
+           
+            var dsCk5 = new dsCK5Print();
+            
+            var ck5ReportDto = _ck5Bll.GetCk5ReportDataById(id);
+
+            var listCk5 = new List<CK5ReportDetailsDto>();
+            listCk5.Add(ck5ReportDto.ReportDetails);
+
+            dsCk5 = AddDataCk5Row(dsCk5, ck5ReportDto.ReportDetails, ck5ReportDto.ListMaterials.Count);
+            dsCk5 = AddDataCk5MaterialRow(dsCk5, ck5ReportDto.ListMaterials);
+            if (ck5ReportDto.ListMaterials.Count > 2)
+                dsCk5 = AddDataCk5MaterialExtendRow(dsCk5, ck5ReportDto.ListMaterials);
+
+            return dsCk5;
+           
+        }
+
         [EncryptedParameter]
         public ActionResult PrintOut(int? id)
         {
-            //DataTable dt = new DataTable();
-            ReportClass rpt = new ReportClass();
-            rpt.FileName = Server.MapPath("/Reports/PBCK1/PBCK1PrintOut.rpt");
-            rpt.Load();
-            //rpt.SetDataSource(dt);
-            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            return File(stream, "application/pdf");
+            try
+            {
+                long idCk5 = 0;
+                if (id.HasValue)
+                    idCk5 = id.Value;
+
+                var dataSet = GetDataSetReport(idCk5);
+
+                //add print history
+                _ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+
+                //eks to report
+                var rpt = new ReportClass
+                {
+                    FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt")
+                };
+                rpt.Load();
+                rpt.SetDataSource(dataSet);
+
+                Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+                return File(stream, "application/pdf"); 
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo("Error : " + ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+           
         }
 
         #endregion

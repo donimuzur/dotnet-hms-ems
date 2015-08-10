@@ -83,7 +83,7 @@
     <Compile Include="IZaidmExGoodTypeBLL.cs" />
     <Compile Include="IZaidmExKPPBCBLL.cs" />
     <Compile Include="IZaidmExNPPBKCBLL.cs" />
-    <Compile Include="POABLL.cs" />
+    <Compile Include="IPOABLL.cs" />
     <Compile Include="IZaidmExProdTypeBLL.cs" />
     <Compile Include="IZaidmExPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

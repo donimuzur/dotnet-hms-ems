@@ -31,6 +31,9 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IMessageService _messageService;
         private IPrintHistoryBLL _printHistoryBll;
+        private IMonthBLL _monthBll;
+        private IPOABLL _poaBll;
+
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -51,7 +54,10 @@ namespace Sampoerna.EMS.BLL
             _messageService = new MessageService(_logger);
 
             _printHistoryBll = new PrintHistoryBLL(_uow, _logger);
+            _monthBll = new MonthBLL(_uow, _logger);
+            _poaBll = new POABLL(_uow, _logger);
         }
+        
 
         public CK5Dto GetById(long id)
         {
@@ -868,9 +874,130 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
-        //public void PrintHistory()
-        //{
-        //    _printHistoryBll.AddPrintHistory();
-        //}
+        #region Reports
+
+        public CK5ReportDto GetCk5ReportDataById(long id)
+        {
+            var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //var ck5Report = new CK5ReportDto();
+            //ck5Report.ReportDetails = Mapper.Map<>()
+            var result = Mapper.Map<CK5ReportDto>(dtData);
+
+
+            if (result.ReportDetails.CarriageMethod == "0")
+                result.ReportDetails.CarriageMethod = "";
+
+            //date convertion
+            if (dtData.SUBMISSION_DATE.HasValue)
+                result.ReportDetails.SubmissionDate = DateReportDisplayString(dtData.SUBMISSION_DATE.Value);
+            if (dtData.REGISTRATION_DATE.HasValue)
+                result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value);
+            if (dtData.PBCK1 != null)
+            {
+                if (dtData.PBCK1.DECREE_DATE.HasValue)
+                    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value);
+            }
+            if (dtData.INVOICE_DATE.HasValue)
+                result.ReportDetails.InvoiceDate = DateReportDisplayString(dtData.INVOICE_DATE.Value);
+
+            result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now);
+
+            //get poa info
+            POADto poaInfo;
+            poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
+            if (poaInfo == null)
+                poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
+
+            if (poaInfo != null)
+            {
+                result.ReportDetails.PoaName = poaInfo.PRINTED_NAME;
+                result.ReportDetails.PoaAddress = poaInfo.POA_ADDRESS;
+                result.ReportDetails.PoaIdCard = poaInfo.ID_CARD;
+                result.ReportDetails.PoaCity = dtData.KPPBC_CITY;
+            }
+
+            //for export type
+            if (dtData.CK5_TYPE == Enums.CK5Type.Export)
+            {
+                result.ReportDetails.DestPlantNpwp = "-";
+                result.ReportDetails.DestPlantNppbkc = "-";
+                result.ReportDetails.DestPlantName = "-";
+                result.ReportDetails.DestPlantAddress = "-";
+                result.ReportDetails.DestOfficeName = "-";
+                result.ReportDetails.DestOfficeCode = "-";
+
+                result.ReportDetails.DestinationCountry = "-";
+                result.ReportDetails.DestinationCode = "-";
+                result.ReportDetails.DestinationNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
+                result.ReportDetails.DestinationName = dtData.DEST_PLANT_NAME;
+                result.ReportDetails.DestinationAddress = dtData.DEST_PLANT_ADDRESS;
+                result.ReportDetails.DestinationOfficeName = dtData.DEST_PLANT_COMPANY_NAME;
+                result.ReportDetails.DestinationOfficeCode = dtData.DEST_PLANT_COMPANY_CODE;
+
+                result.ReportDetails.LoadingPort = dtData.LOADING_PORT;
+                result.ReportDetails.LoadingPortName = dtData.LOADING_PORT_NAME;
+                result.ReportDetails.LoadingPortId = dtData.LOADING_PORT_ID;
+                result.ReportDetails.FinalPort = dtData.FINAL_PORT;
+                result.ReportDetails.FinalPortName = dtData.FINAL_PORT_NAME;
+                result.ReportDetails.FinalPortId = dtData.FINAL_PORT_ID;
+            }
+            else
+            {
+                result.ReportDetails.DestPlantNpwp = dtData.DEST_PLANT_NPWP;
+                result.ReportDetails.DestPlantNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
+                result.ReportDetails.DestPlantName = dtData.DEST_PLANT_NAME;
+                result.ReportDetails.DestPlantAddress = dtData.DEST_PLANT_ADDRESS;
+                result.ReportDetails.DestOfficeName = dtData.DEST_PLANT_COMPANY_NAME;
+                result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_COMPANY_CODE;
+
+                result.ReportDetails.DestinationCountry = "-";
+                result.ReportDetails.DestinationCode = "-";
+                result.ReportDetails.DestinationNppbkc = "-";
+                result.ReportDetails.DestinationName = "-";
+                result.ReportDetails.DestinationAddress = "-";
+                result.ReportDetails.DestinationOfficeName = "-";
+                result.ReportDetails.DestinationOfficeCode = "-";
+
+                result.ReportDetails.LoadingPort = "-";
+                result.ReportDetails.LoadingPortName = "-";
+                result.ReportDetails.LoadingPortId = "-";
+                result.ReportDetails.FinalPort = "-";
+                result.ReportDetails.FinalPortName = "-";
+                result.ReportDetails.FinalPortId = "-";
+            }
+            return result;
+            //return Mapper.Map<CK5ReportDto>(dtData);
+        }
+
+        #endregion
+
+        private string DateReportDisplayString(DateTime dt)
+        {
+            var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+            return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                   " " + dt.ToString("yyyy");
+        }
+
+        public void AddPrintHistory(long id, string userId)
+        {
+            var dtData = _repository.GetByID(id);
+             if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            var printHistory = new PrintHistoryDto();
+            printHistory.FORM_ID = dtData.CK5_ID;
+            printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
+            printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+            printHistory.PRINT_BY = userId;
+            printHistory.PRINT_DATE = DateTime.Now;
+
+
+            _printHistoryBll.AddPrintHistory(printHistory);
+
+            _uow.SaveChanges();
+        }
     }
 }

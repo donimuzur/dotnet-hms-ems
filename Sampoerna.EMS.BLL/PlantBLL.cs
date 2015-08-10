@@ -130,6 +130,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
             changesData.Add("PHONE", origin.PHONE == data.PHONE);
+            
             var originMaterialDesc = string.Empty;
             if (originReceive != null)
             {

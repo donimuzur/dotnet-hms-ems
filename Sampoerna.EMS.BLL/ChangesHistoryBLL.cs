@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -47,7 +48,7 @@ namespace Sampoerna.EMS.BLL
        
         public List<CHANGES_HISTORY> GetByFormTypeAndFormId(Enums.MenuList formTypeId, string id)
         {
-            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, includeTables).ToList();
+            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, includeTables).OrderByDescending(c => c.MODIFIED_DATE).ToList();
         }
 
     }

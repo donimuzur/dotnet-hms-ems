@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -34,8 +37,11 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowBLL _workflowBll;
         private IMessageService _messageService;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IZaidmExKPPBCBLL _kppbcbll;
+        private IHeaderFooterBLL _headerFooterBll;
+        private IUserBLL _userBll;
 
-        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1";
+        private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
         public PBCK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -55,6 +61,9 @@ namespace Sampoerna.EMS.BLL
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _messageService = new MessageService(_logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _kppbcbll = new ZaidmExKPPBCBLL(_logger, _uow);
+            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
+            _userBll = new UserBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -80,10 +89,10 @@ namespace Sampoerna.EMS.BLL
             var queryFilter = ProcessQueryFilter(input);
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
-            
+
             return Mapper.Map<List<Pbck1Dto>>(GetPbck1Data(queryFilter, input.SortOrderColumn));
         }
-        
+
         private Expression<Func<PBCK1, bool>> ProcessQueryFilter(Pbck1GetByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
@@ -1022,18 +1031,25 @@ namespace Sampoerna.EMS.BLL
             //todo: body message from email template
             //todo: to = ?
             //todo: subject = from email template
-            var to = "irmansulaeman41@gmail.com";
-            var subject = "this is subject for " + input.DocumentNumber;
-            var body = "this is body message for " + input.DocumentNumber;
+            //var to = "irmansulaeman41@gmail.com";
+            //var subject = "this is subject for " + input.DocumentNumber;
+            //var body = "this is body message for " + input.DocumentNumber;
             //var from = "a@gmail.com";
 
-            _messageService.SendEmail(to, subject, body, true);
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
+
+            var pbck1Data = Mapper.Map<Pbck1Dto>(_repository.Get(c => c.PBCK1_ID == input.DocumentId, null, includeTables).FirstOrDefault());
+
+            var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType);
+
+            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+
         }
 
         #endregion
 
-        #region Summary Reports 
-        
+        #region Summary Reports
+
         public List<Pbck1SummaryReportDto> GetSummaryReportByParam(Pbck1GetSummaryReportByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
@@ -1053,7 +1069,7 @@ namespace Sampoerna.EMS.BLL
 
             var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
 
-            if(pbck1Data == null)
+            if (pbck1Data == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             //todo: ask the cleanest way
@@ -1068,19 +1084,19 @@ namespace Sampoerna.EMS.BLL
                     rc[i].NppbkcPlants = Mapper.Map<List<T001WDto>>(nppbckData.T001W);
                 }
             }
-            
+
             return rc;
         }
 
         #endregion
 
-        #region Monitoring Usages 
+        #region Monitoring Usages
 
         public List<Pbck1MonitoringUsageDto> GetMonitoringUsageByParam(Pbck1GetMonitoringUsageByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed 
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed
                 && c.PBCK1_TYPE == Enums.PBCK1Type.New);
 
             if (input.YearFrom.HasValue)
@@ -1106,6 +1122,222 @@ namespace Sampoerna.EMS.BLL
         }
 
         #endregion
+
+        public Pbck1ReportDto GetPrintOutDataById(int id)
+        {
+            var rc = new Pbck1ReportDto();
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
+            var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            rc.Detail.Pbck1Id = dbData.PBCK1_ID;
+            rc.Detail.Pbck1Number = dbData.NUMBER;
+            rc.Detail.Pbck1AdditionalText = dbData.PBCK1_TYPE == Enums.PBCK1Type.Additional ? "Tambahan" : "";
+            if (dbData.PERIOD_FROM != null) rc.Detail.Year = dbData.PERIOD_FROM.Value.ToString("yyyy");
+
+            //GET VENDOR BY VENDOR ID ON NPPBKC
+            var nppbkcDetails = _nppbkcbll.GetDetailsById(dbData.NPPBKC_ID);
+            if (nppbkcDetails != null)
+            {
+                rc.Detail.VendorAliasName = nppbkcDetails.LFA1 != null ? nppbkcDetails.LFA1.NAME2 : string.Empty;
+                rc.Detail.VendorCityName = nppbkcDetails.CITY_ALIAS;
+                rc.Detail.NppbkcAddress = string.Join(Environment.NewLine, nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
+                var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
+                if (mainPlant != null)
+                {
+                    rc.Detail.PlantPhoneNumber = mainPlant.PHONE;
+                }
+                rc.Detail.NppbkcCity = nppbkcDetails.CITY;
+            }
+            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
+            {
+                var poaDetails = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
+                rc.Detail.PoaName = poaDetails.PRINTED_NAME;
+                rc.Detail.PoaTitle = poaDetails.TITLE;
+            }
+            rc.Detail.CompanyName = dbData.NPPBCK_BUTXT;
+            rc.Detail.NppbkcId = dbData.NPPBKC_ID;
+            rc.Detail.ExcisableGoodsDescription = dbData.EXC_TYP_DESC;
+
+            //ambil dari prod converter
+            if (dbData.PBCK1_PROD_CONVERTER != null)
+            {
+                rc.Detail.ProdConverterProductType = string.Join(",",
+                    dbData.PBCK1_PROD_CONVERTER.Select(d => d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").Distinct().ToArray());
+
+                var prodConverterGroup = dbData.PBCK1_PROD_CONVERTER.GroupBy(p => new
+                {
+                    p.PROD_CODE,
+                    p.PRODUCT_TYPE,
+                    p.PRODUCT_ALIAS,
+                    p.CONVERTER_UOM_ID
+                }).Select(g => new
+                {
+                    g.Key.PROD_CODE,
+                    g.Key.PRODUCT_TYPE,
+                    g.Key.PRODUCT_ALIAS,
+                    g.Key.CONVERTER_UOM_ID,
+                    Total = g.Sum(p => p.CONVERTER_OUTPUT)
+                });
+                rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
+                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.CONVERTER_UOM_ID + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+            }
+            if (dbData.PERIOD_FROM.HasValue)
+            {
+                rc.Detail.PeriodFrom = DateReportString(dbData.PERIOD_FROM.Value);
+            }
+            if (dbData.PERIOD_TO.HasValue)
+            {
+                rc.Detail.PeriodTo = DateReportString(dbData.PERIOD_TO.Value);
+            }
+            // ReSharper disable once PossibleInvalidOperationException
+            rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
+            rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
+            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
+            rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
+            rc.Detail.SupplierCompanyName = dbData.SUPPLIER_PLANT;
+            rc.Detail.SupplierNppbkcId = dbData.SUPPLIER_NPPBKC_ID;
+            rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
+            rc.Detail.SupplierPlantPhone = dbData.SUPPLIER_PHONE;
+            rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
+            var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
+            if (kppbcDetail != null)
+            {
+                rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI;
+            }
+            rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
+            rc.Detail.PrintedDate = DateReportString(DateTime.Now);
+            rc.Detail.ExciseManager = dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME;
+            rc.Detail.ProdPlanPeriode = SetPeriod(dbData.PLAN_PROD_FROM.Value.Month, dbData.PLAN_PROD_FROM.Value.Year,
+                dbData.PLAN_PROD_TO.Value.Month, dbData.PLAN_PROD_TO.Value.Year);
+            rc.Detail.Lack1Periode = SetPeriod(dbData.LACK1_FROM_MONTH.Value, dbData.LACK1_FROM_YEAR.Value,
+                dbData.LACK1_TO_MONTH.Value, dbData.LACK1_TO_YEAR.Value);
+
+            //Set ProdPlan
+            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
+            rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
+            rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.PBCK1,
+                CompanyCode = dbData.NPPBKC_BUKRS
+            });
+            rc.HeaderFooter = headerFooterData;
+
+            return rc;
+        }
+
+        private string DateReportString(DateTime dt)
+        {
+            var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+            return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                   " " + dt.ToString("yyyy");
+        }
+
+        private string SetPeriod(int startMonth, int startYear, int endMonth, int endYear)
+        {
+            var month1 = _monthBll.GetMonth(startMonth);
+            var month2 = _monthBll.GetMonth(endMonth);
+            return month1.MONTH_NAME_IND + " " + startYear + " - " + month2.MONTH_NAME_IND + " " + endYear;
+        }
+
+
+        private Pbck1MailNotification ProsesMailNotificationBody(Pbck1Dto pbck1Data, Enums.ActionType actionType)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new Pbck1MailNotification();
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+            rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
+            bodyMail.Append("Dear Team,<br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + pbck1Data.NppbkcCompanyCode + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + pbck1Data.NppbkcId + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Number</td><td> : " + pbck1Data.Pbck1Number + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td</tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/'" + pbck1Data.Pbck1Id + ">link</a> to show detailed information</i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+            switch (actionType)
+            {
+                case Enums.ActionType.Submit:
+                    if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        var poaList = _poaBll.GetPoaByNppbkcId(pbck1Data.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.To.Add(poaDto.POA_EMAIL);
+                        }
+                    }
+                    else if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        var managerId = _poaBll.GetManagerIdByPoaId(pbck1Data.CreatedById);
+                        var managerDetail = _userBll.GetUserById(managerId);
+                        rc.To.Add(managerDetail.EMAIL);
+                    }
+                    break;
+                case Enums.ActionType.Approve:
+                    if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                    }
+                    else if (pbck1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    {
+                        var poaData = _poaBll.GetById(pbck1Data.CreatedById);
+                        if (poaData != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(poaData.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(pbck1Data.CreatedById);
+                            rc.To.Add(userData.EMAIL);
+                        }
+                    }
+                    break;
+                case Enums.ActionType.Reject:
+                    //send notification to creator
+                    var userDetail = _userBll.GetUserById(pbck1Data.CreatedById);
+                    rc.To.Add(userDetail.EMAIL);
+                    break;
+            }
+            rc.Body = bodyMail.ToString();
+            return rc;
+        }
+
+        private string GetManagerEmail(string poaId)
+        {
+            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+            var managerDetail = _userBll.GetUserById(managerId);
+            return managerDetail.EMAIL;
+        }
+        
+        private class Pbck1MailNotification
+        {
+            public Pbck1MailNotification()
+            {
+                To = new List<string>();
+            }
+            public string Subject { get; set; }
+            public string Body { get; set; }
+            public List<string> To { get; set; }
+        }
+
 
     }
 }
