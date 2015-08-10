@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
@@ -148,16 +149,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
+                    dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+
+                try
+                {
+                    _brandRegistrationBll.Save(dbBrand);
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                        );
-                
- 
-               
-
-                
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    AddMessageInfo("Save Failed.", Enums.MessageInfoType.Error
+                       );
+                }
             }
-
 
             InitCreate(model);
 
@@ -229,14 +236,25 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            _brandRegistrationBll.Save(dbBrand);
-
-            AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+            if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
+                dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+            try
+            {
+                _brandRegistrationBll.Save(dbBrand);
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                          );
-                
+                return RedirectToAction("Index");
 
-            return RedirectToAction("Index");
-          
+            }
+            catch 
+            {
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
+                         );
+            }
+
+            model = InitEdit(model);
+
+            return View("Edit", model);
         }
 
         private void SetChangesLog(ZAIDM_EX_BRAND origin, BrandRegistrationEditViewModel updatedModel)
