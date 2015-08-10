@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
+using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -41,7 +43,7 @@ namespace Sampoerna.EMS.BLL
 
         public void Save(EX_GROUP_TYPE GroupTypes)
         {
-            _repository.InsertOrUpdate(GroupTypes);
+           _repository.InsertOrUpdate(GroupTypes);
             _uow.SaveChanges();
         }
 
@@ -106,14 +108,17 @@ namespace Sampoerna.EMS.BLL
 
         public void InsertDetail(EX_GROUP_TYPE_DETAILS detail)
         {
+            //var dbData = _repository.Get(c => c.EX_GROUP_TYPE_ID == detail.EX_GROUP_TYPE_ID, null, includeTables).FirstOrDefault();
+            //var exGoodTypeUpdate = Mapper.Map<EX_GROUP_TYPE_DETAILS>(detail);
+
+            //SetChange(dbData, detail, exGoodTypeUpdate, userId);
             _repositoryDetail.Insert(detail);
             _uow.SaveChanges();
         }
 
 
 
-        private void SetChange(EX_GROUP_TYPE origin, ExGoodTyp data, string userId,
-            List<EX_GROUP_TYPE_DETAILS> originGoodType)
+        private void SetChange(EX_GROUP_TYPE origin, ExGoodTyp data, string userId,List<EX_GROUP_TYPE_DETAILS> originGoodType)
         {
             var changesData = new Dictionary<string, bool>();
             var originExgoodTyplDesc = string.Empty;

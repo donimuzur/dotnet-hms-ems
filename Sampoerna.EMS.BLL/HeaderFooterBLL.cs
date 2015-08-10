@@ -62,16 +62,8 @@ namespace Sampoerna.EMS.BLL
         
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
-             HEADER_FOOTER dbData = null;
-             
-
-            //var dtcompany = _repository.Get(c => c.BUKRS == headerFooterData.COMPANY_ID).FirstOrDefault();
-            // if (dtcompany != null)
-            // {
-            //     output.MessageExist = "1";
-            //     return output;
-            // }
-
+            HEADER_FOOTER dbData = null;
+           
             if (headerFooterData.HEADER_FOOTER_ID > 0)
             {
 
