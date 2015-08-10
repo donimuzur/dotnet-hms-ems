@@ -690,6 +690,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="PER_CODE_DESC" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -3527,6 +3528,7 @@
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MARKET" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
+          <Property Name="PER_CODE_DESC" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -5413,7 +5415,8 @@
     <EntitySetMapping Name="ZAIDM_EX_BRAND">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_BRAND)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
-          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="PER_CODE_DESC" ColumnName="PER_CODE_DESC" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
           <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
           <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
           <ScalarProperty Name="PER_CODE" ColumnName="PER_CODE" />
