@@ -215,7 +215,9 @@ namespace Sampoerna.EMS.Core
             [Description("Darat")]
             Darat = 1,
             [Description("Laut")]
-            Laut = 2
+            Laut = 2,
+            [Description("Udara")]
+            Udara = 3
         }
 
         public enum LACK1Type

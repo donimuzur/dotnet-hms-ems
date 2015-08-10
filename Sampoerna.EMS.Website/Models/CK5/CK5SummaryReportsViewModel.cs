@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5SearchSummaryReportsViewModel
     {
         public Enums.CK5Type Ck5Type { get; set; }
+        public Enums.CK5Type Ck5TypeList { get; set; }
 
         public string CompanyCodeSource { get; set; }
         public SelectList CompanyCodeSourceList { get; set; }
