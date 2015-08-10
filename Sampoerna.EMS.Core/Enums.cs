@@ -33,7 +33,8 @@ namespace Sampoerna.EMS.Core
             Uom = 27,
             GoodsTypeGroup =26,
             UserAuthorization = 28,
-            POAMap = 29
+            POAMap = 29,
+            Vendor = 30
         }
         public enum PBCK1Type
         {
