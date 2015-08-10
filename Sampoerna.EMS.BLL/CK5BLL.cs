@@ -367,25 +367,26 @@ namespace Sampoerna.EMS.BLL
             //todo check the new value
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(data.KPPBC_CITY));
+            changesData.Add("KPPBC_CITY", origin.KPPBC_CITY == data.KPPBC_CITY);
             changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
 
-            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_DESC.Equals(data.EX_GOODS_TYPE_DESC));
-            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(data.EX_SETTLEMENT_ID));
-            changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(data.EX_STATUS_ID));
-            changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(data.REQUEST_TYPE_ID));
-            changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID.Equals(data.SOURCE_PLANT_ID));
-            changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID.Equals(data.DEST_PLANT_ID));
+            changesData.Add("EX_GOODS_TYPE", origin.EX_GOODS_TYPE == data.EX_GOODS_TYPE);
+
+            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID == data.EX_SETTLEMENT_ID);
+            changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID == data.EX_STATUS_ID);
+            changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID == data.REQUEST_TYPE_ID);
+            changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID ==(data.SOURCE_PLANT_ID));
+            changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID == (data.DEST_PLANT_ID));
 
             changesData.Add("INVOICE_NUMBER", origin.INVOICE_NUMBER == data.INVOICE_NUMBER);
-            changesData.Add("INVOICE_DATE", origin.INVOICE_DATE.Equals(data.INVOICE_DATE));
+            changesData.Add("INVOICE_DATE", origin.INVOICE_DATE == (data.INVOICE_DATE));
 
-            changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID.Equals(data.PBCK1_DECREE_ID));
-            changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(data.CARRIAGE_METHOD_ID));
+            changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID == (data.PBCK1_DECREE_ID));
+            changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID == (data.CARRIAGE_METHOD_ID));
 
-            changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(data.GRAND_TOTAL_EX));
+            changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX == (data.GRAND_TOTAL_EX));
            
-            changesData.Add("PACKAGE_UOM_ID", !string.IsNullOrEmpty(origin.PACKAGE_UOM_ID) ? origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID) : (!string.IsNullOrEmpty(data.PACKAGE_UOM_ID) ? false : true));
+            changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID == data.PACKAGE_UOM_ID);
 
 
             foreach (var listChange in changesData)
@@ -407,9 +408,9 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
                         changes.NEW_VALUE = data.REGISTRATION_NUMBER;
                         break;
-                    case "EX_GOODS_TYPE_ID":
-                        changes.OLD_VALUE = origin.EX_GOODS_TYPE_DESC;
-                        changes.NEW_VALUE = data.EX_GOODS_TYPE_DESC;
+                    case "EX_GOODS_TYPE":
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
                         break;
                     case "EX_SETTLEMENT_ID":
                         changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);

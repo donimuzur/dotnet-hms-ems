@@ -58,7 +58,10 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
               .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
               .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
+              
               .ForMember(dest => dest.EX_GOODS_TYPE_DESC, opt => opt.MapFrom(src => src.GoodTypeName))
+              .ForMember(dest => dest.EX_GOODS_TYPE, opt => opt.MapFrom(src => src.GoodType))
+
               .ForMember(dest => dest.EX_SETTLEMENT_ID, opt => opt.MapFrom(src => src.ExciseSettlement))
               .ForMember(dest => dest.EX_STATUS_ID, opt => opt.MapFrom(src => src.ExciseStatus))
               .ForMember(dest => dest.REQUEST_TYPE_ID, opt => opt.MapFrom(src => src.RequestType))
@@ -94,7 +97,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PbckDecreeNumber))
                .ForMember(dest => dest.CARRIAGE_METHOD_ID, opt => opt.MapFrom(src => src.CarriageMethod))
                .ForMember(dest => dest.GRAND_TOTAL_EX, opt => opt.MapFrom(src => src.GrandTotalEx))
-              .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomName));
+              .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomName))
+              .ForMember(dest => dest.DEST_COUNTRY_CODE, opt => opt.MapFrom(src => src.CountryCode))
+              .ForMember(dest => dest.DEST_COUNTRY_NAME, opt => opt.MapFrom(src => src.CountryName))
+              ;
 
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()
             .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
@@ -111,7 +117,10 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
             .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
             .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
+
+            .ForMember(dest => dest.GoodType, opt => opt.MapFrom(src => src.EX_GOODS_TYPE))
             .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
+
             .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => src.EX_SETTLEMENT_ID))
             .ForMember(dest => dest.ExciseSettlementDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_SETTLEMENT_ID)))
             .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => src.EX_STATUS_ID))
@@ -160,10 +169,14 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.StobNumber, opt => opt.MapFrom(src => src.STOB_NUMBER))
             .ForMember(dest => dest.GiDate, opt => opt.MapFrom(src => src.GI_DATE))
             .ForMember(dest => dest.GrDate, opt => opt.MapFrom(src => src.GR_DATE))
-             .ForMember(dest => dest.SealingNotifNumber, opt => opt.MapFrom(src => src.SEALING_NOTIF_NUMBER))
+            .ForMember(dest => dest.SealingNotifNumber, opt => opt.MapFrom(src => src.SEALING_NOTIF_NUMBER))
             .ForMember(dest => dest.SealingNotifDate, opt => opt.MapFrom(src => src.SEALING_NOTIF_DATE))
-             .ForMember(dest => dest.UnSealingNotifNumber, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_NUMBER))
+            .ForMember(dest => dest.UnSealingNotifNumber, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_NUMBER))
             .ForMember(dest => dest.UnsealingNotifDate, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_DATE))
+
+            .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.DEST_COUNTRY_CODE))
+            .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.DEST_COUNTRY_NAME))
+            
             .ForMember(dest => dest.Ck5FileUploadModelList, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.Ck5FileUploadDtos)));
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();

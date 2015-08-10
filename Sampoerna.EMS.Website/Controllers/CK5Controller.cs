@@ -239,7 +239,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
+
+            //model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
           
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
@@ -441,7 +442,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
+            
+            //model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();

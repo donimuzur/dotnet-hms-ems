@@ -55,10 +55,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("DateTime")]
         public DateTime? RegistrationDate { get; set; }
 
-        //[Required]
-        //public int? GoodTypeId { get; set; }
-        public SelectList GoodTypeList { get; set; }
-        [Required]
+        public Enums.ExGoodsType GoodType { get; set; }
+        public Enums.ExGoodsType GoodTypeList { get; set; }
+      
         public string GoodTypeName { get; set; }
 
 
@@ -199,5 +198,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public List<CK5FileUploadViewModel> Ck5FileUploadModelList { get; set; }
 
         public bool IsAllowPrint { get; set; }
+
+        public string CountryCode { get; set; }
+        public string CountryName { get; set; }
     }
 }

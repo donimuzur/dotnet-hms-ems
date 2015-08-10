@@ -87,9 +87,9 @@
 
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Goods Type Group</label>
+                                        <label class="col-md-4">Excise Goods Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.GoodTypeName, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
