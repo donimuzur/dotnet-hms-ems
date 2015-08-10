@@ -250,7 +250,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plantIdList = plantBll.GetAll();
+            var plantIdList = plantBll.GetAllPlant();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 

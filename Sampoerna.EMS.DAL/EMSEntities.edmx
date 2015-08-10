@@ -1531,6 +1531,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_POA_MAP_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" />
           <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
@@ -2241,6 +2253,10 @@
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_MAP" EntitySet="POA_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_T001W" Association="Self.FK_POA_MAP_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="Self.FK_POA_MAP_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="POA_MAP" EntitySet="POA_MAP" />
@@ -2544,21 +2560,7 @@
             <End Role="MONTH" EntitySet="MONTH" />
             <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
-          <EntitySet Name="POA" EntityType="EMSModel.POA" />
-          <EntitySet Name="POA_MAP" EntityType="EMSModel.POA_MAP" />
-          <AssociationSet Name="FK_POA_MAP_POA" Association="EMSModel.FK_POA_MAP_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC">
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
           <EntitySet Name="POA_SK" EntityType="EMSModel.POA_SK" />
-          <AssociationSet Name="FK_POA_SK_POA" Association="EMSModel.FK_POA_SK_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="POA_SK" EntitySet="POA_SK" />
-          </AssociationSet>
           <EntitySet Name="CK5" EntityType="EMSModel.CK5" />
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="EMSModel.FK_CK5_MATERIAL_CK5">
             <End Role="CK5" EntitySet="CK5" />
@@ -2726,30 +2728,6 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
           </AssociationSet>
-          <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="EMSModel.FK_POA_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="EMSModel.FK_POA_LOGIN_AS_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_USER" Association="EMSModel.FK_POA_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_CREATED_BY_USER" Association="EMSModel.FK_POA_MAP_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_POA_MAP_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MAP_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
-          </AssociationSet>
           <AssociationSet Name="FK_T001_MODIFIED_BY_USER" Association="EMSModel.FK_T001_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="T001" EntitySet="T001" />
@@ -2836,6 +2814,48 @@
           </AssociationSet>
           <EntitySet Name="COUNTRY" EntityType="EMSModel.COUNTRY" />
           <EntitySet Name="CURRENCY" EntityType="EMSModel.CURRENCY" />
+          <EntitySet Name="POA" EntityType="EMSModel.POA" />
+          <EntitySet Name="POA_MAP" EntityType="EMSModel.POA_MAP" />
+          <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="EMSModel.FK_POA_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="EMSModel.FK_POA_LOGIN_AS_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_SK_POA" Association="EMSModel.FK_POA_SK_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_SK" EntitySet="POA_SK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_USER" Association="EMSModel.FK_POA_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_CREATED_BY_USER" Association="EMSModel.FK_POA_MAP_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_MODIFIED_BY_USER" Association="EMSModel.FK_POA_MAP_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_T001W" Association="EMSModel.FK_POA_MAP_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_MAP_POA" Association="EMSModel.FK_POA_MAP_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_MAP" EntitySet="POA_MAP" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3050,6 +3070,7 @@
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="T001W" ToRole="USER" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_T001W" FromRole="T001W" ToRole="POA_MAP" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
@@ -3308,8 +3329,8 @@
           <NavigationProperty Name="T0011" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="POA_MAP" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" FromRole="ZAIDM_EX_NPPBKC" ToRole="USER" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="POA_MAP" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
           <End Type="EMSModel.LFA1" Role="LFA1" Multiplicity="0..1" />
@@ -3781,72 +3802,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="POA">
-          <Key>
-            <PropertyRef Name="POA_ID" />
-          </Key>
-          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" />
-          <Property Name="POA_PHONE" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ADDRESS" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="POA_EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MANAGER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACTIVE" Type="Boolean" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
-          <NavigationProperty Name="POA_SK" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA" ToRole="POA_SK" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="POA" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="POA" ToRole="USER" />
-          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="POA" ToRole="USER" />
-          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_USER" FromRole="POA" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="POA_MAP">
-          <Key>
-            <PropertyRef Name="POA_MAP_ID" />
-          </Key>
-          <Property Name="POA_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA_MAP" ToRole="POA" />
-          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="POA_MAP" ToRole="ZAIDM_EX_NPPBKC" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
-        </EntityType>
-        <Association Name="FK_POA_MAP_POA">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
-          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_NPPBKC">
-              <PropertyRef Name="NPPBKC_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="NPPBKC_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="POA_SK">
           <Key>
             <PropertyRef Name="POA_SK_ID" />
@@ -3857,18 +3812,6 @@
           <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA_SK" ToRole="POA" />
         </EntityType>
-        <Association Name="FK_POA_SK_POA">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
-          <End Type="EMSModel.POA_SK" Role="POA_SK" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
-            </Principal>
-            <Dependent Role="POA_SK">
-              <PropertyRef Name="POA_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="CK5">
           <Key>
             <PropertyRef Name="CK5_ID" />
@@ -4388,12 +4331,6 @@
           <NavigationProperty Name="PBCK12" Relationship="EMSModel.FK_PBCK1_USER" FromRole="USER" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK1_DECREE_DOC" Relationship="EMSModel.FK_PBCK1_DECREE_DOC_USER" FromRole="USER" ToRole="PBCK1_DECREE_DOC" />
           <NavigationProperty Name="PBCK1_QUOTA" Relationship="EMSModel.FK_PBCK1_QUOTA_USER" FromRole="USER" ToRole="PBCK1_QUOTA" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
-          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="USER" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="USER" ToRole="T001W" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
@@ -4410,6 +4347,12 @@
           <NavigationProperty Name="LACK21" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="USER" ToRole="LACK2" />
           <NavigationProperty Name="LACK22" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="USER" ToRole="LACK2" />
           <NavigationProperty Name="PRINT_HISTORY" Relationship="EMSModel.FK_PRINT_HISTORY_USER" FromRole="USER" ToRole="PRINT_HISTORY" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
+          <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
         </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -4633,78 +4576,6 @@
             </Principal>
             <Dependent Role="PBCK1_QUOTA">
               <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_LOGIN_AS_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="LOGIN_AS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA">
-              <PropertyRef Name="MANAGER_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_CREATED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_POA_MAP_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="POA_MAP">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5027,6 +4898,169 @@
           <Property Name="CURRENCY_ID" Type="Int32" Nullable="false" />
           <Property Name="CURRENCY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="POA">
+          <Key>
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PHONE" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ADDRESS" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="POA_EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MANAGER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="POA_SK" Relationship="EMSModel.FK_POA_SK_POA" FromRole="POA" ToRole="POA_SK" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_USER" FromRole="POA" ToRole="USER" />
+          <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
+        </EntityType>
+        <EntityType Name="POA_MAP">
+          <Key>
+            <PropertyRef Name="POA_MAP_ID" />
+          </Key>
+          <Property Name="POA_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="POA_MAP" ToRole="USER" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_POA_MAP_T001W" FromRole="POA_MAP" ToRole="T001W" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" FromRole="POA_MAP" ToRole="ZAIDM_EX_NPPBKC" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA_MAP" ToRole="POA" />
+        </EntityType>
+        <Association Name="FK_POA_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_LOGIN_AS_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="LOGIN_AS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_SK_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_SK" Role="POA_SK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_SK">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA">
+              <PropertyRef Name="MANAGER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_CREATED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_MODIFIED_BY_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_T001W">
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_MAP_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_MAP" Role="POA_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_MAP">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5537,40 +5571,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="POA">
-      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.POA)">
-        <MappingFragment StoreEntitySet="POA">
-          <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-          <ScalarProperty Name="ID_CARD" ColumnName="ID_CARD" />
-          <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
-          <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
-          <ScalarProperty Name="POA_EMAIL" ColumnName="POA_EMAIL" />
-          <ScalarProperty Name="PRINTED_NAME" ColumnName="PRINTED_NAME" />
-          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
-          <ScalarProperty Name="LOGIN_AS" ColumnName="LOGIN_AS" />
-          <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="POA_MAP">
-      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.POA_MAP)">
-        <MappingFragment StoreEntitySet="POA_MAP">
-          <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
-          <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
-          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-          <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="POA_SK">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.POA_SK)">
         <MappingFragment StoreEntitySet="POA_SK">
@@ -5877,6 +5877,40 @@
               <MappingFragment StoreEntitySet="CURRENCY">
                 <ScalarProperty Name="CURRENCY_NAME" ColumnName="CURRENCY_NAME" />
                 <ScalarProperty Name="CURRENCY_ID" ColumnName="CURRENCY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA">
+            <EntityTypeMapping TypeName="EMSModel.POA">
+              <MappingFragment StoreEntitySet="POA">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MANAGER_ID" ColumnName="MANAGER_ID" />
+                <ScalarProperty Name="LOGIN_AS" ColumnName="LOGIN_AS" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="PRINTED_NAME" ColumnName="PRINTED_NAME" />
+                <ScalarProperty Name="POA_EMAIL" ColumnName="POA_EMAIL" />
+                <ScalarProperty Name="POA_ADDRESS" ColumnName="POA_ADDRESS" />
+                <ScalarProperty Name="POA_PHONE" ColumnName="POA_PHONE" />
+                <ScalarProperty Name="ID_CARD" ColumnName="ID_CARD" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_MAP">
+            <EntityTypeMapping TypeName="EMSModel.POA_MAP">
+              <MappingFragment StoreEntitySet="POA_MAP">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="POA_MAP_ID" ColumnName="POA_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

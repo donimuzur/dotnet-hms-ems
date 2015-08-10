@@ -69,6 +69,7 @@
     <Compile Include="IPlantBLL.cs" />
     <Compile Include="IPrintHistoryBLL.cs" />
     <Compile Include="ISupplierPortBLL.cs" />
+    <Compile Include="IPOAMapBL.cs" />
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserAuthorizationBLL.cs" />
