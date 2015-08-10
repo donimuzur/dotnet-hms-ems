@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-3">PBCK Type</label>
+                                        <label class="col-md-3">PBCK Type<span class="red">*</span></label>
                                         <div class="col-md-9">
                                             @Html.EnumDropDownListFor(model => model.Detail.Pbck1Type, Model.Pbck1Types, "Select", new { @class = "form-control" })
                                         </div>
@@ -45,10 +45,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-3">Reported On</label>
+                                        <label class="col-md-3">Reported On<span class="red">*</span></label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -58,10 +58,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-3">Period From</label>
+                                        <label class="col-md-3">Period From<span class="red">*</span></label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -71,10 +71,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-3">Period To</label>
+                                        <label class="col-md-3">Period To<span class="red">*</span></label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -104,7 +104,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">NPPBKC ID</label>
+                                        <label class="col-md-4">NPPBKC ID<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Detail.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
                                         </div>
@@ -152,7 +152,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier Plant</label>
+                                        <label class="col-md-4">Supplier Plant<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
                                             <div id="supp-plant">
@@ -209,7 +209,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4 long">Exciseable Goods Description</label>
+                                        <label class="col-md-4 long">Exciseable Goods Description<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Detail.GoodTypeDesc)
                                             @Html.DropDownListFor(model => model.Detail.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
@@ -220,10 +220,10 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4 long">Plan Produtcion From</label>
+                                        <label class="col-md-4 long">Plan Produtcion From<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -233,10 +233,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Plan Production to</label>
+                                        <label class="col-md-4">Plan Production to<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -246,7 +246,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">LACK-1 From</label>
+                                        <label class="col-md-4">LACK-1 From<span class="red">*</span></label>
                                         <div class="col-md-4">
                                             @Html.DropDownListFor(model => model.Detail.Lack1FromMonthId, Model.MonthList, "", new { @class = "form-control" })
                                         </div>
@@ -257,7 +257,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">LACK-1 To</label>
+                                        <label class="col-md-4">LACK-1 To<span class="red">*</span></label>
                                         <div class="col-md-4">
                                             @Html.DropDownListFor(model => model.Detail.Lack1ToMonthId, Model.MonthList, "", new { @class = "form-control" })
                                         </div>
@@ -268,7 +268,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Request Qty</label>
+                                        <label class="col-md-4">Request Qty<span class="red">*</span></label>
                                         <div class="col-md-4">
                                             @Html.HiddenFor(model => model.Detail.RequestQty)
                                             @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control", @disabled = "disabled" })
@@ -421,7 +421,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -476,6 +476,11 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
         </div>
     </div>
 </div>
