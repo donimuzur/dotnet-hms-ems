@@ -88,6 +88,7 @@
     <Compile Include="PrintHistoryBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SupplierPortBLL.cs" />
+    <Compile Include="POAMapBLL.cs" />
     <Compile Include="UnitOfMeasurementBLL.cs" />
     <Compile Include="UserAuthorizationBLL.cs" />
     <Compile Include="UserBLL.cs" />

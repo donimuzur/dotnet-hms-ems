@@ -86,9 +86,20 @@ namespace Sampoerna.EMS.BLL
 
             #endregion
 
-            Mapper.CreateMap<POA_MAP, POA_MAPDto>().IgnoreAllNonExisting();
-            Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<POA_MAP, POA_MAPDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.POA_MAP_ID, opt => opt.MapFrom(src => src.POA_MAP_ID))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.POA_ID))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.T001W.NAME1))
+                .ForMember(dest => dest.POA_NAME, opt => opt.MapFrom(src => src.POA.USER.FIRST_NAME + " " + src.POA.USER.LAST_NAME));
+            Mapper.CreateMap<POA_MAPDto, POA_MAP>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.POA_MAP_ID, opt => opt.MapFrom(src => src.POA_MAP_ID))
+               .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+               .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.POA_ID))
+               .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.WERKS));
 
+      
             Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();

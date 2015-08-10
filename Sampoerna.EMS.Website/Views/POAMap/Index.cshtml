@@ -1,0 +1,117 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.POAMap.PoaMapIndexViewModel
+@{
+    ViewBag.Title = "New Unit Of Measure";
+}
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuPoaMap').addClass('active');
+        $(document).ready(function () {
+
+            // Setup - add a text input to each footer cell
+            $('#poamaptable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                }
+            });
+
+            // DataTable
+            var table = $('#poamap').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+          
+           
+        });
+    </script>
+}
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">POA Map</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "POAMap")"><button class="btn btn-blue">NEW</button></a>
+                <a data-toggle="modal" data-target=".menu-maping-type">
+
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="poamaptable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row">Filter</th>
+                            <th>NPPBKC ID</th>
+                            <th>PLANT</th>
+                            <th>POA</th>
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.PoaMaps)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Details", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>@item.NPPBKC_ID)</td>
+                                <td>@(item.WERKS + Constans.DelimeterSelectItem + item.PLANT_NAME)</td>
+                                <td>@(item.POA_ID + Constans.DelimeterSelectItem + item.POA_NAME)</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--modal-->
+<input id="btn-uom-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body" id="modal-uom-message">
+
+            </div>
+        </div>
+    </div>
+</div>
+

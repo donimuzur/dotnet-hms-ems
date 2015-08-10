@@ -244,6 +244,7 @@
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\POAMapController.cs" />
     <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserAuthorizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -312,6 +313,8 @@
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\PLANT\T001WModel.cs" />
+    <Compile Include="Models\POAMap\PoaMapIndexViewModel.cs" />
+    <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -799,7 +802,6 @@
     <Content Include="Views\Uom\Create.cshtml" />
     <Content Include="Views\Uom\Details.cshtml" />
     <Content Include="Views\Uom\Edit.cshtml" />
-    <Content Include="Views\Uom\Index.cshtml" />
     <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
     <Content Include="Views\Shared\_MessageInfo.cshtml" />
     <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
@@ -862,6 +864,9 @@
     <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
     <Content Include="Views\UserAuthorization\Edit.cshtml" />
+    <Content Include="Views\POAMap\Create.cshtml" />
+    <Content Include="Views\Uom\Index.cshtml" />
+    <Content Include="Views\POAMap\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
