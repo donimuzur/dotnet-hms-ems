@@ -34,85 +34,100 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<ZAIDM_EX_MATERIAL>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_MATERIAL();
-                    item.STICKER_CODE = xElement.Element("MATNR").Value;
-                    item.BASE_UOM_ID = xElement.Element("MEINS").Value;
-                    item.MATERIAL_GROUP = xElement.Element("MATKL") == null ? null : xElement.Element("MATKL").Value;
-                    item.CLIENT_DELETION = xElement.Element("LVORM") == null
-                        ? false
-                        : (xElement.Element("LVORM").Value == "X" ? true : false);
-
-
-                    var E1MARCM = xElement.Element("E1MARCM");
-                    if (E1MARCM != null)
-                    {
-                        
-                        item.WERKS = E1MARCM.Element("WERKS").Value;
-                        item.PLANT_DELETION = xElement.Element("LVORM") == null
-                        ? false
-                        : (xElement.Element("LVORM").Value == "X" ? true : false);
-
-
-                        item.ISSUE_STORANGE_LOC = E1MARCM.Element("LGPRO") == null ? string.Empty : E1MARCM.Element("LGPRO").Value;
-                        item.PURCHASING_GROUP = E1MARCM.Element("EKGRP") == null ? null : E1MARCM.Element("EKGRP").Value;
-                        var exGoodType = E1MARCM.Element("Z1A_ZAIDM_EX_GOODTYP");
-                        if (exGoodType != null)
-                        {
-                            item.EXC_GOOD_TYP = exGoodType.Element("EXC_GOOD_TYP").Value;
-                           
-                        }
-                    }
-                    var E1MAKTM = xElement.Element("E1MAKTM");
                     
+                    var stickerCode = xElement.Element("MATNR").Value;
+                    var baseUom = xElement.Element("MEINS").Value;
+                    var materialGroup = xElement.Element("MATKL") == null ? null : xElement.Element("MATKL").Value;
+                    var isClientDeletion = xElement.Element("LVORM") == null
+                        ? false
+                        : (xElement.Element("LVORM").Value == "X" ? true : false);
+
+                    var E1MAKTM = xElement.Element("E1MAKTM");
+                    string materialDes = string.Empty;
                     if (E1MAKTM != null)
                     {
-                        item.MATERIAL_DESC = E1MAKTM.Element("MAKTX") == null ? string.Empty : E1MAKTM.Element("MAKTX").Value;
+                        materialDes = E1MAKTM.Element("MAKTX") == null ? string.Empty : E1MAKTM.Element("MAKTX").Value;
                     }
-                    //uom
-                    var uomList = xElement.Elements("E1MARMM");
-                    foreach (var element in uomList)
-                    {
-                        var matUom = new MATERIAL_UOM();
-                        matUom.STICKER_CODE = item.STICKER_CODE;
-                        matUom.WERKS = item.WERKS;
-                        matUom.UMREZ = Convert.ToDecimal(element.Element("UMREZ").Value);
-                        matUom.UMREN = Convert.ToDecimal(element.Element("UMREN").Value);
-                        matUom.MEINH = element.Element("MEINH").Value;
+                    var plantList = xElement.Elements("E1MARCM");
 
-                        item.MATERIAL_UOM.Add(matUom);
-                    }
-
-                    item.IS_FROM_SAP = true;
-                    var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
-                    if (existingMaterial != null)
+                    if (plantList != null)
                     {
-                        var tempUoms = item.MATERIAL_UOM;
-                        item.MATERIAL_UOM = null;
-                        item.MATERIAL_UOM = new List<MATERIAL_UOM>();
-                        foreach (var uom in existingMaterial.MATERIAL_UOM)
+                        foreach (var plant in plantList)
                         {
-                            foreach (var tempUom in tempUoms)
-                            {
-                                if (uom.MEINH == tempUom.MEINH)
-                                {
-                                    tempUom.MATERIAL_UOM_ID = uom.MATERIAL_UOM_ID;
+                            var item = new ZAIDM_EX_MATERIAL();
+                            item.STICKER_CODE = stickerCode;
+                            item.MATERIAL_DESC = materialDes;
+                            item.BASE_UOM_ID = baseUom;
+                            item.MATERIAL_GROUP = materialGroup;
+                            item.CLIENT_DELETION = isClientDeletion;
+                            item.WERKS = plant.Element("WERKS").Value;
+                            item.PLANT_DELETION = plant.Element("LVORM") == null
+                            ? false
+                            : (plant.Element("LVORM").Value == "X" ? true : false);
 
+
+                            item.ISSUE_STORANGE_LOC = plant.Element("LGPRO") == null ? string.Empty : (plant.Element("LGPRO").Value == "/" ? null :plant.Element("LGPRO").Value);
+                            item.PURCHASING_GROUP = plant.Element("EKGRP") == null ? null : plant.Element("EKGRP").Value;
+                            var exGoodType = plant.Element("Z1A_ZAIDM_EX_GOODTYP");
+                            if (exGoodType != null)
+                            {
+                                item.EXC_GOOD_TYP = exGoodType.Element("EXC_GOOD_TYP").Value;
+
+                            }
+
+                            //uom
+                            var uomList = xElement.Elements("E1MARMM");
+                            foreach (var element in uomList)
+                            {
+                                var matUom = new MATERIAL_UOM();
+                                matUom.STICKER_CODE = stickerCode;
+                                matUom.WERKS = item.WERKS;
+                                matUom.UMREZ = Convert.ToDecimal(element.Element("UMREZ").Value);
+                                matUom.UMREN = Convert.ToDecimal(element.Element("UMREN").Value);
+                                matUom.MEINH = element.Element("MEINH").Value;
+
+                                item.MATERIAL_UOM.Add(matUom);
+                            }
+
+                            item.IS_FROM_SAP = true;
+                            var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
+                            if (existingMaterial != null)
+                            {
+                                var tempUoms = item.MATERIAL_UOM;
+                                item.MATERIAL_UOM = null;
+                                item.MATERIAL_UOM = new List<MATERIAL_UOM>();
+                                foreach (var uom in existingMaterial.MATERIAL_UOM)
+                                {
+                                    foreach (var tempUom in tempUoms)
+                                    {
+                                        if (uom.MEINH == tempUom.MEINH)
+                                        {
+                                            tempUom.MATERIAL_UOM_ID = uom.MATERIAL_UOM_ID;
+
+                                        }
+                                        item.MATERIAL_UOM.Add(tempUom);
+                                    }
                                 }
-                                item.MATERIAL_UOM.Add(tempUom);
+
+
+                                item.CREATED_DATE = existingMaterial.CREATED_DATE;
+                                item.MODIFIED_DATE = DateTime.Now;
+                                items.Add(item);
+
+                            }
+                            else
+                            {
+                                item.CREATED_DATE = DateTime.Now;
+                                items.Add(item);
                             }
                         }
-                       
                         
-                        item.CREATED_DATE = existingMaterial.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
+                        
+                    }
+                    
+                   
 
-                    }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
+                   
 
                 }
                 
