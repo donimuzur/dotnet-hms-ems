@@ -51,6 +51,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.FA_CODE = xElement.Element("FA_CODE").Value;
                         item.COUNTRY = xElement.Element("COUNTRY").Value;
                         item.BRAND_CONTENT = xElement.Element("CONTENT").Value;
+                        item.CREATED_BY = xElement.Element("MODIFIED_BY").Value; 
                         var pcodeCode = xElement.Element("PER_CODE").Value;
                         var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
                         if (pCode == null)
@@ -120,11 +121,8 @@ namespace Sampoerna.EMS.XMLReader
                         item.TARIFF = Convert.ToDecimal(xElement.Element("TARIFF").Value);
                         item.TARIF_CURR = xElement.Element("TARIFF_CURR").Value;
                         item.COLOUR = xElement.Element("COLOUR").Value;
-                        //item.CUT_FILLER_CODE = xElement.Element("CUT_FILLER_CODE").Value;
-                        //item.PRINTING_PRICE = Convert.ToDecimal(xElement.Element("PRINTING_PRICE").Value);
                         item.START_DATE = _xmlMapper.GetDate(xElement.Element("START_DATE").Value);
                         item.END_DATE = _xmlMapper.GetDate(xElement.Element("END_DATE").Value);
-                        //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
                         var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
                         if (existingMaterial != null)
                         {
@@ -132,6 +130,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.PRINTING_PRICE = existingMaterial.PRINTING_PRICE;
                             item.CUT_FILLER_CODE = existingMaterial.CUT_FILLER_CODE;
                             item.CREATED_DATE = existingMaterial.CREATED_DATE;
+                            item.MODIFIED_BY = item.CREATED_BY;
                             item.MODIFIED_DATE = DateTime.Now;
                             items.Add(item);
 
@@ -158,9 +157,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
         }
         public ZAIDM_EX_BRAND GetBrand(string plant_id, string fa_code)

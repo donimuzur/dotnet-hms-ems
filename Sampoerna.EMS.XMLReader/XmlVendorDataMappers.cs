@@ -35,24 +35,31 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<LFA1>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new LFA1();
-                    var vendorCodeXml = xElement.Element("LIFNR").Value;
+                    try
+                    {
+                        var item = new LFA1();
+                        var vendorCodeXml = xElement.Element("LIFNR").Value;
 
-                    var exsitingVendor = GetExVendor(vendorCodeXml);
-                    item.LIFNR = vendorCodeXml;
-                    item.NAME1 = xElement.Element("NAME1").Value;
-                    
-                    if (exsitingVendor != null)
-                    {
-                        item.CREATED_DATE = exsitingVendor.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
-                     
+                        var exsitingVendor = GetExVendor(vendorCodeXml);
+                        item.LIFNR = vendorCodeXml;
+                        item.NAME1 = xElement.Element("NAME1").Value;
+
+                        if (exsitingVendor != null)
+                        {
+                            item.CREATED_DATE = exsitingVendor.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
+                        continue;
                     }
 
                 }
@@ -62,9 +69,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<LFA1>(Items);
+            return  _xmlMapper.InsertToDatabase<LFA1>(Items);
        
         }
 

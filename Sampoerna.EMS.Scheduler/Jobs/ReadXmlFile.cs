@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,16 +10,21 @@ using SimpleInjector;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.XMLReader;
 using Sampoerna.EMS.Contract;
+using Container = SimpleInjector.Container;
+
 namespace Sampoerna.HMS.Scheduler.Jobs
 {
     [DisallowConcurrentExecution]
     public class ReadXmlFile : IJob
     {
         private readonly Container _container;
-
+        private Service _svc = null;
         public ReadXmlFile(Container container)
         {
             _container = container;
+            _svc = new Service();
+            
+
         }
 
         private string StringErrorList(List<string> errorList)
@@ -51,8 +57,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
                      
                     logger.Info("Reading XML start on " + DateTime.Now);
-                    Service svc = new Service();
-                    errorList.AddRange(svc.Run());
+                    errorList.AddRange(_svc.Run());
                     logger.Info("Reading XML ended On " + DateTime.Now);
                     
                 }
@@ -65,11 +70,24 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
                     foreach (var err in errorList)
                     {
-                        
+
                         logger.Info(err);
                     }
-                    logger.Error(EmailUtility.Email(StringErrorList(errorList), null));
-           
+                    var body = StringErrorList(errorList);
+
+                    logger.Error(EmailUtility.Email(body, null));
+
+                }
+                else
+                {
+                    var body = string.Empty;
+                    foreach (var file in _svc.filesMoved)
+                    {
+                        string info = "<p>file move to archieve : " + file +"</p>";
+                        body += info;
+                        logger.Info(info);
+                    }
+                    logger.Error(EmailUtility.Email(body, null));
                 }
 
             }

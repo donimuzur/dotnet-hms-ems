@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -31,6 +30,8 @@ namespace Sampoerna.EMS.Contract
         List<Pbck1SummaryReportDto> GetSummaryReportByParam(Pbck1GetSummaryReportByParamInput input);
 
         List<Pbck1MonitoringUsageDto> GetMonitoringUsageByParam(Pbck1GetMonitoringUsageByParamInput input);
+
+        Pbck1ReportDto GetPrintOutDataById(int id);
 
     }
 }

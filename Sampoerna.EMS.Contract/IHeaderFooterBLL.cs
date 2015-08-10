@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
@@ -14,5 +16,8 @@ namespace Sampoerna.EMS.Contract
 
         SaveHeaderFooterOutput GetCompanyId(string companyId);
         void Delete(int id, string userId);
+
+        HEADER_FOOTER_MAPDto GetByComanyAndFormType(HeaderFooterGetByComanyAndFormTypeInput input);
+
     }
 }

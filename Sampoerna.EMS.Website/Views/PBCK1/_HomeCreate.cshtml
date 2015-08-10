@@ -47,7 +47,7 @@
                                         <div class="col-md-9">
                                             <div class="input-group date">
                                                 @*@Html.HiddenFor(model => model.Detail.ReportedOn)*@
-                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -60,7 +60,7 @@
                                         <label class="col-md-3">Period From</label>
                                         <div class="col-md-9">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -74,7 +74,7 @@
                                         <div class="col-md-9">
                                             <div class="input-group date">
                                                 @*@Html.HiddenFor(model => model.Detail.PeriodTo)*@
-                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -223,7 +223,7 @@
                                         <label class="col-md-4 long">Plan Produtcion From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -236,7 +236,7 @@
                                         <label class="col-md-4">Plan Production to</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -420,7 +420,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>

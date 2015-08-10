@@ -81,5 +81,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK2_DOCUMENT> LACK2_DOCUMENT { get; set; }
         public virtual DbSet<LACK2_ITEM> LACK2_ITEM { get; set; }
         public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
+        public virtual DbSet<COUNTRY> COUNTRY { get; set; }
+        public virtual DbSet<CURRENCY> CURRENCY { get; set; }
     }
 }

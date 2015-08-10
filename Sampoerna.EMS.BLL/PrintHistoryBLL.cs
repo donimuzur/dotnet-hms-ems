@@ -54,6 +54,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = Mapper.Map<PRINT_HISTORY>(printHistoryData);
             _repository.Insert(dbData);
+            _uow.SaveChanges();
         }
 
     }
