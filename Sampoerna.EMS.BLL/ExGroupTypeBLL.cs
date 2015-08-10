@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.BLL
 
         public void Save(EX_GROUP_TYPE GroupTypes)
         {
-           _repository.InsertOrUpdate(GroupTypes);
+            _repository.InsertOrUpdate(GroupTypes);
             _uow.SaveChanges();
         }
 
@@ -118,7 +118,8 @@ namespace Sampoerna.EMS.BLL
 
 
 
-        private void SetChange(EX_GROUP_TYPE origin, ExGoodTyp data, string userId,List<EX_GROUP_TYPE_DETAILS> originGoodType)
+        private void SetChange(EX_GROUP_TYPE origin, ExGoodTyp data, string userId,
+            List<EX_GROUP_TYPE_DETAILS> originGoodType)
         {
             var changesData = new Dictionary<string, bool>();
             var originExgoodTyplDesc = string.Empty;
@@ -178,3 +179,4 @@ namespace Sampoerna.EMS.BLL
             }
         }
     }
+}
