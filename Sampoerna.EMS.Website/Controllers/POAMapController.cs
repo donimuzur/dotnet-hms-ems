@@ -5,6 +5,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.POAMap;
 using Sampoerna.EMS.Website.Models.UOM;
 using System;
@@ -44,18 +45,12 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Uom/Details/5
         public ActionResult Details(int id)
         {
-            var model = new UomDetailViewModel();
+            var existingData = _poaMapBLL.GetById(id);
+            var model = new PoaMapDetailViewModel();
+            model.PoaMap = Mapper.Map<POA_MAPDto>(existingData);
+            model.CurrentMenu = PageInfo;
+            return View("Detail", model);
 
-            //var data = _uomBLL.GetById(HttpUtility.UrlDecode(id));
-
-            //model = Mapper.Map<UomDetailViewModel>(data);
-            //model.CurrentMenu = PageInfo;
-            //model.MainMenu = _mainMenu;
-
-            //model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.Uom, HttpUtility.UrlDecode(id)));
-            
-            
-            return View(model);
         }
 
         //
@@ -100,44 +95,32 @@ namespace Sampoerna.EMS.Website.Controllers
 
         //
         // GET: /Uom/Edit/5
-        //public ActionResult Edit(string id)
-        //{
-        //    var model = new UomDetailViewModel();
+        public ActionResult Edit(int id)
+        {
+            return RedirectToAction("Edit", new {id = id});
+        }
 
-        //    var data = _uomBLL.GetById(HttpUtility.UrlDecode(id));
-        //    model = Mapper.Map<UomDetailViewModel>(data);
+        [HttpPost]
+        public ActionResult Delete(PoaMapDetailViewModel model)
+        {
+            try
+            {
+                
+               // _poaMapBLL.Save(data);
 
-        //    model.MainMenu = _mainMenu;
-        //    model.CurrentMenu = PageInfo;
-           
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                     );
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
 
-            
-        //    return View("Edit",model);
-        //}
 
-        ////
-        //// POST: /Uom/Edit/5
-        //[HttpPost]
-        //public ActionResult Edit(UomDetailViewModel model)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
-        //        var data = Mapper.Map<UOM>(model);
-             
-        //        _uomBLL.Save(data,CurrentUser.USER_ID, true);
-        //        AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-        //                );
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch(Exception ex)
-        //    {
-
-        //        AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-        //                               );
-        //        return View(model);
-        //    }
-        //}
+                return View(model);
+            }
+        }
 
       
         

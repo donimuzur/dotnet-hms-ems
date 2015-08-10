@@ -867,6 +867,7 @@
     <Content Include="Views\POAMap\Create.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
     <Content Include="Views\POAMap\Index.cshtml" />
+    <Content Include="Views\POAMap\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

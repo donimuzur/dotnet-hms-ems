@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<POA_MAP> _repository;
         private ChangesHistoryBLL _changeBLL;
-
+        private string _includeProperties = "T001W, POA, POA.USER";
         public POAMapBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -26,17 +26,17 @@ namespace Sampoerna.EMS.BLL
 
         public List<POA_MAP> GetByNppbckId(string NppbckdId)
         {
-            return _uow.GetGenericRepository<POA_MAP>().Get(p => p.NPPBKC_ID == NppbckdId, null, "T001W, POA, POA.USER").ToList();
+            return _uow.GetGenericRepository<POA_MAP>().Get(p => p.NPPBKC_ID == NppbckdId, null, _includeProperties ).ToList();
         }
 
         public POA_MAP GetById(int Id)
         {
-            return _uow.GetGenericRepository<POA_MAP>().GetByID(Id);
+            return _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_MAP_ID == Id, null, _includeProperties).FirstOrDefault();
         }
 
         public List<POA_MAP> GetAll()
         {
-            return _uow.GetGenericRepository<POA_MAP>().Get(null, null, "T001W, POA, POA.USER").ToList();
+            return _uow.GetGenericRepository<POA_MAP>().Get(null, null, _includeProperties).ToList();
         }
 
         public void Save(POA_MAP poaMap)
@@ -44,6 +44,13 @@ namespace Sampoerna.EMS.BLL
             var repo = _uow.GetGenericRepository<POA_MAP>();
             repo.InsertOrUpdate(poaMap);
             _uow.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            //var repo = _uow.GetGenericRepository<POA_MAP>();
+            //repo.InsertOrUpdate(poaMap);
+            //_uow.SaveChanges();
         }
     }
 }

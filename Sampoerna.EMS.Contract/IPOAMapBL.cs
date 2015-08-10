@@ -9,6 +9,7 @@ namespace Sampoerna.EMS.Contract
         POA_MAP GetById(int Id);
         List<POA_MAP> GetAll();
         void Save(POA_MAP poaMap);
+        void Delete(int id);
 
        
     }
