@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.Website.Filters
 
         private string Decrypt(string encryptedText)
         {
+            encryptedText = encryptedText.Replace(" ", "+");
             string key = "jdsg432387#";
             byte[] decryptKey = { };
             byte[] IV = { 55, 34, 87, 64, 87, 195, 54, 21 };
