@@ -149,7 +149,6 @@
         <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="49.5" />
         <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
         <EntityTypeShape EntityType="EMSModel.COUNTRY" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EMSModel.CURRENCY" Width="1.5" PointX="3.375" PointY="6.75" />
         <EntityTypeShape EntityType="EMSModel.POA" Width="1.5" PointX="3.625" PointY="34.375" />
         <EntityTypeShape EntityType="EMSModel.POA_MAP" Width="1.5" PointX="23" PointY="49.5" />
         <AssociationConnector Association="EMSModel.FK_POA_CREATED_BY_USER" />
@@ -162,6 +161,7 @@
         <AssociationConnector Association="EMSModel.FK_POA_MAP_T001W" />
         <AssociationConnector Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" />
         <AssociationConnector Association="EMSModel.FK_POA_MAP_POA" />
+        <EntityTypeShape EntityType="EMSModel.CURRENCY" Width="1.5" PointX="3.375" PointY="6.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
