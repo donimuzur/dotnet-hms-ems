@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BROLE_MAP">
           <Key>
             <PropertyRef Name="BROLE_MAP_ID" />
@@ -96,6 +96,9 @@
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="SOURCE_PLANT_COMPANY_CODE" Type="nvarchar" MaxLength="4" />
           <Property Name="DEST_PLANT_COMPANY_CODE" Type="nvarchar" MaxLength="4" />
+          <Property Name="EX_GOODS_TYPE" Type="int" Nullable="false" />
+          <Property Name="DEST_COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
+          <Property Name="DEST_COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -142,8 +145,8 @@
           <Key>
             <PropertyRef Name="CURRENCY_ID" />
           </Key>
-          <Property Name="CURRENCY_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="CURRENCY_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="CURRENCY_ID" Type="int" Nullable="false" />
+          <Property Name="CURRENCY_NAME" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -230,7 +233,6 @@
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" />
           <Property Name="EX_GOODTYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
           <Property Name="WASTE_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="WASTE_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="RETURN_QTY" Type="decimal" Precision="15" Scale="2" />
@@ -243,6 +245,7 @@
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -414,8 +417,8 @@
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -544,11 +547,11 @@
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
-          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="ORT01" Type="varchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -580,7 +583,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -731,18 +734,18 @@
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="IS_FROM_SAP" Type="bit" Nullable="false" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CLIENT_DELETION" Type="bit" />
-          <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="PLANT_DELETION" Type="bit" />
+          <Property Name="CLIENT_DELETION" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -3011,8 +3014,8 @@
           <NavigationProperty Name="VIRTUAL_PLANT_MAP" Relationship="EMSModel.FK_VIRTUAL_PLANT_MAP_T001" FromRole="T001" ToRole="VIRTUAL_PLANT_MAP" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC1" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
-          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="T001" ToRole="USER" />
           </EntityType>
         <EntityType Name="T001K">
@@ -3943,6 +3946,9 @@
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK5_CREATED_BY_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_CK5_USER" FromRole="CK5" ToRole="USER" />
           <NavigationProperty Name="LACK2_ITEM" Relationship="EMSModel.FK_LACK2_ITEM_CK5" FromRole="CK5" ToRole="LACK2_ITEM" />
+          <Property Name="EX_GOODS_TYPE" Type="EMSModel.ExGoodsType" Nullable="false" />
+          <Property Name="DEST_COUNTRY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="DEST_COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -4132,7 +4138,7 @@
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5013,12 +5019,13 @@
           <Property Name="COUNTRY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EnumType Name="ExGoodsType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.ExGoodsType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EntityType Name="CURRENCY">
           <Key>
             <PropertyRef Name="CURRENCY_ID" />
           </Key>
-          <Property Name="CURRENCY_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="CURRENCY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CURRENCY_ID" Type="Int32" Nullable="false" />
+          <Property Name="CURRENCY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -5577,7 +5584,10 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
+          <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
+                <ScalarProperty Name="DEST_COUNTRY_CODE" ColumnName="DEST_COUNTRY_CODE" />
+                <ScalarProperty Name="EX_GOODS_TYPE" ColumnName="EX_GOODS_TYPE" />
+                <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
           <ScalarProperty Name="CK5_TYPE" ColumnName="CK5_TYPE" />
           <ScalarProperty Name="KPPBC_CITY" ColumnName="KPPBC_CITY" />
           <ScalarProperty Name="CE_OFFICE_CODE" ColumnName="CE_OFFICE_CODE" />

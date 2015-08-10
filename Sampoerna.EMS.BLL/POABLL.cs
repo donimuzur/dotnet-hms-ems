@@ -6,6 +6,7 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -126,6 +127,13 @@ namespace Sampoerna.EMS.BLL
             var poaList = dbData.ToList().Select(d => d.POA);
             return Mapper.Map<List<POADto>>(poaList.ToList());
         }
+        //public POADto GetDetailsById(string id)
+        //{
+        //    var dtData =  _repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault();
+        //    //if (dtData == null)
+        //    //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //    return AutoMapper.Mapper.Map<POADto>(dtData);
+        //}
 
     }
 }

@@ -86,6 +86,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
         public string SOURCE_PLANT_COMPANY_CODE { get; set; }
         public string DEST_PLANT_COMPANY_CODE { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExGoodsType EX_GOODS_TYPE { get; set; }
+        public string DEST_COUNTRY_CODE { get; set; }
+        public string DEST_COUNTRY_NAME { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }

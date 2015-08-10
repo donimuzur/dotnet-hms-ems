@@ -107,13 +107,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 param.HeaderFooterMapList = new List<HeaderFooterMap>();
 
-                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
-                if (saveOutput.MessageExist == "1")
+                var existCompany = _headerFooterBll.GetCompanyId(model.Detail.COMPANY_ID.ToString());
+                if (existCompany.MessageExist == "1")
                 {
                     AddMessageInfo("Company Code Already Set", Enums.MessageInfoType.Warning);
                     return InitialCreate(model);
                 }
+                var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
 
+               
                 if (saveOutput.Success)
                 {
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
@@ -166,20 +168,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     imageHeaderUrl = model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT;
                 }
-
+                
                 model.Detail.HEADER_IMAGE_PATH = imageHeaderUrl;
 
                 var saveOutput = _headerFooterBll.Save(Mapper.Map<HeaderFooterDetails>(model.Detail), CurrentUser.USER_ID);
-                if (saveOutput.MessageExist == "1")
-                {
-                    AddMessageInfo("Company Code Already Set", Enums.MessageInfoType.Warning);
-                    return InitialCreate(model);
-                }
-
+               
                 if (saveOutput.Success)
                 {
-                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                         );
+                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
 
@@ -358,19 +354,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        //private string IsCompanyAlreadyExist(int headerFooterId, string companyId)
-        //{
-        //    var checkIfExist = _headerFooterBll.GetById(headerFooterId, companyId);
-        //    if (checkIfExist == null)
-        //    {
-        //        return ;
-        //    }
-        //    if (checkIfExist.COMPANY_ID != null)
-        //    {
-        //        return companyId;
-        //    }
-        //}
-
-
+        
     }
 }

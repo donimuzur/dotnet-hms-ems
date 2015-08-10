@@ -14,6 +14,7 @@ namespace Sampoerna.EMS.Contract
 
         SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId);
 
+        SaveHeaderFooterOutput GetCompanyId(string companyId);
         void Delete(int id, string userId);
 
         HEADER_FOOTER_MAPDto GetByComanyAndFormType(HeaderFooterGetByComanyAndFormTypeInput input);

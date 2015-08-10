@@ -50,18 +50,22 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<HeaderFooter>>(_repository.Get(null, null, includeTables).ToList());
         }
 
+        public SaveHeaderFooterOutput GetCompanyId(string companyId)
+        {
+            var output = new SaveHeaderFooterOutput();
+            var dtCompany = Mapper.Map<HEADER_FOOTER>(_repository.Get(c => c.BUKRS == companyId).FirstOrDefault());
+            if (dtCompany != null)
+            {
+                output.MessageExist = "1";
+                return output;
+            }
+            return output;
+        }
+        
         public SaveHeaderFooterOutput Save(HeaderFooterDetails headerFooterData, string userId)
         {
-             HEADER_FOOTER dbData = null;
-             var output = new SaveHeaderFooterOutput();
-
-            var dtcompany = _repository.Get(c => c.BUKRS == headerFooterData.COMPANY_ID).FirstOrDefault();
-             if (dtcompany != null)
-             {
-                 output.MessageExist = "1";
-                 return output;
-             }
-
+            HEADER_FOOTER dbData = null;
+           
             if (headerFooterData.HEADER_FOOTER_ID > 0)
             {
 
@@ -105,8 +109,8 @@ namespace Sampoerna.EMS.BLL
                 _repository.Insert(dbData);
             }
 
-           
 
+            var output = new SaveHeaderFooterOutput();
             try
             {
                 _uow.SaveChanges();
@@ -300,5 +304,8 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+
+
+       
     }
 }

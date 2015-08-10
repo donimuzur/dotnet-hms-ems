@@ -39,6 +39,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dsCK5Print.cs">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsCK5Print.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </Compile>
     <Compile Include="dsHeaderFooter.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -55,6 +64,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dsCK5Print.xsc">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </None>
+    <None Include="dsCK5Print.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsCK5Print.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsCK5Print.xss">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </None>
     <None Include="dsHeaderFooter.xsc">
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
     </None>
