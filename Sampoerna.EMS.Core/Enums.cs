@@ -235,5 +235,17 @@ namespace Sampoerna.EMS.Core
             [Description("Cancelled")]
             Cancelled = 3
         }
+
+        public enum ExGoodsType
+        {
+            [Description("Etil Alcohol")]
+            EtilAlcohol = 1,
+            [Description("MMEA")]
+            MMEA = 2,
+            [Description("Hasil Tembakau")]
+            HasilTembakau = 3,
+            [Description("Lainnya")]
+            Lainnya = 4
+        }
     }
 }

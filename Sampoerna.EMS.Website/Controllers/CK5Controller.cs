@@ -3323,7 +3323,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dataSet = GetDataSetReport(idCk5);
 
                 //add print history
-                //_ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+                _ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
 
                 //eks to report
                 var rpt = new ReportClass
