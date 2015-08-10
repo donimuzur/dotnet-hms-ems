@@ -898,16 +898,13 @@
     <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
     <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
     <Content Include="Views\UserAuthorization\Edit.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\LACK1\_PrintOut.cshtml" />
-=======
     <Content Include="Views\POAMap\Create.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
     <Content Include="Views\POAMap\Index.cshtml" />
     <Content Include="Views\POAMap\Detail.cshtml" />
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
->>>>>>> dev
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
