@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual T001 T0011 { get; set; }
         public virtual ICollection<T001W> T001W { get; set; }
         public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
-        public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual USER USER { get; set; }
+        public virtual ICollection<POA_MAP> POA_MAP { get; set; }
     }
 }

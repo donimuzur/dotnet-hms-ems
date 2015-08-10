@@ -63,8 +63,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual DbSet<LACK1> LACK1 { get; set; }
-        public virtual DbSet<POA> POA { get; set; }
-        public virtual DbSet<POA_MAP> POA_MAP { get; set; }
         public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
@@ -82,6 +80,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK2_ITEM> LACK2_ITEM { get; set; }
         public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
         public virtual DbSet<COUNTRY> COUNTRY { get; set; }
+        public virtual DbSet<POA> POA { get; set; }
+        public virtual DbSet<POA_MAP> POA_MAP { get; set; }
         public virtual DbSet<CURRENCY> CURRENCY { get; set; }
     }
 }

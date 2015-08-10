@@ -253,30 +253,30 @@ namespace Sampoerna.EMS.Website.Controllers
 
               
 
-                changesData.Add("FACode", origin.FA_CODE == null || origin.FA_CODE.Equals(updatedModel.FaCode));
+                changesData.Add("FACode", origin.FA_CODE == updatedModel.FaCode);
                 changesData.Add("PersonalizationCode", origin.PER_CODE == updatedModel.PersonalizationCode);
-                changesData.Add("BrandName", origin.BRAND_CE == null || origin.BRAND_CE.Equals(updatedModel.BrandName));
-                changesData.Add("SkepNo", origin.SKEP_NO == null || origin.SKEP_NO.Equals(updatedModel.SkepNo));
-                changesData.Add("SkepDate", origin.SKEP_DATE.Equals(updatedModel.SkepDate));
-                changesData.Add("ProductCode", origin.PROD_CODE.Equals(updatedModel.ProductCode));
-                changesData.Add("SeriesId", origin.SERIES_CODE.Equals(updatedModel.SeriesId));
+                changesData.Add("BrandName", origin.BRAND_CE == updatedModel.BrandName);
+                changesData.Add("SkepNo", origin.SKEP_NO == updatedModel.SkepNo);
+                changesData.Add("SkepDate", origin.SKEP_DATE == updatedModel.SkepDate);
+                changesData.Add("ProductCode", origin.PROD_CODE == updatedModel.ProductCode);
+                changesData.Add("SeriesId", origin.SERIES_CODE == updatedModel.SeriesId);
                 changesData.Add("Content", origin.BRAND_CONTENT == updatedModel.Content);
                 changesData.Add("MarketId", origin.MARKET_ID == updatedModel.MarketId);
-                changesData.Add("CountryId", origin.COUNTRY == null || origin.COUNTRY.Equals(updatedModel.CountryId));
-                changesData.Add("HjeValue", origin.HJE_IDR.Equals(updatedModel.HjeValue));
-                changesData.Add("HjeCurrency", origin.HJE_CURR.Equals(updatedModel.HjeCurrency));
-                changesData.Add("Tariff", origin.TARIFF.Equals(updatedModel.Tariff));
-                changesData.Add("TariffCurrency", origin.TARIF_CURR.Equals(updatedModel.TariffCurrency));
-                changesData.Add("ColourName", origin.COLOUR.Equals(updatedModel.ColourName));
-                changesData.Add("GoodType", origin.EXC_GOOD_TYP.Equals(updatedModel.GoodType));
-                changesData.Add("StartDate", origin.START_DATE.Equals(updatedModel.StartDate));
-                changesData.Add("EndDate", origin.END_DATE.Equals(updatedModel.EndDate));
-                changesData.Add("Status", origin.STATUS.Equals(updatedModel.IsActive));
+                changesData.Add("CountryId", origin.COUNTRY == updatedModel.CountryId);
+                changesData.Add("HjeValue", origin.HJE_IDR  ==updatedModel.HjeValue );
+                changesData.Add("HjeCurrency", origin.HJE_CURR == updatedModel.HjeCurrency);
+                changesData.Add("Tariff", origin.TARIFF == updatedModel.Tariff);
+                changesData.Add("TariffCurrency", origin.TARIF_CURR == updatedModel.TariffCurrency);
+                changesData.Add("ColourName", origin.COLOUR == updatedModel.ColourName);
+                changesData.Add("GoodType", origin.EXC_GOOD_TYP==updatedModel.GoodType);
+                changesData.Add("StartDate", origin.START_DATE == updatedModel.StartDate);
+                changesData.Add("EndDate", origin.END_DATE == updatedModel.EndDate);
+                changesData.Add("Status", origin.STATUS == updatedModel.IsActive );
             }
 
-            changesData.Add("Conversion", origin.CONVERSION.Equals(updatedModel.Conversion));
-            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
-            changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE.Equals(updatedModel.PrintingPrice));
+            changesData.Add("Conversion", origin.CONVERSION == updatedModel.Conversion);
+            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == updatedModel.CutFilterCode);
+            changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE == updatedModel.PrintingPrice);
 
             foreach (var listChange in changesData)
             {

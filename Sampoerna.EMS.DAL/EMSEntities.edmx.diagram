@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="94" >
+      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="269" >
         <EntityTypeShape EntityType="EMSModel.CHANGES_HISTORY" Width="1.5" PointX="5.25" PointY="64" />
         <EntityTypeShape EntityType="EMSModel.EMAIL_TEMPLATE" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.5" PointX="11.25" PointY="70.625" />
@@ -52,7 +52,6 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_T001W" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" />
-        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_PLAN" Width="1.5" PointX="15.75" PointY="27.625" />
@@ -73,12 +72,7 @@
         <AssociationConnector Association="EMSModel.FK_LACK1_DOCUMENT_LACK1" />
         <AssociationConnector Association="EMSModel.FK_LACK1_ITEM_LACK1" />
         <AssociationConnector Association="EMSModel.FK_LACK1_MONTH" />
-        <EntityTypeShape EntityType="EMSModel.POA" Width="1.5" PointX="5.25" PointY="30" />
-        <EntityTypeShape EntityType="EMSModel.POA_MAP" Width="1.5" PointX="23.75" PointY="35.625" />
-        <AssociationConnector Association="EMSModel.FK_POA_MAP_POA" />
-        <AssociationConnector Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" />
         <EntityTypeShape EntityType="EMSModel.POA_SK" Width="1.5" PointX="7.5" PointY="31.5" />
-        <AssociationConnector Association="EMSModel.FK_POA_SK_POA" />
         <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="18.5" PointY="30.75" />
         <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="1.5" PointX="10.5" PointY="21.125" />
@@ -129,12 +123,6 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_DECREE_DOC_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_QUOTA_USER" />
-        <AssociationConnector Association="EMSModel.FK_POA_CREATED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_POA_LOGIN_AS_USER" />
-        <AssociationConnector Association="EMSModel.FK_POA_MODIFIED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_POA_USER" />
-        <AssociationConnector Association="EMSModel.FK_POA_MAP_CREATED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_T001_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_T001W_MODIFIED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_UOM_MODIFIED_BY_USER" />
@@ -160,6 +148,18 @@
         <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="49.5" />
         <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
         <EntityTypeShape EntityType="EMSModel.COUNTRY" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EMSModel.POA" Width="1.5" PointX="3.625" PointY="34.375" />
+        <EntityTypeShape EntityType="EMSModel.POA_MAP" Width="1.5" PointX="23" PointY="49.5" />
+        <AssociationConnector Association="EMSModel.FK_POA_CREATED_BY_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_LOGIN_AS_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_MODIFIED_BY_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_SK_POA" />
+        <AssociationConnector Association="EMSModel.FK_POA_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_MAP_CREATED_BY_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_MAP_T001W" />
+        <AssociationConnector Association="EMSModel.FK_POA_MAP_ZAIDM_EX_NPPBKC" />
+        <AssociationConnector Association="EMSModel.FK_POA_MAP_POA" />
         <EntityTypeShape EntityType="EMSModel.CURRENCY" Width="1.5" PointX="3.375" PointY="6.75" />
         </Diagram>
     </edmx:Diagrams>
