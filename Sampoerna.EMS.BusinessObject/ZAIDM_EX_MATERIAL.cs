@@ -44,7 +44,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
         public virtual UOM UOM { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
     }
 }

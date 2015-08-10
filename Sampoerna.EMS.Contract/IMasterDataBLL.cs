@@ -30,12 +30,12 @@ namespace Sampoerna.EMS.Contract
 
         #region COUNTRY
 
-        List<string> GetAllDataCountry();
+        List<COUNTRY> GetAllDataCountry();
         #endregion
 
         #region CURRENCY
 
-        List<string> GetAllDataCurrency();
+        List<CURRENCY> GetAllDataCurrency();
         #endregion
 
         string GetProductCodeTypeDescById(string id);

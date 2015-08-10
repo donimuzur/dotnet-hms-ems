@@ -148,9 +148,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
                 
-                 TempData[Constans.SubmitType.Save]  = _brandRegistrationBll.Save(dbBrand);
-                  
+ 
                
 
                 
@@ -228,9 +229,12 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            TempData[Constans.SubmitType.Update]  =_brandRegistrationBll.Save(dbBrand);
+            _brandRegistrationBll.Save(dbBrand);
 
-          
+            AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                         );
+                
+
             return RedirectToAction("Index");
           
         }
@@ -242,6 +246,7 @@ namespace Sampoerna.EMS.Website.Controllers
             updatedModel.Tariff = updatedModel.TariffValueStr == null ? 0 : Convert.ToDecimal(updatedModel.TariffValueStr);
             updatedModel.Conversion = updatedModel.ConversionValueStr == null ? 0 : Convert.ToDecimal(updatedModel.ConversionValueStr);
             updatedModel.PrintingPrice = updatedModel.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(updatedModel.PrintingPriceValueStr);
+            
 
             if (origin.IS_FROM_SAP.HasValue == false || origin.IS_FROM_SAP.Value == false)
             {
@@ -270,7 +275,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             changesData.Add("Conversion", origin.CONVERSION.Equals(updatedModel.Conversion));
-            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == null || origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
+            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE.Equals(updatedModel.CutFilterCode));
             changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE.Equals(updatedModel.PrintingPrice));
 
             foreach (var listChange in changesData)

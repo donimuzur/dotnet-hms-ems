@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
         
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP, USER";
+        private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP";
         private ChangesHistoryBLL _changesHistoryBll;
         private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
         public MaterialBLL(IUnitOfWork uow, ILogger logger)
@@ -108,7 +108,7 @@ namespace Sampoerna.EMS.BLL
 
             var changes = new CHANGES_HISTORY
             {
-                FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
+                FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
                 FORM_ID = existingData.STICKER_CODE,
                 FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
@@ -135,11 +135,28 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public int DeleteMaterialUom(int id)
+        public int DeleteMaterialUom(int id, string userId, string mn, string p)
         {
             try
             {
+                var existingData = _repositoryUoM.GetByID(id);
+                string oldData = string.Format("{0} - {1}", existingData.MEINH, existingData.UMREN);
+
                 _repositoryUoM.Delete(id);
+
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                    FORM_ID = mn + p,
+                    FIELD_NAME = "CONVERTION_DELETED",
+                    MODIFIED_BY = userId,
+                    MODIFIED_DATE = DateTime.Now,
+                    OLD_VALUE = oldData,
+                    NEW_VALUE = string.Empty
+                };
+
+                _changesHistoryBll.AddHistory(changes);
+
                 _uow.SaveChanges();
             }
             catch (Exception)

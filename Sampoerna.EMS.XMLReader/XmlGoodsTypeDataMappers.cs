@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_GOODTYP();
                     item.EXC_GOOD_TYP = xElement.Element("EXC_GOOD_TYP").Value;
-                    item.EXT_TYP_DESC = xElement.Element("EXC_TYP_DESC").Value;
+                    item.EXT_TYP_DESC = xElement.Element("EXC_TYP_DESC") == null ? null : xElement.Element("EXC_TYP_DESC").Value;
                     //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
                     var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
                     if (existingGoodsType != null)
@@ -55,9 +55,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_GOODTYP>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_GOODTYP>(Items);
         }
 
         public ZAIDM_EX_GOODTYP GetGoodsType(string Code)

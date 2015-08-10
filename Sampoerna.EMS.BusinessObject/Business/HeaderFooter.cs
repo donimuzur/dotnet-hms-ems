@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
     public class HeaderFooterDetails : HeaderFooter
     {
         public List<HeaderFooterMap> HeaderFooterMapList { get; set; }
+        
     }
     
 }

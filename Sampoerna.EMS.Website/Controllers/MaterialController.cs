@@ -199,11 +199,14 @@ namespace Sampoerna.EMS.Website.Controllers
                         var  output = _materialBll.Save(model, CurrentUser.USER_ID);
                         if (!output.Success)
                         {
-                            TempData[Constans.SubmitType.Save] = output.ErrorMessage;
+                            AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
+                                );
+
                         }
                         else
                         {
-                            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                            AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
                         }
                         
                     }
@@ -293,11 +296,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     var output = _materialBll.Save(data,CurrentUser.USER_ID);
                     if (!output.Success)
                     {
-                        TempData[Constans.SubmitType.Update] = output.ErrorMessage;
+                        AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
+                            );
+
                     }
                     else
                     {
-                        TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                        AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                   );
                     }
 
 
@@ -324,16 +330,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return RedirectToAction("Detail", new { mn = mn, p=p});
             }
         }
 
         [HttpPost]
-        public JsonResult RemoveMaterialUom(int materialUomId)
+        public JsonResult RemoveMaterialUom(int materialUomId, string materialnumber, string plant)
         {
-            return Json(_materialBll.DeleteMaterialUom(materialUomId));
+            return Json(_materialBll.DeleteMaterialUom(materialUomId, CurrentUser.USER_ID, materialnumber, plant));
         }
     }
 }

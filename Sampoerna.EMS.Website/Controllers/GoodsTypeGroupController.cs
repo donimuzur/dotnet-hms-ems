@@ -152,7 +152,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     _exGroupTypeBll.Save(groupType);
 
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                      );
                     return RedirectToAction("Index");
                 }
 
@@ -249,8 +250,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
 
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
-                return RedirectToAction("Index");
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                        ); return RedirectToAction("Index");
 
 
                 ModelState.AddModelError("Details", "Choose at least one type");

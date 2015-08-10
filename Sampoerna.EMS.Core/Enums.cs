@@ -31,7 +31,8 @@ namespace Sampoerna.EMS.Core
             MaterialMaster = 24,
             MasterPlant = 25,
             Uom = 27,
-            GoodsTypeGroup =26
+            GoodsTypeGroup =26,
+            UserAuthorization = 28
         }
         public enum PBCK1Type
         {
@@ -219,6 +220,12 @@ namespace Sampoerna.EMS.Core
             Udara = 3
         }
 
+        public enum LACK1Type
+        {
+            ListByNppbkc = 1,
+            ListByPlant = 2,
+            ComplatedDocument =3
+        }
         public enum CK5TransType
         {
             [Description("Created")]

@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +47,7 @@
     <Compile Include="ICK4C_BLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="IMessageService.cs" />
+    <Compile Include="ILACK1BLL.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
@@ -67,6 +71,7 @@
     <Compile Include="ISupplierPortBLL.cs" />
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IUserAuthorizationBLL.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IVirtualMappingPlantBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />

@@ -16,28 +16,33 @@ namespace Sampoerna.EMS.XMLReader
         private IXmlDataReader reader = null;
         private readonly string inboundPath = ConfigurationManager.AppSettings["XmlInboundPath"];
         private string[] xmlfiles = null;
-
+        public List<string> filesMoved;
         public Service()
         {
             
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
+            filesMoved = new List<string>();
         }
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("POA"))
+            {
+                return new XmlPoaDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("COY"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("T001K"))
+            else if (xmlfile.Contains("T001K"))
             {
                 return new XmlT001KDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("UOM"))
+            else if (xmlfile.Contains("UOM"))
             {
                 return new XmlUoMDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("NPPBKC"))
+            else if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }
@@ -88,6 +93,7 @@ namespace Sampoerna.EMS.XMLReader
         public List<string> Run()
         {
             var errorList = new List<string>();
+            
             foreach (var xmlfile in xmlfiles)
             {
                 try
@@ -96,7 +102,7 @@ namespace Sampoerna.EMS.XMLReader
                   
                     if (reader != null)
                     {
-                        reader.InsertToDatabase();
+                        filesMoved.Add(reader.InsertToDatabase());
                     }
                 }
                 catch (Exception ex)

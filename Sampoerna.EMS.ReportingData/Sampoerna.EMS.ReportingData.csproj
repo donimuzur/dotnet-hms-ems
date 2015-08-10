@@ -53,6 +53,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
     </Compile>
+    <Compile Include="dsPbck1.cs">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsPbck1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +85,17 @@
     </None>
     <None Include="dsHeaderFooter.xss">
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck1.xsc">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsPbck1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsPbck1.xss">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

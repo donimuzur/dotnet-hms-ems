@@ -27,25 +27,32 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<ZAIDM_EX_PCODE>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_PCODE();
-                    item.PER_CODE = xElement.Element("PER_CODE").Value;
-                    item.PER_DESC = xElement.Element("PER_DESC").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    //var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var existingPCode = GetPCode(item.PER_CODE);
-                    if (existingPCode != null)
+                    try
                     {
-                        item.CREATED_DATE = existingPCode.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
-                    
-                    }
-                    else
-                    {
+                        var item = new ZAIDM_EX_PCODE();
+                        item.PER_CODE = xElement.Element("PER_CODE").Value;
+                        item.PER_DESC = xElement.Element("PER_DESC").Value;
                         item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
+                        //var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        var existingPCode = GetPCode(item.PER_CODE);
+                        if (existingPCode != null)
+                        {
+                            item.CREATED_DATE = existingPCode.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            items.Add(item);
 
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
+                    }
                 }
                 return items;
             }
@@ -53,9 +60,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_PCODE>(Items);
+           return _xmlMapper.InsertToDatabase<ZAIDM_EX_PCODE>(Items);
         }
 
         public ZAIDM_EX_PCODE GetPCode(string PCode)

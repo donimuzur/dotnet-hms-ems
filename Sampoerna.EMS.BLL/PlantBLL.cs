@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -128,6 +130,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
             changesData.Add("PHONE", origin.PHONE == data.PHONE);
+            
             var originMaterialDesc = string.Empty;
             if (originReceive != null)
             {
@@ -230,8 +233,28 @@ namespace Sampoerna.EMS.BLL
         public List<T001W> GetAllPlant()
         {
             return _repository.Get().ToList();
+        }
+
+        public List<Plant> GetPlantByNppbkc(string nppbkcId)
+        {
+            Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
+            if (!string.IsNullOrEmpty(nppbkcId))
+            {
+                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
+            }
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        }
+            return Mapper.Map<List<Plant>>(dbData);
+
+
 
         }
+
+
         
           public T001WDto GetT001ById(string id)
           {
