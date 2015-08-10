@@ -146,7 +146,7 @@
             <PropertyRef Name="CURRENCY_ID" />
           </Key>
           <Property Name="CURRENCY_ID" Type="int" Nullable="false" />
-          <Property Name="CURRENCY_CODE" Type="nvarchar" MaxLength="5" />
+          <Property Name="CURRENCY_NAME" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -5025,7 +5025,7 @@
             <PropertyRef Name="CURRENCY_ID" />
           </Key>
           <Property Name="CURRENCY_ID" Type="Int32" Nullable="false" />
-          <Property Name="CURRENCY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CURRENCY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -5875,7 +5875,7 @@
           <EntitySetMapping Name="CURRENCY">
             <EntityTypeMapping TypeName="EMSModel.CURRENCY">
               <MappingFragment StoreEntitySet="CURRENCY">
-                <ScalarProperty Name="CURRENCY_CODE" ColumnName="CURRENCY_CODE" />
+                <ScalarProperty Name="CURRENCY_NAME" ColumnName="CURRENCY_NAME" />
                 <ScalarProperty Name="CURRENCY_ID" ColumnName="CURRENCY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
