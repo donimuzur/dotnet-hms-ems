@@ -55,10 +55,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("DateTime")]
         public DateTime? RegistrationDate { get; set; }
 
-        //[Required]
-        //public int? GoodTypeId { get; set; }
-        public SelectList GoodTypeList { get; set; }
-        [Required]
+        public Enums.ExGoodsType GoodType { get; set; }
+        public Enums.ExGoodsType GoodTypeList { get; set; }
+      
         public string GoodTypeName { get; set; }
 
 
@@ -91,7 +90,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SourceKppbcName { get; set; }
 
         //DESTINATION PLANT
-        [Required(ErrorMessage = "Destination Plant field is required")]
+        //[Required(ErrorMessage = "Destination Plant field is required")]
         public string DestPlantId { get; set; }
         public SelectList DestPlantList { get; set; }
         public string DestPlantName { get; set; }
@@ -131,7 +130,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         [StringLength(50, ErrorMessage = "Max Length : 50")]
         public string InvoiceNumber { get; set; }
-        [UIHint("FormatDateTime")]
+       [UIHint("DateTime")]
         public DateTime? InvoiceDate { get; set; }
 
         public int? PbckDecreeId { get; set; }
@@ -199,5 +198,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public List<CK5FileUploadViewModel> Ck5FileUploadModelList { get; set; }
 
         public bool IsAllowPrint { get; set; }
+
+       [RequiredIf("Ck5Type", Enums.CK5Type.Export), Display(Name = "Country Code")]
+        public string CountryCode { get; set; }
+        public SelectList CountryCodeList { get; set; }
+        public string CountryName { get; set; }
+        public string DisplayDetailsDestinationCountry { get; set; }
     }
 }
