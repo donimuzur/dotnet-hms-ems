@@ -552,6 +552,8 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -561,6 +563,9 @@
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="T001W">
           <Key>
@@ -577,6 +582,8 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_MAIN_PLANT" Type="bit" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -712,6 +719,8 @@
           <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="100" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -721,6 +730,9 @@
           <Property Name="MARKET_DESC" Type="nvarchar" MaxLength="10" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MATERIAL">
           <Key>
@@ -728,13 +740,13 @@
             <PropertyRef Name="WERKS" />
           </Key>
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
-          <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="35" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
+          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" />
-          <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
@@ -797,6 +809,9 @@
           <Property Name="SERIES_VALUE" Type="nvarchar" MaxLength="4" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <Association Name="FK_BROLE_MAP_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
@@ -1857,7 +1872,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="1" />
+          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UOM">
@@ -1869,7 +1884,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
@@ -3010,6 +3025,8 @@
           <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001_MODIFIED_BY_USER" FromRole="T001" ToRole="USER" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
           </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -3021,6 +3038,9 @@
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001K_T001" FromRole="T001K" ToRole="T001" />
           <NavigationProperty Name="T0011" Relationship="EMSModel.FK_T001K_T1001" FromRole="T001K" ToRole="T001" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
         </EntityType>
         <EntityType Name="T001W">
           <Key>
@@ -3043,6 +3063,8 @@
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_T001W_MODIFIED_BY_USER" FromRole="T001W" ToRole="USER" />
           <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_T001W" FromRole="T001W" ToRole="POA_MAP" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
@@ -3087,6 +3109,9 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_MARKET" ToRole="ZAIDM_EX_BRAND" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -3117,6 +3142,9 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_SERIES" ToRole="ZAIDM_EX_BRAND" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
         </EntityType>
         <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
           <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="0..1" />
@@ -3274,6 +3302,8 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_KPPBC" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -4921,13 +4951,13 @@
             <PropertyRef Name="WERKS" />
           </Key>
           <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="MATERIAL_DESC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MATERIAL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PURCHASING_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="ISSUE_STORANGE_LOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BASE_UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="BASE_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="HJE" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
@@ -4972,7 +5002,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UOM">
@@ -4984,7 +5014,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
@@ -5151,7 +5181,9 @@
     <EntitySetMapping Name="T001">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.T001)">
         <MappingFragment StoreEntitySet="T001">
-          <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
           <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
           <ScalarProperty Name="NPWP" ColumnName="NPWP" />
           <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
@@ -5165,7 +5197,10 @@
     <EntitySetMapping Name="T001K">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.T001K)">
         <MappingFragment StoreEntitySet="T001K">
-          <ScalarProperty Name="BWKEY" ColumnName="BWKEY" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="BWKEY" ColumnName="BWKEY" />
           <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
           <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
           <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
@@ -5175,7 +5210,9 @@
     <EntitySetMapping Name="T001W">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.T001W)">
         <MappingFragment StoreEntitySet="T001W">
-          <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
           <ScalarProperty Name="NAME1" ColumnName="NAME1" />
           <ScalarProperty Name="ORT01" ColumnName="ORT01" />
           <ScalarProperty Name="PHONE" ColumnName="PHONE" />
@@ -5217,7 +5254,10 @@
     <EntitySetMapping Name="ZAIDM_EX_MARKET">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_MARKET)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_MARKET">
-          <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
           <ScalarProperty Name="MARKET_DESC" ColumnName="MARKET_DESC" />
           <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
           <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
@@ -5248,7 +5288,10 @@
     <EntitySetMapping Name="ZAIDM_EX_SERIES">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_SERIES)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_SERIES">
-          <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
           <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
           <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
           <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
@@ -5258,7 +5301,9 @@
     <EntitySetMapping Name="ZAIDM_EX_KPPBC">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_KPPBC)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_KPPBC">
-          <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
+          <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
           <ScalarProperty Name="KPPBC_TYPE" ColumnName="KPPBC_TYPE" />
           <ScalarProperty Name="MENGETAHUI" ColumnName="MENGETAHUI" />
           <ScalarProperty Name="CK1_KEP_HEADER" ColumnName="CK1_KEP_HEADER" />

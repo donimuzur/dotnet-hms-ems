@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     
                     var stickerCode = xElement.Element("MATNR").Value;
+                    
                     var baseUom = xElement.Element("MEINS").Value;
                     var materialGroup = xElement.Element("MATKL") == null ? null : xElement.Element("MATKL").Value;
                     var isClientDeletion = xElement.Element("LVORM") == null

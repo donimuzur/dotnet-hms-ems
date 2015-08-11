@@ -155,6 +155,12 @@ namespace Sampoerna.EMS.XMLReader
             return null;
         }
 
+        public string GetElementValue(XElement element)
+        {
+            if (element == null)
+                return null;
+            return null;
+        }
 
     }
 }
