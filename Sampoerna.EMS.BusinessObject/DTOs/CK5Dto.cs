@@ -89,5 +89,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string SOURCE_PLANT_COMPANY_CODE { get; set; }
         public string DEST_PLANT_COMPANY_CODE { get; set; }
+
+        public Sampoerna.EMS.Core.Enums.ExGoodsType EX_GOODS_TYPE { get; set; }
+        public string DEST_COUNTRY_CODE { get; set; }
+        public string DEST_COUNTRY_NAME { get; set; }
+
     }
 }

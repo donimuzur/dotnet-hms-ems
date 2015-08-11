@@ -360,7 +360,7 @@
       <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controllers\CK5PrintOutMaterial.cs">
+    <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
@@ -798,7 +798,6 @@
     <Content Include="Views\PBCK1\_ProdPlanUpload.cshtml" />
     <Content Include="Views\PBCK1\_ProdPlanList.cshtml" />
     <Content Include="Views\CK5\CK5Export.cshtml" />
-    <Content Include="Views\CK5\CK5DomesticAlcohol.cshtml" />
     <Content Include="Views\CK5\CK5Completed.cshtml" />
     <Content Include="Views\CK5\CK5Import.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1Table.cshtml" />
@@ -904,7 +903,12 @@
     <Content Include="Views\POAMap\Index.cshtml" />
     <Content Include="Views\POAMap\Detail.cshtml" />
     <Content Include="Views\Vendor\Details.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Vendor\Index.cshtml" />
+=======
+    <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+>>>>>>> dev
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -978,7 +982,7 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
+    <EmbeddedResource Include="Reports\CK5\CK5PrintOutMaterial.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
     </EmbeddedResource>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -35,11 +36,11 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             var item = new ZAIDM_EX_NPPBKC();
                             item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                            item.ADDR1 = xElement.Element("ADDR1") == null ? null : xElement.Element("ADDR1").Value;
-                            item.ADDR2 = xElement.Element("ADDR2") == null ? null : xElement.Element("ADDR2").Value;
-                            item.CITY = xElement.Element("CITY") == null ? null : xElement.Element("CITY").Value;
-                            item.REGION = xElement.Element("REGION") == null ? null : xElement.Element("REGION").Value;
-                            var kppbcNo = xElement.Element("KPPBC_ID") == null ? null : xElement.Element("KPPBC_ID").Value;
+                            item.ADDR1 = _xmlMapper.GetElementValue(xElement.Element("ADDR1"));
+                            item.ADDR2 = _xmlMapper.GetElementValue(xElement.Element("ADDR2"));
+                            item.CITY = _xmlMapper.GetElementValue(xElement.Element("CITY"));
+                            item.REGION = _xmlMapper.GetElementValue(xElement.Element("REGION"));
+                            var kppbcNo = _xmlMapper.GetElementValue(xElement.Element("KPPBC_ID"));
                             var kppbc = new XmlKPPBCDataMapper(null
                                 ).GetKPPBC(kppbcNo);
                             if (kppbc == null)
@@ -53,8 +54,9 @@ namespace Sampoerna.EMS.XMLReader
                             item.KPPBC_ID = new XmlKPPBCDataMapper(null
                                 ).GetKPPBC(kppbcNo).KPPBC_ID;
 
-                            item.START_DATE = _xmlMapper.GetDate(xElement.Element("START_DATE").Value);
-                            item.END_DATE = _xmlMapper.GetDate(xElement.Element("END_DATE").Value);
+                            item.START_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("START_DATE")));
+                            item.END_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE")));
+                           
                             var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
                             if (exisitingNppbkc != null)
                             {
@@ -63,6 +65,8 @@ namespace Sampoerna.EMS.XMLReader
                                 item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
                                 item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
                                 item.MODIFIED_DATE = DateTime.Now;
+                                item.MODIFIED_BY = Constans.PICreator;
+                                item.CREATED_BY = exisitingNppbkc.CREATED_BY;
                                 items.Add(item);
 
                             }

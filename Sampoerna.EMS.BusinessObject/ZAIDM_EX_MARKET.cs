@@ -23,6 +23,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string MARKET_DESC { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
