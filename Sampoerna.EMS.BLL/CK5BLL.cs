@@ -150,13 +150,16 @@ namespace Sampoerna.EMS.BLL
                                     && c.CK5_TYPE == input.Ck5Type);
                 
             
-            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<CK5>(input.SortOrderColumn));
-            }
+            //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
+            //if (!string.IsNullOrEmpty(input.SortOrderColumn))
+            //{
+            //    orderBy = c => c.OrderByDescending(OrderByHelper.GetOrderByFunction<CK5>(input.SortOrderColumn));
+            //}
+            //default case of ordering
+            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
 
-            var rc = _repository.Get(queryFilter, orderBy, includeTables);
+
+            var rc = _repository.Get(queryFilter, orderByFilter, includeTables);
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -242,8 +245,7 @@ namespace Sampoerna.EMS.BLL
                     ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                     dbData.CK5_MATERIAL.Add(ck5Material);
                 }
-
-
+                
                 _repository.Insert(dbData);
 
             }
@@ -367,26 +369,28 @@ namespace Sampoerna.EMS.BLL
             //todo check the new value
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("KPPBC_CITY", origin.KPPBC_CITY.Equals(data.KPPBC_CITY));
+            changesData.Add("KPPBC_CITY", origin.KPPBC_CITY == data.KPPBC_CITY);
             changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
 
-            changesData.Add("EX_GOODS_TYPE_ID", origin.EX_GOODS_TYPE_DESC.Equals(data.EX_GOODS_TYPE_DESC));
-            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID.Equals(data.EX_SETTLEMENT_ID));
-            changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID.Equals(data.EX_STATUS_ID));
-            changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID.Equals(data.REQUEST_TYPE_ID));
-            changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID.Equals(data.SOURCE_PLANT_ID));
-            changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID.Equals(data.DEST_PLANT_ID));
+            changesData.Add("EX_GOODS_TYPE", origin.EX_GOODS_TYPE == data.EX_GOODS_TYPE);
+
+            changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID == data.EX_SETTLEMENT_ID);
+            changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID == data.EX_STATUS_ID);
+            changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID == data.REQUEST_TYPE_ID);
+            changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID ==(data.SOURCE_PLANT_ID));
+            changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID == (data.DEST_PLANT_ID));
 
             changesData.Add("INVOICE_NUMBER", origin.INVOICE_NUMBER == data.INVOICE_NUMBER);
-            changesData.Add("INVOICE_DATE", origin.INVOICE_DATE.Equals(data.INVOICE_DATE));
+            changesData.Add("INVOICE_DATE", origin.INVOICE_DATE == (data.INVOICE_DATE));
 
-            changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID.Equals(data.PBCK1_DECREE_ID));
-            changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID.Equals(data.CARRIAGE_METHOD_ID));
+            changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID == (data.PBCK1_DECREE_ID));
+            changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID == (data.CARRIAGE_METHOD_ID));
 
-            changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX.Equals(data.GRAND_TOTAL_EX));
+            changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX == (data.GRAND_TOTAL_EX));
            
-            changesData.Add("PACKAGE_UOM_ID", !string.IsNullOrEmpty(origin.PACKAGE_UOM_ID) ? origin.PACKAGE_UOM_ID.Equals(data.PACKAGE_UOM_ID) : (!string.IsNullOrEmpty(data.PACKAGE_UOM_ID) ? false : true));
+            changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID == data.PACKAGE_UOM_ID);
 
+            changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
 
             foreach (var listChange in changesData)
             {
@@ -407,9 +411,9 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
                         changes.NEW_VALUE = data.REGISTRATION_NUMBER;
                         break;
-                    case "EX_GOODS_TYPE_ID":
-                        changes.OLD_VALUE = origin.EX_GOODS_TYPE_DESC;
-                        changes.NEW_VALUE = data.EX_GOODS_TYPE_DESC;
+                    case "EX_GOODS_TYPE":
+                        changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
+                        changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_GOODS_TYPE);
                         break;
                     case "EX_SETTLEMENT_ID":
                         changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);
@@ -459,7 +463,10 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.PackageUomName;
                         changes.NEW_VALUE = data.PackageUomName;
                         break;
-
+                    case "DESTINATION_COUNTRY":
+                        changes.OLD_VALUE = origin.DEST_COUNTRY_NAME;
+                        changes.NEW_VALUE = data.DEST_COUNTRY_NAME;
+                        break;
 
                 }
                 _changesHistoryBll.AddHistory(changes);
@@ -886,6 +893,15 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            //request type Enums.RequestType
+            if (result.ReportDetails.RequestType.Length >= 2)
+            {
+                string requestType = result.ReportDetails.RequestType.ToCharArray()
+                    .Aggregate("", (current, charRequest) => current + (charRequest.ToString() + "."));
+                requestType = requestType.Substring(0, requestType.Length - 1);
+                result.ReportDetails.RequestType = requestType;
+            }
+            result.ReportDetails.ExGoodType = (Convert.ToInt32(dtData.EX_GOODS_TYPE)).ToString();
 
             if (result.ReportDetails.CarriageMethod == "0")
                 result.ReportDetails.CarriageMethod = "";
@@ -929,8 +945,8 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.DestOfficeName = "-";
                 result.ReportDetails.DestOfficeCode = "-";
 
-                result.ReportDetails.DestinationCountry = "-";
-                result.ReportDetails.DestinationCode = "-";
+                result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
+                result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
                 result.ReportDetails.DestinationNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
                 result.ReportDetails.DestinationName = dtData.DEST_PLANT_NAME;
                 result.ReportDetails.DestinationAddress = dtData.DEST_PLANT_ADDRESS;
@@ -981,23 +997,23 @@ namespace Sampoerna.EMS.BLL
                                    " " + dt.ToString("yyyy");
         }
 
-        public void AddPrintHistory(long id, string userId)
-        {
-            var dtData = _repository.GetByID(id);
-             if (dtData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //public void AddPrintHistory(long id, string userId)
+        //{
+        //    var dtData = _repository.GetByID(id);
+        //     if (dtData == null)
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var printHistory = new PrintHistoryDto();
-            printHistory.FORM_ID = dtData.CK5_ID;
-            printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
-            printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
-            printHistory.PRINT_BY = userId;
-            printHistory.PRINT_DATE = DateTime.Now;
+        //    var printHistory = new PrintHistoryDto();
+        //    printHistory.FORM_ID = dtData.CK5_ID;
+        //    printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
+        //    printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+        //    printHistory.PRINT_BY = userId;
+        //    printHistory.PRINT_DATE = DateTime.Now;
 
 
-            _printHistoryBll.AddPrintHistory(printHistory);
+        //    _printHistoryBll.AddPrintHistory(printHistory);
 
-            _uow.SaveChanges();
-        }
+        //    _uow.SaveChanges();
+        //}
     }
 }

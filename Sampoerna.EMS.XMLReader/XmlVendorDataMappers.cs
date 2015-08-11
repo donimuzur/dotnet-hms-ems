@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -42,12 +43,15 @@ namespace Sampoerna.EMS.XMLReader
 
                         var exsitingVendor = GetExVendor(vendorCodeXml);
                         item.LIFNR = vendorCodeXml;
-                        item.NAME1 = xElement.Element("NAME1").Value;
+                        item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.CREATED_BY = Constans.PICreator;
 
                         if (exsitingVendor != null)
                         {
                             item.CREATED_DATE = exsitingVendor.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
+                            item.CREATED_BY = exsitingVendor.CREATED_BY;
+                            item.MODIFIED_BY = Constans.PICreator;
                             items.Add(item);
 
                         }

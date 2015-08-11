@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -30,10 +31,11 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new T001W();
-                        item.WERKS = xElement.Element("WERKS").Value;
-                        item.NAME1 = xElement.Element("NAME1").Value;
-                        item.ORT01 = xElement.Element("ORT01").Value;
-                        item.ADDRESS = xElement.Element("STRAS").Value + " " + item.ORT01;
+                        item.WERKS = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
+                        item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.ADDRESS = _xmlMapper.GetElementValue(xElement.Element("STRAS")) + " " + item.ORT01;
+                        item.CREATED_BY = Constans.PICreator;
                         var exisitingPlant = GetPlant(item.WERKS);
                         if (exisitingPlant != null)
                         {
@@ -41,9 +43,10 @@ namespace Sampoerna.EMS.XMLReader
                             item.PHONE = exisitingPlant.PHONE;
                             item.SKEPTIS = exisitingPlant.SKEPTIS;
                             item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
-
+                            item.CREATED_BY = exisitingPlant.CREATED_BY;
                             item.CREATED_DATE = exisitingPlant.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PICreator;
                             items.Add(item);
 
                         }
