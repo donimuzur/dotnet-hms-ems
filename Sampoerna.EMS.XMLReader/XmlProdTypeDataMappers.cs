@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -33,12 +34,14 @@ namespace Sampoerna.EMS.XMLReader
                         item.PROD_CODE = xElement.Element("PROD_CODE").Value;
                         item.PRODUCT_TYPE = _xmlMapper.GetElementValue(xElement.Element("PRODUCT_TYPE"));
                         item.PRODUCT_ALIAS = _xmlMapper.GetElementValue(xElement.Element("PRODUCT_ALIAS"));
-                       
+                        item.CREATED_BY = Constans.PICreator;
                         var existingProdType = GetProdType(item.PROD_CODE);
                         if (existingProdType != null)
                         {
                             item.CREATED_DATE = existingProdType.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
+                            item.CREATED_BY = existingProdType.CREATED_BY;
+                            item.MODIFIED_BY = Constans.PICreator;
                             items.Add(item);
 
                         }

@@ -813,6 +813,9 @@
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_SERIES">
           <Key>
@@ -2364,7 +2367,6 @@
           <EntitySet Name="T001K" EntityType="EMSModel.T001K" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="EMSModel.VIRTUAL_PLANT_MAP" />
           <EntitySet Name="ZAIDM_EX_MARKET" EntityType="EMSModel.ZAIDM_EX_MARKET" />
-          <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="EMSModel.ZAIDM_EX_PRODTYP" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="EMSModel.ZAIDM_EX_SERIES" />
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
             <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
@@ -2383,10 +2385,6 @@
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="EMSModel.ZAIDM_EX_BRAND" />
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
@@ -2781,6 +2779,11 @@
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
+          <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="EMSModel.ZAIDM_EX_PRODTYP" />
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
+            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2978,17 +2981,6 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
         </EntityType>
-        <EntityType Name="ZAIDM_EX_PRODTYP">
-          <Key>
-            <PropertyRef Name="PROD_CODE" />
-          </Key>
-          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCT_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_PRODTYP" ToRole="ZAIDM_EX_BRAND" />
-        </EntityType>
         <EntityType Name="ZAIDM_EX_SERIES">
           <Key>
             <PropertyRef Name="SERIES_CODE" />
@@ -3104,11 +3096,11 @@
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_MARKET" />
-          <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
           <Property Name="PER_CODE_DESC" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
+          <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
@@ -3119,18 +3111,6 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="MARKET_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
-          <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="1" />
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_PRODTYP">
-              <PropertyRef Name="PROD_CODE" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="PROD_CODE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4933,6 +4913,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ZAIDM_EX_PRODTYP">
+          <Key>
+            <PropertyRef Name="PROD_CODE" />
+          </Key>
+          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCT_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_DELETED" Type="Boolean" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_PRODTYP" ToRole="ZAIDM_EX_BRAND" />
+        </EntityType>
+        <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
+          <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="1" />
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_PRODTYP">
+              <PropertyRef Name="PROD_CODE" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="PROD_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5111,17 +5117,6 @@
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
           <ScalarProperty Name="MARKET_DESC" ColumnName="MARKET_DESC" />
-          <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-          <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="ZAIDM_EX_PRODTYP">
-      <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_PRODTYP)">
-        <MappingFragment StoreEntitySet="ZAIDM_EX_PRODTYP">
-          <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
-          <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
-          <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
           <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
           <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
         </MappingFragment>
@@ -5812,6 +5807,20 @@
                 <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
                 <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_PRODTYP">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_PRODTYP">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_PRODTYP">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+                <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
+                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
