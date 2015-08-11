@@ -366,13 +366,6 @@
       <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
-      <SubType>Component</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -908,6 +901,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\WorkflowHistory\" />
+    <Folder Include="Reports\PBCK1\" />
     <Folder Include="Views\AspxReportViewer\" />
     <Folder Include="Views\SettingsGlobal\" />
     <Folder Include="Views\Settings\" />
@@ -981,11 +975,6 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
