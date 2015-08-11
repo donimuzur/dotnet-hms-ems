@@ -44,11 +44,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
+        public string PER_CODE_DESC { get; set; }
     
         public virtual T001W T001W { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
-        public virtual ZAIDM_EX_PCODE ZAIDM_EX_PCODE { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
     }

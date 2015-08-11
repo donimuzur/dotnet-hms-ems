@@ -188,7 +188,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetStickerCodeList()
         {
             IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
-            var data = materialBll.getAll();
+            var data = materialBll.GetByFlagDeletion(false);
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
@@ -250,7 +250,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plantIdList = plantBll.GetAll();
+            var plantIdList = plantBll.GetAllPlant();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 

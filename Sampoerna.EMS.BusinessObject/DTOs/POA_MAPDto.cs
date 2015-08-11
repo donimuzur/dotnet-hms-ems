@@ -11,7 +11,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int POA_MAP_ID { get; set; }
         public string NPPBKC_ID { get; set; }
         public string WERKS { get; set; }
+        public string PLANT_NAME { get; set; }
         public string POA_ID { get; set; }
+
+        public string POA_NAME { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }

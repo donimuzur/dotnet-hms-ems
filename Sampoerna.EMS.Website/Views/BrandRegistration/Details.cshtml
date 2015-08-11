@@ -8,7 +8,7 @@
                 <a href="@Url.Action("Index", "BrandRegistration")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-                @if (Model.IsDeleted.Equals("No"))
+                @if (Model.IsAllowDelete)
                 {
                     <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
                 }

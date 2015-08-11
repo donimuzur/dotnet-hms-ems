@@ -1,11 +1,6 @@
 ﻿using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Outputs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -25,5 +20,8 @@ namespace Sampoerna.EMS.Contract
         void Delete(string materialnumber, string plant, string userId);
 
         int DeleteMaterialUom(int id, string userId, string materialnumber, string plant);
+
+        List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete);
+
     }
 }
