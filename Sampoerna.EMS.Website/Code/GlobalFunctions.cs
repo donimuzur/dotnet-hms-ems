@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetNppbkcAll()
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            var nppbkcList = nppbkcbll.GetAll();
+            var nppbkcList = nppbkcbll.GetAll().Where(x => x.IS_DELETED != true);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
@@ -77,7 +77,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetGoodTypeList()
         {
             IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
-            var data = goodTypeBll.GetAll();
+            var data = goodTypeBll.GetAll().Where(x => x.IS_DELETED != true);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
@@ -85,28 +85,28 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
-            var data = uomBll.GetAll();
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true);
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
         public static SelectList GetCompanyList()
         {
             ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
-            var data = companyBll.GetAllData();
+            var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
             return new SelectList(data, "BUKRS", "BUTXT");
         }
 
         public static SelectList GetVirtualPlantList()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var data = plantBll.GetAllPlant();
+            var data = plantBll.GetAllPlant().Where(x => x.IS_DELETED != true);
             var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
         public static MultiSelectList GetVirtualPlantListMultiSelect()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var data = plantBll.GetAllPlant();
+            var data = plantBll.GetAllPlant().Where(x => x.IS_DELETED != true);
             var selectItemSource = Mapper.Map<List<SelectItemModelVirtualPlant>>(data);
             return new MultiSelectList(selectItemSource, "ValueField", "TextField");
         }
@@ -122,7 +122,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPersonalizationCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var data = masterBll.GetDataPersonalization();
+            var data = masterBll.GetDataPersonalization().Where(x=>x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem
                              {
@@ -135,7 +135,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetProductCodeList()
         {
             IZaidmExProdTypeBLL productBll = MvcApplication.GetInstance<ZaidmExProdTypeBLL>();
-            var data = productBll.GetAll();
+            var data = productBll.GetAll().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem
                              {
@@ -148,7 +148,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetSeriesCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var data = masterBll.GetAllDataSeries();
+            var data = masterBll.GetAllDataSeries().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                                          select new SelectListItem
                                                     {
@@ -161,7 +161,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetMarketCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var data = masterBll.GetAllDataMarket();
+            var data = masterBll.GetAllDataMarket().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem
                              {
@@ -195,7 +195,7 @@ namespace Sampoerna.EMS.Website.Code
             public static SelectList GetConversionUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
-            var data = uomBll.GetAll();
+            var data = uomBll.GetAll().Where(x=>x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem
                              {
@@ -208,7 +208,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetKppBcCityList()
         {
             IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            var data = nppbkcBll.GetAll();
+            var data = nppbkcBll.GetAll().Where(x => x.IS_DELETED != true);
             return new SelectList(data, "KPPBC_ID", "CITY");
         }
 
@@ -250,7 +250,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plantIdList = plantBll.GetAllPlant();
+            var plantIdList = plantBll.GetAllPlant().Where(x => x.IS_DELETED != true);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
