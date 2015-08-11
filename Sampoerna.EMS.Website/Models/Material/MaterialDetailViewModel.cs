@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
@@ -74,6 +71,8 @@ namespace Sampoerna.EMS.Website.Models.Material
         }
 
         public Nullable<bool> IsDeleted;
+
+        public bool IsAllowDelete { get; set; }
 
         public decimal? Conversion
         {

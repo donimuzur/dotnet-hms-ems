@@ -69,9 +69,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Personalization Code<span class="red">*</span></label>
+                                                        <label class="col-md-4">Personalization Code</label>
                                                         <div class="col-md-8">
                                                             @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.HiddenFor(model => model.PersonalizationCodeDescription)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -109,7 +110,7 @@
                                                         <label class="col-md-4">SKEP Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.SkepDate,"{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.SkepDate,"{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -215,7 +216,7 @@
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.StartDate,"{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.StartDate,"{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -231,7 +232,7 @@
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.EndDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.EndDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -297,7 +298,7 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function() {
             $('.datepicker').datepicker({
-                format: 'dd mmm yyyy'              
+                format: 'dd mmm yyyy'
             });
             $('.input-group.date').datepicker({
                 dateFormat: 'dd mmm yyyy',
@@ -315,10 +316,13 @@
             $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
             $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
             $('#PrintingPriceValueStr').val(ThausandSeperator($('#PrintingPriceValueStr').val(), 2));
+            $('#PersonalizationCode').change(function() {
+                PersonalizationCodeOnChange();
+            });
         });
 
 
-        @*$("#PersonalizationCode").change(function() {
+                @*$("#PersonalizationCode").change(function() {
             if ($("#PersonalizationCode").length) {
                 var personalizationCode = $(this).find("option:selected").val();
                 if (personalizationCode == '') {
@@ -343,7 +347,7 @@
         //    }
         //}
 
-        @*$("#ProductCode").change(function() {
+                @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -371,7 +375,7 @@
         //}
 
 
-        @*$("#SeriesId").change(function() {
+                @*$("#SeriesId").change(function() {
             if ($("#SeriesId").length) {
                 var seriesCode = $(this).find("option:selected").val();
                 if (seriesCode == '') {
@@ -467,13 +471,21 @@
                 url: '@Url.Action("GetPlantByStickerCode", "BrandRegistration")',
                 data: { mn: sc },
                 success: function(data) {
-                    
+
                     for (var i = 0; i < data.length; i++) {
-                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value +'-' + data[i].Text + '</option>');
+                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
                     }
                 }
             });
 
+        }
+
+        function PersonalizationCodeOnChange() {
+            if ($("#PersonalizationCode").length) {
+                var PersonalizationName = $('#PersonalizationCode').find("option:selected").text();
+                console.log(PersonalizationName);
+                $('#PersonalizationCodeDescription').val(PersonalizationName);
+            }
         }
 
     </script>

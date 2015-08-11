@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class CURRENCY
     {
-        public int CURRENCY_ID { get; set; }
+        public string CURRENCY_ID { get; set; }
         public string CURRENCY_NAME { get; set; }
     }
 }

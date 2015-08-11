@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Code;
 using Voxteneo.WebCompoments.NLogLogger;
@@ -74,6 +75,8 @@ namespace Sampoerna.EMS.Website
             container.Register<ILACK1BLL, LACK1BLL>();
             container.Register<IPrintHistoryBLL, PrintHistoryBLL>();
             container.Register<IUserAuthorizationBLL, UserAuthorizationBLL>();
+            container.Register<IPOAMapBLL, POAMapBLL>();
+            container.Register<ILFA1BLL, LFA1BLL>();
           
             // 3. Optionally verify the container's configuration.
             container.Verify();

@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "Detail";
 }
-
-
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
@@ -11,9 +9,9 @@
                 <h3> Material Master </h3>
                 <div class="action-button">
                     <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Back</a>
-                    @if (!(Model.IsDeleted.HasValue ? Model.IsDeleted.Value : false))
+                    @if (Model.IsAllowDelete)
                     {
-                        <a href="javascript:void(0);" onclick="confirmDeleteData() " class="btn btn-danger">Delete</a>
+                        <a href="javascript:void(0);" onclick="confirmDeleteData()" class="btn btn-danger">Delete</a>
                     }
                 </div>
             </div>

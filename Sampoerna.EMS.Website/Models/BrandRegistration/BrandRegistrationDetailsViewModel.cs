@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace Sampoerna.EMS.Website.Models.BrandRegistration
 {
@@ -55,7 +52,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
         public bool IsActive { get; set; }
-
+        public bool IsAllowDelete { get; set; }
+        public bool? IsFromSap { get; set; }
+        public bool? BoolIsDeleted { get; set; }
         
     }
 }
