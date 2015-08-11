@@ -42,6 +42,7 @@
                                             <div class="row">
                                                 <label class="col-md-2">NPPBKC ID<span class="red">*</span></label>
                                                 <div class="col-md-4">
+                                                    @Html.HiddenFor(x=>x.PoaMap.POA_MAP_ID)
                                                     @Html.DropDownListFor(model => model.PoaMap.NPPBKC_ID, Model.NppbckIds, new { @class = "form-control" })
                                                    
 

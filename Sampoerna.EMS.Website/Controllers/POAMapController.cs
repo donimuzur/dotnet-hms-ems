@@ -155,6 +155,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     return RedirectToAction("Create");
                 }
                 var data = Mapper.Map<POA_MAP>(model.PoaMap);
+                data.POA_MAP_ID = model.PoaMap.POA_MAP_ID;
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = DateTime.Now;
                 _poaMapBLL.Save(data);
