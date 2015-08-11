@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -9,7 +8,6 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -64,11 +62,29 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var data = _materialBll.getByID(mn, p);
-            Mapper.Map(data,model);
+            //Mapper.Map(data,model);
+            model = Mapper.Map<MaterialDetailViewModel>(data);
             
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, mn+p));
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
-            InitDetailModel(model);
+            model = InitDetailModel(model);
+
+            if (model.IsDeleted.HasValue && model.IsDeleted.Value)
+            {
+                model.IsAllowDelete = false;
+            }
+            else
+            {
+                if (model.IsFromSap.HasValue && model.IsFromSap.Value)
+                {
+                    model.IsAllowDelete = false;
+                }
+                else
+                {
+                    model.IsAllowDelete = true;
+                }
+            }
+
             return View("Details",model);
         }
          
