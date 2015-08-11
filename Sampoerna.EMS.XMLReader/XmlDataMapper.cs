@@ -65,6 +65,19 @@ namespace Sampoerna.EMS.XMLReader
             var fileName = string.Empty;
             try
             {
+                var existingData = repo.Get();
+                foreach (var item in existingData)
+                {
+                    var is_deleted = item.GetType().GetProperty("IS_DELETED");
+                    if (is_deleted != null)
+                    {
+                        item.GetType().GetProperty("IS_DELETED").SetValue(item, true);
+                        repo.Update(item);
+                        uow.SaveChanges();
+                    }
+
+                   
+                }
                 foreach (var item in items)
                 {
                     itemToInsert++;
