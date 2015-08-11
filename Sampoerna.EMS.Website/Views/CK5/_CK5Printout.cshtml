@@ -48,9 +48,9 @@
                                         <div class="row">
                                             <label class="col-md-3"></label>
                                             <div class="col-md-9">
-                                                @*<input type="button" class="btn btn-blue full" value="Print" />*@
-                                                <a class="btn btn-blue full" onclick="window.open('@Url.EncryptedAction("PrintOut", "CK5", new { id = Model.Ck5Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>
-                                                @*<a class="btn btn-blue full" onclick="window.open('@Url.Action("PrintOut", "CK5", new { id = Model.Ck5Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>*@
+                                               
+                                                @*<a class="btn btn-blue full" onclick="window.open('@Url.EncryptedAction("PrintOut", "CK5", new { id = Model.Ck5Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>*@
+                                                <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintOut", "CK5", new { id = @Model.Ck5Id })', '@Url.Action("AddPrintHistory", "CK5")', @Model.Ck5Id)">Print</a>
                                             </div>
                                         </div>
                                     </div>
@@ -64,7 +64,7 @@
             </div>
         </div>
     </div>
-    <div class="table-container">
+    <div class="table-container" id="PrintOutHistoryTable">
         @Html.Partial("_PrintHistoryTable")
     </div>
 </div>

@@ -39,10 +39,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
-      
+        private IPrintHistoryBLL _printHistoryBll;
+
         public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
             IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
-            IWorkflowBLL workflowBll, IPlantBLL plantBll)
+            IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -51,7 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBll = changesHistoryBll;
             _workflowBll = workflowBll;
             _plantBll = plantBll;
-         
+            _printHistoryBll = printHistoryBll;
         }
 
         #region View Documents
@@ -87,6 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = menulist;
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
+            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
 
             var listCk5Dto = _ck5Bll.GetAll();
             model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
@@ -121,8 +123,8 @@ namespace Sampoerna.EMS.Website.Controllers
             CK5IndexViewModel model;
             try
             {
-               
                 model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Domestic);
+
                 
             }
             catch (Exception ex)
@@ -182,12 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        //public ActionResult CK5DomesticAlcohol()
-        //{
-        //    var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.DomesticAlcohol);
-        //    return View(model);
-        //}
-
+     
         public ActionResult CK5Completed()
         {
             var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Completed);
@@ -239,7 +236,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
+
+            //model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
           
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
@@ -247,6 +245,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
           
             model.PackageUomList = GlobalFunctions.GetUomList();
+
+            model.CountryCodeList = GlobalFunctions.GetCountryList();
 
             return model;
         }
@@ -261,32 +261,53 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = InitCreateCK5(Enums.CK5Type.Domestic);
-            //AddMessageInfo("Create domestic.", Enums.MessageInfoType.Info);
             return View("Create", model);
         }
 
         public ActionResult CreateIntercompany()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             var model = InitCreateCK5(Enums.CK5Type.Intercompany);
             return View("Create", model);
         }
 
-    
-
         public ActionResult CreatePortToImporter()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             var model = InitCreateCK5(Enums.CK5Type.PortToImporter);
             return View("Create", model);
         }
 
         public ActionResult CreateImporterToPlant()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             var model = InitCreateCK5(Enums.CK5Type.ImporterToPlant);
             return View("Create", model);
         }
 
         public ActionResult CreateExport()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             var model = InitCreateCK5(Enums.CK5Type.Export);
             model.IsCk5Export = true;
             return View("Create", model);
@@ -294,6 +315,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateManual()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             var model = InitCreateCK5(Enums.CK5Type.Manual);
             model.IsCk5Manual = true;
             return View("Create", model);
@@ -301,17 +328,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateDomesticAlcohol()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
             var model = InitCreateCK5(Enums.CK5Type.DomesticAlcohol);
             return View("Create", model);
         }
-
-        //[HttpPost]
-        //public JsonResult CeOfficeCodePartial(string nppBkcCityId)
-        //{
-        //    //todo check
-        //    var ceOfficeCode = _nppbkcBll.GetCeOfficeCodeByNppbcId(nppBkcCityId);
-        //    return Json(ceOfficeCode);
-        //}
 
         [HttpPost]
         public JsonResult GetCompanyCode(string nppBkcCityId)
@@ -441,7 +466,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
+            
+            //model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
 
             model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
             model.DestPlantList = GlobalFunctions.GetSourcePlantList();
@@ -449,6 +475,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
+
+            model.CountryCodeList = GlobalFunctions.GetCountryList();
 
             return model;
         }
@@ -480,6 +508,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
+             
             }
             catch (Exception ex)
             {
@@ -3323,7 +3352,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dataSet = GetDataSetReport(idCk5);
 
                 //add print history
-                _ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+                //_ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
 
                 //eks to report
                 var rpt = new ReportClass
@@ -3344,6 +3373,31 @@ namespace Sampoerna.EMS.Website.Controllers
            
         }
 
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var ck5Data = _ck5Bll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.CK5,
+                FORM_ID = ck5Data.CK5_ID,
+                FORM_NUMBER = ck5Data.SUBMISSION_NUMBER,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck5Data.SUBMISSION_NUMBER));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
         #endregion
     }
 }

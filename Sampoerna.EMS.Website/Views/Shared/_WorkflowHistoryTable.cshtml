@@ -9,15 +9,7 @@
                                   <th>Comment</th>
                               </tr>
                           </thead>
-                          @*<thead class="filters">
-                              <tr>
-                                  <th></th>
-                                  <th></th>
-                                  <th></th>
-                                  <th></th>
-                                  <th></th>
-                              </tr>
-                          </thead>*@
+                       
                           <tbody>
                               @foreach (var item in Model)
                               {
@@ -26,11 +18,10 @@
                                       <td>@Html.DisplayFor(model => item.Role)
                                       <td>
                                           @Html.DisplayFor(model => item.ACTION)
-                                          @*@Html.Raw(item.ACTION)*@
                                       </td>
                                       <td>
-                                          @Html.DisplayFor(model => item.ACTION_DATE)
-                                          @*@Html.Raw(item.ACTION_DATE)*@
+                                          @*@Html.DisplayFor(model => item.ACTION_DATE)*@
+                                          @item.ACTION_DATE.Value.ToString("dd MMMM yyyy HH:mm:ss")
                                       </td>
                                       <td class="last">@Html.DisplayFor(model => item.COMMENT)</td>
                                   </tr>

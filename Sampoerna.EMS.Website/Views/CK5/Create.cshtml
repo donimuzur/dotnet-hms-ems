@@ -71,7 +71,18 @@
                         @Html.HiddenFor(model => model.SealingNotifDate)
                         @Html.HiddenFor(model => model.UnsealingNotifDate)
                         
+                        @Html.HiddenFor(model => model.IsCk5Export)
 
+                        @*@Html.HiddenFor(model => model.CountryCode)
+                        @Html.HiddenFor(model => model.CountryName)
+                        
+                        @Html.HiddenFor(model => model.LoadingPort)
+                        @Html.HiddenFor(model => model.LoadingPortId)
+                        @Html.HiddenFor(model => model.LoadingPortName)
+                        @Html.HiddenFor(model => model.FinalPort)
+                        @Html.HiddenFor(model => model.FinalPortId)
+                        @Html.HiddenFor(model => model.FinalPortName)*@
+                       
 
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
@@ -91,6 +102,7 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
     $(document).ready(function () {
+        
         OnReadyFunction('@Model.Ck5Type.ToString()');
 
         var sourcePlant = $('#SourcePlantId').find("option:selected").val();
@@ -101,7 +113,22 @@
             $('#CK5UploadSubmitBtn').enable(true);
         }
 
-
+        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+        $("select#RequestType option[value='SudahDilunasi']").replaceWith("<optgroup label='Sudah Dilunasi'>");
+        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+        
+        //var $cont = $('#RequestType');
+        //$('#RequestType option').each(function () {
+        //    if ($(this).text().indexOf('item') !== 0) {
+        //        $('<optGroup/>').attr('label', $(this).text()).appendTo($cont);
+        //        $(this).remove();
+        //    } else {
+        //        $cont.find('optGroup').last().append($(this));
+        //        $(this).text($(this).text().substr(4));
+        //    }
+        //});
+        
     });
 
     $("#PbckDecreeId").change(function () {

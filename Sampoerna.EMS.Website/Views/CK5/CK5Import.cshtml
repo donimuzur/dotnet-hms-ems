@@ -11,8 +11,11 @@
         <div class="col-sm-12">
             <h3 id="lblTitle">Importer</h3>
             <div class="action-button new">
-                <a id="newPortToImporter" href="@Url.Action("CreatePortToImporter", "CK5")"><button class="btn btn-blue">NEW</button></a>
-                <a id="newImporterToPlant" href="@Url.Action("CreateImporterToPlant", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                @if (Model.IsShowNewButton)
+                {
+                    <a id="newPortToImporter" href="@Url.Action("CreatePortToImporter", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                    <a id="newImporterToPlant" href="@Url.Action("CreateImporterToPlant", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                }
             </div>
         </div>
     </div>
