@@ -911,6 +911,7 @@
     <Content Include="Views\POAMap\Index.cshtml" />
     <Content Include="Views\POAMap\Detail.cshtml" />
     <Content Include="Views\LACK2\Index.cshtml" />
+    <Content Include="Views\LACK2\_Lack2Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
