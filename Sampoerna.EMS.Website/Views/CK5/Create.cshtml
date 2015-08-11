@@ -102,6 +102,7 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
     $(document).ready(function () {
+        
         OnReadyFunction('@Model.Ck5Type.ToString()');
 
         var sourcePlant = $('#SourcePlantId').find("option:selected").val();
@@ -112,7 +113,22 @@
             $('#CK5UploadSubmitBtn').enable(true);
         }
 
-
+        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+        $("select#RequestType option[value='SudahDilunasi']").replaceWith("<optgroup label='Sudah Dilunasi'>");
+        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+        
+        //var $cont = $('#RequestType');
+        //$('#RequestType option').each(function () {
+        //    if ($(this).text().indexOf('item') !== 0) {
+        //        $('<optGroup/>').attr('label', $(this).text()).appendTo($cont);
+        //        $(this).remove();
+        //    } else {
+        //        $cont.find('optGroup').last().append($(this));
+        //        $(this).text($(this).text().substr(4));
+        //    }
+        //});
+        
     });
 
     $("#PbckDecreeId").change(function () {

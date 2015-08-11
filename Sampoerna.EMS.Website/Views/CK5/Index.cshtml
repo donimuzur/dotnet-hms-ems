@@ -119,10 +119,10 @@
                 $('#newIntercompany').hide();
                 $('#newDomesticAlcohol').hide();
 
-                setupDataTables();
+                
                 setupDataTablesIntercompany();
                 setupDataTablesDomesticAlcohol();
-
+                setupDataTables();
             });
 
 
@@ -134,7 +134,7 @@
             table = $('#ck5Table').DataTable();
             table.destroy();
         }
-
+       
         table = $('#ck5Table').DataTable(
               {
                   "sDom": "Rlfrtip",

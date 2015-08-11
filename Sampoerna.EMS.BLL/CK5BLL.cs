@@ -890,6 +890,14 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            //request type Enums.RequestType
+            if (result.ReportDetails.RequestType.Length >= 2)
+            {
+                string requestType = result.ReportDetails.RequestType.ToCharArray()
+                    .Aggregate("", (current, charRequest) => current + (charRequest.ToString() + "."));
+                requestType = requestType.Substring(0, requestType.Length - 1);
+                result.ReportDetails.RequestType = requestType;
+            }
             result.ReportDetails.ExGoodType = (Convert.ToInt32(dtData.EX_GOODS_TYPE)).ToString();
 
             if (result.ReportDetails.CarriageMethod == "0")

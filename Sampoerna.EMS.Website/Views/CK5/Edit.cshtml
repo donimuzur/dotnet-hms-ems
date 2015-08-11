@@ -193,7 +193,10 @@
             }
         });
 
-
+        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+        $("select#RequestType option[value='SudahDilunasi']").replaceWith("<optgroup label='Sudah Dilunasi'>");
+        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
     });
 
     $("#PbckDecreeId").change(function () {

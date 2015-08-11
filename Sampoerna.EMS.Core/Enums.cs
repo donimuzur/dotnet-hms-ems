@@ -204,10 +204,41 @@ namespace Sampoerna.EMS.Core
 
         public enum RequestType
         {
+            [Description("Dibayar")]
+            Dibayar = 10,
             [Description("Tunai")]
-            Tunai = 1,
+            Tunai = 11,
             [Description("Tunda")]
-            Tunda = 2
+            Tunda = 12,
+            [Description("Berkala")]
+            Berkala = 13,
+            [Description("Tidak Dipungut")]
+            TidakDipungut = 20,
+            [Description("Diekspor")]
+            Diekspor = 21,
+            [Description("Ke/Dari Pabrik/Tempat Penyimpanan")]
+            TempatPenyimpanan = 22,
+            [Description("Bahan Baku/Penolong BHA/BKC")]
+            BahanBakuBHABKC = 23,
+            [Description("Dibebaskan")]
+            Dibebaskan = 30,
+            [Description("Bahan Baku/Penolong BHA Non BKC")]
+            BahanBakuBHANonBKC = 31,
+            [Description("Iptek/Sosial Tenaga Ahli/Perwakilan Asing")]
+            IptekSosial = 32,
+            [Description("Ke TPB")]
+            KeTPB = 33,
+            [Description("Telah/Untuk dirusak sehingga tidak baik untuk diminum")]
+            UntukDirusak = 34,
+            [Description("Untuk konsumsi Penumpang/Awak Sarana Pengangkut ke Luar Daerah Pabean")]
+            UntukKonsumsi = 35,
+            [Description("Lainnya")]
+            Lainnya = 40,
+            [Description("Dimusnahkan")]
+            Dimusnahkan = 41,
+            [Description("DiolahKembali")]
+            DiolahKembali = 42
+
         }
 
         public enum CarriageMethod
