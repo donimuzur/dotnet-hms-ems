@@ -66,6 +66,7 @@
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
+    <Compile Include="LFA1BLL.cs" />
     <Compile Include="Pbck1DecreeDocBLL.cs" />
     <Compile Include="LACK1BLL.cs" />
     <Compile Include="Pbck1ProdConverterBLL.cs" />

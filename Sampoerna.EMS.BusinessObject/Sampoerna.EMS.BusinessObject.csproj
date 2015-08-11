@@ -135,6 +135,7 @@
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
+    <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
