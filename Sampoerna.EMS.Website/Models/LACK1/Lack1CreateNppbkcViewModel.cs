@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -12,10 +13,16 @@ namespace Sampoerna.EMS.Website.Models.LACK1
        
         public long Lack1Id { get; set; }
         public string Lack1Number { get; set; }
-        public string Bukrs { get; set; } //company
+        
+        [Required, Display(Name = "Company")]
+        public string Bukrs { get; set; }
         public SelectList BukrList { get; set; }
+
+        [Required, Display(Name = "Period Month")]
         public int PeriodMonth { get; set; }
         public SelectList MontList { get; set; }
+
+        [Required, Display(Name = "Period Years")]
         public int PeriodYears { get; set; }
         public SelectList YearsList { get; set; }
         public string NppbkcId { get; set; }
@@ -24,6 +31,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string LevelPlantName { get; set; }
         public SelectList PlantList { get; set; }
 
+        [Required, Display(Name = "Submission Date")]
         public DateTime? SubmissionDate { get; set; }
         public string SupplierPlant { get; set; }
         public SelectList SupplierList { get; set; }
