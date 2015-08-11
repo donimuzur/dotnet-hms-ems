@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
@@ -48,7 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var dbData = _brandRegistrationBll.GetAllBrands();
-            model.Details = AutoMapper.Mapper.Map<List<BrandRegistrationDetail>>(dbData);
+            model.Details = Mapper.Map<List<BrandRegistrationDetail>>(dbData);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
@@ -64,7 +63,23 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
-            
+
+            if (model.BoolIsDeleted.HasValue && model.BoolIsDeleted.Value)
+            {
+                model.IsAllowDelete = false;
+            }
+            else
+            {
+                if (model.IsFromSap.HasValue && model.IsFromSap.Value)
+                {
+                    model.IsAllowDelete = false;
+                }
+                else
+                {
+                    model.IsAllowDelete = true;
+                }
+            }
+
             return View(model);
         }
 
