@@ -102,18 +102,62 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /POAMap/Edit/5
         public ActionResult Edit(int id)
         {
-            return RedirectToAction("Edit", new {id = id});
+            var existingData = _poaMapBLL.GetById(id);
+            var model = new PoaMapDetailViewModel
+            {
+                PoaMap = Mapper.Map<POA_MAPDto>(existingData),
+                CurrentMenu = PageInfo,
+                MainMenu = _mainMenu
+            };
+            model.NppbckIds = GlobalFunctions.GetNppbkcAll();
+            model.Plants = GlobalFunctions.GetPlantAll();
+            model.POAs = GlobalFunctions.GetPoaAll();
+            return View("Edit", model);
         }
 
-        [HttpPost]
-        public ActionResult Delete(PoaMapDetailViewModel model)
+        
+        public ActionResult Delete(int id)
         {
             try
             {
                 
-               // _poaMapBLL.Save(data);
+                _poaMapBLL.Delete(id);
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                     );
+                
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
+
+
+                
+            }
+            return RedirectToAction("Index");
+        }
+
+        //
+        // POST: /POAMap/Create
+        [HttpPost]
+        public ActionResult Edit(PoaMapDetailViewModel model)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+                var existingData = _poaMapBLL.GetByNppbckId(model.PoaMap.NPPBKC_ID, model.PoaMap.WERKS, model.PoaMap.POA_ID);
+                if (existingData != null)
+                {
+                    AddMessageInfo("data already exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Create");
+                }
+                var data = Mapper.Map<POA_MAP>(model.PoaMap);
+                data.CREATED_BY = CurrentUser.USER_ID;
+                data.CREATED_DATE = DateTime.Now;
+                _poaMapBLL.Save(data);
+
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                      );
                 return RedirectToAction("Index");
             }
