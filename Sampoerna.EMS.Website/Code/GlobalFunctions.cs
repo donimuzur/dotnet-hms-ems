@@ -46,6 +46,13 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static SelectList GetNppbkcByFlagDeletionList(bool isDeleted)
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            var nppbkcList = nppbkcbll.GetByFlagDeletion(isDeleted);
+            return new SelectList(nppbkcList, "NPPBKC_ID", "NPPBKC_ID");
+        }
+
         public static ZAIDM_EX_NPPBKC GetNppbkcById(string id)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();

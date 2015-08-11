@@ -98,15 +98,24 @@ namespace Sampoerna.EMS.Website.Controllers
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
+        
+        //private SelectList CreateYearList()
+        //{
+        //    var years = new List<SelectItemModel>();
+        //    var currentYear = DateTime.Now.Year;
+        //    for (int i = 0; i < 5; i++)
+        //    {
+        //        years.Add(new SelectItemModel() { ValueField = currentYear - i, TextField = (currentYear - i).ToString() });
+        //    }
+        //    return new SelectList(years, "ValueField", "TextField");
+        //}
 
-        private SelectList CreateYearList()
+        private SelectList LackYearList()
         {
             var years = new List<SelectItemModel>();
             var currentYear = DateTime.Now.Year;
-            for (int i = 0; i < 5; i++)
-            {
-                years.Add(new SelectItemModel() { ValueField = currentYear - i, TextField = (currentYear - i).ToString() });
-            }
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
             return new SelectList(years, "ValueField", "TextField");
         }
 
@@ -204,7 +213,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
             model.MonthList = GlobalFunctions.GetMonthList();
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
             model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
@@ -221,7 +230,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
 
-            model.YearList = CreateYearList();
+            //model.YearList = CreateYearList();
+            model.YearList = LackYearList();
 
             model.AllowPrintDocument = false;
 

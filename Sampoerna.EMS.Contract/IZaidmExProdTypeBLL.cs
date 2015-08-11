@@ -9,5 +9,8 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_PRODTYP> GetAll();
         ZAIDM_EX_PRODTYP GetByCode(string Code);
+
+        ZAIDM_EX_PRODTYP GetByAlias(string aliasName);
+
     }
 }
