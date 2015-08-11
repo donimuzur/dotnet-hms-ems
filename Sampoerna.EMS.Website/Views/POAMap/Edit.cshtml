@@ -2,10 +2,10 @@
 
 
 @{
-    ViewBag.Title = "Create new POA Map";
+    ViewBag.Title = "Edit POA Map";
 }
 
-@using (Html.BeginForm("Create", "POAMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Edit", "POAMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
     <div class="container-wrap title-page">
@@ -29,7 +29,7 @@
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    New POA Map
+                                    Edit POA Map
                                     <i class="fa fa-caret-down"></i>
                                 </a>
                             </h4>
@@ -42,6 +42,7 @@
                                             <div class="row">
                                                 <label class="col-md-2">NPPBKC ID<span class="red">*</span></label>
                                                 <div class="col-md-4">
+                                                    @Html.HiddenFor(x=>x.PoaMap.POA_MAP_ID)
                                                     @Html.DropDownListFor(model => model.PoaMap.NPPBKC_ID, Model.NppbckIds, new { @class = "form-control" })
                                                    
 
@@ -87,16 +88,15 @@
 }
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
-            $('#MenuPoaMap').addClass('active');
+    $(document).ready(function () {
+        $('#MenuPoaMap').addClass('active');
 
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("Index", "PoaMap")';
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "PoaMap")';
             });
-            $('#PoaMap_NPPBKC_ID').change();
-            
-        });
+        $('#PoaMap_NPPBKC_ID').change();
 
+    });
         $('#PoaMap_NPPBKC_ID').change(function () {
             var nppbkcid = $(this).find("option:selected").val();
             $('#PoaMap_WERKS').html("");
@@ -105,13 +105,11 @@
                 url: '@Url.Action("GetPlantOfNppbck", "POAMap")',
                 data: { nppbkcid: nppbkcid },
                 success: function (data) {
-                    console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         $('#PoaMap_WERKS').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
                     }
                 }
             });
         });
-
     </script>
 }

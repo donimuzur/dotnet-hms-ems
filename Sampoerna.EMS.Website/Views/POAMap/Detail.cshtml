@@ -6,15 +6,14 @@
     ViewBag.Title = "Detail POA Map";
 }
 
-@using (Html.BeginForm("Delete", "POAMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
-{
+
 
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>POA Map</h3>
                 <div class="action-button">
-                    <button class="btn btn-danger">Delete</button>
+                    <a href="javascript:void(0);" onclick="confirmDeleteData()" class="btn btn-danger">Delete</a>
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
@@ -79,17 +78,40 @@
             </div>
         </div>
     </div>
+    <!--delete-->
+    <input id="btn-delete-poa-map" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poamap" value="delete">
+    <div class="modal ems-modal fade delete-modal poamap" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Delete</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="window.location.href ='@Url.Action("Delete", "POAMap", new { id = @Model.PoaMap.POA_MAP_ID})'">Delete</button>
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-}
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#MenuPoaMap').addClass('active');
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "POAMap")';
             });
-        });
 
+        });
+        var confirmDeleteData = function() {
+            $('#btn-delete-poa-map').click();
+
+        };
+       
     </script>
 }

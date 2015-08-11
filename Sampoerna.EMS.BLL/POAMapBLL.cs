@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<POA_MAP> _repository;
         private ChangesHistoryBLL _changeBLL;
-        private string _includeProperties = "T001W, POA, POA.USER";
+         private string _includeProperties = "T001W, POA, POA.USER";
         public POAMapBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;

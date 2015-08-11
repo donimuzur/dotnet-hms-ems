@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.Contract
         void Delete(int id);
 
         POA_MAP GetByNppbckId(string nppbkc, string plant, string poa);
-       
+
+     
     }
 }
