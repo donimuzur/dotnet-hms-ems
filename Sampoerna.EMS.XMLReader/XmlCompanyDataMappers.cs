@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -29,17 +30,19 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new T001();
                     var bukrs = xElement.Element("BUKRS").Value;
-                    item.BUTXT = xElement.Element("BUTXT").Value;
-                    item.ORT01 = xElement.Element("ORT01") == null ? null : xElement.Element("ORT01").Value;
-                    item.SPRAS = xElement.Element("SPRAS") == null ? null : xElement.Element("SPRAS").Value;
-                    //var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
+                    item.BUTXT = _xmlMapper.GetElementValue(xElement.Element("BUTXT"));
+                    item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                    item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
+                    item.CREATED_BY = Constans.PICreator;
                     var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
                         .GetByID(bukrs);
                     item.BUKRS = bukrs;
                     if (exisitingCompany != null)
                     {
+                        item.CREATED_BY = exisitingCompany.CREATED_BY;
                         item.CREATED_DATE = exisitingCompany.CREATED_DATE;
                         item.MODIFIED_DATE = DateTime.Now;
+                        item.MODIFIED_BY = Constans.PICreator;
                         items.Add(item);
                         
                     }
