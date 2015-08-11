@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
-        private string includeTables = "ZAIDM_EX_KPPBC,T001, LFA1";
+        private string includeTables = "ZAIDM_EX_KPPBC,T001W, LFA1";
         private IChangesHistoryBLL _changesHistoryBll;
 
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_NPPBKCDto GetDetailsById(string id)
         {
-            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T0011, ZAIDM_EX_KPPBC").FirstOrDefault());
+            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T001, ZAIDM_EX_KPPBC").FirstOrDefault());
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()

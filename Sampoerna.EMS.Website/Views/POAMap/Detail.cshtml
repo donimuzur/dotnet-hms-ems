@@ -100,17 +100,18 @@
 
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#MenuPoaMap').addClass('active');
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "POAMap")';
             });
-            
+
         });
-        var confirmDeleteData = function () {
+        var confirmDeleteData = function() {
             $('#btn-delete-poa-map').click();
 
         };
+       
     </script>
 }

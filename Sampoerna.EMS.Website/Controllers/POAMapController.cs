@@ -17,12 +17,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changeHistoryBll;
         private Enums.MenuList _mainMenu;
 
-        public POAMapController(IPageBLL pageBLL, IPOAMapBLL poaMapBll, IChangesHistoryBLL changeHistorybll) 
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        public POAMapController(IPageBLL pageBLL, IPOAMapBLL poaMapBll, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changeHistorybll) 
             : base(pageBLL, Enums.MenuList.POAMap) 
         {
             _poaMapBLL = poaMapBll;
             _changeHistoryBll = changeHistorybll;
             _mainMenu = Enums.MenuList.MasterData;
+            _nppbkcbll = nppbkcbll;
         }
         //
         // GET: /POA/
@@ -153,6 +155,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     return RedirectToAction("Create");
                 }
                 var data = Mapper.Map<POA_MAP>(model.PoaMap);
+                data.POA_MAP_ID = model.PoaMap.POA_MAP_ID;
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = DateTime.Now;
                 _poaMapBLL.Save(data);
@@ -170,6 +173,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
         }
+
+        [HttpPost]
+        public JsonResult GetPlantOfNppbck(string nppbkcId)
+        {
+            var data = _nppbkcbll.GetById(nppbkcId).T001W;
+            if (data == null)
+            {
+                return null;
+            }
+            return Json(new SelectList(data, "WERKS", "NAME1"));
+        }
+
         
     }
 }
