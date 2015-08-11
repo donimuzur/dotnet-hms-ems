@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("T001K"))
+            else if (xmlfile.Contains("PLANTV"))
             {
                 return new XmlT001KDataMapper(xmlfile);
             }
@@ -71,7 +71,7 @@ namespace Sampoerna.EMS.XMLReader
              {
                  return new XmlSeriesDataMapper(xmlfile);
              }
-            else if (xmlfile.Contains("T001W"))
+            else if (xmlfile.Contains("PLANT-"))
             {
                 return new XmlPlantDataMapper(xmlfile);
             }
