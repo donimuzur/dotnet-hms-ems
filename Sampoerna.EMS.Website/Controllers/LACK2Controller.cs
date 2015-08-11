@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Website.Models.LACK2;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -24,7 +25,13 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: LACK2
         public ActionResult Index()
         {
-            return View();
+            var model = new LACK2FormViewModel();
+
+            //you need set this each time when you return model to view in order to get the right menu
+            model.MainMenu = Enums.MenuList.LACK2;
+            model.CurrentMenu = PageInfo;
+
+            return View("Index", model);
         }
     }
 }
