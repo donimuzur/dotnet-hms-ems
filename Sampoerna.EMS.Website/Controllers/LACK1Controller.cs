@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Drawing;
 using System.Linq;
 using System.Web;
@@ -218,6 +219,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        #region ----- create -----
 
         public ActionResult Create()
         {
@@ -225,8 +227,75 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
+            return CreateInitial(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Lack1CreateNppbkcViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    return CreateInitial(model);
+                }
+
+                //process save
+                var dataToSave = Mapper.Map<Lack1Dto>(model);
+                dataToSave.CreateBy = CurrentUser.USER_ID;
+
+                var input = new Lack1SaveInput()
+                {
+                    Lack1 = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    WorkflowActionType = Enums.ActionType.Created
+                };
+
+                //only add this information from gov approval,
+                //when save create/edit 
+                input.Lack1.DecreeDate = null;
+
+                var saveResult = _lack1Bll.Save(input);
+
+                if (saveResult.Success)
+                {
+                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                }
+
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+            }
+
+            return CreateInitial(model);
+
+        }
+
+        public ActionResult CreateInitial(Lack1CreateNppbkcViewModel model)
+        {
             return View("Create", InitialModel(model));
         }
+
+        #endregion
 
         private SelectList CreateYearList()
         {

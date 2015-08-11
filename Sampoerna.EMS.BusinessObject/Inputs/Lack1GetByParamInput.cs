@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -25,6 +26,30 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
       
     }
-   
-   
+
+    public class Lack1SaveInput
+    {
+        public Lack1Dto Lack1 { get; set; }
+        public string UserId { get; set; }
+        public Enums.ActionType WorkflowActionType { get; set; }
+    }
+
+    public class Lack1WorkflowDocumentInput
+    {
+        public long DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string DocumentNumber { get; set; }
+
+        public Lack1WorkflowDocumentData AdditionalDocumentData { get; set; }
+
+    }
+
+    public class Lack1WorkflowDocumentData
+    {
+        public DateTime DecreeDate { get; set; }
+        public Lack1DocumentDto Lack1Document { get; set; }
+    }
 }

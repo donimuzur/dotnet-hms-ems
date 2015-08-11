@@ -10,6 +10,7 @@ using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using AutoMapper;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -22,6 +23,10 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<LACK1> _repository;
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
+        private IDocumentSequenceNumberBLL _docSeqNumBll;
+        private IPOABLL _poaBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
         private string includeTables = "MONTH, UOM";
 
@@ -32,6 +37,10 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<LACK1>();
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _poaBll = new POABLL(_uow, _logger);
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
 
@@ -89,6 +98,119 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
         }
+        
+        public SaveLack1Output Save(Lack1SaveInput input)
+        {
+            LACK1 dbData;
 
+            if (input.Lack1.Lack1Id > 0)
+            {
+
+                //update
+                dbData = _repository.Get(c => c.LACK1_ID == input.Lack1.Lack1Id, null, includeTables).FirstOrDefault();
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                //set changes history
+                var origin = Mapper.Map<Lack1Dto>(dbData);
+                SetChangesHistory(origin, input.Lack1, input.UserId);
+
+                Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
+                dbData.LACK1_DOCUMENT = null;
+
+                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.Lack1.DecreeDoc);
+
+            }
+            else
+            {
+                //Insert
+                var generateNumberInput = new GenerateDocNumberInput()
+                {
+                    Year = Convert.ToInt32(input.Lack1.PeriodMonth),
+                    Month = Convert.ToInt32(input.Lack1.PeriodYears),
+                    NppbkcId = input.Lack1.NppbkcId
+                };
+
+                input.Lack1.Lack1Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
+                input.Lack1.Status = Enums.DocumentStatus.Draft;
+                input.Lack1.CreateDate = DateTime.Now;
+                dbData = new LACK1();
+                Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
+
+                _repository.Insert(dbData);
+
+            }
+
+            var output = new SaveLack1Output();
+
+            _uow.SaveChanges();
+
+            output.Success = true;
+            output.Id = dbData.LACK1_ID;
+            output.Lack1Number = dbData.LACK1_NUMBER;
+
+            //set workflow history
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+
+            var inputAddWorkflowHistory = new Lack1WorkflowDocumentInput()
+            {
+                DocumentId = output.Id,
+                DocumentNumber = output.Lack1Number,
+                ActionType = input.WorkflowActionType,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            };
+
+            AddWorkflowHistory(inputAddWorkflowHistory);
+
+            _uow.SaveChanges();
+
+            return output;
+        }
+
+        #region workflow
+
+        private void AddWorkflowHistory(Lack1WorkflowDocumentInput input)
+        {
+            var dbData = Mapper.Map<WorkflowHistoryDto>(input);
+
+            dbData.ACTION_DATE = DateTime.Now;
+            dbData.FORM_TYPE_ID = Enums.FormType.LACK1;
+
+            _workflowHistoryBll.Save(dbData);
+
+        }
+
+        #endregion
+
+        private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("BUKRS", origin.Bukrs == data.Bukrs);
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Enums.MenuList.LACK1,
+                        FORM_ID = data.Lack1Id.ToString(),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "BUKRS":
+                            changes.OLD_VALUE = origin.Bukrs;
+                            changes.NEW_VALUE = data.Bukrs;
+                            break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
     }
 }

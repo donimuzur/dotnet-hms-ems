@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ReturnUom { get; set; }
         public Enums.DocumentStatus Status { get; set; }
         public Enums.DocumentStatus  GovStatus { get; set; }
+        public long DecreeDoc { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreateBy { get; set; }
@@ -36,8 +37,5 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime ApprovedDate { get; set; }
         public string NppbkcId { get; set;  }
         public string ExTypDesc { get; set; }
-        
-        
-        
     }
 }
