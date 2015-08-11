@@ -4,14 +4,14 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Alias="Self" Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012">
         <EntityType Name="BROLE_MAP">
           <Key>
             <PropertyRef Name="BROLE_MAP_ID" />
           </Key>
-          <Property Name="BROLE_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="BROLE" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="MSACCT" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BROLE_MAP_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="BROLE" Nullable="false" MaxLength="10" Type="nvarchar" />
+          <Property Name="MSACCT" Nullable="false" MaxLength="50" Type="nvarchar" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
         </EntityType>
@@ -19,141 +19,141 @@
           <Key>
             <PropertyRef Name="CHANGES_HISTORY_ID" />
           </Key>
-          <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
-          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
-          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
-          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
+          <Property Name="CHANGES_HISTORY_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="FORM_TYPE_ID" Nullable="false" Type="int" />
+          <Property Name="FORM_ID" MaxLength="50" Type="nvarchar" />
+          <Property Name="FIELD_NAME" MaxLength="25" Type="nvarchar" />
+          <Property Name="OLD_VALUE" MaxLength="255" Type="nvarchar" />
+          <Property Name="NEW_VALUE" MaxLength="255" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="CK5">
           <Key>
             <PropertyRef Name="CK5_ID" />
           </Key>
-          <Property Name="CK5_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CK5_TYPE" Type="int" Nullable="false" />
-          <Property Name="KPPBC_CITY" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CE_OFFICE_CODE" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="SUBMISSION_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="CK5_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="CK5_TYPE" Nullable="false" Type="int" />
+          <Property Name="KPPBC_CITY" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CE_OFFICE_CODE" Nullable="false" MaxLength="10" Type="nvarchar" />
+          <Property Name="SUBMISSION_NUMBER" MaxLength="30" Type="nvarchar" />
           <Property Name="SUBMISSION_DATE" Type="datetime" />
-          <Property Name="REGISTRATION_NUMBER" Type="nvarchar" MaxLength="30" />
-          <Property Name="EX_GOODS_TYPE_DESC" Type="nvarchar" MaxLength="65" />
-          <Property Name="EX_SETTLEMENT_ID" Type="int" Nullable="false" />
-          <Property Name="EX_STATUS_ID" Type="int" Nullable="false" />
-          <Property Name="REQUEST_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="STO_SENDER_NUMBER" Type="nvarchar" MaxLength="50" />
-          <Property Name="STO_RECEIVER_NUMBER" Type="nvarchar" MaxLength="50" />
-          <Property Name="STOB_NUMBER" Type="nvarchar" MaxLength="50" />
-          <Property Name="SOURCE_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="DEST_PLANT_ID" Type="nvarchar" MaxLength="4" />
-          <Property Name="INVOICE_NUMBER" Type="nvarchar" MaxLength="50" />
+          <Property Name="REGISTRATION_NUMBER" MaxLength="30" Type="nvarchar" />
+          <Property Name="EX_GOODS_TYPE_DESC" MaxLength="65" Type="nvarchar" />
+          <Property Name="EX_SETTLEMENT_ID" Nullable="false" Type="int" />
+          <Property Name="EX_STATUS_ID" Nullable="false" Type="int" />
+          <Property Name="REQUEST_TYPE_ID" Nullable="false" Type="int" />
+          <Property Name="STO_SENDER_NUMBER" MaxLength="50" Type="nvarchar" />
+          <Property Name="STO_RECEIVER_NUMBER" MaxLength="50" Type="nvarchar" />
+          <Property Name="STOB_NUMBER" MaxLength="50" Type="nvarchar" />
+          <Property Name="SOURCE_PLANT_ID" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="DEST_PLANT_ID" MaxLength="4" Type="nvarchar" />
+          <Property Name="INVOICE_NUMBER" MaxLength="50" Type="nvarchar" />
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="GRAND_TOTAL_EX" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="PACKAGE_UOM_ID" MaxLength="5" Type="nvarchar" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
-          <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
-          <Property Name="OFFICE_HARBOUR" Type="nvarchar" MaxLength="50" />
-          <Property Name="LAST_SHELTER_HARBOUR" Type="nvarchar" MaxLength="50" />
-          <Property Name="OFFICE_SHELTER" Type="nvarchar" MaxLength="50" />
-          <Property Name="DN_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="HARBOUR" MaxLength="50" Type="nvarchar" />
+          <Property Name="OFFICE_HARBOUR" MaxLength="50" Type="nvarchar" />
+          <Property Name="LAST_SHELTER_HARBOUR" MaxLength="50" Type="nvarchar" />
+          <Property Name="OFFICE_SHELTER" MaxLength="50" Type="nvarchar" />
+          <Property Name="DN_NUMBER" MaxLength="30" Type="nvarchar" />
           <Property Name="GR_DATE" Type="datetime" />
           <Property Name="GI_DATE" Type="datetime" />
-          <Property Name="SEALING_NOTIF_NUMBER" Type="nvarchar" MaxLength="50" />
-          <Property Name="UNSEALING_NOTIF_NUMBER" Type="nvarchar" MaxLength="50" />
+          <Property Name="SEALING_NOTIF_NUMBER" MaxLength="50" Type="nvarchar" />
+          <Property Name="UNSEALING_NOTIF_NUMBER" MaxLength="50" Type="nvarchar" />
           <Property Name="SEALING_NOTIF_DATE" Type="datetime" />
           <Property Name="UNSEALING_NOTIF_DATE" Type="datetime" />
-          <Property Name="LOADING_PORT" Type="nvarchar" MaxLength="50" />
-          <Property Name="LOADING_PORT_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="LOADING_PORT_ID" Type="nvarchar" MaxLength="10" />
-          <Property Name="FINAL_PORT" Type="nvarchar" MaxLength="50" />
-          <Property Name="FINAL_PORT_ID" Type="nvarchar" MaxLength="10" />
-          <Property Name="STATUS_ID" Type="int" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
+          <Property Name="LOADING_PORT" MaxLength="50" Type="nvarchar" />
+          <Property Name="LOADING_PORT_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="LOADING_PORT_ID" MaxLength="10" Type="nvarchar" />
+          <Property Name="FINAL_PORT" MaxLength="50" Type="nvarchar" />
+          <Property Name="FINAL_PORT_ID" MaxLength="10" Type="nvarchar" />
+          <Property Name="STATUS_ID" Nullable="false" Type="int" />
+          <Property Name="CREATED_BY" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="APPROVED_BY_POA" MaxLength="50" Type="nvarchar" />
           <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="SOURCE_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="SOURCE_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="SOURCE_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
-          <Property Name="SOURCE_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
-          <Property Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
-          <Property Name="DEST_PLANT_NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="DEST_PLANT_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="DEST_PLANT_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
-          <Property Name="DEST_PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
-          <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" Type="nvarchar" MaxLength="150" />
+          <Property Name="SOURCE_PLANT_NPWP" MaxLength="30" Type="nvarchar" />
+          <Property Name="SOURCE_PLANT_NPPBKC_ID" MaxLength="15" Type="nvarchar" />
+          <Property Name="SOURCE_PLANT_COMPANY_NAME" MaxLength="35" Type="nvarchar" />
+          <Property Name="SOURCE_PLANT_ADDRESS" MaxLength="150" Type="nvarchar" />
+          <Property Name="SOURCE_PLANT_KPPBC_NAME_OFFICE" MaxLength="150" Type="nvarchar" />
+          <Property Name="DEST_PLANT_NPWP" MaxLength="30" Type="nvarchar" />
+          <Property Name="DEST_PLANT_NPPBKC_ID" MaxLength="15" Type="nvarchar" />
+          <Property Name="DEST_PLANT_COMPANY_NAME" MaxLength="35" Type="nvarchar" />
+          <Property Name="DEST_PLANT_ADDRESS" MaxLength="150" Type="nvarchar" />
+          <Property Name="DEST_PLANT_KPPBC_NAME_OFFICE" MaxLength="150" Type="nvarchar" />
           <Property Name="REGISTRATION_DATE" Type="datetime" />
           <Property Name="DN_DATE" Type="datetime" />
-          <Property Name="SOURCE_PLANT_NAME" Type="nvarchar" MaxLength="30" />
-          <Property Name="DEST_PLANT_NAME" Type="nvarchar" MaxLength="30" />
-          <Property Name="FINAL_PORT_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="SOURCE_PLANT_NAME" MaxLength="30" Type="nvarchar" />
+          <Property Name="DEST_PLANT_NAME" MaxLength="30" Type="nvarchar" />
+          <Property Name="FINAL_PORT_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="APPROVED_BY_MANAGER" MaxLength="50" Type="nvarchar" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="SOURCE_PLANT_COMPANY_CODE" Type="nvarchar" MaxLength="4" />
-          <Property Name="DEST_PLANT_COMPANY_CODE" Type="nvarchar" MaxLength="4" />
-          <Property Name="EX_GOODS_TYPE" Type="int" Nullable="false" />
-          <Property Name="DEST_COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
-          <Property Name="DEST_COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="SOURCE_PLANT_COMPANY_CODE" MaxLength="4" Type="nvarchar" />
+          <Property Name="DEST_PLANT_COMPANY_CODE" MaxLength="4" Type="nvarchar" />
+          <Property Name="EX_GOODS_TYPE" Nullable="false" Type="int" />
+          <Property Name="DEST_COUNTRY_CODE" MaxLength="5" Type="nvarchar" />
+          <Property Name="DEST_COUNTRY_NAME" MaxLength="30" Type="nvarchar" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
             <PropertyRef Name="CK5_FILE_UPLOAD_ID" />
           </Key>
-          <Property Name="CK5_FILE_UPLOAD_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CK5_ID" Type="bigint" Nullable="false" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CK5_FILE_UPLOAD_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="CK5_ID" Nullable="false" Type="bigint" />
+          <Property Name="FILE_NAME" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="FILE_PATH" Nullable="false" MaxLength="250" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
           <Key>
             <PropertyRef Name="CK5_MATERIAL_ID" />
           </Key>
-          <Property Name="CK5_MATERIAL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CK5_MATERIAL_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY" Precision="18" Scale="0" Type="numeric" />
+          <Property Name="CONVERTED_QTY" Precision="18" Scale="0" Type="numeric" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
-          <Property Name="BRAND" Type="varchar" MaxLength="50" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
-          <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="NOTE" Type="varchar" MaxLength="100" />
-          <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
+          <Property Name="BRAND" MaxLength="50" Type="varchar" />
+          <Property Name="PLANT_ID" MaxLength="4" Type="nvarchar" />
+          <Property Name="UOM" MaxLength="50" Type="varchar" />
+          <Property Name="CONVERTION" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="HJE" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="TARIFF" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="EXCISE_VALUE" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="USD_VALUE" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="NOTE" MaxLength="100" Type="varchar" />
+          <Property Name="CONVERTED_UOM" MaxLength="50" Type="varchar" />
         </EntityType>
         <EntityType Name="COUNTRY">
           <Key>
             <PropertyRef Name="COUNTRY_ID" />
           </Key>
-          <Property Name="COUNTRY_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
-          <Property Name="COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="COUNTRY_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="COUNTRY_CODE" MaxLength="5" Type="nvarchar" />
+          <Property Name="COUNTRY_NAME" MaxLength="30" Type="nvarchar" />
         </EntityType>
         <EntityType Name="CURRENCY">
           <Key>
             <PropertyRef Name="CURRENCY_ID" />
           </Key>
-          <Property Name="CURRENCY_ID" Type="int" Nullable="false" />
-          <Property Name="CURRENCY_NAME" Type="varchar" MaxLength="50" />
+          <Property Name="CURRENCY_ID" Nullable="false" Type="int" />
+          <Property Name="CURRENCY_NAME" MaxLength="50" Type="varchar" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
             <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
           </Key>
-          <Property Name="DOC_NUMBER_SEQ_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="DOC_NUMBER_SEQ_LAST" Type="bigint" Nullable="false" />
+          <Property Name="DOC_NUMBER_SEQ_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="DOC_NUMBER_SEQ_LAST" Nullable="false" Type="bigint" />
           <Property Name="MONTH" Type="int" />
           <Property Name="YEAR" Type="int" />
         </EntityType>
@@ -161,9 +161,9 @@
           <Key>
             <PropertyRef Name="EMAIL_TEMPLATE_ID" />
           </Key>
-          <Property Name="EMAIL_TEMPLATE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TEMPLATE_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="SUBJECT" Type="nvarchar" MaxLength="50" />
+          <Property Name="EMAIL_TEMPLATE_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="TEMPLATE_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="SUBJECT" MaxLength="50" Type="nvarchar" />
           <Property Name="BODY" Type="nvarchar(max)" />
           <Property Name="CREATED_DATE" Type="datetime" />
         </EntityType>
@@ -171,49 +171,49 @@
           <Key>
             <PropertyRef Name="EX_GROUP_TYPE_ID" />
           </Key>
-          <Property Name="EX_GROUP_TYPE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="GROUP_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="EX_GROUP_TYPE_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="GROUP_NAME" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="EX_GROUP_TYPE_DETAILS">
           <Key>
             <PropertyRef Name="EX_GROUP_TYPE_DETAIL_ID" />
           </Key>
-          <Property Name="EX_GROUP_TYPE_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EX_GROUP_TYPE_DETAIL_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
           <Property Name="EX_GROUP_TYPE_ID" Type="int" />
-          <Property Name="GOODTYPE_ID" Type="nvarchar" MaxLength="2" />
+          <Property Name="GOODTYPE_ID" MaxLength="2" Type="nvarchar" />
         </EntityType>
         <EntityType Name="FILE_UPLOAD">
           <Key>
             <PropertyRef Name="FILE_ID" />
           </Key>
-          <Property Name="FILE_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FORM_TYEP_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_NO" Type="nvarchar" MaxLength="30" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="FILE_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="FORM_TYEP_ID" Nullable="false" Type="int" />
+          <Property Name="FORM_NO" MaxLength="30" Type="nvarchar" />
+          <Property Name="FILE_NAME" MaxLength="100" Type="nvarchar" />
           <Property Name="UPLOAD_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER">
           <Key>
             <PropertyRef Name="HEADER_FOOTER_ID" />
           </Key>
-          <Property Name="HEADER_FOOTER_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FORM_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="HEADER_IMAGE_PATH" Type="nvarchar" MaxLength="150" />
+          <Property Name="HEADER_FOOTER_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="FORM_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="BUKRS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="HEADER_IMAGE_PATH" MaxLength="150" Type="nvarchar" />
           <Property Name="FOOTER_CONTENT" Type="nvarchar(max)" />
           <Property Name="IS_ACTIVE" Type="bit" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER_FORM_MAP">
           <Key>
             <PropertyRef Name="HEADER_FOOTER_FORM_MAP_ID" />
           </Key>
-          <Property Name="HEADER_FOOTER_FORM_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="HEADER_FOOTER_ID" Type="int" Nullable="false" />
+          <Property Name="HEADER_FOOTER_FORM_MAP_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="HEADER_FOOTER_ID" Nullable="false" Type="int" />
           <Property Name="FORM_TYPE_ID" Type="int" />
           <Property Name="IS_HEADER_SET" Type="bit" />
           <Property Name="IS_FOOTER_SET" Type="bit" />
@@ -222,281 +222,281 @@
           <Key>
             <PropertyRef Name="LACK1_ID" />
           </Key>
-          <Property Name="LACK1_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="LACK1_NUMBER" Type="nvarchar" MaxLength="35" />
-          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" />
-          <Property Name="BUTXT" Type="nvarchar" MaxLength="35" />
+          <Property Name="LACK1_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="LACK1_NUMBER" MaxLength="35" Type="nvarchar" />
+          <Property Name="BUKRS" MaxLength="4" Type="nvarchar" />
+          <Property Name="BUTXT" MaxLength="35" Type="nvarchar" />
           <Property Name="PERIOD_MONTH" Type="int" />
           <Property Name="PERIOD_YEAR" Type="int" />
-          <Property Name="LEVEL_PLANT_ID" Type="nvarchar" MaxLength="4" />
-          <Property Name="LEVEL_PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="LEVEL_PLANT_ID" MaxLength="4" Type="nvarchar" />
+          <Property Name="LEVEL_PLANT_NAME" MaxLength="30" Type="nvarchar" />
           <Property Name="SUBMISSION_DATE" Type="datetime" />
-          <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" />
-          <Property Name="EX_GOODTYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="WASTE_QTY" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="WASTE_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="RETURN_QTY" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="RETURN_UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="SUPPLIER_PLANT" MaxLength="70" Type="nvarchar" />
+          <Property Name="EX_GOODTYP" MaxLength="2" Type="nvarchar" />
+          <Property Name="WASTE_QTY" Precision="15" Scale="2" Type="decimal" />
+          <Property Name="WASTE_UOM" MaxLength="5" Type="nvarchar" />
+          <Property Name="RETURN_QTY" Precision="15" Scale="2" Type="decimal" />
+          <Property Name="RETURN_UOM" MaxLength="5" Type="nvarchar" />
           <Property Name="STATUS" Type="int" />
           <Property Name="GOV_STATUS" Type="int" />
           <Property Name="DECREE_DATE" Type="datetime" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="APPROVED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="APPROVED_DATE" Type="datetime" />
-          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
+          <Property Name="NPPBKC_ID" MaxLength="15" Type="nvarchar" />
+          <Property Name="EX_TYP_DESC" MaxLength="65" Type="nvarchar" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
             <PropertyRef Name="LACK1_DOCUMENT_ID" />
           </Key>
-          <Property Name="LACK1_DOCUMENT_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_DOCUMENT_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
           <Property Name="LACK1_ID" Type="int" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" />
+          <Property Name="FILE_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="FILE_PATH" MaxLength="250" Type="nvarchar" />
         </EntityType>
         <EntityType Name="LACK1_ITEM">
           <Key>
             <PropertyRef Name="LACK1_ITEM_ID" />
           </Key>
-          <Property Name="LACK1_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ITEM_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
           <Property Name="LACK1_ID" Type="int" />
-          <Property Name="BEGINNING_BALANCE" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="INCOME" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="USAGE" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="PRODUCTION" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="BEGINNING_BALANCE" Precision="15" Scale="2" Type="decimal" />
+          <Property Name="INCOME" Precision="15" Scale="2" Type="decimal" />
+          <Property Name="USAGE" Precision="18" Scale="2" Type="decimal" />
+          <Property Name="PRODUCTION" Precision="18" Scale="2" Type="decimal" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
             <PropertyRef Name="LACK2_ID" />
           </Key>
-          <Property Name="LACK2_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="PERIOD_MONTH" Type="int" Nullable="false" />
-          <Property Name="PERIOD_YEAR" Type="int" Nullable="false" />
-          <Property Name="LEVEL_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="LEVEL_PLANT_NAME" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="LEVEL_PLANT_CITY" Type="nvarchar" MaxLength="25" />
-          <Property Name="SUBMISSION_DATE" Type="datetime" Nullable="false" />
-          <Property Name="EX_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" Nullable="false" />
-          <Property Name="GOV_STATUS" Type="int" Nullable="false" />
-          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="LACK2_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="BUKRS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="BUTXT" Nullable="false" MaxLength="35" Type="nvarchar" />
+          <Property Name="PERIOD_MONTH" Nullable="false" Type="int" />
+          <Property Name="PERIOD_YEAR" Nullable="false" Type="int" />
+          <Property Name="LEVEL_PLANT_ID" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="LEVEL_PLANT_NAME" Nullable="false" MaxLength="30" Type="nvarchar" />
+          <Property Name="LEVEL_PLANT_CITY" MaxLength="25" Type="nvarchar" />
+          <Property Name="SUBMISSION_DATE" Nullable="false" Type="datetime" />
+          <Property Name="EX_GOOD_TYP" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="EX_TYP_DESC" Nullable="false" MaxLength="65" Type="nvarchar" />
+          <Property Name="GOV_STATUS" Nullable="false" Type="int" />
+          <Property Name="STATUS" Nullable="false" Type="int" />
           <Property Name="DECREE_DATE" Type="datetime" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="APPROVED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="LACK2_DOCUMENT">
           <Key>
             <PropertyRef Name="LACK2_DOCUMENT_ID" />
           </Key>
-          <Property Name="LACK2_DOCUMENT_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="LACK2_ID" Type="int" Nullable="false" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="LACK2_DOCUMENT_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="LACK2_ID" Nullable="false" Type="int" />
+          <Property Name="FILE_NAME" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="FILE_PATH" Nullable="false" MaxLength="250" Type="nvarchar" />
         </EntityType>
         <EntityType Name="LACK2_ITEM">
           <Key>
             <PropertyRef Name="LACK2_ITEM_ID" />
           </Key>
-          <Property Name="LACK2_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="LACK2_ID" Type="int" Nullable="false" />
-          <Property Name="CK5_ID" Type="bigint" Nullable="false" />
+          <Property Name="LACK2_ITEM_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="LACK2_ID" Nullable="false" Type="int" />
+          <Property Name="CK5_ID" Nullable="false" Type="bigint" />
         </EntityType>
         <EntityType Name="LFA1">
           <Key>
             <PropertyRef Name="LIFNR" />
           </Key>
-          <Property Name="LIFNR" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="NAME1" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="NAME2" Type="nvarchar" MaxLength="35" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="LIFNR" Nullable="false" MaxLength="10" Type="nvarchar" />
+          <Property Name="NAME1" Nullable="false" MaxLength="35" Type="nvarchar" />
+          <Property Name="NAME2" MaxLength="35" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="MATERIAL_UOM">
           <Key>
             <PropertyRef Name="MATERIAL_UOM_ID" />
           </Key>
-          <Property Name="MATERIAL_UOM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
-          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="MATERIAL_UOM_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="STICKER_CODE" Nullable="false" MaxLength="18" Type="nvarchar" />
+          <Property Name="WERKS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="MEINH" MaxLength="10" Type="nvarchar" />
+          <Property Name="UMREZ" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="UMREN" Precision="18" Scale="2" Type="numeric" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
             <PropertyRef Name="MENGETAHUI_ID" />
           </Key>
-          <Property Name="MENGETAHUI_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MENGETAHUI_CODE" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="MENGETAHUI_DESC" Type="nvarchar" MaxLength="150" />
+          <Property Name="MENGETAHUI_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="MENGETAHUI_CODE" Nullable="false" MaxLength="30" Type="nvarchar" />
+          <Property Name="MENGETAHUI_DESC" MaxLength="150" Type="nvarchar" />
         </EntityType>
         <EntityType Name="MONTH">
           <Key>
             <PropertyRef Name="MONTH_ID" />
           </Key>
-          <Property Name="MONTH_ID" Type="int" Nullable="false" />
-          <Property Name="MONTH_NAME_IND" Type="nvarchar" MaxLength="15" />
-          <Property Name="MONTH_NAME_ENG" Type="nvarchar" MaxLength="15" />
+          <Property Name="MONTH_ID" Nullable="false" Type="int" />
+          <Property Name="MONTH_NAME_IND" MaxLength="15" Type="nvarchar" />
+          <Property Name="MONTH_NAME_ENG" MaxLength="15" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
             <PropertyRef Name="PAGE_ID" />
           </Key>
-          <Property Name="PAGE_ID" Type="int" Nullable="false" />
-          <Property Name="PAGE_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="PAGE_URL" Type="nvarchar" MaxLength="100" />
-          <Property Name="MENU_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="PAGE_ID" Nullable="false" Type="int" />
+          <Property Name="PAGE_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="PAGE_URL" MaxLength="100" Type="nvarchar" />
+          <Property Name="MENU_NAME" MaxLength="50" Type="nvarchar" />
           <Property Name="PARENT_PAGE_ID" Type="int" />
         </EntityType>
         <EntityType Name="PAGE_MAP">
           <Key>
             <PropertyRef Name="PAGE_MAP_ID" />
           </Key>
-          <Property Name="PAGE_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PAGE_ID" Type="int" Nullable="false" />
-          <Property Name="BROLE" Type="nvarchar" MaxLength="10" />
+          <Property Name="PAGE_MAP_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="PAGE_ID" Nullable="false" Type="int" />
+          <Property Name="BROLE" MaxLength="10" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PARAMATER">
           <Key>
             <PropertyRef Name="PARAMETER_ID" />
           </Key>
-          <Property Name="PARAMETER_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PARAMETER_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
           <Property Name="PARAMETER_CODE" Type="int" />
-          <Property Name="PARAMETER_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="PARAMETER_NAME" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PBCK1">
           <Key>
             <PropertyRef Name="PBCK1_ID" />
           </Key>
-          <Property Name="PBCK1_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
+          <Property Name="PBCK1_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="NUMBER" Nullable="false" MaxLength="35" Type="nvarchar" />
           <Property Name="PBCK1_REF" Type="int" />
-          <Property Name="PBCK1_TYPE" Type="int" Nullable="false" />
+          <Property Name="PBCK1_TYPE" Nullable="false" Type="int" />
           <Property Name="PERIOD_FROM" Type="datetime" />
           <Property Name="PERIOD_TO" Type="datetime" />
           <Property Name="REPORTED_ON" Type="datetime" />
-          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="NPPBKC_BUKRS" Type="nvarchar" MaxLength="4" />
-          <Property Name="NPPBCK_BUTXT" Type="nvarchar" MaxLength="35" />
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="EXC_TYP_DESC" Type="nvarchar" MaxLength="65" />
-          <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" Nullable="false" />
+          <Property Name="NPPBKC_ID" MaxLength="15" Type="nvarchar" />
+          <Property Name="NPPBKC_BUKRS" MaxLength="4" Type="nvarchar" />
+          <Property Name="NPPBCK_BUTXT" MaxLength="35" Type="nvarchar" />
+          <Property Name="EXC_GOOD_TYP" MaxLength="2" Type="nvarchar" />
+          <Property Name="EXC_TYP_DESC" MaxLength="65" Type="nvarchar" />
+          <Property Name="SUPPLIER_PLANT" Nullable="false" MaxLength="70" Type="nvarchar" />
           <Property Name="SUPPLIER_PORT_ID" Type="int" />
-          <Property Name="SUPPLIER_ADDRESS" Type="nvarchar" MaxLength="50" />
-          <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
+          <Property Name="SUPPLIER_ADDRESS" MaxLength="50" Type="nvarchar" />
+          <Property Name="SUPPLIER_PHONE" MaxLength="15" Type="nvarchar" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="REQUEST_QTY" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="REQUEST_QTY_UOM" MaxLength="5" Type="nvarchar" />
+          <Property Name="LATEST_SALDO" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="LATEST_SALDO_UOM" MaxLength="5" Type="nvarchar" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
           <Property Name="LACK1_TO_MONTH" Type="int" />
           <Property Name="LACK1_TO_YEAR" Type="int" />
-          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="STATUS" Nullable="false" Type="int" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Precision="18" Scale="0" Type="numeric" />
           <Property Name="DECREE_DATE" Type="datetime" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="CREATED_BY" MaxLength="50" Type="nvarchar" />
+          <Property Name="APPROVED_BY_POA" MaxLength="50" Type="nvarchar" />
           <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="SUPPLIER_PORT_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="SUPPLIER_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="SUPPLIER_KPPBC_ID" Type="nvarchar" MaxLength="10" />
-          <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
-          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="SUPPLIER_PORT_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="SUPPLIER_NPPBKC_ID" MaxLength="15" Type="nvarchar" />
+          <Property Name="SUPPLIER_KPPBC_ID" MaxLength="10" Type="nvarchar" />
+          <Property Name="SUPPLIER_PLANT_WERKS" MaxLength="4" Type="nvarchar" />
+          <Property Name="APPROVED_BY_MANAGER" MaxLength="50" Type="nvarchar" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
-          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
+          <Property Name="REMAINING_QUOTA" Precision="18" Scale="0" Type="decimal" />
+          <Property Name="NPPBKC_KPPBC_ID" MaxLength="10" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
             <PropertyRef Name="PBCK1_DECREE_DOC_ID" />
           </Key>
-          <Property Name="PBCK1_DECREE_DOC_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PBCK1_ID" Type="int" Nullable="false" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PBCK1_DECREE_DOC_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="PBCK1_ID" Nullable="false" Type="int" />
+          <Property Name="FILE_NAME" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="FILE_PATH" Nullable="false" MaxLength="250" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_CONVERTER">
           <Key>
             <PropertyRef Name="PBCK1_PROD_COV_ID" />
           </Key>
-          <Property Name="PBCK1_PROD_COV_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK1_PROD_COV_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
           <Property Name="PBCK1_ID" Type="int" />
-          <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
-          <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
-          <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="PROD_CODE" MaxLength="2" Type="nvarchar" />
+          <Property Name="PRODUCT_TYPE" MaxLength="35" Type="nvarchar" />
+          <Property Name="PRODUCT_ALIAS" MaxLength="35" Type="nvarchar" />
+          <Property Name="CONVERTER_OUTPUT" Precision="18" Scale="2" Type="numeric" />
+          <Property Name="CONVERTER_UOM_ID" MaxLength="5" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
           <Key>
             <PropertyRef Name="PBCK1_PROD_PLAN_ID" />
           </Key>
-          <Property Name="PBCK1_PROD_PLAN_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK1_PROD_PLAN_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
           <Property Name="PBCK1_ID" Type="int" />
-          <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
-          <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
-          <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="AMOUNT" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="BKC_REQUIRED" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PROD_CODE" MaxLength="2" Type="nvarchar" />
+          <Property Name="PRODUCT_TYPE" MaxLength="35" Type="nvarchar" />
+          <Property Name="PRODUCT_ALIAS" MaxLength="35" Type="nvarchar" />
+          <Property Name="AMOUNT" Precision="18" Scale="2" Type="decimal" />
+          <Property Name="BKC_REQUIRED" Precision="18" Scale="2" Type="decimal" />
           <Property Name="MONTH" Type="int" />
-          <Property Name="BKC_REQUIRED_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="BKC_REQUIRED_UOM_ID" MaxLength="5" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PBCK1_QUOTA">
           <Key>
             <PropertyRef Name="PBCK1_QUOTA_ID" />
           </Key>
-          <Property Name="PBCK1_QUOTA_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PBCK1_ID" Type="int" Nullable="false" />
-          <Property Name="CK5_ID" Type="bigint" Nullable="false" />
-          <Property Name="CK5_TRANS_TYPE" Type="int" Nullable="false" />
-          <Property Name="CK5_GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="0" Nullable="false" />
-          <Property Name="PBCK1_QTY_APPROVED" Type="decimal" Precision="18" Scale="0" Nullable="false" />
-          <Property Name="PREV_REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" Nullable="false" />
-          <Property Name="RECEIVED_AMOUNT" Type="decimal" Precision="18" Scale="0" Nullable="false" />
-          <Property Name="TOTAL_REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="PBCK1_QUOTA_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="PBCK1_ID" Nullable="false" Type="int" />
+          <Property Name="CK5_ID" Nullable="false" Type="bigint" />
+          <Property Name="CK5_TRANS_TYPE" Nullable="false" Type="int" />
+          <Property Name="CK5_GRAND_TOTAL_EX" Nullable="false" Precision="18" Scale="0" Type="decimal" />
+          <Property Name="PBCK1_QTY_APPROVED" Nullable="false" Precision="18" Scale="0" Type="decimal" />
+          <Property Name="PREV_REMAINING_QUOTA" Nullable="false" Precision="18" Scale="0" Type="decimal" />
+          <Property Name="RECEIVED_AMOUNT" Nullable="false" Precision="18" Scale="0" Type="decimal" />
+          <Property Name="TOTAL_REMAINING_QUOTA" Nullable="false" Precision="18" Scale="0" Type="decimal" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
         </EntityType>
         <EntityType Name="PLANT_RECEIVE_MATERIAL">
           <Key>
             <PropertyRef Name="PLANT_MATERIAL_ID" />
           </Key>
-          <Property Name="PLANT_MATERIAL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
+          <Property Name="PLANT_MATERIAL_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="PLANT_ID" MaxLength="4" Type="nvarchar" />
+          <Property Name="EXC_GOOD_TYP" Nullable="false" MaxLength="2" Type="nvarchar" />
         </EntityType>
         <EntityType Name="POA">
           <Key>
             <PropertyRef Name="POA_ID" />
           </Key>
-          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="ID_CARD" Type="nvarchar" MaxLength="22" Nullable="false" />
-          <Property Name="POA_PHONE" Type="nvarchar" MaxLength="25" Nullable="false" />
-          <Property Name="POA_ADDRESS" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="POA_EMAIL" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="PRINTED_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="TITLE" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="LOGIN_AS" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="POA_ID" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="ID_CARD" Nullable="false" MaxLength="22" Type="nvarchar" />
+          <Property Name="POA_PHONE" Nullable="false" MaxLength="25" Type="nvarchar" />
+          <Property Name="POA_ADDRESS" Nullable="false" MaxLength="200" Type="nvarchar" />
+          <Property Name="POA_EMAIL" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="PRINTED_NAME" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="TITLE" Nullable="false" MaxLength="35" Type="nvarchar" />
+          <Property Name="LOGIN_AS" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="MANAGER_ID" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
@@ -504,100 +504,100 @@
           <Key>
             <PropertyRef Name="POA_MAP_ID" />
           </Key>
-          <Property Name="POA_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
-          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="POA_MAP_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="NPPBKC_ID" Nullable="false" MaxLength="15" Type="nvarchar" />
+          <Property Name="WERKS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="POA_ID" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="POA_SK">
           <Key>
             <PropertyRef Name="POA_SK_ID" />
           </Key>
-          <Property Name="POA_SK_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="POA_SK_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="POA_ID" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="FILE_NAME" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="FILE_PATH" Nullable="false" MaxLength="250" Type="nvarchar" />
         </EntityType>
         <EntityType Name="PRINT_HISTORY">
           <Key>
             <PropertyRef Name="PRINT_HISTORY_ID" />
           </Key>
-          <Property Name="PRINT_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="bigint" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINT_DATE" Type="datetime" Nullable="false" />
-          <Property Name="PRINT_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PRINT_HISTORY_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="FORM_TYPE_ID" Nullable="false" Type="int" />
+          <Property Name="FORM_ID" Nullable="false" Type="bigint" />
+          <Property Name="FORM_NUMBER" MaxLength="30" Type="nvarchar" />
+          <Property Name="PRINT_DATE" Nullable="false" Type="datetime" />
+          <Property Name="PRINT_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
           </Key>
-          <Property Name="SUPPLIER_PORT_ID" Type="int" Nullable="false" />
-          <Property Name="PORT_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="SUPPLIER_PORT_ID" Nullable="false" Type="int" />
+          <Property Name="PORT_NAME" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="T001">
           <Key>
             <PropertyRef Name="BUKRS" />
           </Key>
-          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="BUKRS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="BUTXT" Nullable="false" MaxLength="35" Type="nvarchar" />
+          <Property Name="NPWP" MaxLength="30" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="ORT01" Type="varchar" MaxLength="25" />
-          <Property Name="SPRAS" Type="varchar" MaxLength="150" />
+          <Property Name="ORT01" MaxLength="25" Type="varchar" />
+          <Property Name="SPRAS" MaxLength="150" Type="varchar" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
             <PropertyRef Name="BWKEY" />
           </Key>
-          <Property Name="BWKEY" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="BWKEY" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="BUKRS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="T001W">
           <Key>
             <PropertyRef Name="WERKS" />
           </Key>
-          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="NAME1" Type="nvarchar" MaxLength="30" />
-          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
-          <Property Name="PHONE" Type="nvarchar" MaxLength="25" />
-          <Property Name="ADDRESS" Type="nvarchar" MaxLength="200" />
-          <Property Name="SKEPTIS" Type="nvarchar" MaxLength="50" />
-          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="WERKS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="NAME1" MaxLength="30" Type="nvarchar" />
+          <Property Name="ORT01" MaxLength="25" Type="nvarchar" />
+          <Property Name="PHONE" MaxLength="25" Type="nvarchar" />
+          <Property Name="ADDRESS" MaxLength="200" Type="nvarchar" />
+          <Property Name="SKEPTIS" MaxLength="50" Type="nvarchar" />
+          <Property Name="NPPBKC_ID" MaxLength="15" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="IS_MAIN_PLANT" Type="bit" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
             <PropertyRef Name="UOM_ID" />
           </Key>
-          <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="UOM_ID" Nullable="false" MaxLength="5" Type="nvarchar" />
+          <Property Name="UOM_DESC" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
             <PropertyRef Name="USER_ID" />
           </Key>
-          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FIRST_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="LAST_NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="PHONE" Type="nvarchar" MaxLength="25" />
-          <Property Name="EMAIL" Type="nvarchar" MaxLength="35" />
-          <Property Name="ADDRESS" Type="nvarchar" MaxLength="200" />
+          <Property Name="USER_ID" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="FIRST_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="LAST_NAME" MaxLength="50" Type="nvarchar" />
+          <Property Name="PHONE" MaxLength="25" Type="nvarchar" />
+          <Property Name="EMAIL" MaxLength="35" Type="nvarchar" />
+          <Property Name="ADDRESS" MaxLength="200" Type="nvarchar" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="int" />
@@ -606,43 +606,43 @@
           <Key>
             <PropertyRef Name="BROLE" />
           </Key>
-          <Property Name="BROLE" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="BROLE_DESC" Type="nvarchar" MaxLength="100" />
+          <Property Name="BROLE" Nullable="false" MaxLength="10" Type="nvarchar" />
+          <Property Name="BROLE_DESC" MaxLength="100" Type="nvarchar" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
             <PropertyRef Name="VIRTUAL_PLANT_MAP_ID" />
           </Key>
-          <Property Name="VIRTUAL_PLANT_MAP_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="COMPANY_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="IMPORT_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="EXPORT_PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="VIRTUAL_PLANT_MAP_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="COMPANY_ID" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="IMPORT_PLANT_ID" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="EXPORT_PLANT_ID" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="CREATED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
             <PropertyRef Name="WORKFLOW_HISTORY_ID" />
           </Key>
-          <Property Name="WORKFLOW_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="bigint" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="nvarchar" MaxLength="30" />
-          <Property Name="ACTION" Type="int" Nullable="false" />
-          <Property Name="ACTION_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WORKFLOW_HISTORY_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="FORM_TYPE_ID" Nullable="false" Type="int" />
+          <Property Name="FORM_ID" Nullable="false" Type="bigint" />
+          <Property Name="FORM_NUMBER" MaxLength="30" Type="nvarchar" />
+          <Property Name="ACTION" Nullable="false" Type="int" />
+          <Property Name="ACTION_BY" Nullable="false" MaxLength="50" Type="nvarchar" />
           <Property Name="ACTION_DATE" Type="datetime" />
-          <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
-          <Property Name="ROLE" Type="int" Nullable="false" />
+          <Property Name="COMMENT" MaxLength="50" Type="nvarchar" />
+          <Property Name="ROLE" Nullable="false" Type="int" />
         </EntityType>
         <EntityType Name="WORKFLOW_STATE">
           <Key>
             <PropertyRef Name="WORKFLOW_STATE_ID" />
           </Key>
-          <Property Name="WORKFLOW_STATE_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ACTION" Type="int" Nullable="false" />
+          <Property Name="WORKFLOW_STATE_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="ACTION" Nullable="false" Type="int" />
           <Property Name="MENU_ID" Type="int" />
           <Property Name="EMAIL_TEMPLATE_ID" Type="int" />
           <Property Name="FORM_TYPE_ID" Type="int" />
@@ -651,74 +651,74 @@
           <Key>
             <PropertyRef Name="WF_STATE_USER_ID" />
           </Key>
-          <Property Name="WF_STATE_USER_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="WORKFLOW_STATE_ID" Type="bigint" Nullable="false" />
-          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WF_STATE_USER_ID" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+          <Property Name="WORKFLOW_STATE_ID" Nullable="false" Type="bigint" />
+          <Property Name="USER_ID" Nullable="false" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
             <PropertyRef Name="WERKS" />
             <PropertyRef Name="FA_CODE" />
           </Key>
-          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
-          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
-          <Property Name="PER_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" Nullable="false" />
-          <Property Name="SKEP_NO" Type="nvarchar" MaxLength="30" />
+          <Property Name="WERKS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="FA_CODE" Nullable="false" MaxLength="18" Type="nvarchar" />
+          <Property Name="STICKER_CODE" MaxLength="18" Type="nvarchar" />
+          <Property Name="PER_CODE" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="BRAND_CE" Nullable="false" MaxLength="65" Type="nvarchar" />
+          <Property Name="SKEP_NO" MaxLength="30" Type="nvarchar" />
           <Property Name="SKEP_DATE" Type="datetime" />
-          <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="SERIES_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
-          <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
-          <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="PROD_CODE" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="SERIES_CODE" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="BRAND_CONTENT" MaxLength="4" Type="nvarchar" />
+          <Property Name="MARKET_ID" MaxLength="2" Type="nvarchar" />
+          <Property Name="COUNTRY" MaxLength="3" Type="nvarchar" />
+          <Property Name="HJE_IDR" Precision="15" Scale="2" Type="numeric" />
+          <Property Name="HJE_CURR" MaxLength="5" Type="nvarchar" />
+          <Property Name="TARIFF" Precision="15" Scale="2" Type="numeric" />
+          <Property Name="TARIF_CURR" MaxLength="5" Type="nvarchar" />
+          <Property Name="COLOUR" MaxLength="70" Type="nvarchar" />
+          <Property Name="EXC_GOOD_TYP" MaxLength="2" Type="nvarchar" />
+          <Property Name="CUT_FILLER_CODE" MaxLength="30" Type="nvarchar" />
+          <Property Name="PRINTING_PRICE" Precision="15" Scale="2" Type="numeric" />
+          <Property Name="CONVERSION" Precision="15" Scale="2" Type="numeric" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
           <Property Name="IS_FROM_SAP" Type="bit" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="CREATED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
             <PropertyRef Name="EXC_GOOD_TYP" />
           </Key>
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="EXT_TYP_DESC" Type="nvarchar" MaxLength="65" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="EXC_GOOD_TYP" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="EXT_TYP_DESC" MaxLength="65" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_KPPBC">
           <Key>
             <PropertyRef Name="KPPBC_ID" />
           </Key>
-          <Property Name="KPPBC_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="30" />
-          <Property Name="MENGETAHUI" Type="nvarchar" MaxLength="70" />
-          <Property Name="CK1_KEP_HEADER" Type="nvarchar" MaxLength="100" />
-          <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="100" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="KPPBC_ID" Nullable="false" MaxLength="10" Type="nvarchar" />
+          <Property Name="KPPBC_TYPE" MaxLength="30" Type="nvarchar" />
+          <Property Name="MENGETAHUI" MaxLength="70" Type="nvarchar" />
+          <Property Name="CK1_KEP_HEADER" MaxLength="100" Type="nvarchar" />
+          <Property Name="CK1_KEP_FOOTER" MaxLength="100" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
             <PropertyRef Name="MARKET_ID" />
           </Key>
-          <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="MARKET_DESC" Type="nvarchar" MaxLength="10" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MARKET_ID" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="MARKET_DESC" MaxLength="10" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MATERIAL">
@@ -726,24 +726,24 @@
             <PropertyRef Name="STICKER_CODE" />
             <PropertyRef Name="WERKS" />
           </Key>
-          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
-          <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MATERIAL_GROUP" Type="nvarchar" MaxLength="35" />
-          <Property Name="PURCHASING_GROUP" Type="nvarchar" MaxLength="35" />
-          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="IS_FROM_SAP" Type="bit" Nullable="false" />
+          <Property Name="STICKER_CODE" Nullable="false" MaxLength="18" Type="nvarchar" />
+          <Property Name="MATERIAL_DESC" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="MATERIAL_GROUP" MaxLength="35" Type="nvarchar" />
+          <Property Name="PURCHASING_GROUP" MaxLength="35" Type="nvarchar" />
+          <Property Name="WERKS" Nullable="false" MaxLength="4" Type="nvarchar" />
+          <Property Name="EXC_GOOD_TYP" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="ISSUE_STORANGE_LOC" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="BASE_UOM_ID" Nullable="false" MaxLength="5" Type="nvarchar" />
+          <Property Name="IS_FROM_SAP" Nullable="false" Type="bit" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATED_BY" MaxLength="50" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="HJE" Precision="15" Scale="2" Type="numeric" />
+          <Property Name="HJE_CURR" MaxLength="5" Type="nvarchar" />
+          <Property Name="TARIFF" Precision="15" Scale="2" Type="decimal" />
+          <Property Name="TARIFF_CURR" MaxLength="5" Type="nvarchar" />
           <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CLIENT_DELETION" Type="bit" />
         </EntityType>
@@ -751,55 +751,55 @@
           <Key>
             <PropertyRef Name="NPPBKC_ID" />
           </Key>
-          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
-          <Property Name="ADDR1" Type="nvarchar" MaxLength="50" />
-          <Property Name="ADDR2" Type="nvarchar" MaxLength="50" />
-          <Property Name="CITY" Type="nvarchar" MaxLength="50" />
-          <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="10" />
-          <Property Name="KPPBC_ID" Type="nvarchar" MaxLength="10" />
-          <Property Name="REGION" Type="nvarchar" MaxLength="20" />
-          <Property Name="REGION_DGCE" Type="nvarchar" MaxLength="150" />
-          <Property Name="VENDOR_ID" Type="nvarchar" MaxLength="10" />
-          <Property Name="BUKRS" Type="nvarchar" MaxLength="4" />
-          <Property Name="TEXT_TO" Type="nvarchar" MaxLength="150" />
+          <Property Name="NPPBKC_ID" Nullable="false" MaxLength="15" Type="nvarchar" />
+          <Property Name="ADDR1" MaxLength="50" Type="nvarchar" />
+          <Property Name="ADDR2" MaxLength="50" Type="nvarchar" />
+          <Property Name="CITY" MaxLength="50" Type="nvarchar" />
+          <Property Name="CITY_ALIAS" MaxLength="10" Type="nvarchar" />
+          <Property Name="KPPBC_ID" MaxLength="10" Type="nvarchar" />
+          <Property Name="REGION" MaxLength="20" Type="nvarchar" />
+          <Property Name="REGION_DGCE" MaxLength="150" Type="nvarchar" />
+          <Property Name="VENDOR_ID" MaxLength="10" Type="nvarchar" />
+          <Property Name="BUKRS" MaxLength="4" Type="nvarchar" />
+          <Property Name="TEXT_TO" MaxLength="150" Type="nvarchar" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" MaxLength="50" Type="nvarchar" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
             <PropertyRef Name="PER_CODE" />
           </Key>
-          <Property Name="PER_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="PER_DESC" Type="nvarchar" MaxLength="30" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="PER_CODE" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="PER_DESC" MaxLength="30" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PRODTYP">
           <Key>
             <PropertyRef Name="PROD_CODE" />
           </Key>
-          <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
-          <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="PROD_CODE" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="PRODUCT_TYPE" MaxLength="35" Type="nvarchar" />
+          <Property Name="PRODUCT_ALIAS" MaxLength="35" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_SERIES">
           <Key>
             <PropertyRef Name="SERIES_CODE" />
           </Key>
-          <Property Name="SERIES_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="SERIES_VALUE" Type="nvarchar" MaxLength="4" />
-          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="SERIES_CODE" Nullable="false" MaxLength="2" Type="nvarchar" />
+          <Property Name="SERIES_VALUE" MaxLength="4" Type="nvarchar" />
+          <Property Name="CREATED_DATE" Nullable="false" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <Association Name="FK_BROLE_MAP_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="BROLE_MAP" Type="Self.BROLE_MAP" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.BROLE_MAP" Multiplicity="*" Role="BROLE_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -810,8 +810,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_BROLE_MAP_USER_BROLE">
-          <End Role="USER_BROLE" Type="Self.USER_BROLE" Multiplicity="1" />
-          <End Role="BROLE_MAP" Type="Self.BROLE_MAP" Multiplicity="*" />
+          <End Type="Self.USER_BROLE" Multiplicity="1" Role="USER_BROLE" />
+          <End Type="Self.BROLE_MAP" Multiplicity="*" Role="BROLE_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER_BROLE">
               <PropertyRef Name="BROLE" />
@@ -822,8 +822,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.CHANGES_HISTORY" Multiplicity="*" Role="CHANGES_HISTORY" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -834,8 +834,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_APPROVED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.CK5" Multiplicity="*" Role="CK5" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -846,8 +846,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_CREATED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.CK5" Multiplicity="*" Role="CK5" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -858,8 +858,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD">
-          <End Role="CK5" Type="Self.CK5" Multiplicity="1" />
-          <End Role="CK5_FILE_UPLOAD" Type="Self.CK5_FILE_UPLOAD" Multiplicity="*" />
+          <End Type="Self.CK5" Multiplicity="1" Role="CK5" />
+          <End Type="Self.CK5_FILE_UPLOAD" Multiplicity="*" Role="CK5_FILE_UPLOAD" />
           <ReferentialConstraint>
             <Principal Role="CK5">
               <PropertyRef Name="CK5_ID" />
@@ -870,8 +870,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_FILE_UPLOAD_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="CK5_FILE_UPLOAD" Type="Self.CK5_FILE_UPLOAD" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.CK5_FILE_UPLOAD" Multiplicity="*" Role="CK5_FILE_UPLOAD" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -882,8 +882,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_MATERIAL_CK5">
-          <End Role="CK5" Type="Self.CK5" Multiplicity="0..1" />
-          <End Role="CK5_MATERIAL" Type="Self.CK5_MATERIAL" Multiplicity="*" />
+          <End Type="Self.CK5" Multiplicity="0..1" Role="CK5" />
+          <End Type="Self.CK5_MATERIAL" Multiplicity="*" Role="CK5_MATERIAL" />
           <ReferentialConstraint>
             <Principal Role="CK5">
               <PropertyRef Name="CK5_ID" />
@@ -894,8 +894,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_PBCK1">
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="0..1" />
-          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
+          <End Type="Self.PBCK1" Multiplicity="0..1" Role="PBCK1" />
+          <End Type="Self.CK5" Multiplicity="*" Role="CK5" />
           <ReferentialConstraint>
             <Principal Role="PBCK1">
               <PropertyRef Name="PBCK1_ID" />
@@ -906,8 +906,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.CK5" Multiplicity="*" Role="CK5" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -918,8 +918,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CK5_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="CK5" Type="Self.CK5" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.CK5" Multiplicity="*" Role="CK5" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -930,8 +930,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DOC_NUMBER_SEQ_MONTH">
-          <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
-          <End Role="DOC_NUMBER_SEQ" Type="Self.DOC_NUMBER_SEQ" Multiplicity="*" />
+          <End Type="Self.MONTH" Multiplicity="0..1" Role="MONTH" />
+          <End Type="Self.DOC_NUMBER_SEQ" Multiplicity="*" Role="DOC_NUMBER_SEQ" />
           <ReferentialConstraint>
             <Principal Role="MONTH">
               <PropertyRef Name="MONTH_ID" />
@@ -942,8 +942,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
-          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="0..1" />
-          <End Role="EX_GROUP_TYPE_DETAILS" Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <End Type="Self.EX_GROUP_TYPE" Multiplicity="0..1" Role="EX_GROUP_TYPE" />
+          <End Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" Role="EX_GROUP_TYPE_DETAILS" />
           <ReferentialConstraint>
             <Principal Role="EX_GROUP_TYPE">
               <PropertyRef Name="EX_GROUP_TYPE_ID" />
@@ -954,8 +954,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
-          <End Role="EX_GROUP_TYPE_DETAILS" Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" Role="ZAIDM_EX_GOODTYP" />
+          <End Type="Self.EX_GROUP_TYPE_DETAILS" Multiplicity="*" Role="EX_GROUP_TYPE_DETAILS" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
               <PropertyRef Name="EXC_GOOD_TYP" />
@@ -966,8 +966,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_HEADER_FOOTER_CREATED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.HEADER_FOOTER" Multiplicity="*" Role="HEADER_FOOTER" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -978,8 +978,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
-          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="1" />
-          <End Role="HEADER_FOOTER_FORM_MAP" Type="Self.HEADER_FOOTER_FORM_MAP" Multiplicity="*" />
+          <End Type="Self.HEADER_FOOTER" Multiplicity="1" Role="HEADER_FOOTER" />
+          <End Type="Self.HEADER_FOOTER_FORM_MAP" Multiplicity="*" Role="HEADER_FOOTER_FORM_MAP" />
           <ReferentialConstraint>
             <Principal Role="HEADER_FOOTER">
               <PropertyRef Name="HEADER_FOOTER_ID" />
@@ -990,8 +990,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="*" />
+          <End Type="Self.T001" Multiplicity="1" Role="T001" />
+          <End Type="Self.HEADER_FOOTER" Multiplicity="*" Role="HEADER_FOOTER" />
           <ReferentialConstraint>
             <Principal Role="T001">
               <PropertyRef Name="BUKRS" />
@@ -1002,8 +1002,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_HEADER_FOOTER_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="HEADER_FOOTER" Type="Self.HEADER_FOOTER" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.HEADER_FOOTER" Multiplicity="*" Role="HEADER_FOOTER" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1014,8 +1014,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_DOCUMENT_LACK1">
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
-          <End Role="LACK1_DOCUMENT" Type="Self.LACK1_DOCUMENT" Multiplicity="*" />
+          <End Type="Self.LACK1" Multiplicity="0..1" Role="LACK1" />
+          <End Type="Self.LACK1_DOCUMENT" Multiplicity="*" Role="LACK1_DOCUMENT" />
           <ReferentialConstraint>
             <Principal Role="LACK1">
               <PropertyRef Name="LACK1_ID" />
@@ -1026,8 +1026,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_ITEM_LACK1">
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
-          <End Role="LACK1_ITEM" Type="Self.LACK1_ITEM" Multiplicity="*" />
+          <End Type="Self.LACK1" Multiplicity="0..1" Role="LACK1" />
+          <End Type="Self.LACK1_ITEM" Multiplicity="*" Role="LACK1_ITEM" />
           <ReferentialConstraint>
             <Principal Role="LACK1">
               <PropertyRef Name="LACK1_ID" />
@@ -1038,8 +1038,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_MONTH">
-          <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <End Type="Self.MONTH" Multiplicity="0..1" Role="MONTH" />
+          <End Type="Self.LACK1" Multiplicity="*" Role="LACK1" />
           <ReferentialConstraint>
             <Principal Role="MONTH">
               <PropertyRef Name="MONTH_ID" />
@@ -1050,8 +1050,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_RETURN_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.LACK1" Multiplicity="*" Role="LACK1" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1062,8 +1062,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_USER_APPROVED">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.LACK1" Multiplicity="*" Role="LACK1" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1074,8 +1074,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_USER_CREATED">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.LACK1" Multiplicity="*" Role="LACK1" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1086,8 +1086,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_WASTE_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.LACK1" Multiplicity="*" Role="LACK1" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1098,8 +1098,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_DOCUMENT_LACK2">
-          <End Role="LACK2" Type="Self.LACK2" Multiplicity="1" />
-          <End Role="LACK2_DOCUMENT" Type="Self.LACK2_DOCUMENT" Multiplicity="*" />
+          <End Type="Self.LACK2" Multiplicity="1" Role="LACK2" />
+          <End Type="Self.LACK2_DOCUMENT" Multiplicity="*" Role="LACK2_DOCUMENT" />
           <ReferentialConstraint>
             <Principal Role="LACK2">
               <PropertyRef Name="LACK2_ID" />
@@ -1110,8 +1110,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_ITEM_CK5">
-          <End Role="CK5" Type="Self.CK5" Multiplicity="1" />
-          <End Role="LACK2_ITEM" Type="Self.LACK2_ITEM" Multiplicity="*" />
+          <End Type="Self.CK5" Multiplicity="1" Role="CK5" />
+          <End Type="Self.LACK2_ITEM" Multiplicity="*" Role="LACK2_ITEM" />
           <ReferentialConstraint>
             <Principal Role="CK5">
               <PropertyRef Name="CK5_ID" />
@@ -1122,8 +1122,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_ITEM_LACK2">
-          <End Role="LACK2" Type="Self.LACK2" Multiplicity="1" />
-          <End Role="LACK2_ITEM" Type="Self.LACK2_ITEM" Multiplicity="*" />
+          <End Type="Self.LACK2" Multiplicity="1" Role="LACK2" />
+          <End Type="Self.LACK2_ITEM" Multiplicity="*" Role="LACK2_ITEM" />
           <ReferentialConstraint>
             <Principal Role="LACK2">
               <PropertyRef Name="LACK2_ID" />
@@ -1134,8 +1134,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_MONTH">
-          <End Role="MONTH" Type="Self.MONTH" Multiplicity="1" />
-          <End Role="LACK2" Type="Self.LACK2" Multiplicity="*" />
+          <End Type="Self.MONTH" Multiplicity="1" Role="MONTH" />
+          <End Type="Self.LACK2" Multiplicity="*" Role="LACK2" />
           <ReferentialConstraint>
             <Principal Role="MONTH">
               <PropertyRef Name="MONTH_ID" />
@@ -1146,8 +1146,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_USER_APPROVED_BY">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="LACK2" Type="Self.LACK2" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.LACK2" Multiplicity="*" Role="LACK2" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1158,8 +1158,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_USER_CREATED_BY">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="LACK2" Type="Self.LACK2" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.LACK2" Multiplicity="*" Role="LACK2" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1170,8 +1170,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK2_USER_MODIFIED_BY">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="LACK2" Type="Self.LACK2" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.LACK2" Multiplicity="*" Role="LACK2" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1182,8 +1182,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
-          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" />
-          <End Role="MATERIAL_UOM" Type="Self.MATERIAL_UOM" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" Role="ZAIDM_EX_MATERIAL" />
+          <End Type="Self.MATERIAL_UOM" Multiplicity="*" Role="MATERIAL_UOM" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_MATERIAL">
               <PropertyRef Name="STICKER_CODE" />
@@ -1196,8 +1196,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PAGE_MAP_PAGE">
-          <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
-          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
+          <End Type="Self.PAGE" Multiplicity="1" Role="PAGE" />
+          <End Type="Self.PAGE_MAP" Multiplicity="*" Role="PAGE_MAP" />
           <ReferentialConstraint>
             <Principal Role="PAGE">
               <PropertyRef Name="PAGE_ID" />
@@ -1208,8 +1208,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PAGE_MAP_USER_BROLE">
-          <End Role="USER_BROLE" Type="Self.USER_BROLE" Multiplicity="0..1" />
-          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
+          <End Type="Self.USER_BROLE" Multiplicity="0..1" Role="USER_BROLE" />
+          <End Type="Self.PAGE_MAP" Multiplicity="*" Role="PAGE_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER_BROLE">
               <PropertyRef Name="BROLE" />
@@ -1220,8 +1220,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PAGE_PAGE">
-          <End Role="PAGE" Type="Self.PAGE" Multiplicity="0..1" />
-          <End Role="PAGE1" Type="Self.PAGE" Multiplicity="*" />
+          <End Type="Self.PAGE" Multiplicity="0..1" Role="PAGE" />
+          <End Type="Self.PAGE" Multiplicity="*" Role="PAGE1" />
           <ReferentialConstraint>
             <Principal Role="PAGE">
               <PropertyRef Name="PAGE_ID" />
@@ -1232,8 +1232,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_APPROVED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1244,8 +1244,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_CREATED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1256,8 +1256,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_DECREE_DOC_PBCK1">
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="1" />
-          <End Role="PBCK1_DECREE_DOC" Type="Self.PBCK1_DECREE_DOC" Multiplicity="*" />
+          <End Type="Self.PBCK1" Multiplicity="1" Role="PBCK1" />
+          <End Type="Self.PBCK1_DECREE_DOC" Multiplicity="*" Role="PBCK1_DECREE_DOC" />
           <ReferentialConstraint>
             <Principal Role="PBCK1">
               <PropertyRef Name="PBCK1_ID" />
@@ -1268,8 +1268,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_DECREE_DOC_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="PBCK1_DECREE_DOC" Type="Self.PBCK1_DECREE_DOC" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.PBCK1_DECREE_DOC" Multiplicity="*" Role="PBCK1_DECREE_DOC" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1280,8 +1280,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_LACK1_MONTH_FROM">
-          <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.MONTH" Multiplicity="0..1" Role="MONTH" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="MONTH">
               <PropertyRef Name="MONTH_ID" />
@@ -1292,8 +1292,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_MONTH">
-          <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.MONTH" Multiplicity="0..1" Role="MONTH" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="MONTH">
               <PropertyRef Name="MONTH_ID" />
@@ -1304,8 +1304,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_PBCK1">
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="0..1" />
-          <End Role="PBCK11" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.PBCK1" Multiplicity="0..1" Role="PBCK1" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK11" />
           <ReferentialConstraint>
             <Principal Role="PBCK1">
               <PropertyRef Name="PBCK1_ID" />
@@ -1316,8 +1316,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_PROD_CONVERTER_PBCK1">
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="0..1" />
-          <End Role="PBCK1_PROD_CONVERTER" Type="Self.PBCK1_PROD_CONVERTER" Multiplicity="*" />
+          <End Type="Self.PBCK1" Multiplicity="0..1" Role="PBCK1" />
+          <End Type="Self.PBCK1_PROD_CONVERTER" Multiplicity="*" Role="PBCK1_PROD_CONVERTER" />
           <ReferentialConstraint>
             <Principal Role="PBCK1">
               <PropertyRef Name="PBCK1_ID" />
@@ -1328,8 +1328,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_PROD_CONVERTER_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="PBCK1_PROD_CONVERTER" Type="Self.PBCK1_PROD_CONVERTER" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.PBCK1_PROD_CONVERTER" Multiplicity="*" Role="PBCK1_PROD_CONVERTER" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1340,8 +1340,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_PROD_PLAN_MONTH">
-          <End Role="MONTH" Type="Self.MONTH" Multiplicity="0..1" />
-          <End Role="PBCK1_PROD_PLAN" Type="Self.PBCK1_PROD_PLAN" Multiplicity="*" />
+          <End Type="Self.MONTH" Multiplicity="0..1" Role="MONTH" />
+          <End Type="Self.PBCK1_PROD_PLAN" Multiplicity="*" Role="PBCK1_PROD_PLAN" />
           <ReferentialConstraint>
             <Principal Role="MONTH">
               <PropertyRef Name="MONTH_ID" />
@@ -1352,8 +1352,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_PROD_PLAN_PBCK1">
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="0..1" />
-          <End Role="PBCK1_PROD_PLAN" Type="Self.PBCK1_PROD_PLAN" Multiplicity="*" />
+          <End Type="Self.PBCK1" Multiplicity="0..1" Role="PBCK1" />
+          <End Type="Self.PBCK1_PROD_PLAN" Multiplicity="*" Role="PBCK1_PROD_PLAN" />
           <ReferentialConstraint>
             <Principal Role="PBCK1">
               <PropertyRef Name="PBCK1_ID" />
@@ -1364,8 +1364,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_PROD_PLAN_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="PBCK1_PROD_PLAN" Type="Self.PBCK1_PROD_PLAN" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.PBCK1_PROD_PLAN" Multiplicity="*" Role="PBCK1_PROD_PLAN" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1376,8 +1376,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_QUOTA_CK5">
-          <End Role="CK5" Type="Self.CK5" Multiplicity="1" />
-          <End Role="PBCK1_QUOTA" Type="Self.PBCK1_QUOTA" Multiplicity="*" />
+          <End Type="Self.CK5" Multiplicity="1" Role="CK5" />
+          <End Type="Self.PBCK1_QUOTA" Multiplicity="*" Role="PBCK1_QUOTA" />
           <ReferentialConstraint>
             <Principal Role="CK5">
               <PropertyRef Name="CK5_ID" />
@@ -1388,8 +1388,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_QUOTA_PBCK1">
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="1" />
-          <End Role="PBCK1_QUOTA" Type="Self.PBCK1_QUOTA" Multiplicity="*" />
+          <End Type="Self.PBCK1" Multiplicity="1" Role="PBCK1" />
+          <End Type="Self.PBCK1_QUOTA" Multiplicity="*" Role="PBCK1_QUOTA" />
           <ReferentialConstraint>
             <Principal Role="PBCK1">
               <PropertyRef Name="PBCK1_ID" />
@@ -1400,8 +1400,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_QUOTA_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="PBCK1_QUOTA" Type="Self.PBCK1_QUOTA" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.PBCK1_QUOTA" Multiplicity="*" Role="PBCK1_QUOTA" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1412,8 +1412,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_REQUEST_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1424,8 +1424,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_SALDO_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="0..1" Role="UOM" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1436,8 +1436,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK1_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.PBCK1" Multiplicity="*" Role="PBCK1" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1448,8 +1448,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PLANT_RECEIVE_MATERIAL_T001W">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" Role="ZAIDM_EX_GOODTYP" />
+          <End Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" Role="PLANT_RECEIVE_MATERIAL" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
               <PropertyRef Name="EXC_GOOD_TYP" />
@@ -1460,8 +1460,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" Role="ZAIDM_EX_GOODTYP" />
+          <End Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" Role="PLANT_RECEIVE_MATERIAL" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
               <PropertyRef Name="EXC_GOOD_TYP" />
@@ -1472,8 +1472,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_CREATED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="POA" Type="Self.POA" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.POA" Multiplicity="*" Role="POA" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1484,8 +1484,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_LOGIN_AS_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="POA" Type="Self.POA" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.POA" Multiplicity="*" Role="POA" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1496,8 +1496,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_MAP_CREATED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.POA_MAP" Multiplicity="*" Role="POA_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1508,8 +1508,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_MAP_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.POA_MAP" Multiplicity="*" Role="POA_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1520,8 +1520,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_MAP_POA">
-          <End Role="POA" Type="Self.POA" Multiplicity="1" />
-          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
+          <End Type="Self.POA" Multiplicity="1" Role="POA" />
+          <End Type="Self.POA_MAP" Multiplicity="*" Role="POA_MAP" />
           <ReferentialConstraint>
             <Principal Role="POA">
               <PropertyRef Name="POA_ID" />
@@ -1532,8 +1532,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_MAP_T001W">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
+          <End Type="Self.T001W" Multiplicity="1" Role="T001W" />
+          <End Type="Self.POA_MAP" Multiplicity="*" Role="POA_MAP" />
           <ReferentialConstraint>
             <Principal Role="T001W">
               <PropertyRef Name="WERKS" />
@@ -1544,8 +1544,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_MAP_ZAIDM_EX_NPPBKC">
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" />
-          <End Role="POA_MAP" Type="Self.POA_MAP" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" Role="ZAIDM_EX_NPPBKC" />
+          <End Type="Self.POA_MAP" Multiplicity="*" Role="POA_MAP" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="NPPBKC_ID" />
@@ -1556,8 +1556,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="POA" Type="Self.POA" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.POA" Multiplicity="*" Role="POA" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1568,8 +1568,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_SK_POA">
-          <End Role="POA" Type="Self.POA" Multiplicity="1" />
-          <End Role="POA_SK" Type="Self.POA_SK" Multiplicity="*" />
+          <End Type="Self.POA" Multiplicity="1" Role="POA" />
+          <End Type="Self.POA_SK" Multiplicity="*" Role="POA_SK" />
           <ReferentialConstraint>
             <Principal Role="POA">
               <PropertyRef Name="POA_ID" />
@@ -1580,8 +1580,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="POA" Type="Self.POA" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.POA" Multiplicity="*" Role="POA" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1592,8 +1592,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PRINT_HISTORY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="PRINT_HISTORY" Type="Self.PRINT_HISTORY" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.PRINT_HISTORY" Multiplicity="*" Role="PRINT_HISTORY" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1604,8 +1604,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_T001_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="T001" Type="Self.T001" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.T001" Multiplicity="*" Role="T001" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1616,8 +1616,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_T001K_T001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+          <End Type="Self.T001" Multiplicity="1" Role="T001" />
+          <End Type="Self.T001K" Multiplicity="*" Role="T001K" />
           <ReferentialConstraint>
             <Principal Role="T001">
               <PropertyRef Name="BUKRS" />
@@ -1628,8 +1628,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_T001K_T1001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+          <End Type="Self.T001" Multiplicity="1" Role="T001" />
+          <End Type="Self.T001K" Multiplicity="*" Role="T001K" />
           <ReferentialConstraint>
             <Principal Role="T001">
               <PropertyRef Name="BUKRS" />
@@ -1640,8 +1640,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_T001W_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="T001W" Type="Self.T001W" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.T001W" Multiplicity="*" Role="T001W" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1652,8 +1652,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_T001W_ZAIDM_EX_NPPBKC">
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
-          <End Role="T001W" Type="Self.T001W" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" Role="ZAIDM_EX_NPPBKC" />
+          <End Type="Self.T001W" Multiplicity="*" Role="T001W" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="NPPBKC_ID" />
@@ -1664,8 +1664,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UOM_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="UOM" Type="Self.UOM" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.UOM" Multiplicity="*" Role="UOM" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1676,8 +1676,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" Role="VIRTUAL_PLANT_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1688,8 +1688,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <End Type="Self.T001W" Multiplicity="1" Role="T001W" />
+          <End Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" Role="VIRTUAL_PLANT_MAP" />
           <ReferentialConstraint>
             <Principal Role="T001W">
               <PropertyRef Name="WERKS" />
@@ -1700,8 +1700,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <End Type="Self.T001W" Multiplicity="1" Role="T001W" />
+          <End Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" Role="VIRTUAL_PLANT_MAP" />
           <ReferentialConstraint>
             <Principal Role="T001W">
               <PropertyRef Name="WERKS" />
@@ -1712,8 +1712,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" Role="VIRTUAL_PLANT_MAP" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1724,8 +1724,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_T001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
+          <End Type="Self.T001" Multiplicity="1" Role="T001" />
+          <End Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" Role="VIRTUAL_PLANT_MAP" />
           <ReferentialConstraint>
             <Principal Role="T001">
               <PropertyRef Name="BUKRS" />
@@ -1736,8 +1736,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WORKFLOW_HISTORY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="WORKFLOW_HISTORY" Type="Self.WORKFLOW_HISTORY" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.WORKFLOW_HISTORY" Multiplicity="*" Role="WORKFLOW_HISTORY" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1748,8 +1748,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
-          <End Role="EMAIL_TEMPLATE" Type="Self.EMAIL_TEMPLATE" Multiplicity="0..1" />
-          <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="*" />
+          <End Type="Self.EMAIL_TEMPLATE" Multiplicity="0..1" Role="EMAIL_TEMPLATE" />
+          <End Type="Self.WORKFLOW_STATE" Multiplicity="*" Role="WORKFLOW_STATE" />
           <ReferentialConstraint>
             <Principal Role="EMAIL_TEMPLATE">
               <PropertyRef Name="EMAIL_TEMPLATE_ID" />
@@ -1760,8 +1760,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WORKFLOW_STATE_USERS_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="1" Role="USER" />
+          <End Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" Role="WORKFLOW_STATE_USERS" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1772,8 +1772,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
-          <End Role="WORKFLOW_STATE" Type="Self.WORKFLOW_STATE" Multiplicity="1" />
-          <End Role="WORKFLOW_STATE_USERS" Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" />
+          <End Type="Self.WORKFLOW_STATE" Multiplicity="1" Role="WORKFLOW_STATE" />
+          <End Type="Self.WORKFLOW_STATE_USERS" Multiplicity="*" Role="WORKFLOW_STATE_USERS" />
           <ReferentialConstraint>
             <Principal Role="WORKFLOW_STATE">
               <PropertyRef Name="WORKFLOW_STATE_ID" />
@@ -1784,8 +1784,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_T001W">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <End Type="Self.T001W" Multiplicity="1" Role="T001W" />
+          <End Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" Role="ZAIDM_EX_BRAND" />
           <ReferentialConstraint>
             <Principal Role="T001W">
               <PropertyRef Name="WERKS" />
@@ -1796,8 +1796,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="0..1" Role="ZAIDM_EX_GOODTYP" />
+          <End Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" Role="ZAIDM_EX_BRAND" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
               <PropertyRef Name="EXC_GOOD_TYP" />
@@ -1808,8 +1808,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
-          <End Role="ZAIDM_EX_MARKET" Type="Self.ZAIDM_EX_MARKET" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_MARKET" Multiplicity="0..1" Role="ZAIDM_EX_MARKET" />
+          <End Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" Role="ZAIDM_EX_BRAND" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_MARKET">
               <PropertyRef Name="MARKET_ID" />
@@ -1820,8 +1820,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE">
-          <End Role="ZAIDM_EX_PCODE" Type="Self.ZAIDM_EX_PCODE" Multiplicity="1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_PCODE" Multiplicity="1" Role="ZAIDM_EX_PCODE" />
+          <End Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" Role="ZAIDM_EX_BRAND" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_PCODE">
               <PropertyRef Name="PER_CODE" />
@@ -1832,8 +1832,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
-          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" Role="ZAIDM_EX_PRODTYP" />
+          <End Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" Role="ZAIDM_EX_BRAND" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_PRODTYP">
               <PropertyRef Name="PROD_CODE" />
@@ -1844,8 +1844,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
-          <End Role="ZAIDM_EX_SERIES" Type="Self.ZAIDM_EX_SERIES" Multiplicity="1" />
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_SERIES" Multiplicity="1" Role="ZAIDM_EX_SERIES" />
+          <End Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" Role="ZAIDM_EX_BRAND" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_SERIES">
               <PropertyRef Name="SERIES_CODE" />
@@ -1856,8 +1856,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <End Type="Self.T001W" Multiplicity="1" Role="T001W" />
+          <End Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" Role="ZAIDM_EX_MATERIAL" />
           <ReferentialConstraint>
             <Principal Role="T001W">
               <PropertyRef Name="WERKS" />
@@ -1868,8 +1868,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
-          <End Role="UOM" Type="Self.UOM" Multiplicity="1" />
-          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <End Type="Self.UOM" Multiplicity="1" Role="UOM" />
+          <End Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" Role="ZAIDM_EX_MATERIAL" />
           <ReferentialConstraint>
             <Principal Role="UOM">
               <PropertyRef Name="UOM_ID" />
@@ -1880,8 +1880,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" Role="ZAIDM_EX_GOODTYP" />
+          <End Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" Role="ZAIDM_EX_MATERIAL" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_GOODTYP">
               <PropertyRef Name="EXC_GOOD_TYP" />
@@ -1892,8 +1892,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
-          <End Role="LFA1" Type="Self.LFA1" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <End Type="Self.LFA1" Multiplicity="0..1" Role="LFA1" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" Role="ZAIDM_EX_NPPBKC" />
           <ReferentialConstraint>
             <Principal Role="LFA1">
               <PropertyRef Name="LIFNR" />
@@ -1904,8 +1904,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <End Type="Self.USER" Multiplicity="0..1" Role="USER" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" Role="ZAIDM_EX_NPPBKC" />
           <ReferentialConstraint>
             <Principal Role="USER">
               <PropertyRef Name="USER_ID" />
@@ -1916,8 +1916,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_T001">
-          <End Role="T001" Type="Self.T001" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <End Type="Self.T001" Multiplicity="0..1" Role="T001" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" Role="ZAIDM_EX_NPPBKC" />
           <ReferentialConstraint>
             <Principal Role="T001">
               <PropertyRef Name="BUKRS" />
@@ -1928,8 +1928,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_T0011">
-          <End Role="T001" Type="Self.T001" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <End Type="Self.T001" Multiplicity="0..1" Role="T001" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" Role="ZAIDM_EX_NPPBKC" />
           <ReferentialConstraint>
             <Principal Role="T001">
               <PropertyRef Name="BUKRS" />
@@ -1940,8 +1940,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
-          <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
+          <End Type="Self.ZAIDM_EX_KPPBC" Multiplicity="0..1" Role="ZAIDM_EX_KPPBC" />
+          <End Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" Role="ZAIDM_EX_NPPBKC" />
           <ReferentialConstraint>
             <Principal Role="ZAIDM_EX_KPPBC">
               <PropertyRef Name="KPPBC_ID" />
@@ -2010,388 +2010,388 @@
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_BROLE_MAP_USER" Association="Self.FK_BROLE_MAP_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="BROLE_MAP" Role="BROLE_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_BROLE_MAP_USER_BROLE" Association="Self.FK_BROLE_MAP_USER_BROLE">
-            <End Role="USER_BROLE" EntitySet="USER_BROLE" />
-            <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
+            <End EntitySet="USER_BROLE" Role="USER_BROLE" />
+            <End EntitySet="BROLE_MAP" Role="BROLE_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="CHANGES_HISTORY" Role="CHANGES_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_APPROVED_BY_USER" Association="Self.FK_CK5_APPROVED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="CK5" Role="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_CREATED_BY_USER" Association="Self.FK_CK5_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="CK5" Role="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" Association="Self.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD">
-            <End Role="CK5" EntitySet="CK5" />
-            <End Role="CK5_FILE_UPLOAD" EntitySet="CK5_FILE_UPLOAD" />
+            <End EntitySet="CK5" Role="CK5" />
+            <End EntitySet="CK5_FILE_UPLOAD" Role="CK5_FILE_UPLOAD" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_FILE_UPLOAD_USER" Association="Self.FK_CK5_FILE_UPLOAD_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5_FILE_UPLOAD" EntitySet="CK5_FILE_UPLOAD" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="CK5_FILE_UPLOAD" Role="CK5_FILE_UPLOAD" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_MATERIAL_CK5" Association="Self.FK_CK5_MATERIAL_CK5">
-            <End Role="CK5" EntitySet="CK5" />
-            <End Role="CK5_MATERIAL" EntitySet="CK5_MATERIAL" />
+            <End EntitySet="CK5" Role="CK5" />
+            <End EntitySet="CK5_MATERIAL" Role="CK5_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_PBCK1" Association="Self.FK_CK5_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="CK5" EntitySet="CK5" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
+            <End EntitySet="CK5" Role="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_UOM" Association="Self.FK_CK5_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="CK5" EntitySet="CK5" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="CK5" Role="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_CK5_USER" Association="Self.FK_CK5_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CK5" EntitySet="CK5" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="CK5" Role="CK5" />
           </AssociationSet>
           <AssociationSet Name="FK_DOC_NUMBER_SEQ_MONTH" Association="Self.FK_DOC_NUMBER_SEQ_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="DOC_NUMBER_SEQ" EntitySet="DOC_NUMBER_SEQ" />
+            <End EntitySet="MONTH" Role="MONTH" />
+            <End EntitySet="DOC_NUMBER_SEQ" Role="DOC_NUMBER_SEQ" />
           </AssociationSet>
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" Association="Self.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE">
-            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
-            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
+            <End EntitySet="EX_GROUP_TYPE" Role="EX_GROUP_TYPE" />
+            <End EntitySet="EX_GROUP_TYPE_DETAILS" Role="EX_GROUP_TYPE_DETAILS" />
           </AssociationSet>
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" Association="Self.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
+            <End EntitySet="ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" />
+            <End EntitySet="EX_GROUP_TYPE_DETAILS" Role="EX_GROUP_TYPE_DETAILS" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_CREATED_BY_USER" Association="Self.FK_HEADER_FOOTER_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="HEADER_FOOTER" Role="HEADER_FOOTER" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" Association="Self.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER">
-            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
-            <End Role="HEADER_FOOTER_FORM_MAP" EntitySet="HEADER_FOOTER_FORM_MAP" />
+            <End EntitySet="HEADER_FOOTER" Role="HEADER_FOOTER" />
+            <End EntitySet="HEADER_FOOTER_FORM_MAP" Role="HEADER_FOOTER_FORM_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_HEADER_FOOTER" Association="Self.FK_HEADER_FOOTER_HEADER_FOOTER">
-            <End Role="T001" EntitySet="T001" />
-            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+            <End EntitySet="T001" Role="T001" />
+            <End EntitySet="HEADER_FOOTER" Role="HEADER_FOOTER" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_MODIFIED_BY_USER" Association="Self.FK_HEADER_FOOTER_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="HEADER_FOOTER" EntitySet="HEADER_FOOTER" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="HEADER_FOOTER" Role="HEADER_FOOTER" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_DOCUMENT_LACK1" Association="Self.FK_LACK1_DOCUMENT_LACK1">
-            <End Role="LACK1" EntitySet="LACK1" />
-            <End Role="LACK1_DOCUMENT" EntitySet="LACK1_DOCUMENT" />
+            <End EntitySet="LACK1" Role="LACK1" />
+            <End EntitySet="LACK1_DOCUMENT" Role="LACK1_DOCUMENT" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_ITEM_LACK1" Association="Self.FK_LACK1_ITEM_LACK1">
-            <End Role="LACK1" EntitySet="LACK1" />
-            <End Role="LACK1_ITEM" EntitySet="LACK1_ITEM" />
+            <End EntitySet="LACK1" Role="LACK1" />
+            <End EntitySet="LACK1_ITEM" Role="LACK1_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_MONTH" Association="Self.FK_LACK1_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="LACK1" EntitySet="LACK1" />
+            <End EntitySet="MONTH" Role="MONTH" />
+            <End EntitySet="LACK1" Role="LACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="Self.FK_LACK1_RETURN_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="LACK1" EntitySet="LACK1" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="LACK1" Role="LACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_USER_APPROVED" Association="Self.FK_LACK1_USER_APPROVED">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK1" EntitySet="LACK1" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="LACK1" Role="LACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_USER_CREATED" Association="Self.FK_LACK1_USER_CREATED">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK1" EntitySet="LACK1" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="LACK1" Role="LACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="Self.FK_LACK1_WASTE_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="LACK1" EntitySet="LACK1" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="LACK1" Role="LACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_DOCUMENT_LACK2" Association="Self.FK_LACK2_DOCUMENT_LACK2">
-            <End Role="LACK2" EntitySet="LACK2" />
-            <End Role="LACK2_DOCUMENT" EntitySet="LACK2_DOCUMENT" />
+            <End EntitySet="LACK2" Role="LACK2" />
+            <End EntitySet="LACK2_DOCUMENT" Role="LACK2_DOCUMENT" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_ITEM_CK5" Association="Self.FK_LACK2_ITEM_CK5">
-            <End Role="CK5" EntitySet="CK5" />
-            <End Role="LACK2_ITEM" EntitySet="LACK2_ITEM" />
+            <End EntitySet="CK5" Role="CK5" />
+            <End EntitySet="LACK2_ITEM" Role="LACK2_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_ITEM_LACK2" Association="Self.FK_LACK2_ITEM_LACK2">
-            <End Role="LACK2" EntitySet="LACK2" />
-            <End Role="LACK2_ITEM" EntitySet="LACK2_ITEM" />
+            <End EntitySet="LACK2" Role="LACK2" />
+            <End EntitySet="LACK2_ITEM" Role="LACK2_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_MONTH" Association="Self.FK_LACK2_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="LACK2" EntitySet="LACK2" />
+            <End EntitySet="MONTH" Role="MONTH" />
+            <End EntitySet="LACK2" Role="LACK2" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_USER_APPROVED_BY" Association="Self.FK_LACK2_USER_APPROVED_BY">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK2" EntitySet="LACK2" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="LACK2" Role="LACK2" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_USER_CREATED_BY" Association="Self.FK_LACK2_USER_CREATED_BY">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK2" EntitySet="LACK2" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="LACK2" Role="LACK2" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_USER_MODIFIED_BY" Association="Self.FK_LACK2_USER_MODIFIED_BY">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK2" EntitySet="LACK2" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="LACK2" Role="LACK2" />
           </AssociationSet>
           <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="Self.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-            <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
+            <End EntitySet="ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" />
+            <End EntitySet="MATERIAL_UOM" Role="MATERIAL_UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="Self.FK_PAGE_MAP_PAGE">
-            <End Role="PAGE" EntitySet="PAGE" />
-            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
+            <End EntitySet="PAGE" Role="PAGE" />
+            <End EntitySet="PAGE_MAP" Role="PAGE_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_MAP_USER_BROLE" Association="Self.FK_PAGE_MAP_USER_BROLE">
-            <End Role="USER_BROLE" EntitySet="USER_BROLE" />
-            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
+            <End EntitySet="USER_BROLE" Role="USER_BROLE" />
+            <End EntitySet="PAGE_MAP" Role="PAGE_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_PAGE" Association="Self.FK_PAGE_PAGE">
-            <End Role="PAGE" EntitySet="PAGE" />
-            <End Role="PAGE1" EntitySet="PAGE" />
+            <End EntitySet="PAGE" Role="PAGE" />
+            <End EntitySet="PAGE" Role="PAGE1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_APPROVED_BY_USER" Association="Self.FK_PBCK1_APPROVED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="Self.FK_PBCK1_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_DECREE_DOC_PBCK1" Association="Self.FK_PBCK1_DECREE_DOC_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
+            <End EntitySet="PBCK1_DECREE_DOC" Role="PBCK1_DECREE_DOC" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_DECREE_DOC_USER" Association="Self.FK_PBCK1_DECREE_DOC_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1_DECREE_DOC" EntitySet="PBCK1_DECREE_DOC" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="PBCK1_DECREE_DOC" Role="PBCK1_DECREE_DOC" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_LACK1_MONTH_FROM" Association="Self.FK_PBCK1_LACK1_MONTH_FROM">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="MONTH" Role="MONTH" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_MONTH" Association="Self.FK_PBCK1_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="MONTH" Role="MONTH" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PBCK1" Association="Self.FK_PBCK1_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="PBCK11" EntitySet="PBCK1" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
+            <End EntitySet="PBCK1" Role="PBCK11" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PROD_CONVERTER_PBCK1" Association="Self.FK_PBCK1_PROD_CONVERTER_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
+            <End EntitySet="PBCK1_PROD_CONVERTER" Role="PBCK1_PROD_CONVERTER" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PROD_CONVERTER_UOM" Association="Self.FK_PBCK1_PROD_CONVERTER_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="PBCK1_PROD_CONVERTER" Role="PBCK1_PROD_CONVERTER" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_MONTH" Association="Self.FK_PBCK1_PROD_PLAN_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+            <End EntitySet="MONTH" Role="MONTH" />
+            <End EntitySet="PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_PBCK1" Association="Self.FK_PBCK1_PROD_PLAN_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
+            <End EntitySet="PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="Self.FK_PBCK1_PROD_PLAN_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_QUOTA_CK5" Association="Self.FK_PBCK1_QUOTA_CK5">
-            <End Role="CK5" EntitySet="CK5" />
-            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+            <End EntitySet="CK5" Role="CK5" />
+            <End EntitySet="PBCK1_QUOTA" Role="PBCK1_QUOTA" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_QUOTA_PBCK1" Association="Self.FK_PBCK1_QUOTA_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
+            <End EntitySet="PBCK1_QUOTA" Role="PBCK1_QUOTA" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_QUOTA_USER" Association="Self.FK_PBCK1_QUOTA_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1_QUOTA" EntitySet="PBCK1_QUOTA" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="PBCK1_QUOTA" Role="PBCK1_QUOTA" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_REQUEST_UOM" Association="Self.FK_PBCK1_REQUEST_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_SALDO_UOM" Association="Self.FK_PBCK1_SALDO_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_USER" Association="Self.FK_PBCK1_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="PBCK1" Role="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="Self.FK_PLANT_RECEIVE_MATERIAL_T001W">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+            <End EntitySet="ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" />
+            <End EntitySet="PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="Self.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+            <End EntitySet="ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" />
+            <End EntitySet="PLANT_RECEIVE_MATERIAL" Role="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="Self.FK_POA_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="POA" Role="POA" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="Self.FK_POA_LOGIN_AS_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="POA" Role="POA" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_CREATED_BY_USER" Association="Self.FK_POA_MAP_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="POA_MAP" Role="POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_MODIFIED_BY_USER" Association="Self.FK_POA_MAP_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="POA_MAP" Role="POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_POA" Association="Self.FK_POA_MAP_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
+            <End EntitySet="POA" Role="POA" />
+            <End EntitySet="POA_MAP" Role="POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_T001W" Association="Self.FK_POA_MAP_T001W">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
+            <End EntitySet="T001W" Role="T001W" />
+            <End EntitySet="POA_MAP" Role="POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_MAP_ZAIDM_EX_NPPBKC" Association="Self.FK_POA_MAP_ZAIDM_EX_NPPBKC">
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-            <End Role="POA_MAP" EntitySet="POA_MAP" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="POA_MAP" Role="POA_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_MODIFIED_BY_USER" Association="Self.FK_POA_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="POA" Role="POA" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_SK_POA" Association="Self.FK_POA_SK_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="POA_SK" EntitySet="POA_SK" />
+            <End EntitySet="POA" Role="POA" />
+            <End EntitySet="POA_SK" Role="POA_SK" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_USER" Association="Self.FK_POA_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="POA" EntitySet="POA" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="POA" Role="POA" />
           </AssociationSet>
           <AssociationSet Name="FK_PRINT_HISTORY_USER" Association="Self.FK_PRINT_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PRINT_HISTORY" EntitySet="PRINT_HISTORY" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="PRINT_HISTORY" Role="PRINT_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_T001_MODIFIED_BY_USER" Association="Self.FK_T001_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="T001" EntitySet="T001" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="T001" Role="T001" />
           </AssociationSet>
           <AssociationSet Name="FK_T001K_T001" Association="Self.FK_T001K_T001">
-            <End Role="T001" EntitySet="T001" />
-            <End Role="T001K" EntitySet="T001K" />
+            <End EntitySet="T001" Role="T001" />
+            <End EntitySet="T001K" Role="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
-            <End Role="T001" EntitySet="T001" />
-            <End Role="T001K" EntitySet="T001K" />
+            <End EntitySet="T001" Role="T001" />
+            <End EntitySet="T001K" Role="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_MODIFIED_BY_USER" Association="Self.FK_T001W_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="T001W" EntitySet="T001W" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="T001W" Role="T001W" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-            <End Role="T001W" EntitySet="T001W" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="T001W" Role="T001W" />
           </AssociationSet>
           <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="Self.FK_UOM_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="UOM" EntitySet="UOM" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="UOM" Role="UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" Association="Self.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT" Association="Self.FK_VIRTUAL_PLANT_MAP_EXPORT_PLANT">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+            <End EntitySet="T001W" Role="T001W" />
+            <End EntitySet="VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT" Association="Self.FK_VIRTUAL_PLANT_MAP_IMPORT_PLANT">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+            <End EntitySet="T001W" Role="T001W" />
+            <End EntitySet="VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER" Association="Self.FK_VIRTUAL_PLANT_MAP_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T001" Association="Self.FK_VIRTUAL_PLANT_MAP_T001">
-            <End Role="T001" EntitySet="T001" />
-            <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+            <End EntitySet="T001" Role="T001" />
+            <End EntitySet="VIRTUAL_PLANT_MAP" Role="VIRTUAL_PLANT_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="WORKFLOW_HISTORY" Role="WORKFLOW_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_STATE_EMAIL_TEMPLATE" Association="Self.FK_WORKFLOW_STATE_EMAIL_TEMPLATE">
-            <End Role="EMAIL_TEMPLATE" EntitySet="EMAIL_TEMPLATE" />
-            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
+            <End EntitySet="EMAIL_TEMPLATE" Role="EMAIL_TEMPLATE" />
+            <End EntitySet="WORKFLOW_STATE" Role="WORKFLOW_STATE" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_STATE_USERS_USER" Association="Self.FK_WORKFLOW_STATE_USERS_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="WORKFLOW_STATE_USERS" Role="WORKFLOW_STATE_USERS" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="Self.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
-            <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
-            <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+            <End EntitySet="WORKFLOW_STATE" Role="WORKFLOW_STATE" />
+            <End EntitySet="WORKFLOW_STATE_USERS" Role="WORKFLOW_STATE_USERS" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T001W" Association="Self.FK_ZAIDM_EX_BRAND_T001W">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End EntitySet="T001W" Role="T001W" />
+            <End EntitySet="ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End EntitySet="ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" />
+            <End EntitySet="ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
-            <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End EntitySet="ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" />
+            <End EntitySet="ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PCODE">
-            <End Role="ZAIDM_EX_PCODE" EntitySet="ZAIDM_EX_PCODE" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End EntitySet="ZAIDM_EX_PCODE" Role="ZAIDM_EX_PCODE" />
+            <End EntitySet="ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End EntitySet="ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" />
+            <End EntitySet="ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
-            <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End EntitySet="ZAIDM_EX_SERIES" Role="ZAIDM_EX_SERIES" />
+            <End EntitySet="ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="Self.FK_ZAIDM_EX_MATERIAL_T001W">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End EntitySet="T001W" Role="T001W" />
+            <End EntitySet="ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="Self.FK_ZAIDM_EX_MATERIAL_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End EntitySet="UOM" Role="UOM" />
+            <End EntitySet="ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="Self.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End EntitySet="ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" />
+            <End EntitySet="ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_LFA1" Association="Self.FK_ZAIDM_EX_NPPBKC_LFA1">
-            <End Role="LFA1" EntitySet="LFA1" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="LFA1" Role="LFA1" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER" Association="Self.FK_ZAIDM_EX_NPPBKC_MODIFIED_DATE_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="USER" Role="USER" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T001" Association="Self.FK_ZAIDM_EX_NPPBKC_T001">
-            <End Role="T001" EntitySet="T001" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="T001" Role="T001" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T0011" Association="Self.FK_ZAIDM_EX_NPPBKC_T0011">
-            <End Role="T001" EntitySet="T001" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="T001" Role="T001" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" Association="Self.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
-            <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End EntitySet="ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" />
+            <End EntitySet="ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
