@@ -31,9 +31,9 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new ZAIDM_EX_PRODTYP();
                         item.PROD_CODE = xElement.Element("PROD_CODE").Value;
-                        item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE") == null ? string.Empty : xElement.Element("PRODUCT_TYPE").Value;
-                        item.PRODUCT_ALIAS = xElement.Element("PRODUCT_ALIAS").Value;
-                        //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        item.PRODUCT_TYPE = _xmlMapper.GetElementValue(xElement.Element("PRODUCT_TYPE"));
+                        item.PRODUCT_ALIAS = _xmlMapper.GetElementValue(xElement.Element("PRODUCT_ALIAS"));
+                       
                         var existingProdType = GetProdType(item.PROD_CODE);
                         if (existingProdType != null)
                         {

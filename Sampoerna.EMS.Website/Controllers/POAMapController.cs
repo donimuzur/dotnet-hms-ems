@@ -73,6 +73,12 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 // TODO: Add insert logic here
+                var existingData = _poaMapBLL.GetByNppbckId(model.PoaMap.NPPBKC_ID, model.PoaMap.WERKS, model.PoaMap.POA_ID);
+                if (existingData != null)
+                {
+                    AddMessageInfo("data already exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Create");
+                }
                 var data = Mapper.Map<POA_MAP>(model.PoaMap);
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = DateTime.Now;

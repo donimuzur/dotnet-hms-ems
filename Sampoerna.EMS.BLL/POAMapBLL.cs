@@ -48,9 +48,14 @@ namespace Sampoerna.EMS.BLL
 
         public void Delete(int id)
         {
-            //var repo = _uow.GetGenericRepository<POA_MAP>();
-            //repo.InsertOrUpdate(poaMap);
-            //_uow.SaveChanges();
+            var repo = _uow.GetGenericRepository<POA_MAP>();
+            repo.Delete(id);
+            _uow.SaveChanges();
+        }
+
+        public POA_MAP GetByNppbckId(string nppbkc, string plant, string poa)
+        {
+            return _uow.GetGenericRepository<POA_MAP>().Get(p=>p.NPPBKC_ID == nppbkc && p.WERKS == plant && p.POA_ID == poa, null, _includeProperties).FirstOrDefault();
         }
     }
 }

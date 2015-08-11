@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -31,19 +32,21 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new ZAIDM_EX_PCODE();
                         item.PER_CODE = xElement.Element("PER_CODE").Value;
-                        item.PER_DESC = xElement.Element("PER_DESC").Value;
+                        item.PER_DESC = _xmlMapper.GetElementValue(xElement.Element("PER_DESC"));
                         item.CREATED_DATE = DateTime.Now;
-                        //var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                        item.CREATED_BY = Constans.PICreator;
                         var existingPCode = GetPCode(item.PER_CODE);
                         if (existingPCode != null)
                         {
                             item.CREATED_DATE = existingPCode.CREATED_DATE;
+                            item.MODIFIED_BY = Constans.PICreator;
                             item.MODIFIED_DATE = DateTime.Now;
                             items.Add(item);
 
                         }
                         else
                         {
+                            
                             item.CREATED_DATE = DateTime.Now;
                             items.Add(item);
                         }
