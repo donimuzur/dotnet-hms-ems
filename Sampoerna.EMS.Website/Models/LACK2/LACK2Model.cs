@@ -5,8 +5,8 @@ using System.Web;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
-    public class LACK2FormViewModel  : BaseModel
+    public class LACK2Model
     {
-        
+
     }
 }

@@ -107,6 +107,7 @@
     <Compile Include="FakeStuffs.cs" />
     <Compile Include="HeaderFooterBLLTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Lack2BLLTests.cs" />
     <Compile Include="UserBLLTest.cs" />
   </ItemGroup>
   <ItemGroup>
