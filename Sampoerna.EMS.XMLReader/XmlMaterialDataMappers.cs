@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -37,8 +38,8 @@ namespace Sampoerna.EMS.XMLReader
                     
                     var stickerCode = xElement.Element("MATNR").Value;
                     
-                    var baseUom = xElement.Element("MEINS").Value;
-                    var materialGroup = xElement.Element("MATKL") == null ? null : xElement.Element("MATKL").Value;
+                    var baseUom = _xmlMapper.GetElementValue(xElement.Element("MEINS"));
+                    var materialGroup = _xmlMapper.GetElementValue(xElement.Element("MATKL"));
                     var isClientDeletion = xElement.Element("LVORM") == null
                         ? false
                         : (xElement.Element("LVORM").Value == "X" ? true : false);
@@ -47,7 +48,7 @@ namespace Sampoerna.EMS.XMLReader
                     string materialDes = string.Empty;
                     if (E1MAKTM != null)
                     {
-                        materialDes = E1MAKTM.Element("MAKTX") == null ? string.Empty : E1MAKTM.Element("MAKTX").Value;
+                        materialDes = _xmlMapper.GetElementValue(E1MAKTM.Element("MAKTX"));
                     }
                     var plantList = xElement.Elements("E1MARCM");
 
@@ -61,18 +62,18 @@ namespace Sampoerna.EMS.XMLReader
                             item.BASE_UOM_ID = baseUom;
                             item.MATERIAL_GROUP = materialGroup;
                             item.CLIENT_DELETION = isClientDeletion;
-                            item.WERKS = plant.Element("WERKS").Value;
+                            item.WERKS = _xmlMapper.GetElementValue(plant.Element("WERKS"));
                             item.PLANT_DELETION = plant.Element("LVORM") == null
                             ? false
                             : (plant.Element("LVORM").Value == "X" ? true : false);
 
 
-                            item.ISSUE_STORANGE_LOC = plant.Element("LGPRO") == null ? string.Empty : (plant.Element("LGPRO").Value == "/" ? null :plant.Element("LGPRO").Value);
-                            item.PURCHASING_GROUP = plant.Element("EKGRP") == null ? null : plant.Element("EKGRP").Value;
+                            item.ISSUE_STORANGE_LOC = _xmlMapper.GetElementValue(plant.Element("LGPRO"));
+                            item.PURCHASING_GROUP = _xmlMapper.GetElementValue(plant.Element("EKGRP"));
                             var exGoodType = plant.Element("Z1A_ZAIDM_EX_GOODTYP");
                             if (exGoodType != null)
                             {
-                                item.EXC_GOOD_TYP = exGoodType.Element("EXC_GOOD_TYP").Value;
+                                item.EXC_GOOD_TYP =  _xmlMapper.GetElementValue(exGoodType.Element("EXC_GOOD_TYP"));
 
                             }
 
@@ -83,12 +84,13 @@ namespace Sampoerna.EMS.XMLReader
                                 var matUom = new MATERIAL_UOM();
                                 matUom.STICKER_CODE = stickerCode;
                                 matUom.WERKS = item.WERKS;
-                                matUom.UMREZ = Convert.ToDecimal(element.Element("UMREZ").Value);
-                                matUom.UMREN = Convert.ToDecimal(element.Element("UMREN").Value);
-                                matUom.MEINH = element.Element("MEINH").Value;
+                                matUom.UMREZ = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREZ")));
+                                matUom.UMREN = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREN")));
+                                matUom.MEINH =  _xmlMapper.GetElementValue(element.Element("MEINH"));
 
                                 item.MATERIAL_UOM.Add(matUom);
                             }
+                            item.CREATED_BY = Constans.PICreator;
 
                             item.IS_FROM_SAP = true;
                             var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
@@ -110,7 +112,8 @@ namespace Sampoerna.EMS.XMLReader
                                     }
                                 }
 
-
+                                item.MODIFIED_BY =  Constans.PICreator;
+                                item.CREATED_BY = existingMaterial.CREATED_BY;
                                 item.CREATED_DATE = existingMaterial.CREATED_DATE;
                                 item.MODIFIED_DATE = DateTime.Now;
                                 items.Add(item);

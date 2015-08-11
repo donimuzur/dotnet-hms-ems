@@ -33,7 +33,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
         public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual DbSet<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
-        public virtual DbSet<LFA1> LFA1 { get; set; }
         public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
         public virtual DbSet<MONTH> MONTH { get; set; }
         public virtual DbSet<PAGE> PAGE { get; set; }
@@ -44,9 +43,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<T001K> T001K { get; set; }
         public virtual DbSet<T001W> T001W { get; set; }
         public virtual DbSet<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
-        public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_MARKET> ZAIDM_EX_MARKET { get; set; }
-        public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
         public virtual DbSet<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
@@ -66,7 +63,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
         public virtual DbSet<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
-        public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<WORKFLOW_STATE> WORKFLOW_STATE { get; set; }
         public virtual DbSet<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
         public virtual DbSet<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
@@ -83,5 +79,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_MAP> POA_MAP { get; set; }
         public virtual DbSet<CURRENCY> CURRENCY { get; set; }
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual DbSet<UOM> UOM { get; set; }
+        public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
+        public virtual DbSet<LFA1> LFA1 { get; set; }
+        public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
     }
 }

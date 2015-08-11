@@ -159,7 +159,11 @@ namespace Sampoerna.EMS.XMLReader
         {
             if (element == null)
                 return null;
-            return null;
+            if (element.Value == "/")
+                return null;
+            return element.Value;
+
+           
         }
 
     }

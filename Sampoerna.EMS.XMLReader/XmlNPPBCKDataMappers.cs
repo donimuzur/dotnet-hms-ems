@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -55,6 +56,7 @@ namespace Sampoerna.EMS.XMLReader
 
                             item.START_DATE = _xmlMapper.GetDate(xElement.Element("START_DATE").Value);
                             item.END_DATE = _xmlMapper.GetDate(xElement.Element("END_DATE").Value);
+                           
                             var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
                             if (exisitingNppbkc != null)
                             {
@@ -63,6 +65,7 @@ namespace Sampoerna.EMS.XMLReader
                                 item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
                                 item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
                                 item.MODIFIED_DATE = DateTime.Now;
+                                item.MODIFIED_BY = Constans.PICreator;
                                 items.Add(item);
 
                             }

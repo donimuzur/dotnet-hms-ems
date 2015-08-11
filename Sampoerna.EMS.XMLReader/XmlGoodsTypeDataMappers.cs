@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -31,14 +32,15 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     var item = new ZAIDM_EX_GOODTYP();
                     item.EXC_GOOD_TYP = xElement.Element("EXC_GOOD_TYP").Value;
-                    item.EXT_TYP_DESC = xElement.Element("EXC_TYP_DESC") == null ? null : xElement.Element("EXC_TYP_DESC").Value;
-                    //var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
+                    item.EXT_TYP_DESC = _xmlMapper.GetElementValue(xElement.Element("EXC_TYP_DESC"));
+                    item.CREATED_BY = Constans.PICreator;
                     var existingGoodsType = GetGoodsType(item.EXC_GOOD_TYP);
                     if (existingGoodsType != null)
                     {
-                        
+                        item.CREATED_BY = existingGoodsType.CREATED_BY;
                         item.CREATED_DATE = existingGoodsType.CREATED_DATE;
                         item.MODIFIED_DATE = DateTime.Now;
+                        item.MODIFIED_BY = Constans.PICreator;
                         items.Add(item);
                        
                     }

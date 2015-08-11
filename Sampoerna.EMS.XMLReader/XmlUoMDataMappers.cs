@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -31,12 +32,16 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new UOM();
                         item.UOM_ID = xElement.Element("MSEHI").Value;
-                        item.UOM_DESC = xElement.Element("MSEHL").Value;
+                        item.UOM_DESC =_xmlMapper.GetElementValue(xElement.Element("MSEHL"));
+                        item.CREATED_BY = Constans.PICreator;
+
                         var existingData = GetUoM(item.UOM_ID);
                         if (existingData != null)
                         {
+                            item.CREATED_BY = existingData.CREATED_BY;
                             item.CREATED_DATE = existingData.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PICreator;
                             items.Add(item);
 
                         }
