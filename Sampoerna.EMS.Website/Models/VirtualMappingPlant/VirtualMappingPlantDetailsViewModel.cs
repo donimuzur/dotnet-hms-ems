@@ -10,5 +10,7 @@
         public string ExportPlantDesc { get; set; }
 
         public bool? IsDeleted { get; set; }
+
+        public bool IsAllowDelete { get; set; }
     }
 }
