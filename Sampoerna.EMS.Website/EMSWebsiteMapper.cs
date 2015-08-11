@@ -571,7 +571,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PurchasingGroup, opt => opt.MapFrom(src => src.PURCHASING_GROUP))
                 .ForMember(dest => dest.IssueStorageLoc, opt => opt.MapFrom(src => src.ISSUE_STORANGE_LOC))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                .ForMember(dest => dest.CreatedById,
+                .ForMember(dest => dest.CreatedBy,
                     opt => opt.MapFrom(src => src.CREATED_BY))
                 //.ForMember(dest => dest.ChangedDate, opt => opt.MapFrom(src => src.MOD))
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
