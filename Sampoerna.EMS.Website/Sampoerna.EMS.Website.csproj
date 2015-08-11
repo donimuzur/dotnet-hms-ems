@@ -378,6 +378,12 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
@@ -902,7 +908,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\WorkflowHistory\" />
-    <Folder Include="Reports\PBCK1\" />
     <Folder Include="Views\AspxReportViewer\" />
     <Folder Include="Views\SettingsGlobal\" />
     <Folder Include="Views\Settings\" />
@@ -975,6 +980,10 @@
     <EmbeddedResource Include="Reports\CK5\CK5PrintOutMaterial.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
