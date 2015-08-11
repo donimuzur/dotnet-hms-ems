@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
-using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
-using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -50,7 +43,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode)
         {
-            var dbData = _repository.Get(a => a.WERKS == plant && a.FA_CODE == facode, null, "T001W , ZAIDM_EX_PCODE, ZAIDM_EX_PRODTYP, ZAIDM_EX_SERIES, ZAIDM_EX_GOODTYP, ZAIDM_EX_MARKET").FirstOrDefault();
+            var dbData = _repository.Get(a => a.WERKS == plant && a.FA_CODE == facode, null, "T001W , ZAIDM_EX_PRODTYP, ZAIDM_EX_SERIES, ZAIDM_EX_GOODTYP, ZAIDM_EX_MARKET").FirstOrDefault();
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -81,22 +74,11 @@ namespace Sampoerna.EMS.BLL
             return result.ToList();
         }
 
-        public string Save(ZAIDM_EX_BRAND brandRegistration)
+        public void Save(ZAIDM_EX_BRAND brandRegistration)
         {
 
             _repository.InsertOrUpdate(brandRegistration);
-
-
-            try
-            {
-                _uow.SaveChanges();
-            }
-            catch (Exception exception)
-            {
-                return exception.Message;
-
-            }
-            return Constans.SubmitMessage.Updated;
+            _uow.SaveChanges();
 
         }
 

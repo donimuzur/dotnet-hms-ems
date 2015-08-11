@@ -1,6 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
@@ -8,8 +7,6 @@ using Sampoerna.EMS.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -167,6 +164,16 @@ namespace Sampoerna.EMS.BLL
             }
             return 0;
 
+        }
+
+        public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete)
+        {
+            Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+            if (isDelete.HasValue)
+            {
+                queryFilter = isDelete.Value ? queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == isDelete.Value) : queryFilter.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
+            }
+            return _repository.Get(queryFilter, null, includeTables).ToList();
         }
     }
 }
