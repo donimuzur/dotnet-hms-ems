@@ -410,6 +410,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
                 .ForMember(dest => dest.PER_CODE, opt => opt.MapFrom(src => src.PersonalizationCode))
+                .ForMember(dest => dest.PER_CODE_DESC, opt => opt.MapFrom(src => src.PersonalizationCodeDescription))
                 .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.BrandName))
                 .ForMember(dest => dest.SKEP_NO, opt => opt.MapFrom(src => src.SkepNo))
                 .ForMember(dest => dest.SKEP_DATE, opt => opt.MapFrom(src => src.SkepDate))

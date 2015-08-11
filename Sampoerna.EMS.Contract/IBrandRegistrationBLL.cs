@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode);
 
-        string Save(ZAIDM_EX_BRAND brandRegistration);
+        void Save(ZAIDM_EX_BRAND brandRegistration);
 
         List<ZAIDM_EX_BRAND> GetAllBrands();
 
