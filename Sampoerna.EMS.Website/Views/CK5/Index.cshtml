@@ -6,9 +6,12 @@
         <div class="col-sm-12">
             <h3 id="lblTitle">Domestic</h3>
             <div class="action-button new">
-                <a id="newDomestic" href="@Url.Action("CreateDomestic", "CK5")"><button class="btn btn-blue">NEW</button></a>
-                <a id="newIntercompany" href="@Url.Action("CreateIntercompany", "CK5")"><button class="btn btn-blue">NEW</button></a>
-                <a id="newDomesticAlcohol" href="@Url.Action("CreateDomesticAlcohol", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                @if (Model.IsShowNewButton)
+                {
+                    <a id="newDomestic" href="@Url.Action("CreateDomestic", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                    <a id="newIntercompany" href="@Url.Action("CreateIntercompany", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                    <a id="newDomesticAlcohol" href="@Url.Action("CreateDomesticAlcohol", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                }
             </div>
         </div>
     </div>

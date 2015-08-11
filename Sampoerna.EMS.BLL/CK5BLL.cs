@@ -150,13 +150,16 @@ namespace Sampoerna.EMS.BLL
                                     && c.CK5_TYPE == input.Ck5Type);
                 
             
-            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<CK5>(input.SortOrderColumn));
-            }
+            //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
+            //if (!string.IsNullOrEmpty(input.SortOrderColumn))
+            //{
+            //    orderBy = c => c.OrderByDescending(OrderByHelper.GetOrderByFunction<CK5>(input.SortOrderColumn));
+            //}
+            //default case of ordering
+            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
 
-            var rc = _repository.Get(queryFilter, orderBy, includeTables);
+
+            var rc = _repository.Get(queryFilter, orderByFilter, includeTables);
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

@@ -130,7 +130,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         [StringLength(50, ErrorMessage = "Max Length : 50")]
         public string InvoiceNumber { get; set; }
-        [UIHint("FormatDateTime")]
+       [UIHint("DateTime")]
         public DateTime? InvoiceDate { get; set; }
 
         public int? PbckDecreeId { get; set; }
