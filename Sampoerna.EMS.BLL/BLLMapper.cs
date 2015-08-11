@@ -197,6 +197,9 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             #endregion
+
+            Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
+
 	    
 	    #region ExGoodTyp
 

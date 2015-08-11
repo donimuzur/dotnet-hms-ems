@@ -731,6 +731,10 @@ namespace Sampoerna.EMS.BLL
                     uomId = uomData.UOM_ID;
                     valResult = true;
                 }
+                else
+                {
+                    messageList.Add("UOM Id not valid.");
+                }
             }
             else
             {

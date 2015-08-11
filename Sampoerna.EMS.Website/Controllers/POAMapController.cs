@@ -4,14 +4,9 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
-using Sampoerna.EMS.Website.Models.ChangesHistory;
-using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.POAMap;
-using Sampoerna.EMS.Website.Models.UOM;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -23,14 +18,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private Enums.MenuList _mainMenu;
 
         public POAMapController(IPageBLL pageBLL, IPOAMapBLL poaMapBll, IChangesHistoryBLL changeHistorybll) 
-            : base(pageBLL, Enums.MenuList.Uom) 
+            : base(pageBLL, Enums.MenuList.POAMap) 
         {
             _poaMapBLL = poaMapBll;
             _changeHistoryBll = changeHistorybll;
             _mainMenu = Enums.MenuList.MasterData;
         }
         //
-        // GET: /Uom/
+        // GET: /POA/
         public ActionResult Index()
         {
             var model = new PoaMapIndexViewModel();
@@ -42,32 +37,36 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         //
-        // GET: /Uom/Details/5
+        // GET: /POAMap/Details/5
         public ActionResult Details(int id)
         {
             var existingData = _poaMapBLL.GetById(id);
-            var model = new PoaMapDetailViewModel();
-            model.PoaMap = Mapper.Map<POA_MAPDto>(existingData);
-            model.CurrentMenu = PageInfo;
+            var model = new PoaMapDetailViewModel
+            {
+                PoaMap = Mapper.Map<POA_MAPDto>(existingData),
+                CurrentMenu = PageInfo,
+                MainMenu = _mainMenu
+            };
             return View("Detail", model);
-
         }
 
         //
-        // GET: /Uom/Create
+        // GET: /POAMap/Create
         public ActionResult Create()
         {
-            var model = new PoaMapDetailViewModel();
-            model.CurrentMenu = PageInfo;
-            model.MainMenu = _mainMenu;
-            model.NppbckIds = GlobalFunctions.GetNppbkcAll();
-            model.Plants = GlobalFunctions.GetPlantAll();
-            model.POAs = GlobalFunctions.GetPoaAll();
+            var model = new PoaMapDetailViewModel
+            {
+                CurrentMenu = PageInfo,
+                MainMenu = _mainMenu,
+                NppbckIds = GlobalFunctions.GetNppbkcAll(),
+                Plants = GlobalFunctions.GetPlantAll(),
+                POAs = GlobalFunctions.GetPoaAll()
+            };
             return View("Create",model);
         }
 
         //
-        // POST: /Uom/Create
+        // POST: /POAMap/Create
         [HttpPost]
         public ActionResult Create(PoaMapDetailViewModel model)
         {
@@ -94,7 +93,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         //
-        // GET: /Uom/Edit/5
+        // GET: /POAMap/Edit/5
         public ActionResult Edit(int id)
         {
             return RedirectToAction("Edit", new {id = id});
@@ -121,8 +120,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
         }
-
-      
         
     }
 }
