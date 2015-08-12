@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.Website.Models.WorkflowHistory
         public Core.Enums.FormType FORM_TYPE_ID { get; set; }
         public string FORM_NUMBER { get; set; }
         public string ACTION { get; set; }
-        public int? ACTION_BY { get; set; }
+        public string ACTION_BY { get; set; }
         [UIHint("FormatDateTime")]
         public DateTime? ACTION_DATE { get; set; }
         public string COMMENT { get; set; }

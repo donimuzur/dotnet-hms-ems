@@ -77,8 +77,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
             var data = plantBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
         }
 
         public static SelectList GetGoodTypeList()

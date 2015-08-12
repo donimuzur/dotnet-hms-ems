@@ -478,7 +478,8 @@ namespace Sampoerna.EMS.BLL
 
                 string uomName;
                 string uomId;
-                if (!ValidateUom(output.ConverterUom, out messages, out uomName, out uomId))
+                //validate by UOM Name
+                if (!ValidateUomId(output.ConverterUom, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -589,7 +590,8 @@ namespace Sampoerna.EMS.BLL
 
                 string uomName;
                 string uomId;
-                if (!ValidateUom(output.BkcRequiredUomId, out messages, out uomName, out uomId))
+                //validate by Uom Id
+                if (!ValidateUomId(output.BkcRequiredUomId, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -756,7 +758,7 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateUom(string uom, out List<string> message, out string uomName, out string uomId)
+        private bool ValidateUomId(string uom, out List<string> message, out string uomName, out string uomId)
         {
             var valResult = false;
             var messageList = new List<string>();
@@ -774,6 +776,37 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     messageList.Add("UOM Id [" + uom + "] not valid");
+                }
+            }
+            else
+            {
+                messageList.Add("UOM is empty");
+            }
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateUomName(string uomName, out List<string> message, out string uomNameFromDb,
+            out string uomId)
+        {
+            var valResult = false;
+            var messageList = new List<string>();
+            uomNameFromDb = string.Empty;
+            uomId = string.Empty;
+            if (!string.IsNullOrWhiteSpace(uomName))
+            {
+                var uomData = _uomBll.GetByName(uomName);
+                if (uomData != null)
+                {
+                    uomNameFromDb = uomData.UOM_DESC;
+                    uomId = uomData.UOM_ID;
+                    valResult = true;
+                }
+                else
+                {
+                    messageList.Add("UOM Name [" + uomName + "] not valid");
                 }
             }
             else

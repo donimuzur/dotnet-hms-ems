@@ -28,5 +28,12 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<T001KDto>(dbData);
         }
 
+        public T001KDto GetByNppbkcIdAndMainPlant(string nppbkcId)
+        {
+            includeTables += ", T001W, T001W.ZAIDM_EX_NPPBKC";
+            var dbData = _repository.Get(c => c.T001W.NPPBKC_ID == nppbkcId && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value, null, includeTables).FirstOrDefault();
+            return Mapper.Map<T001KDto>(dbData);
+        }
+
     }
 }
