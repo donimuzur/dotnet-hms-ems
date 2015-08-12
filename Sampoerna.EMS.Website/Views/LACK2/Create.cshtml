@@ -1,0 +1,142 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
+
+@{
+    ViewBag.Title = "Create LACK2";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="status">Draft</label>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+
+
+
+
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                LACK2
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.SelectedCompanyCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.SelectedCompanyCode, Model.CompanyCodesDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.ValidationMessageFor(model => model.SelectedCompanyCode, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.SelectedNPPBKC, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.SelectedNPPBKC, Model.NPPBKCDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.ValidationMessageFor(model => model.SelectedNPPBKC, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.SelectedPlant, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.SelectedPlant, Model.SendingPlantDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.ValidationMessageFor(model => model.SelectedPlant, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.SelectedExGoodsType, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.SelectedExGoodsType, Model.ExcisableGoodsTypeDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.ValidationMessageFor(model => model.SelectedExGoodsType, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.LACK2Period, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                @Html.EditorFor(model => model.LACK2Period, new { htmlAttributes = new { @class = "form-control", @name = "SubmissionDate" } })
+                                                                @Html.ValidationMessageFor(model => model.LACK2Period, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.SubmissionDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                @Html.EditorFor(model => model.SubmissionDate, new { htmlAttributes = new { @class = "form-control", @name = "SubmissionDate" } })
+                                                                @Html.ValidationMessageFor(model => model.SubmissionDate, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-md-offset-2 col-md-10">
+                                                            <input type="submit" value="Create" class="btn btn-default" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Put all of this top html in a partial view*@
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

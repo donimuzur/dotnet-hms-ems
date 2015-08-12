@@ -928,6 +928,7 @@
     <Content Include="Views\KPPBC\Index.cshtml" />
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Views\LACK2\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -986,10 +987,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
+    <!--<EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
-    </EmbeddedResource>
+    </EmbeddedResource>-->
     <EmbeddedResource Include="Reports\CK5\CK5Materials.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5Materials.cs</LastGenOutput>

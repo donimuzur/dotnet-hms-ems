@@ -62,7 +62,23 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            return View();
+            LACK2CreateViewModel model = new LACK2CreateViewModel();
+
+            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll();
+            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList();
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
+            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
+
+            model.MainMenu = Enums.MenuList.LACK2;
+            model.CurrentMenu = PageInfo;
+
+            return View("Create", model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(LACK2CreateViewModel model)
+        {
+            return View("Create", model);
         }
 
     }
