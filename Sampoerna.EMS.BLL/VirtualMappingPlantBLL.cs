@@ -46,11 +46,15 @@ namespace Sampoerna.EMS.BLL
         public VIRTUAL_PLANT_MAP Save(VIRTUAL_PLANT_MAP virtualPlant)
         {
             var isexist = _repository.Get(x => x.COMPANY_ID == virtualPlant.COMPANY_ID && x.EXPORT_PLANT_ID == virtualPlant.EXPORT_PLANT_ID && x.IMPORT_PLANT_ID == virtualPlant.IMPORT_PLANT_ID).Count() > 0;
-            if (isexist && virtualPlant.VIRTUAL_PLANT_MAP_ID == 0) { 
-                //_repository.Insert()
+            if (!isexist && virtualPlant.VIRTUAL_PLANT_MAP_ID == 0)
+            {
+                _repository.Insert(virtualPlant);
+            }
+            else if(!isexist){
+                _repository.Update(virtualPlant);
             }
 
-            _repository.InsertOrUpdate(virtualPlant);
+            //_repository.InsertOrUpdate(virtualPlant);
             _uow.SaveChanges();
             return virtualPlant;
         }
