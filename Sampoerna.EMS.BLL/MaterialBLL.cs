@@ -98,7 +98,6 @@ namespace Sampoerna.EMS.BLL
         public void Delete(string mn, string p, string userId)
         {
             var existingData = _repository.GetByID(mn, p);
-            existingData.IS_DELETED = true;
             //existingData.CHANGED_BY = userId;
             //existingData.CHANGED_DATE = DateTime.Now;
             _repository.Update(existingData);
@@ -110,7 +109,6 @@ namespace Sampoerna.EMS.BLL
                 FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now,
-                OLD_VALUE = existingData.IS_DELETED.HasValue ? existingData.IS_DELETED.Value.ToString() : "NULL",
                 NEW_VALUE = true.ToString()
             };
 
@@ -171,7 +169,7 @@ namespace Sampoerna.EMS.BLL
             Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
             if (isDelete.HasValue)
             {
-                queryFilter = isDelete.Value ? queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == isDelete.Value) : queryFilter.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
+                //queryFilter = isDelete.Value ? queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == isDelete.Value) : queryFilter.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
             }
             return _repository.Get(queryFilter, null, includeTables).ToList();
         }
