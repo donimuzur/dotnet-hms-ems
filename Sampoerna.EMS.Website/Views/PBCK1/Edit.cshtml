@@ -1,6 +1,7 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit PBCK-1";
 }
 
 @using (Html.BeginForm("Edit", "PBCK1"))
@@ -12,7 +13,7 @@
                 <label class="status">@Model.Detail.StatusName</label>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
@@ -132,6 +133,12 @@
             });
 
         });
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
 
         function loadSupplierPlant() {
             var list = supplierData;

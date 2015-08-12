@@ -555,6 +555,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnLackPeriod;
             
+            private global::System.Data.DataColumn columnDocumentText;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck1DataTable() {
@@ -854,6 +856,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DocumentTextColumn {
+                get {
+                    return this.columnDocumentText;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -922,7 +932,8 @@ namespace Sampoerna.EMS.ReportingData {
                         string PrintedDate, 
                         string ExciseManager, 
                         string ProdPlanPeriod, 
-                        string LackPeriod) {
+                        string LackPeriod, 
+                        string DocumentText) {
                 Pbck1Row rowPbck1Row = ((Pbck1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Pbck1Id,
@@ -957,7 +968,8 @@ namespace Sampoerna.EMS.ReportingData {
                         PrintedDate,
                         ExciseManager,
                         ProdPlanPeriod,
-                        LackPeriod};
+                        LackPeriod,
+                        DocumentText};
                 rowPbck1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck1Row);
                 return rowPbck1Row;
@@ -1013,6 +1025,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnExciseManager = base.Columns["ExciseManager"];
                 this.columnProdPlanPeriod = base.Columns["ProdPlanPeriod"];
                 this.columnLackPeriod = base.Columns["LackPeriod"];
+                this.columnDocumentText = base.Columns["DocumentText"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1084,6 +1097,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnProdPlanPeriod);
                 this.columnLackPeriod = new global::System.Data.DataColumn("LackPeriod", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLackPeriod);
+                this.columnDocumentText = new global::System.Data.DataColumn("DocumentText", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDocumentText);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3698,6 +3713,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DocumentText {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1.DocumentTextColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DocumentText\' in table \'Pbck1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1.DocumentTextColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPbck1IdNull() {
                 return this.IsNull(this.tablePbck1.Pbck1IdColumn);
             }
@@ -4090,6 +4121,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetLackPeriodNull() {
                 this[this.tablePbck1.LackPeriodColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDocumentTextNull() {
+                return this.IsNull(this.tablePbck1.DocumentTextColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDocumentTextNull() {
+                this[this.tablePbck1.DocumentTextColumn] = global::System.Convert.DBNull;
             }
         }
         

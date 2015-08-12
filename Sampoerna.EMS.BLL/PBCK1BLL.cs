@@ -1229,7 +1229,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.Detail.VendorAliasName = nppbkcDetails.LFA1 != null ? nppbkcDetails.LFA1.NAME2 : string.Empty;
                 rc.Detail.VendorCityName = nppbkcDetails.CITY_ALIAS;
-                rc.Detail.NppbkcAddress = string.Join(Environment.NewLine, nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
+                rc.Detail.NppbkcAddress = "-" + string.Join(Environment.NewLine + "-", nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
                 var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
                 if (mainPlant != null)
                 {
@@ -1291,11 +1291,18 @@ namespace Sampoerna.EMS.BLL
             var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
             if (kppbcDetail != null)
             {
-                rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI;
+                //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
+                if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
+                {
+                    var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
+                    List<string> stringList = strToSplit.Split('|').ToList();
+                    rc.Detail.SupplierKppbcMengetahui = stringList[1].Replace("<br />", Environment.NewLine);
+                }
+
             }
             rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
             rc.Detail.PrintedDate = DateReportString(DateTime.Now);
-            rc.Detail.ExciseManager = dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME;
+            rc.Detail.ExciseManager = dbData.USER2 != null ? dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME : "";
             rc.Detail.ProdPlanPeriode = SetPeriod(dbData.PLAN_PROD_FROM.Value.Month, dbData.PLAN_PROD_FROM.Value.Year,
                 dbData.PLAN_PROD_TO.Value.Month, dbData.PLAN_PROD_TO.Value.Year);
             rc.Detail.Lack1Periode = SetPeriod(dbData.LACK1_FROM_MONTH.Value, dbData.LACK1_FROM_YEAR.Value,
@@ -1312,6 +1319,7 @@ namespace Sampoerna.EMS.BLL
                 FormTypeId = Enums.FormType.PBCK1,
                 CompanyCode = dbData.NPPBKC_BUKRS
             });
+
             rc.HeaderFooter = headerFooterData;
 
             return rc;
