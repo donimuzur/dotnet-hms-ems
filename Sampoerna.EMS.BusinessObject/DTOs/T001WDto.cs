@@ -23,5 +23,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string KppbcCity { get; set; }
         public string KppbcNo { get; set; }
         public string CompanyCode { get; set; }
+
+        public bool IsChecked { get; set; }
     }
 }
