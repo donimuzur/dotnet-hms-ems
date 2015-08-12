@@ -10,6 +10,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
             PLANT_RECEIVE_MATERIAL = new List<PLANT_RECEIVE_MATERIAL>();
         }
         public string WERKS { get; set; }
+        public string DROPDOWNTEXTFIELD { get; set; }
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
         public string PHONE { get; set; }
