@@ -34,6 +34,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
+        public string BUTXT_ALIAS { get; set; }
     
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual ICollection<T001K> T001K { get; set; }
