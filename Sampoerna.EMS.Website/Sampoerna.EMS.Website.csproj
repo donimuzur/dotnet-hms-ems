@@ -238,11 +238,11 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
-    <Compile Include="Controllers\CK5PrintOutMaterial.cs">
+    <!--<Compile Include="Controllers\CK5PrintOutMaterial.cs">
       <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
+    </Compile>-->
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\DocumenSequenceController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
