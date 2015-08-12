@@ -14,15 +14,15 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public long Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         
-        [Required, Display(Name = "Company")]
+        [Required]
         public string Bukrs { get; set; }
         public SelectList BukrList { get; set; }
 
-        [Required, Display(Name = "Period Month")]
+        [Required]
         public int PeriodMonth { get; set; }
         public SelectList MontList { get; set; }
 
-        [Required, Display(Name = "Period Years")]
+        [Required]
         public int PeriodYears { get; set; }
         public SelectList YearsList { get; set; }
         public string NppbkcId { get; set; }
@@ -31,16 +31,20 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string LevelPlantName { get; set; }
         public SelectList PlantList { get; set; }
 
-        [Required, Display(Name = "Submission Date")]
+        [Required]
         public DateTime? SubmissionDate { get; set; }
+        
+        [Required]
         public string SupplierPlant { get; set; }
         public SelectList SupplierList { get; set; }
+
+        [Required]
         public string ExGoodsType { get; set; }
         public SelectList ExGoodTypeList { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
         public SelectList WasteUomList { get; set; }
-        public decimal ReturnQty { get; set; }
+        public decimal? ReturnQty { get; set; }
         public string ReturnUom { get; set; }
         public SelectList ReturnUomList { get; set; }
         public Enums.DocumentStatus Status { get; set; }
