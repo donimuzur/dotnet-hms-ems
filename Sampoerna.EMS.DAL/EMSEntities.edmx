@@ -1263,18 +1263,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PBCK1_APPROVED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="APPROVED_BY_POA" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PBCK1_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
@@ -1647,15 +1635,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001K_T1001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+        <Association Name="FK_T001K_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="T001">
-              <PropertyRef Name="BUKRS" />
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
             </Principal>
             <Dependent Role="T001K">
-              <PropertyRef Name="BUKRS" />
+              <PropertyRef Name="BWKEY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2125,10 +2113,6 @@
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE1" EntitySet="PAGE" />
           </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_APPROVED_BY_USER" Association="Self.FK_PBCK1_APPROVED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="Self.FK_PBCK1_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1" EntitySet="PBCK1" />
@@ -2253,8 +2237,8 @@
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
-            <End Role="T001" EntitySet="T001" />
+          <AssociationSet Name="FK_T001K_T001W" Association="Self.FK_T001K_T001W">
+            <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
@@ -2784,6 +2768,10 @@
             <End Role="ZAIDM_EX_KPPBC" EntitySet="ZAIDM_EX_KPPBC" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
+          <AssociationSet Name="FK_T001K_T001W" Association="EMSModel.FK_T001K_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="T001K" EntitySet="T001K" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -2948,6 +2936,7 @@
           <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="T001" Relationship="EMSModel.FK_T001K_T001" FromRole="T001K" ToRole="T001" />
           <NavigationProperty Name="T0011" Relationship="EMSModel.FK_T001K_T1001" FromRole="T001K" ToRole="T001" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001K_T001W" FromRole="T001K" ToRole="T001W" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
@@ -4619,6 +4608,7 @@
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="T001W" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="T001W" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
+          <NavigationProperty Name="T001K" Relationship="EMSModel.FK_T001K_T001W" FromRole="T001W" ToRole="T001K" />
         </EntityType>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
@@ -4936,6 +4926,18 @@
             </Principal>
             <Dependent Role="ZAIDM_EX_NPPBKC">
               <PropertyRef Name="KPPBC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_T001K_T001W">
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
+          <End Type="EMSModel.T001K" Role="T001K" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="T001K">
+              <PropertyRef Name="BWKEY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

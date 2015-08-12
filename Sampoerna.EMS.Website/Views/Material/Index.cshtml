@@ -86,8 +86,8 @@
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
-
-                            <th> Deleted </th>
+                            <th> Plant Deletion </th>
+                            <th> Client Deletion </th>
                         </tr>
 
                     </thead>
@@ -100,7 +100,8 @@
                             <th> Good Type</th>
                             <th> UOM</th>
 
-                            <th> Deleted </th>
+                            <th> Plant Deletion </th>
+                            <th> Client Deletion </th>
                         </tr>
                     </thead>
 
@@ -129,7 +130,10 @@
                                     @Html.DisplayFor(modelItem => item.UomName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                                    @Html.DisplayFor(modelItem => item.PlantDeletion)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientDeletion)
                                 </td>
 
                             </tr>

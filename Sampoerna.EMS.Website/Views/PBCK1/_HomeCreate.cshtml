@@ -419,8 +419,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            <div class="input-group date disabled">
+                                                @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -440,7 +440,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Decree Doc</label>
                                         <div class="col-md-8">
-                                            <div class="input-group">
+                                            <div class="input-group disabled">
                                                 <input type="text" class="form-control" disabled="disabled">
                                                 <span class=" input-group-addon file-input btn btn-primary btn-file">
                                                     Browse <input type="file" multiple disabled="disabled">

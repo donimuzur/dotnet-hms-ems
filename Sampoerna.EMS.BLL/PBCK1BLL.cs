@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -446,7 +445,10 @@ namespace Sampoerna.EMS.BLL
                 #region -------------- Product Code Validation --------------
                 List<string> messages;
                 ZAIDM_EX_PRODTYP prodTypeData = null;
-                if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
+                //if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
+                
+                //use product alias instead of product code
+                if (ValidateProductAlias(output.ProductCode, out messages, out prodTypeData))
                 {
                     output.ProductCode = prodTypeData.PROD_CODE;
                     output.ProdTypeAlias = prodTypeData.PRODUCT_ALIAS;
@@ -476,7 +478,8 @@ namespace Sampoerna.EMS.BLL
 
                 string uomName;
                 string uomId;
-                if (!ValidateUom(output.ConverterUom, out messages, out uomName, out uomId))
+                //validate by UOM Name
+                if (!ValidateUomId(output.ConverterUom, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -527,7 +530,10 @@ namespace Sampoerna.EMS.BLL
                 #region ------------- Product Code Validation ----------
                 List<string> messages;
                 ZAIDM_EX_PRODTYP prodTypeData = null;
-                if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
+                //if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
+
+                //use product alias instead of product code
+                if (ValidateProductAlias(output.ProductCode, out messages, out prodTypeData))
                 {
                     output.ProductCode = prodTypeData.PROD_CODE;
                     output.ProdTypeAlias = prodTypeData.PRODUCT_ALIAS;
@@ -535,6 +541,9 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
+                    output.ProductCode = "";
+                    output.ProdTypeAlias = output.ProductCode;
+                    output.ProdTypeName = "";
                     output.IsValid = false;
                     messageList.AddRange(messages);
                 }
@@ -581,7 +590,8 @@ namespace Sampoerna.EMS.BLL
 
                 string uomName;
                 string uomId;
-                if (!ValidateUom(output.BkcRequiredUomId, out messages, out uomName, out uomId))
+                //validate by Uom Id
+                if (!ValidateUomId(output.BkcRequiredUomId, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -618,19 +628,51 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        private bool ValidateProductCode(string productCode, out List<string> message, out ZAIDM_EX_PRODTYP productData)
+        //private bool ValidateProductCode(string productCode, out List<string> message, out ZAIDM_EX_PRODTYP productData)
+        //{
+        //    productData = null;
+        //    var valResult = false;
+        //    var messageList = new List<string>();
+        //    #region ------------Product Code Validation-------------
+        //    if (!string.IsNullOrWhiteSpace(productCode))
+        //    {
+
+        //        productData = _prodTypeBll.GetByCode(productCode);
+        //        if (productData == null)
+        //        {
+        //            messageList.Add("ProductCode not valid");
+        //        }
+        //        else
+        //        {
+        //            valResult = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        messageList.Add("ProductCode is empty");
+        //    }
+
+        //    #endregion
+
+        //    message = messageList;
+
+        //    return valResult;
+        //}
+
+        private bool ValidateProductAlias(string productAlias, out List<string> message,
+            out ZAIDM_EX_PRODTYP productData)
         {
             productData = null;
             var valResult = false;
             var messageList = new List<string>();
             #region ------------Product Code Validation-------------
-            if (!string.IsNullOrWhiteSpace(productCode))
+            if (!string.IsNullOrWhiteSpace(productAlias))
             {
 
-                productData = _prodTypeBll.GetByCode(productCode);
+                productData = _prodTypeBll.GetByAlias(productAlias);
                 if (productData == null)
                 {
-                    messageList.Add("ProductCode not valid");
+                    messageList.Add("Product Alias [" + productAlias + "] not valid");
                 }
                 else
                 {
@@ -639,7 +681,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                messageList.Add("ProductCode is empty");
+                messageList.Add("Product Alias is empty");
             }
 
             #endregion
@@ -665,7 +707,7 @@ namespace Sampoerna.EMS.BLL
                 if (!int.TryParse(month, out monthNumber))
                 {
                     //not valid
-                    messageList.Add("Month is not valid");
+                    messageList.Add("Month [" + month + "] is not valid");
                 }
                 else
                 {
@@ -673,7 +715,7 @@ namespace Sampoerna.EMS.BLL
                     var monthData = _monthBll.GetMonth(monthNumber);
                     if (monthData == null)
                     {
-                        messageList.Add("Month is not valid");
+                        messageList.Add("Month [" + month + "] is not valid");
                     }
                     else
                     {
@@ -716,7 +758,7 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateUom(string uom, out List<string> message, out string uomName, out string uomId)
+        private bool ValidateUomId(string uom, out List<string> message, out string uomName, out string uomId)
         {
             var valResult = false;
             var messageList = new List<string>();
@@ -733,7 +775,38 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
-                    messageList.Add("UOM Id not valid.");
+                    messageList.Add("UOM Id [" + uom + "] not valid");
+                }
+            }
+            else
+            {
+                messageList.Add("UOM is empty");
+            }
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateUomName(string uomName, out List<string> message, out string uomNameFromDb,
+            out string uomId)
+        {
+            var valResult = false;
+            var messageList = new List<string>();
+            uomNameFromDb = string.Empty;
+            uomId = string.Empty;
+            if (!string.IsNullOrWhiteSpace(uomName))
+            {
+                var uomData = _uomBll.GetByName(uomName);
+                if (uomData != null)
+                {
+                    uomNameFromDb = uomData.UOM_DESC;
+                    uomId = uomData.UOM_ID;
+                    valResult = true;
+                }
+                else
+                {
+                    messageList.Add("UOM Name [" + uomName + "] not valid");
                 }
             }
             else
