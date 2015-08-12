@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -31,17 +32,18 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new ZAIDM_EX_KPPBC();
                         item.KPPBC_ID = xElement.Element("KPPBC_ID").Value;
-                        item.KPPBC_TYPE = xElement.Element("KPPBC_TYPE") == null ? null : xElement.Element("KPPBC_TYPE").Value;
-                        item.MENGETAHUI = xElement.Element("MENGETAHUI") == null ? null : xElement.Element("MENGETAHUI").Value;
-                        item.CK1_KEP_FOOTER = xElement.Element("CK1_KEP_FOOTER") == null ? null : xElement.Element("CK1_KEP_FOOTER").Value;
-                        item.CK1_KEP_HEADER = xElement.Element("CK1_KEP_HEADER") == null ? null : xElement.Element("CK1_KEP_HEADER").Value;
-                        //item.MODIFIED_DATE = DateTime.Now;
-                        // var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); ;
+                        item.KPPBC_TYPE = _xmlMapper.GetElementValue(xElement.Element("KPPBC_TYPE"));
+                        item.MENGETAHUI = _xmlMapper.GetElementValue(xElement.Element("MENGETAHUI"));
+                        item.CK1_KEP_FOOTER = _xmlMapper.GetElementValue(xElement.Element("CK1_KEP_FOOTER"));
+                        item.CK1_KEP_HEADER = _xmlMapper.GetElementValue(xElement.Element("CK1_KEP_HEADER"));
+                        item.CREATED_BY = Constans.PICreator;
                         var existingKppbc = GetKPPBC(item.KPPBC_ID);
                         if (existingKppbc != null)
                         {
+                            item.CREATED_BY = existingKppbc.CREATED_BY;
                             item.CREATED_DATE = existingKppbc.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PICreator;
                             items.Add(item);
 
                         }

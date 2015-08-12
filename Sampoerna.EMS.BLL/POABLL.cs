@@ -6,7 +6,6 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -65,7 +64,7 @@ namespace Sampoerna.EMS.BLL
             }
 
         }
-        
+
         public void Delete(string id)
         {
             var existingPoa = GetById(id);
@@ -85,7 +84,7 @@ namespace Sampoerna.EMS.BLL
         {
             try
             {
-                
+
                 _repository.Update(poa);
                 _uow.SaveChanges();
             }
@@ -127,13 +126,17 @@ namespace Sampoerna.EMS.BLL
             var poaList = dbData.ToList().Select(d => d.POA);
             return Mapper.Map<List<POADto>>(poaList.ToList());
         }
-        //public POADto GetDetailsById(string id)
-        //{
-        //    var dtData =  _repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault();
-        //    //if (dtData == null)
-        //    //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-        //    return AutoMapper.Mapper.Map<POADto>(dtData);
-        //}
+
+        public List<POADto> GetPoaByNppbkcIdAndMainPlant(string nppbkcId)
+        {
+            //query by nppbkc, main plant and active poa
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.NPPBKC_ID == nppbkcId 
+                && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value 
+                && c.POA.IS_ACTIVE.HasValue && c.POA.IS_ACTIVE.Value;
+            var dbData = _poaMapRepository.Get(queryFilter, null, "POA");
+            var poaList = dbData.ToList().Select(d => d.POA);
+            return Mapper.Map<List<POADto>>(poaList.ToList());
+        }
 
     }
 }

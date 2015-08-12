@@ -18,8 +18,12 @@ namespace Sampoerna.EMS.BusinessObject
         public string BUKRS { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     
         public virtual T001 T001 { get; set; }
         public virtual T001 T0011 { get; set; }
+        public virtual T001W T001W { get; set; }
     }
 }

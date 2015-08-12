@@ -57,6 +57,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
+               .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
                 ;
 
             Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting()
@@ -65,7 +66,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.SPRAS))
                  .ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
                  .ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
-                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null || src.ZAIDM_EX_NPPBKC.T001 == null ? string.Empty : src.ZAIDM_EX_NPPBKC.T001.BUKRS));
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null || src.ZAIDM_EX_NPPBKC.T001 == null ? string.Empty : src.ZAIDM_EX_NPPBKC.T001.BUKRS))
+                .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
             
             #region Workflow History
 
@@ -92,7 +94,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.POA_ID, opt => opt.MapFrom(src => src.POA_ID))
                 .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.T001W.NAME1))
-                .ForMember(dest => dest.POA_NAME, opt => opt.MapFrom(src => src.POA.USER.FIRST_NAME + " " + src.POA.USER.LAST_NAME));
+                .ForMember(dest => dest.POA_NAME, opt => opt.MapFrom(src => src.POA.PRINTED_NAME));
             Mapper.CreateMap<POA_MAPDto, POA_MAP>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.POA_MAP_ID, opt => opt.MapFrom(src => src.POA_MAP_ID))
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
@@ -106,8 +108,17 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<PrintHistoryDto, PRINT_HISTORY>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKCDto>().IgnoreAllNonExisting();
-            Mapper.CreateMap<ZAIDM_EX_KPPBC, ZAIDM_EX_KPPBCDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKCDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.DROPDOWNTEXT, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                ;
+            Mapper.CreateMap<ZAIDM_EX_KPPBC, ZAIDM_EX_KPPBCDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.KPPBC_ID, opt => opt.MapFrom(src => src.KPPBC_ID))
+                .ForMember(dest => dest.KPPBC_TYPE, opt => opt.MapFrom(src => src.KPPBC_TYPE))
+                .ForMember(dest => dest.MENGETAHUI, opt => opt.MapFrom(src => src.MENGETAHUI))
+                .ForMember(dest => dest.MENGETAHUI_DETAIL, opt => opt.MapFrom(src => src.MENGETAHUI_DETAIL))
+                .ForMember(dest => dest.CK1_KEP_HEADER, opt => opt.MapFrom(src => src.CK1_KEP_HEADER))
+                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER));
+  
 
             Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting();
             Mapper.CreateMap<T001, T001Dto>().IgnoreAllNonExisting();
@@ -223,6 +234,18 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             #endregion
+
+            Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.T001.BUTXT))
+                .ForMember(dest => dest.NPWP, opt => opt.MapFrom(src => src.T001.NPWP))
+                .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.T001.ORT01))
+                .ForMember(dest => dest.SPRAS, opt => opt.MapFrom(src => src.T001.SPRAS))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.T001W.NPPBKC_ID))
+                .ForMember(dest => dest.NPPBKC_KPPBC_ID, opt => opt.MapFrom(src => src.T001W.ZAIDM_EX_NPPBKC.KPPBC_ID))
+                ;
+
 	    
 	    #region ExGoodTyp
 

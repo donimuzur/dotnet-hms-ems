@@ -189,7 +189,18 @@
                                         UoM
                                     </a>
                                 </li>
-
+                                <li>
+                                    <a id="MenuVendor" href="@Url.Action("Index", "Vendor")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Vendor
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuKppbc" href="@Url.Action("Index", "KPPBC")">
+                                        <i class="fa fa-angle-right"></i>
+                                        KPPBC
+                                    </a>
+                                </li>                
 
                             </ul>
                         </div>
@@ -199,7 +210,7 @@
                                 <span>Other Modules</span>
                             </a>
                             <ul class="child other-menu">
-                                <li><a href="list.html"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
+                                <li><a href="@Url.Action("Index", "Pbck1")"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
                                 <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
                                 <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
                                 <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
@@ -306,8 +317,6 @@
                                         Global Settings
                                     </a>
                                 </li>
-
-
                             </ul>
                         </div>
                         <div class="other">
@@ -316,7 +325,7 @@
                                 <span>Other Modules</span>
                             </a>
                             <ul class="child other-menu">
-                                <li><a href="list.html"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
+                                <li><a href="@Url.Action("Index", "Pbck1")"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
                                 <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
                                 <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
                                 <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
@@ -364,16 +373,45 @@
                                     <i class="fa fa-th"></i>
                                     <span>Other Modules</span>
                                 </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
-                                </ul>
+                                <div class="collapse-menu active open">
+                                    <a href="#" class="list-group-item list-parent">
+                                        <i class="fa fa-clipboard"></i>
+                                        <span>Document List</span>
+                                        <i class="down fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="child list">
+                                        <li><a id="Menulack1ListByNppbkc" href="@Url.Action("Index", "LACK1")"><i class="fa fa-angle-right"></i>List by NPPBKC </a></li>
+                                        <li><a id="MenuLack1ListByPlant" href="@Url.Action("ListByPlant", "LACK1")"><i class="fa fa-angle-right"></i>List by Plant</a></li>
+                                        <li><a href="4.2-lack1-list-completed.html"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+                                    </ul>
+                                </div>
+                                <div class="collapse-menu">
+                                    <a href="#" class="list-group-item list-parent">
+                                        <i class="fa fa-signal"></i>
+                                        <span>Report</span>
+                                        <i class="down fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="child list">
+                                        <li><a href="4.3-lack1-summary-report.html"><i class="fa fa-angle-right"></i>Summary</a></li>
+                                        <li><a href="4.4-lack1-detail-report.html"><i class="fa fa-angle-right"></i>Detail</a></li>
+                                    </ul>
+                                </div>
+                                <div class="other">
+                                    <a href="#" class="list-group-item">
+                                        <i class="fa fa-th"></i>
+                                        <span>Other Modules</span>
+                                    </a>
+                                    <ul class="child other-menu">
+                                        <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 

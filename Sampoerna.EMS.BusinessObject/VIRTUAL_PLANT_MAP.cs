@@ -24,10 +24,10 @@ namespace Sampoerna.EMS.BusinessObject
         public string MODIFIED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
     
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
         public virtual T001 T001 { get; set; }
         public virtual T001W T001W { get; set; }
         public virtual T001W T001W1 { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
     }
 }

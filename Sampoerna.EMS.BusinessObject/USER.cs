@@ -31,18 +31,12 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK12 = new HashSet<PBCK1>();
             this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
             this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
-            this.T001 = new HashSet<T001>();
-            this.T001W = new HashSet<T001W>();
-            this.UOM = new HashSet<UOM>();
             this.VIRTUAL_PLANT_MAP = new HashSet<VIRTUAL_PLANT_MAP>();
             this.VIRTUAL_PLANT_MAP1 = new HashSet<VIRTUAL_PLANT_MAP>();
             this.WORKFLOW_HISTORY = new HashSet<WORKFLOW_HISTORY>();
             this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
-            this.ZAIDM_EX_MATERIAL1 = new HashSet<ZAIDM_EX_MATERIAL>();
-            this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
             this.LACK2 = new HashSet<LACK2>();
             this.LACK21 = new HashSet<LACK2>();
             this.LACK22 = new HashSet<LACK2>();
@@ -53,6 +47,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA3 = new HashSet<POA>();
             this.POA_MAP = new HashSet<POA_MAP>();
             this.POA_MAP1 = new HashSet<POA_MAP>();
+            this.UOM = new HashSet<UOM>();
         }
     
         public string USER_ID { get; set; }
@@ -80,18 +75,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1> PBCK12 { get; set; }
         public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual ICollection<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
-        public virtual ICollection<T001> T001 { get; set; }
-        public virtual ICollection<T001W> T001W { get; set; }
-        public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP1 { get; set; }
         public virtual ICollection<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
-        public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL1 { get; set; }
-        public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
         public virtual ICollection<LACK2> LACK2 { get; set; }
         public virtual ICollection<LACK2> LACK21 { get; set; }
         public virtual ICollection<LACK2> LACK22 { get; set; }
@@ -102,5 +91,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<POA> POA3 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP1 { get; set; }
+        public virtual ICollection<UOM> UOM { get; set; }
     }
 }

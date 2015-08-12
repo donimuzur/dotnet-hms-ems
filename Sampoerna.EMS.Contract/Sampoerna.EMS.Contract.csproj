@@ -46,8 +46,8 @@
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK4C_BLL.cs" />
     <Compile Include="ICK5BLL.cs" />
-    <Compile Include="ILACK2BLL.cs" />
-    <Compile Include="IMessageService.cs" />
+    <Compile Include="ILFA1BLL.cs" />
+    <Compile Include="ILACK2BLL.cs" />    <Compile Include="IMessageService.cs" />
     <Compile Include="ILACK1BLL.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
@@ -71,6 +71,7 @@
     <Compile Include="IPrintHistoryBLL.cs" />
     <Compile Include="ISupplierPortBLL.cs" />
     <Compile Include="IPOAMapBL.cs" />
+    <Compile Include="IT001KBLL.cs" />
     <Compile Include="IUnitOfMeasurementBLL.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserAuthorizationBLL.cs" />

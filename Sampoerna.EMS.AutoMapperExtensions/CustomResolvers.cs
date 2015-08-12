@@ -187,4 +187,16 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    public class CK5ListIndexDestinationPlantResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+           
+            if (value.IsCk5Export)
+                return value.DEST_COUNTRY_CODE + " - " + value.DEST_COUNTRY_NAME;
+
+            return value.DEST_PLANT_ID + " - " + value.DEST_PLANT_NAME;
+        }
+    }
+
 }

@@ -77,7 +77,20 @@
                         @Html.HiddenFor(model => model.UnSealingNotifNumber)
                         @Html.HiddenFor(model => model.SealingNotifDate)
                         @Html.HiddenFor(model => model.UnsealingNotifDate)
+                        
+                      @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.CountryName)
 
+                        @*@Html.HiddenFor(model => model.CountryCode)
+                        @Html.HiddenFor(model => model.CountryName)
+
+                        @Html.HiddenFor(model => model.LoadingPort)
+                        @Html.HiddenFor(model => model.LoadingPortId)
+                        @Html.HiddenFor(model => model.LoadingPortName)
+                        @Html.HiddenFor(model => model.FinalPort)
+                        @Html.HiddenFor(model => model.FinalPortId)
+                        @Html.HiddenFor(model => model.FinalPortName)*@
+                        
 
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
@@ -180,7 +193,10 @@
             }
         });
 
-
+        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+        $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
     });
 
     $("#PbckDecreeId").change(function () {
@@ -274,5 +290,19 @@
     $("#btnSubmitConfirm").click(function () {
         window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
     });
+    
+        $("#CountryCode").change(function () {
+            if ($("#CountryCode").length) {
+                var countryName = $('option:selected', $(this)).text();
+                if (countryName == '') {
+                    $("input[name='CountryName']").val('');
+                   
+                } else {
+                    $("input[name='CountryName']").val(countryName);
+                 
+                     }
+            }
+
+        });
 </script>
 }

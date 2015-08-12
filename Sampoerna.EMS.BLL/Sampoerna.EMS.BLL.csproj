@@ -66,8 +66,8 @@
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
-    <Compile Include="LACK2BLL.cs" />
-    <Compile Include="Pbck1DecreeDocBLL.cs" />
+    <Compile Include="LFA1BLL.cs" />
+    <Compile Include="LACK2BLL.cs" />    <Compile Include="Pbck1DecreeDocBLL.cs" />
     <Compile Include="LACK1BLL.cs" />
     <Compile Include="Pbck1ProdConverterBLL.cs" />
     <Compile Include="EmailTemplateBLL.cs" />
@@ -90,6 +90,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SupplierPortBLL.cs" />
     <Compile Include="POAMapBLL.cs" />
+    <Compile Include="T001KBLL.cs" />
     <Compile Include="UnitOfMeasurementBLL.cs" />
     <Compile Include="UserAuthorizationBLL.cs" />
     <Compile Include="UserBLL.cs" />

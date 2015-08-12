@@ -5,6 +5,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
    public class T001WDto
     {
         public string WERKS { get; set; }
+        public string DROPDOWNTEXTFIELD { get; set; }
         public string NAME1 { get; set; }
         public string ORT01 { get; set; }
         public string PHONE { get; set; }

@@ -254,10 +254,12 @@
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\KPPBCController.cs" />
     <Compile Include="Controllers\POAMapController.cs" />
     <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserAuthorizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VendorController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
     <Compile Include="Controllers\WorkflowSettingsController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
@@ -298,6 +300,8 @@
     <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
     <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
+    <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
@@ -340,6 +344,8 @@
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
@@ -372,13 +378,13 @@
       <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controllers\CK5PrintOutMaterial.cs">
+    <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
+    <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
@@ -396,6 +402,12 @@
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
@@ -810,7 +822,6 @@
     <Content Include="Views\PBCK1\_ProdPlanUpload.cshtml" />
     <Content Include="Views\PBCK1\_ProdPlanList.cshtml" />
     <Content Include="Views\CK5\CK5Export.cshtml" />
-    <Content Include="Views\CK5\CK5DomesticAlcohol.cshtml" />
     <Content Include="Views\CK5\CK5Completed.cshtml" />
     <Content Include="Views\CK5\CK5Import.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1Table.cshtml" />
@@ -915,7 +926,12 @@
     <Content Include="Views\POAMap\Index.cshtml" />
     <Content Include="Views\POAMap\Detail.cshtml" />
     <Content Include="Views\LACK2\Index.cshtml" />
-    <Content Include="Views\LACK2\_Lack2Table.cshtml" />
+    <Content Include="Views\LACK2\_Lack2Table.cshtml" />    <Content Include="Views\Vendor\Details.cshtml" />
+    <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+    <Content Include="Views\POAMap\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Index.cshtml" />
+    <Content Include="Views\KPPBC\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -989,7 +1005,7 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
+    <EmbeddedResource Include="Reports\CK5\CK5PrintOutMaterial.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
     </EmbeddedResource>
