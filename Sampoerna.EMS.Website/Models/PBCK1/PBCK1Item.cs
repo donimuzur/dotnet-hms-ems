@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             //PlanProdFrom = DateTime.Now;
             //PlanProdTo = DateTime.Now;
             //DecreeDate = DateTime.Now;
+            ReportedOn = DateTime.Now;
         }
         public int Pbck1Id { get; set; }
 

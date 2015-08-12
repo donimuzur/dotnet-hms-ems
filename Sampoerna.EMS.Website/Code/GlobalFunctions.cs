@@ -46,6 +46,13 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static SelectList GetNppbkcByFlagDeletionList(bool isDeleted)
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            var nppbkcList = nppbkcbll.GetByFlagDeletion(isDeleted);
+            return new SelectList(nppbkcList, "NPPBKC_ID", "NPPBKC_ID");
+        }
+
         public static ZAIDM_EX_NPPBKC GetNppbkcById(string id)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
@@ -70,8 +77,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
             var data = plantBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
         }
 
         public static SelectList GetGoodTypeList()

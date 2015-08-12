@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -110,6 +112,24 @@ namespace Sampoerna.EMS.BLL
 
             return dbData.ZAIDM_EX_KPPBC.KPPBC_ID;
 
+        }
+
+        public List<ZAIDM_EX_NPPBKCDto> GetByFlagDeletion(bool isDeleted)
+        {
+            var queryFilter = PredicateHelper.True<ZAIDM_EX_NPPBKC>();
+            if (!isDeleted)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c => !c.IS_DELETED.HasValue || (c.IS_DELETED.HasValue && c.IS_DELETED.Value == false));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == true);
+            }
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(dbData.ToList());
         }
     }
 }
