@@ -1,0 +1,146 @@
+﻿@model Sampoerna.EMS.Website.Models.KPPBC.KppbcDetailViewModel
+
+
+@{
+    ViewBag.Title = "Edit KPPBC";
+}
+
+@using (Html.BeginForm("Edit", "KPPBC", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>KPPBC</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Edit KPPBC
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">KPPBC ID</label>
+                                                <div class="col-md-8">
+                                                    @Html.HiddenFor(x=>x.Kppbc.KPPBC_ID)
+                                                    @Html.TextBox("KPPBC_ID", Model.Kppbc.KPPBC_ID, new { @class = "form-control", @disabled="disabled" })
+                                                   
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">KPPBC TYPE</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBox("KPPBC_TYPE", Model.Kppbc.KPPBC_TYPE, new { @class = "form-control", @disabled = "disabled" })
+
+
+
+  
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">MENGETAHUI HEADER</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBox("MENGETAHUI", Model.Kppbc.MENGETAHUI, new { @class = "form-control", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">MENGETAHUI DETAIL</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(m=>m.MengetahuiHTML, 6, 1, new { @class = "form-control" })
+
+
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">CK1 KEP HEADER</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBox("CK1_KEP_HEADER", Model.Kppbc.CK1_KEP_HEADER, new { @class = "form-control", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">CK1 KEP FOOTER</label>
+                                                <div class="col-md-8">
+                                                   
+                                                    @Html.TextBox("CK1_KEP_FOOTER", Model.Kppbc.CK1_KEP_FOOTER, new { @class = "form-control", @disabled = "disabled" })
+
+
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts {
+    <script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $('#MenuKppbc').addClass('active');
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "KPPBC")';
+            });
+        
+
+    });
+        
+    </script>
+}

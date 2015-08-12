@@ -346,10 +346,10 @@ function ajaxLoadCompany(formData, url) {
             data: formData,
             success: function (data) {
                 if (data != null) {
-                    $('#Detail_NppbkcCompanyName').val(data.T001.BUTXT);
-                    $('#Detail_NppbkcCompanyCode').val(data.T001.BUKRS);
-                    $('#Detail_NppbkcKppbcId').val(data.KPPBC_ID);
-                    $('#displayCompanyName').val(data.T001.BUTXT);
+                    $('#Detail_NppbkcCompanyName').val(data.BUTXT);
+                    $('#Detail_NppbkcCompanyCode').val(data.BUKRS);
+                    $('#Detail_NppbkcKppbcId').val(data.NPPBKC_KPPBC_ID);
+                    $('#displayCompanyName').val(data.BUTXT);
                 } else {
                     $('#Detail_NppbkcCompanyName').val('');
                     $('#Detail_NppbkcCompanyCode').val('');

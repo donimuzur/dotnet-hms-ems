@@ -18,5 +18,7 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_NPPBKCDto GetDetailsById(string id);
 
+        List<ZAIDM_EX_NPPBKCDto> GetByFlagDeletion(bool isDeleted);
+
     }
 }

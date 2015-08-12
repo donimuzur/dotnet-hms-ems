@@ -80,7 +80,8 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         public string GoodTypeName { get; set; }
 
-        public string IsDeleted { get; set; }
+        public string PlantDeletion { get; set; }
+        public string ClientDeletion { get; set; }
 
         
 

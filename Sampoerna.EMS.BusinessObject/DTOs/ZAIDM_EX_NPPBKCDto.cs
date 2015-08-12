@@ -6,6 +6,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class ZAIDM_EX_NPPBKCDto
     {
         public string NPPBKC_ID { get; set; }
+        /// <summary>
+        /// use for TextField on dropdownlist
+        /// </summary>
+        public string DROPDOWNTEXT { get; set; }
         public string ADDR1 { get; set; }
         public string ADDR2 { get; set; }
         public string CITY { get; set; }
@@ -25,7 +29,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public LFA1Dto LFA1 { get; set; }
         public T001Dto T001 { get; set; }
-        public T001Dto T0011 { get; set; }
         public ICollection<T001WDto> T001W { get; set; }
         public ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
         public ICollection<POA_MAP> POA_MAP { get; set; }
