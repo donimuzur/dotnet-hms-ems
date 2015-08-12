@@ -33,5 +33,7 @@ namespace Sampoerna.EMS.Contract
 
         Pbck1ReportDto GetPrintOutDataById(int id);
 
+        Pbck1Dto GetByDocumentNumber(string documentNumber);
+
     }
 }

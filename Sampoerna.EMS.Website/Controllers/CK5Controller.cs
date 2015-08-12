@@ -14,6 +14,7 @@ using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.ReportingData;
@@ -3399,5 +3400,106 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
         #endregion
+
+        #region Upload File Documents
+
+        public ActionResult CK5UploadFileDocuments()
+        {
+            var model = new CK5FileDocumentsViewModel();
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+
+            return View("CK5UploadFileDocument", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult UploadFileDocuments(HttpPostedFileBase itemExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcelCk5FileDocuments(itemExcelFile);
+            var model = new CK5FileDocumentsViewModel();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new CK5FileDocumentItems();
+
+                    try
+                    {
+                        uploadItem.Ck5Type = datarow[0];// == "0" ? Enums.CK5Type.Domestic : Enums.CK5Type.Export;
+
+                        
+                        uploadItem.KppBcCityName = datarow[1];
+                        uploadItem.ExGoodType = datarow[2];
+                        uploadItem.ExciseSettlement = datarow[3];
+                        uploadItem.ExciseStatus = datarow[4];
+                        uploadItem.RequestType = datarow[5];
+                        uploadItem.SourcePlantId = datarow[6];
+                        uploadItem.DestPlantId = datarow[7];
+                        uploadItem.InvoiceNumber = datarow[8];
+                        uploadItem.InvoiceDateDisplay = datarow[9];
+                        uploadItem.PbckDecreeNumber = datarow[10];
+                        uploadItem.CarriageMethod = datarow[11];
+                        uploadItem.GrandTotalEx = datarow[12];
+                        uploadItem.Uom = datarow[13];
+
+                        model.Ck5FileDocumentItems.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+
+                }
+            }
+
+            var input = Mapper.Map<List<CK5UploadFileDocumentsInput>>(model.Ck5FileDocumentItems);
+
+            List<CK5FileUploadDocumentsOutput> outputResult;
+            outputResult = _ck5Bll.CK5UploadFileDocumentsProcess(input);
+
+            model.Ck5FileDocumentItems = Mapper.Map<List<CK5FileDocumentItems>>(outputResult);
+
+            return PartialView("_CK5UploadFileDocumentsList", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveCK5FileDocuments(CK5FileDocumentsViewModel model)
+        {
+            try
+            {
+
+                var dataToSave = Mapper.Map<CK5Dto>(model);
+
+                var input = new CK5SaveInput()
+                {
+                    Ck5Dto = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    //Ck5Material = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels)
+                };
+
+                _ck5Bll.SaveCk5(input);
+                // var saveResult = SaveCk5ToDatabase(model);
+
+                AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+
+
+
+                return View("Create");
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                return View("Index");
+            }
+
+        }
+
+        #endregion
+
     }
 }

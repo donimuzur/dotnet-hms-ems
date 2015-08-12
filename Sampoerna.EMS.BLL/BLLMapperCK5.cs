@@ -105,6 +105,9 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             #endregion
+
+            Mapper.CreateMap<CK5UploadFileDocumentsInput, CK5FileUploadDocumentsOutput>().IgnoreAllNonExisting();
+
         }
     }
 }

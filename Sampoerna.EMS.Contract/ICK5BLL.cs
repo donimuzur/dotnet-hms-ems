@@ -41,5 +41,7 @@ namespace Sampoerna.EMS.Contract
        CK5ReportDto GetCk5ReportDataById(long id);
 
        //void AddPrintHistory(long id, string userId);
+
+       List<CK5FileUploadDocumentsOutput> CK5UploadFileDocumentsProcess(List<CK5UploadFileDocumentsInput> inputs);
    }
 }

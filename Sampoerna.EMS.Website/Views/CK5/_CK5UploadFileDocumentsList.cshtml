@@ -1,0 +1,112 @@
+﻿@model  Sampoerna.EMS.Website.Models.CK5.CK5FileDocumentsViewModel
+
+<table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
+    <thead>
+        <tr>
+
+            <th>Type</th>
+            <th>KPPBC City</th>
+            <th>Excise Goods Type</th>
+            <th>Excise Settlement</th>
+            <th>Excise Status</th>
+            <th>Request Type</th>
+            <th>SOURCE PLANT</th>
+            <th>DESTINATION PLANT</th>
+            <th>INVOICE NUMBER</th>
+            <th>INVOICE DATE</th>
+            <th>PBCK-1 NUMBER</th>
+            <th>CARRIAGE METHOD</th>
+            <th>GRAND TOTAL</th>
+            <th>UOM</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            for (int i = 0; i < Model.Ck5FileDocumentItems.Count(); i++)
+            {
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Ck5Type)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].KppBcCityName)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ExGoodType)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ExciseSettlement)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ExciseStatus)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].RequestType)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SourcePlantId)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DestPlantId)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].InvoiceDate)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].CarriageMethod)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Uom)
+
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].CK5_TYPE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].CE_OFFICE_CODE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].EX_GOODS_TYPE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].EX_SETTLEMENT_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].EX_STATUS_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].REQUEST_TYPE_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_NPWP)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_NPPBKC_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_COMPANY_CODE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_COMPANY_NAME)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_ADDRESS)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_KPPBC_NAME_OFFICE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_NAME)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_NPWP)
+
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_NPPBKC_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_COMPANY_CODE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_COMPANY_NAME)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_ADDRESS)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_KPPBC_NAME_OFFICE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_NAME)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].PBCK1_DECREE_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].CARRIAGE_METHOD_ID)
+
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_NAME)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_ID)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_CODE)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_NAME)
+
+                <tr>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Ck5Type)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].KppBcCityName)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].ExGoodType)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].ExciseSettlement)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].ExciseStatus)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].RequestType)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].SourcePlantId)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].DestPlantId)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceDateDisplay)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].CarriageMethod)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Uom)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].MesssageUploadFileDocuments)</td>
+                    @*<td>@row.Ck5Type</td>
+                        <td>@row.KppBcCityName</td>
+                        <td>@row.ExGoodType</td>
+                        <td>@row.ExciseSettlement</td>
+                        <td>@row.ExciseStatus</td>
+                        <td>@row.RequestType</td>
+                        <td>@row.SourcePlantId</td>
+                        <td>@row.DestPlantId</td>
+                        <td>@row.InvoiceNumber</td>
+                        <td>@row.InvoiceDateDisplay</td>
+                        <td>@row.PbckDecreeNumber</td>
+                        <td>@row.CarriageMethod</td>
+                        <td>@row.GrandTotalEx</td>
+                        <td>@row.Uom</td>
+                        <td>@row.MesssageUploadFileDocuments</td>*@
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+

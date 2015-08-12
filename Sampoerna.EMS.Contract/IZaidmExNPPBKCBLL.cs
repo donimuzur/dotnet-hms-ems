@@ -18,5 +18,6 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_NPPBKCDto GetDetailsById(string id);
 
+        ZAIDM_EX_NPPBKCDto GetDetailsByCityName(string cityName);
     }
 }

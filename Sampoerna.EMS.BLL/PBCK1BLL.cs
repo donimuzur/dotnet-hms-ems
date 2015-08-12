@@ -1343,5 +1343,19 @@ namespace Sampoerna.EMS.BLL
         }
 
 
+        public Pbck1Dto GetByDocumentNumber(string documentNumber)
+        {
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
+            var dbData = _repository.Get(c => c.NUMBER == documentNumber, null, includeTables).FirstOrDefault();
+            var mapResult = Mapper.Map<Pbck1Dto>(dbData);
+            if (dbData != null)
+            {
+                mapResult.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
+                mapResult.Pbck1Childs = Mapper.Map<List<Pbck1Dto>>(dbData.PBCK11);
+            }
+            return mapResult;
+        }
+
+
     }
 }

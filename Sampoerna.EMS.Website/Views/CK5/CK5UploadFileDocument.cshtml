@@ -1,17 +1,127 @@
-﻿
-@{
-    Layout = null;
-}
+﻿@model  Sampoerna.EMS.Website.Models.CK5.CK5FileDocumentsViewModel
 
-<!DOCTYPE html>
+@using (Html.BeginForm("SaveCK5", "CK5"))
+{
+    @Html.AntiForgeryToken()
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>CK5UploadFileDocument</title>
-</head>
-<body>
-    <div> 
+    <div role="tabpanel" class="tab-pane" id="upload">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Upload Excel File Documents
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="input-group">
+                                    <input type="file" class="form-control" name="itemExcelFile" id="itemExcelFile">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="button" id="btnGenerate" class="btn btn-grey generate" value="Generate" />
+                                <input type="button" class="btn btn-grey" id="btnSave" value="Save" />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="table-container" id="listFileDocuments">
+            @Html.Partial("_CK5UploadFileDocumentsList", Model)
+        </div>
+
     </div>
-</body>
-</html>
+
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/CK5Scripts.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MenuCK5FileDocuments').addClass('active');
+        });
+    
+        $('#btnGenerate').click(function () {
+
+            var fileName = $('[name="itemExcelFile"]').val().trim();
+            var pos = fileName.lastIndexOf('.');
+            var extension = (pos <= 0) ? '' : fileName.substring(pos);
+            if (extension != '.xlsx') {
+                alert('Please browse a correct excel file to upload');
+                return false;
+            }
+
+            var formData = new FormData();
+            var totalFiles = document.getElementById("itemExcelFile").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("itemExcelFile").files[i];
+
+                formData.append("itemExcelFile", file);
+                //formData.append("plantId", $('#SourcePlantId').val());
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: '/CK5/UploadFileDocuments',
+                data: formData,
+                dataType: 'html',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#listFileDocuments').html("");
+                    $('#listFileDocuments').html(response);
+                    //if (IsValidDataUpload())
+                    //    $('#CK5UploadSave').enable();
+                },
+                error: function (error) {
+                    alert("errror " + error);
+                }
+            });
+        });
+
+        $('#btnSave').click(function () {
+            var datarows = GetTableData($('#Ck5UploadTable'));
+            var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
+            $('#ck5TableItem tbody').html('');
+            for (var i = 0; i < datarows.length; i++) {
+                var data = '<tr>';
+                if (columnLength > 0) {
+                    data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+
+                }
+                data += '</tr>';
+                $('#ck5TableItem tbody').append(data);
+            }
+
+
+        });
+        
+    </script>
+
+    }

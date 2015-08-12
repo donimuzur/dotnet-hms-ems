@@ -34,6 +34,9 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IPOABLL _poaBll;
 
+        private IZaidmExNPPBKCBLL _nppbkcBll;
+        private IPlantBLL _plantBll;
+        private IPBCK1BLL _pbck1Bll;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -56,6 +59,10 @@ namespace Sampoerna.EMS.BLL
             _printHistoryBll = new PrintHistoryBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
+
+            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow,_logger);
+            _plantBll = new PlantBLL(_uow, _logger);
+            _pbck1Bll = new PBCK1BLL(_uow,_logger);
         }
         
 
@@ -1015,5 +1022,191 @@ namespace Sampoerna.EMS.BLL
 
         //    _uow.SaveChanges();
         //}
+
+
+        private List<CK5FileUploadDocumentsOutput> ValidateCk5UploadFileDocuments(List<CK5UploadFileDocumentsInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5FileUploadDocumentsOutput>();
+
+            foreach (var ck5UploadFileDocuments in inputs)
+            {
+                messageList.Clear();
+
+                //var output = new CK5MaterialOutput();
+                var output = Mapper.Map<CK5FileUploadDocumentsOutput>(ck5UploadFileDocuments);
+
+                //ck5type
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.Ck5Type))
+                    messageList.Add("Type not valid");
+                else
+                {
+                    if (typeof(Enums.CK5Type).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.Ck5Type)))
+                        output.CK5_TYPE =
+                            (Enums.CK5Type)
+                                Enum.Parse(typeof(Enums.CK5Type), ck5UploadFileDocuments.Ck5Type);
+                    else
+                        messageList.Add("ExGoodType not valid");
+                }
+
+                //kppbc city
+
+                var dbNppbkc = _nppbkcBll.GetDetailsByCityName(ck5UploadFileDocuments.KppBcCityName);
+                if (dbNppbkc == null)
+                    messageList.Add("City Not Exist");
+                else
+                    output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
+                
+                //excise goods type
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodType))
+                    messageList.Add("ExGoodType not valid");
+                else
+                {
+                    if (typeof (Enums.ExGoodsType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExGoodType)))
+                        output.EX_GOODS_TYPE =
+                            (Enums.ExGoodsType)
+                                Enum.Parse(typeof (Enums.ExGoodsType), ck5UploadFileDocuments.ExGoodType);
+                    else
+                        messageList.Add("ExGoodType not valid");
+                }
+
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExciseSettlement))
+                    messageList.Add("ExciseSettlement not valid");
+                else
+                {
+                    if (typeof (Enums.ExciseSettlement).IsEnumDefined(
+                            Convert.ToInt32(ck5UploadFileDocuments.ExciseSettlement)))
+                        output.EX_SETTLEMENT_ID =
+                            (Enums.ExciseSettlement)
+                                Enum.Parse(typeof (Enums.ExciseSettlement), ck5UploadFileDocuments.ExciseSettlement);
+                    else
+                        messageList.Add("ExciseSettlement not valid");
+                }
+
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExciseStatus))
+                    messageList.Add("ExciseStatus not valid");
+                else
+                {
+                    if (typeof (Enums.ExciseStatus).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExciseStatus)))
+                        output.EX_STATUS_ID =
+                            (Enums.ExciseStatus)
+                                Enum.Parse(typeof (Enums.ExciseStatus), ck5UploadFileDocuments.ExciseStatus);
+                    else
+                        messageList.Add("ExciseStatus not valid");
+                }
+
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.RequestType))
+                    messageList.Add("RequestType not valid");
+                else
+                {
+
+                    if (typeof (Enums.RequestType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.RequestType)))
+                        output.REQUEST_TYPE_ID =
+                            (Enums.RequestType)
+                                Enum.Parse(typeof (Enums.RequestType), ck5UploadFileDocuments.RequestType);
+                    else
+                        messageList.Add("ExciseStatus not valid");
+                }
+
+                var sourcePlant = _plantBll.GetT001ById(ck5UploadFileDocuments.SourcePlantId);
+
+                if (sourcePlant == null)
+                    messageList.Add("Source Plant Not Exist");
+
+                var destPlant = _plantBll.GetT001ById(ck5UploadFileDocuments.DestPlantId);
+
+                if (destPlant == null)
+                    messageList.Add("Destination Plant Not Exist");
+
+
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.InvoiceDate))
+                {
+                    var dateTime = Utils.ConvertHelper.StringToDateTimeCk5FileDocuments(ck5UploadFileDocuments.InvoiceDate);
+                    if (dateTime != null)
+                        output.InvoiceDateTime = dateTime;
+                    else
+                        messageList.Add("Invoice Date not valid");
+                }
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.PbckDecreeNumber))
+                {
+                    var pbck1 = _pbck1Bll.GetByDocumentNumber(ck5UploadFileDocuments.PbckDecreeNumber);
+                    if (pbck1 == null)
+                        messageList.Add("PbckDecreeNumber Not Exist");
+                }
+
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.CarriageMethod))
+                {
+                    if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.CarriageMethod))
+                        messageList.Add("CarriageMethod not valid");
+                    else
+                    {
+                        if (typeof (Enums.CarriageMethod).IsEnumDefined(
+                                Convert.ToInt32(ck5UploadFileDocuments.CarriageMethod)))
+                            output.CARRIAGE_METHOD_ID =
+                                (Enums.CarriageMethod)
+                                    Enum.Parse(typeof (Enums.CarriageMethod), ck5UploadFileDocuments.CarriageMethod);
+                        else
+                            messageList.Add("CarriageMethod not valid");
+                    }
+                }
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.PackageUomName))
+                {
+
+                    if (!_uomBll.IsUomIdExist(ck5UploadFileDocuments.PackageUomName))
+                        messageList.Add("UOM not exist");
+                }
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+            //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
+            return outputList;
+        }
+
+
+        public List<CK5FileUploadDocumentsOutput> CK5UploadFileDocumentsProcess(List<CK5UploadFileDocumentsInput> inputs)
+        {
+            var outputList = ValidateCk5UploadFileDocuments(inputs);
+
+            if (!outputList.All(c => c.IsValid))
+                return outputList;
+
+            //foreach (var output in outputList)
+            //{
+
+            //    output.ConvertedQty = Convert.ToInt32(output.Qty) * Convert.ToInt32(output.Convertion);
+
+            //    var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(output.Plant, output.Brand);
+            //    if (dbBrand == null)
+            //    {
+            //        output.Hje = 0;
+            //        output.Tariff = 0;
+            //    }
+            //    else
+            //    {
+            //        output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+            //        output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+            //    }
+
+            //    output.ExciseValue = output.ConvertedQty * output.Tariff;
+
+            //}
+
+            return outputList;
+        }
     }
 }
