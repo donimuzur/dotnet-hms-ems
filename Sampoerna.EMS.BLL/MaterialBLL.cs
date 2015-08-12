@@ -48,10 +48,27 @@ namespace Sampoerna.EMS.BLL
         public List<T001W> getAllPlant(string materialnumber)
         {
             var data =
-                _repository.Get(p => p.STICKER_CODE == materialnumber, null, includeTables)
+                _repository.Get(p => p.STICKER_CODE == materialnumber && p.PLANT_DELETION != true, null, includeTables)
                     .Select(p => p.T001W)
                     .ToList();
             return data;
+        }
+
+        private void PlantDeletion(ZAIDM_EX_MATERIAL data, string userId) {
+            data.PLANT_DELETION = true;
+
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                FORM_ID = data.STICKER_CODE + data.WERKS,
+                FIELD_NAME = "PLANT_DELETION",
+                MODIFIED_BY = userId,
+                MODIFIED_DATE = DateTime.Now,
+                OLD_VALUE = data.PLANT_DELETION.HasValue ? data.PLANT_DELETION.Value.ToString() : "NULL",
+                NEW_VALUE = true.ToString()
+            };
+
+            _changesHistoryBll.AddHistory(changes);
         }
 
         private void CLientDeletion(ZAIDM_EX_MATERIAL data, string userId) {
@@ -59,7 +76,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var detail in datatobeclientdeleted) {
                 detail.CLIENT_DELETION = data.CLIENT_DELETION;
-
+                detail.IS_DELETED = true;
                 var changes = new CHANGES_HISTORY
                 {
                     FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
@@ -85,6 +102,10 @@ namespace Sampoerna.EMS.BLL
 
             if (data.CLIENT_DELETION == true) { 
                 CLientDeletion(data, userId);
+                
+            }
+            else if (data.PLANT_DELETION == true) {
+                PlantDeletion(data, userId);
             }
              
                 _repository.InsertOrUpdate(data);
@@ -194,16 +215,37 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete)
         {
-            Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            if (isDelete.HasValue)
-            {
-                queryFilter = isDelete.Value ? queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == isDelete.Value) : queryFilter.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
-            }
-            return _repository.Get(queryFilter, null, includeTables)
-                .Select(x => new ZAIDM_EX_MATERIAL(){ 
-                    STICKER_CODE = x.STICKER_CODE
+            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilterPlant = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilterClient = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+            //if (isDelete.HasValue)
+            //{
+            //    queryFilterPlant = isDelete.Value ?
+            //        queryFilterPlant.And(c => c.PLANT_DELETION.HasValue &&( c.CLIENT_DELETION.Value == isDelete.Value))
+            //        : queryFilterPlant.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
+            //}
+            var datalistFromDb = _repository.Get(null, null, includeTables);
+            List<ZAIDM_EX_MATERIAL> filteredData = new List<ZAIDM_EX_MATERIAL>();
+            foreach (var data in datalistFromDb) {
+                if (!(data.CLIENT_DELETION.HasValue ? data.CLIENT_DELETION.Value : false)) {
+                    filteredData.Add(data);
+                }
 
-                }).Distinct().ToList();
+                if (data.PLANT_DELETION.HasValue ? data.PLANT_DELETION.Value : false) {
+                    filteredData.Remove(data);
+                }
+            }
+
+            return filteredData.GroupBy(x => x.STICKER_CODE)
+                .Select(x =>
+                    x.Select(y => new ZAIDM_EX_MATERIAL() { 
+                        STICKER_CODE = y.STICKER_CODE
+                    }).First()
+
+                ).ToList();
         }
+
+
+        
     }
 }

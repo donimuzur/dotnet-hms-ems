@@ -205,7 +205,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             break;
                         case "IS ACTIVE":
                             changes.OLD_VALUE = origin.Is_Active;
-                            changes.NEW_VALUE = poa.IS_ACTIVE.ToString();
+                            changes.NEW_VALUE = convertBooltoString;
 
                             break;
                     }
