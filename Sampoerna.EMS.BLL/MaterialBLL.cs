@@ -71,11 +71,11 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void CLientDeletion(ZAIDM_EX_MATERIAL data, string userId) {
-            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE,null,"").ToList();
+        private void CLientDeletion(string stickercode, string userId,bool? deletionflag) {
+            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == stickercode, null, "").ToList();
 
             foreach (var detail in datatobeclientdeleted) {
-                detail.CLIENT_DELETION = data.CLIENT_DELETION;
+                detail.CLIENT_DELETION = deletionflag;
                 var changes = new CHANGES_HISTORY
                 {
                     FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
@@ -84,7 +84,7 @@ namespace Sampoerna.EMS.BLL
                     MODIFIED_BY = userId,
                     MODIFIED_DATE = DateTime.Now,
                     OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
-                    NEW_VALUE = true.ToString()
+                    NEW_VALUE = deletionflag.ToString()
                 };
 
                 _changesHistoryBll.AddHistory(changes);
@@ -99,11 +99,11 @@ namespace Sampoerna.EMS.BLL
         {
 
 
-            if (data.CLIENT_DELETION == true) { 
-                CLientDeletion(data, userId);
+            //if (data.CLIENT_DELETION == true) { 
+            CLientDeletion(data.STICKER_CODE, userId,data.CLIENT_DELETION);
                 
-            }
-            else if (data.PLANT_DELETION == true) {
+            //}
+            if (data.PLANT_DELETION == true) {
                 PlantDeletion(data, userId);
             }
              

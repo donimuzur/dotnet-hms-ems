@@ -137,10 +137,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
             model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
             model.CompanyName = dbVirtual.T001.BUTXT;
-            model.ImportPlanName = dbVirtual.T001W.WERKS;
-            model.ExportPlanName = dbVirtual.T001W1.WERKS;
-            model.ImportPlantDesc = dbVirtual.T001W.WERKS + "-" + dbVirtual.T001W.NAME1;
-            model.ExportPlantDesc = dbVirtual.T001W1.WERKS + "-" + dbVirtual.T001W1.NAME1;
+            model.ImportPlanName = dbVirtual.T001W1.WERKS;
+            model.ExportPlanName = dbVirtual.T001W.WERKS;
+            model.ImportPlantDesc = dbVirtual.T001W1.WERKS + "-" + dbVirtual.T001W1.NAME1;
+            model.ExportPlantDesc = dbVirtual.T001W.WERKS + "-" + dbVirtual.T001W.NAME1;
             model.IsDeleted = dbVirtual.IS_DELETED;
             
             //model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
@@ -186,8 +186,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
                         modeldetail.CompanyName = dbVirtual.T001.BUTXT;
 
-                    modeldetail.ImportPlanName = dbVirtual.T001W.WERKS;
-                    modeldetail.ExportPlanName = dbVirtual.T001W1.WERKS;
+                    modeldetail.ImportPlanName = dbVirtual.T001W1.WERKS;
+                    modeldetail.ExportPlanName = dbVirtual.T001W.WERKS;
 
                     
                     return View("Details",modeldetail);
@@ -198,8 +198,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
                         model.CompanyId = dbVirtual.COMPANY_ID;
 
-                    model.ImportPlantId = dbVirtual.T001W.WERKS;
-                    model.ExportPlantId = dbVirtual.T001W1.WERKS;
+                    model.ImportPlantId = dbVirtual.T001W1.WERKS;
+                    model.ExportPlantId = dbVirtual.T001W.WERKS;
 
                     return View(model);
                 }
