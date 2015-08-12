@@ -54,12 +54,38 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
+        private void CLientDeletion(ZAIDM_EX_MATERIAL data, string userId) {
+            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE,null,"").ToList();
+
+            foreach (var detail in datatobeclientdeleted) {
+                detail.CLIENT_DELETION = data.CLIENT_DELETION;
+
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                    FORM_ID = detail.STICKER_CODE+detail.WERKS,
+                    FIELD_NAME = "CLIENT_DELETION",
+                    MODIFIED_BY = userId,
+                    MODIFIED_DATE = DateTime.Now,
+                    OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
+                    NEW_VALUE = true.ToString()
+                };
+
+                _changesHistoryBll.AddHistory(changes);
+            }
+
+            
+            //_uow.SaveChanges();
+        }
+
 
         public MaterialOutput Save(ZAIDM_EX_MATERIAL data,string userId)
         {
 
 
-            
+            if (data.CLIENT_DELETION == true) { 
+                CLientDeletion(data, userId);
+            }
              
                 _repository.InsertOrUpdate(data);
             
@@ -173,7 +199,11 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = isDelete.Value ? queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == isDelete.Value) : queryFilter.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
             }
-            return _repository.Get(queryFilter, null, includeTables).ToList();
+            return _repository.Get(queryFilter, null, includeTables)
+                .Select(x => new ZAIDM_EX_MATERIAL(){ 
+                    STICKER_CODE = x.STICKER_CODE
+
+                }).Distinct().ToList();
         }
     }
 }
