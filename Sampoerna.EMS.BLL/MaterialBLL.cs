@@ -76,7 +76,6 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var detail in datatobeclientdeleted) {
                 detail.CLIENT_DELETION = deletionflag;
-                //detail.IS_DELETED = true;
                 var changes = new CHANGES_HISTORY
                 {
                     FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
@@ -145,8 +144,7 @@ namespace Sampoerna.EMS.BLL
         public void Delete(string mn, string p, string userId)
         {
             var existingData = _repository.GetByID(mn, p);
-            existingData.IS_DELETED = true;
-            //existingData.CHANGED_BY = userId;
+           //existingData.CHANGED_BY = userId;
             //existingData.CHANGED_DATE = DateTime.Now;
             _repository.Update(existingData);
 
@@ -157,7 +155,6 @@ namespace Sampoerna.EMS.BLL
                 FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now,
-                OLD_VALUE = existingData.IS_DELETED.HasValue ? existingData.IS_DELETED.Value.ToString() : "NULL",
                 NEW_VALUE = true.ToString()
             };
 

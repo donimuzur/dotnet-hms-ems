@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
         public string MODIFIED_BY { get; set; }
+        public string MENGETAHUI_DETAIL { get; set; }
     
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
