@@ -12,7 +12,9 @@ namespace Sampoerna.EMS.Website.Models.KPPBC
     {
 
         public ZAIDM_EX_KPPBCDto Kppbc { get; set; }
-
+       
+        [AllowHtml]
+        public string MengetahuiHTML { get; set; }
        
     }
 }

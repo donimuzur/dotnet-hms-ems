@@ -62,8 +62,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-           
+            model.MengetahuiHTML = model.Kppbc.MENGETAHUI_DETAIL;
             return View("Edit", model);
+        }
+
+
+        public ActionResult Detail(string id)
+        {
+            var existingData = _kppbcbll.GetKppbcById(id);
+            var model = new KppbcDetailViewModel
+            {
+                Kppbc = Mapper.Map<ZAIDM_EX_KPPBCDto>(existingData),
+                CurrentMenu = PageInfo,
+                MainMenu = _mainMenu
+            };
+            model.MengetahuiHTML = model.Kppbc.MENGETAHUI_DETAIL;
+            return View("Detail", model);
         }
 
         
@@ -76,6 +90,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add insert logic here
                 var existingData = _kppbcbll.GetKppbcById(model.Kppbc.KPPBC_ID);
+                existingData.MENGETAHUI_DETAIL = model.MengetahuiHTML;
                 existingData.MODIFIED_BY = CurrentUser.USER_ID;
                 existingData.MODIFIED_DATE = DateTime.Now;
                 _kppbcbll.Save(existingData);

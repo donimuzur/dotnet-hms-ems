@@ -723,6 +723,7 @@
           <Property Name="KPPBC_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="30" />
           <Property Name="MENGETAHUI" Type="nvarchar" MaxLength="70" />
+          <Property Name="MENGETAHUI_DETAIL" Type="text" />
           <Property Name="CK1_KEP_HEADER" Type="nvarchar" MaxLength="100" />
           <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="100" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -4924,6 +4925,7 @@
           <Property Name="IS_DELETED" Type="Boolean" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_KPPBC" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="MENGETAHUI_DETAIL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
           <End Type="EMSModel.ZAIDM_EX_KPPBC" Role="ZAIDM_EX_KPPBC" Multiplicity="0..1" />
@@ -5808,6 +5810,7 @@
           <EntitySetMapping Name="ZAIDM_EX_KPPBC">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_KPPBC">
               <MappingFragment StoreEntitySet="ZAIDM_EX_KPPBC">
+                <ScalarProperty Name="MENGETAHUI_DETAIL" ColumnName="MENGETAHUI_DETAIL" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
