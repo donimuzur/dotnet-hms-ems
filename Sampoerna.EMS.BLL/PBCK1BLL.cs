@@ -429,18 +429,27 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.GetByID(id);
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
-
-        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs)
+        
+        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdConverterOutput>();
+            
             foreach (var inputItem in inputs)
             {
                 messageList.Clear();
 
                 var output = Mapper.Map<Pbck1ProdConverterOutput>(inputItem);
                 output.IsValid = true;
-
+                
+                var checkCountDataProductCode = inputs.Where(c => c.ProductCode == output.ProductCode).ToList();
+                if (checkCountDataProductCode.Count > 1)
+                {
+                    //double product code
+                    output.IsValid = false;
+                    messageList.Add("Duplicate Product Code [" + output.ProductCode + "]");
+                }
+                
                 //Product Code Validation
                 #region -------------- Product Code Validation --------------
                 List<string> messages;
@@ -509,7 +518,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-
+                
                 outputList.Add(output);
 
             }
