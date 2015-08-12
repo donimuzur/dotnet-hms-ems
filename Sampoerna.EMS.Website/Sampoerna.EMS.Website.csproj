@@ -359,7 +359,6 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
-    <Compile Include="Models\WorkflowSetting\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\CK5\CK5Materials.cs">
       <AutoGen>True</AutoGen>
@@ -933,6 +932,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\WorkflowHistory\" />
+    <Folder Include="Models\WorkflowSetting\" />
     <Folder Include="Views\AspxReportViewer\" />
     <Folder Include="Views\SettingsGlobal\" />
     <Folder Include="Views\Settings\" />
