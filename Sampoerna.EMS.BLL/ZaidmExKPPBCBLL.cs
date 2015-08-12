@@ -25,9 +25,20 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<ZAIDM_EX_KPPBCDto>(_repository.GetByID(id));
         }
 
+        public ZAIDM_EX_KPPBC GetKppbcById(string id)
+        {
+            return _repository.GetByID(id);
+        }
+
         public List<ZAIDM_EX_KPPBCDto> GetAll()
         {
             return Mapper.Map<List<ZAIDM_EX_KPPBCDto>>(_repository.Get().ToList());
+        }
+
+        public void Save(ZAIDM_EX_KPPBC kppbc)
+        {
+            _repository.InsertOrUpdate(kppbc);
+            _uow.SaveChanges();
         }
     }
 }

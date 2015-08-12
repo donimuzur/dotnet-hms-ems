@@ -244,6 +244,7 @@
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\KPPBCController.cs" />
     <Compile Include="Controllers\POAMapController.cs" />
     <Compile Include="Controllers\UomController.cs" />
     <Compile Include="Controllers\UserAuthorizationController.cs" />
@@ -289,6 +290,8 @@
     <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
     <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
+    <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
@@ -904,6 +907,9 @@
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
     <Content Include="Views\POAMap\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Index.cshtml" />
+    <Content Include="Views\KPPBC\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
