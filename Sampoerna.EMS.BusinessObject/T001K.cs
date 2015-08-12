@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_DELETED { get; set; }
     
         public virtual T001 T001 { get; set; }
+        public virtual T001 T0011 { get; set; }
         public virtual T001W T001W { get; set; }
     }
 }

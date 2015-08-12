@@ -169,7 +169,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PHONE))
                 .ForMember(dest => dest.Ort01, opt => opt.MapFrom(src => src.ORT01))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED ));
 
 
             Mapper.CreateMap<DetailPlantT1001W, T001W>().IgnoreAllNonExisting()
@@ -274,9 +274,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.T001.BUTXT))
                 .ForMember(dest => dest.ImportPlantId, opt => opt.MapFrom(src => src.IMPORT_PLANT_ID))
-                .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS))
+                .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS))
                 .ForMember(dest => dest.ExportPlantId, opt => opt.MapFrom(src => src.EXPORT_PLANT_ID))
-                .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS))
+                .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS))
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
 
             Mapper.CreateMap<Plant, SelectItemModelVirtualPlant>().IgnoreAllNonExisting()
@@ -294,8 +294,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<VIRTUAL_PLANT_MAP, VirtualMappingPlantDetailsViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
-                .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS + "-" + src.T001W.NAME1))
-                .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS + "-" + src.T001W1.NAME1));
+                .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS + "-" + src.T001W.NAME1))
+                .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS + "-" + src.T001W.NAME1));
                
             #endregion
 
@@ -580,7 +580,6 @@ namespace Sampoerna.EMS.Website
                 //.ForMember(dest => dest.ChangedDate, opt => opt.MapFrom(src => src.MOD))
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
                 .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
-                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP))
                 .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM))
                 .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))

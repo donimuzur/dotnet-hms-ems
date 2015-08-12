@@ -77,24 +77,26 @@ namespace Sampoerna.HMS.Scheduler
                         var triggers = scheduler.GetTriggersOfJob(jobKey);
                         foreach (ITrigger trigger in triggers)
                         {
-                            logger.Debug("group: " + group);
-                            logger.Debug("jobkey name: " + jobKey.Name);
-                            logger.Debug("detail description: " + detail.Description);
-                            logger.Debug("trigger key name: " + trigger.Key.Name);
-                            logger.Debug("trigger key group: " + trigger.Key.Group);
-                            logger.Debug("trigger type name: " + trigger.GetType().Name);
-                            logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
-                            DateTimeOffset? nextFireTime = trigger.GetNextFireTimeUtc();
-                            if (nextFireTime.HasValue)
-                            {
-                               
-                                logger.Info("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
-                            }
+                            //logger.Debug("group: " + group);
+                            //logger.Debug("jobkey name: " + jobKey.Name);
+                            //logger.Debug("detail description: " + detail.Description);
+                            //logger.Debug("trigger key name: " + trigger.Key.Name);
+                            //logger.Debug("trigger key group: " + trigger.Key.Group);
+                            //logger.Debug("trigger type name: " + trigger.GetType().Name);
+                            //logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
+                            
 
                             DateTimeOffset? previousFireTime = trigger.GetPreviousFireTimeUtc();
                             if (previousFireTime.HasValue)
                             {
                                 logger.Info("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
+                            }
+
+                            DateTimeOffset? nextFireTime = trigger.GetNextFireTimeUtc();
+                            if (nextFireTime.HasValue)
+                            {
+
+                                logger.Info("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
                             }
                         }
                     }
