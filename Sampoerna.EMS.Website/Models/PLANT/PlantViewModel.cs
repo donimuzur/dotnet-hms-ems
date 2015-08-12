@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public string Phone { get; set; }
 
 
+        public bool? IsDeleted { get; set; }
     }
 
 }
