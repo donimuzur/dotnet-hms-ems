@@ -13,7 +13,8 @@ namespace Sampoerna.EMS.Website.Models.WorkflowSetting
         public List<WorkflowDetails> Details { get; set; }
     }
 
-    public class WorkflowDetails {
+    public class WorkflowDetailsWorkflowDetails
+    {
         public string Modul { get; set; }
 
         public string Form_Id { get; set; }

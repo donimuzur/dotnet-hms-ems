@@ -238,6 +238,11 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BrandRegistrationController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
+    <Compile Include="Controllers\CK5PrintOutMaterial.cs">
+      <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\DocumenSequenceController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -379,11 +384,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controllers\CK5PrintOutMaterial.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
     </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -986,6 +986,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\CK5\CK5Materials.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5Materials.cs</LastGenOutput>
@@ -1001,10 +1005,6 @@
     <EmbeddedResource Include="Reports\CK5\CK5PrintOutFooter.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controllers\CK5PrintOutMaterial.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
