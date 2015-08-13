@@ -3471,24 +3471,23 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
 
-                var dataToSave = Mapper.Map<CK5Dto>(model);
+                var dataToSave = Mapper.Map<List<CK5Dto>>(model.Ck5FileDocumentItems);
 
-                var input = new CK5SaveInput()
+                var input = new CK5SaveListInput()
                 {
                     Ck5Dto = dataToSave,
                     UserId = CurrentUser.USER_ID,
                     UserRole = CurrentUser.UserRole,
-                    //Ck5Material = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels)
+                   
                 };
 
-                _ck5Bll.SaveCk5(input);
-                // var saveResult = SaveCk5ToDatabase(model);
-
+                _ck5Bll.InsertListCk5(input);
+              
                 AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
 
 
-                return View("Create");
+                return View("CK5UploadFileDocument", model);
             }
             catch (Exception ex)
             {

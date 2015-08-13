@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     {
         public string Ck5Type { get; set; }
         public string KppBcCityName { get; set; }
-        public string ExGoodType { get; set; }
+        public string ExGoodTypeDesc { get; set; }
         public string ExciseSettlement { get; set; }
         public string ExciseStatus { get; set; }
         public string RequestType { get; set; }

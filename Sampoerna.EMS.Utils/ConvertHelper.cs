@@ -45,5 +45,14 @@ namespace Sampoerna.EMS.Utils
                 return null;
             }
         }
+
+        public static bool IsEnumsObject<T>(Object enumsType, int enumsValue)
+        {
+            //T one = (T)Enum.Parse(typeof(T), o.ToString());
+            //return one;
+            if (typeof(T).IsEnumDefined(enumsValue))
+                return true;
+            return false;
+        }
     }
 }

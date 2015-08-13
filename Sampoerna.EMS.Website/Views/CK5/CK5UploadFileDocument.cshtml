@@ -1,6 +1,6 @@
 ﻿@model  Sampoerna.EMS.Website.Models.CK5.CK5FileDocumentsViewModel
 
-@using (Html.BeginForm("SaveCK5", "CK5"))
+@using (Html.BeginForm("SaveCK5FileDocuments", "CK5"))
 {
     @Html.AntiForgeryToken()
 
@@ -26,7 +26,7 @@
                             </div>
                             <div class="col-md-6">
                                 <input type="button" id="btnGenerate" class="btn btn-grey generate" value="Generate" />
-                                <input type="button" class="btn btn-grey" id="btnSave" value="Save" />
+                                <input type="submit" class="btn btn-grey" id="btnSave" value="Save" />
                             </div>
 
                         </div>

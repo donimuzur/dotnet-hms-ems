@@ -1024,6 +1024,7 @@ namespace Sampoerna.EMS.BLL
         //}
 
 
+       
         private List<CK5FileUploadDocumentsOutput> ValidateCk5UploadFileDocuments(List<CK5UploadFileDocumentsInput> inputs)
         {
             var messageList = new List<string>();
@@ -1058,14 +1059,14 @@ namespace Sampoerna.EMS.BLL
                     output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
                 
                 //excise goods type
-                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodType))
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodTypeDesc))
                     messageList.Add("ExGoodType not valid");
                 else
                 {
-                    if (typeof (Enums.ExGoodsType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExGoodType)))
+                    if (typeof(Enums.ExGoodsType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExGoodTypeDesc)))
                         output.EX_GOODS_TYPE =
                             (Enums.ExGoodsType)
-                                Enum.Parse(typeof (Enums.ExGoodsType), ck5UploadFileDocuments.ExGoodType);
+                                Enum.Parse(typeof(Enums.ExGoodsType), ck5UploadFileDocuments.ExGoodTypeDesc);
                     else
                         messageList.Add("ExGoodType not valid");
                 }
@@ -1112,12 +1113,31 @@ namespace Sampoerna.EMS.BLL
 
                 if (sourcePlant == null)
                     messageList.Add("Source Plant Not Exist");
+                else
+                {
+                    output.SOURCE_PLANT_NPWP = sourcePlant.Npwp;
+                    output.SOURCE_PLANT_NPPBKC_ID = sourcePlant.NPPBKC_ID;
+                    output.SOURCE_PLANT_COMPANY_CODE = sourcePlant.CompanyCode;
+                    output.SOURCE_PLANT_COMPANY_NAME = sourcePlant.CompanyName;
+                    output.SOURCE_PLANT_ADDRESS = sourcePlant.CompanyAddress;
+                    output.SOURCE_PLANT_KPPBC_NAME_OFFICE = sourcePlant.KppbcCity + "-" + sourcePlant.KppbcNo;
+                    output.SOURCE_PLANT_NAME = sourcePlant.NAME1;
+                }
 
                 var destPlant = _plantBll.GetT001ById(ck5UploadFileDocuments.DestPlantId);
 
                 if (destPlant == null)
                     messageList.Add("Destination Plant Not Exist");
-
+                else
+                {
+                    output.DEST_PLANT_NPWP = destPlant.Npwp;
+                    output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
+                    output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
+                    output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
+                    output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
+                    output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
+                    output.DEST_PLANT_NAME = destPlant.NAME1;
+                }
 
                 if (!string.IsNullOrEmpty(ck5UploadFileDocuments.InvoiceDate))
                 {
@@ -1132,6 +1152,10 @@ namespace Sampoerna.EMS.BLL
                     var pbck1 = _pbck1Bll.GetByDocumentNumber(ck5UploadFileDocuments.PbckDecreeNumber);
                     if (pbck1 == null)
                         messageList.Add("PbckDecreeNumber Not Exist");
+                    else
+                    {
+                        output.PBCK1_DECREE_ID = pbck1.Pbck1Id;
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(ck5UploadFileDocuments.CarriageMethod))
@@ -1207,6 +1231,69 @@ namespace Sampoerna.EMS.BLL
             //}
 
             return outputList;
+        }
+
+        public void InsertListCk5(CK5SaveListInput input)
+        {
+            foreach (var ck5Dto in input.Ck5Dto)
+            {
+                //workflowhistory
+                var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+
+                CK5 dbData = null;
+
+
+                //create new ck5 documents
+                var generateNumberInput = new GenerateDocNumberInput()
+                {
+                    Year = DateTime.Now.Year,
+                    Month = DateTime.Now.Month,
+                    NppbkcId = ck5Dto.SOURCE_PLANT_NPPBKC_ID
+                };
+
+                ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+                ck5Dto.SUBMISSION_DATE = DateTime.Now;
+                ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
+                ck5Dto.CREATED_DATE = DateTime.Now;
+                ck5Dto.CREATED_BY = input.UserId;
+
+                dbData = new CK5();
+
+
+                Mapper.Map<CK5Dto, CK5>(ck5Dto, dbData);
+
+                dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+
+                inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+                //foreach (var ck5Item in input.Ck5Material)
+                //{
+                //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                //    dbData.CK5_MATERIAL.Add(ck5Material);
+                //}
+
+                _repository.Insert(dbData);
+                
+
+                //_repository.InsertOrUpdate(dbData);
+
+                inputWorkflowHistory.DocumentId = dbData.CK5_ID;
+                inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+                inputWorkflowHistory.UserId = input.UserId;
+                inputWorkflowHistory.UserRole = input.UserRole;
+
+
+                AddWorkflowHistory(inputWorkflowHistory);
+            }
+          
+
+
+            _uow.SaveChanges();
+
+            //return Mapper.Map<CK5Dto>(dbData);
+
+
         }
     }
 }
