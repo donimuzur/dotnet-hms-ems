@@ -17,13 +17,15 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<USER_BROLE> _repository;
         private IGenericRepository<BROLE_MAP> _repositoryRoleMap;
+        private IUserPlantMapBLL _userPlantMapBll;
        
-        public UserAuthorizationBLL(ILogger logger, IUnitOfWork uow)
+        public UserAuthorizationBLL(ILogger logger, IUnitOfWork uow, IUserPlantMapBLL userPlantMapBll)
         {
             _logger = logger;
             _uow = uow;
             _repository = uow.GetGenericRepository<USER_BROLE>();
             _repositoryRoleMap = uow.GetGenericRepository<BROLE_MAP>();
+            _userPlantMapBll = userPlantMapBll;
         }
         public List<UserAuthorizationDto> GetAll()
         {
@@ -55,6 +57,11 @@ namespace Sampoerna.EMS.BLL
                 }
             }
             return pages;
+        }
+
+        public List<string> GetPlants(string userid)
+        {
+            return _userPlantMapBll.GetByUserId(userid).Select(x => x.PLANT_ID).ToList();
         }
     }
 }

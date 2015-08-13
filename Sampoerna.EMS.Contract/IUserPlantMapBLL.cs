@@ -13,5 +13,8 @@ namespace Sampoerna.EMS.Contract
         USER_PLANT_MAP GetById(int id);
 
         List<USER_PLANT_MAP> GetByUserId(string id);
+        USER_PLANT_MAP GetByUserIdAndPlant(string userid, string plantid);
+
+        void Delete(int id);
     }
 }

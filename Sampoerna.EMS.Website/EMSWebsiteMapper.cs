@@ -381,7 +381,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
             .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
-            .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
+            .ForMember(dest => dest.CutFillerCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS == true ? "Active" : "Inactive"))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS))
             .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP))
@@ -410,7 +410,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.END_DATE, opt => opt.MapFrom(src => src.EndDate))
                 .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
-                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFilterCode))
+                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFillerCode))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
                 .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
 
@@ -437,7 +437,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.END_DATE, opt => opt.MapFrom(src => src.EndDate))
                 .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
-                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFilterCode))
+                .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFillerCode))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
                 .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
             #endregion

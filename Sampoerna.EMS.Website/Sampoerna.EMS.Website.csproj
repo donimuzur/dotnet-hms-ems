@@ -937,6 +937,7 @@
     <Content Include="Views\UserPlantMap\Create.cshtml" />
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
+    <Content Include="Views\UserPlantMap\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
