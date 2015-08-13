@@ -391,13 +391,6 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Reports\PBCK1\Pbck1PrintOutMain.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Pbck1PrintOutMain.rpt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKC.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1018,11 +1011,6 @@
     <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Reports\PBCK1\Pbck1PrintOutMain.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>Pbck1PrintOutMain.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\PBCK1\Pbck1RealisasiP3BKC.rpt">
