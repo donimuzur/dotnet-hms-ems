@@ -298,7 +298,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uom.UMREZ = matUom.Umrez;
                         uom.MEINH = HttpUtility.UrlDecode(matUom.Meinh);
 
-                        _materialBll.SaveUoM(uom);
+                        _materialBll.SaveUoM(uom, CurrentUser.USER_ID);
                     }
                 }
                 var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
