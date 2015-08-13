@@ -63,13 +63,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput());
+                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Status).ThenBy(d => d.ApprovedByManagerId);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
-            var dbData = _pbck1Bll.GetOpenDocumentByParam(input);
+            var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Status).ThenBy(d => d.ApprovedByManagerId);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
 
@@ -205,7 +205,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkcList = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
             model.MonthList = GlobalFunctions.GetMonthList();
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
-            model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
+            //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
+            model.SupplierPlantList = GlobalFunctions.GetPlantAll();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.UomList = GlobalFunctions.GetUomList();
 
@@ -1343,7 +1344,30 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbck1Data == null)
                 HttpNotFound();
 
-            var dataSet = SetDataSetReport(pbck1Data);
+            Stream stream = GetReport(pbck1Data, "PBCK-1");
+
+            return File(stream, "application/pdf");
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck1Data = _pbck1Bll.GetPrintOutDataById(id.Value);
+            if (pbck1Data == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbck1Data, "Preview PBCK-1");
+
+            return File(stream, "application/pdf");
+        }
+
+        private Stream GetReport(Pbck1ReportDto pbck1Data, string printTitle)
+        {
+            var dataSet = SetDataSetReport(pbck1Data, printTitle);
 
             ReportClass rpt = new ReportClass
             {
@@ -1352,14 +1376,13 @@ namespace Sampoerna.EMS.Website.Controllers
             rpt.Load();
             rpt.SetDataSource(dataSet);
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            
-            return File(stream, "application/pdf");
+            return stream;
         }
-
-        private DataSet SetDataSetReport(Pbck1ReportDto pbck1ReportData)
+        
+        private DataSet SetDataSetReport(Pbck1ReportDto pbck1ReportData, string printTitle)
         {
             var dsPbck1 = new dsPbck1();
-            dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail);
+            dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
             dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.ProdPlanList);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
             dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData.RealisasiP3Bkc);
@@ -1367,7 +1390,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return dsPbck1;
         }
 
-        private dsPbck1 AddDataPbck1Row(dsPbck1 ds, Pbck1ReportInformationDto d)
+        private dsPbck1 AddDataPbck1Row(dsPbck1 ds, Pbck1ReportInformationDto d, string printTitle)
         {
             var detailRow = ds.Pbck1.NewPbck1Row();
             detailRow.Pbck1Id = d.Pbck1Id.ToString();
@@ -1403,6 +1426,7 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.ExciseManager = d.ExciseManager;
             detailRow.ProdPlanPeriod = d.ProdPlanPeriode;
             detailRow.LackPeriod = d.Lack1Periode;
+            detailRow.DocumentText = printTitle;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }
