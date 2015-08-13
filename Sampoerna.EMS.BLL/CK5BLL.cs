@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
@@ -1059,14 +1060,14 @@ namespace Sampoerna.EMS.BLL
                     output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
                 
                 //excise goods type
-                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodTypeDesc))
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodType))
                     messageList.Add("ExGoodType not valid");
                 else
                 {
-                    if (typeof(Enums.ExGoodsType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExGoodTypeDesc)))
+                    if (typeof(Enums.ExGoodsType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExGoodType)))
                         output.EX_GOODS_TYPE =
                             (Enums.ExGoodsType)
-                                Enum.Parse(typeof(Enums.ExGoodsType), ck5UploadFileDocuments.ExGoodTypeDesc);
+                                Enum.Parse(typeof(Enums.ExGoodsType), ck5UploadFileDocuments.ExGoodType);
                     else
                         messageList.Add("ExGoodType not valid");
                 }
@@ -1115,6 +1116,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Source Plant Not Exist");
                 else
                 {
+                    output.SOURCE_PLANT_ID = ck5UploadFileDocuments.SourcePlantId;
                     output.SOURCE_PLANT_NPWP = sourcePlant.Npwp;
                     output.SOURCE_PLANT_NPPBKC_ID = sourcePlant.NPPBKC_ID;
                     output.SOURCE_PLANT_COMPANY_CODE = sourcePlant.CompanyCode;
@@ -1130,6 +1132,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Destination Plant Not Exist");
                 else
                 {
+                    output.DEST_PLANT_ID = ck5UploadFileDocuments.DestPlantId;
                     output.DEST_PLANT_NPWP = destPlant.Npwp;
                     output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
                     output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
@@ -1235,6 +1238,7 @@ namespace Sampoerna.EMS.BLL
 
         public void InsertListCk5(CK5SaveListInput input)
         {
+            
             foreach (var ck5Dto in input.Ck5Dto)
             {
                 //workflowhistory
@@ -1286,10 +1290,26 @@ namespace Sampoerna.EMS.BLL
 
                 AddWorkflowHistory(inputWorkflowHistory);
             }
-          
 
 
-            _uow.SaveChanges();
+            try
+            {
+                _uow.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
 
             //return Mapper.Map<CK5Dto>(dbData);
 

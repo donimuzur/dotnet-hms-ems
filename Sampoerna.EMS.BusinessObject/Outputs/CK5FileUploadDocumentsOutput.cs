@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     {
         public string Ck5Type { get; set; }
         public string KppBcCityName { get; set; }
-        public string ExGoodTypeDesc { get; set; }
+        public string ExGoodType { get; set; }
         public string ExciseSettlement { get; set; }
         public string ExciseStatus { get; set; }
         public string RequestType { get; set; }
@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         
         public DateTime? InvoiceDateTime { get; set; }
 
+        public string SOURCE_PLANT_ID { get; set; }
         public string SOURCE_PLANT_NPWP { get; set; }
         public string SOURCE_PLANT_NPPBKC_ID { get; set; }
         public string SOURCE_PLANT_COMPANY_CODE { get; set; }
@@ -41,6 +42,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string SOURCE_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public string SOURCE_PLANT_NAME { get; set; }
 
+        public string DEST_PLANT_ID { get; set; }
         public string DEST_PLANT_NPWP { get; set; }
         public string DEST_PLANT_NPPBKC_ID { get; set; }
         public string DEST_PLANT_COMPANY_CODE { get; set; }

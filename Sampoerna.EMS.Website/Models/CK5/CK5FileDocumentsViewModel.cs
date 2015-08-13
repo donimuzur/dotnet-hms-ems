@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public Enums.ExciseStatus EX_STATUS_ID { get; set; }
         public Enums.RequestType REQUEST_TYPE_ID { get; set; }
 
+        public string SOURCE_PLANT_ID { get; set; }
         public string SOURCE_PLANT_NPWP { get; set; }
         public string SOURCE_PLANT_NPPBKC_ID { get; set; }
         public string SOURCE_PLANT_COMPANY_CODE { get; set; }
@@ -54,6 +55,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SOURCE_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public string SOURCE_PLANT_NAME { get; set; }
 
+        
+        public string DEST_PLANT_ID { get; set; }
         public string DEST_PLANT_NPWP { get; set; }
         public string DEST_PLANT_NPPBKC_ID { get; set; }
         public string DEST_PLANT_COMPANY_CODE { get; set; }

@@ -3494,7 +3494,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
 
-                return View("Index");
+                return RedirectToAction("Index", "CK5");
             }
 
         }

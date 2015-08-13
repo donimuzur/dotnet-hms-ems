@@ -47,6 +47,8 @@
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].EX_SETTLEMENT_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].EX_STATUS_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].REQUEST_TYPE_ID)
+            
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_NPWP)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_NPPBKC_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_COMPANY_CODE)
@@ -54,8 +56,9 @@
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_ADDRESS)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_KPPBC_NAME_OFFICE)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SOURCE_PLANT_NAME)
+            
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_NPWP)
-
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_NPPBKC_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_COMPANY_CODE)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_PLANT_COMPANY_NAME)
