@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
@@ -59,17 +60,25 @@ namespace Sampoerna.EMS.Website.Controllers
        
         public ActionResult Edit(string id)
         {
-           // var existingData = _userPlantMapBll.GetById(id);
-            var currenPlant = _userPlantMapBll.GetByUserId(id);
+           var currenPlant = _userPlantMapBll.GetByUserId(id);
             var model = new UserPlantMapDetailViewModel
             {
-                //UserPlantMap = Mapper.Map<UserPlantMapDto>(existingData),
+                UserPlantMap = Mapper.Map<UserPlantMapDto>(currenPlant.FirstOrDefault()),
                 Plants = Mapper.Map<List<PlantDto>>(_plantBll.GetAllPlant()),
                 Users = GlobalFunctions.GetUsers(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-            
+            foreach (var userPlantMap in currenPlant)
+            {
+                for(int i=0; i< model.Plants.Count; i++)
+                {
+                    if (model.Plants[i].Werks == userPlantMap.PLANT_ID)
+                    {
+                        model.Plants[i].IsChecked = true;
+                    }
+                }
+            }
             return View("Edit", model);
         }
 
@@ -97,10 +106,17 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (plant.IsChecked)
                         {
+
                             model.UserPlantMap.PlantId = plant.Werks;
-                            var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
-                            _userPlantMapBll.Save(data);
+                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
+                                plant.Werks);
+                            if (existingPlantMap != null)
+                            {
+                                var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
+                                _userPlantMapBll.Save(data);
+                            }
                         }
+                       
                     }
                     
                 }
@@ -124,7 +140,43 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-               
+
+                var currenPlant = _userPlantMapBll.GetByUserId(model.UserPlantMap.UserId);
+                if (model.Plants != null)
+                {
+                    foreach (var plant in model.Plants)
+                    {
+                        if (plant.IsChecked)
+                        {
+                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
+                                plant.Werks);
+                            
+                            model.UserPlantMap.PlantId = plant.Werks;
+                            var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
+                            if (existingPlantMap != null)
+                            {
+                                data.USER_PLANT_MAP_ID = existingPlantMap.USER_PLANT_MAP_ID;
+                            }
+                            _userPlantMapBll.Save(data);
+                        }
+                        else
+                        {
+                            if (currenPlant.Any(x => x.PLANT_ID == plant.Werks))
+                            {
+                                var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
+                                    plant.Werks);
+                                if (existingPlantMap != null)
+                                {
+
+                                    _userPlantMapBll.Delete(existingPlantMap.USER_PLANT_MAP_ID);
+                                }
+                            }
+                        }
+                    }
+
+                }
+           
+
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                      );
                 return RedirectToAction("Index");

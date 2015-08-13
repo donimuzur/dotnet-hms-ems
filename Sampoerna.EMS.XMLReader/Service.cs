@@ -159,9 +159,15 @@ namespace Sampoerna.EMS.XMLReader
                 isComplete = false;
             if (filesCompany.Count() == 0)
                 isComplete = false;
-            if (!isComplete)
-                return null;
-           
+            if (ConfigurationManager.AppSettings["FileComplete"] != null)
+            {
+                if (ConfigurationManager.AppSettings["FileComplete"] == "1")
+                {
+                    if (!isComplete)
+                        return null;
+                }
+            }
+
             return orderedXmlFiles;
         }
 
