@@ -243,15 +243,15 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
         }
 
-        public static SelectList GetSourcePlantList()
-        {
-            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plant = plantBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plant);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+        //public static SelectList GetSourcePlantList()
+        //{
+        //    IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+        //    var plant = plantBll.GetAll();
+        //    var selectItemSource = Mapper.Map<List<SelectItemModel>>(plant);
+        //    return new SelectList(selectItemSource, "ValueField", "TextField");
 
-            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
-        }
+        //    //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
+        //}
 
         public static SelectList GetPbck1CompletedList()
         {

@@ -394,16 +394,19 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck1PrintOutMain.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKC.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck1RealisasiP3BKC.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PBCK1\Pbck1RencanaProduksi.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
@@ -932,6 +935,7 @@
     <Content Include="Views\UserPlantMap\Create.cshtml" />
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
+    <Content Include="Views\UserPlantMap\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
