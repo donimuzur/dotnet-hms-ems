@@ -53,12 +53,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 UserPlantMap = Mapper.Map<UserPlantMapDto>(currenPlant.FirstOrDefault()),
                 Plants = Mapper.Map<List<PlantDto>>(currenPlant.Select(x => x.T001W).ToList()),
+                
                 Users = GlobalFunctions.GetUsers(),
                 Nppbkcs =  GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-            
+            model.SelectedNppbkc = model.Plants.GroupBy(x => x.NPPBKC_ID).Select(x => x.Key).ToList();
             return model;
         }
 

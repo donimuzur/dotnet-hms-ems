@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Website.Models.UserPlantMap
 
         public List<PlantDto> Plants { get; set; }
 
-        public List<T001W> ExistingPlant { get; set; }
+        public List<string> SelectedNppbkc { get; set; }
 
         public MultiSelectList Nppbkcs { get; set; } 
     }

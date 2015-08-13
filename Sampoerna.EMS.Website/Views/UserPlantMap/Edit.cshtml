@@ -100,9 +100,9 @@
 @section scripts {
     <script src="~/Scripts/chosen.jquery.min.js"></script>
     <script type="text/javascript" language="javascript">
-      
-        var plantlist = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
-      
+        var plantlist = [];
+        var selectedPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
+        var selectedNppbkc = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedNppbkc)));
         $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
 
@@ -112,20 +112,58 @@
 
 
         });
-        var nppbkc = [];
-       
-        for (var m = 0; m < plantlist.length; m++) {
-            nppbkc.push(plantlist[m].NPPBKC_ID);
-            $('#plant-list').append(SetPlantList(plantlist[m], m));
+
+        $('#plant-list').html('');
+
+        var GetPlantByNppbkc = (function(nppbkcId) {
+          
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
+                data: { nppbkcid: nppbkcId },
+                success: function(data) {
+                    PushPlantList(data);
+                }
+            });
+           
+        
+        });
+
+
+        selectedNppbkc.forEach(function(v, i) {
+            GetPlantByNppbkc(v);
+
+        });
+
+        var plantLength = 0;
+        function PushPlantList(data) {
+
+            for (var i = 0; i < data.length; i++) {
+                plantlist.push(data[i]);
+
+                $('#plant-list').append(SetPlantList(data[i], plantLength));
+                    for (var q = 0; q < selectedPlant.length; q++) {
+                        if (data[i].WERKS == selectedPlant[q].WERKS) {
+                          
+                            $('#plants_' + plantLength + '__checkbox').prop('checked', true);
+                            $('#Plants_' + plantLength + '__IsChecked').val(true);
+                        }
+                    }
+                    plantLength++;
+                
+            }
+           
+
         }
-       
-        $('#select-nppbkc-id').val(nppbkc);
+
+
+        $('#select-nppbkc-id').val(selectedNppbkc);
 
         $(".chosen").chosen();
-       
-        
+
+
         $('.chosen').on('change', function(evt, params) {
-             ViewPlant(params.selected);
+            ViewPlant(params.selected);
 
             if (params.deselected) {
                 $('.' + params.deselected).remove();
@@ -141,10 +179,18 @@
                 $('#plant-list').html('');
                 for (var l = 0; l < plantlist.length; l++) {
                     $('#plant-list').append(SetPlantList(plantlist[l], l));
+                    for (var f = 0; f < selectedPlant.length; f++) {
+                        if (plantlist[l].WERKS == selectedPlant[f].WERKS) {
+
+                            $('#plants_' + l + '__checkbox').prop('checked', true);
+                            $('#Plants_' + l + '__IsChecked').val(true);
+                        }
+                    }
                 }
             }
 
         });
+
 
         function ViewPlant(nppbkcid_selected) {
             if (nppbkcid_selected) {
@@ -161,6 +207,12 @@
                         $('#plant-list').html('');
                         for (var k = 0; k < plantlist.length; k++) {
                             $('#plant-list').append(SetPlantList(plantlist[k], k));
+                            for (var g = 0; g < selectedPlant.length; g++) {
+                                if (plantlist[k].WERKS == selectedPlant[g].WERKS) {
+
+                                    $('#plants_' + k + '__checkbox').prop('checked', true);
+                                }
+                            }
                         }
                     }
                 });
@@ -168,9 +220,9 @@
         }
 
         function SetPlantList(data, index) {
-
+            var isChecked = (data.IsChecked != null && data.IsChecked != undefined) == true ? 'Checked' : '';
             var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
-                '<input  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked">' +
+                '<input id="plants_' + index + '__checkbox"  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked" ' + isChecked + '>' +
                 data.WERKS + '-' + data.NAME1 + '</div>';
             return view;
         }
