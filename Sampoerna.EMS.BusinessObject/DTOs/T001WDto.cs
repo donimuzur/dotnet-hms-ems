@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class PlantDto
     {
         public string WERKS { get; set; }
-        public string NPPBCK_ID { get; set; }
+        public string NPPBKC_ID { get; set; }
 
         public string NAME1 { get; set; }
 

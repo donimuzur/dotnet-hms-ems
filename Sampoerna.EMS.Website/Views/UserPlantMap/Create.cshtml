@@ -117,7 +117,24 @@
         $(".chosen").chosen();
         $('.chosen').on('change', function(evt, params) {
             var nppbkcid_selected = params.selected;
-           
+            if (nppbkcid_selected) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
+                    data: { nppbkcid: nppbkcid_selected },
+                    success: function (data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            plantlist.push(data[i]);
+
+                        }
+                        $('#plant-list').html('');
+                        for (var k = 0; k < plantlist.length; k++) {
+                            $('#plant-list').append(SetPlantList(plantlist[k], k));
+                        }
+                    }
+                });
+            }
 
             if (params.deselected) {
                 $('.' + params.deselected).remove();

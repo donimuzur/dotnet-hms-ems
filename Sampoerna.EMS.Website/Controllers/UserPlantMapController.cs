@@ -133,6 +133,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var currenPlant = _userPlantMapBll.GetByUserId(model.UserPlantMap.UserId);
+
                 if (model.Plants != null)
                 {
                     foreach (var plant in model.Plants)
