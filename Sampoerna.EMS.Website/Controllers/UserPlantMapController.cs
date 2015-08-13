@@ -139,22 +139,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     foreach (var plant in model.Plants)
                     {
-                        if (plant.IsChecked)
+                        if (currenPlant.Any(x => x.PLANT_ID == plant.WERKS))
                         {
-                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                plant.WERKS);
-                            
-                            model.UserPlantMap.PlantId = plant.WERKS;
-                            var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
-                            if (existingPlantMap != null)
-                            {
-                                data.USER_PLANT_MAP_ID = existingPlantMap.USER_PLANT_MAP_ID;
-                            }
-                            _userPlantMapBll.Save(data);
-                        }
-                        else
-                        {
-                            if (currenPlant.Any(x => x.PLANT_ID == plant.WERKS))
+                            if (!plant.IsChecked)
                             {
                                 var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
                                     plant.WERKS);
@@ -165,6 +152,24 @@ namespace Sampoerna.EMS.Website.Controllers
                                 }
                             }
                         }
+                        else
+                        {
+                            if (plant.IsChecked)
+                            {
+                                var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
+                                    plant.WERKS);
+
+                                model.UserPlantMap.PlantId = plant.WERKS;
+                                var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
+                                if (existingPlantMap != null)
+                                {
+                                    data.USER_PLANT_MAP_ID = existingPlantMap.USER_PLANT_MAP_ID;
+                                }
+                                _userPlantMapBll.Save(data);
+                            }
+                        }
+                        
+                        
                     }
 
                 }
