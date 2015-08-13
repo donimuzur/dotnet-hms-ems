@@ -40,38 +40,31 @@
                         @{
                             var firstUserName = Model.UserPlantMaps.Count > 0 ?  Model.UserPlantMaps[0].UserId : null;
                         }
-                        @foreach (var item in Model.UserPlantMaps.OrderBy(x => x.UserId).GroupBy(x => x.UserId))
+                        @foreach (var item in Model.UserPlantMaps.OrderBy(x => x.UserId).GroupBy(x=>x.UserId))
                         {
-
-                           var itemByUserId = Model.UserPlantMaps.Where(x=>x.UserId == item.Key); 
 
 
                             <tr>
                                 
-                                <td class="action" rowspan="@itemByUserId.Count()">
+                                <td class="action">
                                     <a href="@Url.Action("Detail", "UserPlantMap", new {id = item.Key })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                     <a href="@Url.Action("Edit", "UserPlantMap", new {id = item.Key })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                                 </td>
-                                <td rowspan="@itemByUserId.Count()">
+                                <td>
                                     @item.Key
                                 </td>
-                                
+                                <td>
+                                    @{
+                                        var plantListByUser = Model.UserPlantMaps.Where(x => x.UserId == item.Key);
+                                    }
+                                    @foreach (var plant in plantListByUser)
+                                    {
+                                        <p>@(plant.PlantId + "-" +plant.PlantName)</p>
+                                    }
+                                </td>
                                   
                             </tr>
-                              foreach (var itembyuserid in itemByUserId)
-                              {
-                                  <tr>
-                                      <td>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                      </td>
-                                      <td>
-                                          @itembyuserid.PlantId
-                                      </td>
-                                  </tr>
-                              }
+                              
                         }
 
                     </tbody>
