@@ -31,10 +31,12 @@ namespace Sampoerna.EMS.Core
             MaterialMaster = 24,
             MasterPlant = 25,
             Uom = 27,
-            GoodsTypeGroup =26,
+            GoodsTypeGroup = 26,
             UserAuthorization = 28,
             POAMap = 29,
-            Vendor = 30
+            Vendor = 30,
+            KPPBC = 31,
+            UserPlantMap = 32
         }
         public enum PBCK1Type
         {

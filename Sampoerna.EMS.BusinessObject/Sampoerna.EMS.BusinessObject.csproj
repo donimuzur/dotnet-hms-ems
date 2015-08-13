@@ -102,8 +102,10 @@
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
+    <Compile Include="DTOs\T001KDto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
+    <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCDto.cs" />
@@ -255,6 +257,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="USER_BROLE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USER_PLANT_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="VIRTUAL_PLANT_MAP.cs">

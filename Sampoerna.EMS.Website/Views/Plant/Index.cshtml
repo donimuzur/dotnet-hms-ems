@@ -30,6 +30,7 @@
                             <th> Main Plant </th>
                             <th> Plant Address </th>
                             <th> Plant City </th>
+                            <th> Deletion </th>
                         </tr>
 
                     </thead>
@@ -42,6 +43,7 @@
                             <th> Main Plant </th>
                             <th> Plant Address </th>
                             <th> Plant City </th>
+                            <th> Deletion </th>
                         </tr>
 
                     </thead>
@@ -73,6 +75,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Ort01)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsDeletedString)
                                 </td>
                             </tr>
                         }

@@ -10,7 +10,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -22,7 +21,6 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
-using Sampoerna.EMS.Website.Models.NPPBKC;
 using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -42,10 +40,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPrintHistoryBLL _printHistoryBll;
-        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IT001KBLL _t001Bll;
+        private IPOABLL _poaBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IZaidmExNPPBKCBLL nppbkcbll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IT001KBLL t001Bll, IPOABLL poaBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -55,7 +54,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _printHistoryBll = printHistoryBll;
-            _nppbkcbll = nppbkcbll;
+            _t001Bll = t001Bll;
+            _poaBll = poaBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -63,13 +63,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput());
+                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Status).ThenBy(d => d.ApprovedByManagerId);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
-            var dbData = _pbck1Bll.GetOpenDocumentByParam(input);
+            var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Status).ThenBy(d => d.ApprovedByManagerId);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
 
@@ -98,23 +98,21 @@ namespace Sampoerna.EMS.Website.Controllers
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
-
-        private SelectList CreateYearList()
+        
+        private SelectList LackYearList()
         {
             var years = new List<SelectItemModel>();
             var currentYear = DateTime.Now.Year;
-            for (int i = 0; i < 5; i++)
-            {
-                years.Add(new SelectItemModel() { ValueField = currentYear - i, TextField = (currentYear - i).ToString() });
-            }
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
             return new SelectList(years, "ValueField", "TextField");
         }
 
         [HttpPost]
         public JsonResult PoaListPartial(string nppbkcId)
         {
-            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var model = new Pbck1ViewModel { SearchInput = { PoaList = listPoa } };
+            var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(nppbkcId);
+            var model = new Pbck1ViewModel { SearchInput = { PoaList = new SelectList(listPoa, "POA_ID", "PRINTED_NAME") } };
             return Json(model);
         }
 
@@ -204,10 +202,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
             model.MonthList = GlobalFunctions.GetMonthList();
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
-            model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
+            //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
+            model.SupplierPlantList = GlobalFunctions.GetPlantAll();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.UomList = GlobalFunctions.GetUomList();
 
@@ -221,7 +220,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
 
-            model.YearList = CreateYearList();
+            //model.YearList = CreateYearList();
+            model.YearList = LackYearList();
 
             model.AllowPrintDocument = false;
 
@@ -260,9 +260,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetNppbkcDetail(string nppbkcid)
         {
-            //var data = GlobalFunctions.GetNppbkcById(nppbkcid);
-            var data = _nppbkcbll.GetDetailsById(nppbkcid);
-            return Json(Mapper.Map<NppbkcItemModel>(data));
+            var data = _t001Bll.GetByNppbkcIdAndMainPlant(nppbkcid);
+            return Json(data);
         }
 
         [HttpPost]
@@ -1345,7 +1344,30 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbck1Data == null)
                 HttpNotFound();
 
-            var dataSet = SetDataSetReport(pbck1Data);
+            Stream stream = GetReport(pbck1Data, "PBCK-1");
+
+            return File(stream, "application/pdf");
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck1Data = _pbck1Bll.GetPrintOutDataById(id.Value);
+            if (pbck1Data == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbck1Data, "Preview PBCK-1");
+
+            return File(stream, "application/pdf");
+        }
+
+        private Stream GetReport(Pbck1ReportDto pbck1Data, string printTitle)
+        {
+            var dataSet = SetDataSetReport(pbck1Data, printTitle);
 
             ReportClass rpt = new ReportClass
             {
@@ -1354,14 +1376,13 @@ namespace Sampoerna.EMS.Website.Controllers
             rpt.Load();
             rpt.SetDataSource(dataSet);
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            
-            return File(stream, "application/pdf");
+            return stream;
         }
-
-        private DataSet SetDataSetReport(Pbck1ReportDto pbck1ReportData)
+        
+        private DataSet SetDataSetReport(Pbck1ReportDto pbck1ReportData, string printTitle)
         {
             var dsPbck1 = new dsPbck1();
-            dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail);
+            dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
             dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.ProdPlanList);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
             dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData.RealisasiP3Bkc);
@@ -1369,7 +1390,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return dsPbck1;
         }
 
-        private dsPbck1 AddDataPbck1Row(dsPbck1 ds, Pbck1ReportInformationDto d)
+        private dsPbck1 AddDataPbck1Row(dsPbck1 ds, Pbck1ReportInformationDto d, string printTitle)
         {
             var detailRow = ds.Pbck1.NewPbck1Row();
             detailRow.Pbck1Id = d.Pbck1Id.ToString();
@@ -1405,6 +1426,7 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.ExciseManager = d.ExciseManager;
             detailRow.ProdPlanPeriod = d.ProdPlanPeriode;
             detailRow.LackPeriod = d.Lack1Periode;
+            detailRow.DocumentText = printTitle;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }

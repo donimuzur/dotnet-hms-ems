@@ -47,9 +47,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string PER_CODE_DESC { get; set; }
     
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
-        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual T001W T001W { get; set; }
+        public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
     }
 }

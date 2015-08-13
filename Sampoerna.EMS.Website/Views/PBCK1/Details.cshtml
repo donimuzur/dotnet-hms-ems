@@ -1,7 +1,8 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Detail PBCK-1";
 }
 
 @using (Html.BeginForm("GovApproveDocument", "PBCK1", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
@@ -31,7 +32,7 @@
                         }
                     }
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
 
                     @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
                     {
@@ -346,6 +347,12 @@
                     ResetPrintHistoryDataTable();
                 }
             });
+        }
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
         }
         
         function ResetPrintHistoryDataTable() {

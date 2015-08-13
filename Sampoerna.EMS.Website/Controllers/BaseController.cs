@@ -91,17 +91,6 @@ namespace Sampoerna.EMS.Website.Controllers
             if (viewResult == null)
                 return;
 
-            //if (ConfigurationManager.AppSettings["BaseUrl"] != null)
-            //{
-            //    viewResult.ViewBag.BaseUrl = ConfigurationManager.AppSettings["BaseUrl"].ToString();
-            //}
-
-            //var descriptor = filterContext.ActionDescriptor;
-            //var actionName = descriptor.ActionName;
-            //var controllerName = descriptor.ControllerDescriptor.ControllerName;
-
-            //_accountBll.InsertLog(controllerName, actionName, CurrentUser
-            //    );
 
             base.OnActionExecuted(filterContext);
 
