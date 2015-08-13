@@ -18,5 +18,7 @@ namespace Sampoerna.EMS.Contract
 
         List<int?> GetAuthPages(string userid);
 
+        List<string> GetPlants(string userid);
+
     }
 }

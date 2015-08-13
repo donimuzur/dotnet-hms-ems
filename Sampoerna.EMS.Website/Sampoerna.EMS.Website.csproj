@@ -236,6 +236,7 @@
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\UserPlantMapController.cs" />
     <Compile Include="Controllers\LACK1Controller.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -328,6 +329,8 @@
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapIndexViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapDetailViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
     <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />
@@ -385,6 +388,24 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1PrintOutMain.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1PrintOutMain.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKC.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RealisasiP3BKC.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RencanaProduksi.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Startup.cs" />
@@ -457,6 +478,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\upload\header\header_sampoerna.jpg" />
     <Content Include="Content\upload\header\sample_header.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -914,6 +936,11 @@
     <Content Include="Views\KPPBC\Index.cshtml" />
     <Content Include="Views\KPPBC\Edit.cshtml" />
     <Content Include="Views\KPPBC\Detail.cshtml" />
+    <Content Include="Views\KPPBC\Detail.cshtml" />
+    <Content Include="Views\UserPlantMap\Create.cshtml" />
+    <Content Include="Views\UserPlantMap\Index.cshtml" />
+    <Content Include="Views\UserPlantMap\Edit.cshtml" />
+    <Content Include="Views\UserPlantMap\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -994,6 +1021,18 @@
     <EmbeddedResource Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PBCK1\Pbck1PrintOutMain.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1PrintOutMain.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKC.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RealisasiP3BKC.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PBCK1\Pbck1RencanaProduksi.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RencanaProduksi.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

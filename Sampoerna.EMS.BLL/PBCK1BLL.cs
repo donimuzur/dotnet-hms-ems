@@ -429,18 +429,27 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.GetByID(id);
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
-
-        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs)
+        
+        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdConverterOutput>();
+            
             foreach (var inputItem in inputs)
             {
                 messageList.Clear();
 
                 var output = Mapper.Map<Pbck1ProdConverterOutput>(inputItem);
                 output.IsValid = true;
-
+                
+                var checkCountDataProductCode = inputs.Where(c => c.ProductCode == output.ProductCode).ToList();
+                if (checkCountDataProductCode.Count > 1)
+                {
+                    //double product code
+                    output.IsValid = false;
+                    messageList.Add("Duplicate Product Code [" + output.ProductCode + "]");
+                }
+                
                 //Product Code Validation
                 #region -------------- Product Code Validation --------------
                 List<string> messages;
@@ -509,7 +518,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-
+                
                 outputList.Add(output);
 
             }
@@ -1220,7 +1229,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.Detail.VendorAliasName = nppbkcDetails.LFA1 != null ? nppbkcDetails.LFA1.NAME2 : string.Empty;
                 rc.Detail.VendorCityName = nppbkcDetails.CITY_ALIAS;
-                rc.Detail.NppbkcAddress = string.Join(Environment.NewLine, nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
+                rc.Detail.NppbkcAddress = "-" + string.Join(Environment.NewLine + "-", nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
                 var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
                 if (mainPlant != null)
                 {
@@ -1282,11 +1291,18 @@ namespace Sampoerna.EMS.BLL
             var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
             if (kppbcDetail != null)
             {
-                rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI;
+                //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
+                if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
+                {
+                    var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
+                    List<string> stringList = strToSplit.Split('|').ToList();
+                    rc.Detail.SupplierKppbcMengetahui = stringList[1].Replace("<br />", Environment.NewLine);
+                }
+
             }
             rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
             rc.Detail.PrintedDate = DateReportString(DateTime.Now);
-            rc.Detail.ExciseManager = dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME;
+            rc.Detail.ExciseManager = dbData.USER2 != null ? dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME : "";
             rc.Detail.ProdPlanPeriode = SetPeriod(dbData.PLAN_PROD_FROM.Value.Month, dbData.PLAN_PROD_FROM.Value.Year,
                 dbData.PLAN_PROD_TO.Value.Month, dbData.PLAN_PROD_TO.Value.Year);
             rc.Detail.Lack1Periode = SetPeriod(dbData.LACK1_FROM_MONTH.Value, dbData.LACK1_FROM_YEAR.Value,
@@ -1303,6 +1319,7 @@ namespace Sampoerna.EMS.BLL
                 FormTypeId = Enums.FormType.PBCK1,
                 CompanyCode = dbData.NPPBKC_BUKRS
             });
+
             rc.HeaderFooter = headerFooterData;
 
             return rc;

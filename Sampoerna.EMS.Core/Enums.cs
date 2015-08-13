@@ -35,7 +35,8 @@ namespace Sampoerna.EMS.Core
             UserAuthorization = 28,
             POAMap = 29,
             Vendor = 30,
-            KPPBC = 31
+            KPPBC = 31,
+            UserPlantMap = 32
         }
         public enum PBCK1Type
         {

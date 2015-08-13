@@ -297,15 +297,12 @@ namespace Sampoerna.EMS.BLL
                 c => c.HEADER_FOOTER.BUKRS == input.CompanyCode && c.FORM_TYPE_ID == input.FormTypeId;
             var dbData = _mapRepository.Get(queryFilter, null, "HEADER_FOOTER").FirstOrDefault();
             
-            if(dbData == null)
-                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            //if(dbData == null)
+            //    throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             return Mapper.Map<HEADER_FOOTER_MAPDto>(dbData);
 
         }
-
-
-
-       
+        
     }
 }

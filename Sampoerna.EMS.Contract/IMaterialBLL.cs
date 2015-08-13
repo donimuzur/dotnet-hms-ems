@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Contract
 
         int DeleteMaterialUom(int id, string userId, string materialnumber, string plant);
 
-        List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete);
+        List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete, string plant = "");
 
     }
 }

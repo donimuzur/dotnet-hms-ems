@@ -156,6 +156,9 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_KPPBC" Width="1.5" PointX="9.375" PointY="1" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" />
+        <EntityTypeShape EntityType="EMSModel.USER_PLANT_MAP" Width="1.5" PointX="21" PointY="45.125" />
+        <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_T001W" />
+        <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
