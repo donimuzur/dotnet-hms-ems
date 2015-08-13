@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BACK1BLL.cs" />
     <Compile Include="BLLMapper.cs" />
     <Compile Include="BLLMapperCK5.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
+    <Compile Include="PBCK7BLL.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
     <Compile Include="Pbck1DecreeDocBLL.cs" />
     <Compile Include="LACK1BLL.cs" />

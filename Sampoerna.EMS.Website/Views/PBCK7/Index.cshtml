@@ -1,0 +1,218 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">NEW</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @*ajax*@
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label class="col-md-4">NPPBKC ID</label>
+                            <div class="col-md-8">
+                                <select class="form-control">
+                                    <option>0703.1.3.204</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label class="col-md-4">Plant ID</label>
+                            <div class="col-md-8">
+                                <select class="form-control">
+                                    <option>001 - Plant</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label class="col-md-4 long">Reported On</label>
+                            <div class="col-md-8">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="last-form">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">POA</label>
+                                <div class="col-md-8">
+                                    <select class="form-control">
+                                        <option>001 - POA 1</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Creator</label>
+                                <div class="col-md-8">
+                                    <select class="form-control">
+                                        <option>001 - Creator 1</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-blue full">FILTER</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-blue full">RESET</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="pbck-1" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>PBCK-7 No</th>
+                            <th>Reported Date</th>
+                            <th>NPPBKC</th>
+                            <th>Plant</th>
+                            <th>POA</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr>
+                            <th>Filter</th>
+                            <th>PBCK-7 No</th>
+                            <th>Reported Date</th>
+                            <th>NPPBKC</th>
+                            <th>Plant</th>
+                            <th>POA</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                        <tr>
+                            <td class="action">
+                                <a href="#"><i class="fa fa-eye"></i></a>
+                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td class="no">PBCK-7 No Value</td>
+                            <td>8 August 2015</td>
+                            <td>NPPBKC Value</td>
+                            <td>Plant Value</td>
+                            <td>POA Value</td>
+                            <td class="last">Status Value</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBACK1BLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK4C_BLL.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
     <Compile Include="IPbck1QuotaBLL.cs" />
+    <Compile Include="IPBCK7BLL.cs" />
     <Compile Include="IPOASKBLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IDocumentSequenceNumberBLL.cs" />

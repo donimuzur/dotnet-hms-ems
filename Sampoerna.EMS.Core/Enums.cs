@@ -282,5 +282,11 @@ namespace Sampoerna.EMS.Core
             [Description("Lainnya")]
             Lainnya = 4
         }
+
+        public enum Pbck7Type
+        {
+            Pbck7List =1
+        }
+
     }
 }
