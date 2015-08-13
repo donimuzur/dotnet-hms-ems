@@ -193,6 +193,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
+            model.CutFillerCodeList = GlobalFunctions.GetCutFillerCodeList(model.PlantId);
             model.ProductCodeList = GlobalFunctions.GetProductCodeList();
             model.SeriesList = GlobalFunctions.GetSeriesCodeList();
             model.MarketCodeList = GlobalFunctions.GetMarketCodeList();
@@ -451,6 +452,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
            var data =  _materialBll.getAllPlant(mn);
             return Json(new SelectList(data, "WERKS", "NAME1"));
+        }
+
+        [HttpPost]
+        public JsonResult GetCutFillerCodeByPlant(string plant)
+        {
+            var data = GlobalFunctions.GetCutFillerCodeList(plant);
+            return Json(data);
         }
     }
 }

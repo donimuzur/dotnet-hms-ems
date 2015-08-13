@@ -131,5 +131,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 
         public bool IsActive { get; set; }
         public bool IsFromSAP { get; set; }
+
+        public SelectList CutFillerCodeList { get; set; }
     }
 }

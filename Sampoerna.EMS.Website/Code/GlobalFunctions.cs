@@ -198,6 +198,13 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
+        public static SelectList GetCutFillerCodeList(string plant = "")
+        {
+            IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
+            var data = materialBll.GetByFlagDeletion(false, plant);
+            return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
+        }
+
             public static SelectList GetConversionUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();

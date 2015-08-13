@@ -241,14 +241,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbVirtual.IMPORT_PLANT_ID = model.ImportPlantId;
                 dbVirtual.EXPORT_PLANT_ID = model.ExportPlantId;
 
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                    //InitEditModel(model);
+                    //return View("Edit", model);
+                }
+                
             }
 
-           
             InitEditModel(model);
             return View("Edit", model);
+            
         }
 
         public ActionResult Delete(int id)

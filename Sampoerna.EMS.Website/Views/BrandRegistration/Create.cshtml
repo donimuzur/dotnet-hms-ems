@@ -269,7 +269,10 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Cut Filler Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })
+                                                            <select class="form-control" id="CutFillerCode" name="CutFillerCode">
+                                                                <option value="">select</option>
+                                                            </select>
+                                                            @*@Html.TextBoxFor(model => model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -457,6 +460,7 @@
             if ($("#StickerCode").length) {
                 var stickerCode = $(this).find("option:selected").val();
                 $('#PlantId').html('');
+                $('#PlantId').append('<option value="">select</option>');
                 if (stickerCode != '') {
                     ajaxGetPlantByStickerCode(stickerCode);
                 }
@@ -478,6 +482,33 @@
                 }
             });
 
+        }
+
+        $("#PlantId").change(function () {
+            
+            if ($("#PlantId").length) {
+                var PlantId = $(this).find("option:selected").val();
+                $('#CutFillerCode').html('');
+                $('#CutFillerCode').append('<option value="">select</option>');
+                if (!PlantId == '') {
+                    ajaxGetCutFillerCodeByPlant(PlantId);
+                } 
+            }
+
+        });
+
+        function ajaxGetCutFillerCodeByPlant(plantid) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCutFillerCodeByPlant", "BrandRegistration")',
+                data: { plant: plantid },
+                success: function (data) {
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        $('#CutFillerCode').append('<option value="' + data[i].Value + '">' + data[i].Value + '-' + data[i].Text + '</option>');
+                    }
+                }
+            });
         }
 
         function PersonalizationCodeOnChange() {
