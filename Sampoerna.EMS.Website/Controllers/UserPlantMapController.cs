@@ -107,7 +107,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             model.UserPlantMap.PlantId = plant.Werks;
                             var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
                                 plant.Werks);
-                            if (existingPlantMap != null)
+                            if (existingPlantMap == null)
                             {
                                 var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
                                 _userPlantMapBll.Save(data);
