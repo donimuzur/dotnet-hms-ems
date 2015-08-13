@@ -40,6 +40,8 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
+        
+
         public List<string> getStickerCode()
         {
             return _repository.Get(null, null, includeTables).Select(p=>p.STICKER_CODE).Distinct().ToList();
@@ -210,17 +212,11 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete)
+        
+
+        public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete,string plant = "")
         {
-            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilterPlant = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilterClient = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            //if (isDelete.HasValue)
-            //{
-            //    queryFilterPlant = isDelete.Value ?
-            //        queryFilterPlant.And(c => c.PLANT_DELETION.HasValue &&( c.CLIENT_DELETION.Value == isDelete.Value))
-            //        : queryFilterPlant.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
-            //}
+            
             var datalistFromDb = _repository.Get(null, null, includeTables);
             List<ZAIDM_EX_MATERIAL> filteredData = new List<ZAIDM_EX_MATERIAL>();
             foreach (var data in datalistFromDb) {
@@ -233,13 +229,30 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            return filteredData.GroupBy(x => x.STICKER_CODE)
+            if (plant == "")
+            {
+                return filteredData.GroupBy(x => x.STICKER_CODE)
                 .Select(x =>
-                    x.Select(y => new ZAIDM_EX_MATERIAL() { 
+                    x.Select(y => new ZAIDM_EX_MATERIAL()
+                    {
                         STICKER_CODE = y.STICKER_CODE
                     }).First()
 
-                ).ToList();
+                ).OrderBy(x => x.STICKER_CODE).ToList();
+            }
+            else {
+                return filteredData.Where(x => x.WERKS == plant)
+                    .GroupBy(x => x.STICKER_CODE)
+                    .Select(x =>
+                        x.Select(y => new ZAIDM_EX_MATERIAL()
+                        {
+                            STICKER_CODE = y.STICKER_CODE
+                        }).First()
+
+                    ).OrderBy(x => x.STICKER_CODE).ToList();
+                
+            }
+            
         }
 
 

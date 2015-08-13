@@ -117,9 +117,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbVirtual = AutoMapper.Mapper.Map<VIRTUAL_PLANT_MAP>(model);
                 dbVirtual.CREATED_DATE = DateTime.Now;
                 dbVirtual.CREATED_BY = CurrentUser.USER_ID;
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                }
+                
+                
             }
 
             InitCreateModel(model);
@@ -241,14 +248,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbVirtual.IMPORT_PLANT_ID = model.ImportPlantId;
                 dbVirtual.EXPORT_PLANT_ID = model.ExportPlantId;
 
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                    //InitEditModel(model);
+                    //return View("Edit", model);
+                }
+                
             }
 
-           
             InitEditModel(model);
             return View("Edit", model);
+            
         }
 
         public ActionResult Delete(int id)
