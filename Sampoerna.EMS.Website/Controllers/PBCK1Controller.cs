@@ -1379,7 +1379,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             ReportClass rpt = new ReportClass
             {
-                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK1\\Pbck1RealisasiP3BKC.rpt"
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK1\\PBCK1PrintOut.rpt"
             };
             rpt.Load();
             rpt.SetDataSource(dataSet);
