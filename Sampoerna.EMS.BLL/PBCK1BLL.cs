@@ -1233,11 +1233,9 @@ namespace Sampoerna.EMS.BLL
                 if (vendorData != null)
                 {
                     rc.Detail.VendorAliasName = vendorData.NAME2;
+                    //todo: change with field CITY FROM VENDOR MASTER
+                    rc.Detail.VendorCityName = vendorData.ORT01;
                 }
-
-                //todo: change with field CITY FROM VENDOR MASTER
-                rc.Detail.VendorCityName = nppbkcDetails.CITY;
-
                 rc.Detail.NppbkcAddress = "- " + string.Join(Environment.NewLine + "- ", nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
                 var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
                 if (mainPlant != null)
