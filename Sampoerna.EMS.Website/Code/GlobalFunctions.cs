@@ -286,6 +286,15 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
         }
+
+        public static SelectList GetUsers()
+        {
+            IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
+            var users = userBll.GetUsers();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
       
         }
        
