@@ -44,6 +44,8 @@ namespace Sampoerna.EMS.XMLReader
                         var exsitingVendor = GetExVendor(vendorCodeXml);
                         item.LIFNR = vendorCodeXml;
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
                         item.CREATED_BY = Constans.PICreator;
 
                         if (exsitingVendor != null)

@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div id="contenttable" class="table-container">
-                <table id="UserAuthorization" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                <table id="UserAuthorizationTable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th class="toggle-row"> Filter </th>
@@ -28,9 +28,9 @@
                     </thead>
                     <thead class="filters">
                         <tr>
-                            <td>Action</td>
-                            <th>BRole</th>
-                            <th>Description</th>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,23 +65,19 @@
             $(document).ready(function() {
 
                 // Setup - add a text input to each footer cell
-                $('#UserAuthorization .filters th').each(function() {
+                $('#UserAuthorizationTable .filters th').each(function () {
                     var idx = $(this).index();
-                    if (idx != 0 && idx != 0) {
-                        var title = $('#UserAuthorization thead th').eq($(this).index()).text();
-                        $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
-
+                    if (idx != 0) {
+                        $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
                     }
                 });
 
                 // DataTable
-                var table = $('#UserAuthorization').DataTable();
-
+                var table = $('#UserAuthorizationTable').DataTable();
 
                 // Apply the search
-
-                table.columns().eq(0).each(function(colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+                table.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                         table
                             .column(colIdx)
                             .search(this.value)

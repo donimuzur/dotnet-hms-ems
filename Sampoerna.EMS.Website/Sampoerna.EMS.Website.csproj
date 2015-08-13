@@ -236,6 +236,7 @@
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\UserPlantMapController.cs" />
     <Compile Include="Controllers\LACK1Controller.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -328,6 +329,8 @@
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapIndexViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapDetailViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
     <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />
@@ -931,6 +934,9 @@
     <Content Include="Views\KPPBC\Index.cshtml" />
     <Content Include="Views\KPPBC\Edit.cshtml" />
     <Content Include="Views\KPPBC\Detail.cshtml" />
+    <Content Include="Views\UserPlantMap\Create.cshtml" />
+    <Content Include="Views\UserPlantMap\Index.cshtml" />
+    <Content Include="Views\UserPlantMap\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

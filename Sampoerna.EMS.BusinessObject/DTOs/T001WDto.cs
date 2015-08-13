@@ -23,5 +23,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string KppbcCity { get; set; }
         public string KppbcNo { get; set; }
         public string CompanyCode { get; set; }
+
+        public bool IsChecked { get; set; }
+    }
+
+    public class PlantDto
+    {
+        public string Werks { get; set; }
+        public string Name { get; set; }
+
+        public bool IsChecked { get; set; }
     }
 }
