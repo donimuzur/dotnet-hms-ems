@@ -14,6 +14,6 @@ namespace Sampoerna.EMS.Website.Models.UserPlantMap
 
         public SelectList Users { get; set; }
 
-        public List<T001WDto> Plants { get; set; }
+        public List<PlantDto> Plants { get; set; }
     }
 }

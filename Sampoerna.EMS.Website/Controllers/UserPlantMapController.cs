@@ -57,17 +57,19 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
        
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            var existingData = _userPlantMapBll.GetById(id);
+           // var existingData = _userPlantMapBll.GetById(id);
+            var currenPlant = _userPlantMapBll.GetByUserId(id);
             var model = new UserPlantMapDetailViewModel
             {
-                UserPlantMap = Mapper.Map<UserPlantMapDto>(existingData),
-                Plants = Mapper.Map<List<T001WDto>>(_plantBll.GetAllPlant()),
+                //UserPlantMap = Mapper.Map<UserPlantMapDto>(existingData),
+                Plants = Mapper.Map<List<PlantDto>>(_plantBll.GetAllPlant()),
                 Users = GlobalFunctions.GetUsers(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
+            
             return View("Edit", model);
         }
 
@@ -76,7 +78,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new UserPlantMapDetailViewModel
             {
-                Plants = Mapper.Map<List<T001WDto>>(_plantBll.GetAllPlant()),
+                Plants = Mapper.Map<List<PlantDto>>(_plantBll.GetAllPlant()),
                 Users = GlobalFunctions.GetUsers(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
@@ -95,7 +97,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (plant.IsChecked)
                         {
-                            model.UserPlantMap.PlantId = plant.WERKS;
+                            model.UserPlantMap.PlantId = plant.Werks;
                             var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
                             _userPlantMapBll.Save(data);
                         }

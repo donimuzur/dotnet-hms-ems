@@ -26,4 +26,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public bool IsChecked { get; set; }
     }
+
+    public class PlantDto
+    {
+        public string Werks { get; set; }
+        public string Name { get; set; }
+
+        public bool IsChecked { get; set; }
+    }
 }

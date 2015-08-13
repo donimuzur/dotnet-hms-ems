@@ -914,6 +914,8 @@
     <Content Include="Views\KPPBC\Edit.cshtml" />
     <Content Include="Views\KPPBC\Detail.cshtml" />
     <Content Include="Views\UserPlantMap\Create.cshtml" />
+    <Content Include="Views\UserPlantMap\Index.cshtml" />
+    <Content Include="Views\UserPlantMap\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

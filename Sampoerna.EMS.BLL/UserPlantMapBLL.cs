@@ -38,5 +38,10 @@ namespace Sampoerna.EMS.BLL
         {
             return _repository.Get(p => p.USER_PLANT_MAP_ID == id, null, _includeTables).FirstOrDefault();
         }
+
+        public List<USER_PLANT_MAP> GetByUserId(string id)
+        {
+            return _repository.Get(p => p.USER_ID == id, null, _includeTables).ToList();
+        }
     }
 }
