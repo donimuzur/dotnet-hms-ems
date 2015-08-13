@@ -50,9 +50,11 @@ namespace Sampoerna.EMS.BLL
             if (!isexist && virtualPlant.VIRTUAL_PLANT_MAP_ID == 0)
             {
                 _repository.Insert(virtualPlant);
+                success = true;
             }
             else if(!isexist){
                 _repository.Update(virtualPlant);
+                success = true;
             }
 
             //_repository.InsertOrUpdate(virtualPlant);

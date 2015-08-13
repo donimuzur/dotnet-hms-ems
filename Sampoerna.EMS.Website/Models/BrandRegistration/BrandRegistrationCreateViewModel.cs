@@ -121,7 +121,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string PrintingPriceValueStr { get; set; }
 
         [StringLength(25)]
-        public string CutFilterCode { get; set; }
+        public string CutFillerCode { get; set; }
 
         public bool IsActive { get; set; }
         

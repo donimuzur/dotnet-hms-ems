@@ -243,7 +243,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 dbBrand.PRINTING_PRICE = model.PrintingPrice;
                 dbBrand.CONVERSION = model.Conversion;
-                dbBrand.CUT_FILLER_CODE = model.CutFilterCode;
+                dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
             }
             else
                 Mapper.Map(model, dbBrand);
@@ -309,7 +309,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             changesData.Add("Conversion", origin.CONVERSION == updatedModel.Conversion);
-            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == updatedModel.CutFilterCode);
+            changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == updatedModel.CutFillerCode);
             changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE == updatedModel.PrintingPrice);
 
             foreach (var listChange in changesData)
@@ -410,7 +410,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         break;
                     case "CutFilterCode":
                         changes.OLD_VALUE = origin.CUT_FILLER_CODE;
-                        changes.NEW_VALUE = updatedModel.CutFilterCode;
+                        changes.NEW_VALUE = updatedModel.CutFillerCode;
                         break;
                     case "Status":
                         changes.OLD_VALUE = origin.STATUS.ToString();
