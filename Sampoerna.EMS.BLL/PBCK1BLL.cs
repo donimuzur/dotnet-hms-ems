@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExKPPBCBLL _kppbcbll;
         private IHeaderFooterBLL _headerFooterBll;
         private IUserBLL _userBll;
+        private ILFA1BLL _lfaBll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -63,6 +64,7 @@ namespace Sampoerna.EMS.BLL
             _kppbcbll = new ZaidmExKPPBCBLL(_logger, _uow);
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
+            _lfaBll = new LFA1BLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -1223,13 +1225,20 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.Pbck1AdditionalText = dbData.PBCK1_TYPE == Enums.PBCK1Type.Additional ? "Tambahan" : "";
             if (dbData.PERIOD_FROM != null) rc.Detail.Year = dbData.PERIOD_FROM.Value.ToString("yyyy");
 
-            //GET VENDOR BY VENDOR ID ON NPPBKC
+            //GET VENDOR BY NPPBKC_ID ON PBCK-1 FORM AND KPPBC_ID ON NPPBKC
             var nppbkcDetails = _nppbkcbll.GetDetailsById(dbData.NPPBKC_ID);
             if (nppbkcDetails != null)
             {
-                rc.Detail.VendorAliasName = nppbkcDetails.LFA1 != null ? nppbkcDetails.LFA1.NAME2 : string.Empty;
-                rc.Detail.VendorCityName = nppbkcDetails.CITY_ALIAS;
-                rc.Detail.NppbkcAddress = "-" + string.Join(Environment.NewLine + "-", nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
+                var vendorData = _lfaBll.GetById(nppbkcDetails.KPPBC_ID);
+                if (vendorData != null)
+                {
+                    rc.Detail.VendorAliasName = vendorData.NAME2;
+                }
+
+                //todo: change with field CITY FROM VENDOR MASTER
+                rc.Detail.VendorCityName = nppbkcDetails.CITY;
+
+                rc.Detail.NppbkcAddress = "- " + string.Join(Environment.NewLine + "- ", nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
                 var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
                 if (mainPlant != null)
                 {

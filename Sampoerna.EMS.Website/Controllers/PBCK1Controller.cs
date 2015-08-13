@@ -493,6 +493,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (saveResult.Success)
                 {
                     //return RedirectToAction("Index");
+                    AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = model.Detail.Pbck1Id });
                 }
 
@@ -647,9 +648,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveResult.Success)
                 {
+                    AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = saveResult.Id });
                 }
-
             }
             catch (DbEntityValidationException ex)
             {
@@ -1371,7 +1372,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             ReportClass rpt = new ReportClass
             {
-                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK1\\PBCK1PrintOut.rpt"
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK1\\Pbck1PrintOutMain.rpt"
             };
             rpt.Load();
             rpt.SetDataSource(dataSet);
