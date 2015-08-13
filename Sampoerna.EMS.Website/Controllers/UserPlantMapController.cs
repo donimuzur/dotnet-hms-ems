@@ -52,22 +52,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new UserPlantMapDetailViewModel
             {
                 UserPlantMap = Mapper.Map<UserPlantMapDto>(currenPlant.FirstOrDefault()),
-                Plants = Mapper.Map<List<PlantDto>>(currenPlant.Select(x=>x.T001W)),
+                Plants = Mapper.Map<List<PlantDto>>(currenPlant.Select(x => x.T001W).ToList()),
                 Users = GlobalFunctions.GetUsers(),
                 Nppbkcs =  GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-            foreach (var userPlantMap in currenPlant)
-            {
-                for (int i = 0; i < model.Plants.Count; i++)
-                {
-                    if (model.Plants[i].Werks == userPlantMap.PLANT_ID)
-                    {
-                        model.Plants[i].IsChecked = true;
-                    }
-                }
-            }
+            
             return model;
         }
 
@@ -107,9 +98,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (plant.IsChecked)
                         {
 
-                            model.UserPlantMap.PlantId = plant.Werks;
+                            model.UserPlantMap.PlantId = plant.WERKS;
                             var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                plant.Werks);
+                                plant.WERKS);
                             if (existingPlantMap == null)
                             {
                                 var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
@@ -149,9 +140,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (plant.IsChecked)
                         {
                             var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                plant.Werks);
+                                plant.WERKS);
                             
-                            model.UserPlantMap.PlantId = plant.Werks;
+                            model.UserPlantMap.PlantId = plant.WERKS;
                             var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
                             if (existingPlantMap != null)
                             {
@@ -161,10 +152,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
-                            if (currenPlant.Any(x => x.PLANT_ID == plant.Werks))
+                            if (currenPlant.Any(x => x.PLANT_ID == plant.WERKS))
                             {
                                 var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                    plant.Werks);
+                                    plant.WERKS);
                                 if (existingPlantMap != null)
                                 {
 

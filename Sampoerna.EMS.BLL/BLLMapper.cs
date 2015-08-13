@@ -104,8 +104,8 @@ namespace Sampoerna.EMS.BLL
 
 
             Mapper.CreateMap<T001W, PlantDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NAME1))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.NAME1))
                 ;
            
 

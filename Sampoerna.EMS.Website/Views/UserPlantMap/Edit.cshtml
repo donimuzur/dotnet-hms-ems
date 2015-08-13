@@ -100,9 +100,9 @@
 @section scripts {
     <script src="~/Scripts/chosen.jquery.min.js"></script>
     <script type="text/javascript" language="javascript">
-        var plantlist = [];
-        var existingPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
-        console.log(existingPlant);
+      
+        var plantlist = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
+      
         $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
 
@@ -114,9 +114,9 @@
         });
         var ss = ['00000100100000A', '00000100100000B'];
         $('#select-nppbkc-id').val(ss);
-        for (var m = 0; m < ss.length; m++) {
+        for (var m = 0; m < plantlist.length; m++) {
 
-            ViewPlant(ss[m]);
+            $('#plant-list').append(SetPlantList(plantlist[m], m));
         }
         
 
@@ -168,7 +168,7 @@
 
         function SetPlantList(data, index) {
 
-            var view = '<div class="' + data.NPPBKC_ID + '"><input id="Plants_' + index + '__Werks" name="Plants[' + index + '].Werks" type="hidden" value="' + data.WERKS + '">' +
+            var view = '<div class="' + data.NPPBKC_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
                 '<input  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked">' +
                 data.WERKS + '-' + data.NAME1 + '</div>';
             return view;
