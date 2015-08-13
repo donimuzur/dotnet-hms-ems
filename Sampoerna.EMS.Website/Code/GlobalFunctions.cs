@@ -45,7 +45,13 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-
+        public static MultiSelectList GetNppbkcMultiSelectList()
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            var nppbkcList = nppbkcbll.GetAll().Where(x => x.IS_DELETED != true);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
+            return new MultiSelectList(selectItemSource, "ValueField", "TextField");
+        }
         public static SelectList GetNppbkcByFlagDeletionList(bool isDeleted)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();

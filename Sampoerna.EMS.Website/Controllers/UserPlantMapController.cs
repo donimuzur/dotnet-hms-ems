@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IUserPlantMapBLL _userPlantMapBll;
         private IPlantBLL _plantBll;
+        
         public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll) 
             : base(pageBLL, Enums.MenuList.POAMap) 
         {
@@ -86,6 +87,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 Plants = Mapper.Map<List<PlantDto>>(_plantBll.GetAllPlant()),
                 Users = GlobalFunctions.GetUsers(),
+                Nppbkcs = GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
@@ -188,7 +190,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetPlantByNppbkc(string nppbkcid)
+        {
+            return Json(_plantBll.GetPlantByNppbkc(nppbkcid));
+        }
 
-        
     }
 }
