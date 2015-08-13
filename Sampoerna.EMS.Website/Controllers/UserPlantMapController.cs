@@ -52,8 +52,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new UserPlantMapDetailViewModel
             {
                 UserPlantMap = Mapper.Map<UserPlantMapDto>(currenPlant.FirstOrDefault()),
-                Plants = Mapper.Map<List<PlantDto>>(_plantBll.GetAllPlant()),
+                Plants = Mapper.Map<List<PlantDto>>(currenPlant.Select(x=>x.T001W)),
                 Users = GlobalFunctions.GetUsers(),
+                Nppbkcs =  GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
@@ -85,7 +86,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new UserPlantMapDetailViewModel
             {
-                Plants = Mapper.Map<List<PlantDto>>(_plantBll.GetAllPlant()),
+                
                 Users = GlobalFunctions.GetUsers(),
                 Nppbkcs = GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,

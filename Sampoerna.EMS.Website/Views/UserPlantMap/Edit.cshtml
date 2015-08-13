@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = "Edit User Plant Map";
 }
-
+@section styles{
+    <link href="~/Content/chosen.min.css" rel="stylesheet" />
+}
 @using (Html.BeginForm("Edit", "UserPlantMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
@@ -96,39 +98,33 @@
 
 }
 @section scripts {
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
     <script type="text/javascript" language="javascript">
         var plantlist = [];
-        $(document).ready(function () {
+        var existingPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
+        console.log(existingPlant);
+        $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "UserPlantMap")';
             });
-          
-            
+
+
         });
+        var ss = ['00000100100000A', '00000100100000B'];
+        $('#select-nppbkc-id').val(ss);
+        for (var m = 0; m < ss.length; m++) {
+
+            ViewPlant(ss[m]);
+        }
+        
 
         $(".chosen").chosen();
-        $('.chosen').on('change', function (evt, params) {
-            var nppbkcid_selected = params.selected;
-            if (nppbkcid_selected) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
-                    data: { nppbkcid: nppbkcid_selected },
-                    success: function (data) {
-
-                        for (var i = 0; i < data.length; i++) {
-                            plantlist.push(data[i]);
-
-                        }
-                        $('#plant-list').html('');
-                        for (var k = 0; k < plantlist.length; k++) {
-                            $('#plant-list').append(SetPlantList(plantlist[k], k));
-                        }
-                    }
-                });
-            }
+       
+        
+        $('.chosen').on('change', function(evt, params) {
+                ViewPlant(params.selected);
 
             if (params.deselected) {
                 $('.' + params.deselected).remove();
@@ -149,6 +145,27 @@
 
         });
 
+        function ViewPlant(nppbkcid_selected) {
+            if (nppbkcid_selected) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
+                    data: { nppbkcid: nppbkcid_selected },
+                    success: function(data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            plantlist.push(data[i]);
+
+                        }
+                        $('#plant-list').html('');
+                        for (var k = 0; k < plantlist.length; k++) {
+                            $('#plant-list').append(SetPlantList(plantlist[k], k));
+                        }
+                    }
+                });
+            }
+        }
+
         function SetPlantList(data, index) {
 
             var view = '<div class="' + data.NPPBKC_ID + '"><input id="Plants_' + index + '__Werks" name="Plants[' + index + '].Werks" type="hidden" value="' + data.WERKS + '">' +
@@ -162,7 +179,6 @@
 
             $('#Plants_' + index + '__IsChecked').val(isCheck);
         }
-        
 
     </script>
 }
