@@ -43,24 +43,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        //
-        // GET: /POAMap/Details/5
-        public ActionResult Detail(int id)
-        {
-            var existingData = _userPlantMapBll.GetById(id);
-            var model = new UserPlantMapDetailViewModel
-            {
-                UserPlantMap = Mapper.Map<UserPlantMapDto>(existingData),
-                CurrentMenu = PageInfo,
-                MainMenu = _mainMenu
-            };
-            return View("Detail", model);
-        }
+        
 
-       
-        public ActionResult Edit(string id)
+        private UserPlantMapDetailViewModel InitEdit(string id)
         {
-           var currenPlant = _userPlantMapBll.GetByUserId(id);
+            var currenPlant = _userPlantMapBll.GetByUserId(id);
             var model = new UserPlantMapDetailViewModel
             {
                 UserPlantMap = Mapper.Map<UserPlantMapDto>(currenPlant.FirstOrDefault()),
@@ -71,7 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             foreach (var userPlantMap in currenPlant)
             {
-                for(int i=0; i< model.Plants.Count; i++)
+                for (int i = 0; i < model.Plants.Count; i++)
                 {
                     if (model.Plants[i].Werks == userPlantMap.PLANT_ID)
                     {
@@ -79,9 +66,19 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
             }
-            return View("Edit", model);
+            return model;
         }
 
+        public ActionResult Edit(string id)
+        {
+            var model = InitEdit(id);
+            return View("Edit", model);
+        }
+        public ActionResult Detail(string id)
+        {
+            var model = InitEdit(id);
+            return View("Detail", model);
+        }
 
         public ActionResult Create()
         {

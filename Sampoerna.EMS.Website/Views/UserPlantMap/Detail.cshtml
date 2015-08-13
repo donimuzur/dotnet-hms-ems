@@ -2,18 +2,16 @@
 
 
 @{
-    ViewBag.Title = "Create new User Plant Map";
+    ViewBag.Title = "Detail User Plant Map";
 }
 
-@using (Html.BeginForm("Create", "UserPlantMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
-{
 
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>User Plant Map</h3>
+                <h3>Detail Plant Map</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    <button class="btn btn-red">DELETE</button>
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
@@ -29,7 +27,7 @@
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    New User Plant Map
+                                    Detail User Plant Map
                                     <i class="fa fa-caret-down"></i>
                                 </a>
                             </h4>
@@ -42,14 +40,14 @@
                                             <div class="row">
                                                 <label class="col-md-4">User ID<span class="red">*</span></label>
                                                 <div class="col-md-8">
-                                                    @Html.DropDownListFor(model => model.UserPlantMap.UserId, Model.Users, new { @class = "form-control" })
+                                                    @Html.TextBox("user_id", Model.UserPlantMap.UserId, new { @class = "form-control", @disabled="disabled" })
                                                    
 
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                        <div class="row">
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="col-md-4">Plant</label>
@@ -61,7 +59,7 @@
                                                                 {
                                                                     <div>
                                                                         @Html.HiddenFor(x => Model.Plants[i].Werks)
-                                                                        @Html.CheckBoxFor(x => Model.Plants[i].IsChecked) @(Model.Plants[i].Werks + "-" + Model.Plants[i].Name)
+                                                                        @Html.CheckBoxFor(x => Model.Plants[i].IsChecked, new {@disabled = "disabled" }) @(Model.Plants[i].Werks + "-" + Model.Plants[i].Name)
 
                                                                     </div>
                                                                 }
@@ -76,7 +74,7 @@
                                         </div>
 
                                         
-                                    
+                                   
                                     <div class="row">
                                         <div class="col-md-12">
                                             <span class="red">*</span> ) This Field Required
@@ -92,7 +90,7 @@
         </div>
     </div>
 
-}
+
 @section scripts {
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
