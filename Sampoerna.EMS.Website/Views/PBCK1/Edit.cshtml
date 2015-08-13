@@ -79,7 +79,7 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
-            
+
             $('#btn-changelog-export-xls').click(function () {
                 href.location = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
             });
@@ -113,27 +113,24 @@
                 pbck1TypeOnchange();
             });
 
-            //load nppbkc detail
-            nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
-
             ajaxLoadSupplierPlant('@Url.Action("GetSupplierPlant", "PBCK1")');
 
             pbck1TypeOnchange();
-            
+
             $('#Detail_NppbkcId').change(function () {
-                nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
+                nppbkcIdOnChange();
             });
-            
+
             $("#btnSubmitDocument").click(function () {
                 $('#Pbck1Modal').modal('show');
             });
 
-            $("#btnSubmitConfirm").click(function() {
+            $("#btnSubmitConfirm").click(function () {
                 window.location = "@Url.Action("SubmitDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
             });
 
         });
-        
+
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
@@ -153,6 +150,64 @@
                 $('#supp-plant').html(htmlSelect);
                 //selected to 1
                 supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+            }
+        }
+
+        function ajaxSelectNppbck(formData) {
+            if (formData.nppbkcid) {
+                //Load POA
+                ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
+
+                //Load company
+                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
+            }
+        }
+
+        function nppbkcIdOnChange() {
+            if ($("#Detail_NppbkcId").length) {
+                var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+                console.log(nppbkcid);
+                if (nppbkcid != '') {
+                    ajaxSelectNppbck({ nppbkcid: nppbkcid });
+                } else {
+                    $('#Detail_NppbkcCompanyName').val('');
+                    $('#Detail_NppbkcCompanyCode').val('');
+                    $('#Detail_NppbkcKppbcId').val('');
+                    $('#displayCompanyName').val('');
+                    $('#Detail_PoaList').val('');
+                    $('#displayPoaList').val('');
+                }
+            }
+        }
+
+        function ajaxLoadSupplierPlant(url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                success: function (data) {
+                    supplierData = data;
+                    //load supplier plant
+                    supplierPortOnChange();
+                }
+            });
+        }
+
+        function supplierPortOnChange() {
+            if ($("#Detail_SupplierPortId").length) {
+                var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                console.log(port_id);
+                $('#Detail_SupplierPlant').remove();
+                if (port_id == '') {
+                    //
+                    $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
+                    disableSupplierFormInput(false);
+                    setSupplierPlantEmpty();
+                } else {
+                    $('#Detail_SupplierPortName').val(port_name);
+                    loadSupplierPlant();
+                    disableSupplierFormInput(true);
+                }
             }
         }
     </script>
