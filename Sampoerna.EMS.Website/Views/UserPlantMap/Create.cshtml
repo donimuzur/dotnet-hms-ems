@@ -102,6 +102,8 @@
     <script src="~/Scripts/chosen.jquery.min.js"></script>
     
     <script type="text/javascript" language="javascript">
+
+        var plantlist = [];
         $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
 
@@ -123,20 +125,39 @@
                     success: function(data) {
 
                         for (var i = 0; i < data.length; i++) {
-                            $('#plant-list').append(SetPlantList(data[i], nppbkcid_selected, i));
+                            plantlist.push(data[i]);
+
+                        }
+                        $('#plant-list').html('');
+                        for (var k = 0; k < plantlist.length; k++) {
+                            $('#plant-list').append(SetPlantList(plantlist[k], k));
                         }
                     }
                 });
             }
-            var nppbkcid_deselected = params.deselected;
-            if (nppbkcid_deselected) {
-                $('.' + nppbkcid_deselected).remove();
+
+            if (params.deselected) {
+                $('.' + params.deselected).remove();
+                var arrlength = plantlist.length;
+                var tempArray = [];
+                for (var j = 0; j < arrlength; j++) {
+                    var m =plantlist[j].NPPBKC_ID;
+                    if (m != params.deselected) {
+                        tempArray.push(plantlist[j]);
+                    }
+                }
+                plantlist = tempArray;
+                $('#plant-list').html('');
+                for (var l = 0; l < plantlist.length; l++) {
+                    $('#plant-list').append(SetPlantList(plantlist[l], l));
+                }
             }
 
         });
 
-        function SetPlantList(data, nppbkcid, index) {
-            var view = '<div class="' + nppbkcid + '"><input id="Plants_' + index + '__Werks" name="Plants[' + index + '].Werks" type="hidden" value="' + data.WERKS + '">' +
+        function SetPlantList(data, index) {
+            
+            var view = '<div class="' + data.NPPBKC_ID + '"><input id="Plants_' + index + '__Werks" name="Plants[' + index + '].Werks" type="hidden" value="' + data.WERKS + '">' +
                 '<input  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked">' +
                 data.WERKS + '-' + data.NAME1 + '</div>';
             return view;
@@ -144,8 +165,10 @@
 
         function setChecked(index, obj) {
             var isCheck = $(obj[0]).prop('checked');
-            
+
             $('#Plants_' + index + '__IsChecked').val(isCheck);
         }
+        
+
     </script>
 }
