@@ -321,6 +321,8 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
+          <Property Name="STRAS" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="MATERIAL_UOM">
           <Key>
@@ -4550,6 +4552,8 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_LFA1" FromRole="LFA1" ToRole="ZAIDM_EX_NPPBKC" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="STRAS" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -5775,6 +5779,8 @@
           <EntitySetMapping Name="LFA1">
             <EntityTypeMapping TypeName="EMSModel.LFA1">
               <MappingFragment StoreEntitySet="LFA1">
+                <ScalarProperty Name="STRAS" ColumnName="STRAS" />
+                <ScalarProperty Name="ORT01" ColumnName="ORT01" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
