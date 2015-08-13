@@ -3487,7 +3487,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
 
-
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
                 return View("CK5UploadFileDocument", model);
             }
             catch (Exception ex)
