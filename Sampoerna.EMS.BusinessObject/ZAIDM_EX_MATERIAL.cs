@@ -32,7 +32,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> TARIFF { get; set; }
         public string TARIFF_CURR { get; set; }
         public bool IS_FROM_SAP { get; set; }
-        public Nullable<bool> IS_DELETED { get; set; }
         public Nullable<bool> CLIENT_DELETION { get; set; }
         public Nullable<bool> PLANT_DELETION { get; set; }
         public string CREATED_BY { get; set; }
@@ -41,8 +40,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
+        public virtual T001W T001W { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
-        public virtual T001W T001W { get; set; }
     }
 }

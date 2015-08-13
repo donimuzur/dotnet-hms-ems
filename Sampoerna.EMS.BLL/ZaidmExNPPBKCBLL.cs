@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -14,7 +16,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
-        private string includeTables = "ZAIDM_EX_KPPBC,T001, LFA1";
+        private string includeTables = "ZAIDM_EX_KPPBC,T001W, LFA1";
         private IChangesHistoryBLL _changesHistoryBll;
 
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
@@ -33,7 +35,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_NPPBKCDto GetDetailsById(string id)
         {
-            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T0011, ZAIDM_EX_KPPBC").FirstOrDefault());
+            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T001, ZAIDM_EX_KPPBC").FirstOrDefault());
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()
@@ -110,6 +112,24 @@ namespace Sampoerna.EMS.BLL
 
             return dbData.ZAIDM_EX_KPPBC.KPPBC_ID;
 
+        }
+
+        public List<ZAIDM_EX_NPPBKCDto> GetByFlagDeletion(bool isDeleted)
+        {
+            var queryFilter = PredicateHelper.True<ZAIDM_EX_NPPBKC>();
+            if (!isDeleted)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c => !c.IS_DELETED.HasValue || (c.IS_DELETED.HasValue && c.IS_DELETED.Value == false));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.IS_DELETED.HasValue && c.IS_DELETED.Value == true);
+            }
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(dbData.ToList());
         }
     }
 }

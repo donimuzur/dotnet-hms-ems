@@ -81,7 +81,7 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Details", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    @*<a href="@Url.Action("Edit", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>*@
+                                    <a href="@Url.Action("Edit", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>@item.NPPBKC_ID</td>
                                 <td>@(item.WERKS + Constans.DelimeterSelectItem + item.PLANT_NAME)</td>

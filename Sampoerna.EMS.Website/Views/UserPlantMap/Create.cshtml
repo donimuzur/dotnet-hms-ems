@@ -1,0 +1,110 @@
+﻿@model Sampoerna.EMS.Website.Models.UserPlantMap.UserPlantMapDetailViewModel
+
+
+@{
+    ViewBag.Title = "Create new User Plant Map";
+}
+
+@using (Html.BeginForm("Create", "UserPlantMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>User Plant Map</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    New User Plant Map
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">User ID<span class="red">*</span></label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.UserPlantMap.UserId, Model.Users, new { @class = "form-control" })
+                                                   
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant</label>
+                                                    <div class="col-md-8">
+                                                        <div class="page-role">
+                                                            @if (Model.Plants != null)
+                                                            {
+                                                                for (int i = 0; i < Model.Plants.Count; i++)
+                                                                {
+                                                                    <div>
+                                                                        @Html.HiddenFor(x => Model.Plants[i].Werks)
+                                                                        @Html.CheckBoxFor(x => Model.Plants[i].IsChecked) @(Model.Plants[i].Werks + "-" + Model.Plants[i].Name)
+
+                                                                    </div>
+                                                                }
+                                                            }
+
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $('#MenuUserPlantMap').addClass('active');
+
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "UserPlantMap")';
+            });
+          
+            
+        });
+
+       
+
+    </script>
+}

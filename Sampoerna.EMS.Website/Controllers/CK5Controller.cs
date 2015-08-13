@@ -237,10 +237,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
 
-            //model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
-          
-            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+           //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+            model.SourcePlantList = GlobalFunctions.GetPlantAll();
+            model.DestPlantList = GlobalFunctions.GetPlantAll();
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
           
@@ -467,11 +467,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
             
-            //model.GoodTypeList = GlobalFunctions.GetGoodTypeGroupListByDescValue();
-
-            model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            model.DestPlantList = GlobalFunctions.GetSourcePlantList();
             
+            //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
+            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+            model.SourcePlantList = GlobalFunctions.GetPlantAll();
+            model.DestPlantList = GlobalFunctions.GetPlantAll();
+
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
             model.PackageUomList = GlobalFunctions.GetUomList();
