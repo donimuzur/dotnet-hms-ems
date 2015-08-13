@@ -73,8 +73,13 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void CLientDeletion(string stickercode, string userId,bool? deletionflag) {
-            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == stickercode, null, "").ToList();
+        private void CLientDeletion(ZAIDM_EX_MATERIAL data, string userId,bool? deletionflag) {
+            var original = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS, null, "").FirstOrDefault();
+
+            if (original.CLIENT_DELETION == data.CLIENT_DELETION) {
+                return;
+            }
+            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE, null, "").ToList();
 
             foreach (var detail in datatobeclientdeleted) {
                 detail.CLIENT_DELETION = deletionflag;
@@ -102,7 +107,7 @@ namespace Sampoerna.EMS.BLL
 
 
             //if (data.CLIENT_DELETION == true) { 
-            CLientDeletion(data.STICKER_CODE, userId,data.CLIENT_DELETION);
+            CLientDeletion(data, userId,data.CLIENT_DELETION);
                 
             //}
             if (data.PLANT_DELETION == true) {
@@ -131,11 +136,24 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public void SaveUoM(MATERIAL_UOM data)
+        public void SaveUoM(MATERIAL_UOM data,string userid)
         {
             try
             {
+                string newdata = string.Format("{0} - {1}", data.MEINH, data.UMREN);
+                
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                    FORM_ID = data.STICKER_CODE + data.WERKS,
+                    FIELD_NAME = "CONVERTION_ADDED",
+                    MODIFIED_BY = userid,
+                    MODIFIED_DATE = DateTime.Now,
+                    OLD_VALUE = string.Empty,
+                    NEW_VALUE = newdata
+                };
                 _repositoryUoM.InsertOrUpdate(data);
+                _changesHistoryBll.AddHistory(changes);
             }
             catch (Exception ex)
             {
