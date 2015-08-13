@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class PBCK1PrintOut : ReportClass {
+    public class Pbck1PrintOutMain : ReportClass {
         
-        public PBCK1PrintOut() {
+        public Pbck1PrintOutMain() {
         }
         
         public override string ResourceName {
             get {
-                return "PBCK1PrintOut.rpt";
+                return "Pbck1PrintOutMain.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.PBCK1.PBCK1PrintOut.rpt";
+                return "Sampoerna.EMS.Website.Reports.PBCK1.Pbck1PrintOutMain.rpt";
             }
             set {
                 // Do nothing
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection5 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection2 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,7 +82,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection6 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,49 +90,17 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection4 {
-            get {
-                return this.ReportDefinition.Sections[5];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection8 {
-            get {
-                return this.ReportDefinition.Sections[6];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection9 {
-            get {
-                return this.ReportDefinition.Sections[7];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[8];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[9];
+                return this.ReportDefinition.Sections[5];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPBCK1PrintOut : Component, ICachedReport {
+    public class CachedPbck1PrintOutMain : Component, ICachedReport {
         
-        public CachedPBCK1PrintOut() {
+        public CachedPbck1PrintOutMain() {
         }
         
         [Browsable(false)]
@@ -169,7 +137,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            PBCK1PrintOut rpt = new PBCK1PrintOut();
+            Pbck1PrintOutMain rpt = new Pbck1PrintOutMain();
             rpt.Site = this.Site;
             return rpt;
         }
