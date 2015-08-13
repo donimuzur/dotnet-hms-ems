@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Contract
 
         MaterialOutput Save(ZAIDM_EX_MATERIAL data, string userId);
 
-        void SaveUoM(MATERIAL_UOM data);
+        void SaveUoM(MATERIAL_UOM data,string userid);
 
         void Delete(string materialnumber, string plant, string userId);
 
