@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.Contract
         VIRTUAL_PLANT_MAP GetById(long id);
         VIRTUAL_PLANT_MAP GetByIdIncludeChild(int id);
         List<VIRTUAL_PLANT_MAP> GetAll();
-        VIRTUAL_PLANT_MAP Save(VIRTUAL_PLANT_MAP virtualPlant);
+        bool Save(VIRTUAL_PLANT_MAP virtualPlant);
         // SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap);
 
 

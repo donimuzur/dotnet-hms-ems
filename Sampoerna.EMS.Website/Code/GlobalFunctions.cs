@@ -187,7 +187,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCountry();
-            return new SelectList(data, "COUNTRY_CODE", "COUNTRY_NAME");
+            return new SelectList(data, "COUNTRY_CODE", "COUNTRY_CODE");
         }
 
         public static SelectList GetCurrencyList()
@@ -201,6 +201,13 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
             var data = materialBll.GetByFlagDeletion(false);
+            return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
+        }
+
+        public static SelectList GetCutFillerCodeList(string plant = "")
+        {
+            IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
+            var data = materialBll.GetByFlagDeletion(false, plant);
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
@@ -242,15 +249,15 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
         }
 
-        public static SelectList GetSourcePlantList()
-        {
-            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plant = plantBll.GetAll();
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plant);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+        //public static SelectList GetSourcePlantList()
+        //{
+        //    IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+        //    var plant = plantBll.GetAll();
+        //    var selectItemSource = Mapper.Map<List<SelectItemModel>>(plant);
+        //    return new SelectList(selectItemSource, "ValueField", "TextField");
 
-            //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
-        }
+        //    //return new SelectList(sourcePlant, "NPPBCK_ID", "NAME1");
+        //}
 
         public static SelectList GetPbck1CompletedList()
         {

@@ -40,6 +40,8 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, includeTables).ToList();
         }
 
+        
+
         public List<string> getStickerCode()
         {
             return _repository.Get(null, null, includeTables).Select(p=>p.STICKER_CODE).Distinct().ToList();
@@ -56,7 +58,7 @@ namespace Sampoerna.EMS.BLL
 
         private void PlantDeletion(ZAIDM_EX_MATERIAL data, string userId) {
             data.PLANT_DELETION = true;
-
+            
             var changes = new CHANGES_HISTORY
             {
                 FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
@@ -71,23 +73,31 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void CLientDeletion(string stickercode, string userId,bool? deletionflag) {
-            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == stickercode, null, "").ToList();
+        private void CLientDeletion(ZAIDM_EX_MATERIAL data, string userId,bool? deletionflag) {
+            var original = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS, null, "").FirstOrDefault();
+
+            
+            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE, null, "").ToList();
 
             foreach (var detail in datatobeclientdeleted) {
-                detail.CLIENT_DELETION = deletionflag;
-                var changes = new CHANGES_HISTORY
-                {
-                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                    FORM_ID = detail.STICKER_CODE+detail.WERKS,
-                    FIELD_NAME = "CLIENT_DELETION",
-                    MODIFIED_BY = userId,
-                    MODIFIED_DATE = DateTime.Now,
-                    OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
-                    NEW_VALUE = deletionflag.ToString()
-                };
 
-                _changesHistoryBll.AddHistory(changes);
+                detail.CLIENT_DELETION = deletionflag;
+                if (original.CLIENT_DELETION != data.CLIENT_DELETION)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                        FORM_ID = detail.STICKER_CODE + detail.WERKS,
+                        FIELD_NAME = "CLIENT_DELETION",
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now,
+                        OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
+                        NEW_VALUE = deletionflag.ToString()
+                    };
+
+                    _changesHistoryBll.AddHistory(changes);
+                }
+                
             }
 
             
@@ -97,13 +107,19 @@ namespace Sampoerna.EMS.BLL
 
         public MaterialOutput Save(ZAIDM_EX_MATERIAL data,string userId)
         {
+            var origin = _repository.Get(x=>x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS,null,includeTables).SingleOrDefault();
+            //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
+            //AutoMapper.Mapper.Map(model, data);
+            data.MODIFIED_BY = userId;
+            data.MODIFIED_DATE = DateTime.Now;
+            data.CREATED_DATE = origin.CREATED_DATE;
+            data.CREATED_BY = origin.CREATED_BY;
 
-
-            //if (data.CLIENT_DELETION == true) { 
-            CLientDeletion(data.STICKER_CODE, userId,data.CLIENT_DELETION);
+            if (data.CLIENT_DELETION != origin.CLIENT_DELETION) { 
+                CLientDeletion(data, userId,data.CLIENT_DELETION);
                 
-            //}
-            if (data.PLANT_DELETION == true) {
+            }
+            if (data.PLANT_DELETION != origin.PLANT_DELETION) {
                 PlantDeletion(data, userId);
             }
              
@@ -129,11 +145,24 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public void SaveUoM(MATERIAL_UOM data)
+        public void SaveUoM(MATERIAL_UOM data,string userid)
         {
             try
             {
+                string newdata = string.Format("{0} - {1}", data.MEINH, data.UMREN);
+                
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                    FORM_ID = data.STICKER_CODE + data.WERKS,
+                    FIELD_NAME = "CONVERTION_ADDED",
+                    MODIFIED_BY = userid,
+                    MODIFIED_DATE = DateTime.Now,
+                    OLD_VALUE = string.Empty,
+                    NEW_VALUE = newdata
+                };
                 _repositoryUoM.InsertOrUpdate(data);
+                _changesHistoryBll.AddHistory(changes);
             }
             catch (Exception ex)
             {
@@ -210,17 +239,72 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete)
+        private void SetChanges(ZAIDM_EX_MATERIAL origin, ZAIDM_EX_MATERIAL data,string userid)
         {
-            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilterPlant = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            //Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilterClient = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
-            //if (isDelete.HasValue)
-            //{
-            //    queryFilterPlant = isDelete.Value ?
-            //        queryFilterPlant.And(c => c.PLANT_DELETION.HasValue &&( c.CLIENT_DELETION.Value == isDelete.Value))
-            //        : queryFilterPlant.And(c => !c.IS_DELETED.HasValue || c.IS_DELETED.Value == isDelete.Value);
-            //}
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC.Equals(data.MATERIAL_DESC));
+            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP.Equals(data.PURCHASING_GROUP));
+            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP.Equals(data.MATERIAL_GROUP));
+            changesData.Add("BASE_UOM", origin.BASE_UOM_ID.Equals(data.BASE_UOM_ID));
+            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC.Equals(data.ISSUE_STORANGE_LOC));
+            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
+            changesData.Add("PLANT_DELETION", origin.PLANT_DELETION.Equals(data.PLANT_DELETION));
+            changesData.Add("CLIENT_DELETION", origin.CLIENT_DELETION.Equals(data.CLIENT_DELETION));
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                        FORM_ID = data.STICKER_CODE + data.WERKS,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userid,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+
+                        case "MATERIAL_DESC":
+                            changes.OLD_VALUE = origin.MATERIAL_DESC;
+                            changes.NEW_VALUE = data.MATERIAL_DESC;
+                            break;
+                        case "PURCHASING_GROUP":
+                            changes.OLD_VALUE = origin.PURCHASING_GROUP;
+                            changes.NEW_VALUE = data.PURCHASING_GROUP;
+                            break;
+                        case "MATERIAL_GROUP":
+                            changes.OLD_VALUE = origin.MATERIAL_GROUP;
+                            changes.NEW_VALUE = data.MATERIAL_GROUP;
+                            break;
+
+                        case "BASE_UOM":
+                            changes.OLD_VALUE = origin.BASE_UOM_ID;
+                            changes.NEW_VALUE = data.BASE_UOM_ID;
+                            break;
+                        case "ISSUE_STORANGE_LOC":
+                            changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
+                            changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
+                            break;
+                        //case "PLANT_DELETION":
+                        //    changes.OLD_VALUE = origin.IsPlantDelete.ToString();
+                        //    changes.NEW_VALUE = data.PLANT_DELETION.ToString();
+                        //    break;
+                        //case "CLIENT_DELETION":
+                        //    changes.OLD_VALUE = origin.IsClientDelete.ToString();
+                        //    changes.NEW_VALUE = data.CLIENT_DELETION.ToString();
+                        //    break;
+
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
+
+        public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete,string plant = "")
+        {
+            
             var datalistFromDb = _repository.Get(null, null, includeTables);
             List<ZAIDM_EX_MATERIAL> filteredData = new List<ZAIDM_EX_MATERIAL>();
             foreach (var data in datalistFromDb) {
@@ -233,13 +317,30 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            return filteredData.GroupBy(x => x.STICKER_CODE)
+            if (plant == "")
+            {
+                return filteredData.GroupBy(x => x.STICKER_CODE)
                 .Select(x =>
-                    x.Select(y => new ZAIDM_EX_MATERIAL() { 
+                    x.Select(y => new ZAIDM_EX_MATERIAL()
+                    {
                         STICKER_CODE = y.STICKER_CODE
                     }).First()
 
-                ).ToList();
+                ).OrderBy(x => x.STICKER_CODE).ToList();
+            }
+            else {
+                return filteredData.Where(x => x.WERKS == plant)
+                    .GroupBy(x => x.STICKER_CODE)
+                    .Select(x =>
+                        x.Select(y => new ZAIDM_EX_MATERIAL()
+                        {
+                            STICKER_CODE = y.STICKER_CODE
+                        }).First()
+
+                    ).OrderBy(x => x.STICKER_CODE).ToList();
+                
+            }
+            
         }
 
 
