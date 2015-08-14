@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.BusinessObject.DTOs;
+﻿using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -52,4 +53,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime DecreeDate { get; set; }
         public Lack1DocumentDto Lack1Document { get; set; }
     }
+    public class Lack1GetLatestSaldoPerPeriodInput
+    {
+        public int MonthTo { get; set; }
+        public int YearTo { get; set; }
+        public string NppbkcId { get; set; }
+    }
+
 }
