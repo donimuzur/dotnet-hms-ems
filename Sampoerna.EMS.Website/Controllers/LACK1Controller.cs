@@ -209,7 +209,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MontList = GlobalFunctions.GetMonthList();
             model.YearsList = CreateYearList();
             model.NppbkcList = GlobalFunctions.GetNppbkcAll();
-            model.PlantList = GlobalFunctions.GetSourcePlantList();
+            model.PlantList = GlobalFunctions.GetPlantAll();
             model.SupplierList = GlobalFunctions.GetSupplierPlantList();
             model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList();
             model.WasteUomList = GlobalFunctions.GetUomList();

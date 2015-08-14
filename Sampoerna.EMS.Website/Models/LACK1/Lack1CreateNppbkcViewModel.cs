@@ -10,7 +10,11 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 {
     public class Lack1CreateNppbkcViewModel : BaseModel
     {
-       
+
+        public Lack1CreateNppbkcViewModel()
+        {
+            SubmissionDate = DateTime.Now;
+        }
         public long Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         
