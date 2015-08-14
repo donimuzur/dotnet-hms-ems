@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = "Create new User Plant Map";
 }
-
+@section styles{
+    <link href="~/Content/chosen.min.css" rel="stylesheet" />
+}
 @using (Html.BeginForm("Create", "UserPlantMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
 
@@ -41,7 +43,7 @@
                                         <div class="col-md-12">
                                             <div class="row">
                                                 <label class="col-md-4">User ID<span class="red">*</span></label>
-                                                <div class="col-md-8">
+                                                <div class="col-md-4">
                                                     @Html.DropDownListFor(model => model.UserPlantMap.UserId, Model.Users, new { @class = "form-control" })
                                                    
 
@@ -50,23 +52,25 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">NPPBKC<span class="red">*</span></label>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownList("select-nppbck", Model.Nppbkcs, new { @id="select-nppbkc-id", @class = "chosen form-control", multiple = "multiple" })
+                                                </div>
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row">
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="col-md-4">Plant</label>
-                                                    <div class="col-md-8">
-                                                        <div class="page-role">
-                                                            @if (Model.Plants != null)
-                                                            {
-                                                                for (int i = 0; i < Model.Plants.Count; i++)
-                                                                {
-                                                                    <div>
-                                                                        @Html.HiddenFor(x => Model.Plants[i].Werks)
-                                                                        @Html.CheckBoxFor(x => Model.Plants[i].IsChecked) @(Model.Plants[i].Werks + "-" + Model.Plants[i].Name)
-
-                                                                    </div>
-                                                                }
-                                                            }
-
+                                                    <div class="col-md-6">
+                                                        <div class="page-role" id="plant-list">
+                                                           
+                                                           
 
 
                                                         </div>
@@ -94,18 +98,77 @@
 
 }
 @section scripts {
+
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    
     <script type="text/javascript" language="javascript">
-        $(document).ready(function () {
+
+        var plantlist = [];
+        $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "UserPlantMap")';
             });
-          
-            
+
+
         });
 
-       
+        $(".chosen").chosen();
+        $('.chosen').on('change', function(evt, params) {
+            var nppbkcid_selected = params.selected;
+            if (nppbkcid_selected) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
+                    data: { nppbkcid: nppbkcid_selected },
+                    success: function (data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            plantlist.push(data[i]);
+
+                        }
+                        $('#plant-list').html('');
+                        for (var k = 0; k < plantlist.length; k++) {
+                            $('#plant-list').append(SetPlantList(plantlist[k], k));
+                        }
+                    }
+                });
+            }
+
+            if (params.deselected) {
+                $('.' + params.deselected).remove();
+                var arrlength = plantlist.length;
+                var tempArray = [];
+                for (var j = 0; j < arrlength; j++) {
+                    var m =plantlist[j].NPPBKC_ID;
+                    if (m != params.deselected) {
+                        tempArray.push(plantlist[j]);
+                    }
+                }
+                plantlist = tempArray;
+                $('#plant-list').html('');
+                for (var l = 0; l < plantlist.length; l++) {
+                    $('#plant-list').append(SetPlantList(plantlist[l], l));
+                }
+            }
+
+        });
+
+        function SetPlantList(data, index) {
+            
+            var view = '<div class="' + data.NPPBKC_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
+                '<input  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked">' +
+                data.WERKS + '-' + data.NAME1 + '</div>';
+            return view;
+        }
+
+        function setChecked(index, obj) {
+            var isCheck = $(obj[0]).prop('checked');
+
+            $('#Plants_' + index + '__IsChecked').val(isCheck);
+        }
+        
 
     </script>
 }
