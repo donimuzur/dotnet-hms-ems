@@ -83,6 +83,11 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
+        /// <summary>
+        /// Inserts a LACK2 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public Lack2Dto Insert(Lack2Dto item)
         {
 
@@ -92,8 +97,12 @@ namespace Sampoerna.EMS.BLL
             }
 
             LACK2 model = new LACK2();
-            model = AutoMapper.Mapper.Map<LACK2>(item);
+            MONTH month = new MONTH();
 
+            month = _monthBll.GetMonth(item.PeriodMonth);
+
+            model = AutoMapper.Mapper.Map<LACK2>(item);
+            model.MONTH = month;
             _repository.InsertOrUpdate(model);
 
             return item;

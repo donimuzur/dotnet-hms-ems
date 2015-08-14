@@ -1,144 +1,144 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
 
 @{
-    ViewBag.Title = "Create LACK2";
+	ViewBag.Title = "Create LACK2";
 }
 
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
+	@Html.AntiForgeryToken()
 
-    <div class="container-wrap title-page">
-        <div class="row">
-            <div class="col-sm-12">
-                <label class="status">Draft</label>
-                <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container-wrap">
-        <div class="row">
-            <div class="col-sm-12">
-                <div role="tabpanel">
-
-
-
-
-
-                    <div role="tabpanel" class="tab-pane active" id="information">
-                        <div class="tab-wrapper">
-
-                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingOne">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                LACK2
-                                                <i class="fa fa-caret-down"></i>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                        <div class="panel-body">
-                                            <div class="form-excise" role="form">
-                                                <div class="row">
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.SelectedCompanyCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.SelectedCompanyCode, Model.CompanyCodesDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.SelectedCompanyCode, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.NppbkcId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.NppbkcId, Model.NPPBKCDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.NppbkcId, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.LevelPlantId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.LevelPlantId, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.ExGoodTyp, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.ExGoodTyp, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.LACK2Period, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    @Html.EditorFor(model => model.Lack2Model.LACK2Period, new { htmlAttributes = new { @class = "form-control" } })
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                    @Html.ValidationMessageFor(model => model.Lack2Model.LACK2Period, "", new { @class = "text-danger" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.SubmissionDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    @Html.EditorFor(model => model.Lack2Model.SubmissionDate, new { htmlAttributes = new { @class = "form-control" } })
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                    @Html.ValidationMessageFor(model => model.Lack2Model.SubmissionDate, "", new { @class = "text-danger" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @*Put all of this top html in a partial view*@
+	<div class="container-wrap title-page">
+		<div class="row">
+			<div class="col-sm-12">
+				<label class="status">Draft</label>
+				<div class="action-button">
+					<input type="submit" class="btn btn-blue" value="Save" />
+					<input type="button" class="btn btn-grey" value="Print Preview" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-wrap">
+		<div class="row">
+			<div class="col-sm-12">
+				<div role="tabpanel">
 
 
 
 
 
-                </div>
-            </div>
-        </div>
-    </div>
+					<div role="tabpanel" class="tab-pane active" id="information">
+						<div class="tab-wrapper">
+
+							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+								<div class="panel panel-default">
+									<div class="panel-heading" role="tab" id="headingOne">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+												LACK2
+												<i class="fa fa-caret-down"></i>
+											</a>
+										</h4>
+									</div>
+									<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+										<div class="panel-body">
+											<div class="form-excise" role="form">
+												<div class="row">
+
+													<div class="col-md-6">
+														<div class="row">
+															@Html.LabelFor(model => model.Lack2Model.Burks, htmlAttributes: new { @class = "control-label col-md-2" })
+															<div class="col-md-8">
+																@Html.DropDownListFor(model => model.Lack2Model.Burks, Model.CompanyCodesDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+																@Html.ValidationMessageFor(model => model.Lack2Model.Burks, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-6">
+														<div class="row">
+															@Html.LabelFor(model => model.Lack2Model.NppbkcId, htmlAttributes: new { @class = "control-label col-md-2" })
+															<div class="col-md-8">
+																@Html.DropDownListFor(model => model.Lack2Model.NppbkcId, Model.NPPBKCDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+																@Html.ValidationMessageFor(model => model.Lack2Model.NppbkcId, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+
+
+													<div class="col-md-6">
+														<div class="row">
+															@Html.LabelFor(model => model.Lack2Model.LevelPlantId, htmlAttributes: new { @class = "control-label col-md-2" })
+															<div class="col-md-8">
+																@Html.DropDownListFor(model => model.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+																@Html.ValidationMessageFor(model => model.Lack2Model.LevelPlantId, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-6">
+														<div class="row">
+															@Html.LabelFor(model => model.Lack2Model.ExGoodTyp, htmlAttributes: new { @class = "control-label col-md-2" })
+															<div class="col-md-8">
+																@Html.DropDownListFor(model => model.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+																@Html.ValidationMessageFor(model => model.Lack2Model.ExGoodTyp, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-6">
+														<div class="row">
+															@Html.LabelFor(model => model.Lack2Model.LACK2Period, htmlAttributes: new { @class = "control-label col-md-2" })
+															<div class="col-md-8">
+																<div class="input-group date">
+																	@Html.EditorFor(model => model.Lack2Model.LACK2Period, new { htmlAttributes = new { @class = "form-control" } })
+																	<span class="input-group-addon">
+																		<i class="fa fa-calendar"></i>
+																	</span>
+																	@Html.ValidationMessageFor(model => model.Lack2Model.LACK2Period, "", new { @class = "text-danger" })
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-6">
+														<div class="row">
+															@Html.LabelFor(model => model.Lack2Model.SubmissionDate, htmlAttributes: new { @class = "control-label col-md-2" })
+															<div class="col-md-8">
+																<div class="input-group date">
+																	@Html.EditorFor(model => model.Lack2Model.SubmissionDate, new { htmlAttributes = new { @class = "form-control" } })
+																	<span class="input-group-addon">
+																		<i class="fa fa-calendar"></i>
+																	</span>
+																	@Html.ValidationMessageFor(model => model.Lack2Model.SubmissionDate, "", new { @class = "text-danger" })
+																</div>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					@*Put all of this top html in a partial view*@
+
+
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/bundles/jqueryval")
 }

@@ -17,12 +17,20 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private ILACK2BLL _lack2Bll;
+        private IPlantBLL _plantBll;
+        private ICompanyBLL _companyBll;
+        private IZaidmExGoodTypeBLL _exGroupBll;
+
         private Enums.MenuList _mainMenu;
 
-        public LACK2Controller(IPageBLL pageBll, ILACK2BLL lack2Bll)
+        public LACK2Controller(IPageBLL pageBll, ILACK2BLL lack2Bll,
+            IPlantBLL plantBll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
+            _plantBll = plantBll;
+            _companyBll = companyBll;
+            _exGroupBll = exGroupBll;
             _mainMenu = Enums.MenuList.LACK2;
         }
 
@@ -83,16 +91,103 @@ namespace Sampoerna.EMS.Website.Controllers
             Lack2Dto item = new Lack2Dto();
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
+    
+            var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
+            var company = _companyBll.GetById(model.Lack2Model.Burks);
+            var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
+            item.GovStatus = Enums.DocumentStatus.WaitingGovApproval;
+            item.Status = Enums.DocumentStatus.WaitingForApproval;
+
+            item.ExTypDesc = goods.EXT_TYP_DESC;
+
+            item.Butxt = company.BUTXT;
+            item.LevelPlantName = plant.NAME1;
+            item.LevelPlantCity = plant.ORT01;
             item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
             item.PeriodYear = model.Lack2Model.LACK2Period.Year;
-            item.CreatedBy = User.Identity.Name;
+            item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
 
             _lack2Bll.Insert(item);
 
             return RedirectToAction("Index");
         }
+
+
+
+        #region SearchFilters
+        
+        private List<LACK2NppbkcData> GetListByNppbkc(Lack2IndexViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get all 
+                var litsByNppbkc = _lack2Bll.GetAll(new Lack2GetByParamInput());
+                return Mapper.Map<List<LACK2NppbkcData>>(litsByNppbkc);
+            }
+            //get by param
+            var input = Mapper.Map<Lack2GetByParamInput>(filter);
+            var dbData = _lack2Bll.GetAll(input);
+
+            return Mapper.Map<List<LACK2NppbkcData>>(dbData);
+
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterListByNppbkc(Lack2Input model)
+        {
+
+
+            var input = Mapper.Map<Lack2GetByParamInput>(model);
+
+            var dbData = _lack2Bll.GetAll(input);
+
+            var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
+
+            var viewModel = new Lack2IndexViewModel();
+            viewModel.Details = result;
+
+            return PartialView("_Lack2Table", viewModel);
+
+        }
+
+
+        private List<LACK2PlantData> GetListByPlant(Lack2IndexPlantViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get all 
+                var litsByNppbkc = _lack2Bll.GetAll(new Lack2GetByParamInput());
+                return Mapper.Map<List<LACK2PlantData>>(litsByNppbkc);
+            }
+            //get by param
+            var input = Mapper.Map<Lack2GetByParamInput>(filter);
+            var dbData = _lack2Bll.GetAll(input);
+
+            return Mapper.Map<List<LACK2PlantData>>(dbData);
+
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterListByPlant(Lack2Input model)
+        {
+
+            var inputPlant = Mapper.Map<Lack2GetByParamInput>(model);
+
+            var dbDataPlant = _lack2Bll.GetAll(inputPlant);
+
+            var resultPlant = Mapper.Map<List<LACK2PlantData>>(dbDataPlant);
+
+            var viewModel = new Lack2IndexPlantViewModel();
+            viewModel.Details = resultPlant;
+
+            return PartialView("_Lack2ListByPlantTable", viewModel);
+
+        }
+
+        #endregion
+
 
     }
             

@@ -313,6 +313,7 @@
     <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
     <Compile Include="Models\LACK1\NppbkcData.cs" />
     <Compile Include="Models\LACK1\PlantData.cs" />
+    <Compile Include="Models\LACK2\Lack2Input.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
