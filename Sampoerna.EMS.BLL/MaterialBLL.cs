@@ -110,20 +110,34 @@ namespace Sampoerna.EMS.BLL
             var origin = _repository.Get(x=>x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS,null,includeTables).SingleOrDefault();
             //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
             //AutoMapper.Mapper.Map(model, data);
-            data.MODIFIED_BY = userId;
-            data.MODIFIED_DATE = DateTime.Now;
-            data.CREATED_DATE = origin.CREATED_DATE;
-            data.CREATED_BY = origin.CREATED_BY;
+            if (origin != null)
+            {
+                data.MODIFIED_BY = userId;
+                data.MODIFIED_DATE = DateTime.Now;
+                data.CREATED_DATE = origin.CREATED_DATE;
+                data.CREATED_BY = origin.CREATED_BY;
 
-            if (data.CLIENT_DELETION != origin.CLIENT_DELETION) { 
-                CLientDeletion(data, userId,data.CLIENT_DELETION);
+                if (data.CLIENT_DELETION != (origin.CLIENT_DELETION.HasValue? origin.CLIENT_DELETION : false ))
+                {
+                    CLientDeletion(origin, userId, data.CLIENT_DELETION);
+
+                }
+                if (data.PLANT_DELETION != (origin.PLANT_DELETION.HasValue ? origin.PLANT_DELETION.Value : false))
+                {
+                    PlantDeletion(origin, userId);
+                }
+            }
+            else {
+                data.CREATED_BY = userId;
+                data.CREATED_DATE = DateTime.Now;
+
                 
             }
-            if (data.PLANT_DELETION != origin.PLANT_DELETION) {
-                PlantDeletion(data, userId);
-            }
+            
+
+            
              
-                _repository.InsertOrUpdate(data);
+            _repository.InsertOrUpdate(data);
             
 
             
