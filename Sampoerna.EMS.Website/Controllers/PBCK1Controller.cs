@@ -40,11 +40,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IPrintHistoryBLL _printHistoryBll;
-        private IT001KBLL _t001Bll;
         private IPOABLL _poaBll;
+        private ILACK1BLL _lackBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IT001KBLL t001Bll, IPOABLL poaBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -54,8 +54,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _printHistoryBll = printHistoryBll;
-            _t001Bll = t001Bll;
             _poaBll = poaBll;
+            _lackBll = lackBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -260,7 +260,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetNppbkcDetail(string nppbkcid)
         {
-            var data = _t001Bll.GetByNppbkcIdAndMainPlant(nppbkcid);
+            var data = _plantBll.GetMainPlantByNppbkcId(nppbkcid);
             return Json(data);
         }
 
@@ -493,6 +493,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (saveResult.Success)
                 {
                     //return RedirectToAction("Index");
+                    AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = model.Detail.Pbck1Id });
                 }
 
@@ -647,9 +648,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (saveResult.Success)
                 {
+                    AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = saveResult.Id });
                 }
-
             }
             catch (DbEntityValidationException ex)
             {
@@ -808,6 +809,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public JsonResult GetLatestSaldoLack(int month, int year, string nppbkcid)
+        {
+            var latestSaldo = _lackBll.GetLatestSaldoPerPeriod(new Lack1GetLatestSaldoPerPeriodInput() { MonthTo = month, YearTo = year, NppbkcId = nppbkcid });
+            return Json(new { latestSaldo });
         }
 
         [HttpPost]
