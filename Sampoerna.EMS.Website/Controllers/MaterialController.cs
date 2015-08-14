@@ -218,14 +218,14 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add update logic here
                
-                    var data = _materialBll.getByID(model.MaterialNumber, model.PlantId);
+                var dataexist = _materialBll.getByID(model.MaterialNumber, model.PlantId);
                     
-                    model.ChangedById = CurrentUser.USER_ID;
-                    model.ChangedDate = DateTime.Now;
-                    //model.ChangesHistoryList =  Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
-                    if (data == null) {
-                       return RedirectToAction("Index");
-                    }
+                    
+                if (dataexist == null)
+                {
+                    return RedirectToAction("Index");
+                }
+
                 if (model.MaterialUom != null)
                 {
                     foreach (var matUom in model.MaterialUom)
@@ -240,21 +240,20 @@ namespace Sampoerna.EMS.Website.Controllers
                         _materialBll.SaveUoM(uom, CurrentUser.USER_ID);
                     }
                 }
-                
 
+                var data = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
                     
-                    var output = _materialBll.Save(data, CurrentUser.USER_ID);
-                    if (!output.Success)
-                    {
-                        AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
-                            );
+                var output = _materialBll.Save(data, CurrentUser.USER_ID);
+                if (!output.Success)
+                {
+                    AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
+                        );
 
-                    }
-                    else
-                    {
-                        AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                   );
-                    }
+                }
+                else
+                {
+                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+                }
 
 
                
