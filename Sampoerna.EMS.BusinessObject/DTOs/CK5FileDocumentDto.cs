@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Web;
-using DocumentFormat.OpenXml.Math;
+using System.Text;
+using System.Threading.Tasks;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.Website.Models.CK5
+namespace Sampoerna.EMS.BusinessObject.DTOs
 {
-    public class CK5FileDocumentsViewModel : BaseModel
+   public class CK5FileDocumentDto
     {
-        public CK5FileDocumentsViewModel()
-        {
-            Ck5FileDocumentItems = new List<CK5FileDocumentItems>();
-        }
-
-        public List<CK5FileDocumentItems> Ck5FileDocumentItems { get; set; }
-
-    }
-
-    public class CK5FileDocumentItems
-    {
+      
         public string Ck5Type { get; set; }
         public string KppBcCityName { get; set; }
         public string ExGoodType { get; set; }
@@ -56,7 +45,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SOURCE_PLANT_KPPBC_NAME_OFFICE { get; set; }
         public string SOURCE_PLANT_NAME { get; set; }
 
-        
+
         public string DEST_PLANT_ID { get; set; }
         public string DEST_PLANT_NPWP { get; set; }
         public string DEST_PLANT_NPPBKC_ID { get; set; }
@@ -92,5 +81,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public decimal Hje { get; set; }
         public decimal Tariff { get; set; }
         public decimal ExciseValue { get; set; }
+      
     }
 }

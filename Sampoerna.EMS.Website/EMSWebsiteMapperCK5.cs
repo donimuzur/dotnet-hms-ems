@@ -310,6 +310,7 @@ namespace Sampoerna.EMS.Website
              //.ForMember(dest => dest.DEST_COUNTRY_NAME, opt => opt.MapFrom(src => src.CountryName))
              ;
 
+            Mapper.CreateMap<CK5FileDocumentItems, CK5FileDocumentDto>().IgnoreAllNonExisting();
         }
     }
 }

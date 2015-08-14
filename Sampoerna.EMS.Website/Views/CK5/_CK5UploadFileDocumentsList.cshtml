@@ -3,6 +3,14 @@
 <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
     <thead>
         <tr>
+            <th>Doc Seq Number</th>
+            <th>Mat Number</th>
+            <th>Qty</th>
+            <th>UOM Mat</th>
+            <th>Convertion</th>
+            <th>Converted UOM</th>
+            <th>USD Value</th>
+            <th>Note</th>
 
             <th>Type</th>
             <th>KPPBC City</th>
@@ -75,8 +83,32 @@
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_CODE)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_NAME)
-
+            
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DocSeqNumber)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].MatNumber)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Qty)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].UomMaterial)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Convertion)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ConvertedUom)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].UsdValue)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Note)
+            
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ConvertedQty)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Hje)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Tariff)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ExciseValue)
+            
+            
                 <tr>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].DocSeqNumber)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].MatNumber)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Qty)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].UomMaterial)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Convertion)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].ConvertedUom)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].UsdValue)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Note)</td>
+
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Ck5Type)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].KppBcCityName)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].ExGoodType)</td>
@@ -92,21 +124,7 @@
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Uom)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].MesssageUploadFileDocuments)</td>
-                    @*<td>@row.Ck5Type</td>
-                        <td>@row.KppBcCityName</td>
-                        <td>@row.ExGoodType</td>
-                        <td>@row.ExciseSettlement</td>
-                        <td>@row.ExciseStatus</td>
-                        <td>@row.RequestType</td>
-                        <td>@row.SourcePlantId</td>
-                        <td>@row.DestPlantId</td>
-                        <td>@row.InvoiceNumber</td>
-                        <td>@row.InvoiceDateDisplay</td>
-                        <td>@row.PbckDecreeNumber</td>
-                        <td>@row.CarriageMethod</td>
-                        <td>@row.GrandTotalEx</td>
-                        <td>@row.Uom</td>
-                        <td>@row.MesssageUploadFileDocuments</td>*@
+                   
                 </tr>
             }
         }

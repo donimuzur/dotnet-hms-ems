@@ -108,6 +108,19 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<CK5UploadFileDocumentsInput, CK5FileUploadDocumentsOutput>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<CK5FileDocumentDto, CK5Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.KppBcCityName))
+                ;
+
+            Mapper.CreateMap<CK5FileDocumentDto, CK5MaterialDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.UomMaterial))
+                .ForMember(dest => dest.CONVERTED_UOM, opt => opt.MapFrom(src => src.ConvertedUom))
+                .ForMember(dest => dest.CONVERTED_QTY, opt => opt.MapFrom(src => Convert.ToDecimal(src.ConvertedQty)))
+                .ForMember(dest => dest.EXCISE_VALUE, opt => opt.MapFrom(src => src.ExciseValue))
+                .ForMember(dest => dest.BRAND, opt => opt.MapFrom(src => src.MatNumber))
+                ;
+
+
         }
     }
 }

@@ -3426,22 +3426,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     try
                     {
-                        uploadItem.Ck5Type = datarow[0];// == "0" ? Enums.CK5Type.Domestic : Enums.CK5Type.Export;
-
+                        uploadItem.DocSeqNumber = datarow[0];
+                        uploadItem.MatNumber = datarow[1];
+                        uploadItem.Qty = datarow[2];
+                        uploadItem.UomMaterial = datarow[3];
+                        uploadItem.Convertion = datarow[4];
+                        uploadItem.ConvertedUom = datarow[5];
+                        uploadItem.UsdValue = datarow[6];
+                        uploadItem.Note = datarow[7];
                         
-                        uploadItem.KppBcCityName = datarow[1];
-                        uploadItem.ExGoodType = datarow[2];
-                        uploadItem.ExciseSettlement = datarow[3];
-                        uploadItem.ExciseStatus = datarow[4];
-                        uploadItem.RequestType = datarow[5];
-                        uploadItem.SourcePlantId = datarow[6];
-                        uploadItem.DestPlantId = datarow[7];
-                        uploadItem.InvoiceNumber = datarow[8];
-                        uploadItem.InvoiceDateDisplay = datarow[9];
-                        uploadItem.PbckDecreeNumber = datarow[10];
-                        uploadItem.CarriageMethod = datarow[11];
-                        uploadItem.GrandTotalEx = datarow[12];
-                        uploadItem.Uom = datarow[13];
+                        uploadItem.Ck5Type = datarow[8];
+                        uploadItem.KppBcCityName = datarow[9];
+                        uploadItem.ExGoodType = datarow[10];
+                        uploadItem.ExciseSettlement = datarow[11];
+                        uploadItem.ExciseStatus = datarow[12];
+                        uploadItem.RequestType = datarow[13];
+                        uploadItem.SourcePlantId = datarow[14];
+                        uploadItem.DestPlantId = datarow[15];
+                        uploadItem.InvoiceNumber = datarow[16];
+                        uploadItem.InvoiceDateDisplay = datarow[17];
+                        uploadItem.PbckDecreeNumber = datarow[18];
+                        uploadItem.CarriageMethod = datarow[19];
+                        uploadItem.GrandTotalEx = datarow[20];
+                        uploadItem.Uom = datarow[21];
 
                         model.Ck5FileDocumentItems.Add(uploadItem);
 
@@ -3472,11 +3479,11 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
 
-                var dataToSave = Mapper.Map<List<CK5Dto>>(model.Ck5FileDocumentItems);
+                var dataToSave = Mapper.Map<List<CK5FileDocumentDto>>(model.Ck5FileDocumentItems);
 
                 var input = new CK5SaveListInput()
                 {
-                    Ck5Dto = dataToSave,
+                    ListCk5UploadDocumentDto = dataToSave,
                     UserId = CurrentUser.USER_ID,
                     UserRole = CurrentUser.UserRole,
                    

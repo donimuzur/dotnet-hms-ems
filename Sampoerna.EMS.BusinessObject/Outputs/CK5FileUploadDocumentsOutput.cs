@@ -63,7 +63,23 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string DEST_COUNTRY_CODE { get; set; }
         public string DEST_COUNTRY_NAME { get; set; }
 
+        public string DocSeqNumber { get; set; }
+        public string MatNumber { get; set; }
+        public string Qty { get; set; }
+        public string UomMaterial { get; set; }
+        public string Convertion { get; set; }
+        public string ConvertedUom { get; set; }
+        public string UsdValue { get; set; }
+        public string Note { get; set; }
+
         public bool IsValid { get; set; }
         public string Message { get; set; }
+
+
+       //additional material
+        public int ConvertedQty { get; set; }
+        public decimal Hje { get; set; }
+        public decimal Tariff { get; set; }
+        public decimal ExciseValue { get; set; }
     }
 }

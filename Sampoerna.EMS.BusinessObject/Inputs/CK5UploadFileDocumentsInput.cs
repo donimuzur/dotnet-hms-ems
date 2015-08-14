@@ -25,5 +25,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PackageUomName { get; set; }
 
         public Enums.ExGoodsType EX_GOODS_TYPE { get; set; }
+
+        public string DocSeqNumber { get; set; }
+        public string MatNumber { get; set; }
+        public string Qty { get; set; }
+        public string UomMaterial { get; set; }
+        public string Convertion { get; set; }
+        public string ConvertedUom { get; set; }
+        public string UsdValue { get; set; }
+        public string Note { get; set; }
     }
 }
