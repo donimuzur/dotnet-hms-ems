@@ -82,5 +82,21 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
         }
+
+        public Lack2Dto Insert(Lack2Dto item)
+        {
+
+            if(item == null)
+            {
+                throw new Exception("Invalid data entry !");
+            }
+
+            LACK2 model = new LACK2();
+            model = AutoMapper.Mapper.Map<LACK2>(item);
+
+            _repository.InsertOrUpdate(model);
+
+            return item;
+        }
     }
 }

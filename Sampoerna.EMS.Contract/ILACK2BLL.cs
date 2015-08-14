@@ -11,5 +11,7 @@ namespace Sampoerna.EMS.Contract
     public interface ILACK2BLL
     {
         List<Lack2Dto> GetAll(Lack2GetByParamInput input);
+
+        Lack2Dto Insert(Lack2Dto item);
     }
 }

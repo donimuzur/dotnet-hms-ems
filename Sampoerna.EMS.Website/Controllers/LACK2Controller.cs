@@ -9,6 +9,7 @@ using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -78,7 +79,19 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(LACK2CreateViewModel model)
         {
-            return View("Create", model);
+
+            Lack2Dto item = new Lack2Dto();
+
+            item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
+
+            item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
+            item.PeriodYear = model.Lack2Model.LACK2Period.Year;
+            item.CreatedBy = User.Identity.Name;
+            item.CreatedDate = DateTime.Now;
+
+            _lack2Bll.Insert(item);
+
+            return RedirectToAction("Index");
         }
 
     }

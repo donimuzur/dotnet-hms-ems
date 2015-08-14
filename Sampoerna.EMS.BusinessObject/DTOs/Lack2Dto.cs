@@ -14,6 +14,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Butxt { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+        public string PeriodNameInd { get; set; }
+        public string PerionNameEng { get; set; }
         public string LevelPlantId { get; set; }
         public string LevelPlantName { get; set; }
         public string LevelPlantCity { get; set; }
@@ -29,5 +31,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ModifiedDate { get; set; }
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
+        public string NppbkcId { get; set; }
     }
 }
