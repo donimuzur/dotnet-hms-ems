@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.PBCK7
 {
@@ -23,9 +24,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK7
         public SelectList PoaList { get; set; }
         public SelectList CreatorList { get; set; }
         public List<DataListIndexPbck7> Detail { get; set; }
+
+        //Enums
+        public Enums.Pbck7Type Pbck7Type { get; set; }
     }
-
-
+    
     public class DataListIndexPbck7
     {
         public string Pbck7Number { get; set; }
@@ -35,5 +38,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7
         public string Poa { get; set; }
         public int Status { get; set; }
     }
+
+  
     
 }
