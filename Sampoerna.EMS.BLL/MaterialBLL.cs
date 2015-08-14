@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.BLL
 
         private void PlantDeletion(ZAIDM_EX_MATERIAL data, string userId) {
             data.PLANT_DELETION = true;
-
+            
             var changes = new CHANGES_HISTORY
             {
                 FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
@@ -76,25 +76,28 @@ namespace Sampoerna.EMS.BLL
         private void CLientDeletion(ZAIDM_EX_MATERIAL data, string userId,bool? deletionflag) {
             var original = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS, null, "").FirstOrDefault();
 
-            if (original.CLIENT_DELETION == data.CLIENT_DELETION) {
-                return;
-            }
+            
             var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE, null, "").ToList();
 
             foreach (var detail in datatobeclientdeleted) {
-                detail.CLIENT_DELETION = deletionflag;
-                var changes = new CHANGES_HISTORY
-                {
-                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                    FORM_ID = detail.STICKER_CODE+detail.WERKS,
-                    FIELD_NAME = "CLIENT_DELETION",
-                    MODIFIED_BY = userId,
-                    MODIFIED_DATE = DateTime.Now,
-                    OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
-                    NEW_VALUE = deletionflag.ToString()
-                };
 
-                _changesHistoryBll.AddHistory(changes);
+                detail.CLIENT_DELETION = deletionflag;
+                if (original.CLIENT_DELETION != data.CLIENT_DELETION)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                        FORM_ID = detail.STICKER_CODE + detail.WERKS,
+                        FIELD_NAME = "CLIENT_DELETION",
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now,
+                        OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
+                        NEW_VALUE = deletionflag.ToString()
+                    };
+
+                    _changesHistoryBll.AddHistory(changes);
+                }
+                
             }
 
             
@@ -104,17 +107,37 @@ namespace Sampoerna.EMS.BLL
 
         public MaterialOutput Save(ZAIDM_EX_MATERIAL data,string userId)
         {
+            var origin = _repository.Get(x=>x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS,null,includeTables).SingleOrDefault();
+            //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
+            //AutoMapper.Mapper.Map(model, data);
+            if (origin != null)
+            {
+                data.MODIFIED_BY = userId;
+                data.MODIFIED_DATE = DateTime.Now;
+                data.CREATED_DATE = origin.CREATED_DATE;
+                data.CREATED_BY = origin.CREATED_BY;
 
+                if (data.CLIENT_DELETION != (origin.CLIENT_DELETION.HasValue? origin.CLIENT_DELETION : false ))
+                {
+                    CLientDeletion(origin, userId, data.CLIENT_DELETION);
 
-            //if (data.CLIENT_DELETION == true) { 
-            CLientDeletion(data, userId,data.CLIENT_DELETION);
-                
-            //}
-            if (data.PLANT_DELETION == true) {
-                PlantDeletion(data, userId);
+                }
+                if (data.PLANT_DELETION != (origin.PLANT_DELETION.HasValue ? origin.PLANT_DELETION.Value : false))
+                {
+                    PlantDeletion(origin, userId);
+                }
             }
+            else {
+                data.CREATED_BY = userId;
+                data.CREATED_DATE = DateTime.Now;
+
+                
+            }
+            
+
+            
              
-                _repository.InsertOrUpdate(data);
+            _repository.InsertOrUpdate(data);
             
 
             
@@ -230,7 +253,68 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        
+        private void SetChanges(ZAIDM_EX_MATERIAL origin, ZAIDM_EX_MATERIAL data,string userid)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC.Equals(data.MATERIAL_DESC));
+            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP.Equals(data.PURCHASING_GROUP));
+            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP.Equals(data.MATERIAL_GROUP));
+            changesData.Add("BASE_UOM", origin.BASE_UOM_ID.Equals(data.BASE_UOM_ID));
+            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC.Equals(data.ISSUE_STORANGE_LOC));
+            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
+            changesData.Add("PLANT_DELETION", origin.PLANT_DELETION.Equals(data.PLANT_DELETION));
+            changesData.Add("CLIENT_DELETION", origin.CLIENT_DELETION.Equals(data.CLIENT_DELETION));
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
+                        FORM_ID = data.STICKER_CODE + data.WERKS,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userid,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+
+                        case "MATERIAL_DESC":
+                            changes.OLD_VALUE = origin.MATERIAL_DESC;
+                            changes.NEW_VALUE = data.MATERIAL_DESC;
+                            break;
+                        case "PURCHASING_GROUP":
+                            changes.OLD_VALUE = origin.PURCHASING_GROUP;
+                            changes.NEW_VALUE = data.PURCHASING_GROUP;
+                            break;
+                        case "MATERIAL_GROUP":
+                            changes.OLD_VALUE = origin.MATERIAL_GROUP;
+                            changes.NEW_VALUE = data.MATERIAL_GROUP;
+                            break;
+
+                        case "BASE_UOM":
+                            changes.OLD_VALUE = origin.BASE_UOM_ID;
+                            changes.NEW_VALUE = data.BASE_UOM_ID;
+                            break;
+                        case "ISSUE_STORANGE_LOC":
+                            changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
+                            changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
+                            break;
+                        //case "PLANT_DELETION":
+                        //    changes.OLD_VALUE = origin.IsPlantDelete.ToString();
+                        //    changes.NEW_VALUE = data.PLANT_DELETION.ToString();
+                        //    break;
+                        //case "CLIENT_DELETION":
+                        //    changes.OLD_VALUE = origin.IsClientDelete.ToString();
+                        //    changes.NEW_VALUE = data.CLIENT_DELETION.ToString();
+                        //    break;
+
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
 
         public List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete,string plant = "")
         {

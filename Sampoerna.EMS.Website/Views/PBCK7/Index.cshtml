@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Sampoerna.EMS.Website.Models.PBCK7.Pbck7IndexViewModel
+@{
     ViewBag.Title = "Index";
 }
 
@@ -23,9 +24,7 @@
                         <div class="row">
                             <label class="col-md-4">NPPBKC ID</label>
                             <div class="col-md-8">
-                                <select class="form-control">
-                                    <option>0703.1.3.204</option>
-                                </select>
+                              @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, null, new { @class = "form-control selectreset" })
                             </div>
                         </div>
                     </div>
@@ -33,9 +32,7 @@
                         <div class="row">
                             <label class="col-md-4">Plant ID</label>
                             <div class="col-md-8">
-                                <select class="form-control">
-                                    <option>001 - Plant</option>
-                                </select>
+                                @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "form-control selectreset" })
                             </div>
                         </div>
                     </div>
@@ -58,30 +55,28 @@
                         <div class="col-md-4">
                             <div class="row">
                                 <label class="col-md-4">POA</label>
-                                <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>001 - POA 1</option>
-                                    </select>
-                                </div>
+                                <div id="divPoaList" class="col-md-8 ui-widget">
+                                <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
+                                    <option value="">All</option>
+                                </select>
+                            </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
                                 <label class="col-md-4">Creator</label>
                                 <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>001 - Creator 1</option>
-                                    </select>
+                                    @Html.DropDownListFor(model => model.Creator, Model.CreatorList, null, new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button class="btn btn-blue full">FILTER</button>
+                                    <input type="submit" class="btn btn-blue full" value="FILTER" />
                                 </div>
                                 <div class="col-md-6">
-                                    <button class="btn btn-blue full">RESET</button>
+                                    <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
                                 </div>
                             </div>
                         </div>
@@ -125,89 +120,7 @@
                             <td>POA Value</td>
                             <td class="last">Status Value</td>
                         </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
+               
                         </tr>
                     </tbody>
                 </table>
@@ -216,3 +129,7 @@
     </div>
 </div>
 
+@section scripts
+{
+    
+}

@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7
     {
         public Pbck7IndexViewModel()
         {
-             Detail   = new List<PBCK7Data>();
+            Detail = new List<DataListIndexPbck7>();
         }
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
@@ -21,9 +21,19 @@ namespace Sampoerna.EMS.Website.Models.PBCK7
         public SelectList NppbkcList { get; set; }
         public SelectList PlantList { get; set; }
         public SelectList PoaList { get; set; }
-        public SelectList CratorList { get; set; }
-        public List<PBCK7Data> Detail { get; set; }
+        public SelectList CreatorList { get; set; }
+        public List<DataListIndexPbck7> Detail { get; set; }
     }
 
+
+    public class DataListIndexPbck7
+    {
+        public string Pbck7Number { get; set; }
+        public DateTime ReportedOn { get; set; }
+        public string NppbkcId { get; set; }
+        public string PlantId { get; set; }
+        public string Poa { get; set; }
+        public int Status { get; set; }
+    }
     
 }

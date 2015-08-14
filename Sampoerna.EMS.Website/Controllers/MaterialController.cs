@@ -120,68 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
            InitCreateModel(model);
             return View(model);
         }
-        private void SetChanges(MaterialEditViewModel origin, ZAIDM_EX_MATERIAL data)
-        {
-            var changesData = new Dictionary<string, bool>();
-            changesData.Add("MATERIAL_DESC", origin.MaterialDesc.Equals(data.MATERIAL_DESC));
-            changesData.Add("PURCHASING_GROUP", origin.PurchasingGroup.Equals(data.PURCHASING_GROUP));
-            changesData.Add("MATERIAL_GROUP", origin.MaterialGroup.Equals(data.MATERIAL_GROUP));
-            changesData.Add("BASE_UOM", origin.UomId.Equals(data.BASE_UOM_ID));
-            changesData.Add("ISSUE_STORANGE_LOC", origin.IssueStorageLoc.Equals(data.ISSUE_STORANGE_LOC));
-            changesData.Add("EX_GOODTYP", origin.GoodTypeId.Equals(data.EXC_GOOD_TYP));
-            changesData.Add("PLANT_DELETION", origin.IsClientDelete.Equals(data.PLANT_DELETION));
-            changesData.Add("CLIENT_DELETION", origin.IsClientDelete.Equals(data.PLANT_DELETION));
-            
-            foreach (var listChange in changesData)
-            {
-                if (!listChange.Value)
-                {
-                    var changes = new CHANGES_HISTORY
-                    {
-                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                        FORM_ID = data.STICKER_CODE+data.WERKS,
-                        FIELD_NAME = listChange.Key,
-                        MODIFIED_BY = CurrentUser.USER_ID,
-                        MODIFIED_DATE = DateTime.Now
-                    };
-                    switch (listChange.Key)
-                    {
-                       
-                        case "MATERIAL_DESC":
-                            changes.OLD_VALUE = origin.MaterialDesc;
-                            changes.NEW_VALUE = data.MATERIAL_DESC;
-                            break;
-                        case "PURCHASING_GROUP":
-                            changes.OLD_VALUE = origin.PurchasingGroup;
-                            changes.NEW_VALUE = data.PURCHASING_GROUP;
-                            break;
-                        case "MATERIAL_GROUP":
-                            changes.OLD_VALUE = origin.MaterialGroup;
-                            changes.NEW_VALUE = data.MATERIAL_GROUP;
-                            break;
-
-                        case "BASE_UOM":
-                            changes.OLD_VALUE = origin.UomId;
-                            changes.NEW_VALUE = data.BASE_UOM_ID;
-                            break;
-                        case "ISSUE_STORANGE_LOC":
-                            changes.OLD_VALUE = origin.IssueStorageLoc;
-                            changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
-                            break;
-                        case "PLANT_DELETION":
-                            changes.OLD_VALUE = origin.IsPlantDelete.ToString();
-                            changes.NEW_VALUE = data.PLANT_DELETION.ToString();
-                            break;
-                        case "CLIENT_DELETION":
-                            changes.OLD_VALUE = origin.IsClientDelete.ToString();
-                            changes.NEW_VALUE = data.CLIENT_DELETION.ToString();
-                            break;
-                        
-                    }
-                    _changesHistoryBll.AddHistory(changes);
-                }
-            }
-        }
+        
 
         
        //  POST: /Material/Create
@@ -279,14 +218,14 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add update logic here
                
-                    var data = _materialBll.getByID(model.MaterialNumber, model.PlantId);
+                var dataexist = _materialBll.getByID(model.MaterialNumber, model.PlantId);
                     
-                    model.ChangedById = CurrentUser.USER_ID;
-                    model.ChangedDate = DateTime.Now;
-                    //model.ChangesHistoryList =  Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, id))
-                    if (data == null) {
-                       return RedirectToAction("Index");
-                    }
+                    
+                if (dataexist == null)
+                {
+                    return RedirectToAction("Index");
+                }
+
                 if (model.MaterialUom != null)
                 {
                     foreach (var matUom in model.MaterialUom)
@@ -301,26 +240,20 @@ namespace Sampoerna.EMS.Website.Controllers
                         _materialBll.SaveUoM(uom, CurrentUser.USER_ID);
                     }
                 }
-                var origin = AutoMapper.Mapper.Map<MaterialEditViewModel>(data);
-                    AutoMapper.Mapper.Map(model, data);
-                    data.MODIFIED_BY = CurrentUser.USER_ID;
-                    data.MODIFIED_DATE = DateTime.Now;
-                    data.CREATED_DATE = origin.CreatedDate;
-                    data.CREATED_BY = origin.CreatedById;
-                    
-                    SetChanges(origin, data);
-                    var output = _materialBll.Save(data,CurrentUser.USER_ID);
-                    if (!output.Success)
-                    {
-                        AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
-                            );
 
-                    }
-                    else
-                    {
-                        AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                   );
-                    }
+                var data = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
+                    
+                var output = _materialBll.Save(data, CurrentUser.USER_ID);
+                if (!output.Success)
+                {
+                    AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
+                        );
+
+                }
+                else
+                {
+                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+                }
 
 
                
