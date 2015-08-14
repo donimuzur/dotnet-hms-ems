@@ -1367,7 +1367,7 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td></tr>");
             bodyMail.AppendLine();
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/'" + pbck1Data.Pbck1Id + ">link</a> to show detailed information</i></td></tr>");
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
