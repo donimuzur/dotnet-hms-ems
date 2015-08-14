@@ -368,6 +368,16 @@
                     <div class="panel-body">
                         <div class="form-excise" role="form">
                             <div class="row">
+                                @if (Model.AllowGovApproveAndReject){
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Status Gov</label>
+                                            <div class="col-md-8">
+                                                @Html.EnumDropDownListFor(model => model.Detail.StatusGov, Model.StatusGovList, "Select", new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Qty Approved<span class="red">*</span></label>
