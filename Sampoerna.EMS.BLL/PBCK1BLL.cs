@@ -859,8 +859,8 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
-            //if (isNeedSendNotif)
-            //    SendEmailWorkflow(input);
+            if (isNeedSendNotif)
+                SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
 
@@ -1365,7 +1365,7 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Number</td><td> : " + pbck1Data.Pbck1Number + "</td></tr>");
             bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td</tr>");
+            bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/'" + pbck1Data.Pbck1Id + ">link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
