@@ -5,30 +5,30 @@
 }
 
 <div class="container-wrap title-page">
-    <div class="row">
-        <div class="col-sm-12">
-            <h3>@ViewBag.Title</h3>
-            <div class="action-button new">
-                <a href="@Url.Action("Create","LACK2")">
-                    <input type="button" class="btn btn-blue" value="NEW" />
-                </a>
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@ViewBag.Title</h3>
+                <div class="action-button new">
+                    <a href="@Url.Action("Create","LACK2")">
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
                 @using (Ajax.BeginForm("FilterListByNppbkc", "LACK2",
-                    new AjaxOptions
-                    {
-                        HttpMethod = "POST",
-                        InsertionMode = InsertionMode.Replace,
-                        UpdateTargetId = "contenttable",
-                        OnComplete = "ReloadDataTables"
-                    }, new { @class = "form-excise", role = "form" }))
+                        new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "contenttable",
+                            OnComplete = "ReloadDataTables"
+                        }, new { @class = "form-excise", role = "form" }))
                 {
                     <div class="row">
                         <div class="col-md-4">
@@ -97,115 +97,113 @@
     </div>
 </div>
 
-
-
-@section Scripts
+    @section Scripts
 {
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript">
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+        <script type="text/javascript">
 
-        function setupDataTables() {
-            $('#btn-reset-filter').click(function() {
-                $(".selectreset").val($(".selectreset option:first").val());
-            });
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#lack1Table')) {
-                table = $('#lack1Table').DataTable();
-                table.destroy();
-            }
+            function setupDataTables() {
+                $('#btn-reset-filter').click(function () {
+                    $(".selectreset").val($(".selectreset option:first").val());
+                });
+                // DataTable
+                var table = null;
+                if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                    table = $('#lack1Table').DataTable();
+                    table.destroy();
+                }
 
-            table = $('#lack1Table').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
+                table = $('#lack1Table').DataTable(
+                    {
+                        "sDom": "Rlfrtip",
+                        "language": {
+                            "zeroRecords": "No records found",
+                            "infoFiltered": "(filtered from _MAX_ total records)"
+                        }
+                    });
+
+                // Setup - add a text input to each footer cell
+                $('#lack1Table .filters th').each(function () {
+                    var idx = $(this).index();
+                    if (idx != 0) {
+                        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                     }
                 });
 
-            // Setup - add a text input to each footer cell
-            $('#lack1Table .filters th').each(function() {
-                var idx = $(this).index();
-                if (idx != 0) {
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
-                }
-            });
-
-            // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
+                // Apply the search
+                table.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        table
+                            .column(colIdx)
+                            .search(this.value)
+                            .draw();
+                    });
                 });
-            });
 
-            $('#Menulack1ListByNppbkc').addClass('active');
-        }
-
-        $("#NppbkcId").change(function () {
-            if ($("#NppbkcId").length) {
-                var nbck = $(this).find("option:selected").text();
-                $('#SearchInput_POA option').remove();
-                $('#SearchInput_PlantId option').remove();
-                console.log(nbck);
-                if (nbck == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_POA').append('<option value="">All</option>');
-                    $('#SearchInput_PlantId').append('<option value="">All</option>');
-                } else {
-                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
-                }
+                $('#Menulack1ListByNppbkc').addClass('active');
             }
 
-
-        });
-
-        $(document).ready(function () {
-            setupDataTables();
-        });
-
-        function ajaxSelectNppbck(url, formData) {
-            if (formData.nppbkcId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        var list = data.PoaList;
-                        var listPlant = data.PlantIdList;
+            $("#NppbkcId").change(function () {
+                if ($("#NppbkcId").length) {
+                    var nbck = $(this).find("option:selected").text();
+                    $('#SearchInput_POA option').remove();
+                    $('#SearchInput_PlantId option').remove();
+                    console.log(nbck);
+                    if (nbck == '' || $(this).find("option:selected").val() == '') {
                         $('#SearchInput_POA').append('<option value="">All</option>');
                         $('#SearchInput_PlantId').append('<option value="">All</option>');
-                        if (list.length > 0) {
-                            for (var i = 0; i < list.length; i++) {
-                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
-
-                            }
-                        }
-
-                        if (listPlant.length > 0) {
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-
-                            }
-                        }
-
+                    } else {
+                        ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
                     }
-                });
-            }
-        }
+                }
 
-        function ReloadDataTables() {
-            $('.toggle-row').click(function () {
 
-                var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
-
-                });
             });
-            setupDataTables();
-        }
-    </script>
-}
+
+            $(document).ready(function () {
+                setupDataTables();
+            });
+
+            function ajaxSelectNppbck(url, formData) {
+                if (formData.nppbkcId) {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: formData,
+                        success: function (data) {
+                            var list = data.PoaList;
+                            var listPlant = data.PlantIdList;
+                            $('#SearchInput_POA').append('<option value="">All</option>');
+                            $('#SearchInput_PlantId').append('<option value="">All</option>');
+                            if (list.length > 0) {
+                                for (var i = 0; i < list.length; i++) {
+                                    $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+
+                                }
+                            }
+
+                            if (listPlant.length > 0) {
+                                for (var i = 0; i < listPlant.length; i++) {
+                                    $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+
+                                }
+                            }
+
+                        }
+                    });
+                }
+            }
+
+            function ReloadDataTables() {
+                $('.toggle-row').click(function () {
+
+                    var filter = $(".filters");
+                    filter.slideToggle(100).promise().done(function () {
+
+                    });
+                });
+                setupDataTables();
+            }
+        </script>
+    }
 

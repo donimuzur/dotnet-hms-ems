@@ -930,6 +930,7 @@
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
+    <Content Include="Views\LACK2\_CreateBasicInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

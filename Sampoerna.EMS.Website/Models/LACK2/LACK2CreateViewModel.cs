@@ -21,6 +21,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         
         public SelectList ExcisableGoodsTypeDDL { get; set; }
 
+        public SelectList GovStatusDDL { get; set; }
+
+        public SelectList StatusDDL { get; set; }
+
         public LACK2Model Lack2Model { get; set; }
         
     }

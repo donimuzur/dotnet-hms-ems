@@ -7,6 +7,7 @@ using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -23,6 +24,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<LACK2> _repository;
         private IMonthBLL _monthBll;
+        private IUserBLL _userBll;
         private IUnitOfMeasurementBLL _uomBll;
 
         private string includeTables = "MONTH";
@@ -34,6 +36,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<LACK2>();
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+            _userBll = new UserBLL(_uow, _logger);
         }
 
         /// <summary>
@@ -91,7 +94,7 @@ namespace Sampoerna.EMS.BLL
         public Lack2Dto Insert(Lack2Dto item)
         {
 
-            if(item == null)
+            if (item == null)
             {
                 throw new Exception("Invalid data entry !");
             }
@@ -100,11 +103,19 @@ namespace Sampoerna.EMS.BLL
             MONTH month = new MONTH();
 
             month = _monthBll.GetMonth(item.PeriodMonth);
+            var user = _userBll.GetUserById(item.CreatedBy);
 
             model = AutoMapper.Mapper.Map<LACK2>(item);
             model.MONTH = month;
-            _repository.InsertOrUpdate(model);
-
+            model.USER = user;
+            try
+            {
+                _repository.InsertOrUpdate(model);
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
             return item;
         }
     }
