@@ -159,6 +159,15 @@
         <EntityTypeShape EntityType="EMSModel.USER_PLANT_MAP" Width="1.5" PointX="21" PointY="45.125" />
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_T001W" />
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_USER" />
+        <EntityTypeShape EntityType="EMSModel.BACK1" Width="1.5" PointX="6.25" PointY="18.5" />
+        <EntityTypeShape EntityType="EMSModel.BACK1_DOCUMENT" Width="1.5" PointX="8.5" PointY="18.625" />
+        <EntityTypeShape EntityType="EMSModel.PBCK3_PBCK7" Width="1.5" PointX="4" PointY="16.625" />
+        <EntityTypeShape EntityType="EMSModel.BACK3_CK2_PBCK3_PBCK7" Width="1.5" PointX="0.75" PointY="6.75" />
+        <AssociationConnector Association="EMSModel.FK_BACK1_DOCUMENT_BACK1" />
+        <AssociationConnector Association="EMSModel.FK_BACK1_PBCK3_PBCK7" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

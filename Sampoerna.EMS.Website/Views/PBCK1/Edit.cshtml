@@ -210,5 +210,59 @@
                 }
             }
         }
+        
+        $('#Detail_Lack1FromMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        $('#Detail_Lack1ToMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        $('#Detail_Lack1FormYear').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        $('#Detail_Lack1ToYear').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        function ChangeLatestSaldo() {
+            var month = 0;
+            var year = 0;
+
+            var nppbkcid = "";
+            if ($("#Detail_NppbkcId").length) {
+                nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+            }
+            if ($("#Detail_Lack1ToMonthId").length) {
+                month = $('#Detail_Lack1ToMonthId').find("option:selected").val();
+            }
+            if ($('#Detail_Lack1ToYear').length) {
+                year = $('#Detail_Lack1ToYear').find("option:selected").val();
+            }
+            if (month != 0 && year != 0) {
+                setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+            } else {
+                $('#Detail_LatestSaldoUomName').val('0');
+            }
+        }
+        
+        function setLatestSaldo(formData, url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    if (data != null) {
+                        $('#Detail_LatestSaldo').val(data.latestSaldo);
+                    } else {
+                        $('#Detail_LatestSaldo').val('0');
+                    }
+
+                }
+            });
+        }
+
     </script>
 }

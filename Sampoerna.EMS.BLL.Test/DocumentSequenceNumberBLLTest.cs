@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BLL.Test
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<DOC_NUMBER_SEQ> _repository;
-        private IGenericRepository<ZAIDM_EX_NPPBKC> _nppbkcRepository;
+        private IGenericRepository<T001K> _t001KReporRepository;
         private IDocumentSequenceNumberBLL _bll;
 
         [TestInitialize]
@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.BLL.Test
             _logger = Substitute.For<ILogger>();
             _uow = Substitute.For<IUnitOfWork>();
             _repository = _uow.GetGenericRepository<DOC_NUMBER_SEQ>();
-            _nppbkcRepository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
+            _t001KReporRepository = _uow.GetGenericRepository<T001K>();
             _bll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BLL.Test
             _logger = null;
             _uow = null;
             _repository = null;
-            _nppbkcRepository = null;
+            _t001KReporRepository = null;
             _bll = null;
         }
 
@@ -44,24 +44,31 @@ namespace Sampoerna.EMS.BLL.Test
             //arr
             var docNumberSeq = new DOC_NUMBER_SEQ()
             {
-                MONTH = 1, YEAR = 2015, DOC_NUMBER_SEQ_LAST = 1
+                MONTH = 1,
+                YEAR = 2015,
+                DOC_NUMBER_SEQ_LAST = 1
             };
 
-            var nppbkc = new ZAIDM_EX_NPPBKC()
+            var t001k = new T001K()
             {
-                NPPBKC_ID = "1", CITY_ALIAS = "MLG",
-                T001 = new T001() { BUTXT = "HMS-E", BUKRS = "3006" }
+                T001 = new T001() { BUTXT = "Philip Morris Indonesia", BUTXT_ALIAS = "HMS-E", BUKRS = "3006" },
+                T001W = new T001W()
+                {
+                    ZAIDM_EX_NPPBKC = new ZAIDM_EX_NPPBKC() { CITY_ALIAS = "SBY" }
+                }
             };
 
             var input = new GenerateDocNumberInput()
             {
-                Month = 1, Year = 1, NppbkcId = "1"
+                Month = 1,
+                Year = 1,
+                NppbkcId = "1"
             };
 
             _repository.Get().ReturnsForAnyArgs(new List<DOC_NUMBER_SEQ>() { docNumberSeq });
-            _nppbkcRepository.Get().ReturnsForAnyArgs(new List<ZAIDM_EX_NPPBKC>{nppbkc});
+            _t001KReporRepository.Get().ReturnsForAnyArgs(new List<T001K> { t001k });
 
-            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + nppbkc.T001.BUTXT + "/" + nppbkc.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + t001k.T001.BUTXT_ALIAS + "/" + t001k.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             //act
             var result = _bll.GenerateNumber(input);

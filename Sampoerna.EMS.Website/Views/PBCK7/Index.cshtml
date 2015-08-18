@@ -1,4 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK7.Pbck7IndexViewModel
+@using Sampoerna.EMS.Helpers
+
 @{
     ViewBag.Title = "Index";
 }
@@ -18,112 +20,84 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @*ajax*@
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="row">
-                            <label class="col-md-4">NPPBKC ID</label>
-                            <div class="col-md-8">
-                              @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, null, new { @class = "form-control selectreset" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <label class="col-md-4">Plant ID</label>
-                            <div class="col-md-8">
-                                @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "form-control selectreset" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <label class="col-md-4 long">Reported On</label>
-                            <div class="col-md-8">
-                                <div class="input-group date">
-                                    <input type="text" class="form-control">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="last-form">
+                @using (Ajax.BeginForm("FilterPbck7", "PBCK3_PBCK7",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables",
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+                    <div class="row">
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-4">POA</label>
-                                <div id="divPoaList" class="col-md-8 ui-widget">
-                                <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
-                                    <option value="">All</option>
-                                </select>
-                            </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row">
-                                <label class="col-md-4">Creator</label>
+                                <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.Creator, Model.CreatorList, null, new { @class = "form-control selectreset" })
+                                    @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                <label class="col-md-4">Plant ID</label>
+                                <div class="col-md-8">
+                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
+                                        <option value="">All</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4 long">Reported On</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div id="divPoaList" class="col-md-8 ui-widget">
+                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Creator, Model.CreatorList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
-            <div class="table-container">
-                <table id="pbck-1" class="display" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Action</th>
-                            <th>PBCK-7 No</th>
-                            <th>Reported Date</th>
-                            <th>NPPBKC</th>
-                            <th>Plant</th>
-                            <th>POA</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <thead>
-                        <tr>
-                            <th>Filter</th>
-                            <th>PBCK-7 No</th>
-                            <th>Reported Date</th>
-                            <th>NPPBKC</th>
-                            <th>Plant</th>
-                            <th>POA</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="action">
-                                <a href="#"><i class="fa fa-eye"></i></a>
-                                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                            </td>
-                            <td class="no">PBCK-7 No Value</td>
-                            <td>8 August 2015</td>
-                            <td>NPPBKC Value</td>
-                            <td>Plant Value</td>
-                            <td>POA Value</td>
-                            <td class="last">Status Value</td>
-                        </tr>
-               
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_Pbck7TableIndex")
             </div>
         </div>
     </div>
@@ -131,5 +105,48 @@
 
 @section scripts
 {
-    
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#Pbck7TableIndex')) {
+                table = $('#Pbck7TableIndex').DataTable();
+                table.destroy();
+            }
+
+            table = $('#Pbck7TableIndex').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            // Setup - add a text input to each footer cell
+            $('#Pbck7TableIndex .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+            $('#Menulack1ListByNppbkc').addClass('active');
+        }
+    </script>
 }

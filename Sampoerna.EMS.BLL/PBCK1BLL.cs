@@ -431,19 +431,19 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.GetByID(id);
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
-        
+
         public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdConverterOutput>();
-            
+
             foreach (var inputItem in inputs)
             {
                 messageList.Clear();
 
                 var output = Mapper.Map<Pbck1ProdConverterOutput>(inputItem);
                 output.IsValid = true;
-                
+
                 var checkCountDataProductCode = inputs.Where(c => c.ProductCode == output.ProductCode).ToList();
                 if (checkCountDataProductCode.Count > 1)
                 {
@@ -451,13 +451,13 @@ namespace Sampoerna.EMS.BLL
                     output.IsValid = false;
                     messageList.Add("Duplicate Product Code [" + output.ProductCode + "]");
                 }
-                
+
                 //Product Code Validation
                 #region -------------- Product Code Validation --------------
                 List<string> messages;
                 ZAIDM_EX_PRODTYP prodTypeData = null;
                 //if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
-                
+
                 //use product alias instead of product code
                 if (ValidateProductAlias(output.ProductCode, out messages, out prodTypeData))
                 {
@@ -520,7 +520,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                
+
                 outputList.Add(output);
 
             }
@@ -859,8 +859,8 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
-            //if (isNeedSendNotif)
-            //    SendEmailWorkflow(input);
+            if (isNeedSendNotif)
+                SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
 
@@ -1244,12 +1244,25 @@ namespace Sampoerna.EMS.BLL
                 }
                 rc.Detail.NppbkcCity = nppbkcDetails.CITY;
             }
-            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
+
+            var poaId = !string.IsNullOrEmpty(dbData.APPROVED_BY_POA) ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
+
+            var poaDetails = _poaBll.GetDetailsById(poaId);
+            if (poaDetails != null)
             {
-                var poaDetails = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
                 rc.Detail.PoaName = poaDetails.PRINTED_NAME;
                 rc.Detail.PoaTitle = poaDetails.TITLE;
+                if (!string.IsNullOrEmpty(poaDetails.MANAGER_ID))
+                {
+                    var managerData = _userBll.GetUserById(poaDetails.MANAGER_ID);
+                    if (managerData != null)
+                    {
+                        rc.Detail.ExciseManager = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
+                    }
+                }
+
             }
+
             rc.Detail.CompanyName = dbData.NPPBCK_BUTXT;
             rc.Detail.NppbkcId = dbData.NPPBKC_ID;
             rc.Detail.ExcisableGoodsDescription = dbData.EXC_TYP_DESC;
@@ -1309,7 +1322,6 @@ namespace Sampoerna.EMS.BLL
             }
             rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
             rc.Detail.PrintedDate = DateReportString(DateTime.Now);
-            rc.Detail.ExciseManager = dbData.USER2 != null ? dbData.USER2.FIRST_NAME + " " + dbData.USER2.LAST_NAME : "";
             rc.Detail.ProdPlanPeriode = SetPeriod(dbData.PLAN_PROD_FROM.Value.Month, dbData.PLAN_PROD_FROM.Value.Year,
                 dbData.PLAN_PROD_TO.Value.Month, dbData.PLAN_PROD_TO.Value.Year);
             rc.Detail.Lack1Periode = SetPeriod(dbData.LACK1_FROM_MONTH.Value, dbData.LACK1_FROM_YEAR.Value,
@@ -1365,9 +1377,9 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Number</td><td> : " + pbck1Data.Pbck1Number + "</td></tr>");
             bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td</tr>");
+            bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td></tr>");
             bodyMail.AppendLine();
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/'" + pbck1Data.Pbck1Id + ">link</a> to show detailed information</i></td></tr>");
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
@@ -1427,7 +1439,7 @@ namespace Sampoerna.EMS.BLL
             var managerDetail = _userBll.GetUserById(managerId);
             return managerDetail.EMAIL;
         }
-        
+
         private class Pbck1MailNotification
         {
             public Pbck1MailNotification()

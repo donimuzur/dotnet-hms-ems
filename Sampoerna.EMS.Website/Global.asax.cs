@@ -79,6 +79,8 @@ namespace Sampoerna.EMS.Website
             container.Register<ILFA1BLL, LFA1BLL>();
             container.Register<IT001KBLL, T001KBLL>();
             container.Register<IUserPlantMapBLL, UserPlantMapBLL>();
+            container.Register<IPBCK7BLL,PBCK7BLL>();
+            container.Register<IBACK1BLL, BACK1BLL>();
           
             // 3. Optionally verify the container's configuration.
             container.Verify();

@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
-        public DateTime Pbck7Date { get; set; }
+        public string Pbck7Date { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
         public string ShortOrderColum { get; set; }

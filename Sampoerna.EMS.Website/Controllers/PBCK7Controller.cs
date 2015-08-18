@@ -69,6 +69,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck7TableIndex",viewModel);
         }
 
-
+        [HttpPost]
+        public JsonResult PoaAndPlantListPartial(string nppbkcId)
+        {
+            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
+            var model = new Pbck7IndexViewModel() { PoaList = listPoa, PlantList = listPlant };
+            return Json(model);
+        }
     }
 }
