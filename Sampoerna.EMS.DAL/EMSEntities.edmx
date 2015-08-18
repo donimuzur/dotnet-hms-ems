@@ -23,8 +23,6 @@
           <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
           <Key>
             <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
@@ -78,7 +76,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -145,17 +143,17 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -259,7 +257,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" />
           <Property Name="EX_GOODTYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
           <Property Name="WASTE_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="WASTE_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="RETURN_QTY" Type="decimal" Precision="15" Scale="2" />
@@ -272,6 +269,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -358,8 +356,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -425,9 +423,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -435,21 +433,21 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PORT_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="SUPPLIER_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="SUPPLIER_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
-          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -471,7 +469,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -653,8 +651,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="IS_DELETED" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="IS_EMS" Type="bit" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -747,15 +746,15 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -791,9 +790,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="MENGETAHUI_DETAIL" Type="text" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MENGETAHUI_DETAIL" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -820,17 +819,17 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="HJE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="IS_FROM_SAP" Type="bit" Nullable="false" />
+          <Property Name="CLIENT_DELETION" Type="bit" />
+          <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="PLANT_DELETION" Type="bit" />
-          <Property Name="CLIENT_DELETION" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -850,10 +849,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -876,9 +875,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="IS_DELETED" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_SERIES">
           <Key>
@@ -1314,6 +1313,30 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PAGE_MAP_PAGE">
+          <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
+          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="PAGE_MAP">
+              <PropertyRef Name="PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAGE_MAP_USER_BROLE">
+          <End Role="USER_BROLE" Type="Self.USER_BROLE" Multiplicity="0..1" />
+          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER_BROLE">
+              <PropertyRef Name="BROLE" />
+            </Principal>
+            <Dependent Role="PAGE_MAP">
+              <PropertyRef Name="BROLE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PAGE_PAGE">
           <End Role="PAGE" Type="Self.PAGE" Multiplicity="0..1" />
           <End Role="PAGE1" Type="Self.PAGE" Multiplicity="*" />
@@ -1323,6 +1346,18 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="PAGE1">
               <PropertyRef Name="PARENT_PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_APPROVED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="APPROVED_BY_POA" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1746,6 +1781,18 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_T001K_T1001">
+          <End Role="T001" Type="Self.T001" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001">
+              <PropertyRef Name="BUKRS" />
+            </Principal>
+            <Dependent Role="T001K">
+              <PropertyRef Name="BUKRS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_T001W_ZAIDM_EX_NPPBKC">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
           <End Role="T001W" Type="Self.T001W" Multiplicity="*" />
@@ -1755,6 +1802,18 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="T001W">
               <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UOM_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="UOM" Type="Self.UOM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="UOM">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1887,6 +1946,30 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="WORKFLOW_STATE_USERS">
               <PropertyRef Name="WORKFLOW_STATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2037,6 +2120,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
         <EntityContainer Name="EMSModelStoreContainer">
           <EntitySet Name="BACK1" EntityType="Self.BACK1" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BACK1_DOCUMENT" EntityType="Self.BACK1_DOCUMENT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BACK3_CK2_PBCK3_PBCK7" EntityType="Self.BACK3_CK2_PBCK3_PBCK7" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BROLE_MAP" EntityType="Self.BROLE_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
@@ -2096,11 +2180,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BACK3_CK2_PBCK3_PBCK7" EntityType="Self.BACK3_CK2_PBCK3_PBCK7" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [BACK3_CK2_PBCK3_PBCK7].[BACK3_CK2_PBCK3_PBCK7_ID] AS [BACK3_CK2_PBCK3_PBCK7_ID]
-    FROM [dbo].[BACK3_CK2_PBCK3_PBCK7] AS [BACK3_CK2_PBCK3_PBCK7]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="Self.FK_BACK1_DOCUMENT_BACK1">
             <End Role="BACK1" EntitySet="BACK1" />
             <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
@@ -2241,9 +2320,21 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
             <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
           </AssociationSet>
+          <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="Self.FK_PAGE_MAP_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAGE_MAP_USER_BROLE" Association="Self.FK_PAGE_MAP_USER_BROLE">
+            <End Role="USER_BROLE" EntitySet="USER_BROLE" />
+            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
+          </AssociationSet>
           <AssociationSet Name="FK_PAGE_PAGE" Association="Self.FK_PAGE_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE1" EntitySet="PAGE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_APPROVED_BY_USER" Association="Self.FK_PBCK1_APPROVED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="Self.FK_PBCK1_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -2385,9 +2476,17 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
+          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
+            <End Role="T001" EntitySet="T001" />
+            <End Role="T001K" EntitySet="T001K" />
+          </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="T001W" EntitySet="T001W" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="Self.FK_UOM_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="UOM" EntitySet="UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_USER_PLANT_MAP_T001W" Association="Self.FK_USER_PLANT_MAP_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -2432,6 +2531,14 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="Self.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
             <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T001W" Association="Self.FK_ZAIDM_EX_BRAND_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -4564,6 +4671,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
+          <Property Name="IS_EMS" Type="Boolean" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -6004,6 +6112,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="UOM">
             <EntityTypeMapping TypeName="EMSModel.UOM">
               <MappingFragment StoreEntitySet="UOM">
+                <ScalarProperty Name="IS_EMS" ColumnName="IS_EMS" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
