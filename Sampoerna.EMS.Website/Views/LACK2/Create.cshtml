@@ -15,7 +15,7 @@
                 <label class="status">Draft</label>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="preview()"/>
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="preview()" />
                 </div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                                                             @Html.LabelFor(model => model.Lack2Model.LACK2Period, htmlAttributes: new { @class = "control-label col-md-2" })
                                                             <div class="col-md-8">
                                                                 <div class="input-group date">
-                                                                    @Html.TextBoxFor(model => model.Lack2Model.LACK2Period, new { htmlAttributes = new { @class = "form-control" } })
+                                                                    @Html.TextBoxFor(model => model.Lack2Model.LACK2Period, new { htmlAttributes = new { @class = "form-control", @name = "lack2Period" } })
                                                                     <span class="input-group-addon">
                                                                         <i class="fa fa-calendar"></i>
                                                                     </span>
@@ -138,6 +138,21 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            @Html.LabelFor(model => model.Lack2Model.DecreeDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                            <div class="col-md-8">
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.Lack2Model.DecreeDate, new { htmlAttributes = new { @class = "form-control", @disabled = "true" } })
+                                                                    <span class="input-group-addon" id="decreeDateCalendar" style="visibility: hidden;">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                    @Html.ValidationMessageFor(model => model.Lack2Model.DecreeDate, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -161,6 +176,22 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+        $('#Lack2Model_DecreeDate').attr('disabled', true);
+
+        var e = document.getElementById("Lack2Model_Status");
+        var selectedStatus = e.options[e.selectedIndex].value;
+        
+        if(selectedStatus =='35')
+        {
+            $('#Lack2Model_DecreeDate').attr('disabled', false);
+            $('#decreeDateCalendar').attr('style', '');
+
+        }
+
+    </script>
 
     <script>
         // this need to be done in a partial tab to be refreshed on the preview button click

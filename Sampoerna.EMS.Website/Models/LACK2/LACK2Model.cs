@@ -39,7 +39,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public int Status { get; set; }
 
-        public DateTime DecreeDate { get; set; }
+        [Display(Name = "Decree Date")]
+        public DateTime? DecreeDate { get; set; }
 
         [Required]
         [Display(Name = "LACK2 Period")]
