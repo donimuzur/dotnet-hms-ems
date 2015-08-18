@@ -168,6 +168,7 @@
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_APPROVED_BY_USER1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

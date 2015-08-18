@@ -73,9 +73,12 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(g => g.GROUP_NAME == name, null, includeTables).ToList();
         }
 
-        public List<EX_GROUP_TYPE> GetAll()
+        public List<EX_GROUP_TYPE> GetAll(bool includedeletedchild = true)
         {
-
+            //var exgoodtyplist = _repositoryGoodType.Get(X => X.IS_DELETED == false).Select(X => X.EXC_GOOD_TYP).ToList();
+            //if (includedeletedchild != null && !includedeletedchild) { 
+            //    _repository.Get().Join(ZA)
+            //}
             return _repository.Get(null, null, includeTables).OrderBy(x => x.GROUP_NAME).ToList();
         }
 

@@ -67,6 +67,7 @@
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
+    <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
     <Compile Include="PBCK7BLL.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
