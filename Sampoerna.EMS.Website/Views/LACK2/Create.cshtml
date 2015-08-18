@@ -181,15 +181,23 @@
     <script>
         $('#Lack2Model_DecreeDate').attr('disabled', true);
 
-        var e = document.getElementById("Lack2Model_Status");
-        var selectedStatus = e.options[e.selectedIndex].value;
-        
-        if(selectedStatus =='35')
-        {
-            $('#Lack2Model_DecreeDate').attr('disabled', false);
-            $('#decreeDateCalendar').attr('style', '');
+        // For enabaling the Decree Date
+        $('#Lack2Model_Status').click(function () {
+            var e = document.getElementById("Lack2Model_Status");
+            var selectedStatus = e.options[e.selectedIndex].value;
+            //console.log(selectedStatus);
 
-        }
+            if (selectedStatus == '30') {
+                $('#Lack2Model_DecreeDate').attr('disabled', false);
+                $('#decreeDateCalendar').css('visibility: visible;');
+
+            }
+            else
+            {
+                $('#Lack2Model_DecreeDate').attr('disabled', true);
+                $('#decreeDateCalendar').css('visibility: hidden;');
+            }
+        });
 
     </script>
 

@@ -932,6 +932,7 @@
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
     <Content Include="Views\LACK2\CreateDocument.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
