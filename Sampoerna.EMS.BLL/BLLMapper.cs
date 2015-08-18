@@ -124,7 +124,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER));
   
 
-            Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.IS_DELETED_STRING,opt => opt.MapFrom(src => src.IS_DELETED.HasValue ? src.IS_DELETED.Value ? "Yes" : "No" : "No"))
+                .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED.HasValue ? src.IS_DELETED.Value : false));
             Mapper.CreateMap<T001, T001Dto>().IgnoreAllNonExisting();
             
             #region LACK1
