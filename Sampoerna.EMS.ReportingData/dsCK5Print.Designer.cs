@@ -445,6 +445,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnFinalPortCode;
             
+            private global::System.Data.DataColumn columnDocumentText;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public dtCk5DataTable() {
@@ -864,6 +866,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DocumentTextColumn {
+                get {
+                    return this.columnDocumentText;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -947,7 +957,8 @@ namespace Sampoerna.EMS.ReportingData {
                         string LoadingPortCode, 
                         string FinalPort, 
                         string FinalPortName, 
-                        string FinalPortCode) {
+                        string FinalPortCode, 
+                        string DocumentText) {
                 dtCk5Row rowdtCk5Row = ((dtCk5Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         OfficeName,
@@ -997,7 +1008,8 @@ namespace Sampoerna.EMS.ReportingData {
                         LoadingPortCode,
                         FinalPort,
                         FinalPortName,
-                        FinalPortCode};
+                        FinalPortCode,
+                        DocumentText};
                 rowdtCk5Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtCk5Row);
                 return rowdtCk5Row;
@@ -1068,6 +1080,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnFinalPort = base.Columns["FinalPort"];
                 this.columnFinalPortName = base.Columns["FinalPortName"];
                 this.columnFinalPortCode = base.Columns["FinalPortCode"];
+                this.columnDocumentText = base.Columns["DocumentText"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1169,6 +1182,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnFinalPortName);
                 this.columnFinalPortCode = new global::System.Data.DataColumn("FinalPortCode", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFinalPortCode);
+                this.columnDocumentText = new global::System.Data.DataColumn("DocumentText", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDocumentText);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2881,6 +2896,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DocumentText {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.DocumentTextColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DocumentText\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.DocumentTextColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsOfficeNameNull() {
                 return this.IsNull(this.tabledtCk5.OfficeNameColumn);
             }
@@ -3453,6 +3484,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetFinalPortCodeNull() {
                 this[this.tabledtCk5.FinalPortCodeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDocumentTextNull() {
+                return this.IsNull(this.tabledtCk5.DocumentTextColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDocumentTextNull() {
+                this[this.tabledtCk5.DocumentTextColumn] = global::System.Convert.DBNull;
             }
         }
         

@@ -253,6 +253,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<EMAIL_TEMPLATEDto, EMAIL_TEMPLATE>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Country
+
+            Mapper.CreateMap<COUNTRY, CountryDto>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

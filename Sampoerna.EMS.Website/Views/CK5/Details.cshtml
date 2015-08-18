@@ -1,4 +1,5 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 @using (Html.BeginForm("GovApproveDocument", "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
@@ -38,7 +39,8 @@
                         </a>
                             break;
                     }
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    @*<input type="button" class="btn btn-grey" value="Print Preview" />*@
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
 
                     @if (Model.AllowApproveAndReject)
                     {
@@ -255,6 +257,10 @@
             OnReadyFunction('@Model.Ck5Type.ToString()');
 
             openGovStatusBlock();
+            
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
+            });
         });
 
         function openGovStatusBlock() {
@@ -370,6 +376,12 @@
 
         });
 
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+        
         function PrintOutClick(reportUrl, addHistoryUrl, id) {
 
             window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');

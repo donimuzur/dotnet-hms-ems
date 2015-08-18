@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -22,14 +23,20 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private Enums.MenuList _mainMenu;
-        
-        public LACK1Controller(IPageBLL pageBll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
+        private IPOABLL _poabll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
+        private ICompanyBLL _companyBll;
+        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
             _monthBll = monthBll;
             _uomBll = uomBll;
             _mainMenu = Enums.MenuList.LACK1;
+            _poabll = poabll;
+            _nppbkcbll = nppbkcbll;
+            _goodTypeBll = goodTypeBll;
         }
 
 
@@ -57,8 +64,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1IndexViewModel InitLack1ViewModel(Lack1IndexViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.PoaList = GlobalFunctions.GetPoaAll();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
             
@@ -135,8 +142,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1IndexPlantViewModel InitLack1LiistByPlant(Lack1IndexPlantViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.PoaList = GlobalFunctions.GetPoaAll();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
             
@@ -203,14 +210,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.BukrList = GlobalFunctions.GetCompanyList();
-            model.MontList = GlobalFunctions.GetMonthList();
+            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             //model.YearsList = GlobalFunctions.GetYears();
-            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.SupplierList = GlobalFunctions.GetSupplierPlantList();
-            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList();
-            model.WasteUomList = GlobalFunctions.GetUomList();
-            model.ReturnUomList = GlobalFunctions.GetUomList();
+            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
             //liststatus.
 
             return (model);
