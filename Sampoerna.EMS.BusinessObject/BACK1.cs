@@ -12,19 +12,19 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class WORKFLOW_STATE
+    public partial class BACK1
     {
-        public WORKFLOW_STATE()
+        public BACK1()
         {
-            this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
+            this.BACK1_DOCUMENT = new HashSet<BACK1_DOCUMENT>();
         }
     
-        public long WORKFLOW_STATE_ID { get; set; }
-        public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
-        public Nullable<int> EMAIL_TEMPLATE_ID { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
+        public int BACK1_ID { get; set; }
+        public string BACK1_NUMBER { get; set; }
+        public System.DateTime BACK1_DATE { get; set; }
+        public int PBCK3_PBCK7_ID { get; set; }
     
-        public virtual EMAIL_TEMPLATE EMAIL_TEMPLATE { get; set; }
-        public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
+        public virtual ICollection<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
+        public virtual PBCK3_PBCK7 PBCK3_PBCK7 { get; set; }
     }
 }
