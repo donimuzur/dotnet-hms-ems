@@ -155,10 +155,9 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectList, "Value", "Text");
         }
 
-        public static SelectList GetSeriesCodeList()
+        public static SelectList GetSeriesCodeList(IMasterDataBLL _masterDataBll)
         {
-            IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var data = masterBll.GetAllDataSeries().Where(x => x.IS_DELETED != true);
+            var data = _masterDataBll.GetAllDataSeries().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                                          select new SelectListItem
                                                     {
@@ -168,9 +167,8 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectList, "Value", "Text");
         }
 
-        public static SelectList GetMarketCodeList()
+        public static SelectList GetMarketCodeList(IMasterDataBLL masterBll)
         {
-            IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataMarket().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem

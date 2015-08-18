@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using Microsoft.Ajax.Utilities;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
+        private IMasterDataBLL _masterDataBll;
         private IPrintHistoryBLL _printHistoryBll;
         private IPOABLL _poaBll;
         private ILACK1BLL _lackBll;
@@ -46,7 +48,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private ISupplierPortBLL _supplierPortBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
-        public PBCK1Controller(IPageBLL pageBLL, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
+        private ICompanyBLL _companyBll;
+        private IUnitOfMeasurementBLL _uomBll;
+      
+        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
             IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
@@ -63,6 +68,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _monthBll = monthbll;
             _supplierPortBll = supplierPortBll;
             _goodTypeBll = goodTypeBll;
+            _companyBll = companyBll;
+            _uomBll = uomBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -215,7 +222,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.SupplierPlantList = GlobalFunctions.GetPlantAll();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.UomList = GlobalFunctions.GetUomList();
+            model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             var pbck1RefList = GetCompletedDocument();
 
@@ -931,7 +938,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentMenu = PageInfo,
                     SearchView =
                     {
-                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
                         NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
@@ -1163,7 +1170,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentMenu = PageInfo,
                     SearchView =
                     {
-                        CompanyCodeList = GlobalFunctions.GetCompanyList(),
+                        CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
                         NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)

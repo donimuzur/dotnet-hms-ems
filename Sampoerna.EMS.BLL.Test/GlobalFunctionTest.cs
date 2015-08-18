@@ -23,12 +23,17 @@ namespace Sampoerna.EMS.BLL.Test
         private IMonthBLL _monthBll;
         private ISupplierPortBLL _supplierPortBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
+        private IUnitOfMeasurementBLL _unitOfMeasurementBll;
+        private IMasterDataBLL _masterDataBll;
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repositoryPoa;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repositoryNppbkc;
         private IGenericRepository<MONTH> _repositoryMonth;
         private IGenericRepository<SUPPLIER_PORT> _repositorySupplier;
         private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGoodsType;
+        private IGenericRepository<UOM> _repositoryUom;
+        private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
+        private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries; 
         private ILogger _logger;
        
         [TestInitialize]
@@ -131,6 +136,52 @@ namespace Sampoerna.EMS.BLL.Test
             var firstItemValue = actualResult.ToList()[0].Value;
             Assert.AreEqual(firstItemText, goodTypeFake.ToList()[0].EXC_GOOD_TYP + "-" + goodTypeFake.ToList()[0].EXT_TYP_DESC);
             Assert.AreEqual(firstItemValue, goodTypeFake.ToList()[0].EXC_GOOD_TYP);
+        }
+        [TestMethod]
+        public void GetUomTest()
+        {
+            _repositoryUom = Substitute.For<IGenericRepository<UOM>>();
+            _uow.GetGenericRepository<UOM>().ReturnsForAnyArgs(_repositoryUom);
+            _unitOfMeasurementBll = new UnitOfMeasurementBLL(_uow, _logger);
+            var uomFake = FakeStuffs.GetUomList();
+            _repositoryUom.Get().ReturnsForAnyArgs(uomFake);
+            var actualResult = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
+
+            var firstItemText = actualResult.ToList()[0].Text;
+            var firstItemValue = actualResult.ToList()[0].Value;
+            Assert.AreEqual(firstItemText, uomFake.ToList()[0].UOM_DESC);
+            Assert.AreEqual(firstItemValue, uomFake.ToList()[0].UOM_ID);
+        }
+        [TestMethod]
+        public void GetMarketTest()
+        {
+            _repositoryMarket = Substitute.For<IGenericRepository<ZAIDM_EX_MARKET>>();
+            _uow.GetGenericRepository<ZAIDM_EX_MARKET>().ReturnsForAnyArgs(_repositoryMarket);
+            _masterDataBll = new MasterDataBLL(_uow);
+            var marketFake = FakeStuffs.GetMarketList();
+            _repositoryMarket.Get().ReturnsForAnyArgs(marketFake);
+            var actualResult = GlobalFunctions.GetMarketCodeList(_masterDataBll);
+
+            var firstItemText = actualResult.ToList()[0].Text;
+            var firstItemValue = actualResult.ToList()[0].Value;
+            Assert.AreEqual(firstItemText,marketFake.ToList()[0].MARKET_ID + "-" + marketFake.ToList()[0].MARKET_DESC);
+            Assert.AreEqual(firstItemValue, marketFake.ToList()[0].MARKET_ID);
+        }
+
+        [TestMethod]
+        public void GetSeriesTest()
+        {
+            _repositorySeries = Substitute.For<IGenericRepository<ZAIDM_EX_SERIES>>();
+            _uow.GetGenericRepository<ZAIDM_EX_SERIES>().ReturnsForAnyArgs(_repositorySeries);
+            _masterDataBll = new MasterDataBLL(_uow);
+            var seriesFake = FakeStuffs.GetSeriesList();
+            _repositorySeries.Get().ReturnsForAnyArgs(seriesFake);
+            var actualResult = GlobalFunctions.GetSeriesCodeList(_masterDataBll);
+
+            var firstItemText = actualResult.ToList()[0].Text;
+            var firstItemValue = actualResult.ToList()[0].Value;
+            Assert.AreEqual(firstItemText, seriesFake.ToList()[0].SERIES_CODE + "-" + seriesFake.ToList()[0].SERIES_VALUE);
+            Assert.AreEqual(firstItemValue, seriesFake.ToList()[0].SERIES_CODE);
         }
     }
 }

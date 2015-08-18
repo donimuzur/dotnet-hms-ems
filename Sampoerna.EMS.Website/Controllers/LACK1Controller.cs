@@ -26,7 +26,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
-        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
+        private ICompanyBLL _companyBll;
+        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -209,7 +210,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.BukrList = GlobalFunctions.GetCompanyList();
+            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             //model.YearsList = GlobalFunctions.GetYears();
             model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);

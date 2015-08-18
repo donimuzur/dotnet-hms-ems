@@ -18,11 +18,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private Enums.MenuList _mainMenu;
         private IZaidmExGoodTypeBLL _goodTypeBll;
-        public MaterialController(IPageBLL pageBLL, IZaidmExGoodTypeBLL goodTypeBll, IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MaterialMaster){
+        private IUnitOfMeasurementBLL _unitOfMeasurementBll;
+        public MaterialController(IPageBLL pageBLL, IUnitOfMeasurementBLL unitOfMeasurementBll, IZaidmExGoodTypeBLL goodTypeBll, IMaterialBLL materialBll, IChangesHistoryBLL changesHistoryBll) : base(pageBLL, Enums.MenuList.MaterialMaster){
             _materialBll = materialBll;
             _changesHistoryBll = changesHistoryBll;
             _mainMenu = Enums.MenuList.MasterData;
             _goodTypeBll = goodTypeBll;
+            _unitOfMeasurementBll = unitOfMeasurementBll;
         }
 
         private MaterialCreateViewModel InitCreateModel(MaterialCreateViewModel model)
@@ -33,7 +35,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PlantList = GlobalFunctions.GetVirtualPlantListMultiSelect();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.BaseUOM = GlobalFunctions.GetUomList();
+            model.BaseUOM = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
             model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
@@ -98,7 +100,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.BaseUOM = GlobalFunctions.GetUomList();
+            model.BaseUOM = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
             model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }

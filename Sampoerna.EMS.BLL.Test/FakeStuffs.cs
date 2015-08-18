@@ -96,5 +96,23 @@ namespace Sampoerna.EMS.BLL.Test
 
             return fakeDatas;
         }
+        public static IEnumerable<ZAIDM_EX_MARKET> GetMarketList()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_MARKET>();
+            fakeDatas.Add(new ZAIDM_EX_MARKET { MARKET_ID = "01", MARKET_DESC = "market1"});
+
+            return fakeDatas;
+        }
+
+        public static IEnumerable<ZAIDM_EX_SERIES> GetSeriesList()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_SERIES>();
+            fakeDatas.Add(new ZAIDM_EX_SERIES{ SERIES_CODE = "01", SERIES_VALUE = "223"});
+
+            return fakeDatas;
+        }
+        
     }
 }

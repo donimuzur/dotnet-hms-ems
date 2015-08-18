@@ -21,8 +21,8 @@ namespace Sampoerna.EMS.Website.Controllers
         //private List<AutoCompletePlant> _plantList;
         private Enums.MenuList _mainMenu;
         private IUnitOfMeasurementBLL _uomBll;
-
-        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IUnitOfMeasurementBLL uomBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
+        private ICompanyBLL _companyBll;
+        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, ICompanyBLL companyBll, IUnitOfMeasurementBLL uomBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.VirtualMappingPlant)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //_plantList = _masterDataBll.get;
             _mainMenu = Enums.MenuList.MasterData;
             _uomBll = uomBll;
+            _companyBll = companyBll;
         }
 
         //
@@ -52,7 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.CompanyNameList = GlobalFunctions.GetCompanyList();
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             
@@ -165,7 +166,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.CompanyNameList = GlobalFunctions.GetCompanyList();
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
 
