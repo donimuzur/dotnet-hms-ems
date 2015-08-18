@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
@@ -34,6 +35,10 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
         private IPOABLL _poaBll;
 
+        private IZaidmExNPPBKCBLL _nppbkcBll;
+        private IPlantBLL _plantBll;
+        private IPBCK1BLL _pbck1Bll;
+        private ICountryBLL _countryBll;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -56,6 +61,11 @@ namespace Sampoerna.EMS.BLL
             _printHistoryBll = new PrintHistoryBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
+
+            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow,_logger);
+            _plantBll = new PlantBLL(_uow, _logger);
+            _pbck1Bll = new PBCK1BLL(_uow,_logger);
+            _countryBll = new CountryBLL(_uow,_logger);
         }
         
 
@@ -214,65 +224,20 @@ namespace Sampoerna.EMS.BLL
                     dbData.CK5_MATERIAL.Add(ck5Material);
                 }
 
+                inputWorkflowHistory.DocumentId = dbData.CK5_ID;
+                inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+                inputWorkflowHistory.UserId = input.UserId;
+                inputWorkflowHistory.UserRole = input.UserRole;
+
+
+                AddWorkflowHistory(inputWorkflowHistory);
+
+
             }
             else
             {
-                //create new ck5 documents
-                var generateNumberInput = new GenerateDocNumberInput()
-                {
-                    Year = DateTime.Now.Year,
-                    Month = DateTime.Now.Month,
-                    NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID
-                };
-
-                input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
-                input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
-                input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
-                input.Ck5Dto.CREATED_DATE = DateTime.Now;
-                input.Ck5Dto.CREATED_BY = input.UserId;
-
-                dbData = new CK5();
-
-            
-                Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
-            
-                dbData.STATUS_ID = Enums.DocumentStatus.Draft;
-
-                inputWorkflowHistory.ActionType = Enums.ActionType.Created;
-
-                foreach (var ck5Item in input.Ck5Material)
-                {
-                    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
-                    dbData.CK5_MATERIAL.Add(ck5Material);
-                }
-                
-                _repository.Insert(dbData);
-
+                ProcessInsertCk5(input);
             }
-
-            
-
-            ////insert child
-            ////insert the data
-            //foreach (var ck5Item in input.Ck5Material)
-            //{
-            //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-            //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
-            //    dbData.CK5_MATERIAL.Add(ck5Material);
-            //}
-
-           
-            //_repository.InsertOrUpdate(dbData);
-
-            inputWorkflowHistory.DocumentId = dbData.CK5_ID;
-            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
-            inputWorkflowHistory.UserId = input.UserId;
-            inputWorkflowHistory.UserRole = input.UserRole;
-         
-
-            AddWorkflowHistory(inputWorkflowHistory);
-
 
             _uow.SaveChanges();
 
@@ -334,6 +299,27 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
+        private CK5MaterialOutput GetAdditionalValueCk5Material(CK5MaterialOutput input)
+        {
+            input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+
+            var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(input.Plant, input.Brand);
+            if (dbBrand == null)
+            {
+                input.Hje = 0;
+                input.Tariff = 0;
+            }
+            else
+            {
+                input.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                input.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+            }
+
+            input.ExciseValue = input.ConvertedQty * input.Tariff;
+
+            return input;
+        }
+
         public List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs)
         {
             var outputList = ValidateCk5Material(inputs);
@@ -343,23 +329,13 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var output in outputList)
             {
+                var resultValue = GetAdditionalValueCk5Material(output);
 
-                output.ConvertedQty = Convert.ToInt32(output.Qty) * Convert.ToInt32(output.Convertion);
-
-                var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(output.Plant, output.Brand);
-                if (dbBrand == null)
-                {
-                    output.Hje = 0;
-                    output.Tariff = 0;
-                }
-                else
-                {
-                    output.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
-                    output.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
-                }
-                
-                output.ExciseValue = output.ConvertedQty * output.Tariff;
-
+                output.ConvertedQty = resultValue.ConvertedQty;
+                output.Hje = resultValue.Hje;
+                output.Tariff = resultValue.Tariff;
+                output.ExciseValue = resultValue.ExciseValue;
+              
             }
 
             return outputList;
@@ -998,23 +974,424 @@ namespace Sampoerna.EMS.BLL
                                    " " + dt.ToString("yyyy");
         }
 
-        //public void AddPrintHistory(long id, string userId)
-        //{
-        //    var dtData = _repository.GetByID(id);
-        //     if (dtData == null)
-        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+       
+        private List<CK5FileUploadDocumentsOutput> ValidateCk5UploadFileDocuments(List<CK5UploadFileDocumentsInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5FileUploadDocumentsOutput>();
 
-        //    var printHistory = new PrintHistoryDto();
-        //    printHistory.FORM_ID = dtData.CK5_ID;
-        //    printHistory.FORM_NUMBER = dtData.SUBMISSION_NUMBER;
-        //    printHistory.FORM_TYPE_ID = Enums.FormType.CK5;
-        //    printHistory.PRINT_BY = userId;
-        //    printHistory.PRINT_DATE = DateTime.Now;
+            foreach (var ck5UploadFileDocuments in inputs)
+            {
+                messageList.Clear();
+
+                //var output = new CK5MaterialOutput();
+                var output = Mapper.Map<CK5FileUploadDocumentsOutput>(ck5UploadFileDocuments);
+
+                //ck5type
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.Ck5Type))
+                    messageList.Add("Type not valid");
+                else
+                {
+                    if (typeof(Enums.CK5Type).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.Ck5Type)))
+                        output.CK5_TYPE =
+                            (Enums.CK5Type)
+                                Enum.Parse(typeof(Enums.CK5Type), ck5UploadFileDocuments.Ck5Type);
+                    else
+                        messageList.Add("ExGoodType not valid");
+                }
+
+                //kppbc city
+
+                var dbNppbkc = _nppbkcBll.GetDetailsByCityName(ck5UploadFileDocuments.KppBcCityName);
+                if (dbNppbkc == null)
+                    messageList.Add("City Not Exist");
+                else
+                    output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
+                
+                //excise goods type
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodType))
+                    messageList.Add("ExGoodType not valid");
+                else
+                {
+                    if (typeof(Enums.ExGoodsType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExGoodType)))
+                        output.EX_GOODS_TYPE =
+                            (Enums.ExGoodsType)
+                                Enum.Parse(typeof(Enums.ExGoodsType), ck5UploadFileDocuments.ExGoodType);
+                    else
+                        messageList.Add("ExGoodType not valid");
+                }
+
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExciseSettlement))
+                    messageList.Add("ExciseSettlement not valid");
+                else
+                {
+                    if (typeof (Enums.ExciseSettlement).IsEnumDefined(
+                            Convert.ToInt32(ck5UploadFileDocuments.ExciseSettlement)))
+                        output.EX_SETTLEMENT_ID =
+                            (Enums.ExciseSettlement)
+                                Enum.Parse(typeof (Enums.ExciseSettlement), ck5UploadFileDocuments.ExciseSettlement);
+                    else
+                        messageList.Add("ExciseSettlement not valid");
+                }
+
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExciseStatus))
+                    messageList.Add("ExciseStatus not valid");
+                else
+                {
+                    if (typeof (Enums.ExciseStatus).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.ExciseStatus)))
+                        output.EX_STATUS_ID =
+                            (Enums.ExciseStatus)
+                                Enum.Parse(typeof (Enums.ExciseStatus), ck5UploadFileDocuments.ExciseStatus);
+                    else
+                        messageList.Add("ExciseStatus not valid");
+                }
+
+                if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.RequestType))
+                    messageList.Add("RequestType not valid");
+                else
+                {
+
+                    if (typeof (Enums.RequestType).IsEnumDefined(Convert.ToInt32(ck5UploadFileDocuments.RequestType)))
+                        output.REQUEST_TYPE_ID =
+                            (Enums.RequestType)
+                                Enum.Parse(typeof (Enums.RequestType), ck5UploadFileDocuments.RequestType);
+                    else
+                        messageList.Add("ExciseStatus not valid");
+                }
+
+                var sourcePlant = _plantBll.GetT001ById(ck5UploadFileDocuments.SourcePlantId);
+
+                if (sourcePlant == null)
+                    messageList.Add("Source Plant Not Exist");
+                else
+                {
+                    output.SOURCE_PLANT_ID = ck5UploadFileDocuments.SourcePlantId;
+                    output.SOURCE_PLANT_NPWP = sourcePlant.Npwp;
+                    output.SOURCE_PLANT_NPPBKC_ID = sourcePlant.NPPBKC_ID;
+                    output.SOURCE_PLANT_COMPANY_CODE = sourcePlant.CompanyCode;
+                    output.SOURCE_PLANT_COMPANY_NAME = sourcePlant.CompanyName;
+                    output.SOURCE_PLANT_ADDRESS = sourcePlant.CompanyAddress;
+                    output.SOURCE_PLANT_KPPBC_NAME_OFFICE = sourcePlant.KppbcCity + "-" + sourcePlant.KppbcNo;
+                    output.SOURCE_PLANT_NAME = sourcePlant.NAME1;
+                }
+
+                var destPlant = _plantBll.GetT001ById(ck5UploadFileDocuments.DestPlantId);
+
+                if (destPlant == null)
+                    messageList.Add("Destination Plant Not Exist");
+                else
+                {
+                    output.DEST_PLANT_ID = ck5UploadFileDocuments.DestPlantId;
+                    output.DEST_PLANT_NPWP = destPlant.Npwp;
+                    output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
+                    output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
+                    output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
+                    output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
+                    output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
+                    output.DEST_PLANT_NAME = destPlant.NAME1;
+                }
+
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.InvoiceDateDisplay))
+                {
+                    var dateTime = Utils.ConvertHelper.StringToDateTimeCk5FileDocuments(ck5UploadFileDocuments.InvoiceDateDisplay);
+                    if (dateTime != null)
+                        output.INVOICE_DATE = dateTime;
+                    else
+                        messageList.Add("Invoice Date not valid");
+                }
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.PbckDecreeNumber))
+                {
+                    var pbck1 = _pbck1Bll.GetByDocumentNumber(ck5UploadFileDocuments.PbckDecreeNumber);
+                    if (pbck1 == null)
+                        messageList.Add("PbckDecreeNumber Not Exist");
+                    else
+                    {
+                        output.PBCK1_DECREE_ID = pbck1.Pbck1Id;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.CarriageMethod))
+                {
+                    if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.CarriageMethod))
+                        messageList.Add("CarriageMethod not valid");
+                    else
+                    {
+                        if (typeof (Enums.CarriageMethod).IsEnumDefined(
+                                Convert.ToInt32(ck5UploadFileDocuments.CarriageMethod)))
+                            output.CARRIAGE_METHOD_ID =
+                                (Enums.CarriageMethod)
+                                    Enum.Parse(typeof (Enums.CarriageMethod), ck5UploadFileDocuments.CarriageMethod);
+                        else
+                            messageList.Add("CarriageMethod not valid");
+                    }
+                }
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.PackageUomName))
+                {
+
+                    if (!_uomBll.IsUomIdExist(ck5UploadFileDocuments.PackageUomName))
+                        messageList.Add("UOM not exist");
+                }
+
+                //exsport type
+                if (ck5UploadFileDocuments.Ck5Type == Convert.ToInt32(Enums.CK5Type.Export).ToString())
+                {
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.LOADING_PORT))
+                        messageList.Add("Loading port empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.LOADING_PORT_ID))
+                        messageList.Add("Loading port Id empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.LOADING_PORT_NAME))
+                        messageList.Add("Loading port Name empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.FINAL_PORT))
+                        messageList.Add("Final port empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.FINAL_PORT_ID))
+                        messageList.Add("Final port Id empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.FINAL_PORT_NAME))
+                        messageList.Add("Final port name empty");
+
+                    //check country code
+                    var country = _countryBll.GetCountryByCode(ck5UploadFileDocuments.DEST_COUNTRY_CODE);
+                    if (country == null)
+                        messageList.Add("Country not exist");
+                    else
+                    {
+                        output.DEST_COUNTRY_NAME = country.COUNTRY_NAME;
+                    }
+                }
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+            //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
+            return outputList;
+        }
 
 
-        //    _printHistoryBll.AddPrintHistory(printHistory);
+        public List<CK5FileUploadDocumentsOutput> CK5UploadFileDocumentsProcess(List<CK5UploadFileDocumentsInput> inputs)
+        {
+            var lisCk5Material = new List<CK5MaterialInput>();
 
-        //    _uow.SaveChanges();
-        //}
+            
+            foreach (var ck5UploadFileDocumentsInput in inputs)
+            {
+                var inputCk5Material = new CK5MaterialInput();
+                inputCk5Material.Plant = ck5UploadFileDocumentsInput.SourcePlantId;
+                inputCk5Material.Brand = ck5UploadFileDocumentsInput.MatNumber;
+                inputCk5Material.Qty = ck5UploadFileDocumentsInput.Qty;
+                inputCk5Material.Uom = ck5UploadFileDocumentsInput.UomMaterial;
+                inputCk5Material.Convertion = ck5UploadFileDocumentsInput.Convertion;
+                inputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
+                inputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
+                inputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                
+                lisCk5Material.Add(inputCk5Material);
+
+            }
+
+            var outputListCk5Material = ValidateCk5Material(lisCk5Material);
+
+
+
+            var outputList = ValidateCk5UploadFileDocuments(inputs);
+
+            for (int i = 0; i < outputList.Count; i++)
+            {
+                outputList[i].Message += outputListCk5Material[i].Message;
+            }
+
+            if (!outputList.All(c => c.IsValid))
+                return outputList;
+
+
+            if (!outputListCk5Material.All(ck5MaterialOutput => ck5MaterialOutput.IsValid))
+                return outputList;
+
+            foreach (var output in outputListCk5Material)
+            {
+                var resultValue = GetAdditionalValueCk5Material(output);
+
+                output.ConvertedQty = resultValue.ConvertedQty;
+                output.Hje = resultValue.Hje;
+                output.Tariff = resultValue.Tariff;
+                output.ExciseValue = resultValue.ExciseValue;
+
+            }
+
+            foreach (var ck5UploadFileDocumentsInput in outputList)
+            {
+                var outputCk5Material = new CK5MaterialOutput();
+                outputCk5Material.Plant = ck5UploadFileDocumentsInput.SourcePlantId;
+                outputCk5Material.Brand = ck5UploadFileDocumentsInput.MatNumber;
+                outputCk5Material.Qty = ck5UploadFileDocumentsInput.Qty;
+                outputCk5Material.Uom = ck5UploadFileDocumentsInput.UomMaterial;
+                outputCk5Material.Convertion = ck5UploadFileDocumentsInput.Convertion;
+                outputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
+                outputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
+                outputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+
+                var resultValue = GetAdditionalValueCk5Material(outputCk5Material);
+
+                ck5UploadFileDocumentsInput.ConvertedQty = resultValue.ConvertedQty;
+                ck5UploadFileDocumentsInput.Hje = resultValue.Hje;
+                ck5UploadFileDocumentsInput.Tariff = resultValue.Tariff;
+                ck5UploadFileDocumentsInput.ExciseValue = resultValue.ExciseValue;
+
+            }
+
+            return outputList;
+        }
+
+        private void ProcessInsertCk5(CK5SaveInput input)
+        {
+            //workflowhistory
+            var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+
+            CK5 dbData = null;
+
+
+            //create new ck5 documents
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Year = DateTime.Now.Year,
+                Month = DateTime.Now.Month,
+                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID
+            };
+
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+            input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
+            input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
+            input.Ck5Dto.CREATED_DATE = DateTime.Now;
+            input.Ck5Dto.CREATED_BY = input.UserId;
+
+            dbData = new CK5();
+
+
+            Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+
+            inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+
+            foreach (var ck5Item in input.Ck5Material)
+            {
+
+                var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+                ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                dbData.CK5_MATERIAL.Add(ck5Material);
+            }
+
+            _repository.Insert(dbData);
+            
+            inputWorkflowHistory.DocumentId = dbData.CK5_ID;
+            inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+        }
+
+       
+        public void InsertListCk5(CK5SaveListInput input)
+        {
+            List<CK5MaterialDto> listCk5Material = null;
+            string docSeqNumber = "-1";
+            bool isFirstTime = true;
+
+            CK5Dto ck5Dto = null;
+            CK5SaveInput inputSave = null;
+
+            //order first
+            input.ListCk5UploadDocumentDto = input.ListCk5UploadDocumentDto.OrderBy(x => x.DocSeqNumber).ToList();
+
+            foreach (var ck5FileDocumentDto in input.ListCk5UploadDocumentDto)
+            {
+                if (docSeqNumber != ck5FileDocumentDto.DocSeqNumber)
+                {
+                    docSeqNumber = ck5FileDocumentDto.DocSeqNumber;
+
+                    if (!isFirstTime)
+                    {
+                        inputSave = new CK5SaveInput();
+                        inputSave.Ck5Dto = ck5Dto;
+                        inputSave.Ck5Material = listCk5Material;
+                        inputSave.UserId = input.UserId;
+                        inputSave.UserRole = input.UserRole;
+
+                        ProcessInsertCk5(inputSave);
+                    }
+
+                    //new record
+                    listCk5Material = new List<CK5MaterialDto>();
+
+                    ck5Dto = Mapper.Map<CK5Dto>(ck5FileDocumentDto);
+
+                    var ck5Material = Mapper.Map<CK5MaterialDto>(ck5FileDocumentDto);
+
+                    listCk5Material.Add(ck5Material);
+
+
+                }
+                else
+                {
+                    var ck5Material = Mapper.Map<CK5MaterialDto>(ck5FileDocumentDto);
+
+                    if (listCk5Material == null)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                    listCk5Material.Add(ck5Material);
+                }
+               
+                isFirstTime = false;
+
+            }
+
+
+            //save the lastone
+            inputSave = new CK5SaveInput();
+            inputSave.Ck5Dto = ck5Dto;
+            inputSave.Ck5Material = listCk5Material;
+            inputSave.UserId = input.UserId;
+            inputSave.UserRole = input.UserRole;
+            ProcessInsertCk5(inputSave);
+
+            try
+            {
+                _uow.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+
+            //return Mapper.Map<CK5Dto>(dbData);
+
+
+        }
     }
 }

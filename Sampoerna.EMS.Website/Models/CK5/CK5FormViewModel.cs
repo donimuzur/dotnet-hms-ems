@@ -207,5 +207,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList CountryCodeList { get; set; }
         public string CountryName { get; set; }
         public string DisplayDetailsDestinationCountry { get; set; }
+
+        public string Ck5TypeString { get; set; }
+        public string MesssageUploadFileDocuments { get; set; }
+
     }
 }
