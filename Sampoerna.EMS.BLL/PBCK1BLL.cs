@@ -1270,7 +1270,7 @@ namespace Sampoerna.EMS.BLL
             //ambil dari prod converter
             if (dbData.PBCK1_PROD_CONVERTER != null)
             {
-                rc.Detail.ProdConverterProductType = string.Join(",",
+                rc.Detail.ProdConverterProductType = string.Join(", ",
                     dbData.PBCK1_PROD_CONVERTER.Select(d => d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").Distinct().ToArray());
 
                 var prodConverterGroup = dbData.PBCK1_PROD_CONVERTER.GroupBy(p => new
@@ -1278,17 +1278,19 @@ namespace Sampoerna.EMS.BLL
                     p.PROD_CODE,
                     p.PRODUCT_TYPE,
                     p.PRODUCT_ALIAS,
-                    p.CONVERTER_UOM_ID
+                    p.CONVERTER_UOM_ID,
+                    p.UOM.UOM_DESC
                 }).Select(g => new
                 {
                     g.Key.PROD_CODE,
                     g.Key.PRODUCT_TYPE,
                     g.Key.PRODUCT_ALIAS,
                     g.Key.CONVERTER_UOM_ID,
+                    g.Key.UOM_DESC,
                     Total = g.Sum(p => p.CONVERTER_OUTPUT)
                 });
                 rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.CONVERTER_UOM_ID + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
             }
             if (dbData.PERIOD_FROM.HasValue)
             {
