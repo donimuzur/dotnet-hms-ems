@@ -142,9 +142,8 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectList, "Value", "Text");
         }
 
-        public static SelectList GetProductCodeList()
+        public static SelectList GetProductCodeList(IZaidmExProdTypeBLL productBll)
         {
-            IZaidmExProdTypeBLL productBll = MvcApplication.GetInstance<ZaidmExProdTypeBLL>();
             var data = productBll.GetAll().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem

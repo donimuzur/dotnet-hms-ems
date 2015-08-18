@@ -91,7 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
             //model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
-            model.ProductCodeList = GlobalFunctions.GetProductCodeList();
+            model.ProductCodeList = GlobalFunctions.GetProductCodeList(_productBll);
             model.SeriesList = GlobalFunctions.GetSeriesCodeList(_masterBll);
             model.MarketCodeList = GlobalFunctions.GetMarketCodeList(_masterBll);
             model.CountryCodeList = GlobalFunctions.GetCountryList();
@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
             model.CutFillerCodeList = GlobalFunctions.GetCutFillerCodeList(model.PlantId);
-            model.ProductCodeList = GlobalFunctions.GetProductCodeList();
+            model.ProductCodeList = GlobalFunctions.GetProductCodeList(_productBll);
             model.SeriesList = GlobalFunctions.GetSeriesCodeList(_masterBll);
             model.MarketCodeList = GlobalFunctions.GetMarketCodeList(_masterBll);
             model.CountryCodeList = GlobalFunctions.GetCountryList();

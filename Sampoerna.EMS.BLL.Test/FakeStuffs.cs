@@ -113,6 +113,15 @@ namespace Sampoerna.EMS.BLL.Test
 
             return fakeDatas;
         }
+
+        public static IEnumerable<ZAIDM_EX_PRODTYP> GetProdTypList()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_PRODTYP>();
+            fakeDatas.Add(new ZAIDM_EX_PRODTYP { PROD_CODE = "P1", PRODUCT_TYPE = "PXXX", PRODUCT_ALIAS = "PP"});
+
+            return fakeDatas;
+        }
         
     }
 }

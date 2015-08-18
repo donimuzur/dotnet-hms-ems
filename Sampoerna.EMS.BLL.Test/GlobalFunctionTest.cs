@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BLL.Test
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IUnitOfMeasurementBLL _unitOfMeasurementBll;
         private IMasterDataBLL _masterDataBll;
+        private IZaidmExProdTypeBLL _prodTypeBll;
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repositoryPoa;
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repositoryNppbkc;
@@ -33,7 +34,8 @@ namespace Sampoerna.EMS.BLL.Test
         private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGoodsType;
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
-        private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries; 
+        private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
+        private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProdType; 
         private ILogger _logger;
        
         [TestInitialize]
@@ -182,6 +184,21 @@ namespace Sampoerna.EMS.BLL.Test
             var firstItemValue = actualResult.ToList()[0].Value;
             Assert.AreEqual(firstItemText, seriesFake.ToList()[0].SERIES_CODE + "-" + seriesFake.ToList()[0].SERIES_VALUE);
             Assert.AreEqual(firstItemValue, seriesFake.ToList()[0].SERIES_CODE);
+        }
+        [TestMethod]
+        public void GetProdTypeTest()
+        {
+            _repositoryProdType = Substitute.For<IGenericRepository<ZAIDM_EX_PRODTYP>>();
+            _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>().ReturnsForAnyArgs(_repositoryProdType);
+            _prodTypeBll = new ZaidmExProdTypeBLL(_uow, _logger);
+            var ptypeFake = FakeStuffs.GetProdTypList();
+            _repositoryProdType.Get().ReturnsForAnyArgs(ptypeFake);
+            var actualResult = GlobalFunctions.GetProductCodeList(_prodTypeBll);
+
+            var firstItemText = actualResult.ToList()[0].Text;
+            var firstItemValue = actualResult.ToList()[0].Value;
+            Assert.AreEqual(firstItemText, ptypeFake.ToList()[0].PROD_CODE + "-" + ptypeFake.ToList()[0].PRODUCT_TYPE + " [" + ptypeFake.ToList()[0].PRODUCT_ALIAS+ "]");
+            Assert.AreEqual(firstItemValue, ptypeFake.ToList()[0].PROD_CODE);
         }
     }
 }
