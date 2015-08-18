@@ -33,6 +33,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _exGroupBll = exGroupBll;
             _mainMenu = Enums.MenuList.LACK2;
         }
+
+
         #region CRUD Actions
 
         // GET: LACK2
@@ -79,14 +81,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
 
-            //var GovStatuses = from Enums.DocumentStatusGov s in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-            //                  select new { ID = (int)s, Name = s.ToString() };
+            var GovStatuses = from Enums.DocumentStatusGov s in Enum.GetValues(typeof(Enums.DocumentStatusGov))
+                              select new { ID = (int)s, Name = s.ToString() };
 
-            //var Statuses = from Enums.DocumentStatus s in Enum.GetValues(typeof(Enums.DocumentStatus))
-            //                  select new { ID = (int)s, Name = s.ToString() };
+            var Statuses = from Enums.DocumentStatus s in Enum.GetValues(typeof(Enums.DocumentStatus))
+                           select new { ID = (int)s, Name = s.ToString() };
 
-            //model.GovStatusDDL = new SelectList(GovStatuses, "ID", "Name");
-            //model.StatusDDL = new SelectList(Statuses, "ID", "Name");
+            model.GovStatusDDL = new SelectList(GovStatuses, "ID", "Name");
+            model.StatusDDL = new SelectList(Statuses, "ID", "Name");
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -124,6 +126,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 #endregion
+
 
         #region PreviewActions
 

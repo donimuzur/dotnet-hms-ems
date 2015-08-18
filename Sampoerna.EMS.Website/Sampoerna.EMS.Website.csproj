@@ -320,6 +320,7 @@
     <Compile Include="Models\LACK2\LACK2Model.cs" />
     <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
+    <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -930,7 +931,7 @@
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
-    <Content Include="Views\LACK2\_CreateBasicInfo.cshtml" />
+    <Content Include="Views\LACK2\CreateDocument.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
