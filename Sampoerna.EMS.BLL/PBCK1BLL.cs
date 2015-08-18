@@ -1067,9 +1067,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.Rejected);
 
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
 
             dbData.APPROVED_BY_POA = input.UserId;
@@ -1270,7 +1271,7 @@ namespace Sampoerna.EMS.BLL
             //ambil dari prod converter
             if (dbData.PBCK1_PROD_CONVERTER != null)
             {
-                rc.Detail.ProdConverterProductType = string.Join(",",
+                rc.Detail.ProdConverterProductType = string.Join(", ",
                     dbData.PBCK1_PROD_CONVERTER.Select(d => d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").Distinct().ToArray());
 
                 var prodConverterGroup = dbData.PBCK1_PROD_CONVERTER.GroupBy(p => new
@@ -1278,17 +1279,19 @@ namespace Sampoerna.EMS.BLL
                     p.PROD_CODE,
                     p.PRODUCT_TYPE,
                     p.PRODUCT_ALIAS,
-                    p.CONVERTER_UOM_ID
+                    p.CONVERTER_UOM_ID,
+                    p.UOM.UOM_DESC
                 }).Select(g => new
                 {
                     g.Key.PROD_CODE,
                     g.Key.PRODUCT_TYPE,
                     g.Key.PRODUCT_ALIAS,
                     g.Key.CONVERTER_UOM_ID,
+                    g.Key.UOM_DESC,
                     Total = g.Sum(p => p.CONVERTER_OUTPUT)
                 });
                 rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.CONVERTER_UOM_ID + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
             }
             if (dbData.PERIOD_FROM.HasValue)
             {
@@ -1301,6 +1304,7 @@ namespace Sampoerna.EMS.BLL
             // ReSharper disable once PossibleInvalidOperationException
             rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
+            rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
             if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierCompanyName = dbData.SUPPLIER_PLANT;
@@ -1329,9 +1333,21 @@ namespace Sampoerna.EMS.BLL
 
             //Set ProdPlan
             rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
+            //Set from Pbck1ProdConv
             rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
+            foreach (var dataItem in dbData.PBCK1_PROD_CONVERTER.Select(item => new Pbck1ReportBrandRegistrationDto()
+            {
+                Type = item.PRODUCT_ALIAS,
+                Brand = "todo: get from ?",
+                Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
+                Convertion = item.CONVERTER_OUTPUT.HasValue ? item.CONVERTER_OUTPUT.Value.ToString("N0") : "-",
+                ConvertionUom = item.UOM.UOM_DESC,
+                ConvertionUomId = item.CONVERTER_UOM_ID
+            }))
+            {
+                rc.BrandRegistrationList.Add(dataItem);
+            }
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
-
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {

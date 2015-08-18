@@ -49,6 +49,7 @@
               <xs:element name="ProdPlanPeriod" msprop:Generator_ColumnVarNameInTable="columnProdPlanPeriod" msprop:Generator_ColumnPropNameInRow="ProdPlanPeriod" msprop:Generator_ColumnPropNameInTable="ProdPlanPeriodColumn" msprop:Generator_UserColumnName="ProdPlanPeriod" type="xs:string" minOccurs="0" />
               <xs:element name="LackPeriod" msprop:Generator_ColumnVarNameInTable="columnLackPeriod" msprop:Generator_ColumnPropNameInRow="LackPeriod" msprop:Generator_ColumnPropNameInTable="LackPeriodColumn" msprop:Generator_UserColumnName="LackPeriod" type="xs:string" minOccurs="0" />
               <xs:element name="DocumentText" msprop:Generator_ColumnVarNameInTable="columnDocumentText" msprop:Generator_ColumnPropNameInRow="DocumentText" msprop:Generator_ColumnPropNameInTable="DocumentTextColumn" msprop:Generator_UserColumnName="DocumentText" type="xs:string" minOccurs="0" />
+              <xs:element name="RequestQtyUomName" msprop:Generator_ColumnVarNameInTable="columnRequestQtyUomName" msprop:Generator_ColumnPropNameInRow="RequestQtyUomName" msprop:Generator_ColumnPropNameInTable="RequestQtyUomNameColumn" msprop:Generator_UserColumnName="RequestQtyUomName" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -58,13 +59,13 @@
               <xs:element name="ProdTypeCode" msprop:Generator_ColumnVarNameInTable="columnProdTypeCode" msprop:Generator_ColumnPropNameInRow="ProdTypeCode" msprop:Generator_ColumnPropNameInTable="ProdTypeCodeColumn" msprop:Generator_UserColumnName="ProdTypeCode" type="xs:string" minOccurs="0" />
               <xs:element name="ProdTypeName" msprop:Generator_ColumnVarNameInTable="columnProdTypeName" msprop:Generator_ColumnPropNameInRow="ProdTypeName" msprop:Generator_ColumnPropNameInTable="ProdTypeNameColumn" msprop:Generator_UserColumnName="ProdTypeName" type="xs:string" minOccurs="0" />
               <xs:element name="ProdAlias" msprop:Generator_ColumnVarNameInTable="columnProdAlias" msprop:Generator_ColumnPropNameInRow="ProdAlias" msprop:Generator_ColumnPropNameInTable="ProdAliasColumn" msprop:Generator_UserColumnName="ProdAlias" type="xs:string" minOccurs="0" />
-              <xs:element name="Amount" msprop:Generator_ColumnVarNameInTable="columnAmount" msprop:Generator_ColumnPropNameInRow="Amount" msprop:Generator_ColumnPropNameInTable="AmountColumn" msprop:Generator_UserColumnName="Amount" type="xs:string" minOccurs="0" />
-              <xs:element name="BkcRequired" msprop:Generator_ColumnVarNameInTable="columnBkcRequired" msprop:Generator_ColumnPropNameInRow="BkcRequired" msprop:Generator_ColumnPropNameInTable="BkcRequiredColumn" msprop:Generator_UserColumnName="BkcRequired" type="xs:string" minOccurs="0" />
+              <xs:element name="BkcRequired" msprop:Generator_ColumnVarNameInTable="columnBkcRequired" msprop:Generator_ColumnPropNameInRow="BkcRequired" msprop:Generator_ColumnPropNameInTable="BkcRequiredColumn" msprop:Generator_UserColumnName="BkcRequired" type="xs:decimal" minOccurs="0" />
               <xs:element name="BkcRequiredUomId" msprop:Generator_ColumnVarNameInTable="columnBkcRequiredUomId" msprop:Generator_ColumnPropNameInRow="BkcRequiredUomId" msprop:Generator_ColumnPropNameInTable="BkcRequiredUomIdColumn" msprop:Generator_UserColumnName="BkcRequiredUomId" type="xs:string" minOccurs="0" />
               <xs:element name="BkcRequiredUomName" msprop:Generator_ColumnVarNameInTable="columnBkcRequiredUomName" msprop:Generator_ColumnPropNameInRow="BkcRequiredUomName" msprop:Generator_ColumnPropNameInTable="BkcRequiredUomNameColumn" msprop:Generator_UserColumnName="BkcRequiredUomName" type="xs:string" minOccurs="0" />
               <xs:element name="MonthId" msprop:Generator_ColumnVarNameInTable="columnMonthId" msprop:Generator_ColumnPropNameInRow="MonthId" msprop:Generator_ColumnPropNameInTable="MonthIdColumn" msprop:Generator_UserColumnName="MonthId" type="xs:string" minOccurs="0" />
               <xs:element name="MonthName" msprop:Generator_ColumnVarNameInTable="columnMonthName" msprop:Generator_ColumnPropNameInRow="MonthName" msprop:Generator_ColumnPropNameInTable="MonthNameColumn" msprop:Generator_UserColumnName="MonthName" type="xs:string" minOccurs="0" />
               <xs:element name="No" msprop:Generator_ColumnVarNameInTable="columnNo" msprop:Generator_ColumnPropNameInRow="No" msprop:Generator_ColumnPropNameInTable="NoColumn" msprop:Generator_UserColumnName="No" type="xs:string" minOccurs="0" />
+              <xs:element name="AmountDecimal" msprop:Generator_ColumnVarNameInTable="columnAmountDecimal" msprop:Generator_ColumnPropNameInRow="AmountDecimal" msprop:Generator_ColumnPropNameInTable="AmountDecimalColumn" msprop:Generator_UserColumnName="AmountDecimal" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -77,6 +78,7 @@
               <xs:element name="Convertion" msprop:Generator_ColumnVarNameInTable="columnConvertion" msprop:Generator_ColumnPropNameInRow="Convertion" msprop:Generator_ColumnPropNameInTable="ConvertionColumn" msprop:Generator_UserColumnName="Convertion" type="xs:string" minOccurs="0" />
               <xs:element name="ConvertionUom" msprop:Generator_ColumnVarNameInTable="columnConvertionUom" msprop:Generator_ColumnPropNameInRow="ConvertionUom" msprop:Generator_ColumnPropNameInTable="ConvertionUomColumn" msprop:Generator_UserColumnName="ConvertionUom" type="xs:string" minOccurs="0" />
               <xs:element name="No" msprop:Generator_ColumnVarNameInTable="columnNo" msprop:Generator_ColumnPropNameInRow="No" msprop:Generator_ColumnPropNameInTable="NoColumn" msprop:Generator_UserColumnName="No" type="xs:string" minOccurs="0" />
+              <xs:element name="ConvertionUomId" msprop:Generator_ColumnVarNameInTable="columnConvertionUomId" msprop:Generator_ColumnPropNameInRow="ConvertionUomId" msprop:Generator_ColumnPropNameInTable="ConvertionUomIdColumn" msprop:Generator_UserColumnName="ConvertionUomId" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
