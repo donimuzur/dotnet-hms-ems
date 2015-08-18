@@ -97,7 +97,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
-            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true);
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true);
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
