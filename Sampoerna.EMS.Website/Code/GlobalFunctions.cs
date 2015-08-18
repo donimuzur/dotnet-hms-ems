@@ -94,16 +94,14 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
-        public static SelectList GetUomList()
+        public static SelectList GetUomList(IUnitOfMeasurementBLL uomBll)
         {
-            IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
             var data = uomBll.GetAll().Where(x => x.IS_DELETED != true);
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
-        public static SelectList GetCompanyList()
+        public static SelectList GetCompanyList(ICompanyBLL companyBll)
         {
-            ICompanyBLL companyBll = MvcApplication.GetInstance<CompanyBLL>();
             var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
             return new SelectList(data, "BUKRS", "BUTXT");
         }

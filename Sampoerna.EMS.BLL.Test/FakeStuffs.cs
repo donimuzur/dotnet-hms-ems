@@ -87,5 +87,14 @@ namespace Sampoerna.EMS.BLL.Test
             
             return fakeDatas;
         }
+
+        public static IEnumerable<UOM> GetUomList()
+        {
+
+            var fakeDatas = new List<UOM>();
+            fakeDatas.Add(new UOM() { UOM_ID = "kg", UOM_DESC = "kilogram" });
+
+            return fakeDatas;
+        }
     }
 }

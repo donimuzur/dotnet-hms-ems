@@ -20,9 +20,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBLL;
         //private List<AutoCompletePlant> _plantList;
         private Enums.MenuList _mainMenu;
-       
+        private IUnitOfMeasurementBLL _uomBll;
 
-        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
+        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IUnitOfMeasurementBLL uomBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.VirtualMappingPlant)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBLL = changeLogHistoryBLL;
             //_plantList = _masterDataBll.get;
             _mainMenu = Enums.MenuList.MasterData;
+            _uomBll = uomBll;
         }
 
         //

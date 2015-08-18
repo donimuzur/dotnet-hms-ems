@@ -42,7 +42,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPrintHistoryBLL _printHistoryBll;
         private IPOABLL _poabll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
-        public CK5Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
+        private IUnitOfMeasurementBLL _uomBll;
+
+        public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
             IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
             IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
@@ -56,6 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _printHistoryBll = printHistoryBll;
             _poabll = poabll;
             _nppbkcbll = nppbckbll;
+            _uomBll = uomBll;
         }
 
         #region View Documents
@@ -247,7 +250,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
           
-            model.PackageUomList = GlobalFunctions.GetUomList();
+            model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
@@ -478,7 +481,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
-            model.PackageUomList = GlobalFunctions.GetUomList();
+            model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 

@@ -215,8 +215,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.SupplierList = GlobalFunctions.GetSupplierPlantList();
             model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.WasteUomList = GlobalFunctions.GetUomList();
-            model.ReturnUomList = GlobalFunctions.GetUomList();
+            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
             //liststatus.
 
             return (model);
