@@ -61,12 +61,12 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Npwp, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.NPWP))
-                  .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.BUTXT))
-                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.SPRAS))
+                .ForMember(dest => dest.Npwp, opt => opt.MapFrom(src => src.T001K.T001.NPWP))
+                  .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.T001K.T001.BUTXT))
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.T001K.T001.SPRAS))
                  .ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
                  .ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
-                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null || src.ZAIDM_EX_NPPBKC.T001 == null ? string.Empty : src.ZAIDM_EX_NPPBKC.T001.BUKRS))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.T001K == null || src.T001K.T001 == null ? string.Empty : src.T001K.T001.BUKRS))
                 .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
             
             #region Workflow History
@@ -104,9 +104,9 @@ namespace Sampoerna.EMS.BLL
 
 
             Mapper.CreateMap<T001W, PlantDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NAME1))
-                ;
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.NAME1))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID));
            
 
             Mapper.CreateMap<PRINT_HISTORY, PrintHistoryDto>().IgnoreAllNonExisting();
@@ -238,6 +238,17 @@ namespace Sampoerna.EMS.BLL
 	    #region ExGoodTyp
 
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Material Dto
+            Mapper.CreateMap<MaterialDto, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_MATERIAL,MaterialDto>().IgnoreAllNonExisting();
+            #endregion
+            #region Email Template
+
+            Mapper.CreateMap<EMAIL_TEMPLATE, EMAIL_TEMPLATEDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<EMAIL_TEMPLATEDto, EMAIL_TEMPLATE>().IgnoreAllNonExisting();
 
             #endregion
         }

@@ -56,8 +56,8 @@
             $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
-            
-            $("#Detail_SupplierPortId").change(function () {
+
+            $("#Detail_SupplierPortId").change(function() {
                 supplierPortOnChange();
             });
 
@@ -72,7 +72,7 @@
             $('#ProdConvSubmitBtn').click(function() {
                 prodConvGenerateClick('@Url.Action("UploadFileConversion", "PBCK1")');
             });
-            
+
             $('#ProdPlanSubmitBtn').click(function() {
                 prodPlanGenerateClick('@Url.Action("UploadFilePlan", "PBCK1")');
             });
@@ -91,8 +91,9 @@
                 pbck1TypeOnchange();
             });
 
-            //load nppbkc detail
-            nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
+            $('#Detail_NppbkcId').change(function() {
+                nppbkcIdOnChange();
+            });
 
             ajaxLoadSupplierPlant('@Url.Action("GetSupplierPlant", "PBCK1")');
 
@@ -101,13 +102,50 @@
             $('#Detail_GoodType').change(function() {
                 goodTypeOnChange();
             });
-            
-            $('#Detail_NppbkcId').change(function () {
-                nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
-            });
 
         });
+
+        //$('#Detail_RequestQtyUomName').change(function () {
+        //    $('#Detail_LatestSaldoUomName').
+        //});
+
+        $('#Detail_Lack1FromMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
         
+        $('#Detail_Lack1ToMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        $('#Detail_Lack1FormYear').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        $('#Detail_Lack1ToYear').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        function ChangeLatestSaldo() {
+            var month = 0;
+            var year = 0;
+
+            var nppbkcid = "";
+            if ($("#Detail_NppbkcId").length) {
+                nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+            }
+            if ($("#Detail_Lack1ToMonthId").length) {
+                month = $('#Detail_Lack1ToMonthId').find("option:selected").val();
+            }
+            if ($('#Detail_Lack1ToYear').length) {
+                year = $('#Detail_Lack1ToYear').find("option:selected").val();
+            }
+            if (month != 0 && year != 0) {
+                setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+            } else {
+                $('#Detail_LatestSaldoUomName').val('0');
+            }
+        }
+
         function loadSupplierPlant() {
             var list = supplierData;
             if (list.length > 0) {
@@ -122,6 +160,83 @@
                 //selected to 1
                 supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             }
+        }
+
+        function ajaxSelectNppbck(formData) {
+            if (formData.nppbkcid) {
+                //Load POA
+                ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
+
+                //Load company
+                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
+            }
+        }
+
+        function nppbkcIdOnChange() {
+
+            ChangeLatestSaldo();
+
+            if ($("#Detail_NppbkcId").length) {
+                var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+                console.log(nppbkcid);
+                if (nppbkcid != '') {
+                    ajaxSelectNppbck({ nppbkcid: nppbkcid });
+                } else {
+                    $('#Detail_NppbkcCompanyName').val('');
+                    $('#Detail_NppbkcCompanyCode').val('');
+                    $('#Detail_NppbkcKppbcId').val('');
+                    $('#displayCompanyName').val('');
+                    $('#Detail_PoaList').val('');
+                    $('#displayPoaList').val('');
+                }
+            }
+        }
+
+        function ajaxLoadSupplierPlant(url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                success: function(data) {
+                    supplierData = data;
+                    //load supplier plant
+                    supplierPortOnChange();
+                }
+            });
+        }
+
+        function supplierPortOnChange() {
+            if ($("#Detail_SupplierPortId").length) {
+                var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                console.log(port_id);
+                $('#Detail_SupplierPlant').remove();
+                if (port_id == '') {
+                    //
+                    $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
+                    disableSupplierFormInput(false);
+                    setSupplierPlantEmpty();
+                } else {
+                    $('#Detail_SupplierPortName').val(port_name);
+                    loadSupplierPlant();
+                    disableSupplierFormInput(true);
+                }
+            }
+        }
+
+        function setLatestSaldo(formData, url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    if (data != null) {
+                        $('#Detail_LatestSaldo').val(data.latestSaldo);
+                    } else {
+                        $('#Detail_LatestSaldo').val('0');
+                    }
+                    
+                }
+            });
         }
 
     </script>

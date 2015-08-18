@@ -41,5 +41,87 @@ namespace Sampoerna.EMS.BLL.Test
             return compannyDummy;
         }
 
+        public static IEnumerable<POA> GetPOA()
+        {
+
+            var poaDummy = new List<POA>();
+            poaDummy.Add(new POA { ID_CARD = "123", PRINTED_NAME = "POA 1", POA_ID = "0000000001", MANAGER_ID = "0000000002", LOGIN_AS = "0000000001" });
+            poaDummy.Add(new POA { ID_CARD = "345", PRINTED_NAME = "POA 2", POA_ID = "0000000002", MANAGER_ID = "0000000003", LOGIN_AS = "0000000002" });
+            
+            return poaDummy;
+        }
+
+        public static IEnumerable<ZAIDM_EX_NPPBKC> GetNppbkc()
+        {
+
+            var nppbckDummy = new List<ZAIDM_EX_NPPBKC>();
+            nppbckDummy.Add(new ZAIDM_EX_NPPBKC(){ BUKRS = "ID02", CITY = "SURABAYA", CITY_ALIAS = "SBY", NPPBKC_ID = "01"});
+            nppbckDummy.Add(new ZAIDM_EX_NPPBKC() { BUKRS = "ID03", CITY = "SURABAYA", CITY_ALIAS = "SBY", NPPBKC_ID = "02" });
+           
+            return nppbckDummy;
+        }
+        public static IEnumerable<MONTH> GetMonths()
+        {
+
+            var monthDummy = new List<MONTH>();
+            monthDummy.Add(new MONTH() { MONTH_ID = 1, MONTH_NAME_IND = "Januari", MONTH_NAME_ENG = "January"});
+
+            return monthDummy;
+        }
+
+        public static IEnumerable<SUPPLIER_PORT> GetSupplierPorts()
+        {
+
+            var portDummy = new List<SUPPLIER_PORT>();
+            portDummy.Add(new SUPPLIER_PORT(){PORT_NAME = "SBY", SUPPLIER_PORT_ID = 1});
+            portDummy.Add(new SUPPLIER_PORT() { PORT_NAME = "JKT", SUPPLIER_PORT_ID = 2 });
+
+            return portDummy;
+        }
+
+        public static IEnumerable<ZAIDM_EX_GOODTYP> GetGoodTypes()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_GOODTYP>();
+            fakeDatas.Add(new ZAIDM_EX_GOODTYP(){ EXC_GOOD_TYP = "01", EXT_TYP_DESC = "GOOD TYPE 1"});
+            
+            return fakeDatas;
+        }
+
+        public static IEnumerable<UOM> GetUomList()
+        {
+
+            var fakeDatas = new List<UOM>();
+            fakeDatas.Add(new UOM() { UOM_ID = "kg", UOM_DESC = "kilogram" });
+
+            return fakeDatas;
+        }
+        public static IEnumerable<ZAIDM_EX_MARKET> GetMarketList()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_MARKET>();
+            fakeDatas.Add(new ZAIDM_EX_MARKET { MARKET_ID = "01", MARKET_DESC = "market1"});
+
+            return fakeDatas;
+        }
+
+        public static IEnumerable<ZAIDM_EX_SERIES> GetSeriesList()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_SERIES>();
+            fakeDatas.Add(new ZAIDM_EX_SERIES{ SERIES_CODE = "01", SERIES_VALUE = "223"});
+
+            return fakeDatas;
+        }
+
+        public static IEnumerable<ZAIDM_EX_PRODTYP> GetProdTypList()
+        {
+
+            var fakeDatas = new List<ZAIDM_EX_PRODTYP>();
+            fakeDatas.Add(new ZAIDM_EX_PRODTYP { PROD_CODE = "P1", PRODUCT_TYPE = "PXXX", PRODUCT_ALIAS = "PP"});
+
+            return fakeDatas;
+        }
+        
     }
 }

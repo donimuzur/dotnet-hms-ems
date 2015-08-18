@@ -112,21 +112,23 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">POA</label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.PoaList)
-                                            @Html.TextBoxFor(model => model.Detail.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
                                         <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Detail.NppbkcCompanyName)
                                             @Html.HiddenFor(model => model.Detail.NppbkcCompanyCode)
                                             @Html.HiddenFor(model => model.Detail.NppbkcKppbcId)
                                             @Html.TextBoxFor(model => model.Detail.NppbkcCompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">POA</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Detail.PoaList)
+                                            @Html.TextAreaFor(model => model.Detail.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
                                 </div>
@@ -150,6 +152,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Supplier Plant<span class="red">*</span></label>
@@ -170,6 +174,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Supplier Address</label>

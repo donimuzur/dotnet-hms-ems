@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_GOODTYP> GetAll()
         {
-            return _repository.Get().ToList();
+            return _repository.Get(x => x.IS_DELETED != true).ToList();
         }
 
         public string GetGoodTypeDescById(string id)

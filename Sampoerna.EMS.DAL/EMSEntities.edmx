@@ -4,7 +4,31 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BACK1">
+          <Key>
+            <PropertyRef Name="BACK1_ID" />
+          </Key>
+          <Property Name="BACK1_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BACK1_NUMBER" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="BACK1_DATE" Type="datetime" Nullable="false" />
+          <Property Name="PBCK3_PBCK7_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BACK1_DOCUMENT">
+          <Key>
+            <PropertyRef Name="BACK1_DOCUMENT_ID" />
+          </Key>
+          <Property Name="BACK1_DOCUMENT_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BACK1" Type="int" Nullable="false" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
+          <Key>
+            <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
+          </Key>
+          <Property Name="BACK3_CK2_PBCK3_PBCK7_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
         <EntityType Name="BROLE_MAP">
           <Key>
             <PropertyRef Name="BROLE_MAP_ID" />
@@ -52,7 +76,7 @@
           <Property Name="INVOICE_DATE" Type="datetime" />
           <Property Name="PBCK1_DECREE_ID" Type="int" />
           <Property Name="CARRIAGE_METHOD_ID" Type="int" />
-          <Property Name="GRAND_TOTAL_EX" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GRAND_TOTAL_EX" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PACKAGE_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_ID" Type="int" />
           <Property Name="HARBOUR" Type="nvarchar" MaxLength="50" />
@@ -119,17 +143,17 @@
           <Property Name="CK5_ID" Type="bigint" />
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
-          <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="0" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="EXCISE_VALUE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USD_VALUE" Type="decimal" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -233,7 +257,6 @@
           <Property Name="SUBMISSION_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" />
           <Property Name="EX_GOODTYP" Type="nvarchar" MaxLength="2" />
-          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
           <Property Name="WASTE_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="WASTE_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="RETURN_QTY" Type="decimal" Precision="15" Scale="2" />
@@ -246,6 +269,7 @@
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="EX_TYP_DESC" Type="nvarchar" MaxLength="65" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -332,8 +356,8 @@
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UMREN" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -399,9 +423,9 @@
           <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
-          <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="REQUEST_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="REQUEST_QTY_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="LATEST_SALDO" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="LATEST_SALDO" Type="decimal" Precision="18" Scale="2" />
           <Property Name="LATEST_SALDO_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="LACK1_FROM_MONTH" Type="int" />
           <Property Name="LACK1_FROM_YEAR" Type="int" />
@@ -409,7 +433,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="0" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -422,8 +446,8 @@
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -445,7 +469,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
@@ -477,6 +501,33 @@
           <Property Name="TOTAL_REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PBCK3_PBCK7">
+          <Key>
+            <PropertyRef Name="PBCK3_PBCK7_ID" />
+          </Key>
+          <Property Name="PBCK3_PBCK7_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK7_NUMBER" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="PBCK3_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="PBCK7_STATUS" Type="int" Nullable="false" />
+          <Property Name="PBCK3_STATUS" Type="int" />
+          <Property Name="PBCK7_DATE" Type="datetime" Nullable="false" />
+          <Property Name="PBCK3_DATE" Type="datetime" />
+          <Property Name="DOC_TYPE" Type="int" Nullable="false" />
+          <Property Name="NPPBCK_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
+          <Property Name="EXEC_DATE_FROM" Type="datetime" />
+          <Property Name="EXEC_DATE_TO" Type="datetime" />
+          <Property Name="GOV_STATUS" Type="int" Nullable="false" />
+          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="PLANT_RECEIVE_MATERIAL">
           <Key>
@@ -602,6 +653,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="IS_EMS" Type="bit" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -666,7 +718,6 @@
           </Key>
           <Property Name="WORKFLOW_STATE_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ACTION" Type="int" Nullable="false" />
-          <Property Name="MENU_ID" Type="int" />
           <Property Name="EMAIL_TEMPLATE_ID" Type="int" />
           <Property Name="FORM_TYPE_ID" Type="int" />
         </EntityType>
@@ -695,15 +746,15 @@
           <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
-          <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_IDR" Type="decimal" Precision="15" Scale="2" />
           <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="TARIF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
-          <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="PRINTING_PRICE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="decimal" Precision="15" Scale="2" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -734,7 +785,6 @@
           <Property Name="KPPBC_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="30" />
           <Property Name="MENGETAHUI" Type="nvarchar" MaxLength="70" />
-          <Property Name="MENGETAHUI_DETAIL" Type="text" />
           <Property Name="CK1_KEP_HEADER" Type="nvarchar" MaxLength="100" />
           <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="100" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -742,6 +792,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MENGETAHUI_DETAIL" Type="text" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -840,6 +891,30 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
+        <Association Name="FK_BACK1_DOCUMENT_BACK1">
+          <End Role="BACK1" Type="Self.BACK1" Multiplicity="1" />
+          <End Role="BACK1_DOCUMENT" Type="Self.BACK1_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BACK1">
+              <PropertyRef Name="BACK1_ID" />
+            </Principal>
+            <Dependent Role="BACK1_DOCUMENT">
+              <PropertyRef Name="BACK1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BACK1_PBCK3_PBCK7">
+          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="1" />
+          <End Role="BACK1" Type="Self.BACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK3_PBCK7">
+              <PropertyRef Name="PBCK3_PBCK7_ID" />
+            </Principal>
+            <Dependent Role="BACK1">
+              <PropertyRef Name="PBCK3_PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BROLE_MAP_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="BROLE_MAP" Type="Self.BROLE_MAP" Multiplicity="*" />
@@ -1274,6 +1349,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK1_APPROVED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="APPROVED_BY_POA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK1_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="PBCK1" Type="Self.PBCK1" Multiplicity="*" />
@@ -1478,6 +1565,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK3_PBCK7_APPROVED_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_CREATED_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_MODIFIED_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PLANT_RECEIVE_MATERIAL_T001W">
           <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
           <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
@@ -1658,6 +1781,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_T001K_T1001">
+          <End Role="T001" Type="Self.T001" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001">
+              <PropertyRef Name="BUKRS" />
+            </Principal>
+            <Dependent Role="T001K">
+              <PropertyRef Name="BUKRS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_T001W_ZAIDM_EX_NPPBKC">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
           <End Role="T001W" Type="Self.T001W" Multiplicity="*" />
@@ -1667,6 +1802,18 @@
             </Principal>
             <Dependent Role="T001W">
               <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UOM_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="UOM" Type="Self.UOM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="UOM">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1799,6 +1946,30 @@
             </Principal>
             <Dependent Role="WORKFLOW_STATE_USERS">
               <PropertyRef Name="WORKFLOW_STATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1947,6 +2118,9 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="EMSModelStoreContainer">
+          <EntitySet Name="BACK1" EntityType="Self.BACK1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BACK1_DOCUMENT" EntityType="Self.BACK1_DOCUMENT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BACK3_CK2_PBCK3_PBCK7" EntityType="Self.BACK3_CK2_PBCK3_PBCK7" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BROLE_MAP" EntityType="Self.BROLE_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
@@ -1979,6 +2153,7 @@
           <EntitySet Name="PBCK1_PROD_CONVERTER" EntityType="Self.PBCK1_PROD_CONVERTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_PROD_PLAN" EntityType="Self.PBCK1_PROD_PLAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_QUOTA" EntityType="Self.PBCK1_QUOTA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PBCK3_PBCK7" EntityType="Self.PBCK3_PBCK7" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
@@ -2005,6 +2180,14 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="Self.FK_BACK1_DOCUMENT_BACK1">
+            <End Role="BACK1" EntitySet="BACK1" />
+            <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BACK1_PBCK3_PBCK7" Association="Self.FK_BACK1_PBCK3_PBCK7">
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+            <End Role="BACK1" EntitySet="BACK1" />
+          </AssociationSet>
           <AssociationSet Name="FK_BROLE_MAP_USER" Association="Self.FK_BROLE_MAP_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
@@ -2149,6 +2332,10 @@
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE1" EntitySet="PAGE" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_APPROVED_BY_USER" Association="Self.FK_PBCK1_APPROVED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK1_CREATED_BY_USER" Association="Self.FK_PBCK1_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1" EntitySet="PBCK1" />
@@ -2217,6 +2404,18 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_APPROVED_USER" Association="Self.FK_PBCK3_PBCK7_APPROVED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_CREATED_USER" Association="Self.FK_PBCK3_PBCK7_CREATED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_MODIFIED_USER" Association="Self.FK_PBCK3_PBCK7_MODIFIED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
           <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="Self.FK_PLANT_RECEIVE_MATERIAL_T001W">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
@@ -2277,9 +2476,17 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
+          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
+            <End Role="T001" EntitySet="T001" />
+            <End Role="T001K" EntitySet="T001K" />
+          </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="T001W" EntitySet="T001W" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="Self.FK_UOM_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="UOM" EntitySet="UOM" />
           </AssociationSet>
           <AssociationSet Name="FK_USER_PLANT_MAP_T001W" Association="Self.FK_USER_PLANT_MAP_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -2324,6 +2531,14 @@
           <AssociationSet Name="FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE" Association="Self.FK_WORKFLOW_STATE_USERS_WORKFLOW_STATE">
             <End Role="WORKFLOW_STATE" EntitySet="WORKFLOW_STATE" />
             <End Role="WORKFLOW_STATE_USERS" EntitySet="WORKFLOW_STATE_USERS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_CREATED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_CREATED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" Association="Self.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_T001W" Association="Self.FK_ZAIDM_EX_BRAND_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -2824,6 +3039,30 @@
           <AssociationSet Name="FK_USER_PLANT_MAP_USER" Association="EMSModel.FK_USER_PLANT_MAP_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
+          <EntitySet Name="BACK1" EntityType="EMSModel.BACK1" />
+          <EntitySet Name="BACK1_DOCUMENT" EntityType="EMSModel.BACK1_DOCUMENT" />
+          <EntitySet Name="BACK3_CK2_PBCK3_PBCK7" EntityType="EMSModel.BACK3_CK2_PBCK3_PBCK7" />
+          <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="EMSModel.FK_BACK1_DOCUMENT_BACK1">
+            <End Role="BACK1" EntitySet="BACK1" />
+            <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
+          </AssociationSet>
+          <EntitySet Name="PBCK3_PBCK7" EntityType="EMSModel.PBCK3_PBCK7" />
+          <AssociationSet Name="FK_BACK1_PBCK3_PBCK7" Association="EMSModel.FK_BACK1_PBCK3_PBCK7">
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+            <End Role="BACK1" EntitySet="BACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_APPROVED_USER" Association="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_CREATED_USER" Association="EMSModel.FK_PBCK3_PBCK7_CREATED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_MODIFIED_USER" Association="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3646,7 +3885,6 @@
           </Key>
           <Property Name="WORKFLOW_STATE_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
-          <Property Name="MENU_ID" Type="EMSModel.MenuList" />
           <Property Name="EMAIL_TEMPLATE_ID" Type="Int32" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" />
           <NavigationProperty Name="EMAIL_TEMPLATE" Relationship="EMSModel.FK_WORKFLOW_STATE_EMAIL_TEMPLATE" FromRole="WORKFLOW_STATE" ToRole="EMAIL_TEMPLATE" />
@@ -3798,7 +4036,10 @@
           <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER" ToRole="USER_PLANT_MAP" />
-        </EntityType>
+          <NavigationProperty Name="PBCK3_PBCK7" Relationship="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
+          <NavigationProperty Name="PBCK3_PBCK71" Relationship="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
+          <NavigationProperty Name="PBCK3_PBCK72" Relationship="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
+          </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
             <PropertyRef Name="BROLE" />
@@ -4430,6 +4671,7 @@
           <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
+          <Property Name="IS_EMS" Type="Boolean" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -5033,6 +5275,124 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="BACK1">
+          <Key>
+            <PropertyRef Name="BACK1_ID" />
+          </Key>
+          <Property Name="BACK1_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BACK1_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="BACK1_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PBCK3_PBCK7_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BACK1_DOCUMENT" Relationship="EMSModel.FK_BACK1_DOCUMENT_BACK1" FromRole="BACK1" ToRole="BACK1_DOCUMENT" />
+          <NavigationProperty Name="PBCK3_PBCK7" Relationship="EMSModel.FK_BACK1_PBCK3_PBCK7" FromRole="BACK1" ToRole="PBCK3_PBCK7" />
+        </EntityType>
+        <EntityType Name="BACK1_DOCUMENT">
+          <Key>
+            <PropertyRef Name="BACK1_DOCUMENT_ID" />
+          </Key>
+          <Property Name="BACK1_DOCUMENT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BACK1" Type="Int32" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BACK11" Relationship="EMSModel.FK_BACK1_DOCUMENT_BACK1" FromRole="BACK1_DOCUMENT" ToRole="BACK1" />
+        </EntityType>
+        <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
+          <Key>
+            <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
+          </Key>
+          <Property Name="BACK3_CK2_PBCK3_PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <Association Name="FK_BACK1_DOCUMENT_BACK1">
+          <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="1" />
+          <End Type="EMSModel.BACK1_DOCUMENT" Role="BACK1_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BACK1">
+              <PropertyRef Name="BACK1_ID" />
+            </Principal>
+            <Dependent Role="BACK1_DOCUMENT">
+              <PropertyRef Name="BACK1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PBCK3_PBCK7">
+          <Key>
+            <PropertyRef Name="PBCK3_PBCK7_ID" />
+          </Key>
+          <Property Name="PBCK3_PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK7_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PBCK3_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PBCK7_STATUS" Type="Int32" Nullable="false" />
+          <Property Name="PBCK3_STATUS" Type="Int32" />
+          <Property Name="PBCK7_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
+          <Property Name="DOC_TYPE" Type="Int32" Nullable="false" />
+          <Property Name="NPPBCK_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
+          <Property Name="EXEC_DATE_TO" Type="DateTime" Precision="3" />
+          <Property Name="GOV_STATUS" Type="Int32" Nullable="false" />
+          <Property Name="STATUS" Type="Int32" Nullable="false" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="BACK1" Relationship="EMSModel.FK_BACK1_PBCK3_PBCK7" FromRole="PBCK3_PBCK7" ToRole="BACK1" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_BACK1_PBCK3_PBCK7">
+          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="1" />
+          <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK3_PBCK7">
+              <PropertyRef Name="PBCK3_PBCK7_ID" />
+            </Principal>
+            <Dependent Role="BACK1">
+              <PropertyRef Name="PBCK3_PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_APPROVED_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_CREATED_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_MODIFIED_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5567,7 +5927,6 @@
               <MappingFragment StoreEntitySet="WORKFLOW_STATE">
                 <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
                 <ScalarProperty Name="EMAIL_TEMPLATE_ID" ColumnName="EMAIL_TEMPLATE_ID" />
-                <ScalarProperty Name="MENU_ID" ColumnName="MENU_ID" />
                 <ScalarProperty Name="ACTION" ColumnName="ACTION" />
                 <ScalarProperty Name="WORKFLOW_STATE_ID" ColumnName="WORKFLOW_STATE_ID" />
               </MappingFragment>
@@ -5753,6 +6112,7 @@
           <EntitySetMapping Name="UOM">
             <EntityTypeMapping TypeName="EMSModel.UOM">
               <MappingFragment StoreEntitySet="UOM">
+                <ScalarProperty Name="IS_EMS" ColumnName="IS_EMS" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
@@ -5927,6 +6287,61 @@
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
                 <ScalarProperty Name="USER_PLANT_MAP_ID" ColumnName="USER_PLANT_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BACK1">
+            <EntityTypeMapping TypeName="EMSModel.BACK1">
+              <MappingFragment StoreEntitySet="BACK1">
+                <ScalarProperty Name="PBCK3_PBCK7_ID" ColumnName="PBCK3_PBCK7_ID" />
+                <ScalarProperty Name="BACK1_DATE" ColumnName="BACK1_DATE" />
+                <ScalarProperty Name="BACK1_NUMBER" ColumnName="BACK1_NUMBER" />
+                <ScalarProperty Name="BACK1_ID" ColumnName="BACK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BACK1_DOCUMENT">
+            <EntityTypeMapping TypeName="EMSModel.BACK1_DOCUMENT">
+              <MappingFragment StoreEntitySet="BACK1_DOCUMENT">
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="BACK1" ColumnName="BACK1" />
+                <ScalarProperty Name="BACK1_DOCUMENT_ID" ColumnName="BACK1_DOCUMENT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BACK3_CK2_PBCK3_PBCK7">
+            <EntityTypeMapping TypeName="EMSModel.BACK3_CK2_PBCK3_PBCK7">
+              <MappingFragment StoreEntitySet="BACK3_CK2_PBCK3_PBCK7">
+                <ScalarProperty Name="BACK3_CK2_PBCK3_PBCK7_ID" ColumnName="BACK3_CK2_PBCK3_PBCK7_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK3_PBCK7">
+            <EntityTypeMapping TypeName="EMSModel.PBCK3_PBCK7">
+              <MappingFragment StoreEntitySet="PBCK3_PBCK7">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="EXEC_DATE_TO" ColumnName="EXEC_DATE_TO" />
+                <ScalarProperty Name="EXEC_DATE_FROM" ColumnName="EXEC_DATE_FROM" />
+                <ScalarProperty Name="PLANT_CITY" ColumnName="PLANT_CITY" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="NPPBCK_ID" ColumnName="NPPBCK_ID" />
+                <ScalarProperty Name="DOC_TYPE" ColumnName="DOC_TYPE" />
+                <ScalarProperty Name="PBCK3_DATE" ColumnName="PBCK3_DATE" />
+                <ScalarProperty Name="PBCK7_DATE" ColumnName="PBCK7_DATE" />
+                <ScalarProperty Name="PBCK3_STATUS" ColumnName="PBCK3_STATUS" />
+                <ScalarProperty Name="PBCK7_STATUS" ColumnName="PBCK7_STATUS" />
+                <ScalarProperty Name="PBCK3_NUMBER" ColumnName="PBCK3_NUMBER" />
+                <ScalarProperty Name="PBCK7_NUMBER" ColumnName="PBCK7_NUMBER" />
+                <ScalarProperty Name="PBCK3_PBCK7_ID" ColumnName="PBCK3_PBCK7_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
