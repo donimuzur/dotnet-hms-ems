@@ -240,6 +240,11 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Material Dto
+            Mapper.CreateMap<MaterialDto, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_MATERIAL,MaterialDto>().IgnoreAllNonExisting();
+            #endregion
         }
     }
 }
