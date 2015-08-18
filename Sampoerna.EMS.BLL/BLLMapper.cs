@@ -240,6 +240,13 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Email Template
+
+            Mapper.CreateMap<EMAIL_TEMPLATE, EMAIL_TEMPLATEDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<EMAIL_TEMPLATEDto, EMAIL_TEMPLATE>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }
