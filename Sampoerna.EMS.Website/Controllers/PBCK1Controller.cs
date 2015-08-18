@@ -854,7 +854,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
-                Pbck1WorkflowGovApprove(model.Detail, model.Detail.GovApprovalActionType, "");
+                Pbck1WorkflowGovApprove(model.Detail, model.Detail.GovApprovalActionType, model.Detail.Comment);
                 isSuccess = true;
             }
             catch (Exception ex)
@@ -863,7 +863,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
-            AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+            AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 

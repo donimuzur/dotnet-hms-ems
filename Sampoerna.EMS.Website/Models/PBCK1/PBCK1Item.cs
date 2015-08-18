@@ -164,11 +164,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
 
+        [RequiredIf("StatusGov", Enums.DocumentStatusGov.Rejected), Display(Name = "Comment")]
         public string Comment { get; set; }
         
         public List<Pbck1DecreeDocModel> Pbck1DecreeDoc { get; set; }
 
-        //[RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
         public List<HttpPostedFileBase> Pbck1DecreeFiles { get; set; }
 
         public Enums.DocumentStatusGov DocStatusGov { get; set; }

@@ -1067,9 +1067,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.Rejected);
 
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
 
             dbData.APPROVED_BY_POA = input.UserId;

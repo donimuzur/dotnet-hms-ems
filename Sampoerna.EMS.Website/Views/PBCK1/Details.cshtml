@@ -182,6 +182,7 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck1script.js"></script>
 
     @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
     {
@@ -298,6 +299,32 @@
                 $('#GovApproveForm').submit();
             });
 
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateGovInput()) {
+                    $('#GovApproveForm').submit();
+                }
+            });
+            
+            $('#divComment').hide();
+
+            $('#Detail_StatusGov').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'Rejected') {
+                    $('#divComment').show();
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                }
+                else if (valueSelected == 'PartialApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                }
+                else if (valueSelected == 'FullApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+                    
+            });
+            
             openGovStatusBlock();
 
             ResetPrintHistoryDataTable();
