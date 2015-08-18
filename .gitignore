@@ -121,6 +121,7 @@ UpdateApp.config
 aspnet_client
 /Sampoerna.EMS.Website/Web.*.config
 /Sampoerna.EMS.Website/Web.config
+/scripts/BatchSqlDBUpdates.exe.config
 /Release
 **/log*.txt
 
