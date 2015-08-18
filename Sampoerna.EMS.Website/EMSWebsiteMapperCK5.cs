@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.CK5;
 
@@ -58,8 +59,8 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
               .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
               .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
-              
-              .ForMember(dest => dest.EX_GOODS_TYPE_DESC, opt => opt.MapFrom(src => src.GoodTypeName))
+
+              .ForMember(dest => dest.EX_GOODS_TYPE_DESC, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GoodType)))
               .ForMember(dest => dest.EX_GOODS_TYPE, opt => opt.MapFrom(src => src.GoodType))
 
               .ForMember(dest => dest.EX_SETTLEMENT_ID, opt => opt.MapFrom(src => src.ExciseSettlement))
@@ -270,6 +271,46 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5GetSummaryReportByParamInput>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<CK5FileDocumentItems, CK5UploadFileDocumentsInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.Uom))
+               // .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDateDisplay))
+                ;
+
+            Mapper.CreateMap<CK5FileUploadDocumentsOutput, CK5FileDocumentItems>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CK5_TYPE)))
+               .ForMember(dest => dest.ExGoodType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_GOODS_TYPE)))
+               .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_SETTLEMENT_ID)))
+               .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
+               .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
+               .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.PackageUomName))
+               .ForMember(dest => dest.InvoiceDateDisplay, opt => opt.MapFrom(src => src.INVOICE_DATE != null ? src.INVOICE_DATE.Value.ToString("dd MMMM yyyy") : string.Empty))
+               //.ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDate))
+               .ForMember(dest => dest.MesssageUploadFileDocuments, opt => opt.MapFrom(src => src.Message))
+               ;
+
+            Mapper.CreateMap<CK5FileDocumentItems, CK5Dto>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.CK5_TYPE))
+            
+             .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.KppBcCityName))
+             .ForMember(dest => dest.EX_GOODS_TYPE_DESC, opt => opt.MapFrom(src => src.ExGoodType))
+            .ForMember(dest => dest.INVOICE_NUMBER, opt => opt.MapFrom(src => src.InvoiceNumber))
+            //.ForMember(dest => dest.INVOICE_DATE, opt => opt.MapFrom(src => src.InvoiceDate))
+             .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PbckDecreeNumber))
+             // .ForMember(dest => dest.GRAND_TOTAL_EX, opt => opt.MapFrom(src => src.GrandTotalEx))
+             //.ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomName)
+
+             // .ForMember(dest => dest.INVOICE_NUMBER, opt => opt.MapFrom(src => src.InvoiceNumber))
+             //// .ForMember(dest => dest.INVOICE_DATE, opt => opt.MapFrom(src => src.InvoiceDate))
+             // .ForMember(dest => dest.PBCK1_DECREE_ID, opt => opt.MapFrom(src => src.PbckDecreeId))
+             //  .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PbckDecreeNumber))
+             // .ForMember(dest => dest.CARRIAGE_METHOD_ID, opt => opt.MapFrom(src => src.CarriageMethod))
+             // .ForMember(dest => dest.GRAND_TOTAL_EX, opt => opt.MapFrom(src => src.GrandTotalEx))
+             //.ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomName))
+             //.ForMember(dest => dest.DEST_COUNTRY_CODE, opt => opt.MapFrom(src => src.CountryCode))
+             //.ForMember(dest => dest.DEST_COUNTRY_NAME, opt => opt.MapFrom(src => src.CountryName))
+             ;
+
+            Mapper.CreateMap<CK5FileDocumentItems, CK5FileDocumentDto>().IgnoreAllNonExisting();
         }
     }
 }

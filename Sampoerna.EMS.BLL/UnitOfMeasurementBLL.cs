@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
                 UOM data = _repository.GetByID(uom.UOM_ID);
                 SetChanges(data, uom, userid);
                 data.UOM_DESC = uom.UOM_DESC;
-
+                data.IS_EMS = uom.IS_EMS;
                 _repository.Update(data);
 
             }
@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.BLL
             var changesData = new Dictionary<string, bool>();
             changesData.Add("UOM_ID", origin.UOM_ID == data.UOM_ID);
             changesData.Add("UOM_DESC", origin.UOM_DESC == data.UOM_DESC);
-            
+            changesData.Add("IS_EMS", origin.IS_EMS == data.IS_EMS);
             //changesData.Add("HEADER_FOOTER_FORM_MAP", origin.HEADER_FOOTER_FORM_MAP.Equals(poa.HEADER_FOOTER_FORM_MAP));
 
             foreach (var listChange in changesData)
@@ -92,6 +92,10 @@ namespace Sampoerna.EMS.BLL
                         case "UOM_DESC":
                             changes.OLD_VALUE = origin.UOM_DESC;
                             changes.NEW_VALUE = data.UOM_DESC;
+                            break;
+                        case "IS_EMS":
+                            changes.OLD_VALUE = origin.IS_EMS.HasValue? origin.IS_EMS.Value? "Yes" : "No" : "No";
+                            changes.NEW_VALUE = data.IS_EMS.HasValue ? data.IS_EMS.Value ? "Yes" : "No" : "No";
                             break;
                         default: break;
                     }

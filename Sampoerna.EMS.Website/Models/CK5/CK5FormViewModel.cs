@@ -40,7 +40,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList KppBcCityList { get; set; }
         [Required(ErrorMessage = "KPPBC City field is required")]
         public string KppBcCity { get; set; }
+
+         [Display(Name = "KPPBC code")]
         public string CeOfficeCode { get; set; }
+
         public string KppBcCityName { get; set; }
         
         public string SubmissionNumber { get; set; }
@@ -204,5 +207,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList CountryCodeList { get; set; }
         public string CountryName { get; set; }
         public string DisplayDetailsDestinationCountry { get; set; }
+
+        public string Ck5TypeString { get; set; }
+        public string MesssageUploadFileDocuments { get; set; }
+
     }
 }
