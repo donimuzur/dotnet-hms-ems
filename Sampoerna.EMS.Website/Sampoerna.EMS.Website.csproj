@@ -291,6 +291,8 @@
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5ItemModel.cs" />
+    <Compile Include="Models\CK5\CK5ListViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -933,6 +935,8 @@
     <Content Include="Views\LACK2\Create.cshtml" />
     <Content Include="Views\LACK2\CreateDocument.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+    <Content Include="Views\LACK2\ListByPlant.cshtml" />
+    <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Lack2IndexViewModel();
             model = InitViewModel(model);
 
-            model.MainMenu = Enums.MenuList.LACK2;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
             var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
@@ -123,6 +123,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Edits the LACK2
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult Edit(int id)
         {
@@ -183,6 +188,34 @@ namespace Sampoerna.EMS.Website.Controllers
 
 #endregion
 
+        #region Index List By Plant
+
+        public ActionResult ListByPlant()
+        {
+            var data = InitLack1LiistByPlant(new Lack2IndexPlantViewModel
+            {
+
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+
+                Details = Mapper.Map<List<LACK2PlantData>>(_lack2Bll.GetAll(new Lack2GetByParamInput()))
+
+            });
+
+            return View("ListByPlant", data);
+        }
+
+        private Lack2IndexPlantViewModel InitLack1LiistByPlant(Lack2IndexPlantViewModel model)
+        {
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+            model.PoaList = GlobalFunctions.GetPoaAll();
+            model.PlantIdList = GlobalFunctions.GetPlantAll();
+            model.CreatorList = GlobalFunctions.GetCreatorList();
+
+            return model;
+        }
+
+        #endregion
 
         #region PreviewActions
 
