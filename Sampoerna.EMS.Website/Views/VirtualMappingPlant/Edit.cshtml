@@ -11,7 +11,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Update Virtual Plant Mapping</h3>
+                <h3> Virtual Plant Mapping</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
@@ -51,18 +51,18 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Import Virtual Plant</label>
+                                                    <label class="col-md-2">Import Virtual Plant<span class="red">*</span></label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.ImportPlantId, Model.ImportPlanNameList, "Select", new { @class = "selectpicker form-control" })
                                                        
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Export Virtual Plant</label>
+                                                    <label class="col-md-2">Export Virtual Plant<span class="red">*</span></label>
                                                     <div class="col-md-4">
-                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "form-control" })
+                                                        @Html.DropDownListFor(model => model.ExportPlantId, Model.ExportPlanNameList, "Select", new { @class = "selectpicker form-control" })
                                                         
                                                     </div>
                                                 </div>

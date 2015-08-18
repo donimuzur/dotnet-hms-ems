@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /NPPBKC/
         public ActionResult Index()
         {
-            var plant = new NPPBKCIViewModels
+            var nppbkc = new NPPBKCIViewModels
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
             };
 
             //ViewBag.Message = TempData["message"];
-            return View("Index", plant);
+            return View("Index", nppbkc);
 
         }
 
@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Plant = Mapper.Map<List<T001W>>(_plantBll.GetAll());
+            model.Plant = _plantBll.Get(id);
 
 
             
@@ -80,9 +80,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("REGION_OFFICE_DGCE", (origin.RegionOfficeOfDGCE == null ? true : origin.RegionOfficeOfDGCE.Equals(nppbkc.REGION_DGCE)));
-            changesData.Add("CITY_ALIAS", (origin.CityAlias == null ? true : origin.CityAlias.Equals(nppbkc.CITY_ALIAS)));
-            changesData.Add("TEXT_TO", (origin.TextTo == null ? true : origin.TextTo.Equals(nppbkc.TEXT_TO)));
+            changesData.Add("REGION_OFFICE_DGCE", origin.RegionOfficeOfDGCE == nppbkc.REGION_DGCE);
+            changesData.Add("CITY_ALIAS",origin.CityAlias == nppbkc.CITY_ALIAS);
+            changesData.Add("TEXT_TO", origin.TextTo == nppbkc.TEXT_TO);
 
 
             foreach (var listChange in changesData)
@@ -144,14 +144,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 SetChanges(origin, nppbkc);
                 AutoMapper.Mapper.Map(model.Detail, nppbkc);
                 _nppbkcBll.Save(nppbkc);
-               
-               
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
                 return RedirectToAction("Index");
 
             }
             catch(Exception ex)
             {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
                 return View();
             }
 
@@ -163,11 +166,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 HttpNotFound();
             }
-            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.NPPBKC);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.NPPBKC, id);
 
             var model = new NppbkcFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.Plant = _plantBll.Get(id);
             var detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
             model.Detail = detail;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
@@ -180,11 +184,13 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 _nppbkcBll.Delete(id);
-                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+                AddMessageInfo(Constans.SubmitMessage.Deleted, Enums.MessageInfoType.Success
+                      );
             }
             catch (Exception ex)
             {
-                TempData[Constans.SubmitType.Delete] = ex.Message;
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                        );
             }
             return RedirectToAction("Index");
         }

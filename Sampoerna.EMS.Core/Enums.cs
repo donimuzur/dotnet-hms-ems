@@ -31,14 +31,19 @@ namespace Sampoerna.EMS.Core
             MaterialMaster = 24,
             MasterPlant = 25,
             Uom = 27,
-            GoodsTypeGroup =26
+            GoodsTypeGroup = 26,
+            UserAuthorization = 28,
+            POAMap = 29,
+            Vendor = 30,
+            KPPBC = 31,
+            UserPlantMap = 32
         }
         public enum PBCK1Type
         {
             [Description("New")]
-            New,
+            New = 1,
             [Description("Additional")]
-            Additional
+            Additional = 2
         }
 
         public enum CK5Type
@@ -53,6 +58,12 @@ namespace Sampoerna.EMS.Core
             Completed = 7
         }
 
+        public enum Pbck1DocumentType
+        {
+            OpenDocument = 1,
+            CompletedDocument = 2
+        }
+
         public enum DocumentStatus
         {
             [Description("Draft")]
@@ -61,6 +72,8 @@ namespace Sampoerna.EMS.Core
             Revised = 5,
             [Description("Waiting for Approval")]
             WaitingForApproval = 10,
+            [Description("Waiting for Approval")]
+            WaitingForApprovalManager = 11,
             [Description("Approved")]
             Approved = 15,
             [Description("Rejected")]
@@ -118,26 +131,32 @@ namespace Sampoerna.EMS.Core
             [Description("CK-5")]
             CK5 = 2,
             [Description("PBCK-4")]
-            PBKC4 = 3,
+            PBCK4 = 3,
             [Description("PBCK-3")]
-            PBKC3 = 4
+            PBCK3 = 4
         }
 
         public enum ActionType
         {
             [Description("Created")]
             Created = 1,
+            [Description("Cancel")]
+            Cancel = 2,
             [Description("Modified")]
             Modified = 5,
             [Description("Submit")]
             Submit = 10,
+            [Description("Waiting for Approval")]
+            WaitingForApproval = 11,
             [Description("Approve")]
             Approve = 15,
             [Description("Reject")]
             Reject = 20,
-            [Description("GovApprove")]
+            [Description("Gov Approve")]
             GovApprove = 25,
-            [Description("GovReject")]
+            [Description("Gov Partial Approve")]
+            GovPartialApprove = 26,
+            [Description("Gov Reject")]
             GovReject = 30,
             [Description("GovCancel")]
             GovCancel = 35,
@@ -189,11 +208,79 @@ namespace Sampoerna.EMS.Core
 
         public enum RequestType
         {
+            [Description("Dibayar")]
+            Dibayar = 10,
             [Description("Tunai")]
-            Tunai = 1,
+            Tunai = 11,
             [Description("Tunda")]
-            Tunda = 2
+            Tunda = 12,
+            [Description("Berkala")]
+            Berkala = 13,
+            [Description("Tidak Dipungut")]
+            TidakDipungut = 20,
+            [Description("Diekspor")]
+            Diekspor = 21,
+            [Description("Ke/Dari Pabrik/Tempat Penyimpanan")]
+            TempatPenyimpanan = 22,
+            [Description("Bahan Baku/Penolong BHA/BKC")]
+            BahanBakuBHABKC = 23,
+            [Description("Dibebaskan")]
+            Dibebaskan = 30,
+            [Description("Bahan Baku/Penolong BHA Non BKC")]
+            BahanBakuBHANonBKC = 31,
+            [Description("Iptek/Sosial Tenaga Ahli/Perwakilan Asing")]
+            IptekSosial = 32,
+            [Description("Ke TPB")]
+            KeTPB = 33,
+            [Description("Telah/Untuk dirusak sehingga tidak baik untuk diminum")]
+            UntukDirusak = 34,
+            [Description("Untuk konsumsi Penumpang/Awak Sarana Pengangkut ke Luar Daerah Pabean")]
+            UntukKonsumsi = 35,
+            [Description("Lainnya")]
+            Lainnya = 40,
+            [Description("Dimusnahkan")]
+            Dimusnahkan = 41,
+            [Description("DiolahKembali")]
+            DiolahKembali = 42
+
         }
-        
+
+        public enum CarriageMethod
+        {
+            [Description("Darat")]
+            Darat = 1,
+            [Description("Laut")]
+            Laut = 2,
+            [Description("Udara")]
+            Udara = 3
+        }
+
+        public enum LACK1Type
+        {
+            ListByNppbkc = 1,
+            ListByPlant = 2,
+            ComplatedDocument =3
+        }
+        public enum CK5TransType
+        {
+            [Description("Created")]
+            Created = 1,
+            [Description("Modified")]
+            Modified = 2,
+            [Description("Cancelled")]
+            Cancelled = 3
+        }
+
+        public enum ExGoodsType
+        {
+            [Description("Etil Alcohol")]
+            EtilAlcohol = 1,
+            [Description("MMEA")]
+            MMEA = 2,
+            [Description("Hasil Tembakau")]
+            HasilTembakau = 3,
+            [Description("Lainnya")]
+            Lainnya = 4
+        }
     }
 }

@@ -19,6 +19,8 @@ namespace Sampoerna.EMS.Website.Models.PLANT
     {
         public IEnumerable<SelectListItem> Nppbkc { get; set; }
         public DetailPlantT1001W Detail { get; set; }
+
+        public bool IsMainPlantExist     { get; set; }
     }
 
     public class DetailPlantT1001W
@@ -58,7 +60,20 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }
         [Required]
+        [MaxLength(25)]
         public string Phone { get; set; }
+
+
+        public bool? IsDeleted { get; set; }
+
+        public string IsDeletedString
+        {
+            get
+            {
+                return this.IsDeleted.HasValue ? (this.IsDeleted.Value ? "Yes" : "No") : "No";
+            }
+            
+        }
     }
 
 }

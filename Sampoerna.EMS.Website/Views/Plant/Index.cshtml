@@ -2,7 +2,7 @@
 @model Sampoerna.EMS.Website.Models.PLANT.PlantViewModel
     
 @{
-    ViewBag.Title = "MASTER PLANT";
+    ViewBag.Title = "Master Plant";
 }
 
 <div class="container-wrap title-page">
@@ -30,6 +30,7 @@
                             <th> Main Plant </th>
                             <th> Plant Address </th>
                             <th> Plant City </th>
+                            <th> Deletion </th>
                         </tr>
 
                     </thead>
@@ -42,6 +43,7 @@
                             <th> Main Plant </th>
                             <th> Plant Address </th>
                             <th> Plant City </th>
+                            <th> Deletion </th>
                         </tr>
 
                     </thead>
@@ -74,6 +76,9 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Ort01)
                                 </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsDeletedString)
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -88,12 +93,12 @@
 <!--modal-->
 <input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
-<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Success</h3>
+                <h4 class="modal-title">Success</h4>
             </div>
             <div class="modal-body" id="modal-poa-message">
 
@@ -105,34 +110,35 @@
 @section scripts {
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-    $(document).ready(function () {
+        $('#MenuMasterPlant').addClass('active');
+        $(document).ready(function () {
 
-        // Setup - add a text input to each footer cell
-        $('#mydata .filters th').each(function () {
-            var idx = $(this).index();
-            if (idx != 0 && idx != 0) {
-                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
-            }
-        });
-
-        // DataTable
-        var table = $('#mydata').DataTable();
-
-
-        // Apply the search
-
-        table.columns().eq(0).each(function (colIdx) {
-            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                table
-                    .column(colIdx)
-                    .search(this.value)
-                    .draw();
+            // Setup - add a text input to each footer cell
+            $('#mydata .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+                }
             });
-        });
-        $("#mydata_filter").hide();
-        $('#mydata_length').hide();
 
-        @if (TempData[Constans.SubmitType.Save] != null)
+            // DataTable
+            var table = $('#mydata').DataTable();
+
+
+            // Apply the search
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+            $("#mydata_filter").hide();
+            $('#mydata_length').hide();
+
+            @if (TempData[Constans.SubmitType.Save] != null)
             {
                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
                @: $('#btn-poa-modal').click();
@@ -151,7 +157,7 @@
                @:TempData[Constans.SubmitType.Delete] = null;
             }*@
 
-        $('#MenuMasterPlant').addClass('active');
+       
 
     });
     </script>

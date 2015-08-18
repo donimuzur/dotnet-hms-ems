@@ -26,7 +26,7 @@
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Edit POA
+                                        Update POA
                                         <i class="fa fa-caret-down"></i>
                                     </a>
                                 </h4>
@@ -39,6 +39,7 @@
                                                     <label class="col-md-3">ID Card<span class="red">*</span></label>
                                                     <div class="col-md-9">
                                                         @Html.HiddenFor(x => x.Detail.PoaId)
+                                                        @Html.HiddenFor(x => x.Detail.Is_Active)
                                                         @Html.TextBoxFor(model => model.Detail.PoaIdCard, new { @class = "form-control", @maxlength = "22" })
                                                     </div>
                                                 </div>
@@ -47,7 +48,8 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Login As<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "selectpicker form-control" })
+                                                        @Html.HiddenFor(x => x.Detail.UserId)
+                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, null, new { @class = "selectpicker form-control", disabled = "disabled" })
 
                                                     </div>
                                                 </div>
@@ -58,7 +60,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Manager<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select", new { @class = "selectpicker form-control" })
+                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, null, new { @class = "selectpicker form-control" })
 
                                                     </div>
                                                 </div>
@@ -113,30 +115,47 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label class="col-md-3">SK</label>
+                                        
 
-                                                <div class="col-md-8">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <button type="button" class="btn btn-grey full" data-toggle="modal" data-target=".view-files">View Files</button>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">SK Doc</label>
+                                            <div class="col-md-8">
+                                                <div class="file-upload" id="poa-files">
+                                                @if (Model.Detail.PoaSk != null)
+                                                {
+
+                                                    foreach (var file in Model.Detail.PoaSk)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <button class="btn btn-danger full" type="button" onclick="removeSK(@file.POA_SK_ID, '@Url.Action("RemoveSk", "POA")', this)"><i class="fa fa-times"></i></button>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                            
+                                                      }
+                                                  }
+
                                                         </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
+                                    </div>
 
-                                        
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <span class="red">*</span> ) This Field Required
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
                                         </div>
+                                    </div>
+                                  
+                                  
 
                                     
                                 </div>
@@ -148,38 +167,7 @@
         </div>
     </div>
     @Html.Partial("_FileUpload", Model)
-    <div class="modal fade in view-files ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">SK Doc Files</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            @if (Model.Detail.PoaSk != null)
-                            {
-                                foreach (var file in Model.Detail.PoaSk)
-                                {
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <i class="fa fa-file"></i>
-                                            <a href="@file.FILE_PATH">@file.FILE_NAME</a>
-                                        </div>
-
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 }
 
 @section scripts {
@@ -188,7 +176,7 @@
     <script src="~/Scripts/poa/form.js"></script>
 <script type="text/javascript">
         $('#MenuPOA').addClass('active');
-
+       
     function OnChangeUser(id) {
         $.ajax({
             type: 'POST',
@@ -203,6 +191,6 @@
 </script>
 }
  
-}
+
 
 

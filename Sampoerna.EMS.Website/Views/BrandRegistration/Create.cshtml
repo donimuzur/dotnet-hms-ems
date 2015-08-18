@@ -7,7 +7,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>New Brand</h3>
+                <h3>Brand Registration</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
@@ -29,7 +29,7 @@
                                 <div class="panel-heading" role="tab" id="headingOne">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Brand Registration
+                                            Create Brand Registration
                                             <i class="fa fa-caret-down"></i>
                                         </a>
                                     </h4>
@@ -43,7 +43,7 @@
                                                         <label class="col-md-4">Stiker Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -51,7 +51,11 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "selectpicker form-control" })
+                                                          
+                                                            <select class="form-control" id="PlantId" name="PlantId">
+                                                                <option value="">select</option>
+                                                            </select>
+                                                            @*@Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "selectpicker form-control" })*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -65,9 +69,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Personalization Code<span class="red">*</span></label>
+                                                        <label class="col-md-4">Personalization Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.PersonalizationCode, Model.PersonalizationCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.HiddenFor(model => model.PersonalizationCodeDescription)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -75,28 +80,14 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Product Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.ProductCode, Model.ProductCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Personalization Code Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PersonalizationCodeDescription, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Data Element for Product Type</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.ProductType, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
+                                                
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4 long">Brand Name Registration by KPPBC<span class="red">*</span></label>
@@ -105,14 +96,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Data Element for Product Type Alias</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.ProductAlias, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">SKEP No<span class="red">*</span></label>
@@ -126,7 +110,7 @@
                                                         <label class="col-md-4">SKEP Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.SkepDate,"{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.SkepDate,"{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -144,19 +128,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                              
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Series Value</label>
+                                                        <label class="col-md-4">Content</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.SeriesValue, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Content<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "50" })
+                                                            @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "4" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -170,19 +147,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Market Description</label>
+                                                        <label class="col-md-4">Country<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MarketDescription, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Country Key<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "selectpicker form-control" })
+                                                            @Html.DropDownListFor(model => model.CountryId, Model.CountryCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -239,22 +209,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Exciseable Goods Type Description</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.GoodTypeDescription, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                               
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Start Date<span class="red">*</span></label>
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.StartDate,"{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.StartDate,"{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -270,7 +232,7 @@
                                                         <div class="col-md-8">
 
                                                             <div class="input-group date">
-                                                                @Html.TextBoxFor(model => model.EndDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                                @Html.TextBoxFor(model => model.EndDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -307,7 +269,10 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Cut Filler Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })
+                                                            <select class="form-control" id="CutFillerCode" name="CutFillerCode">
+                                                                <option value="">select</option>
+                                                            </select>
+                                                            @*@Html.TextBoxFor(model => model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -337,7 +302,6 @@
         $(document).ready(function() {
             $('.datepicker').datepicker({
                 format: 'dd mmm yyyy'
-              
             });
             $('.input-group.date').datepicker({
                 dateFormat: 'dd mmm yyyy',
@@ -355,10 +319,13 @@
             $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
             $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
             $('#PrintingPriceValueStr').val(ThausandSeperator($('#PrintingPriceValueStr').val(), 2));
+            $('#PersonalizationCode').change(function() {
+                PersonalizationCodeOnChange();
+            });
         });
 
 
-        $("#PersonalizationCode").change(function() {
+                @*$("#PersonalizationCode").change(function() {
             if ($("#PersonalizationCode").length) {
                 var personalizationCode = $(this).find("option:selected").val();
                 if (personalizationCode == '') {
@@ -368,22 +335,22 @@
                 }
             }
 
-        });
+        });*@
 
-        function ajaxGetPersonalizationCodeDescription(url, formData) {
-            if (formData.personalizationId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function(data) {
-                        $('#PersonalizationCodeDescription').val(data);
-                    }
-                });
-            }
-        }
+        //function ajaxGetPersonalizationCodeDescription(url, formData) {
+        //    if (formData.personalizationId) {
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: url,
+        //            data: formData,
+        //            success: function(data) {
+        //                $('#PersonalizationCodeDescription').val(data);
+        //            }
+        //        });
+        //    }
+        //}
 
-        $("#ProductCode").change(function() {
+                @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -394,24 +361,24 @@
                 }
             }
 
-        });
+        });*@
 
-        function ajaxGetProductCodeDetails(url, formData) {
-            if (formData.productId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function(data) {
-                        $('#ProductType').val(data.PRODUCT_TYPE);
-                        $('#ProductAlias').val(data.PRODUCT_ALIAS);
-                    }
-                });
-            }
-        }
+        //function ajaxGetProductCodeDetails(url, formData) {
+        //    if (formData.productId) {
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: url,
+        //            data: formData,
+        //            success: function(data) {
+        //                $('#ProductType').val(data.PRODUCT_TYPE);
+        //                $('#ProductAlias').val(data.PRODUCT_ALIAS);
+        //            }
+        //        });
+        //    }
+        //}
 
 
-        $("#SeriesId").change(function() {
+                @*$("#SeriesId").change(function() {
             if ($("#SeriesId").length) {
                 var seriesCode = $(this).find("option:selected").val();
                 if (seriesCode == '') {
@@ -421,7 +388,7 @@
                 }
             }
 
-        });
+        });*@
 
         function ajaxGetSeriesValue(url, formData) {
             if (formData.seriesId) {
@@ -487,6 +454,69 @@
                 });
             }
 
+        }
+
+        $("#StickerCode").change(function() {
+            if ($("#StickerCode").length) {
+                var stickerCode = $(this).find("option:selected").val();
+                $('#PlantId').html('');
+                $('#PlantId').append('<option value="">select</option>');
+                if (stickerCode != '') {
+                    ajaxGetPlantByStickerCode(stickerCode);
+                }
+            }
+
+        });
+
+        function ajaxGetPlantByStickerCode(sc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByStickerCode", "BrandRegistration")',
+                data: { mn: sc },
+                success: function(data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                    }
+                }
+            });
+
+        }
+
+        $("#PlantId").change(function () {
+            
+            if ($("#PlantId").length) {
+                var PlantId = $(this).find("option:selected").val();
+                $('#CutFillerCode').html('');
+                $('#CutFillerCode').append('<option value="">select</option>');
+                if (!PlantId == '') {
+                    ajaxGetCutFillerCodeByPlant(PlantId);
+                } 
+            }
+
+        });
+
+        function ajaxGetCutFillerCodeByPlant(plantid) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCutFillerCodeByPlant", "BrandRegistration")',
+                data: { plant: plantid },
+                success: function (data) {
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        $('#CutFillerCode').append('<option value="' + data[i].Value + '">' + data[i].Value +  '</option>');
+                    }
+                }
+            });
+        }
+
+        function PersonalizationCodeOnChange() {
+            if ($("#PersonalizationCode").length) {
+                var PersonalizationName = $('#PersonalizationCode').find("option:selected").text();
+                console.log(PersonalizationName);
+                $('#PersonalizationCodeDescription').val(PersonalizationName);
+            }
         }
 
     </script>

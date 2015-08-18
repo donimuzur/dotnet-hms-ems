@@ -8,11 +8,14 @@ namespace Sampoerna.EMS.Website.Controllers
     public class LoginController : BaseController
     {
         private IUserBLL _userBll;
-
-        public LoginController( IUserBLL userBll, IPageBLL pageBll) : base(pageBll, Enums.MenuList.USER)
+        private IPOABLL _poabll;
+        private IUserAuthorizationBLL _userAuthorizationBll;
+        public LoginController(IUserBLL userBll, IPageBLL pageBll, IPOABLL poabll, IUserAuthorizationBLL userAuthorizationBll)
+            : base(pageBll, Enums.MenuList.USER)
         {
             _userBll = userBll;
-
+            _poabll = poabll;
+            _userAuthorizationBll = userAuthorizationBll;
         }
 
         //
@@ -20,7 +23,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var model = new LoginFormModel();
-            model.Users = new SelectList(_userBll.GetUsers(), "USERNAME", "USERNAME");
+            model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
             return View(model);
         }
 
@@ -28,17 +31,25 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index(LoginFormModel model)
         {
             
-            var loginResult = _userBll.GetLogin(model.Login.Username);
+            var loginResult = _userBll.GetLogin(model.Login.UserId);
 
             if (loginResult != null)
             {
                 CurrentUser = loginResult;
-                
+                CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
+                CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
+                CurrentUser.Plants = _userAuthorizationBll.GetPlants(loginResult.USER_ID);
                 return RedirectToAction("Index", "Home");
             }
 
             return RedirectToAction("UnAuthorize", "Error");
 
+        }
+
+        public ActionResult MessageInfo()
+        {
+            var model = GetListMessageInfo();
+            return PartialView("_MessageInfo", model);
         }
 	}
 }

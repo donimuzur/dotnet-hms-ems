@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.BrandRegistration
@@ -23,7 +20,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [StringLength(18)]
         public string FaCode { get; set; }
 
-        [Required]
+        //[Required]
         public string PersonalizationCode { get; set; }
         public SelectList PersonalizationCodeList { get; set; }
         public string PersonalizationCodeDescription { get; set; }
@@ -50,9 +47,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public SelectList SeriesList { get; set; }
         public string SeriesCode { get; set; }
         public string SeriesValue { get; set; }
-
-        [Required]
-        [RegularExpression("([1-9][0-9]*)")]
+               
         public string Content { get; set; }
 
         [Required]
@@ -110,7 +105,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get { return Convert.ToDecimal(ConversionValueStr); }
             set { value = Conversion; }
         }
-        [Required]
+        
         public string ConversionValueStr
         {
             get;
@@ -122,11 +117,11 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
             get { return Convert.ToDecimal(PrintingPriceValueStr); } 
             set { value = PrintingPrice; }
         }
-        [Required]
+       
         public string PrintingPriceValueStr { get; set; }
 
         [StringLength(25)]
-        public string CutFilterCode { get; set; }
+        public string CutFillerCode { get; set; }
 
         public bool IsActive { get; set; }
         

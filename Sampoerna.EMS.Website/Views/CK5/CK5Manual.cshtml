@@ -17,7 +17,10 @@
         <div class="col-sm-12">
             <h3>Manual</h3>
             <div class="action-button new">
-                <a href="@Url.Action("CreateManual", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                @if (Model.IsShowNewButton)
+                {
+                    <a href="@Url.Action("CreateManual", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                }
             </div>
         </div>
     </div>
@@ -53,16 +56,15 @@
 </div>
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
     <script type="text/javascript" language="javascript" class="init">
 
-
         $(document).ready(function () {
-            setupDataTables();
-          
             $('#MenuCK5Manual').addClass('active');
+
+            setupDataTables();
+
         });
 
 
@@ -76,27 +78,23 @@
             }
 
             table = $('#ck5Table').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "lengthMenu": "Display _MENU_ records per page",
-                        "zeroRecords": "No records found",
-                        "info": "Showing page _PAGE_ of _PAGES_",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
 
-            // Setup - add a text input to each footer cell
+
             $('#ck5Table .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 1) {
-                    var title = $('#ck5Table thead th').eq($(this).index()).text();
-                    //$(this).html('<input type="text" placeholder="Search ' + title + '" />');
-                    $(this).html('<input type="text"  />');
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
 
-            // Apply the search
+
             table.columns().eq(0).each(function (colIdx) {
                 $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
@@ -106,16 +104,19 @@
                 });
             });
 
-            $("#ck5Table_filter").hide();
         }
-        
 
         function ReloadDataTables() {
             setupDataTables();
         }
 
-     
-       
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+
 
     </script>
 }

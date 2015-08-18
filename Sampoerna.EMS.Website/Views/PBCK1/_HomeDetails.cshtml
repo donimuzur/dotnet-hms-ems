@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+﻿
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @using Sampoerna.EMS.Website.Helpers
 
 <div role="tabpanel" class="tab-pane active" id="home">
@@ -45,7 +46,7 @@
                                     <div class="row">
                                         <label class="col-md-3">Reported On</label>
                                         <div class="col-md-9">
-                                            @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -53,7 +54,7 @@
                                     <div class="row">
                                         <label class="col-md-3">Period From</label>
                                         <div class="col-md-9">
-                                            @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.PeriodFrom, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -61,7 +62,7 @@
                                     <div class="row">
                                         <label class="col-md-3">Period To</label>
                                         <div class="col-md-9">
-                                            @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.PeriodTo, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -89,23 +90,26 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.NppbkcNo, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.NppbkcId, new { @class = "form-control", @disabled="disabled" })
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">POA</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.CompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
+                                            @Html.TextBoxFor(model => model.Detail.NppbkcCompanyName, new { @class = "form-control", @disabled = "disabled", @id = "displayCompanyName" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">POA</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.Detail.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
                                 </div>
@@ -123,10 +127,12 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier NPPBKC</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkc, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Supplier Plant</label>
@@ -141,10 +147,12 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier KPPBC</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbc, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Supplier Address</label>
@@ -195,7 +203,7 @@
                                     <div class="row">
                                         <label class="col-md-4 long">Plan Produtcion From</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.PlanProdFrom, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -203,7 +211,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plan Production to</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.PlanProdTo, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -270,7 +278,34 @@
                 </div>
                 <div id="collapse6" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading6">
                     <div class="panel-body">
-
+                        <div class="table-container">
+                            <table id="Detail_Pbck1ProdConverter" name="Detail.Pbck1ProdConverter" class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th style="display: none">Product Code</th>
+                                        <th style="display: none">Converter Uom Id</th>
+                                        <th>Product Type Alias</th>
+                                        <th>Product Type</th>
+                                        <th>Converted Output</th>
+                                        <th>Converted Uom</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 0; i < Model.Detail.Pbck1ProdConverter.Count; i++)
+                                    {
+                                        var item = Model.Detail.Pbck1ProdConverter[i];
+                                        <tr>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProductCode" type="hidden" value="@item.ProductCode" />@item.ProductCode</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ConverterUom" type="hidden" value="@item.ConverterUom" />@item.ConverterUom</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeName" type="hidden" value="@item.ProdTypeName" />@item.ProdTypeName</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ConverterOutput" type="hidden" value="@item.ConverterOutput" />@item.ConverterOutput</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ConverterUomId" type="hidden" value="@item.ConverterUomId" />@item.ConverterUomId</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -288,7 +323,40 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading5">
                     <div class="panel-body">
-
+                        <div class="table-container">
+                            <table id="Detail_Pbck1ProdPlan" name="Detail.Pbck1ProdPlan" class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th style="display: none">Product Code</th>
+                                        <th style="display: none">Product Type Name</th>
+                                        <th style="display: none">Month Id</th>
+                                        <th>Month</th>
+                                        <th>Product Type Alias</th>
+                                        <th>Amount</th>
+                                        <th>BKC Required</th>
+                                        <th>BKC Required Uom</th>
+                                        <th style="display: none">BKC Required Uom Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 0; i < Model.Detail.Pbck1ProdPlan.Count; i++)
+                                    {
+                                        var item = Model.Detail.Pbck1ProdPlan[i];
+                                        <tr>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProductCode" type="hidden" value="@item.ProductCode" />@item.ProductCode</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ProdTypeName" type="hidden" value="@item.Month" />@item.ProdTypeName</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].Month" type="hidden" value="@item.Month" />@item.Month</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].MonthName" type="hidden" value="@item.MonthName" />@item.MonthName</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].Amount" type="hidden" value="@item.Amount" />@item.Amount</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].BkcRequired" type="hidden" value="@item.BkcRequired" />@item.BkcRequired</td>
+                                            <td><input name="Detail.Pbck1ProdPlan[@i].BkcRequiredUomId" type="hidden" value="@item.BkcRequiredUomId" />@item.BkcRequiredUomId</td>
+                                            <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].BkcRequiredUomName" type="hidden" value="@item.BkcRequiredUomName" />@item.BkcRequiredUomName</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,7 +379,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Status Gov</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.StatusGovName, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.StatusGovName, new { @class = "form-control", @disabled="disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -319,7 +387,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -336,7 +404,18 @@
                                         <label class="col-md-4">Decree Doc</label>
                                         <div class="col-md-8">
                                             <div class="input-group">
-                                                <input type="text" class="form-control">
+                                                @if (Model.Detail.Pbck1DecreeDoc != null)
+                                                {
+                                                    foreach (var file in Model.Detail.Pbck1DecreeDoc)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <i class="fa fa-file"></i>
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
                                             </div>
                                         </div>
                                     </div>

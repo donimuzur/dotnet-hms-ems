@@ -18,7 +18,7 @@
                         </div>
                         <div class="col-md-6">
                             <input id="ProdPlanSubmitBtn" type="button" class="btn btn-grey generate" value="Generate" />
-                            <input id="prod-plan-save" type="button" class="btn btn-grey" value="Save" />
+                            <input id="prod-plan-save" type="button" class="btn btn-grey" value="Save" disabled="disabled" />
                         </div>
                     </div>
                 </div>
@@ -28,5 +28,11 @@
     <div class="table-container" id="ProdPlanContent">
         @Html.Partial("_ProdPlanList", Model)
     </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <span class="red">*</span>Please review Message Error Column
+            </div>
+        </div>
+    </div>
 </div>
-

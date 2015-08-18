@@ -10,6 +10,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.GOODSTYPE;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -19,15 +20,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _zaidmExGoodTypeBll;
         private IMasterDataBLL _masterDataBll;
         private IExGroupTypeBLL _exGroupTypeBll;
+        private IChangesHistoryBLL _changesHistoryBll;
         private Enums.MenuList _mainMenu;
 
-        public GoodsTypeGroupController(IZaidmExGoodTypeBLL zaidmExGoodTypeBll, IMasterDataBLL masterData, IExGroupTypeBLL exGroupTypeBll,
+        public GoodsTypeGroupController(IZaidmExGoodTypeBLL zaidmExGoodTypeBll, IMasterDataBLL masterData, IExGroupTypeBLL exGroupTypeBll, IChangesHistoryBLL changesHistoryBll,
             IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.GoodsTypeGroup)
         {
             _zaidmExGoodTypeBll = zaidmExGoodTypeBll;
             _masterDataBll = masterData;
             _exGroupTypeBll = exGroupTypeBll;
+            _changesHistoryBll = changesHistoryBll;
             _mainMenu = Enums.MenuList.MasterData;
         }
 
@@ -134,25 +137,26 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View("Create", model);
                 }
 
-                var listGroup = new List<EX_GROUP_TYPE>();
+                var listGroup = new List<EX_GROUP_TYPE_DETAILS>();
 
                 foreach (var detail in model.Details.Where(detail => detail.IsChecked))
                 {
 
-                    var groupType = new EX_GROUP_TYPE();
-                    groupType.GROUP_NAME = model.GroupName;
                     var detailGroupType = new EX_GROUP_TYPE_DETAILS();
                     detailGroupType.GOODTYPE_ID = detail.GoodTypeId;
-                    groupType.EX_GROUP_TYPE_DETAILS.Add(detailGroupType);
-                    listGroup.Add(groupType);
+                  
+                    listGroup.Add(detailGroupType);
                 }
-
+                var groupType = new EX_GROUP_TYPE();
+                groupType.GROUP_NAME = model.GroupName;
+                groupType.EX_GROUP_TYPE_DETAILS = listGroup;  
                 if (listGroup.Count > 0)
                 {
 
-                    _exGroupTypeBll.SaveGroup(listGroup);
+                    _exGroupTypeBll.Save(groupType);
 
-                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                      );
                     return RedirectToAction("Index");
                 }
 
@@ -178,7 +182,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var childDetails = _zaidmExGoodTypeBll.GetAll();
 
             model.Details = Mapper.Map<List<GoodsTypeDetails>>(childDetails).ToList();
-
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.GoodsTypeGroup, id.ToString()));
             foreach (var details in model.Details)
             {
                 foreach (var gt in realChild.EX_GROUP_TYPE_DETAILS)
@@ -202,6 +206,7 @@ namespace Sampoerna.EMS.Website.Controllers
             // model.GroupName = groupName;
 
             var realChild = _exGroupTypeBll.GetById(id);
+            model.Id = realChild.EX_GROUP_TYPE_ID;
             model.GroupName = realChild.GROUP_NAME;
             var childDetails = _zaidmExGoodTypeBll.GetAll();
 
@@ -229,28 +234,35 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (ModelState.IsValid)
             {
-                var realChild = _exGroupTypeBll.GetById(model.Id);
-                var listDetail = new List<EX_GROUP_TYPE_DETAILS>(realChild.EX_GROUP_TYPE_DETAILS);
+                List<EX_GROUP_TYPE_DETAILS> newDetails = new List<EX_GROUP_TYPE_DETAILS>();
 
-                foreach (var groupType in listDetail)
-                {
-                    _exGroupTypeBll.DeleteDetails(groupType);
-                }
-
-
-                var listGroup = new List<EX_GROUP_TYPE>();
-                foreach (var detail in model.Details.Where(detail => detail.IsChecked))
-                {
+                foreach (var data in model.Details.Where(x => x.IsChecked)) {
                     var detailGroupType = new EX_GROUP_TYPE_DETAILS();
 
-                    detailGroupType.GOODTYPE_ID = detail.GoodTypeId;
-                    detailGroupType.EX_GROUP_TYPE_ID = realChild.EX_GROUP_TYPE_ID;
-                    _exGroupTypeBll.InsertDetail(detailGroupType);
-
+                    detailGroupType.GOODTYPE_ID = data.GoodTypeId;
+                    detailGroupType.EX_GROUP_TYPE_ID = model.Id;
+                    newDetails.Add(detailGroupType);
+                    
                 }
 
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
-                return RedirectToAction("Index");
+                _exGroupTypeBll.InsertDetail(model.Id, newDetails, CurrentUser.USER_ID);
+                //var realChild = _exGroupTypeBll.GetById(model.Id);
+                //var listDetail = new List<EX_GROUP_TYPE_DETAILS>(realChild.EX_GROUP_TYPE_DETAILS);
+
+                
+                //var listGroup = new List<EX_GROUP_TYPE>();
+                //foreach (var detail in model.Details.Where(detail => detail.IsChecked))
+                //{
+                //    var detailGroupType = new EX_GROUP_TYPE_DETAILS();
+
+                //    detailGroupType.GOODTYPE_ID = detail.GoodTypeId;
+                //    detailGroupType.EX_GROUP_TYPE_ID = realChild.EX_GROUP_TYPE_ID;
+                //    _exGroupTypeBll.InsertDetail(detailGroupType);
+
+                //}
+
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                        ); return RedirectToAction("Index");
 
 
                 ModelState.AddModelError("Details", "Choose at least one type");

@@ -19,124 +19,122 @@
     </div>
 
     <div class="container-wrap">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="white-wrapper">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Create New POA
-                                        <i class="fa fa-caret-down"></i>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                  
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">ID Card<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaIdCard, new {@class = "form-control", @maxlength = "22"})
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Login As<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select",new { @class = "selectpicker form-control" })
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Create POA
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
 
-                                                       
-                                                    </div>
-                                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">ID Card<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.Detail.PoaIdCard, new {@class = "form-control", @maxlength = "22"})
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Manager<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Users, "select", new { @class="selectpicker form-control" })
+                                            <label class="col-md-3">Login As<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, null,new { @class = "selectpicker form-control" })
 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Printed Name<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @maxlength = "50" })
-                                                    </div>
-                                                </div>
+
                                             </div>
                                         </div>
-
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
-                                                  <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Phone<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "30" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Email<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBox("email",null, new { @class = "form-control", @maxlength = "35", disabled="disabled" })
-                                                        @Html.HiddenFor(x=>x.Detail.Email)
-                                                    </div>
-                                                </div>
+                                            <label class="col-md-3">Manager<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Users, null, new { @class="selectpicker form-control" })
+
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="row">
-
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Title<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @maxlength = "50" })
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Address<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
-                                                    </div>
-                                                </div>
+                                            <label class="col-md-3">Printed Name<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.Detail.PoaPrintedName, new { @class = "form-control", @maxlength = "50" })
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <label class="col-md-3">SK</label>
-
-                                                <div class="col-md-9">
-                                                    <div class="col-md-8">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
+                                            <label class="col-md-3">Phone<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.Detail.PoaPhone, new { @class = "form-control", @maxlength = "30" })
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Email<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBox("email",null, new { @class = "form-control", @maxlength = "35", disabled="disabled" })
+                                                @Html.HiddenFor(x=>x.Detail.Email)
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Title<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @maxlength = "50" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3">Address<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextAreaFor(model => model.Detail.PoaAddress, new { @class = "form-control", rows = "5", id = "comment", @maxlength = "200" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">SK Doc</label>
+                                        <div class="col-md-8">
+                                            <div class="file-upload" id="poa-files">
                                                 
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <span class="red">*</span> ) This Field Required
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    
+                                    </div>
+                                </div>
+                               
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="red">*</span> ) This Field Required
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -145,20 +143,23 @@
             </div>
         </div>
     </div>
+        </div>
    @Html.Partial("_FileUpload", Model)
-}
+    }
+
 @section scripts
 {
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/poa/form.js"></script>
     <script type="text/javascript">
-        $('#Detail_UserId').click(function () {
-            $(this).addClass('selectpicker');
-            $(this).selectpicker();
+        
+        $(function () {
+            OnChangeUser($('#Detail_UserId option:selected').val());
         });
+
         function OnChangeUser(id) {
-           
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetUser", "POA")',
@@ -170,7 +171,6 @@
                 }
             });
         }
-        
 
     </script>
 } 

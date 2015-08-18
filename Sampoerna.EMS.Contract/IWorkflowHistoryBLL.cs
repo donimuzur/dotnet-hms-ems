@@ -1,23 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.Core;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract
 {
     public interface IWorkflowHistoryBLL
     {
-        WORKFLOW_HISTORY GetById(long id);
+        WorkflowHistoryDto GetById(long id);
 
-        WORKFLOW_HISTORY GetByActionAndFormId(Enums.ActionType actionType, long formId);
+        List<WorkflowHistoryDto> GetByFormTypeAndFormId(GetByFormTypeAndFormIdInput input);
 
-        void AddHistory(WORKFLOW_HISTORY history);
+        List<WorkflowHistoryDto> GetByFormNumber(string formNumber);
 
-        void Save(WORKFLOW_HISTORY history);
+        WorkflowHistoryDto GetByActionAndFormNumber(GetByActionAndFormNumberInput input);
 
-        List<WORKFLOW_HISTORY> GetByFormTypeAndFormId(Enums.FormType formTypeId, long id);
+        void AddHistory(WorkflowHistoryDto history);
+
+        void Save(WorkflowHistoryDto history);
+
+        List<WorkflowHistoryDto> GetByFormNumber(GetByFormNumberInput input);
+
+        string GetApprovedRejectedPoaByDocumentNumber(string documentNumber);
+
+        string GetPoaByDocumentNumber(string documentNumber);
     }
 }

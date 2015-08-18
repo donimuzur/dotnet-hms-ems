@@ -39,14 +39,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dsCK5Print.cs">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsCK5Print.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </Compile>
     <Compile Include="dsHeaderFooter.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
     </Compile>
+    <Compile Include="dsPbck1.cs">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsPbck1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dsCK5Print.xsc">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </None>
+    <None Include="dsCK5Print.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsCK5Print.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsCK5Print.xss">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </None>
     <None Include="dsHeaderFooter.xsc">
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
     </None>
@@ -57,6 +85,17 @@
     </None>
     <None Include="dsHeaderFooter.xss">
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck1.xsc">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsPbck1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsPbck1.xss">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

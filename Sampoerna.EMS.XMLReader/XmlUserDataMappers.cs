@@ -35,8 +35,6 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new USER();
                         item.USER_ID = xElement.Element("USER_ID").Value;
-                        item.USERNAME = xElement.Element("USERNAME").Value;
-                       
                         var userGroup = xElement.Element("USER_GROUP").Value;
 
                         
@@ -73,9 +71,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-           _xmlMapper.InsertToDatabase<USER>(Items);
+            return _xmlMapper.InsertToDatabase<USER>(Items);
        
         }
 

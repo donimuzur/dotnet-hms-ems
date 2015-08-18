@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -29,30 +30,42 @@ namespace Sampoerna.EMS.XMLReader
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("E1LFA1M");
+                
                 var items = new List<LFA1>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new LFA1();
-                    var vendorCodeXml = xElement.Element("LIFNR").Value;
+                    try
+                    {
+                        var item = new LFA1();
+                        var vendorCodeXml = xElement.Element("LIFNR").Value;
 
-                    var exsitingVendor = GetExVendor(vendorCodeXml);
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    item.LIFNR = vendorCodeXml;
-                    item.NAME1 = xElement.Element("NAME1").Value;
-                    item.NAME2 = xElement.Element("NAME2").Value;
-                    
-                    if (exsitingVendor != null)
-                    {
-                        item.CREATED_DATE = exsitingVendor.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
-                        items.Add(item);
-                     
+                        var exsitingVendor = GetExVendor(vendorCodeXml);
+                        item.LIFNR = vendorCodeXml;
+                        item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
+                        item.CREATED_BY = Constans.PICreator;
+
+                        if (exsitingVendor != null)
+                        {
+                            item.CREATED_DATE = exsitingVendor.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.CREATED_BY = exsitingVendor.CREATED_BY;
+                            item.MODIFIED_BY = Constans.PICreator;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
+                        continue;
                     }
 
                 }
@@ -62,9 +75,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<LFA1>(Items);
+            return  _xmlMapper.InsertToDatabase<LFA1>(Items);
        
         }
 

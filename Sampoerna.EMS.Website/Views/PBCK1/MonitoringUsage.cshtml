@@ -1,0 +1,232 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringUsageViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Summary Report</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            @using (Ajax.BeginForm("SearchMonitoringUsage", "Pbck1",
+                new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "contenttable",
+                    OnComplete = "ReloadDataTables"
+
+                }))
+            {
+                <div class="white-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-5">Company Code</label>
+                                    <div class="col-md-7">
+                                        @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                        @if (Model.SearchView.CompanyCodeList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new { @class = "form-control selectreset" })
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">From - To</label>
+                                    <div class="col-md-8 year-from">
+                                        @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                        @if (Model.SearchView.YearFromList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.YearFrom, Model.SearchView.YearFromList, "All", new { @class = "form-control selectreset" })
+                                        }
+
+                                        @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                        @if (Model.SearchView.YearToList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.YearTo, Model.SearchView.YearToList, "All", new { @class = "form-control selectreset" })
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC</label>
+                                    <div class="col-md-8">
+                                        @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                        @if (Model.SearchView.NppbkcIdList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="last-form">
+                                <div class="col-md-4">
+                                    <div>
+                                        @* ReSharper disable UnknownCssClass *@
+                                        Toggle column:
+                                        <a class="toggle-vis" data-column="0">No</a> -
+                                        <a class="toggle-vis" data-column="1">Pbck-1 Decree</a> -
+                                        <a class="toggle-vis" data-column="2">Company</a> -
+                                        <a class="toggle-vis" data-column="3">NPPBKC</a> -
+                                        <a class="toggle-vis" data-column="4">KPPBC</a> -
+                                        <a class="toggle-vis" data-column="5">Pbck-1 Period</a> -
+                                        <a class="toggle-vis" data-column="6">Exc. Goods Quota</a> -
+                                        <a class="toggle-vis" data-column="7">Additional Exc. Goods Quota</a> -
+                                        <a class="toggle-vis" data-column="8">Previous Years Final Balance</a> -
+                                        <a class="toggle-vis" data-column="9">Total Pbck-1 Quota</a> -
+                                        <a class="toggle-vis" data-column="10">Received</a> -
+                                        <a class="toggle-vis" data-column="11">Quota Remaining</a>
+                                        @* ReSharper restore UnknownCssClass *@
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-blue full">FILTER</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_Pbck1MonitoringUsageTable")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    @using (Html.BeginForm("ExportMonitoringUsage", "Pbck1", FormMethod.Post, new { @id = "ExportMonitoringUsageForms" }))
+    {
+        @Html.HiddenFor(model => model.ExportModel.CompanyCode)
+        @Html.HiddenFor(model => model.ExportModel.YearFrom)
+        @Html.HiddenFor(model => model.ExportModel.YearTo)
+        @Html.HiddenFor(model => model.ExportModel.NppbkcId)
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3><span id="lblTitleModal">Export</span> </h3>
+                </div>
+                <div class="modal-body">
+                    <span id="lblMessageModal">Column : </span><br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Decree, new { @checked = "checked" })Pbck-1 Decree<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked" })Company<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked" })NPPBKC<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked" })KPPBC<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Period, new { @checked = "checked" })PBCK-1 Period<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsQuota, new { @checked = "checked" })Excisable Goods Quota<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.AdditionalExcGoodsQuota, new { @checked = "checked" })Additional Excisable Goods Quota<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.PrevYearsFinalBalance, new { @checked = "checked" })Previous Years Final Balance<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.TotalPbck1Quota, new { @checked = "checked" })Total Pbck-1 Quota<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Received, new { @checked = "checked" })Received<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.QuotaRemaining, new { @checked = "checked" })Quota Remaining<br />
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @* ReSharper disable UnknownCssClass *@
+    @* ReSharper disable Html.IdNotResolved *@
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            setupDataTables();
+            $('#MenuPBCK1MonitoringUsage').addClass('active');
+        });
+
+        function setupDataTables() {
+
+            // DataTable
+            var table;
+            if ($.fn.dataTable.isDataTable('#pbckTable')) {
+                table = $('#pbckTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#pbckTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+        function OnReset() {
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+        $("#btnExport").click(function () {
+            $('#Pbck1Modal').modal('show');
+
+        });
+
+
+        $("#btnConfirm").click(function () {
+            $('#ExportModel_CompanyCode').val($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportModel_YearFrom').val($('#SearchView_YearFrom').find("option:selected").val());
+            $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
+            $('#ExportModel_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
+            $('#Pbck1Modal').modal('hide');
+            $('#ExportMonitoringUsageForms').submit();
+            preventDefault();
+        });
+
+    </script>
+    @* ReSharper restore Html.IdNotResolved *@
+    @* ReSharper restore UnknownCssClass *@
+}

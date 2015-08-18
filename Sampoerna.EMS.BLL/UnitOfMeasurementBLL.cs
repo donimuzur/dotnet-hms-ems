@@ -28,6 +28,11 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
+        public UOM GetByName(string uomName)
+        {
+            return _repository.Get(c => c.UOM_DESC == uomName, null, string.Empty).FirstOrDefault();
+        }
+
         public List<UOM> GetAll()
         {
             return _repository.Get().ToList();
@@ -94,5 +99,23 @@ namespace Sampoerna.EMS.BLL
                 }
             }
         }
+
+        public string GetUomNameById(int? id)
+        {
+            var dbData = _repository.GetByID(id);
+
+            if (dbData == null)
+                return string.Empty;
+
+            return dbData.UOM_DESC;
+        }
+
+        public bool IsUomIdExist(string uomId)
+        {
+            //var dbData = _repository.Get(u => u.UOM_DESC.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var dbData = _repository.GetByID(uomId);
+            return dbData != null;
+        }
+
     }
 }

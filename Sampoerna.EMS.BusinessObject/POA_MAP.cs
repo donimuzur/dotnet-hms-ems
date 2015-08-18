@@ -17,15 +17,16 @@ namespace Sampoerna.EMS.BusinessObject
         public int POA_MAP_ID { get; set; }
         public string NPPBKC_ID { get; set; }
         public string WERKS { get; set; }
-        public int POA_ID { get; set; }
+        public string POA_ID { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
-        public virtual POA POA { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
+        public virtual POA POA { get; set; }
+        public virtual T001W T001W { get; set; }
         public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
     }
 }

@@ -24,6 +24,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string NAME2 { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public string ORT01 { get; set; }
+        public string STRAS { get; set; }
     
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }

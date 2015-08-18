@@ -16,20 +16,33 @@ namespace Sampoerna.EMS.XMLReader
         private IXmlDataReader reader = null;
         private readonly string inboundPath = ConfigurationManager.AppSettings["XmlInboundPath"];
         private string[] xmlfiles = null;
-
+        public List<string> filesMoved;
         public Service()
         {
             
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
+            filesMoved = new List<string>();
         }
 
         private IXmlDataReader XmlReaderFactory(string xmlfile)
         {
-            if (xmlfile.Contains("T001"))
+            if (xmlfile.Contains("POA"))
+            {
+                return new XmlPoaDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("COY"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            if (xmlfile.Contains("NPPBKC"))
+            else if (xmlfile.Contains("PLANTV"))
+            {
+                return new XmlT001KDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("UOM"))
+            {
+                return new XmlUoMDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("NPPBKC"))
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }
@@ -70,36 +83,120 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlBrandDataMapper(xmlfile);
             }
-            //else if (xmlfile.Contains("MATERIAL"))
-            //{
-            //    return new XmlMaterialDataMapper(xmlfile);
-            //}
+            else if (xmlfile.Contains("MATERIAL"))
+            {
+                return new XmlMaterialDataMapper(xmlfile);
+            }
             return null;
+        }
+
+        private List<string> OrderFile()
+        {
+            bool isComplete = true;
+            var orderedXmlFiles =new List<string>();
+           
+            var filesVendor = xmlfiles.Where(x => x.Contains("VENDOR"));
+            orderedXmlFiles.AddRange(filesVendor);
+            
+            var filesSeries = xmlfiles.Where(x => x.Contains("SERIES"));
+            orderedXmlFiles.AddRange(filesSeries);
+
+            var filesMarket = xmlfiles.Where(x => x.Contains("MARKET"));
+            orderedXmlFiles.AddRange(filesMarket);
+
+            var filesGoodType = xmlfiles.Where(x => x.Contains("GOODTYP"));
+            orderedXmlFiles.AddRange(filesGoodType);
+
+            var filesProdType = xmlfiles.Where(x => x.Contains("PRODTYP"));
+            orderedXmlFiles.AddRange(filesProdType);
+
+            var filesPCode = xmlfiles.Where(x => x.Contains("PCODE"));
+            orderedXmlFiles.AddRange(filesPCode);
+
+            var filesPlant = xmlfiles.Where(x => x.Contains("PLANT-"));
+            orderedXmlFiles.AddRange(filesPlant);
+
+            var filesCompany = xmlfiles.Where(x => x.Contains("COY"));
+            orderedXmlFiles.AddRange(filesCompany);
+
+            var filesT001K = xmlfiles.Where(x => x.Contains("PLANTV-"));
+            orderedXmlFiles.AddRange(filesT001K);
+
+            var filesUom = xmlfiles.Where(x => x.Contains("UOM"));
+            orderedXmlFiles.AddRange(filesUom);
+
+            var filesKppbc = xmlfiles.Where(x => x.Contains("KPPBC"));
+            orderedXmlFiles.AddRange(filesKppbc);
+
+            var filesNppbkc = xmlfiles.Where(x => x.Contains("NPPBKC"));
+            orderedXmlFiles.AddRange(filesNppbkc);
+
+            var filesMaterial = xmlfiles.Where(x => x.Contains("MATERIAL"));
+            orderedXmlFiles.AddRange(filesMaterial);
+
+            var filesBrandReg = xmlfiles.Where(x => x.Contains("BRANDREG"));
+            orderedXmlFiles.AddRange(filesBrandReg);
+
+            var filesPOA = xmlfiles.Where(x => x.Contains("POA"));
+            orderedXmlFiles.AddRange(filesPOA);
+
+            if (filesVendor.Count() == 0)
+                isComplete = false;
+            if (filesSeries.Count() == 0)
+                isComplete = false;
+            if (filesMarket.Count() == 0)
+                isComplete = false;
+              
+            if (filesGoodType.Count() == 0)
+                isComplete = false;
+            if (filesPCode.Count() == 0)
+                isComplete = false;
+            if (filesProdType.Count() == 0)
+                isComplete = false;
+            if (filesUom.Count() == 0)
+                isComplete = false;
+            if (filesPlant.Count() == 0)
+                isComplete = false;
+            if (filesCompany.Count() == 0)
+                isComplete = false;
+            if (ConfigurationManager.AppSettings["FileComplete"] != null)
+            {
+                if (ConfigurationManager.AppSettings["FileComplete"] == "1")
+                {
+                    if (!isComplete)
+                        return null;
+                }
+            }
+
+            return orderedXmlFiles;
         }
 
         public List<string> Run()
         {
             var errorList = new List<string>();
-            foreach (var xmlfile in xmlfiles)
+            var orderedFile = OrderFile();
+            
+            
+            if (orderedFile != null)
             {
-                try
+                foreach (var xmlfile in orderedFile)
                 {
-                    IXmlDataReader reader = XmlReaderFactory(xmlfile);
-                  
-                    if (reader != null)
+                    try
                     {
-                        reader.InsertToDatabase();
+                        IXmlDataReader reader = XmlReaderFactory(xmlfile);
+
+                        if (reader != null)
+                        {
+                            filesMoved.Add(reader.InsertToDatabase());
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    var error = ex.Message;
-                    if (ex.InnerException != null)
+                    catch (Exception ex)
                     {
-                        error = ex.InnerException.Message;
+                        var error = ex.ToString();
+
+                        errorList.Add(string.Format("<b>File: {0} </b> -> Error : {1}", xmlfile, error));
+                        continue;
                     }
-                    errorList.Add(string.Format("<b>File: {0} </b> -> Error : {1}", xmlfile, error));
-                    continue;
                 }
             }
             return errorList;

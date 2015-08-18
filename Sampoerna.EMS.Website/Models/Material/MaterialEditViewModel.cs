@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
     public class MaterialEditViewModel : BaseModel
     {
-       
+
         [Required, Display(Name = "Material Number")]
         public string MaterialNumber { get; set; }
 
@@ -36,7 +37,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string IssueStorageLoc { get; set; }
 
         [Required, Display(Name = "Base UOM")]
-        public int UomId { get; set; }
+        public string UomId { get; set; }
         public string UomName { get; set; }
 
         [Display(Name = "Created On")]
@@ -56,57 +57,27 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Display(Name = "Changed By"), Editable(false)]
         public string ChangedBy { get; set; }
 
-        private Nullable<bool> _isPlantDelete;
-        [Required, Display(Name = "Plant Deletion")]
+        [Display(Name = "Plant Deletion")]
         public bool IsPlantDelete
         {
-            get
-            {
-                if (this._isPlantDelete.HasValue)
-                {
-                    return this._isPlantDelete.Value;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            set
-            {
-                this._isPlantDelete = value;
-            }
+            get; set;
         }
 
 
-        private Nullable<bool> _isClientDelete;
-
-        [Required, Display(Name = "Client Deletion")]
+        
+        [Display(Name = "Client Deletion")]
         public bool IsClientDelete
         {
-            get
-            {
-                if (this._isClientDelete.HasValue)
-                {
-                    return this._isClientDelete.Value;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            set
-            {
-                this._isClientDelete = value;
-            }
+            get; set;
         }
 
-     
+
         public decimal? Conversion
         {
             get;
             set;
         }
-        [Required]
+        
         public string ConversionValueStr
         {
             get;
@@ -119,8 +90,13 @@ namespace Sampoerna.EMS.Website.Models.Material
         public SelectList BaseUOM { get; set; }
 
        
+        public string ConversionUom { get; set; }
+        public SelectList ConversionUomList { get; set; }
 
-
-        
+        public List<MaterialUomDetails> MaterialUom { get; set; }
     }
+
+
+
+
 }

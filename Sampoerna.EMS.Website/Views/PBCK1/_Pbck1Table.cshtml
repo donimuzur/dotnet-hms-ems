@@ -36,17 +36,17 @@
                 <td>@Html.DisplayFor(model => item.PbckTypeName)</td>
                 <td>@Html.DisplayFor(model => item.Year)
                 <td>
-                    @Html.DisplayFor(model => item.NppbkcNo)
+                    @Html.DisplayFor(model => item.NppbkcId)
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.Pbck1Number)
-                </td>
-                <td>@Html.DisplayFor(model => item.RequestQty)</td>
-                <td>
-                    @item.ApprovedUsername
-                </td>
-                <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
-            </tr>
+            </td>
+            <td>@Html.DisplayFor(model => item.RequestQty)</td>
+            <td>
+                @item.ApprovedByPoaId
+            </td>
+            <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
+        </tr>
         }
     </tbody>
 </table>

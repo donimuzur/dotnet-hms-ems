@@ -1,39 +1,33 @@
 ﻿@model IEnumerable<Sampoerna.EMS.Website.Models.WorkflowHistory.WorkflowHistoryViewModel>
-<table id="workflowHistoryTable" class="display" cellspacing="0" width="100%">
-    <thead>
-        <tr>
-            <th class="toggle-row">Account Name</th>
-            <th>Role</th>
-            <th>Action</th>
-            <th>Date</th>
-            <th>Comment</th>
-        </tr>
-    </thead>
-    <thead class="filters">
-        <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+
+<table id="workflowHistoryTable" class="display table table-bordered table-striped" cellspacing="0" width="100%">
+        <thead>
             <tr>
-                <td>@Html.DisplayFor(model => item.USERNAME)</td>
-                <td>@Html.DisplayFor(model => item.Role)
-                <td>
-                    @Html.DisplayFor(model => item.ACTION)
-                    @*@Html.Raw(item.ACTION)*@
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.ACTION_DATE)
-                    @*@Html.Raw(item.ACTION_DATE)*@
-                </td>
-                <td class="last">@Html.DisplayFor(model => item.COMMENT)</td>
+                <th class="toggle-row">Account Name</th>
+                <th>Role</th>
+                <th>Action</th>
+                <th>Date</th>
+                <th>Comment</th>
             </tr>
-        }
-    </tbody>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(model => item.USERNAME)</td>
+                    <td>@Html.DisplayFor(model => item.Role)
+                    <td>
+                        @Html.DisplayFor(model => item.ACTION)
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(model => item.ACTION_DATE)*@
+                        @if (item.ACTION_DATE != null) {
+                            @item.ACTION_DATE.Value.ToString("dd MMMM yyyy HH:mm:ss")
+                        }
+                    </td>
+                    <td class="last">@Html.DisplayFor(model => item.COMMENT)</td>
+                </tr>
+            }
+        </tbody>
 </table>

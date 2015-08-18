@@ -169,6 +169,29 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="table-container">
+                                    <table class="table table-bordered table-striped js-options-table fix-header" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Plant ID</th>
+                                                <th>Plant City</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Plant)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.WERKS)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.ORT01)
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -185,12 +208,12 @@
 </div>
 <!--delete-->
 <input id="btn-delete-nppbkc" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.Nppbkc" value="delete">
-<div class="modal main-menu-child fade delete-modal Nppbkc" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade delete-modal Nppbkc" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Delete</h3>
+                <h4 class="modal-title">Delete</h4>
             </div>
             <div class="modal-body">
                 Are you sure?

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -19,7 +20,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
-
+        
         public PlantController(IPlantBLL plantBll, IZaidmExNPPBKCBLL nppbkcBll, IZaidmExGoodTypeBLL goodTypeBll, IChangesHistoryBLL changesHistoryBll, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.MasterPlant)
         {
@@ -38,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAll())
+                Details = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAllPlant())
             };
             ViewBag.Message = TempData["message"];
             return View("Index", plant);
@@ -47,8 +48,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
-            var plant = _plantBll.GetId(id);
 
+            
+            var plant = _plantBll.GetId(id);
+            
             if (plant == null)
             {
                 return HttpNotFound();
@@ -58,9 +61,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = new PlantFormModel
             {
+              
                 Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
+                
             };
+            
             return InitialEdit(model);
         }
 
@@ -69,38 +75,62 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
+            model.IsMainPlantExist = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
+                model.Detail.Werks);
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
             return View("Edit", model);
         }
 
         [HttpPost]
+        public JsonResult ShowMainPlant(string nppbck1, bool? isMainPlant)
+        {
+            var checkIfExist = _plantBll.GetT001W(nppbck1, isMainPlant);
+            var IsMainPlantExist = checkIfExist != null;
+            return Json(IsMainPlantExist);
+        }
+
+        [HttpPost]
         public ActionResult Edit(PlantFormModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 return InitialEdit(model);
             }
-
+            var isAlreadyExistMainPlant = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
+                model.Detail.Werks);
+            if (isAlreadyExistMainPlant)
+            {
+                AddMessageInfo("Main Plant Already Set", Enums.MessageInfoType.Warning);
+                return InitialEdit(model);
+            }
             try
             {
-                var checkIfExist = _plantBll.GetT001W(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant);
-
-                if (checkIfExist != null)
-                {
-                    TempData[Constans.SubmitType.DataExist] = Constans.SubmitMessage.DataExist;
-                    return InitialEdit(model);
-                }
-
-
+               
                 var receiveMaterial = model.Detail.ReceiveMaterials.Where(c => c.IsChecked).ToList();
                 model.Detail.ReceiveMaterials = receiveMaterial;
                 var t1001w = Mapper.Map<Plant>(model.Detail);
+                if (t1001w.PLANT_RECEIVE_MATERIAL != null)
+                {
+                    var tempRecieveMaterial = t1001w.PLANT_RECEIVE_MATERIAL;
+                    foreach (var rm in tempRecieveMaterial)
+                    {
+                        rm.ZAIDM_EX_GOODTYP = _goodTypeBll.GetById(rm.EXC_GOOD_TYP);
+                    }
+                    t1001w.PLANT_RECEIVE_MATERIAL = tempRecieveMaterial;
+                }
+                
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                      );
                 return RedirectToAction("Index");
             }
-            catch(Exception exception)
+            catch(Exception ex)
             {
+
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                                       );
+              
                 return InitialEdit(model);
             }
         }
@@ -157,6 +187,21 @@ namespace Sampoerna.EMS.Website.Controllers
             
             return planReceives;
         }
-        
+
+        private bool IsMainPlantAlreadyExist(string nppbkcid, bool IsMainPlant, string plantId)
+        {
+            if (!IsMainPlant)
+                return false;
+            var checkIfExist = _plantBll.GetT001W(nppbkcid, IsMainPlant);
+            if (checkIfExist == null)
+                return false;
+            if (checkIfExist.WERKS != plantId)
+                return true;
+            return false;
+           
+
+        }
+
+
     }
 }

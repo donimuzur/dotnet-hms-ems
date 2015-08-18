@@ -1,4 +1,5 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core;
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
 
 @{
@@ -11,7 +12,9 @@
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
                 <a href="@Url.Action("Create", "PBCK1")">
-                    <button class="btn btn-blue">NEW</button>
+                    @if (Model.IsShowNewButton) {
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    }
                 </a>
             </div>
         </div>
@@ -22,7 +25,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("Filter", "PBCK1",
+                @using (Ajax.BeginForm("FilterOpenDocument", "PBCK1",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -36,7 +39,7 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -44,7 +47,7 @@
                             <div class="row">
                                 <label class="col-md-4">Type</label>
                                 <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control" })
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.Pbck1Types, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -52,7 +55,7 @@
                             <div class="row">
                                 <label class="col-md-4">Year</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -61,7 +64,7 @@
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
                                             <option value="">All</option>
                                         </select>
                                     </div>
@@ -71,7 +74,7 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control" })
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
                                     </div>
                                 </div>
                             </div>
@@ -100,8 +103,9 @@
 
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
-        
 
+        $('#MenuPBCK1OpenListDocument').addClass('active');
+        
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
@@ -139,8 +143,6 @@
                         .draw();
                 });
             });
-
-            $('#MenuPBCK1OpenListDocument').addClass('active');
         }
 
         $("#SearchInput_NppbkcId").change(function () {
@@ -169,8 +171,8 @@
                     data: formData,
                     success: function (data) {
                         var list = data.SearchInput.PoaList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
                         if (list.length > 0) {
-                            $('#SearchInput_POA').append('<option value="">All</option>');
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
                             }

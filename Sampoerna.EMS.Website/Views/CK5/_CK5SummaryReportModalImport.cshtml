@@ -1,0 +1,73 @@
+﻿
+@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+
+<div id="Ck5ModalImport" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    @using (Html.BeginForm("ExportXlsSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsFormsImport" }))
+    {
+        @Html.HiddenFor(model => model.Ck5Type)
+
+        @Html.HiddenFor(model => model.ExportModel.CompanyCodeSource)
+        @Html.HiddenFor(model => model.ExportModel.CompanyCodeDest)
+        @Html.HiddenFor(model => model.ExportModel.NppbkcIdSource)
+        @Html.HiddenFor(model => model.ExportModel.NppbkcIdDest)
+        @Html.HiddenFor(model => model.ExportModel.PlantSource)
+        @Html.HiddenFor(model => model.ExportModel.PlantDest)
+        @Html.HiddenFor(model => model.ExportModel.DateFrom)
+        @Html.HiddenFor(model => model.ExportModel.DateTo)
+
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3><span id="lblTitleModal">Export @Sampoerna.EMS.Utils.EnumHelper.GetDescription(Model.Ck5Type)</span> </h3>
+                </div>
+                <div class="modal-body">
+                    <span id="lblMessageModal">Column : </span><br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SubmissionDate, new { @checked = "checked" })Tanggal Aju<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SubmissionNumber, new { @checked = "checked" })Nomer Aju<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.RegistrationDate, new { @checked = "checked" })Tanggal Pendaftaran<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.RegistrationNumber, new { @checked = "checked" })Nomor Pendaftaran<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExGoodTypeDesc, new { @checked = "checked" })Type of Excisable Goods<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExciseStatus, new { @checked = "checked" })Excise Status<br />
+
+                    @Html.CheckBoxFor(model => model.ExportModel.RequestType, new { @checked = "checked" })Type of Request<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SourceKppbcName, new { @checked = "checked" })Origin CE Office<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SourceCompanyName, new { @checked = "checked" })Origin Company<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SourceNppbkcId, new { @checked = "checked" })Origin Company's NPPBKC<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SourceCompanyAddress, new { @checked = "checked" })Origin Company's Address<br />
+
+                    @Html.CheckBoxFor(model => model.ExportModel.DestKppbcName, new { @checked = "checked" })Destination Company<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.DestNppbkcId, new { @checked = "checked" })Destination's NPPBKC<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.DestCompanyAddress, new { @checked = "checked" })Destination Company Address<br />
+
+
+                    @Html.CheckBoxFor(model => model.ExportModel.TypeOfTobaccoProduct, new { @checked = "checked" })Type of Tobacco Product<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.GrandTotal, new { @checked = "checked" })Number of Box<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ContainBox, new { @checked = "checked" })Contain per Box<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.TotalExcisableGoods, new { @checked = "checked" })Total of Excisable Goods<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Hje, new { @checked = "checked" })Unsealing Banderol Price<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExciseTariff, new { @checked = "checked" })Excise Tariff<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExciseValue, new { @checked = "checked" })Excise Value<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.ExciseSettlement, new { @checked = "checked" })Type of Excise Settlement<br />
+
+                    @Html.CheckBoxFor(model => model.ExportModel.Pbck1Number, new { @checked = "checked" })Unpaid Excise Facility Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.PbckDecreeDate, new { @checked = "checked" })Unpaid Excise Facility Date<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.DestKppbcName, new { @checked = "checked" })Destination CE Office<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SealingNotifDate, new { @checked = "checked" })Sealing Notification Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.SealingNotifNumber, new { @checked = "checked" })Sealing Notification Date<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.UnSealingNotifDate, new { @checked = "checked" })UnSealing Notification Number<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.UnSealingNotifNumber, new { @checked = "checked" })UnSealing Notification Date<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Lack1Number, new { @checked = "checked" })Reported to LACK-1 Month<br />
+                    @Html.CheckBoxFor(model => model.ExportModel.Lack2Number, new { @checked = "checked" })Reported to LACK-2 Month<br />
+
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnConfirm" class="btn btn-blue" value="Ok" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

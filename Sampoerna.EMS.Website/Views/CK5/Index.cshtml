@@ -6,8 +6,12 @@
         <div class="col-sm-12">
             <h3 id="lblTitle">Domestic</h3>
             <div class="action-button new">
-                <a id="newDomestic" href="@Url.Action("CreateDomestic", "CK5")"><button class="btn btn-blue">NEW</button></a>
-                <a id="newIntercompany" href="@Url.Action("CreateIntercompany", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                @if (Model.IsShowNewButton)
+                {
+                    <a id="newDomestic" href="@Url.Action("CreateDomestic", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                    <a id="newIntercompany" href="@Url.Action("CreateIntercompany", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                    <a id="newDomesticAlcohol" href="@Url.Action("CreateDomesticAlcohol", "CK5")"><button class="btn btn-blue">NEW</button></a>
+                }
             </div>
         </div>
     </div>
@@ -22,7 +26,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#domestic" aria-controls="domestic" onclick="ChangeTitle('Domestic');" role="tab" data-toggle="tab">Domestic</a></li>
                     <li role="presentation"><a href="#intercompany" aria-controls="intercompany" onclick="ChangeTitle('Intercompany');" role="tab" data-toggle="tab">Intercompany</a></li>
-
+                    <li role="presentation"><a href="#domesticAlcohol" aria-controls="domesticAlcohol" onclick="ChangeTitle('Domestic Alcohol');" role="tab" data-toggle="tab">Domestic Alcohol</a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -74,6 +78,33 @@
 
                         </div>
                     </div>
+                    
+                    <!-- Tab panes -->
+
+                    <div role="tabpanel" class="tab-pane" id="domesticAlcohol">
+                        <div class="tab-wrapper">
+                            @using (Ajax.BeginForm("CK5DomesticAlcohol", "CK5",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    InsertionMode = InsertionMode.Replace,
+                                    UpdateTargetId = "contenttableDomesticAlcohol",
+                                    OnComplete = "ReloadDataTablesDomesticAlcohol"
+
+                                }))
+                            {
+                                @Html.Partial("_CK5Search")
+
+                            }
+
+                            <div id="contenttableDomesticAlcohol" class="table-container">
+                                @Html.Partial("_CK5DomesticAlcoholTablePartial")
+                            </div>
+
+                        </div>
+                    </div>
+                    
+
                 </div>
             </div>
         </div>
@@ -82,18 +113,19 @@
 
     @section scripts {
        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+@*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
         <script type="text/javascript" language="javascript" class="init">
 
             $(document).ready(function() {
                 $('#MenuCK5Domestic').addClass('active');
                 $('#newDomestic').show();
                 $('#newIntercompany').hide();
+                $('#newDomesticAlcohol').hide();
 
-                setupDataTables();
+                
                 setupDataTablesIntercompany();
-
-
+                setupDataTablesDomesticAlcohol();
+                setupDataTables();
             });
 
 
@@ -105,7 +137,7 @@
             table = $('#ck5Table').DataTable();
             table.destroy();
         }
-
+       
         table = $('#ck5Table').DataTable(
               {
                   "sDom": "Rlfrtip",
@@ -167,9 +199,9 @@
             });
         });
         
-        $("#ck5Table_filter").hide();
-        $('#ck5Table_length').hide();
-        $('#ck5Table_info').hide();
+        //$("#ck5Table_filter").hide();
+        //$('#ck5Table_length').hide();
+        //$('#ck5Table_info').hide();
         
         // $("#ck5Table_filter").hide();
     }
@@ -231,9 +263,16 @@
         if (title == 'Domestic') {
             $('#newDomestic').show();
             $('#newIntercompany').hide();
-        } else {
+            $('#newDomesticAlcohol').hide();
+        } else if (title == 'Intercompany')  {
             $('#newDomestic').hide();
             $('#newIntercompany').show();
+            $('#newDomesticAlcohol').hide();
+        }
+        else if (title == 'Domestic Alcohol') {
+            $('#newDomestic').hide();
+            $('#newIntercompany').hide();
+            $('#newDomesticAlcohol').show();
 
         }
     }
@@ -243,6 +282,49 @@
         $(".selectreset").val($(".selectreset option:first").val());
     }
 
+    //domestic alcohol
+    function ReloadDataTablesDomesticAlcohol() {
+        setupDataTablesDomesticAlcohol();
+    }
+
+    function setupDataTablesDomesticAlcohol() {
+
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#ck5TableDomesticAlcohol')) {
+            table = $('#ck5TableDomesticAlcohol').DataTable();
+            table.destroy();
+        }
+
+
+        table = $('#ck5TableDomesticAlcohol').DataTable(
+             {
+                 "sDom": "Rlfrtip",
+                 "language": {
+                     "zeroRecords": "No records found",
+                     "infoFiltered": "(filtered from _MAX_ total records)"
+                 }
+             });
+
+        $('#ck5TableDomesticAlcohol .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            }
+        });
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+
+       
+    }
+    
 </script>
 
     }

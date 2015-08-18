@@ -117,9 +117,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbVirtual = AutoMapper.Mapper.Map<VIRTUAL_PLANT_MAP>(model);
                 dbVirtual.CREATED_DATE = DateTime.Now;
                 dbVirtual.CREATED_BY = CurrentUser.USER_ID;
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                }
+                
+                
             }
 
             InitCreateModel(model);
@@ -137,14 +144,18 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
             model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
             model.CompanyName = dbVirtual.T001.BUTXT;
-            model.ImportPlanName = dbVirtual.T001W.WERKS;
-            model.ExportPlanName = dbVirtual.T001W1.WERKS;
-            model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
+            model.ImportPlanName = dbVirtual.T001W1.WERKS;
+            model.ExportPlanName = dbVirtual.T001W.WERKS;
+            model.ImportPlantDesc = dbVirtual.T001W1.WERKS + "-" + dbVirtual.T001W1.NAME1;
+            model.ExportPlantDesc = dbVirtual.T001W.WERKS + "-" + dbVirtual.T001W.NAME1;
+            model.IsDeleted = dbVirtual.IS_DELETED;
+            
+            //model.IsDeleted = dbVirtual.IS_DELETED.HasValue ? dbVirtual.IS_DELETED.Value : false;
             var changeHistoryList = _changesHistoryBLL.GetByFormTypeId(Enums.MenuList.VirtualMappingPlant);
            
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
-         
 
+            model.IsAllowDelete = !model.IsDeleted.HasValue || !model.IsDeleted.Value;
             return View(model);
         }
 
@@ -165,21 +176,25 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             var model = new VirtualMappingPlantEditViewModel();
+           
             InitEditModel(model);
 
             var dbVirtual = _virtualMappingPlanBll.GetByIdIncludeChild(id);
+           
             if (dbVirtual != null)
             {
                 if (dbVirtual.IS_DELETED == true)
                 {
                     var modeldetail = new VirtualMappingPlantDetailsViewModel();
+                    modeldetail.MainMenu = _mainMenu;
+                    modeldetail.CurrentMenu = PageInfo;
                     modeldetail.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
                     if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
                         modeldetail.CompanyName = dbVirtual.T001.BUTXT;
 
-                    modeldetail.ImportPlanName = dbVirtual.T001W.WERKS;
-                    modeldetail.ExportPlanName = dbVirtual.T001W1.WERKS;
+                    modeldetail.ImportPlanName = dbVirtual.T001W1.WERKS;
+                    modeldetail.ExportPlanName = dbVirtual.T001W.WERKS;
 
                     
                     return View("Details",modeldetail);
@@ -190,8 +205,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
                         model.CompanyId = dbVirtual.COMPANY_ID;
 
-                    model.ImportPlantId = dbVirtual.T001W.WERKS;
-                    model.ExportPlantId = dbVirtual.T001W1.WERKS;
+                    model.ImportPlantId = dbVirtual.T001W1.WERKS;
+                    model.ExportPlantId = dbVirtual.T001W.WERKS;
 
                     return View(model);
                 }
@@ -233,14 +248,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbVirtual.IMPORT_PLANT_ID = model.ImportPlantId;
                 dbVirtual.EXPORT_PLANT_ID = model.ExportPlantId;
 
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                    //InitEditModel(model);
+                    //return View("Edit", model);
+                }
+                
             }
 
-           
             InitEditModel(model);
             return View("Edit", model);
+            
         }
 
         public ActionResult Delete(int id)

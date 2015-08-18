@@ -27,14 +27,16 @@ namespace Sampoerna.EMS.BusinessObject
         public string BUKRS { get; set; }
         public string BUTXT { get; set; }
         public string NPWP { get; set; }
+        public string ORT01 { get; set; }
+        public string SPRAS { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public string ORT01 { get; set; }
-        public string SPRAS { get; set; }
+        public string CREATED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public string BUTXT_ALIAS { get; set; }
     
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
-        public virtual USER USER { get; set; }
         public virtual ICollection<T001K> T001K { get; set; }
         public virtual ICollection<T001K> T001K1 { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }

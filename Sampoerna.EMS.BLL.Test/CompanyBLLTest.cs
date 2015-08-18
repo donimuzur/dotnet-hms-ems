@@ -54,23 +54,7 @@ namespace Sampoerna.EMS.BLL.Test
 
         }
 
-        [TestMethod]
-        public void IsCorrectDate()
-        {
-
-            //act
-            var results = _companyBll.GetMasterData();
-            var companyCode102 = results.Where(x => x.BUKRS == "102");
-
-            DateTime? value = new DateTime();
-            foreach (var data in companyCode102)
-            {
-                value = data.CREATED_DATE;
-            }
-            //assert
-            Assert.AreEqual(Convert.ToDateTime("2015-06-29 10:55:58.143"), value);
-
-        }
+      
 
       
     }

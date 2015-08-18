@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class DOC_NUMBER_SEQ
     {
-        public long DOC_NUMBER_SEQ1 { get; set; }
+        public long DOC_NUMBER_SEQ_ID { get; set; }
         public long DOC_NUMBER_SEQ_LAST { get; set; }
         public Nullable<int> MONTH { get; set; }
         public Nullable<int> YEAR { get; set; }

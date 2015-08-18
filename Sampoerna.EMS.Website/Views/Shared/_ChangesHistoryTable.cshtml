@@ -20,16 +20,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ChangesHistoryList)
+        @foreach (var item in Model.ChangesHistoryList.OrderByDescending(x=>x.MODIFIED_DATE))
         {
             <tr>
-                <td>@item.MODIFIED_DATE.Value.ToString("dd MMMM yyyy")</td>
+                <td>@item.MODIFIED_DATE.Value.ToString("dd MMMM yyyy HH:mm:ss")</td>
                 <td>@item.FIELD_NAME
                 <td>
                     @Html.Raw(item.OLD_VALUE)
                 </td>
                 <td>
                     @Html.Raw(item.NEW_VALUE)
+                 
                 </td>
                 <td class="last">@item.USERNAME</td>
             </tr>

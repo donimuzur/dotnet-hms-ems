@@ -16,7 +16,9 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T001W> _repositoryT1001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
         private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
-       private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProduct;
+        private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProduct;
+        private IGenericRepository<COUNTRY> _repositoryCountry;
+        private IGenericRepository<CURRENCY> _repositoryCurrency;
 
         private IUnitOfWork _uow;
 
@@ -29,12 +31,56 @@ namespace Sampoerna.EMS.BLL
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
             _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
            _repositoryProduct = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
+            _repositoryCountry = _uow.GetGenericRepository<COUNTRY>();
+            _repositoryCurrency = _uow.GetGenericRepository<CURRENCY>();
         }
 
         public List<string> GetDataCompany()
         {
             return _repositoryT1001.Get().Select(p => p.BUTXT).Distinct().ToList();
         }
+
+        //public string GetExSettlementsNameById(int? id)
+        //{
+        //    var dbData = _ExSettlementRepository.GetByID(id);
+
+        //    if (dbData == null)
+        //        return string.Empty;
+
+        //    return dbData.EX_SETTLEMENT_NAME;
+        //}
+
+        //public string GetExStatusNameById(int? id)
+        //{
+        //    var dbData = _ExStatusRepository.GetByID(id);
+
+        //    if (dbData == null)
+        //        return string.Empty;
+
+        //    return dbData.EX_STATUS_NAME;
+        //}
+
+        //public string GetRequestTypeNameById(int? id)
+        //{
+        //    var dbData = _RequestTypeRepository.GetByID(id);
+
+        //    if (dbData == null)
+        //        return string.Empty;
+
+        //    return dbData.REQUEST_TYPE_NAME;
+        //}
+
+        //}
+
+        //public string GetCarriageMethodeNameById(int? id)
+        //{
+        //    var dbData = _CarriageMethodRepository.GetByID(id);
+
+        //    if (dbData == null)
+        //        return string.Empty;
+
+        //    return dbData.CARRIAGE_METHOD_NAME;
+        //}
 
         #region ZAIDM_EX_PCODE
 
@@ -99,21 +145,15 @@ namespace Sampoerna.EMS.BLL
         #region COUNTRY
 
 
-        public List<string> GetAllDataCountry()
+        public List<COUNTRY> GetAllDataCountry()
         {
-            var list = new List<string>();
-            list.Add("INA");
-            list.Add("USA");
-            list.Add("AUS");
-            return list;
+          
+            return _repositoryCountry.Get().ToList();
 
         }
-        public List<string> GetAllDataCurrency()
+        public List<CURRENCY> GetAllDataCurrency()
         {
-            var list = new List<string>();
-            list.Add("IDR");
-            list.Add("USD");
-            return list;
+            return _repositoryCurrency.Get().ToList();
 
         }
 
@@ -130,8 +170,6 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repositoryProduct.GetByID(id);
             return dbData == null ? string.Empty : dbData.PROD_CODE + " - " + dbData.PRODUCT_TYPE;
         }
-
-
         
     }
 }

@@ -3,7 +3,7 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("Create", "PBCK1", new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Create", "PBCK1"))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -23,6 +23,7 @@
             <div class="col-sm-12">
                 <div role="tabpanel">
                     <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
@@ -46,185 +47,144 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck1script.js"></script>
     <script type="text/javascript">
 
         var supplierData;
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('#btnCancel').click(function (e) {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
 
-            $('#prod-conv-save').click(function () {
-                var datarows = GetTableData($('#prod-conv-table'));
-                var columnLength = $('#pbck1-prod-conv-item').find("thead tr:first th").length;
-                $('#pbck1-prod-conv-item tbody').html('');
-                for (var i = 0; i < datarows.length; i++) {
-                    var data = '<tr>';
-                    if (columnLength > 0) {
-                        data += '<td style="display:none">' + datarows[i][0] + '</td>';
-                        data += '<td>' + datarows[i][1] + '</td>';
-                        data += '<td>' + datarows[i][2] + '</td>';
-                        data += '<td>' + datarows[i][3] + '</td>';
-                        data += '<td>' + datarows[i][4] + '</td>';
-                    }
-                    data += '</tr>';
-                    $('#pbck1-prod-conv-item tbody').append(data);
-                }
-                $('#prod-conv-upload-tab').removeClass('active');
-                $('#home-tab').addClass('active');
-                $('#home').addClass('active');
-                $('#upload').removeClass('active');
+            $("#Detail_SupplierPortId").change(function() {
+                supplierPortOnChange();
             });
 
-            $('#prod-plan-save').click(function () {
-                var datarows = GetTableData($('#prod-plan-table'));
-                var columnLength = $('#pbck1-prod-plan-item').find("thead tr:first th").length;
-                $('#pbck1-prod-plan-item tbody').html('');
-                for (var i = 0; i < datarows.length; i++) {
-                    var data = '<tr>';
-                    if (columnLength > 0) {
-                        data += '<td style="display:none">' + datarows[i][0] + '</td>';
-                        data += '<td style="display:none">' + datarows[i][1] + '</td>';
-                        data += '<td>' + datarows[i][2] + '</td>';
-                        data += '<td>' + datarows[i][3] + '</td>';
-                        data += '<td>' + datarows[i][4] + '</td>';
-                        data += '<td>' + datarows[i][5] + '</td>';
-                    }
-                    data += '</tr>';
-                    $('#pbck1-prod-plan-item tbody').append(data);
-                }
-                $('#prod-plan-upload-tab').removeClass('active');
-                $('#home-tab').addClass('active');
-                $('#home').addClass('active');
-                $('#messages').removeClass('active');
-                $('#collapse5').addClass("in");
+            $('#prod-conv-save').click(function() {
+                prodConvSaveClick();
             });
 
-            $('#ProdConvSubmitBtn').click(function () {
-                var fileName = $('[name="ProdConvExcelfile"]').val().trim();
-                var pos = fileName.lastIndexOf('.');
-                var extension = (pos <= 0) ? '' : fileName.substring(pos);
-                if (extension != '.xlsx') {
-                    alert('Please browse a correct excel file to upload');
-                    return false;
-                }
-                var formData = new FormData();
-                var totalFiles = document.getElementById("ProdConvExcelfile").files.length;
-                for (var i = 0; i < totalFiles; i++) {
-                    var file = document.getElementById("ProdConvExcelfile").files[i];
-                    formData.append("prodConvExcelFile", file);
-                }
-
-                $.ajax({
-                    url: '@Url.Action("UploadFileConversion", "PBCK1")',
-                    type: 'POST',
-                    data: formData,
-                    cache: false,
-                    dataType: 'html',
-                    processData: false, // Don't process the files
-                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                    success: function (response) {
-                        $('#ProdConvContent').html("");
-                        $('#ProdConvContent').html(response);
-                    },
-                    error: function (error) {
-                        // Handle errors here
-                        console.log('ERRORS: ' + error);
-                        // STOP LOADING SPINNER
-                    }
-                });
-                return false;
-            });
-            $('#ProdPlanSubmitBtn').click(function () {
-                var fileName = $('[name="ProdPlanExcelfile"]').val().trim();
-                var pos = fileName.lastIndexOf('.');
-                var extension = (pos <= 0) ? '' : fileName.substring(pos);
-                if (extension != '.xlsx') {
-                    alert('Please browse a correct excel file to upload');
-                    return false;
-                }
-
-                var formData = new FormData();
-                var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
-                for (var i = 0; i < totalFiles; i++) {
-                    var file = document.getElementById("ProdPlanExcelfile").files[i];
-                    formData.append("prodPlanExcelFile", file);
-                }
-
-                $.ajax({
-                    url: '@Url.Action("UploadFilePlan", "PBCK1")',
-                    type: 'POST',
-                    data: formData,
-                    cache: false,
-                    dataType: 'html',
-                    processData: false, // Don't process the files
-                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                    success: function (response) {
-                        $('#ProdPlanContent').html("");
-                        $('#ProdPlanContent').html(response);
-                    },
-                    error: function (error) {
-                        // Handle errors here
-                        console.log('ERRORS: ' + error);
-                        // STOP LOADING SPINNER
-                    }
-                });
-                return false;
+            $('#prod-plan-save').click(function() {
+                prodPlanSaveClick();
             });
 
-            $('#btn-prod-conv-upload').click(function () {
-                $('#home-tab').removeClass('active');
-                $('#home').removeClass('active');
-                $('#prod-conv-upload-tab').addClass('active');
-                $('#upload').addClass('active');
+            $('#ProdConvSubmitBtn').click(function() {
+                prodConvGenerateClick('@Url.Action("UploadFileConversion", "PBCK1")');
             });
 
-            $('#btn-prod-plan-upload').click(function () {
-                $('#home-tab').removeClass('active');
-                $('#home').removeClass('active');
-                $('#prod-plan-upload-tab').addClass('active');
-                $('#messages').addClass('active');
+            $('#ProdPlanSubmitBtn').click(function() {
+                prodPlanGenerateClick('@Url.Action("UploadFilePlan", "PBCK1")');
+            });
+
+            $('#btn-prod-conv-upload').click(function() {
+                btnProdConvUploadClick();
+            });
+
+            $('#btn-prod-plan-upload').click(function() {
+                btnProdPlanUploadClick();
             });
 
             $('#MenuPBCK1OpenListDocument').addClass('active');
 
-            $("#Detail_Pbck1Type").change(function () {
+            $("#Detail_Pbck1Type").change(function() {
                 pbck1TypeOnchange();
             });
 
-            //load nppbkc detail
-            nppbkcIdOnChange();
+            $('#Detail_NppbkcId').change(function() {
+                nppbkcIdOnChange();
+            });
 
-            ajaxLoadSupplierPlant();
+            ajaxLoadSupplierPlant('@Url.Action("GetSupplierPlant", "PBCK1")');
 
             pbck1TypeOnchange();
 
+            $('#Detail_GoodType').change(function() {
+                goodTypeOnChange();
+            });
+
         });
 
-        $('#Detail_NppbkcId').change(function () {
-            nppbkcIdOnChange();
+        //$('#Detail_RequestQtyUomName').change(function () {
+        //    $('#Detail_LatestSaldoUomName').
+        //});
+
+        $('#Detail_Lack1FromMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        $('#Detail_Lack1ToMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        $('#Detail_Lack1FormYear').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        $('#Detail_Lack1ToYear').change(function () {
+            ChangeLatestSaldo();
         });
 
-        function pbck1TypeOnchange() {
-            if ($("#Detail_Pbck1Type").length) {
-                var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
-                if (pbck1Type == '' || pbck1Type.toLowerCase() == 'new') {
-                    $('#Detail_Pbck1Reference').prop('disabled', true);
-                } else {
-                    $('#Detail_Pbck1Reference').prop('disabled', false);
+        function ChangeLatestSaldo() {
+            var month = 0;
+            var year = 0;
+
+            var nppbkcid = "";
+            if ($("#Detail_NppbkcId").length) {
+                nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+            }
+            if ($("#Detail_Lack1ToMonthId").length) {
+                month = $('#Detail_Lack1ToMonthId').find("option:selected").val();
+            }
+            if ($('#Detail_Lack1ToYear').length) {
+                year = $('#Detail_Lack1ToYear').find("option:selected").val();
+            }
+            if (month != 0 && year != 0) {
+                setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+            } else {
+                $('#Detail_LatestSaldoUomName').val('0');
+            }
+        }
+
+        function loadSupplierPlant() {
+            var list = supplierData;
+            if (list.length > 0) {
+                var htmlSelect = '';
+                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange(\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
+                for (var i = 0; i < list.length; i++) {
+                    htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
                 }
+                htmlSelect += '</select>';
+                htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
+                $('#supp-plant').html(htmlSelect);
+                //selected to 1
+                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+            }
+        }
+
+        function ajaxSelectNppbck(formData) {
+            if (formData.nppbkcid) {
+                //Load POA
+                ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
+
+                //Load company
+                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
             }
         }
 
         function nppbkcIdOnChange() {
+
+            ChangeLatestSaldo();
+
             if ($("#Detail_NppbkcId").length) {
                 var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
                 console.log(nppbkcid);
                 if (nppbkcid != '') {
                     ajaxSelectNppbck({ nppbkcid: nppbkcid });
                 } else {
-                    $('#Detail_CompanyName').val('');
+                    $('#Detail_NppbkcCompanyName').val('');
+                    $('#Detail_NppbkcCompanyCode').val('');
+                    $('#Detail_NppbkcKppbcId').val('');
                     $('#displayCompanyName').val('');
                     $('#Detail_PoaList').val('');
                     $('#displayPoaList').val('');
@@ -232,62 +192,22 @@
             }
         }
 
-        function ajaxSelectNppbck(formData) {
-            if (formData.nppbkcid) {
-                //Load POA
-                ajaxLoadPoa(formData);
-
-                //Load company
-                ajaxLoadCompany(formData);
-            }
-        }
-
-        function ajaxLoadPoa(formData) {
+        function ajaxLoadSupplierPlant(url) {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("PoaListPartial", "pbck1")',
-                data: formData,
-                success: function (data) {
-                    var list = data.SearchInput.PoaList;
-                    if (list.length > 0) {
-                        var poalist = '';
-                        for (var i = 0; i < list.length; i++) {
-                            poalist = poalist + ', ' + list[i].Text;
-                        }
-                        poalist = poalist.slice(2);
-                        $('#Detail_PoaList').val(poalist);
-                        $('#displayPoaList').val(poalist);
-                    }
+                url: url,
+                success: function(data) {
+                    supplierData = data;
+                    //load supplier plant
+                    supplierPortOnChange();
                 }
             });
         }
 
-        function ajaxLoadCompany(formData) {
-            if (formData.nppbkcid) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetNppbkcDetail", "PBCK1")',
-                    data: formData,
-                    success: function (data) {
-                        if (data != null) {
-                            $('#Detail_CompanyName').val(data.DocumentBukrstxt);
-                            $('#displayCompanyName').val(data.DocumentBukrstxt);
-                        } else {
-                            $('#Detail_CompanyName').val('');
-                            $('#displayCompanyName').val('');
-                        }
-                    }
-                });
-            }
-        }
-
-        $("#Detail_SupplierPortId").change(function () {
-            supplierPortOnChange();
-        });
-
         function supplierPortOnChange() {
             if ($("#Detail_SupplierPortId").length) {
                 var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if (port_id == '') {
@@ -296,86 +216,27 @@
                     disableSupplierFormInput(false);
                     setSupplierPlantEmpty();
                 } else {
+                    $('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();
                     disableSupplierFormInput(true);
                 }
             }
         }
 
-        function disableSupplierFormInput(isDisable) {
-            $('#Detail_SupplierNppbkc').prop('disabled', isDisable);
-            $('#Detail_SupplierKppbc').prop('disabled', isDisable);
-            $('#Detail_SupplierAddress').prop('disabled', isDisable);
-        }
-
-        function ajaxLoadSupplierPlant() {
+        function setLatestSaldo(formData, url) {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("GetSupplierPlant", "PBCK1")',
-                success: function (data) {
-                    supplierData = data;
-                    //load supplier plant
-                    supplierPortOnChange();
-                }
-            });
-        }
-
-        function loadSupplierPlant() {
-            var list = supplierData;
-            if (list.length > 0) {
-                var htmlSelect = '';
-                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange();">';
-                for (var i = 0; i < list.length; i++) {
-                    htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
-                }
-                htmlSelect += '</select>';
-                htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
-                $('#supp-plant').html(htmlSelect);
-                //selected to 1
-                supplierChange();
-            }
-        }
-
-        function ajaxLoadDetailSupplierPlant(formData) {
-            $.ajax({
-                type: 'POST',
+                url: url,
                 data: formData,
-                url: '@Url.Action("GetSupplierPlantDetail", "PBCK1")',
                 success: function (data) {
-
                     if (data != null) {
-                        //load to form
-                        $('#Detail_SupplierNppbkc').val(data.NPPBKC_NO);
-                        $('#Detail_HiddenSupplierKppbc').val(data.KPPBC_NO);
-                        $('#Detail_SupplierKppbc').val(data.KPPBC_NO);
-                        $('#Detail_SupplierPhone').val('');
-                        $('#Detail_SupplierAddress').val(data.Address);
-                        $('#Detail_HiddendSupplierAddress').val(data.Address);
-                        $('#Detail_SupplierPlant').val(data.Name1);
+                        $('#Detail_LatestSaldo').val(data.latestSaldo);
                     } else {
-                        setSupplierPlantEmpty();
+                        $('#Detail_LatestSaldo').val('0');
                     }
+                    
                 }
             });
-        }
-
-        function supplierChange() {
-            if ($("#Detail_SupplierPlant_ddl").length) {
-                var plantid = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
-                console.log(plantid);
-                ajaxLoadDetailSupplierPlant({ plantid: plantid });
-            }
-        }
-
-        function setSupplierPlantEmpty() {
-            $('#Detail_SupplierNppbkc').val('');
-            $('#Detail_SupplierKppbc').val('');
-            $('#Detail_SupplierPhone').val('');
-            $('#Detail_SupplierAddress').val('');
-            $('#Detail_HiddendSupplierAddress').val('');
-            $('#Detail_HiddenSupplierKppbc').val('');
-            $('#Detail_SupplierPlant').val('');
-
         }
 
     </script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -9,13 +10,14 @@ using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlMaterialDataMapper : IXmlDataReader 
     {
-        /*private XmlDataMapper _xmlMapper = null;
+        private XmlDataMapper _xmlMapper = null;
 
         public XmlMaterialDataMapper(string fileName)
         {
@@ -28,72 +30,135 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("E1MARAM");
                 var items = new List<ZAIDM_EX_MATERIAL>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_MATERIAL();
-                    item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
-                    item.MATERIAL_DESC = xElement.Element("MATERIAL_DESC").Value;
-                    item.MATERIAL_GROUP = xElement.Element("MATERIAL_GROUP").Value;
-                    item.PURCHASING_GROUP = xElement.Element("PURCHASING_GROUP").Value;
-                    item.ISSUE_STORANGE_LOC = xElement.Element("ISSUE_STORANGE_LOC").Value;
-                    item.WERKS = xElement.Element("PLANT_ID").Value;
-                    var exGoodTypCode = xElement.Element("EX_GOOD_TYP").Value;
-                    var exGoodType = new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodTypCode);
-                    if(exGoodType == null)
-                    {
-                        throw new Exception(string.Format("There no data GoodType macthing with  {0} ", exGoodTypCode));
-
-                    }
-                    item.EXC_GOOD_TYP = exGoodType.EXC_GOOD_TYP;
-                    var baseUomId =Convert.ToInt32(xElement.Element("BASE_UOM").Value);
-                    var baseUoM = new XmlUoMDataMapper(null).GetExUoM(baseUomId);
-                    if (baseUoM == null)
-                    {
-                        throw new Exception(string.Format("There no data UoM macthing with  {0} ", baseUomId));
-
-                    }
-                    item.BASE_UOM_ID = baseUoM.UOM_ID;
-                    item.CONVERSION = Convert.ToDecimal(xElement.Element("CONVERSION").Value);
                     
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
-                    var existingMaterial = GetMaterial(item.STICKER_CODE);
-                    if (existingMaterial != null)
+                    var stickerCode = xElement.Element("MATNR").Value;
+                    
+                    var baseUom = _xmlMapper.GetElementValue(xElement.Element("MEINS"));
+                    var materialGroup = _xmlMapper.GetElementValue(xElement.Element("MATKL"));
+                    var isClientDeletion = xElement.Element("LVORM") == null
+                        ? false
+                        : (xElement.Element("LVORM").Value == "X" ? true : false);
+
+                    var E1MAKTM = xElement.Element("E1MAKTM");
+                    string materialDes = string.Empty;
+                    if (E1MAKTM != null)
                     {
-                        item.CREATED_DATE = existingMaterial.CREATED_DATE;
-                        item.MODIFIED_DATE = dateXml;
-                        items.Add(item);
+                        materialDes = _xmlMapper.GetElementValue(E1MAKTM.Element("MAKTX"));
+                    }
+                    var plantList = xElement.Elements("E1MARCM");
+
+                    if (plantList != null)
+                    {
+                        foreach (var plant in plantList)
+                        {
+                            var item = new ZAIDM_EX_MATERIAL();
+                            item.STICKER_CODE = stickerCode;
+                            item.MATERIAL_DESC = materialDes;
+                            item.BASE_UOM_ID = baseUom;
+                            item.MATERIAL_GROUP = materialGroup;
+                            item.CLIENT_DELETION = isClientDeletion;
+                            item.WERKS = _xmlMapper.GetElementValue(plant.Element("WERKS"));
+                            item.PLANT_DELETION = plant.Element("LVORM") == null
+                            ? false
+                            : (plant.Element("LVORM").Value == "X" ? true : false);
+
+
+                            item.ISSUE_STORANGE_LOC = _xmlMapper.GetElementValue(plant.Element("LGPRO"));
+                            item.PURCHASING_GROUP = _xmlMapper.GetElementValue(plant.Element("EKGRP"));
+                            var exGoodType = plant.Element("Z1A_ZAIDM_EX_GOODTYP");
+                            if (exGoodType != null)
+                            {
+                                item.EXC_GOOD_TYP =  _xmlMapper.GetElementValue(exGoodType.Element("EXC_GOOD_TYP"));
+
+                            }
+
+                            //uom
+                            var uomList = xElement.Elements("E1MARMM");
+                            foreach (var element in uomList)
+                            {
+                                var matUom = new MATERIAL_UOM();
+                                matUom.STICKER_CODE = stickerCode;
+                                matUom.WERKS = item.WERKS;
+                                matUom.UMREZ = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREZ")));
+                                matUom.UMREN = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREN")));
+                                matUom.MEINH =  _xmlMapper.GetElementValue(element.Element("MEINH"));
+
+                                item.MATERIAL_UOM.Add(matUom);
+                            }
+                            item.CREATED_BY = Constans.PICreator;
+
+                            item.IS_FROM_SAP = true;
+                            var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
+                            if (existingMaterial != null)
+                            {
+                                var tempUoms = item.MATERIAL_UOM;
+                                item.MATERIAL_UOM = null;
+                                item.MATERIAL_UOM = new List<MATERIAL_UOM>();
+                                foreach (var uom in existingMaterial.MATERIAL_UOM)
+                                {
+                                    foreach (var tempUom in tempUoms)
+                                    {
+                                        if (uom.MEINH == tempUom.MEINH)
+                                        {
+                                            tempUom.MATERIAL_UOM_ID = uom.MATERIAL_UOM_ID;
+
+                                        }
+                                        item.MATERIAL_UOM.Add(tempUom);
+                                    }
+                                }
+
+                                item.MODIFIED_BY =  Constans.PICreator;
+                                item.CREATED_BY = existingMaterial.CREATED_BY;
+                                item.CREATED_DATE = existingMaterial.CREATED_DATE;
+                                item.MODIFIED_DATE = DateTime.Now;
+                                items.Add(item);
+
+                            }
+                            else
+                            {
+                                item.CREATED_DATE = DateTime.Now;
+                                items.Add(item);
+                            }
+                        }
+                        
                         
                     }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
+                    
+                   
+
+                   
 
                 }
+                
+                
                 return items;
             }
 
-        }*/
-
-
-        public void InsertToDatabase()
-        {
-            
-           // _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
-            
-
         }
-        //public ZAIDM_EX_MATERIAL GetMaterial(string materialNumber)
-        //{
-        //    var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL>()
-        //        .GetByID(materialNumber);
-        //    return existingData;
-        //}
-        
 
+
+        public string InsertToDatabase()
+        {
+          
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);
+           
+        }
+
+        
+     
+        public ZAIDM_EX_MATERIAL GetMaterial(string materialNumber, string plant)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL>()
+                .GetByID(materialNumber,plant);
+            return existingData;
+        }
+
+        
 
 
     }

@@ -3,6 +3,7 @@ using System.Globalization;
 using AutoMapper;
 using AutoMapper.Internal;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.AutoMapperExtensions
 {
@@ -123,23 +124,79 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
-    public class CK5ListIndexQtyResolver : ValueResolver<CK5, string>
+    public class CK5ListIndexQtyResolver : ValueResolver<CK5Dto, string>
     {
-        protected override string ResolveCore(CK5 value)
+        protected override string ResolveCore(CK5Dto value)
         {
             string resultValue = "";
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-                resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
-
+               resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
+        
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
-            {
-                if (value.UOM != null)
-                    resultUOM = value.UOM.UOM_DESC;
-            }
+                resultUOM = value.PackageUomName;
 
             return resultValue + " " + resultUOM;
         }
     }
+
+    public class StringToDecimalResolver : ValueResolver<string, decimal>
+    {
+        protected override decimal ResolveCore(string value)
+        {
+            try
+            {
+                return Convert.ToDecimal(value);
+            }
+            catch (Exception ex)
+            {
+
+                return -1;
+            }
+
+        }
+    }
+
+    public class DecimalToStringResolver : ValueResolver<decimal?, string>
+    {
+        protected override string ResolveCore(decimal? value)
+        {
+            if (!value.HasValue)
+                return "0";
+
+            return value.Value.ToString("f2");
+
+        }
+
+    }
+
+    /// <summary>
+    /// Resolve String as CultureInfo.InvariantCulture to a nullable DateTime
+    /// </summary>
+    public class StringToNullableDecimalResolver : ValueResolver<object, decimal?>
+    {
+        protected override decimal? ResolveCore(object value)
+        {
+            string InputAsString = value.ToNullSafeString();
+
+            if (string.IsNullOrWhiteSpace(InputAsString))
+                return null;
+
+            return decimal.Parse(InputAsString);
+        }
+    }
+
+    public class CK5ListIndexDestinationPlantResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+           
+            if (value.IsCk5Export)
+                return value.DEST_COUNTRY_CODE + " - " + value.DEST_COUNTRY_NAME;
+
+            return value.DEST_PLANT_ID + " - " + value.DEST_PLANT_NAME;
+        }
+    }
+
 }

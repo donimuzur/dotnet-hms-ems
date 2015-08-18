@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -7,6 +8,8 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -88,17 +91,6 @@ namespace Sampoerna.EMS.Website.Controllers
             if (viewResult == null)
                 return;
 
-            //if (ConfigurationManager.AppSettings["BaseUrl"] != null)
-            //{
-            //    viewResult.ViewBag.BaseUrl = ConfigurationManager.AppSettings["BaseUrl"].ToString();
-            //}
-
-            //var descriptor = filterContext.ActionDescriptor;
-            //var actionName = descriptor.ActionName;
-            //var controllerName = descriptor.ControllerDescriptor.ControllerName;
-
-            //_accountBll.InsertLog(controllerName, actionName, CurrentUser
-            //    );
 
             base.OnActionExecuted(filterContext);
 
@@ -114,15 +106,73 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (controllerName == "Login" && actionName == "Index") return;
 
-            if (CurrentUser == null)
+            if (CurrentUser == null )
             {
-                
                 filterContext.Result = new RedirectToRouteResult(
-                    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
-
+                   new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+                
+             
                 
             }
+            //implement later
+            //CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser.USER_ID);
+            //if (CurrentUser.AuthorizePages != null)
+            //{
+            //    if (!CurrentUser.AuthorizePages.Contains(PageInfo.PAGE_ID))
+            //    {
+            //        if (!CurrentUser.AuthorizePages.Contains(PageInfo.PARENT_PAGE_ID))
+            //        {
+            //            filterContext.Result = new RedirectToRouteResult(
+            //                new RouteValueDictionary {{"controller", "UnAuthorize"}, {"action", "Error"}});
+
+            //        }
+            //    }
+            //}
+
 
         }
+
+        #region MessageInfo
+        private List<MessageInfo> ListMessageInfo { get; set; }
+
+        private void AddMessage(MessageInfo messageInfo)
+        {
+            ListMessageInfo = (List<MessageInfo>)TempData["MessageInfo"] ?? new List<MessageInfo>();
+            ListMessageInfo.Add(messageInfo);
+
+            TempData["MessageInfo"] = ListMessageInfo;
+        }
+
+        public void AddMessageInfo(MessageInfo messageinfo)
+        {
+            AddMessage(messageinfo);
+        }
+
+        public void AddMessageInfo(List<string> message, Enums.MessageInfoType messageinfotype)
+        {
+            AddMessage(new MessageInfo(message, messageinfotype));
+        }
+
+        public void AddMessageInfo(string message, Enums.MessageInfoType messageinfotype)
+        {
+            AddMessage(new MessageInfo(new List<string> { message }, messageinfotype));
+        }
+
+
+        public List<BaseModel> GetListMessageInfo()
+        {
+            var lsModel = new List<BaseModel>();
+            ListMessageInfo = (List<MessageInfo>)TempData["MessageInfo"];
+
+            if (ListMessageInfo != null)
+                lsModel.AddRange(ListMessageInfo.Select(messageInfo => new BaseModel()
+                {
+                    MessageTitle =messageInfo.MessageInfoType.ToString(),// EnumsHelper.GetResourceDisplayEnums(messageInfo.MessageInfoType),
+                    MessageBody = messageInfo.MessageText
+                }));
+
+            return lsModel;
+        }
+        #endregion
     }
 }

@@ -19,30 +19,30 @@
     </div>
 
     <div class="container-wrap">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="white-wrapper">
-                    <div class="scroll">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Create Master Material
-                                            <i class="fa fa-caret-down"></i>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <form class="form-excise" role="form">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="scroll">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Create Master Material
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-4">Material Number<span class="red">*</span></label>
                                                     <div class="col-md-8">
                                                         @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", maxlength = "18" })
-                                                        @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -51,169 +51,241 @@
                                                     <label class="col-md-4">Material Group<span class="red">*</span></label>
                                                     <div class="col-md-8">
                                                         @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
-                                                        @*@Html.ValidationMessageFor(model => model.MaterialGroup)*@
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4 long">Material Description<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Purchasing Group<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
-                                                            @*@Html.ValidationMessageFor(model => model.PurchasingGroup)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Plant<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "select", new { @class = "selectpicker form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.PlantId)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Base UOM<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.UomId)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Excisable Good Type<span class="red">*</span></label>
-                                                        <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4 long">Material Description<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50", rows = "5" })
 
-                                                            @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.GoodTypeId)*@
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Issue Storage Loc<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-
-                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
-                                                            @*@Html.ValidationMessageFor(model => model.IssueStorageLoc)*@
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Convertion<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.Convertion)*@
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Create By</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                            @Html.HiddenFor(model => model.CreatedById, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedBy)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Changed By</label>
-                                                        <div class="col-md-8">
-
-                                                            @Html.TextBoxFor(model => model.ChangedBy, new { @class = "form-control", @disabled = "disabled" })
-                                                            @Html.HiddenFor(model => model.ChangedById, new { @class = "form-control" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedBy)*@
-
-                                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Purchasing Group<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
+                                                        @*@Html.ValidationMessageFor(model => model.PurchasingGroup)*@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Created On</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @disabled = "disabled" })
-                                                            @*@Html.ValidationMessageFor(model => model.CreatedDate)*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Last Change On</label>
-                                                        <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ChangedDate, new { @class = "form-control", @disabled = "disabled" })
-                                                            @*@Html.ValidationMessageFor(model => model.ChangedDate)*@
-                                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "selectpicker form-control" })
+                                                        @*@Html.ValidationMessageFor(model => model.PlantId)*@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Base UOM(SAP)<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, null, new { @class = "selectpicker form-control" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Excisable Good Type<span class="red">*</span></label>
+                                                    <div class="col-md-8">
 
+                                                        @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
+                                                        @*@Html.ValidationMessageFor(model => model.GoodTypeId)*@
 
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Plant Deletion</label>
-                                                        <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsPlantDelete, new { @class = "checkbox" })
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Client Deletion</label>
-                                                        <div class="col-md-8">
-                                                            @Html.CheckBoxFor(model => model.IsClientDelete, new { @class = "checkbox" })
-                                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Issue Storage Loc<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+
+                                                        @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
+                                                        @*@Html.ValidationMessageFor(model => model.IssueStorageLoc)*@
+
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <span class="red">*</span> ) This Field Required
-                                                </div>
-                                            </div>
-
-                                        </form>
-                                    </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                        Convertion List
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Converted UOM(EMS)<span class="red">*</span></label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownList("uom-list", Model.BaseUOM, null, new { @class = "selectpicker form-control" })
+                                                    @*@Html.ValidationMessageFor(model => model.Convertion)*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Convertion<span class="red">*</span></label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
+                                                    @*@Html.ValidationMessageFor(model => model.Convertion)*@
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4 col-md-offset-4">
+                                                <button class="btn btn-blue full" type="button" id="material-uom-add-btn">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="container-wrap">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div id="contenttable" class="table-container">
+                                                    <table id="material-uom" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>&nbsp;</th>
+                                                                <th> Converted UOM </th>
+                                                                <th> Conversion </th>
+
+                                                            </tr>
+
+                                                        </thead>
+
+
+                                                        <tbody></tbody>
+
+                                                    </table>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                            <div class="panel-group" id="accordionThree" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                                Information
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Plant Deletion</label>
+                                                            <div class="col-md-8">
+                                                                @Html.CheckBoxFor(model => model.IsPlantDelete)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Client Deletion</label>
+                                                            <div class="col-md-8">
+                                                                @Html.CheckBoxFor(model => model.IsClientDelete)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                     
+                      
+                        </div>
+                    </div>
                 </div>
+ 
             </div>
         </div>
-    </div>
+    
 }
 
-@section scripts{
-<script src="~/Scripts/thousand-separator.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
-        $('#MenuMasterMaterial').addClass('active');
-        
-        $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
-    </script>
-}
+    @section scripts
+    {
+        <script src="~/Scripts/js/custom.js"></script>
+        <script src="~/Scripts/thousand-separator.js"></script>
+         <script type="text/javascript" language="javascript" class="init">
+             $(document).ready(function () {
+                
+            });
+            $('#MenuMasterMaterial').addClass('active');
+
+            $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
+
+
+           
+
+            var arrayUom = [];
+
+            $('#material-uom-add-btn').click(function() {
+                var meinh = $('#uom-list').find("option:selected").val();
+                if (meinh !== '') {
+                    var umren = $('#ConversionValueStr').val();
+                   
+                    var objUom = { meinh: encodeURI(meinh), umren: umren };
+                    arrayUom.push(objUom);
+                    CreateUomList();
+                }
+            });
+
+            function CreateUomList() {
+                $('#material-uom tbody tr').remove();
+
+                for (var i = 0; i < arrayUom.length; i++) {
+                    $('#material-uom tbody').append('<tr><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + decodeURI(arrayUom[i].meinh) + '</td><td>' + arrayUom[i].umren + '</td></tr>');
+                }
+            }
+
+            function deleteUom(index) {
+                arrayUom.splice(index, 1);
+                CreateUomList();
+            }
+        </script>
+    }                                  

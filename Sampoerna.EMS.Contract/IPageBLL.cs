@@ -7,5 +7,17 @@ namespace Sampoerna.EMS.Contract
     {
         PAGE GetPageByID(int id);
         List<PAGE> GetPages();
+
+        List<PAGE> GetModulePages();
+
+        void Save(PAGE_MAP pageMap);
+
+        void DeletePageMap(int id);
+
+        List<PAGE> GetParentPages();
+
+        List<int?> GetAuthPages(string userid);
+
+
     }
 }

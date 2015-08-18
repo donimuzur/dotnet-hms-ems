@@ -21,16 +21,16 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DocumentNumber { get; set; }
 
         [Display(Name = "POA")]
-        public int? POA { get; set; }
+        public string POA { get; set; }
 
         [Display(Name = "NPPBKC Origin")]
-        public int? NPPBKCOrigin { get; set; }
+        public string NPPBKCOrigin { get; set; }
 
         [Display(Name = "NPPBKC Destination")]
-        public int? NPPBKCDestination { get; set; }
+        public string NPPBKCDestination { get; set; }
 
         [Display(Name = "Creator")]
-        public int? Creator { get; set; }
+        public string Creator { get; set; }
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>

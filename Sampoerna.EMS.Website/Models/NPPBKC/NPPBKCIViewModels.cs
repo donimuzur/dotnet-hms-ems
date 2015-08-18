@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Website.Models.NPPBKC
 {
@@ -57,6 +58,29 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string AcountNumber { get; set; }
         public LFA1 VENDOR { get; set; }
         public string Is_Deleted { get; set; }
+    }
+
+    public class NppbkcItemModel
+    {
+        public string NPPBKC_ID { get; set; }
+        public string ADDR1 { get; set; }
+        public string ADDR2 { get; set; }
+        public string CITY { get; set; }
+        public string CITY_ALIAS { get; set; }
+        public string KPPBC_ID { get; set; }
+        public string REGION { get; set; }
+        public string REGION_DGCE { get; set; }
+        public string VENDOR_ID { get; set; }
+        public string BUKRS { get; set; }
+        public string TEXT_TO { get; set; }
+        public DateTime? START_DATE { get; set; }
+        public DateTime? END_DATE { get; set; }
+        public DateTime CREATED_DATE { get; set; }
+        public DateTime? MODIFIED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public bool? IS_DELETED { get; set; }
+
+        public T001Dto T001 { get; set; }
     }
 
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -23,33 +24,42 @@ namespace Sampoerna.EMS.XMLReader
             get
             {
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
-                var xmlItems = xmlRoot.Elements("Z1A_PLANT");
+                var xmlItems = xmlRoot.Elements("Z1AXX_T001W");
                 var items = new List<T001W>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T001W();
-                    item.WERKS = xElement.Element("WERKS").Value;
-                    item.NAME1 = xElement.Element("NAME1").Value;
-                    item.ORT01 = xElement.Element("ORT01").Value;
-                    //item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                    //var nppbck = new XmlNPPBKCDataMapper(null).GetNPPBKC(item.NPPBKC_ID);
-                    //if (nppbck == null)
-                    //{
+                    try
+                    {
+                        var item = new T001W();
+                        item.WERKS = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
+                        item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.ADDRESS = _xmlMapper.GetElementValue(xElement.Element("STRAS")) + " " + item.ORT01;
+                        item.CREATED_BY = Constans.PICreator;
+                        var exisitingPlant = GetPlant(item.WERKS);
+                        if (exisitingPlant != null)
+                        {
+                            item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
+                            item.PHONE = exisitingPlant.PHONE;
+                            item.SKEPTIS = exisitingPlant.SKEPTIS;
+                            item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
+                            item.CREATED_BY = exisitingPlant.CREATED_BY;
+                            item.CREATED_DATE = exisitingPlant.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PICreator;
+                            items.Add(item);
 
-                    //}
-                    //var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var exisitingPlant = GetPlant(item.WERKS);
-                    if (exisitingPlant != null)
-                    {
-                        item.CREATED_DATE = exisitingPlant.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        items.Add(item);
-                       
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
+                        continue;
+                        
                     }
 
                 }
@@ -59,9 +69,9 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T001W>(Items);
+          return _xmlMapper.InsertToDatabase<T001W>(Items);
         }
 
         public T001W GetPlant(string PlantId)

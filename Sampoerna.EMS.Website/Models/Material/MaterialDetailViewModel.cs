@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.Material
 {
@@ -23,7 +20,7 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string PurchasingGroup { get; set; }
 
 
-        public int PlantId { get; set; }
+        public string PlantId { get; set; }
         [Display(Name = "Plant")]
         public string PlantName { get; set; }
 
@@ -58,50 +55,39 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Display(Name = "Convertion")]
         public decimal? Convertion { get; set; }
 
-        public Nullable<bool> isPlantDeleteTemp;
         [Required, Display(Name = "Plant Deletion")]
-        public string IsPlantDelete
+        public bool IsPlantDelete
         {
-            get
-            {
-                if (this.isPlantDeleteTemp.HasValue)
-                {
-                    return this.isPlantDeleteTemp.Value ? "Yes" : "No";
-                }
-                else
-                {
-                    return "No";
-                }
-            }
-            
+            get; set;
+
         }
 
 
-        public Nullable<bool> isClientDeleteTemp;
-
         [Required, Display(Name = "Client Deletion")]
-        public string IsClientDelete
+        public bool IsClientDelete
         {
-            get
-            {
-                if (this.isClientDeleteTemp.HasValue)
-                {
-                    return this.isClientDeleteTemp.Value ? "Yes" : "No";
-                }
-                else
-                {
-                    return "No";
-                }
-            }
-            
+            get; set;
+
         }
 
         public Nullable<bool> IsDeleted;
 
-        // list for dropdown in the form
-        public SelectList PlantList { get; set; }
-        public SelectList GoodTypeList { get; set; }
-        public SelectList BaseUOM { get; set; }
+        public bool IsAllowDelete { get; set; }
+
+        public decimal? Conversion
+        {
+            get;
+            set;
+        }
+        [Required]
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
+       
+
+        public List<MaterialUomDetails> MaterialUom { get; set; } 
         
     }
 }

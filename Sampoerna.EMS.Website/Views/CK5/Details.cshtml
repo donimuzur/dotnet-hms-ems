@@ -1,110 +1,392 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5DetailsViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
+@using (Html.BeginForm("GovApproveDocument", "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@Model.Ck5Type.ToString()</h3>
+                <label class="status">@Model.DocumentStatusDescription</label>
+                <div class="action-button">
+                    @switch (Model.Ck5Type)
+                    {
+                        case Enums.CK5Type.Manual:
+                            <a href="@Url.Action("CK5Manual", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                        case Enums.CK5Type.PortToImporter:
+                        case Enums.CK5Type.ImporterToPlant:
+                            <a href="@Url.Action("CK5Import", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                        case Enums.CK5Type.Export:
+                            <a href="@Url.Action("CK5Export", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                         case Enums.CK5Type.Completed:
+                            <a href="@Url.Action("CK5Completed", "CK5")">
+                                <input type="button" class="btn btn-blue" value="Back">
+                            </a>
+                            break;
+                        default:
+                        <a href="@Url.Action("Index", "CK5")">
+                            <input type="button" class="btn btn-blue" value="Back">
+                        </a>
+                            break;
+                    }
+                    <input type="button" class="btn btn-grey" value="Print Preview" />
 
-<div class="container-wrap title-page">
-    <div class="row">
-        <div class="col-sm-12">
-            <h3>@Model.Ck5Type.ToString()</h3>
-            <label class="status">@Model.DocumentStatus</label>
-            <div class="action-button">
-                <a href="@Url.Action("Index", "CK5")">
-                    <button class="btn btn-blue">Back</button>
-                </a>
+                    @if (Model.AllowApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
-                <input type="button" class="btn btn-grey" value="Print Preview" />
+                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                    }
+                    else
+                    {
+                        if (Model.AllowGovApproveAndReject)
+                        {
+                            <input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
 
+                            <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
 
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container-wrap">
-    <div class="row">
-        <div class="col-sm-12">
-            <div role="tabpanel">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                    <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
-                    <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
-                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
-                </ul>
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    @Html.HiddenFor(model => model.Ck5Id);
-                    @Html.Partial("_CK5InformationDetails")
-                    @Html.Partial("_CK5Printout")
-                   
-                    <div role="tabpanel" class="tab-pane" id="changes">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Changes Log
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="form-excise " role="form">
-                                                <div class="last-form">
-                                                    <div class="col-md-3">
-                                                        <div class="row">
-                                                            <label class="col-md-5">CK-5 No</label>
-                                                            <div class="col-md-7">
-                                                                @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="row">
-                                                            <label class="col-md-3">Date</label>
-                                                            <div class="col-md-9">
-                                                                <input type="text" class="form-control" placeholder="">
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="row">
-                                                            <label class="col-md-3">User</label>
-                                                            <div class="col-md-9">
-                                                                <input type="text" class="form-control" placeholder="">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="row">
-                                                            @*<div class="col-md-12">
-                                                    <button class="btn btn-blue full">Export to xls</button>
-                                                </div>*@
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="table-container">
-                            @Html.Partial("_ChangesHistoryTable")
-                        </div>
-                    </div>
+                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />
+                        }
+                    }
 
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Ck5Id)
+                        @Html.HiddenFor(model => model.DocumentStatus)
+                        
+                        @Html.HiddenFor(model => model.IsCk5Export)
+
+                        @Html.HiddenFor(model => model.CountryCode)
+                        @Html.HiddenFor(model => model.CountryName)
+
+                        @Html.HiddenFor(model => model.LoadingPort)
+                        @Html.HiddenFor(model => model.LoadingPortId)
+                        @Html.HiddenFor(model => model.LoadingPortName)
+                        @Html.HiddenFor(model => model.FinalPort)
+                        @Html.HiddenFor(model => model.FinalPortId)
+                        @Html.HiddenFor(model => model.FinalPortName)
+                        
+
+                        @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                            @Html.HiddenFor(model => model.KppBcCity)
+                            @Html.HiddenFor(model => model.GoodTypeName)
+                            @Html.HiddenFor(model => model.SourcePlantId)
+                            @Html.HiddenFor(model => model.DestPlantId)
+
+                            @Html.Partial("_CK5GovApproval")
+                        }
+                        else
+                        {
+                            @Html.Partial("_CK5InformationDetails")
+                        }
+                        
+                      
+
+                        @Html.Partial("_CK5Printout")
+                        @Html.Partial("_CK5ChangeLog")
+
+
+
+                    </div>
+                    @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+                    {
+                        <div class="col-md-12">
+                            <span class="red">*</span> ) This Field Required
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3><span id="lblTitleModal">Approval</span> </h3>
+                </div>
+                <div class="modal-body">
+                    <span id="lblMessageModal">Approve Documents ?</span>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
+                    <input type="button" id="btnConfirmGovApprove" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<div id="Ck5ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Reject document</h4>
+            </div>
+            @using (Html.BeginForm("RejectDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
+
+<div id="Ck5ModalGovReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Government Reject document</h4>
+            </div>
+            @using (Html.BeginForm("GovRejectDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmGovReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div id="Ck5ModalGovCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Government Cancel document</h4>
+            </div>
+            @using (Html.BeginForm("GovCancelDocument", "CK5"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Ck5Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmGovCancel" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
 @section scripts {
+    <script src="~/Scripts/CK5Scripts.js"></script>
+    @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+    {
+        <script src="~/Scripts/jquery.form.min.js"></script>
+        <script src="~/Scripts/UploadExcel.js"></script>
+        <script src="~/Scripts/CK5ScriptUploadGovFile.js"></script>
+    }
+
+
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#MenuCK5Domestic').addClass('active');
+            //$('#MenuCK5Domestic').addClass('active');
+            OnReadyFunction('@Model.Ck5Type.ToString()');
+
+            openGovStatusBlock();
         });
+
+        function openGovStatusBlock() {
+            var docStatus = '@Model.IsWaitingGovApproval';
+            var isAllow = '@Model.AllowGovApproveAndReject';
+            if (docStatus.toLowerCase() == 'true' && isAllow.toLowerCase() == 'true') {
+                $('#home').addClass('active');
+                $('#home-tab').addClass('active');
+                $('#collapseFour').addClass("in");
+
+                $('#RegistrationNumber').bind('input propertychange', function () {
+                    AddValidationClass(false, 'RegistrationNumber');
+                    if (this.value.length) {
+                        AddValidationClass(true, 'RegistrationNumber');
+                    }
+                });
+
+                $('#RegistrationDate').bind('input change', function () {
+                    AddValidationClass(false, 'RegistrationDate');
+                    if (this.value.length) {
+                        AddValidationClass(true, 'RegistrationDate');
+                    }
+                });
+            }
+        }
+
+        $("#btnApprove").click(function () {
+
+            $('#btnConfirm').show();
+            $('#btnConfirmGovApprove').hide();
+            $("#lblTitleModal").text('Approval');
+            $("#lblMessageModal").text('Approve Documents ?');
+            $('#Ck5Modal').modal('show');
+
+        });
+
+
+        $("#btnConfirm").click(function () {
+
+            window.location = "@Url.Action("ApproveDocument", "CK5", new {id = @Model.Ck5Id})";
+        });
+
+
+        $("#btnReject").click(function () {
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+
+            $('#Comment').val('');
+
+            $('#Ck5ModalReject').modal('show');
+
+        });
+
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+            $('#btnConfirmGovReject').attr('disabled', 'disabled');
+            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmReject').removeAttr('disabled');
+                $('#btnConfirmGovReject').removeAttr('disabled');
+                $('#btnConfirmGovCancel').removeAttr('disabled');
+            }
+        });
+
+        $('.GovCancel').bind('input propertychange', function () {
+            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            if (this.value.length) {
+                $('#btnConfirmGovCancel').removeAttr('disabled');
+            }
+        });
+
+        $('.GovReject').bind('input propertychange', function () {
+            $('#btnConfirmGovReject').attr('disabled', 'disabled');
+            if (this.value.length) {
+                $('#btnConfirmGovReject').removeAttr('disabled');
+            }
+        });
+
+
+        $("#btnGovApprove").click(function () {
+            // alert('1');
+            if (ValidateGovInput()) {
+                //  alert('2');
+                $('#btnConfirm').hide();
+                $('#btnConfirmGovApprove').show();
+                $("#lblTitleModal").text('GovApproval');
+                $("#lblMessageModal").text('GovApprove Documents ?');
+                $('#Ck5Modal').modal('show');
+            }
+            // alert('3');
+        });
+
+        $("#btnConfirmGovApprove").click(function () {
+            @*window.location = "@Url.Action("GovApproveDocument", "CK5", new { id = @Model.Ck5Id })";*@
+            $('#Ck5Modal').modal('hide');
+            $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+            $('#GovApproveForm').submit();
+        });
+
+
+        $("#btnGovReject").click(function () {
+            $('#btnConfirmGovReject').attr('disabled', 'disabled');
+            $('.GovReject').val('');
+            $('#Ck5ModalGovReject').modal('show');
+
+        });
+
+        $("#btnGovCancel").click(function () {
+            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            $('.GovCancel').val('');
+            $('#Ck5ModalGovCancel').modal('show');
+
+        });
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    
+                }
+            });
+        }
+        
+     
+        
     </script>
 }

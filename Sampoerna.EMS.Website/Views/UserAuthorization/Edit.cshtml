@@ -1,0 +1,127 @@
+﻿@model Sampoerna.EMS.Website.Models.UserAuthorization.EditUserAuthorizationViewModel
+@{
+    ViewBag.Title = "Edit";
+}
+@using (Html.BeginForm("Edit", "UserAuthorization", null, FormMethod.Post, new {@class = "form-excise", role = "form"}))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>User Group Form</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <a href="@Url.Action("Index", "UserAuthorization")" class="btn btn-grey"> Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            User Group
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">BRole</label>
+                                                        <div class="col-md-8">
+                                                            @Html.HiddenFor(x => x.RoleAuthorizationDto.Brole)
+                                                            @Html.TextBox("brole_id", Model.RoleAuthorizationDto.Brole, new {@class = "form-control", disabled = "disabled"})
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Description</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("brole_desc", Model.RoleAuthorizationDto.BroleDescription, new {@class = "form-control", disabled = "disabled"})
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Page</label>
+                                                        <div class="col-md-8">
+                                                            <div class="page-role">
+                                                                @if (Model.Pages != null)
+                                                                {
+                                                                    for (int i = 0; i < Model.Pages.Count; i++)
+                                                                    {
+                                                                        <div>
+                                                                            @Html.HiddenFor(x => Model.Pages[i].Id)
+                                                                            @Html.HiddenFor(x => Model.Pages[i].PageName)
+                                                                            @Html.CheckBoxFor(x => Model.Pages[i].IsChecked) @(Model.Pages[i].PageName)
+                                                                    
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                           
+                                                            
+                                                            
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var map in Model.RoleAuthorizationDto.BRoleMaps)
+                                    {
+                                        <tr>
+                                            <td>@map.User.UserId</td>
+                                            <td>@(map.User.UserFirstName + " " + map.User.UserLastName)</td>
+                                            <td>@map.User.UserEmail</td>
+                                            <td>@map.StartDate</td>
+                                            <td>@map.EndDate</td>
+                                       
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts
+{
+    <script type="text/javascript" language="javascript">
+        $('#MenuUserAuthorization').addClass('active');
+    </script>
+
+}
+
