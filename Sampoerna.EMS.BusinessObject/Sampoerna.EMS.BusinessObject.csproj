@@ -96,9 +96,11 @@
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
+    <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
+    <Compile Include="DTOs\MaterialDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
     <Compile Include="DTOs\Pbck1Dto.cs" />
@@ -145,6 +147,7 @@
     </Compile>
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\CK5MaterialInput.cs" />
+    <Compile Include="Inputs\EmailTemplateInputs.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
