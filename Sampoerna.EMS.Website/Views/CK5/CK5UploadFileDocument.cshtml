@@ -26,7 +26,7 @@
                             </div>
                             <div class="col-md-6">
                                 <input type="button" id="btnGenerate" class="btn btn-grey generate" value="Generate" />
-                                <input type="submit" class="btn btn-grey" id="btnSave" value="Save" />
+                                <input type="submit" class="btn btn-blue" id="btnSave" value="Save" disabled />
                             </div>
 
                         </div>
@@ -58,6 +58,7 @@
     
         $('#btnGenerate').click(function () {
 
+            $('#btnSave').prop('disabled', true);
             var fileName = $('[name="itemExcelFile"]').val().trim();
             var pos = fileName.lastIndexOf('.');
             var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -85,8 +86,8 @@
                 success: function (response) {
                     $('#listFileDocuments').html("");
                     $('#listFileDocuments').html(response);
-                    //if (IsValidDataUpload())
-                    //    $('#CK5UploadSave').enable();
+                    if (IsValidFileDocumentDataUpload())
+                        $('#btnSave').enable();
                 },
                 error: function (error) {
                     alert("errror " + error);
@@ -94,33 +95,46 @@
             });
         });
 
-        $('#btnSave').click(function () {
-            var datarows = GetTableData($('#Ck5UploadTable'));
-            var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
-            $('#ck5TableItem tbody').html('');
-            for (var i = 0; i < datarows.length; i++) {
-                var data = '<tr>';
-                if (columnLength > 0) {
-                    data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
-                    data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+        //$('#btnSave').click(function () {
+        //    var datarows = GetTableData($('#Ck5UploadTable'));
+        //    var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
+        //    $('#ck5TableItem tbody').html('');
+        //    for (var i = 0; i < datarows.length; i++) {
+        //        var data = '<tr>';
+        //        if (columnLength > 0) {
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+        //            data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
 
-                }
-                data += '</tr>';
-                $('#ck5TableItem tbody').append(data);
+        //        }
+        //        data += '</tr>';
+        //        $('#ck5TableItem tbody').append(data);
+        //    }
+
+
+        //});
+
+
+        function IsValidFileDocumentDataUpload() {
+
+            var datarows = GetTableData($('#Ck5UploadTable'));
+
+            for (var i = 0; i < datarows.length; i++) {
+                if (datarows[i][29].length > 0)
+                    return false;
             }
 
-
-        });
+            return true;
+        }
         
     </script>
 

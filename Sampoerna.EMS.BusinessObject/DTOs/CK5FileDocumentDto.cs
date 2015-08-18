@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DestPlantId { get; set; }
         public string InvoiceNumber { get; set; }
         public string InvoiceDateDisplay { get; set; }
-        public string InvoiceDate { get; set; }
+        
         public string PbckDecreeNumber { get; set; }
         public string CarriageMethod { get; set; }
         public string GrandTotalEx { get; set; }
@@ -35,6 +35,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.ExciseSettlement EX_SETTLEMENT_ID { get; set; }
         public Enums.ExciseStatus EX_STATUS_ID { get; set; }
         public Enums.RequestType REQUEST_TYPE_ID { get; set; }
+
+        public DateTime? INVOICE_DATE { get; set; }
 
         public string SOURCE_PLANT_ID { get; set; }
         public string SOURCE_PLANT_NPWP { get; set; }
@@ -63,6 +65,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LOADING_PORT_NAME { get; set; }
         public string LOADING_PORT_ID { get; set; }
         public string FINAL_PORT { get; set; }
+        public string FINAL_PORT_NAME { get; set; }
         public string FINAL_PORT_ID { get; set; }
         public string DEST_COUNTRY_CODE { get; set; }
         public string DEST_COUNTRY_NAME { get; set; }

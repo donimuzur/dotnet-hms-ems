@@ -273,7 +273,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5FileDocumentItems, CK5UploadFileDocumentsInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.Uom))
-                 .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDateDisplay))
+               // .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDateDisplay))
                 ;
 
             Mapper.CreateMap<CK5FileUploadDocumentsOutput, CK5FileDocumentItems>().IgnoreAllNonExisting()
@@ -283,8 +283,8 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
                .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.PackageUomName))
-               .ForMember(dest => dest.InvoiceDateDisplay, opt => opt.MapFrom(src => src.InvoiceDateTime != null ? src.InvoiceDateTime.Value.ToString("dd MMMM yyyy") : src.InvoiceDate))
-               .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDate))
+               .ForMember(dest => dest.InvoiceDateDisplay, opt => opt.MapFrom(src => src.INVOICE_DATE != null ? src.INVOICE_DATE.Value.ToString("dd MMMM yyyy") : string.Empty))
+               //.ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDate))
                .ForMember(dest => dest.MesssageUploadFileDocuments, opt => opt.MapFrom(src => src.Message))
                ;
 

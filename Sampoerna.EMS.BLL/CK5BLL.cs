@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
         private IPBCK1BLL _pbck1Bll;
+        private ICountryBLL _countryBll;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -64,6 +65,7 @@ namespace Sampoerna.EMS.BLL
             _nppbkcBll = new ZaidmExNPPBKCBLL(_uow,_logger);
             _plantBll = new PlantBLL(_uow, _logger);
             _pbck1Bll = new PBCK1BLL(_uow,_logger);
+            _countryBll = new CountryBLL(_uow,_logger);
         }
         
 
@@ -1088,11 +1090,11 @@ namespace Sampoerna.EMS.BLL
                     output.DEST_PLANT_NAME = destPlant.NAME1;
                 }
 
-                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.InvoiceDate))
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.InvoiceDateDisplay))
                 {
-                    var dateTime = Utils.ConvertHelper.StringToDateTimeCk5FileDocuments(ck5UploadFileDocuments.InvoiceDate);
+                    var dateTime = Utils.ConvertHelper.StringToDateTimeCk5FileDocuments(ck5UploadFileDocuments.InvoiceDateDisplay);
                     if (dateTime != null)
-                        output.InvoiceDateTime = dateTime;
+                        output.INVOICE_DATE = dateTime;
                     else
                         messageList.Add("Invoice Date not valid");
                 }
@@ -1127,6 +1129,32 @@ namespace Sampoerna.EMS.BLL
 
                     if (!_uomBll.IsUomIdExist(ck5UploadFileDocuments.PackageUomName))
                         messageList.Add("UOM not exist");
+                }
+
+                //exsport type
+                if (ck5UploadFileDocuments.Ck5Type == Convert.ToInt32(Enums.CK5Type.Export).ToString())
+                {
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.LOADING_PORT))
+                        messageList.Add("Loading port empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.LOADING_PORT_ID))
+                        messageList.Add("Loading port Id empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.LOADING_PORT_NAME))
+                        messageList.Add("Loading port Name empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.FINAL_PORT))
+                        messageList.Add("Final port empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.FINAL_PORT_ID))
+                        messageList.Add("Final port Id empty");
+                    if (string.IsNullOrEmpty(ck5UploadFileDocuments.FINAL_PORT_NAME))
+                        messageList.Add("Final port name empty");
+
+                    //check country code
+                    var country = _countryBll.GetCountryByCode(ck5UploadFileDocuments.DEST_COUNTRY_CODE);
+                    if (country == null)
+                        messageList.Add("Country not exist");
+                    else
+                    {
+                        output.DEST_COUNTRY_NAME = country.COUNTRY_NAME;
+                    }
                 }
 
                 if (messageList.Count > 0)

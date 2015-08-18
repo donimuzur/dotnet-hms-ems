@@ -26,6 +26,13 @@
             <th>CARRIAGE METHOD</th>
             <th>GRAND TOTAL</th>
             <th>UOM</th>
+            <th>LOADING PORT</th>
+            <th>LOADING PORT NAME</th>
+            <th>LOADING PORT ID</th>
+            <th>FINAL PORT</th>
+            <th>FINAL PORT NAME</th>
+            <th>FINAL PORT ID</th>
+            <th>DEST COUNTRY NAME</th>
             <th>Message</th>
         </tr>
     </thead>
@@ -43,7 +50,8 @@
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SourcePlantId)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DestPlantId)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)
-                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].InvoiceDate)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].InvoiceDateDisplay)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].INVOICE_DATE)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].CarriageMethod)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)
@@ -80,6 +88,7 @@
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_NAME)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_NAME)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_ID)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_CODE)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_NAME)
@@ -123,6 +132,16 @@
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].CarriageMethod)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Uom)</td>
+                    
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_NAME)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_ID)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_NAME)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_ID)</td>
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_NAME)</td>
+                    
+
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].MesssageUploadFileDocuments)</td>
                    
                 </tr>

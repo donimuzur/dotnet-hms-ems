@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SourcePlantId { get; set; }
         public string DestPlantId { get; set; }
         public string InvoiceNumber { get; set; }
-        public string InvoiceDate { get; set; }
+        public string InvoiceDateDisplay { get; set; }
         public string PbckDecreeNumber { get; set; }
         public string CarriageMethod { get; set; }
         public string GrandTotalEx { get; set; }
@@ -34,5 +34,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ConvertedUom { get; set; }
         public string UsdValue { get; set; }
         public string Note { get; set; }
+
+        //export type
+        public string LOADING_PORT { get; set; }
+        public string LOADING_PORT_NAME { get; set; }
+        public string LOADING_PORT_ID { get; set; }
+        public string FINAL_PORT { get; set; }
+        public string FINAL_PORT_NAME { get; set; }
+        public string FINAL_PORT_ID { get; set; }
+        public string DEST_COUNTRY_CODE { get; set; }
+        public string DEST_COUNTRY_NAME { get; set; }
     }
 }

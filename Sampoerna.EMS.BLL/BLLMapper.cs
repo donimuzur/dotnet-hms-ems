@@ -240,6 +240,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Country
+
+            Mapper.CreateMap<COUNTRY, CountryDto>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

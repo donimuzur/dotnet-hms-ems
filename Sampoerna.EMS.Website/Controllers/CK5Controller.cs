@@ -3450,6 +3450,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.GrandTotalEx = datarow[20];
                         uploadItem.Uom = datarow[21];
 
+                        uploadItem.LOADING_PORT = datarow[22];
+                        uploadItem.LOADING_PORT_NAME = datarow[23];
+                        uploadItem.LOADING_PORT_ID = datarow[24];
+                        uploadItem.FINAL_PORT = datarow[25];
+                        uploadItem.FINAL_PORT_NAME = datarow[26];
+                        uploadItem.FINAL_PORT_ID = datarow[27];
+                        uploadItem.DEST_COUNTRY_CODE = datarow[28];
+                     
+
                         model.Ck5FileDocumentItems.Add(uploadItem);
 
                     }
