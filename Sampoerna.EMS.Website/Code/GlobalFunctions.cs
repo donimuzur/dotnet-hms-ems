@@ -233,7 +233,7 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetGoodTypeGroupList()
         {
-            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            IExGroupTypeBLL goodTypeBll = MvcApplication.GetInstance<ExGroupTypeBLL>();
             var goodTypes = goodTypeBll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
             return new SelectList(selectItemSource, "ValueField", "TextField");
@@ -242,7 +242,7 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetGoodTypeGroupListByDescValue()
         {
-            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
+            IExGroupTypeBLL goodTypeBll = MvcApplication.GetInstance<ExGroupTypeBLL>();
             var goodTypes = goodTypeBll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
            // return new SelectList(selectItemSource, "ValueField", "TextField");
