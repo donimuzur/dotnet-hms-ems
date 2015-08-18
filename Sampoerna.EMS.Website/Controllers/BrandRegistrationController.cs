@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
         private IMaterialBLL _materialBll;
-
+        
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
             IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll)
@@ -91,13 +91,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
             //model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
-            model.ProductCodeList = GlobalFunctions.GetProductCodeList();
-            model.SeriesList = GlobalFunctions.GetSeriesCodeList();
-            model.MarketCodeList = GlobalFunctions.GetMarketCodeList();
+            model.ProductCodeList = GlobalFunctions.GetProductCodeList(_productBll);
+            model.SeriesList = GlobalFunctions.GetSeriesCodeList(_masterBll);
+            model.MarketCodeList = GlobalFunctions.GetMarketCodeList(_masterBll);
             model.CountryCodeList = GlobalFunctions.GetCountryList();
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
 
             return model;
         }
@@ -194,13 +194,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
             model.CutFillerCodeList = GlobalFunctions.GetCutFillerCodeList(model.PlantId);
-            model.ProductCodeList = GlobalFunctions.GetProductCodeList();
-            model.SeriesList = GlobalFunctions.GetSeriesCodeList();
-            model.MarketCodeList = GlobalFunctions.GetMarketCodeList();
+            model.ProductCodeList = GlobalFunctions.GetProductCodeList(_productBll);
+            model.SeriesList = GlobalFunctions.GetSeriesCodeList(_masterBll);
+            model.MarketCodeList = GlobalFunctions.GetMarketCodeList(_masterBll);
             model.CountryCodeList = GlobalFunctions.GetCountryList();
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             return model;
         }
 

@@ -40,8 +40,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
         private IPrintHistoryBLL _printHistoryBll;
+        private IPOABLL _poabll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IUnitOfMeasurementBLL _uomBll;
 
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
+        public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
             IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
             IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
@@ -53,6 +56,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowBll = workflowBll;
             _plantBll = plantBll;
             _printHistoryBll = printHistoryBll;
+            _poabll = poabll;
+            _nppbkcbll = nppbckbll;
+            _uomBll = uomBll;
         }
 
         #region View Documents
@@ -93,11 +99,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk5Dto = _ck5Bll.GetAll();
             model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
           
-            model.SearchView.POAList = GlobalFunctions.GetPoaAll();
+            model.SearchView.POAList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
-            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll();
-            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll();
+            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
 
             //list table
@@ -244,7 +250,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
           
-            model.PackageUomList = GlobalFunctions.GetUomList();
+            model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
@@ -475,7 +481,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
-            model.PackageUomList = GlobalFunctions.GetUomList();
+            model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
