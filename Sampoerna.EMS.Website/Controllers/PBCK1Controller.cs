@@ -42,8 +42,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPrintHistoryBLL _printHistoryBll;
         private IPOABLL _poaBll;
         private ILACK1BLL _lackBll;
-
-        public PBCK1Controller(IPageBLL pageBLL, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IMonthBLL _monthBll;
+        private ISupplierPortBLL _supplierPortBll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
+        public PBCK1Controller(IPageBLL pageBLL, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
             IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
@@ -56,6 +59,10 @@ namespace Sampoerna.EMS.Website.Controllers
             _printHistoryBll = printHistoryBll;
             _poaBll = poaBll;
             _lackBll = lackBll;
+            _nppbkcbll = nppbkcbll;
+            _monthBll = monthbll;
+            _supplierPortBll = supplierPortBll;
+            _goodTypeBll = goodTypeBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -203,11 +210,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkcList = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
-            model.MonthList = GlobalFunctions.GetMonthList();
-            model.SupplierPortList = GlobalFunctions.GetSupplierPortList();
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SupplierPortList = GlobalFunctions.GetSupplierPortList(_supplierPortBll);
             //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.SupplierPlantList = GlobalFunctions.GetPlantAll();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.UomList = GlobalFunctions.GetUomList();
 
             var pbck1RefList = GetCompletedDocument();
@@ -339,7 +346,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
         {
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
             switch (model.SearchInput.DocumentType)
@@ -927,7 +934,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         CompanyCodeList = GlobalFunctions.GetCompanyList(),
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
                     },
                     //view all data pbck1 completed document
                     DetailsList = SearchSummaryReports()
@@ -1159,7 +1166,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         CompanyCodeList = GlobalFunctions.GetCompanyList(),
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll()
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
                     },
                     DetailsList = SearchMonitoringUsages()
                 };

@@ -16,15 +16,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOAMapBLL _poaMapBLL;
         private IChangesHistoryBLL _changeHistoryBll;
         private Enums.MenuList _mainMenu;
-
+        private IPOABLL _poabll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
-        public POAMapController(IPageBLL pageBLL, IPOAMapBLL poaMapBll, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changeHistorybll) 
+       
+        public POAMapController(IPageBLL pageBLL, IPOABLL poabll, IPOAMapBLL poaMapBll, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changeHistorybll) 
             : base(pageBLL, Enums.MenuList.POAMap) 
         {
             _poaMapBLL = poaMapBll;
             _changeHistoryBll = changeHistorybll;
             _mainMenu = Enums.MenuList.MasterData;
             _nppbkcbll = nppbkcbll;
+            _poabll = poabll;
         }
         //
         // GET: /POA/
@@ -60,9 +62,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu,
-                NppbckIds = GlobalFunctions.GetNppbkcAll(),
+                NppbckIds = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
                 Plants = GlobalFunctions.GetPlantAll(),
-                POAs = GlobalFunctions.GetPoaAll()
+                POAs = GlobalFunctions.GetPoaAll(_poabll)
             };
             return View("Create",model);
         }
@@ -111,9 +113,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-            model.NppbckIds = GlobalFunctions.GetNppbkcAll();
+            model.NppbckIds = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.Plants = GlobalFunctions.GetPlantAll();
-            model.POAs = GlobalFunctions.GetPoaAll();
+            model.POAs = GlobalFunctions.GetPoaAll(_poabll);
             return View("Edit", model);
         }
 

@@ -97,7 +97,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CountryCodeList = GlobalFunctions.GetCountryList();
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
 
             return model;
         }
@@ -200,7 +200,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CountryCodeList = GlobalFunctions.GetCountryList();
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList();
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             return model;
         }
 

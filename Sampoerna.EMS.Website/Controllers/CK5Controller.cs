@@ -40,8 +40,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
         private IPrintHistoryBLL _printHistoryBll;
-
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
+        private IPOABLL _poabll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        public CK5Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
             IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
             IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
@@ -53,6 +54,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowBll = workflowBll;
             _plantBll = plantBll;
             _printHistoryBll = printHistoryBll;
+            _poabll = poabll;
+            _nppbkcbll = nppbckbll;
         }
 
         #region View Documents
@@ -93,11 +96,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk5Dto = _ck5Bll.GetAll();
             model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
           
-            model.SearchView.POAList = GlobalFunctions.GetPoaAll();
+            model.SearchView.POAList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
-            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll();
-            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll();
+            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
 
             //list table
