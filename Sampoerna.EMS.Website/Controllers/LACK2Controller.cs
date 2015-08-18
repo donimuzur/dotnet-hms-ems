@@ -108,9 +108,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
-            item.GovStatus = Enums.DocumentStatus.WaitingGovApproval;
-            item.Status = Enums.DocumentStatus.WaitingForApproval;
-
             item.ExTypDesc = goods.EXT_TYP_DESC;
 
             item.Butxt = company.BUTXT;
