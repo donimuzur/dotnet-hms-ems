@@ -46,6 +46,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         [Display(Name = "LACK2 Period")]
         public DateTime LACK2Period { get; set; }
 
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+
         [Required]
         [Display(Name = "Submmision Date")]
         public DateTime SubmissionDate { get; set; }

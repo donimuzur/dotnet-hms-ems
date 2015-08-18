@@ -87,6 +87,16 @@ namespace Sampoerna.EMS.BLL
         }
 
         /// <summary>
+        /// Gets Lack2 by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Lack2Dto</returns>
+        public Lack2Dto GetById(int id)
+        {
+            return Mapper.Map<Lack2Dto>(_repository.GetByID(id));
+        }
+
+        /// <summary>
         /// Inserts a LACK2 
         /// </summary>
         /// <param name="item"></param>

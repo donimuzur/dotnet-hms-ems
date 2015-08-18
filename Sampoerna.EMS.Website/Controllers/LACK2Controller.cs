@@ -122,6 +122,65 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            LACK2CreateViewModel model = new LACK2CreateViewModel();
+
+            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetById(id));
+
+            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll();
+            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList();
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
+            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
+
+            var GovStatuses = from Enums.DocumentStatusGov s in Enum.GetValues(typeof(Enums.DocumentStatusGov))
+                              select new { ID = (int)s, Name = s.ToString() };
+
+            var Statuses = from Enums.DocumentStatus s in Enum.GetValues(typeof(Enums.DocumentStatus))
+                           select new { ID = (int)s, Name = s.ToString() };
+
+            model.GovStatusDDL = new SelectList(GovStatuses, "ID", "Name", model.Lack2Model.GovStatus);
+            model.StatusDDL = new SelectList(Statuses, "ID", "Name", model.Lack2Model.Status);
+
+            model.MainMenu = Enums.MenuList.LACK2;
+            model.CurrentMenu = PageInfo;
+            model.Lack2Model.LACK2Period = new DateTime(model.Lack2Model.PeriodYear, model.Lack2Model.PeriodMonth, 1);
+            return View("Create", model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(LACK2CreateViewModel model)
+        {
+
+            Lack2Dto item = new Lack2Dto();
+
+            item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
+
+            var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
+            var company = _companyBll.GetById(model.Lack2Model.Burks);
+            var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
+
+            item.ExTypDesc = goods.EXT_TYP_DESC;
+
+            item.Butxt = company.BUTXT;
+            item.LevelPlantName = plant.NAME1;
+            item.LevelPlantCity = plant.ORT01;
+            item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
+            item.PeriodYear = model.Lack2Model.LACK2Period.Year;
+
+            item.ModifiedBy = CurrentUser.USER_ID;
+            item.ModifiedDate = DateTime.Now;
+
+            item.ApprovedBy = CurrentUser.USER_ID;
+            item.ApprovedDate = DateTime.Now;
+
+            _lack2Bll.Insert(item);
+
+            return RedirectToAction("Index");
+        }
+
 #endregion
 
 
