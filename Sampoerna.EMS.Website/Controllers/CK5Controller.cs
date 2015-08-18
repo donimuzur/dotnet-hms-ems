@@ -1135,9 +1135,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
+            //_ck5Bll.GetSummaryReportsByParam(input);
+            //var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
+            var listCk5 = _ck5Bll.GetSummaryReportsByParam(new CK5GetSummaryReportByParamInput());
 
-            var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
-          
             model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
             model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
             model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
@@ -1361,34 +1362,36 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult SearchSummaryReports(CK5SummaryReportsViewModel model)
         {
             model.DetailsList = SearchDataSummaryReports(model.SearchView);
-            if (model.Ck5Type == Enums.CK5Type.Domestic)
-                return PartialView("_CK5ListSummaryReport", model);
-            if (model.Ck5Type == Enums.CK5Type.Intercompany || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
-                return PartialView("_CK5ListSummaryReportIntercompany", model);
-            if (model.Ck5Type == Enums.CK5Type.PortToImporter || model.Ck5Type == Enums.CK5Type.ImporterToPlant)
-                return PartialView("_CK5ListSummaryReportImport", model);
-            if (model.Ck5Type == Enums.CK5Type.Manual)
-                return PartialView("_CK5ListSummaryManual", model);
+            return PartialView("_CK5ListSummaryReport", model);
+
+            //if (model.Ck5Type == Enums.CK5Type.Domestic)
+            //    return PartialView("_CK5ListSummaryReport", model);
+            //if (model.Ck5Type == Enums.CK5Type.Intercompany || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+            //    return PartialView("_CK5ListSummaryReportIntercompany", model);
+            //if (model.Ck5Type == Enums.CK5Type.PortToImporter || model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+            //    return PartialView("_CK5ListSummaryReportImport", model);
+            //if (model.Ck5Type == Enums.CK5Type.Manual)
+            //    return PartialView("_CK5ListSummaryManual", model);
              
-            return PartialView("_CK5ListSummaryReportExport", model);
+            //return PartialView("_CK5ListSummaryReportExport", model);
         }
 
         public void ExportXlsSummaryReports(CK5SummaryReportsViewModel model)
         {
             string pathFile = "";
 
-            //var pathFile = CreateXlsFileSummaryReports(modelExport);
+            pathFile = CreateXlsSummaryReportsDomesticType(model.ExportModel);
 
-            if (model.Ck5Type == Enums.CK5Type.Domestic)
-                pathFile = CreateXlsSummaryReportsDomesticType(model.ExportModel);
-            else if (model.Ck5Type == Enums.CK5Type.Intercompany || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
-                pathFile = CreateXlsSummaryReportsIntercompanyType(model.ExportModel);
-            else if (model.Ck5Type == Enums.CK5Type.PortToImporter || model.Ck5Type == Enums.CK5Type.ImporterToPlant)
-                pathFile = CreateXlsSummaryReportsExportType(model.ExportModel);
-            else if (model.Ck5Type == Enums.CK5Type.Export)
-                pathFile = CreateXlsSummaryReportsExportType(model.ExportModel);
-            else if (model.Ck5Type == Enums.CK5Type.Manual)
-                pathFile = CreateXlsSummaryReportsManualType(model.ExportModel);
+            //if (model.Ck5Type == Enums.CK5Type.Domestic)
+            //    pathFile = CreateXlsSummaryReportsDomesticType(model.ExportModel);
+            //else if (model.Ck5Type == Enums.CK5Type.Intercompany || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+            //    pathFile = CreateXlsSummaryReportsIntercompanyType(model.ExportModel);
+            //else if (model.Ck5Type == Enums.CK5Type.PortToImporter || model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+            //    pathFile = CreateXlsSummaryReportsExportType(model.ExportModel);
+            //else if (model.Ck5Type == Enums.CK5Type.Export)
+            //    pathFile = CreateXlsSummaryReportsExportType(model.ExportModel);
+            //else if (model.Ck5Type == Enums.CK5Type.Manual)
+            //    pathFile = CreateXlsSummaryReportsManualType(model.ExportModel);
 
 
             var newFile = new FileInfo(pathFile);

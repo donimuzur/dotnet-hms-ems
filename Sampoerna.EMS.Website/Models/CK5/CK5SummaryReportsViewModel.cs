@@ -64,6 +64,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
     public class CK5SummaryReportsItem
     {
+        public string Ck5TypeDescription { get; set; }
+        public string KppbcCityName { get; set; }
+        public string SourcePlant { get; set; }
+        public string DestinationPlant { get; set; }
+
         public long Ck5Id { get; set; }
         
         #region domestic

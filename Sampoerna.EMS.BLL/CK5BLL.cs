@@ -834,7 +834,7 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
+            //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
             queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
           
@@ -858,6 +858,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
+     
         #region Reports
 
         public CK5ReportDto GetCk5ReportDataById(long id)

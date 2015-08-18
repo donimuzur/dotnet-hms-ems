@@ -261,6 +261,12 @@ namespace Sampoerna.EMS.Website
                 //public string Lack1Number { get; set; }
                 //public string Lack2Number { get; set; }
             #endregion
+
+                //added
+                .ForMember(dest => dest.Ck5TypeDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CK5_TYPE)))
+                .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
+                .ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
+
 ;
 
 

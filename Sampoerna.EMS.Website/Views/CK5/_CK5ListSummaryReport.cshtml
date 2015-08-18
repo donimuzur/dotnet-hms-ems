@@ -4,7 +4,18 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
+            <th>CK5 Type</th>
+            <th>KPPBC City</th>
+            <th>Submission Number</th>
+            <th>Submission Date</th>
+            <th>Excise Goods Type</th>
+            <th>Excise Settlement</th>
             <th>Excise Status</th>
+            <th>Request Type</th>
+            <th>Source Plant</th>
+            <th>Destination Plant</th>
+
+            @*<th>Excise Status</th>
             <th>Unpaid Excise Facility Number</th>
             <th>Unpaid Excise Facility Date</th>
             <th>Sealing Notification Date</th>
@@ -12,7 +23,7 @@
             <th>Unsealing Notification Date</th>
             <th>Unsealing Notification Number</th>
             <th>Reported to LACK-1 Month</th>
-            <th>Reported to LACK-2 Month</th>
+            <th>Reported to LACK-2 Month</th>*@
             
         </tr>
     </thead>
@@ -25,7 +36,18 @@
             {
                 <tr>
                     <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Ck5TypeDescription)</td>
+                    <td>@Html.DisplayFor(model => item.KppbcCityName)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionNumber)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                    <td>@Html.DisplayFor(model => item.ExGoodTypeDesc)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseSettlement)</td>
                     <td>@Html.DisplayFor(model => item.ExciseStatus)</td>
+                    <td>@Html.DisplayFor(model => item.RequestType)</td>
+                    <td>@Html.DisplayFor(model => item.SourcePlant)</td>
+                    <td class="last">@Html.DisplayFor(model => item.DestinationPlant)</td>
+
+                    @*<td>@Html.DisplayFor(model => item.ExciseStatus)</td>
                     <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
                     <td>@Html.DisplayFor(model => item.PbckDecreeDate)</td>
                     <td>@Html.DisplayFor(model => item.SealingNotifDate)</td>
@@ -33,7 +55,7 @@
                     <td>@Html.DisplayFor(model => item.UnSealingNotifDate)</td>
                     <td>@Html.DisplayFor(model => item.UnSealingNotifNumber)</td>
                     <td>@Html.DisplayFor(model => item.Lack1Number)</td>
-                    <td class="last">@Html.DisplayFor(model => item.Lack2Number)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Lack2Number)</td>*@
                 </tr>
                 row = row + 1;
             }
