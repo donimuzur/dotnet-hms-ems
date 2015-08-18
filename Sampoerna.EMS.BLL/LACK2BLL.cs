@@ -111,6 +111,7 @@ namespace Sampoerna.EMS.BLL
             try
             {
                 _repository.InsertOrUpdate(model);
+                _uow.SaveChanges();
             }
             catch (SqlException ex)
             {
