@@ -59,8 +59,8 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
               .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
               .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
-              
-              .ForMember(dest => dest.EX_GOODS_TYPE_DESC, opt => opt.MapFrom(src => src.GoodTypeName))
+
+              .ForMember(dest => dest.EX_GOODS_TYPE_DESC, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GoodType)))
               .ForMember(dest => dest.EX_GOODS_TYPE, opt => opt.MapFrom(src => src.GoodType))
 
               .ForMember(dest => dest.EX_SETTLEMENT_ID, opt => opt.MapFrom(src => src.ExciseSettlement))
