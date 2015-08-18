@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sampoerna.EMS.Core;
+﻿using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -25,6 +20,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
       
     }
-   
-   
+
+    public class Lack1GetLatestSaldoPerPeriodInput
+    {
+        public int MonthTo { get; set; }
+        public int YearTo { get; set; }
+        public string NppbkcId { get; set; }
+    }
+
 }

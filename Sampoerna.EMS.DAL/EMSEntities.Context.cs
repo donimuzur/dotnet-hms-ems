@@ -84,5 +84,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual DbSet<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
+        public virtual DbSet<BACK1> BACK1 { get; set; }
+        public virtual DbSet<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
+        public virtual DbSet<BACK3_CK2_PBCK3_PBCK7> BACK3_CK2_PBCK3_PBCK7 { get; set; }
+        public virtual DbSet<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
     }
 }

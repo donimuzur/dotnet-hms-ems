@@ -45,7 +45,13 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-
+        public static MultiSelectList GetNppbkcMultiSelectList()
+        {
+            IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+            var nppbkcList = nppbkcbll.GetAll().Where(x => x.IS_DELETED != true);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
+            return new MultiSelectList(selectItemSource, "ValueField", "TextField");
+        }
         public static SelectList GetNppbkcByFlagDeletionList(bool isDeleted)
         {
             IZaidmExNPPBKCBLL nppbkcbll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
@@ -181,7 +187,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
             var data = masterBll.GetAllDataCountry();
-            return new SelectList(data, "COUNTRY_CODE", "COUNTRY_NAME");
+            return new SelectList(data, "COUNTRY_CODE", "COUNTRY_CODE");
         }
 
         public static SelectList GetCurrencyList()
@@ -195,6 +201,13 @@ namespace Sampoerna.EMS.Website.Code
         {
             IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
             var data = materialBll.GetByFlagDeletion(false);
+            return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
+        }
+
+        public static SelectList GetCutFillerCodeList(string plant = "")
+        {
+            IMaterialBLL materialBll = MvcApplication.GetInstance<MaterialBLL>();
+            var data = materialBll.GetByFlagDeletion(false, plant);
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 

@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="CompanyBLLTest.cs" />
     <Compile Include="DocumentSequenceNumberBLLTest.cs" />
+    <Compile Include="EmailTemplateBLLTest.cs" />
     <Compile Include="FakeStuffs.cs" />
     <Compile Include="HeaderFooterBLLTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
