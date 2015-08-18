@@ -1303,6 +1303,7 @@ namespace Sampoerna.EMS.BLL
             // ReSharper disable once PossibleInvalidOperationException
             rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
+            rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
             if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierCompanyName = dbData.SUPPLIER_PLANT;
@@ -1331,9 +1332,21 @@ namespace Sampoerna.EMS.BLL
 
             //Set ProdPlan
             rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
+            //Set from Pbck1ProdConv
             rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
+            foreach (var dataItem in dbData.PBCK1_PROD_CONVERTER.Select(item => new Pbck1ReportBrandRegistrationDto()
+            {
+                Type = item.PRODUCT_ALIAS,
+                Brand = "todo: get from ?",
+                Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
+                Convertion = item.CONVERTER_OUTPUT.HasValue ? item.CONVERTER_OUTPUT.Value.ToString("N0") : "-",
+                ConvertionUom = item.UOM.UOM_DESC,
+                ConvertionUomId = item.CONVERTER_UOM_ID
+            }))
+            {
+                rc.BrandRegistrationList.Add(dataItem);
+            }
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
-
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {
