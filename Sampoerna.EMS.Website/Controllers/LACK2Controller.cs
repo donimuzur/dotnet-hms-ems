@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
 
-        #region CRUD Actions
+        #region List by NPPBKC
 
         // GET: LACK2
         public ActionResult Index()
@@ -188,11 +188,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
 #endregion
 
-        #region Index List By Plant
+        #region List By Plant
 
         public ActionResult ListByPlant()
         {
-            var data = InitLack1LiistByPlant(new Lack2IndexPlantViewModel
+            var data = InitLack2LiistByPlant(new Lack2IndexPlantViewModel
             {
 
                 MainMenu = _mainMenu,
@@ -205,7 +205,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("ListByPlant", data);
         }
 
-        private Lack2IndexPlantViewModel InitLack1LiistByPlant(Lack2IndexPlantViewModel model)
+        private Lack2IndexPlantViewModel InitLack2LiistByPlant(Lack2IndexPlantViewModel model)
         {
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
             model.PoaList = GlobalFunctions.GetPoaAll();
@@ -213,6 +213,24 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
             return model;
+        }
+
+        #endregion
+
+        #region List Completed Documents
+
+        public ActionResult ListCompletedDoc()
+        {
+            var model = new Lack2IndexViewModel();
+            model = InitViewModel(model);
+
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
+            model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
+
+            return View("ListCompletedDoc", model);
         }
 
         #endregion
