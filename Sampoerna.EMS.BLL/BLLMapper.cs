@@ -259,6 +259,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<COUNTRY, CountryDto>().IgnoreAllNonExisting();
 
             #endregion
+
+            Mapper.CreateMap<PBCK1, ZAIDM_EX_NPPBKCCompositeDto>().IgnoreAllNonExisting();
         }
     }
 }

@@ -122,6 +122,7 @@
     <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
+    <Compile Include="DTOs\ZAIDM_EX_NPPBKCCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>

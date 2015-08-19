@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
-using System.Drawing;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using DocumentFormat.OpenXml.Office.CustomUI;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -29,7 +24,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private ICompanyBLL _companyBll;
-        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll)
+        private IPBCK1BLL _pbck1Bll;
+
+        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll, 
+            IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll, 
+            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -40,6 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcbll = nppbkcbll;
             _goodTypeBll = goodTypeBll;
             _companyBll = companyBll;
+            _pbck1Bll = pbck1Bll;
         }
 
 
@@ -57,7 +57,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Type = Enums.LACK1Type.ListByNppbkc,
-                
+
                 Details = Mapper.Map<List<NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()))
 
             });
@@ -71,7 +71,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
-            
+
 
             return model;
         }
@@ -87,8 +87,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //get by param
             var input = Mapper.Map<Lack1GetByParamInput>(filter);
             var dbData = _lack1Bll.GetAllByParam(input);
-            
-            return  Mapper.Map<List<NppbkcData>>(dbData);
+
+            return Mapper.Map<List<NppbkcData>>(dbData);
 
         }
 
@@ -103,7 +103,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //    model.PeriodMonth = data.Month;
             //    model.PeriodYear = data.Year;    
             //}
-            
+
 
 
             var input = Mapper.Map<Lack1GetByParamInput>(model);
@@ -122,7 +122,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //return PartialView("_Lack1Table", model);
             return null;
         }
-        
+
         #endregion
 
         #region Index List By Plant
@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
-            
+
             return model;
         }
 
@@ -206,34 +206,24 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
-       #endregion
-
-        private Lack1CreateNppbkcViewModel InitialModel(Lack1CreateNppbkcViewModel model)
+        [HttpPost]
+        public JsonResult GetNppbkcListByCompanyCode(string companyCode)
         {
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-
-            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.MontList = GlobalFunctions.GetMonthList(_monthBll);
-            model.YearsList = CreateYearList();
-            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
-            model.SupplierList = GlobalFunctions.GetSupplierPlantList();
-            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
-            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
-
-            return (model);
-
+            var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
+            return Json(data);
         }
+
+        #endregion
 
         #region ----- create -----
 
         public ActionResult Create()
         {
-            var model = new Lack1CreateNppbkcViewModel();
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
+            var model = new Lack1CreateNppbkcViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo
+            };
 
             return CreateInitial(model);
         }
@@ -304,6 +294,32 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
+        {
+            var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
+            return new SelectList(data, "NPPBKC_ID", "NPPBKC_ID");
+        }
+
+        private Lack1CreateNppbkcViewModel InitialModel(Lack1CreateNppbkcViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.MontList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearsList = CreateYearList();
+            //model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode("");
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.SupplierList = GlobalFunctions.GetSupplierPlantList();
+            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return (model);
+
+        }
 
         private SelectList CreateYearList()
         {
