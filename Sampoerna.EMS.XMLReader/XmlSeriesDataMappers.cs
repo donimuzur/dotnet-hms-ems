@@ -31,8 +31,8 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new ZAIDM_EX_SERIES();
-                        item.SERIES_CODE = xElement.Element("SERIES_CODE").Value;
-                        item.SERIES_VALUE = _xmlMapper.GetElementValue(xElement.Element("SERIES_VALUE"));
+                        item.SERIES_CODE = _xmlMapper.GetRomanNumeralValue(xElement.Element("SERIES_CODE"));
+                        item.SERIES_VALUE = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("SERIES_VALUE")));
                         item.CREATED_BY = Constans.PICreator;
                             
                         var existingSeries = GetSeries(item.SERIES_CODE);
