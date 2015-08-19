@@ -8,9 +8,8 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 namespace Sampoerna.EMS.XMLReader
 {
-    public class XmlCK5DataWriter : IXmlDataWriter
-    {
-        public void CreateXML()
+    public class XmlCK5DataWriter     {
+        public void CreateXML(CK5 ck5)
         {
            //ZAIDM_EX_MATERIAL material1 = new ZAIDM_EX_MATERIAL();
            //material1.STICKER_CODE = "wwewe";
@@ -36,29 +35,38 @@ namespace Sampoerna.EMS.XMLReader
            // listMaterial.Add(ck5Materialmaterial1);
            // listMaterial.Add(ck5Materialmaterial2);
 
-           //using (XmlWriter writer = XmlWriter.Create(@"D:\ck5_test.xml"))
-           //{
-           //    writer.WriteStartDocument();
-           //    writer.WriteStartElement("EMS_CK45");
-           //    writer.WriteStartElement("ITEM");
-           //    //writer.WriteElementString("CK5_NUMBER", ck5.CK5_NUMBER);
+            using (XmlWriter writer = XmlWriter.Create(@"H:\ck5_test.xml"))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("ZAIDM_CK5_01");
+                writer.WriteStartElement("IDOC");
+                writer.WriteAttributeString("BEGIN", "1");
                 
-           //    writer.WriteStartElement("MATERIAL"); // <-- Write employee element
-                 
-           //    foreach (var item in listMaterial)  // <-- This is new
-           //    {
-           //        writer.WriteStartElement("ITEM");
-           //        writer.WriteElementString("STICKER_CODE", item.ZAIDM_EX_MATERIAL.STICKER_CODE);
-           //        writer.WriteElementString("SKEP_NP", item.ZAIDM_EX_MATERIAL.SKEP_NP);
-           //        writer.WriteEndElement();
+               
+                writer.WriteStartElement("ZAIDM_CK5_HDR");
+                writer.WriteAttributeString("SEGMENT", "1");
 
-              
-           //    }
-           //    writer.WriteEndElement();
-           //    writer.WriteEndElement();
-           //    writer.WriteEndElement();
-           //    writer.WriteEndDocument();
-           //}
+                writer.WriteElementString("CK5_NUMBER", ck5.REGISTRATION_NUMBER);
+                writer.WriteElementString("CK5_PROCS_TYP", ck5.CK5_TYPE.ToString());
+               
+                //foreach (var item in listMaterial)  // <-- This is new
+                //{
+                //    writer.WriteStartElement("ITEM");
+                //    writer.WriteElementString("STICKER_CODE", item.ZAIDM_EX_MATERIAL.STICKER_CODE);
+                //    writer.WriteElementString("SKEP_NP", item.ZAIDM_EX_MATERIAL.SKEP_NP);
+                //    writer.WriteEndElement();
+
+
+                //}
+
+                //ZAIDM_CK5_HDR
+                writer.WriteEndElement();
+                //IDOC
+                writer.WriteEndElement();
+                //ZAIDM_CK5_01
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
 
         }
     }
