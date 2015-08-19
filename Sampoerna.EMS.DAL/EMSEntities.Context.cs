@@ -72,7 +72,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA> POA { get; set; }
         public virtual DbSet<POA_MAP> POA_MAP { get; set; }
         public virtual DbSet<CURRENCY> CURRENCY { get; set; }
-        public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<ZAIDM_EX_PCODE> ZAIDM_EX_PCODE { get; set; }
         public virtual DbSet<LFA1> LFA1 { get; set; }
         public virtual DbSet<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
@@ -88,5 +87,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<BACK3_CK2_PBCK3_PBCK7> BACK3_CK2_PBCK3_PBCK7 { get; set; }
         public virtual DbSet<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
+        public virtual DbSet<UOM> UOM { get; set; }
     }
 }
