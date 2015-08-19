@@ -88,18 +88,7 @@ namespace Sampoerna.EMS.XMLReader
                     writer.WriteEndElement();
                 }
                 
-
-                //foreach (var item in listMaterial)  // <-- This is new
-                //{
-                //    writer.WriteStartElement("ITEM");
-                //    writer.WriteElementString("STICKER_CODE", item.ZAIDM_EX_MATERIAL.STICKER_CODE);
-                //    writer.WriteElementString("SKEP_NP", item.ZAIDM_EX_MATERIAL.SKEP_NP);
-                //    writer.WriteEndElement();
-
-
-                //}
-
-                
+               
                 //ZAIDM_CK5_HDR
                 writer.WriteEndElement();
                 //IDOC
