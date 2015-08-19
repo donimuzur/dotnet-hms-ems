@@ -80,6 +80,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IT001KBLL, T001KBLL>();
             container.Register<IUserPlantMapBLL, UserPlantMapBLL>();
             container.Register<ICountryBLL, CountryBLL>();
+            container.Register<ISupplierPortBLL, SupplierPortBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
