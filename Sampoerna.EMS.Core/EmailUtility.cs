@@ -21,9 +21,20 @@ namespace Sampoerna.EMS.Core
             {
                 var config = EmailConfiguration.GetConfig();
                MailMessage mail = new MailMessage();
+               List<string> recipients = new List<string>();
+               recipients.AddRange(config.To.Split(','));
+               if (recipients.Count > 0)
+               {
+                   foreach (string to in recipients) {
+                       mail.To.Add(new MailAddress(to));
+                   }
+               }
+               else {
+                   mail.To.Add(new MailAddress(config.To));
+               }
                 mail.Body = body;
                 mail.IsBodyHtml = true;
-                mail.To.Add(new MailAddress(config.To));
+                
                 mail.From = new MailAddress(config.Sender, config.SenderDisplay, Encoding.UTF8);
                 mail.Subject = config.Subject;
                 mail.SubjectEncoding = Encoding.UTF8;
