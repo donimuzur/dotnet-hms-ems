@@ -57,13 +57,13 @@
 
         $('#Bukrs').on('change', function () {
             if ($("#Bukrs").length) {
-                var companyCode = $(this).find("option:selected").text();
+                var companyCode = $(this).find("option:selected").val();
                 $('#NppbkcId option').remove();
                 console.log(companyCode);
                 if (companyCode == '' || $(this).find("option:selected").val() == '') {
                     $('#NppbkcId').append('<option value="">Select</option>');
                 } else {
-                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
+                    ajaxLoadNppbkcList({ companyCode: companyCode }, '@Url.Action("GetNppbkcListByCompanyCode", "LACK1")');
                 }
             }
         });
@@ -96,7 +96,7 @@
                         $('#NppbkcId').append('<option value="">Select</option>');
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
-                                $('#NppbkcId').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                                $('#NppbkcId').append('<option value=' + list[i].NPPBKC_ID + '>' + list[i].NPPBKC_ID + '</option>');
                             }
                         }
                     }
