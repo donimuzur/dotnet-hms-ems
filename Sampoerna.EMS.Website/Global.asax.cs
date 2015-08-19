@@ -46,7 +46,6 @@ namespace Sampoerna.EMS.Website
             container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
             container.Register<IPageBLL, PageBLL>();
             container.Register<IPBCK1BLL, PBCK1BLL>();
-            container.Register<POABLL, POABLL>();
             container.Register<ICK4C_BLL, CK4C_BLL>();
             container.Register<IZaidmExPOAMapBLL, ZaidmExPOAMapBLL>();
             container.Register<IVirtualMappingPlantBLL, VirtualMappingPlantBLL>();
@@ -80,6 +79,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IT001KBLL, T001KBLL>();
             container.Register<IUserPlantMapBLL, UserPlantMapBLL>();
             container.Register<ICountryBLL, CountryBLL>();
+            container.Register<ISupplierPortBLL, SupplierPortBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
