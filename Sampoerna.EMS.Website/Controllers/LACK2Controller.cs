@@ -104,7 +104,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Lack2Dto item = new Lack2Dto();
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
-    
+
             var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
@@ -187,7 +187,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-#endregion
+        #endregion
 
         #region List By Plant
 
@@ -228,7 +228,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
             model.SearchInput.PoaList = GlobalFunctions.GetPoaAll();
             model.SearchInput.YearList = LackYearList();
-            
+
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
@@ -288,7 +288,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = Mapper.Map<Lack2GetByParamInput>(model);
 
-            var dbData = _lack2Bll.GetAll(input);
+            var dbData = _lack2Bll.GetAllCompletedByParam(input);
 
             var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
 
@@ -337,8 +337,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterOpenDocument(LACK2FilterViewModel SearchInput)
         {
             var input = Mapper.Map<Lack2GetByParamInput>(SearchInput);
+            // to search trough the completed documents
+            input.Status = Enums.DocumentStatus.Completed;
 
-            var dbData = _lack2Bll.GetAll(input);
+            var dbData = _lack2Bll.GetAllCompletedByParam(input);
 
             var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
 
@@ -352,5 +354,5 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
     }
-            
+
 }

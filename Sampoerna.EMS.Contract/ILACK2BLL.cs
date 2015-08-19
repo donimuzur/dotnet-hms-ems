@@ -1,5 +1,6 @@
 ﻿using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Sampoerna.EMS.Contract
         List<Lack2Dto> GetAll(Lack2GetByParamInput input);
 
         List<Lack2Dto> GetAllCompleted();
+
+        List<Lack2Dto> GetAllCompletedByParam(Lack2GetByParamInput input);
 
         Lack2Dto GetById(int id);
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sampoerna.EMS.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //public int? PeriodYear { get; set; }
         public string Creator { get; set; }
         public string SubmissionDate { get; set; }
+
+        public Enums.DocumentStatus Status { get; set; }
 
         /// <summary>
         /// optional if want to sorting from query

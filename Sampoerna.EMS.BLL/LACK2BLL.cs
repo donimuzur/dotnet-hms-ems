@@ -93,7 +93,58 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         public List<Lack2Dto> GetAllCompleted()
         {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == (int)Enums.DocumentStatus.Completed, null, "MONTH"));
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == (int)Enums.DocumentStatus.Completed, null, includeTables));
+        }
+
+        /// <summary>
+        /// Gets all LACK2 COMPLETED Documents by parameters
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public List<Lack2Dto> GetAllCompletedByParam(Lack2GetByParamInput input)
+        {
+            Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
+
+            if (!string.IsNullOrEmpty((input.PlantId)))
+            {
+                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty((input.Creator)))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty((input.Poa)))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+            if(input.Status != null || input.Status != 0)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == (int)input.Status);
+            }
+            if (!string.IsNullOrEmpty((input.SubmissionDate)))
+            {
+                var dt = Convert.ToDateTime(input.SubmissionDate);
+                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
+            }
+
+            Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
+
+            if (!string.IsNullOrEmpty(input.SortOrderColumn))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK2>(input.SortOrderColumn));
+
+            }
+
+            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var mapResult = Mapper.Map<List<Lack2Dto>>(dbData.ToList());
+
+            return mapResult;
         }
 
         /// <summary>
