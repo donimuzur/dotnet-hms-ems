@@ -227,7 +227,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
+            // gets the completed documents by checking the status
+            var dbData = _lack2Bll.GetAllCompleted();
             model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
 
             return View("ListCompletedDoc", model);

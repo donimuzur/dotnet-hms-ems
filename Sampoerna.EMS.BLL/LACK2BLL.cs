@@ -87,6 +87,15 @@ namespace Sampoerna.EMS.BLL
         }
 
         /// <summary>
+        /// Gets all LACK2 Documents with status Completed
+        /// </summary>
+        /// <returns></returns>
+        public List<Lack2Dto> GetAllCompleted()
+        {
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == 105, null, "MONTH"));
+        }
+
+        /// <summary>
         /// Gets Lack2 by id
         /// </summary>
         /// <param name="id"></param>

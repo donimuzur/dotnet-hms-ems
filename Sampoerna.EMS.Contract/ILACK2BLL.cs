@@ -12,6 +12,8 @@ namespace Sampoerna.EMS.Contract
     {
         List<Lack2Dto> GetAll(Lack2GetByParamInput input);
 
+        List<Lack2Dto> GetAllCompleted();
+
         Lack2Dto GetById(int id);
 
         Lack2Dto Insert(Lack2Dto item);
