@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -28,6 +29,19 @@ namespace Sampoerna.EMS.XMLReader
              var ck5 = new CK5();
              ck5.REGISTRATION_NUMBER = "8100000011";
              ck5.CK5_TYPE = Enums.CK5Type.Domestic;
+             ck5.CK5_MATERIAL = new List<CK5_MATERIAL>();
+               ck5.CK5_MATERIAL.Add(new CK5_MATERIAL()
+               {
+                   LINE_ITEM = 1,
+                   BRAND = "22.8011",
+                   
+               });
+               ck5.CK5_MATERIAL.Add(new CK5_MATERIAL()
+               {
+                   LINE_ITEM = 2,
+                   BRAND = "22.8022",
+
+               });
              rt.CreateXML(ck5);
              Console.ReadLine();
         }
