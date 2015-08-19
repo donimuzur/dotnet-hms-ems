@@ -19,14 +19,17 @@ namespace Sampoerna.EMS.Core
             string error = string.Empty;
             try
             {
-                var config = EmailConfiguration.GetConfig();
+               var config = EmailConfiguration.GetConfig();
                MailMessage mail = new MailMessage();
                List<string> recipients = new List<string>();
                recipients.AddRange(config.To.Split(','));
-               if (recipients.Count > 0)
+               if (recipients.Count > 1)
                {
                    foreach (string to in recipients) {
-                       mail.To.Add(new MailAddress(to));
+                       if (to != null && to.Trim() != "") {
+                           mail.To.Add(new MailAddress(to));
+                       }
+                       
                    }
                }
                else {
