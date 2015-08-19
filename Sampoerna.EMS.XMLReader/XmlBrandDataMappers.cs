@@ -30,10 +30,11 @@ namespace Sampoerna.EMS.XMLReader
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
                 var xmlItems = xmlRoot.Elements("Z1A_BRAND");
                 var items = new List<ZAIDM_EX_BRAND>();
-                try
-                {
+                
                     foreach (var xElement in xmlItems)
                     {
+                        try
+                        {
                         var item = new ZAIDM_EX_BRAND();
                         item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
 
@@ -141,14 +142,15 @@ namespace Sampoerna.EMS.XMLReader
                             item.CREATED_DATE = DateTime.Now;
                             items.Add(item);
                         }
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                    throw;
-                }
+                        }
+                        catch (Exception ex)
+                        {
+                            _xmlMapper.Errors.Add(ex.Message);
+                            continue;
+                        }
             
+                    }
+                
 
 
 
@@ -163,6 +165,12 @@ namespace Sampoerna.EMS.XMLReader
             return _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
         }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
+        }
+
         public ZAIDM_EX_BRAND GetBrand(string plant_id, string fa_code)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()

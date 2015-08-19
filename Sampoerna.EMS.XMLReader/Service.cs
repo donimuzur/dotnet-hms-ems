@@ -175,15 +175,15 @@ namespace Sampoerna.EMS.XMLReader
         {
             var errorList = new List<string>();
             var orderedFile = OrderFile();
-            
-            
+            IXmlDataReader reader =null;
+             
             if (orderedFile != null)
             {
                 foreach (var xmlfile in orderedFile)
                 {
                     try
                     {
-                        IXmlDataReader reader = XmlReaderFactory(xmlfile);
+                        reader = XmlReaderFactory(xmlfile);
 
                         if (reader != null)
                         {
@@ -198,6 +198,10 @@ namespace Sampoerna.EMS.XMLReader
                         continue;
                     }
                 }
+            }
+            if (reader != null)
+            {
+                errorList.AddRange(reader.GetErrorList());
             }
             return errorList;
         }
