@@ -47,7 +47,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA3 = new HashSet<POA>();
             this.POA_MAP = new HashSet<POA_MAP>();
             this.POA_MAP1 = new HashSet<POA_MAP>();
-            this.UOM = new HashSet<UOM>();
             this.USER_PLANT_MAP = new HashSet<USER_PLANT_MAP>();
             this.PBCK3_PBCK7 = new HashSet<PBCK3_PBCK7>();
             this.PBCK3_PBCK71 = new HashSet<PBCK3_PBCK7>();
@@ -95,7 +94,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<POA> POA3 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP1 { get; set; }
-        public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK71 { get; set; }
