@@ -7,46 +7,46 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterListByPlant", "LACK2",
-                        new AjaxOptions
-                        {
-                            HttpMethod = "POST",
-                            InsertionMode = InsertionMode.Replace,
-                            UpdateTargetId = "contenttable",
-                            OnComplete = "ReloadDataTables"
-                        }, new { @class = "form-excise", role = "form" }))
+                @using (Ajax.BeginForm("FilterOpenDocument", "LACK2",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables"
+                    }, new { @class = "form-excise", role = "form" }))
                 {
                     <div class="row">
                         <div class="col-md-4">
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                    @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
-
+                        @*<div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Type</label>
+                                <div class="col-md-8">
+                                    @Html.EnumDropDownListFor(model => model.SearchInput.Pbck1Type, Model.SearchInput.DocumentType, "All", new { @class = "form-control selectreset" })
+                                </div>
+                            </div>
+                        </div>*@
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-4">Reported On</label>
+                                <label class="col-md-4">Year</label>
                                 <div class="col-md-8">
-                                    <div class="input-group date">
-                                        <input type="text" class="form-control" name="SubmissionDate">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
+                                    @Html.DropDownListFor(model => model.SearchInput.Year, Model.SearchInput.YearList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="last-form">
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
                                             <option value="">All</option>
                                         </select>
                                     </div>
@@ -56,7 +56,7 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.Creator, Model.CreatorList, "All", new { @class = "form-control selectreset" })
+                                        @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
                                     </div>
                                 </div>
                             </div>
@@ -71,11 +71,9 @@
                     </div>
                 }
             </div>
-
             <div id="contenttable" class="table-container">
                 @Html.Partial("_Lack2CompletedDoc")
             </div>
-
         </div>
     </div>
 </div>

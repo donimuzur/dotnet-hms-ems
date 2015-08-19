@@ -10,6 +10,7 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -222,8 +223,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult ListCompletedDoc()
         {
             var model = new Lack2IndexViewModel();
-            model = InitViewModel(model);
 
+            model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
+            model.SearchInput.PoaList = GlobalFunctions.GetPoaAll();
+            model.SearchInput.YearList = LackYearList();
+            
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
@@ -233,6 +238,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("ListCompletedDoc", model);
         }
+
+        // this is a cover up for the years we will need a new table or way to get the years for the dropdowns
+        private SelectList LackYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
+
 
         #endregion
 
@@ -314,6 +331,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return PartialView("_Lack2ListByPlantTable", viewModel);
 
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterOpenDocument(LACK2FilterViewModel SearchInput)
+        {
+            var input = Mapper.Map<Lack2GetByParamInput>(SearchInput);
+
+            var dbData = _lack2Bll.GetAll(input);
+
+            var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
+
+            var viewModel = new Lack2IndexViewModel();
+            viewModel.Details = result;
+
+            return PartialView("_Lack2CompletedDoc", viewModel);
         }
 
         #endregion

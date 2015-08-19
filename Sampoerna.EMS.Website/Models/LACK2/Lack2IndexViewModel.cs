@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public Lack2IndexViewModel()
         {
               Details = new List<LACK2NppbkcData>();
+              SearchInput = new LACK2FilterViewModel();
         }
         public string NppbkcId { get; set; }
         public string Poa { get; set; }
@@ -28,5 +29,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         //public Enums.LACK1Type Lack1Type { get; set; }
 
         public List<LACK2NppbkcData> Details { get; set; }
+
+        // for the completed documents
+        public LACK2FilterViewModel SearchInput { get; set; }
     }
 }

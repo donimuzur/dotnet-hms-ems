@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -92,7 +93,7 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         public List<Lack2Dto> GetAllCompleted()
         {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == 105, null, "MONTH"));
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == (int)Enums.DocumentStatus.Completed, null, "MONTH"));
         }
 
         /// <summary>
