@@ -15,5 +15,7 @@ namespace Sampoerna.EMS.Website.Models.UOM
         public string UomId { get; set; }
        
         public string UomName { get; set; }
+
+        public string IsEmsString { get; set; }
     }
 }

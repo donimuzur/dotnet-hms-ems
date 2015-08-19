@@ -196,8 +196,10 @@ namespace Sampoerna.EMS.Core
         {
             [Description("Pembayaran")]
             Pembayaran = 1,
-            [Description("Pita Cukai")]
-            PitaCukai = 2
+            [Description("Pelekatan Pita Cukai")]
+            PitaCukai = 2,
+            [Description("Pembubuhan Tanda LunasLainnya")]
+            PembubuhanTandaLunasLainnya = 3
         }
 
         public enum ExciseStatus

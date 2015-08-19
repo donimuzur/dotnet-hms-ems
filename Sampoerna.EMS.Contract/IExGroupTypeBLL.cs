@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Contract
        EX_GROUP_TYPE GetGroupTypeByName(string name);
        EX_GROUP_TYPE GetById(int id);
        List<EX_GROUP_TYPE> GetGroupTypesByName(string name);
-       List<EX_GROUP_TYPE> GetAll();
+       List<EX_GROUP_TYPE> GetAll(bool includedeletedchild = true);
        List<string> GetGoodTypeByGroup(int groupid);
        void DeleteDetails(EX_GROUP_TYPE_DETAILS detail);
        bool IsGroupNameExist(string name);

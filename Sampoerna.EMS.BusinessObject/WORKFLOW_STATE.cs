@@ -21,7 +21,6 @@ namespace Sampoerna.EMS.BusinessObject
     
         public long WORKFLOW_STATE_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.ActionType ACTION { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.MenuList> MENU_ID { get; set; }
         public Nullable<int> EMAIL_TEMPLATE_ID { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
     

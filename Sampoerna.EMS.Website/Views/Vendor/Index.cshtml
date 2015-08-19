@@ -21,11 +21,13 @@
                             <th>Account Name</th>
                             <th>Name One</th>
                             <th>Name Two</th>
+                            <th>Deleted</th>
                         </tr>
                     </thead>
                     <thead class="filters">
                         <tr>
                             <th>Action</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -41,6 +43,7 @@
                                 <td class="last">@Html.DisplayFor(model => item.LIFNR)</td>
                                 <td>@Html.DisplayFor(model => item.NAME1)</td>
                                 <td>@Html.DisplayFor(model => item.NAME2)</td>
+                                <td>@Html.DisplayFor(model => item.IS_DELETED_STRING)</td>
                             </tr>
                         }
                     </tbody>
@@ -58,7 +61,7 @@
             // Setup - add a text input to each footer cell
             $('#vendorTable .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 3) {
+                if (idx != 0 && idx != 5) {
                     $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
                 }
             });

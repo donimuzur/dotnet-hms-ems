@@ -124,7 +124,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER));
   
 
-            Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.IS_DELETED_STRING,opt => opt.MapFrom(src => src.IS_DELETED.HasValue ? src.IS_DELETED.Value ? "Yes" : "No" : "No"))
+                .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED.HasValue ? src.IS_DELETED.Value : false));
             Mapper.CreateMap<T001, T001Dto>().IgnoreAllNonExisting();
             
             #region LACK1
@@ -238,6 +240,23 @@ namespace Sampoerna.EMS.BLL
 	    #region ExGoodTyp
 
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Material Dto
+            Mapper.CreateMap<MaterialDto, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_MATERIAL,MaterialDto>().IgnoreAllNonExisting();
+            #endregion
+            #region Email Template
+
+            Mapper.CreateMap<EMAIL_TEMPLATE, EMAIL_TEMPLATEDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<EMAIL_TEMPLATEDto, EMAIL_TEMPLATE>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Country
+
+            Mapper.CreateMap<COUNTRY, CountryDto>().IgnoreAllNonExisting();
 
             #endregion
         }

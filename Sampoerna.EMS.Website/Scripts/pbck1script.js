@@ -316,3 +316,31 @@ function ajaxLoadCompany(formData, url) {
         });
     }
 }
+
+function ValidateGovInput() {
+    var result = true;
+
+    if ($('#Detail_DecreeDate').val() == '') {
+        AddValidationClass(false, 'Detail_DecreeDate');
+        result = false;
+    }
+
+    if ($('#Detail_StatusGov').val() == 'Rejected') {
+        if ($('#Detail_Comment').val() == '') {
+            AddValidationClass(false, 'Detail_Comment');
+            result = false;
+        }
+    }
+
+    return result;
+}
+
+function AddValidationClass(isValid, objName) {
+    if (isValid) {
+        $('#' + objName).removeClass('input-validation-error');
+        $('#' + objName).addClass('valid');
+    } else {
+        $('#' + objName).removeClass('valid');
+        $('#' + objName).addClass('input-validation-error');
+    }
+}

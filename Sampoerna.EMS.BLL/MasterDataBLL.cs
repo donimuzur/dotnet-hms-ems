@@ -117,7 +117,7 @@ namespace Sampoerna.EMS.BLL
         public string GetDataSeriesDescById(string id)
         {
             var dbData = _repositorySeries.GetByID(id);
-            return dbData == null ? null: dbData.SERIES_VALUE;
+            return dbData == null ? null: dbData.SERIES_VALUE.ToString();
         }
 
         #endregion
