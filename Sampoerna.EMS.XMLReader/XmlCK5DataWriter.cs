@@ -43,12 +43,28 @@ namespace Sampoerna.EMS.XMLReader
                 writer.WriteAttributeString("BEGIN", "1");
                 
                
-                writer.WriteStartElement("ZAIDM_CK5_HDR");
+                writer.WriteStartElement("ZIA_CK5_HDR");
                 writer.WriteAttributeString("SEGMENT", "1");
 
                 writer.WriteElementString("CK5_NUMBER", ck5.REGISTRATION_NUMBER);
                 writer.WriteElementString("CK5_PROCS_TYP", ck5.CK5_TYPE.ToString());
-               
+                writer.WriteElementString("SOURCE_PLANT", ck5.SOURCE_PLANT_ID);
+                writer.WriteElementString("DEST_PLANT", ck5.DEST_PLANT_ID);
+
+
+                
+                foreach (var item in ck5.CK5_MATERIAL)
+                {
+                    writer.WriteStartElement("ZIA_CK5_ITM");
+                    writer.WriteAttributeString("SEGMENT", "1");
+                    writer.WriteElementString("CK5_NUMBER", ck5.REGISTRATION_NUMBER);
+                    writer.WriteElementString("ITEM_NUMBER", item.LINE_ITEM.ToString());
+                    writer.WriteElementString("MATERIAL", item.BRAND);
+                    //ZAIDM_CK5_ITM
+                    writer.WriteEndElement();
+                }
+                
+
                 //foreach (var item in listMaterial)  // <-- This is new
                 //{
                 //    writer.WriteStartElement("ITEM");
@@ -59,6 +75,7 @@ namespace Sampoerna.EMS.XMLReader
 
                 //}
 
+                
                 //ZAIDM_CK5_HDR
                 writer.WriteEndElement();
                 //IDOC
