@@ -48,13 +48,21 @@ namespace Sampoerna.EMS.Core
 
         public enum CK5Type
         {
+            [Description("Domestic")]
             Domestic = 0,
+            [Description("Intercompany")]
             Intercompany = 1,
+            [Description("Import")]
             PortToImporter = 2,
+            [Description("Import")]
             ImporterToPlant = 3,
+           [Description("Export")]
             Export = 4,
+            [Description("Manual")]
             Manual = 5,
+            [Description("Domestic Alcohol")]
             DomesticAlcohol = 6,
+            [Description("Completed")]
             Completed = 7
         }
 

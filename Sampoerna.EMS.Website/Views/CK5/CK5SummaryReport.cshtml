@@ -5,7 +5,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3 id="lblTitle">Summary Report @Sampoerna.EMS.Utils.EnumHelper.GetDescription(Model.Ck5Type)</h3>
+            <h3 id="lblTitle">Summary Report</h3>
         </div>
     </div>
 </div>
@@ -15,7 +15,8 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            @using (Ajax.BeginForm("SearchSummaryReports", "CK5",
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("SearchSummaryReports", "CK5",
                 new AjaxOptions
                 {
                     HttpMethod = "POST",
@@ -24,22 +25,11 @@
                     OnComplete = "ReloadDataTables"
 
                 }))
-            {
-                @Html.HiddenFor(model => model.Ck5Type)
-
-                <div class="white-wrapper">
+                {
+                    @Html.HiddenFor(model => model.Ck5Type)
+                    
                     <div class="form-excise" role="form">
                         <div class="row">
-                            @*<div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">Type</label>
-                                    <div class="col-md-8 year-from">
-                                      @Html.EnumDropDownListFor(model => model.SearchView.Ck5Type, Model.SearchView.Ck5TypeList,  new { @class = "form-control selectreset" })
-                                        
-                                     </div>
-                                </div>
-                            </div>*@
-
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">Company Source - Origin</label>
@@ -95,96 +85,75 @@
                                 </div>
                             </div>
 
-                            <div class="last-form">
-                                <div class="col-md-8">
-                                    <div class="row toggle">
-                                        @*@if (Model.Ck5Type == Enums.CK5Type.Domestic)
-                                        {*@
-                                            <div class="toggle-title">
-                                                Toggle column:
-                                            </div>
-                                            <div class="col-md-9">
-
-                                                <a class="toggle-vis" data-column="0">No</a> -
-                                                <a class="toggle-vis" data-column="1">Excise Status</a> -
-                                                <a class="toggle-vis" data-column="2">Unpaid Excise Facility Number</a> -
-                                                <a class="toggle-vis" data-column="3">Unpaid Excise Facility Date</a> -
-                                                <a class="toggle-vis" data-column="4">Sealing Notification Date</a> -
-                                                <a class="toggle-vis" data-column="5">Sealing Notification Number</a>
-                                                <a class="toggle-vis" data-column="6">Unsealing Notification Date</a> -
-                                                <a class="toggle-vis" data-column="7">Unsealing Notification Number</a> -
-                                                <a class="toggle-vis" data-column="8">Reported to LACK-1 Month</a> -
-                                                <a class="toggle-vis" data-column="9">Reported to LACK-2 Month</a>
-                                            </div>
-                                        @*}*@
-                                        @*else if (Model.Ck5Type == Enums.CK5Type.Intercompany || Model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
-                                        {
-                                            @Html.Partial("_CK5SummaryReportToggleIntercompany")
-                                        }
-
-                                        else if (Model.Ck5Type == Enums.CK5Type.Export)
-                                        {
-                                            @Html.Partial("_CK5SummaryReportToggleExport")
-                                        }
-                                        else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
-                                        {
-                                            @Html.Partial("_CK5SummaryReportToggleImport")
-                                        }
-                                        else if (Model.Ck5Type == Enums.CK5Type.Manual)
-                                        {
-                                            @Html.Partial("_CK5SummaryReportToggleManual")
-                                        }*@
-
-                                    </div>
-                                    <div class="last-form">
-                                        <div class="col-md-2 col-md-offset-8">
-                                            <button class="btn btn-blue full">FILTER</button>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                           
 
                         </div>
                     </div>
+
+                      <div class="last-form">
+                    <div class="col-md-8">
+                     
+                        <div class="last-form">
+                            <div class="col-md-2 col-md-offset-8">
+                                <button class="btn btn-blue full">FILTER</button>
+                            </div>
+                            @*<div class="col-md-2">
+                                <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                            </div>*@
+                        </div>
+                    </div>
                 </div>
+                }
+                @using (Html.BeginForm("ExportXlsSummaryReports", "CK5", FormMethod.Post, new {@id = "ExportSummaryReportsForms"}))
+                {
+                    <div class="last-form">
+                        <div class="col-md-8">
+                            <div class="row toggle">
 
-            }
+                                <div class="toggle-title">
+                                    Toggle column:
+                                </div>
+                                <div class="col-md-9">
 
+                                    @Html.CheckBoxFor(model => model.ExportModel.Ck5TypeDescription, new {@checked = "checked", @class = "checkexport", @datacolumn = "1"})CK5 Type
+                                    @Html.CheckBoxFor(model => model.ExportModel.KppbcCityName, new {@checked = "checked", @class = "checkexport", @datacolumn = "2"})KPPBC City
+                                    @Html.CheckBoxFor(model => model.ExportModel.SubmissionNumber, new {@checked = "checked", @class = "checkexport", @datacolumn = "3"})SubmissionNumber
+                                    @Html.CheckBoxFor(model => model.ExportModel.SubmissionDate, new {@checked = "checked", @class = "checkexport", @datacolumn = "4"})SubmissionDate
+                                    @Html.CheckBoxFor(model => model.ExportModel.ExGoodTypeDesc, new {@checked = "checked", @class = "checkexport", @datacolumn = "5"})Excise Goods Type
+                                    @Html.CheckBoxFor(model => model.ExportModel.ExciseSettlement, new {@checked = "checked", @class = "checkexport", @datacolumn = "6"})Excise Settlement
+                                    @Html.CheckBoxFor(model => model.ExportModel.ExciseStatus, new {@checked = "checked", @class = "checkexport", @datacolumn = "7"})Excise Status
+                                    @Html.CheckBoxFor(model => model.ExportModel.RequestType, new {@checked = "checked", @class = "checkexport", @datacolumn = "8"})Request Type
+                                    @Html.CheckBoxFor(model => model.ExportModel.SourcePlant, new {@checked = "checked", @class = "checkexport", @datacolumn = "9"})Source Plant
+                                    @Html.CheckBoxFor(model => model.ExportModel.DestinationPlant, new {@checked = "checked", @class = "checkexport", @datacolumn = "10"})Destination Plant
+
+
+                                </div>
+
+
+                            </div>
+                            <div class="last-form">
+                                @*<div class="col-md-2 col-md-offset-8">
+                                <button class="btn btn-blue full">FILTER</button>
+                            </div>*@
+                                <div class="col-md-2">
+                                    <input id="btnExport" type="submit" class="btn btn-blue full" value="EXPORT" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
 
             <div id="contenttable" class="table-container">
                 @Html.Partial("_CK5ListSummaryReport")
-                @*@if (Model.Ck5Type == Enums.CK5Type.Domestic)
-                {
-                    @Html.Partial("_CK5ListSummaryReport")
-                }
-                else if (Model.Ck5Type == Enums.CK5Type.Intercompany || Model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
-                {
-                    @Html.Partial("_CK5ListSummaryReportIntercompany")
-                }
-                else if (Model.Ck5Type == Enums.CK5Type.Export)
-                {
-                    @Html.Partial("_CK5ListSummaryReportExport")
-                }
-                else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
-                {
-                    @Html.Partial("_CK5ListSummaryReportImport")
-                }
-                else if (Model.Ck5Type == Enums.CK5Type.Manual)
-                {
-                    @Html.Partial("_CK5ListSummaryReportManual")
-                }*@
+              
             </div>
         </div>
     </div>
 </div>
 
 
-@*@if (Model.Ck5Type == Enums.CK5Type.Domestic)
-{*@
-    <div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    @*<div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         @using (Html.BeginForm("ExportXlsSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
         {
             @Html.HiddenFor(model => model.Ck5Type)
@@ -224,31 +193,15 @@
                 </div>
             </div>
         }
-    </div>
+    </div>*@
 
-@*}
-else if (Model.Ck5Type == Enums.CK5Type.Intercompany || Model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
-{
-    @Html.Partial("_CK5SummaryReportModalIntercompany")
-}
-else if (Model.Ck5Type == Enums.CK5Type.Export)
-{
-    @Html.Partial("_CK5SummaryReportModalExport")
-}
-else if (Model.Ck5Type == Enums.CK5Type.PortToImporter || Model.Ck5Type == Enums.CK5Type.ImporterToPlant)
-{
-    @Html.Partial("_CK5SummaryReportModalImport")
-}
-else if (Model.Ck5Type == Enums.CK5Type.Manual)
-{
-    @Html.Partial("_CK5SummaryReportModalManual")
-}*@
+
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-
-        $("#SearchView_Ck5Type option[value='7']").remove();
+        
+        //$("#SearchView_Ck5Type option[value='7']").remove();
         
     $(document).ready(function () {
 
@@ -263,22 +216,7 @@ else if (Model.Ck5Type == Enums.CK5Type.Manual)
 
                 location.href = '@Url.Action("SummaryReports", "CK5")';
                 
-                @*if (ck5Type == '@Enums.CK5Type.Domestic.ToString()') {
-                    location.href = '@Url.Action("SummaryReports", "CK5")';
-                } else if (ck5Type == '@Enums.CK5Type.Intercompany.ToString()') {
-                    location.href = '@Url.Action("SummaryReportsIntercompany", "CK5")';
-                } else if (ck5Type == '@Enums.CK5Type.DomesticAlcohol.ToString()') {
-                    location.href = '@Url.Action("SummaryReportsDomesticAlcohol", "CK5")';
-                } else if (ck5Type == '@Enums.CK5Type.Export.ToString()') {
-                    location.href = '@Url.Action("SummaryReportsExport", "CK5")';
-                } else if (ck5Type == '@Enums.CK5Type.PortToImporter.ToString()') {
-                    location.href = '@Url.Action("SummaryReportsPortToImporter", "CK5")';
-                } else if (ck5Type == '@Enums.CK5Type.ImporterToPlant.ToString()') {
-                    location.href = '@Url.Action("SummaryReportsImporterToPlant", "CK5")';
-                } else if (ck5Type == '@Enums.CK5Type.Manual.ToString()') {
-                    location.href = '@Url.Action("SummaryReportsManual", "CK5")';
-                }*@
-
+           
             }
 
         });
@@ -315,6 +253,15 @@ else if (Model.Ck5Type == Enums.CK5Type.Manual)
             column.visible(!column.visible());
         });
 
+        $('.checkexport').on('click', function (e) {
+           // e.preventDefault();
+
+            // Get the column API object
+            var column = table.column($(this).attr('datacolumn'));
+
+            // Toggle the visibility
+            column.visible(!column.visible());
+        });
 
     }
 
@@ -329,18 +276,7 @@ else if (Model.Ck5Type == Enums.CK5Type.Manual)
 
     $("#btnExport").click(function () {
         $('#Ck5Modal').modal('show');
-        
-        @*if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-            $('#Ck5Modal').modal('show');
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-            $('#Ck5ModalIntercompany').modal('show');
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-            $('#Ck5ModalExport').modal('show');
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-            $('#Ck5ModalImport').modal('show');
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-            $('#Ck5ModalManual').modal('show');*@
-
+     
     });
 
     function GetSearchSummaryReports() {
@@ -360,18 +296,7 @@ else if (Model.Ck5Type == Enums.CK5Type.Manual)
     $("#btnConfirm").click(function () {
         GetSearchSummaryReports();
         $('#ExportSummaryReportsForms').submit();
-        
-        @*if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-            $('#ExportSummaryReportsForms').submit();
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-            $('#ExportSummaryReportsFormsIntercompany').submit();
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-            $('#ExportSummaryReportsFormsExport').submit();
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-            $('#ExportSummaryReportsFormsImport').submit();
-        else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-            $('#ExportSummaryReportsFormsManual').submit();*@
-
+    
 
     });
 
