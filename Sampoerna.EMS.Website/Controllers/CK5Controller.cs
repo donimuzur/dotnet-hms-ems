@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -14,6 +15,7 @@ using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.ReportingData;
@@ -40,8 +42,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowBLL _workflowBll;
         private IPlantBLL _plantBll;
         private IPrintHistoryBLL _printHistoryBll;
+        private IPOABLL _poabll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IUnitOfMeasurementBLL _uomBll;
 
-        public CK5Controller(IPageBLL pageBLL, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
+        public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
             IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
             IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
@@ -53,6 +58,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowBll = workflowBll;
             _plantBll = plantBll;
             _printHistoryBll = printHistoryBll;
+            _poabll = poabll;
+            _nppbkcbll = nppbckbll;
+            _uomBll = uomBll;
         }
 
         #region View Documents
@@ -93,11 +101,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk5Dto = _ck5Bll.GetAll();
             model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
           
-            model.SearchView.POAList = GlobalFunctions.GetPoaAll();
+            model.SearchView.POAList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
-            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll();
-            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll();
+            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
 
             //list table
@@ -244,7 +252,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
           
-            model.PackageUomList = GlobalFunctions.GetUomList();
+            model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
@@ -343,6 +351,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var companyCode = "";
             var data = GlobalFunctions.GetNppbkcById(nppBkcCityId);
+            //var data = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
             if (data != null)
                 companyCode = data.BUKRS;
             return Json(companyCode);
@@ -475,7 +484,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
 
-            model.PackageUomList = GlobalFunctions.GetUomList();
+            model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
@@ -3191,7 +3200,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region print
 
 
-        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial)
+        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial, string printTitle)
         {
             var detailRow = dsCk5.dtCk5.NewdtCk5Row();
 
@@ -3256,7 +3265,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //if (detailRow.CarriageMethod == "0")
             //    detailRow.CarriageMethod = "1";
 
-          
+
+            detailRow.DocumentText = printTitle;
 
             dsCk5.dtCk5.AdddtCk5Row(detailRow);
 
@@ -3320,19 +3330,19 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return dsCk5;
         }
-        
 
-        private DataSet GetDataSetReport(long id)
+
+        private DataSet SetDataSetReport(CK5ReportDto ck5ReportDto, string printTitle)
         {
            
             var dsCk5 = new dsCK5Print();
             
-            var ck5ReportDto = _ck5Bll.GetCk5ReportDataById(id);
+           // var ck5ReportDto = _ck5Bll.GetCk5ReportDataById(id);
 
             var listCk5 = new List<CK5ReportDetailsDto>();
             listCk5.Add(ck5ReportDto.ReportDetails);
 
-            dsCk5 = AddDataCk5Row(dsCk5, ck5ReportDto.ReportDetails, ck5ReportDto.ListMaterials.Count);
+            dsCk5 = AddDataCk5Row(dsCk5, ck5ReportDto.ReportDetails, ck5ReportDto.ListMaterials.Count, printTitle);
             dsCk5 = AddDataCk5MaterialRow(dsCk5, ck5ReportDto.ListMaterials);
             if (ck5ReportDto.ListMaterials.Count > 2)
                 dsCk5 = AddDataCk5MaterialExtendRow(dsCk5, ck5ReportDto.ListMaterials);
@@ -3341,30 +3351,64 @@ namespace Sampoerna.EMS.Website.Controllers
            
         }
 
+        private Stream GetReport(CK5ReportDto ck5Report, string printTitle)
+        {
+            var dataSet = SetDataSetReport(ck5Report, printTitle);
+
+            ReportClass rpt = new ReportClass
+            {
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "CK5\\CK5PrintOut.rpt"
+                //FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt")
+            };
+            rpt.Load();
+            rpt.SetDataSource(dataSet);
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return stream;
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            var ck5Data = _ck5Bll.GetCk5ReportDataById(id.Value);
+            if (ck5Data == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(ck5Data, "CK5 PREVIEW");
+
+            return File(stream, "application/pdf");
+        }
+
         [EncryptedParameter]
         public ActionResult PrintOut(int? id)
         {
             try
             {
-                long idCk5 = 0;
-                if (id.HasValue)
-                    idCk5 = id.Value;
+              
+                if (!id.HasValue)
+                    HttpNotFound();
 
-                var dataSet = GetDataSetReport(idCk5);
+                var ck5Data = _ck5Bll.GetCk5ReportDataById(id.Value);
+                if (ck5Data == null)
+                    HttpNotFound();
 
-                //add print history
-                //_ck5Bll.AddPrintHistory(idCk5, CurrentUser.USER_ID);
+                Stream stream = GetReport(ck5Data, string.Empty);
 
-                //eks to report
-                var rpt = new ReportClass
-                {
-                    FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt")
-                };
-                rpt.Load();
-                rpt.SetDataSource(dataSet);
+                return File(stream, "application/pdf");
 
-                Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-                return File(stream, "application/pdf"); 
+                //var dataSet = GetDataSetReport(idCk5, string.Empty);
+
+                //var rpt = new ReportClass
+                //{
+                //    FileName = Server.MapPath("/Reports/CK5/CK5PrintOut.rpt")
+                //};
+                //rpt.Load();
+                //rpt.SetDataSource(dataSet);
+
+                //Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+                //return File(stream, "application/pdf"); 
             }
             catch (Exception ex)
             {
@@ -3400,5 +3444,122 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
         #endregion
+
+        #region Upload File Documents
+
+        public ActionResult CK5UploadFileDocuments()
+        {
+            var model = new CK5FileDocumentsViewModel();
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+
+            return View("CK5UploadFileDocument", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult UploadFileDocuments(HttpPostedFileBase itemExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcelCk5FileDocuments(itemExcelFile);
+            var model = new CK5FileDocumentsViewModel();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new CK5FileDocumentItems();
+
+                    try
+                    {
+                        uploadItem.DocSeqNumber = datarow[0];
+                        uploadItem.MatNumber = datarow[1];
+                        uploadItem.Qty = datarow[2];
+                        uploadItem.UomMaterial = datarow[3];
+                        uploadItem.Convertion = datarow[4];
+                        uploadItem.ConvertedUom = datarow[5];
+                        uploadItem.UsdValue = datarow[6];
+                        uploadItem.Note = datarow[7];
+                        
+                        uploadItem.Ck5Type = datarow[8];
+                        uploadItem.KppBcCityName = datarow[9];
+                        uploadItem.ExGoodType = datarow[10];
+                        uploadItem.ExciseSettlement = datarow[11];
+                        uploadItem.ExciseStatus = datarow[12];
+                        uploadItem.RequestType = datarow[13];
+                        uploadItem.SourcePlantId = datarow[14];
+                        uploadItem.DestPlantId = datarow[15];
+                        uploadItem.InvoiceNumber = datarow[16];
+                        uploadItem.InvoiceDateDisplay = datarow[17];
+                        uploadItem.PbckDecreeNumber = datarow[18];
+                        uploadItem.CarriageMethod = datarow[19];
+                        uploadItem.GrandTotalEx = datarow[20];
+                        uploadItem.Uom = datarow[21];
+
+                        uploadItem.LOADING_PORT = datarow[22];
+                        uploadItem.LOADING_PORT_NAME = datarow[23];
+                        uploadItem.LOADING_PORT_ID = datarow[24];
+                        uploadItem.FINAL_PORT = datarow[25];
+                        uploadItem.FINAL_PORT_NAME = datarow[26];
+                        uploadItem.FINAL_PORT_ID = datarow[27];
+                        uploadItem.DEST_COUNTRY_CODE = datarow[28];
+                     
+
+                        model.Ck5FileDocumentItems.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+
+                }
+            }
+
+            var input = Mapper.Map<List<CK5UploadFileDocumentsInput>>(model.Ck5FileDocumentItems);
+
+            List<CK5FileUploadDocumentsOutput> outputResult;
+            outputResult = _ck5Bll.CK5UploadFileDocumentsProcess(input);
+
+            model.Ck5FileDocumentItems = Mapper.Map<List<CK5FileDocumentItems>>(outputResult);
+
+            return PartialView("_CK5UploadFileDocumentsList", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveCK5FileDocuments(CK5FileDocumentsViewModel model)
+        {
+            try
+            {
+
+                var dataToSave = Mapper.Map<List<CK5FileDocumentDto>>(model.Ck5FileDocumentItems);
+
+                var input = new CK5SaveListInput()
+                {
+                    ListCk5UploadDocumentDto = dataToSave,
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                   
+                };
+
+                _ck5Bll.InsertListCk5(input);
+              
+                AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+
+
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+                return View("CK5UploadFileDocument", model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                return RedirectToAction("Index", "CK5");
+            }
+
+        }
+
+        #endregion
+
     }
 }

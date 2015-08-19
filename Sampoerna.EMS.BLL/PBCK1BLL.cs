@@ -1304,6 +1304,7 @@ namespace Sampoerna.EMS.BLL
             // ReSharper disable once PossibleInvalidOperationException
             rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
+            rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
             if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierCompanyName = dbData.SUPPLIER_PLANT;
@@ -1332,9 +1333,21 @@ namespace Sampoerna.EMS.BLL
 
             //Set ProdPlan
             rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
+            //Set from Pbck1ProdConv
             rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
+            foreach (var dataItem in dbData.PBCK1_PROD_CONVERTER.Select(item => new Pbck1ReportBrandRegistrationDto()
+            {
+                Type = item.PRODUCT_ALIAS,
+                Brand = "todo: get from ?",
+                Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
+                Convertion = item.CONVERTER_OUTPUT.HasValue ? item.CONVERTER_OUTPUT.Value.ToString("N0") : "-",
+                ConvertionUom = item.UOM.UOM_DESC,
+                ConvertionUomId = item.CONVERTER_UOM_ID
+            }))
+            {
+                rc.BrandRegistrationList.Add(dataItem);
+            }
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
-
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {
@@ -1452,6 +1465,20 @@ namespace Sampoerna.EMS.BLL
             public string Subject { get; set; }
             public string Body { get; set; }
             public List<string> To { get; set; }
+        }
+
+
+        public Pbck1Dto GetByDocumentNumber(string documentNumber)
+        {
+            includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
+            var dbData = _repository.Get(c => c.NUMBER == documentNumber, null, includeTables).FirstOrDefault();
+            var mapResult = Mapper.Map<Pbck1Dto>(dbData);
+            if (dbData != null)
+            {
+                mapResult.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
+                mapResult.Pbck1Childs = Mapper.Map<List<Pbck1Dto>>(dbData.PBCK11);
+            }
+            return mapResult;
         }
 
 
