@@ -80,6 +80,10 @@
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
 
+            $("#Detail_SupplierPortId").change(function () {
+                supplierPortOnChange();
+            });
+
             $('#btn-changelog-export-xls').click(function () {
                 href.location = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
             });
@@ -129,6 +133,9 @@
                 window.location = "@Url.Action("SubmitDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
             });
 
+            $("#externalSupPort").click(function () {
+                supplierPortOnChange();
+            });
         });
 
         function printPreview(url) {
@@ -198,7 +205,7 @@
                 var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
-                if (port_id == '') {
+                if ($("#externalSupPort").is(':checked')) {
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
