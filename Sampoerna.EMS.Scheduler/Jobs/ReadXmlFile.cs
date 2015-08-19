@@ -39,7 +39,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                     continue;
                     
                 }
-                result += "<p>"+error+"</p>";
+                result += String.Format("<p>[{0}] {1}</p>", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), error);
             }
             return result;
         }

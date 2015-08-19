@@ -27,9 +27,7 @@ namespace Sampoerna.EMS.XMLReader
                 var xmlItems = xmlRoot.Elements("Z1A_NPPBKC");
                 var items = new List<ZAIDM_EX_NPPBKC>();
               
-                try
-                {
-                   
+                 
                     foreach (var xElement in xmlItems)
                     {
                         try
@@ -78,16 +76,14 @@ namespace Sampoerna.EMS.XMLReader
                         }
                         catch (Exception ex)
                         {
+                            _xmlMapper.Errors.Add(ex.Message);
                             continue;
                             
                         }
                         
-                    }
-                }
-                catch (Exception ex)
-                {
                     
                 }
+                
                
                 return items;
             }
@@ -98,6 +94,11 @@ namespace Sampoerna.EMS.XMLReader
         public string InsertToDatabase()
         {
             return _xmlMapper.InsertToDatabase<ZAIDM_EX_NPPBKC>(Items);
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public ZAIDM_EX_NPPBKC GetNPPBKC(string Number)
