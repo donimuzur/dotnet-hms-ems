@@ -103,6 +103,10 @@
                 goodTypeOnChange();
             });
 
+            $("#externalSupPort").click(function () {
+                supplierPortOnChange();
+            });
+
         });
 
         //$('#Detail_RequestQtyUomName').change(function () {
@@ -210,7 +214,7 @@
                 var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
-                if (port_id == '') {
+                if ($("#externalSupPort").is(':checked')) {
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
