@@ -1319,8 +1319,9 @@ namespace Sampoerna.EMS.BLL
                 if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
                 {
                     var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                    List<string> stringList = strToSplit.Split('|').ToList();
-                    rc.Detail.SupplierKppbcMengetahui = stringList[1].Replace("<br />", Environment.NewLine);
+                    var stringList = strToSplit.Split('|').ToList();
+                    rc.Detail.SupplierKppbcMengetahui = stringList.Count == 2 ? stringList[1].Replace("<br />", Environment.NewLine) : "-";
+                    
                 }
 
             }
