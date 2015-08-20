@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -17,12 +18,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK7BLL _pbck7Bll;
         private IBACK1BLL _back1Bll;
         private Enums.MenuList _mainMenu;
-        public PBCK7Controller(IPageBLL pageBll, IPBCK7BLL pbck7Bll, IBACK1BLL back1Bll)
+        private IPOABLL _poaBll;
+        private IZaidmExNPPBKCBLL _nppbkcBll;
+        public PBCK7Controller(IPageBLL pageBll, IPBCK7BLL pbck7Bll, IBACK1BLL back1Bll, IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7Bll = pbck7Bll;
             _back1Bll = back1Bll;
             _mainMenu = Enums.MenuList.PBCK7;
+            _poaBll = poaBll;
+            _nppbkcBll = nppbkcBll;
         }
 
         #region Index
@@ -45,9 +50,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck7IndexViewModel InitPbck7ViewModel(Pbck7IndexViewModel model)
         {
-            model.NppbkcList = GlobalFunctions.GetNppbkcAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GlobalFunctions.GetPoaAll();
+            model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
             return model;
@@ -55,7 +60,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult FilterListPbck7IndexViewResult(Pbck7IndexViewModel model)
+        public PartialViewResult FilterPbck7Index(Pbck7IndexViewModel model)
         {
             var input = Mapper.Map<Pbck7Input>(model);
 

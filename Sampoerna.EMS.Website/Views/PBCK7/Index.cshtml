@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterPbck7", "PBCK3_PBCK7",
+                @using (Ajax.BeginForm("FilterPbck7Index", "PBCK3_PBCK7",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -107,19 +107,19 @@
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript">
-
+        $('#MenuPBCK7Index').addClass('active');
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#Pbck7TableIndex')) {
-                table = $('#Pbck7TableIndex').DataTable();
+            if ($.fn.dataTable.isDataTable('#Pbck7')) {
+                table = $('#Pbck7').DataTable();
                 table.destroy();
             }
 
-            table = $('#Pbck7TableIndex').DataTable(
+            table = $('#Pbck7').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -129,7 +129,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#Pbck7TableIndex .filters th').each(function () {
+            $('#Pbck7 .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -145,8 +145,14 @@
                         .draw();
                 });
             });
-
-            $('#Menulack1ListByNppbkc').addClass('active');
+           
+           
         }
+        
+        $(document).ready(function () {
+            setupDataTables();
+        });
+
+       
     </script>
 }

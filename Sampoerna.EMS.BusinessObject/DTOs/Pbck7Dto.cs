@@ -24,9 +24,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ExecDateTo { get; set; }
         public int GovStatus { get; set; }
         public int Status { get; set; }
+        public string ApprovedBy { get; set; }
+        public DateTime ApprovedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreateDate { get; set; }
+        public string ModifiedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
         //from table BACK1
-        public int Back1 { get; set; }
+        public int PBCK3PBCK7Id { get; set; }
         public string Back1Number { get; set; }
         public DateTime Back1Date { get; set; }
 
