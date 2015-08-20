@@ -15,5 +15,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public int EX_GROUP_TYPE_ID { get; set; }
         public string GROUP_NAME { get; set; }
         public List<ZAIDM_EX_GOODTYP> ZAIDM_EX_GOODTYP { get; set; }
+
+        public bool Inactive { get; set; }
     }
 }

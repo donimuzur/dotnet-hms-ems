@@ -236,7 +236,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                ProcessInsertCk5(input);
+               dbData =  ProcessInsertCk5(input);
             }
 
             _uow.SaveChanges();
@@ -834,7 +834,7 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
+            //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
             queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
           
@@ -858,6 +858,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
+     
         #region Reports
 
         public CK5ReportDto GetCk5ReportDataById(long id)
@@ -1254,7 +1255,7 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        private void ProcessInsertCk5(CK5SaveInput input)
+        private CK5 ProcessInsertCk5(CK5SaveInput input)
         {
             //workflowhistory
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
@@ -1304,6 +1305,7 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputWorkflowHistory);
 
+            return dbData;
         }
 
        
