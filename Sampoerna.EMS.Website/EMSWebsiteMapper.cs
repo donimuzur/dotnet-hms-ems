@@ -265,6 +265,11 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GoodsTypeId, opt => opt.MapFrom(src => src.EX_GROUP_TYPE_ID))
                 .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.GROUP_NAME));
 
+            Mapper.CreateMap<ExGoodTyp, DetailsGoodsTypGroup>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.GoodsTypeId, opt => opt.MapFrom(src => src.EX_GROUP_TYPE_ID))
+                .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.GROUP_NAME))
+                .ForMember(dest => dest.Inactive, opt => opt.MapFrom(src => src.Inactive ? "Yes" : "No"));
+                
 
 
             #region VirtualMappingPlant

@@ -240,6 +240,7 @@ namespace Sampoerna.EMS.BLL
 	    #region ExGoodTyp
 
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
+            
 
             #endregion
 
