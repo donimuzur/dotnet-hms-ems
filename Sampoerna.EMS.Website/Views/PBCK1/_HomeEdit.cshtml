@@ -290,7 +290,8 @@
                                             @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                         <div class="col-md-4">
-                                            @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
+                                            @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>

@@ -7,6 +7,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 {
     public class Pbck1ItemViewModel : BaseModel
     {
+        public Pbck1ItemViewModel()
+        {
+            WorkflowHistory = new List<WorkflowHistoryViewModel>();
+        }
+
         public string SubmitType { get; set; }
 
         public Pbck1Item Detail { get; set; }
