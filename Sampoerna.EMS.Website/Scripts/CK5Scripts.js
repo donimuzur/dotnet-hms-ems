@@ -70,6 +70,9 @@ function OnReadyFunction(ck5Type) {
 
         $('#collapse5').addClass('in');
     });
+    
+    $('#collapseTwo').addClass('in');
+    $('#collapseThree').addClass('in');
 }
 
 function IsValidDataUpload() {
@@ -282,5 +285,49 @@ function AddValidationClass(isValid, objName) {
         $('#' + objName).removeClass('valid');
         $('#' + objName).addClass('input-validation-error');
     }
+}
+
+function ValidateCk5Form() {
+    var result = true;
+    
+    //var nppBkcCity = $('#KppBcCity').find("option:selected").val();
+    //if (nppBkcCity == '') {
+    //    AddValidationClass(false, 'KppBcCity');
+    //    result = false;
+    //    $('#collapseOne').addClass('in');
+    //}
+    
+    if ($('#SourcePlantId').find("option:selected").val() == '') {
+        AddValidationClass(false, 'SourcePlantId');
+        result = false;
+       // $('#collapseTwo').addClass('in');
+    }
+    
+    if ($('#DestPlantId').find("option:selected").val() == '') {
+        AddValidationClass(false, 'DestPlantId');
+        result = false;
+       // $('#collapseThree').addClass('in');
+    }
+
+    if (result) {
+        var rowCount = $('#ck5TableItem tr').length;
+
+        if (rowCount <= 1) {
+            // alert('Missing CK5 Material');
+
+            $('#ModalCreateCk5').modal('show');
+            
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
+
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
+            
+            result = false;
+        }
+        
+    }
+
+    return result;
 }
 

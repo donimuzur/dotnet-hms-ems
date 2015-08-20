@@ -3,7 +3,7 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("SaveCK5", "CK5"))
+@using (Html.BeginForm("SaveCK5", "CK5", FormMethod.Post, new { @id = "SaveCk5Forms" }))
 {
      @Html.AntiForgeryToken()
     
@@ -13,7 +13,7 @@
                 <h3>@Model.Ck5Type.ToString()</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                 </div>
             </div>
         </div>
@@ -94,114 +94,132 @@
     </div>
 
 }
+
+<div id="ModalCreateCk5" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                   Missing CK5 Materials
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
-    $(document).ready(function () {
-        
-        OnReadyFunction('@Model.Ck5Type.ToString()');
+        $(document).ready(function() {
 
-        var sourcePlant = $('#SourcePlantId').find("option:selected").val();
+            OnReadyFunction('@Model.Ck5Type.ToString()');
 
-        if (sourcePlant != '') {
-            //enable upload
-            $('#btnUploadInfo').enable(true);
-            $('#CK5UploadSubmitBtn').enable(true);
-        }
+            var sourcePlant = $('#SourcePlantId').find("option:selected").val();
 
-        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
-        $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
-        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
-        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
-        
-        //var $cont = $('#RequestType');
-        //$('#RequestType option').each(function () {
-        //    if ($(this).text().indexOf('item') !== 0) {
-        //        $('<optGroup/>').attr('label', $(this).text()).appendTo($cont);
-        //        $(this).remove();
-        //    } else {
-        //        $cont.find('optGroup').last().append($(this));
-        //        $(this).text($(this).text().substr(4));
-        //    }
-        //});
-        
-    });
-
-    $("#PbckDecreeId").change(function () {
-        if ($("#PbckDecreeId").length) {
-            var pbck1 = $(this).find("option:selected").val();
-            if (pbck1 == '') {
-                $("input[name='PbckDecreeDate']").val('');
-            } else {
-                ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
-            }
-        }
-
-    });
-
-    $("#DestPlantId").change(function () {
-        if ($("#DestPlantId").length) {
-            var destPlant = $(this).find("option:selected").val();
-            if (destPlant == '') {
-                $("input[name='DestNpwp']").val('');
-                $("input[name='DestNppbkcId']").val('');
-                $("input[name='DestCompanyCode']").val('');
-                $("input[name='DestCompanyName']").val('');
-                $("*[name='DestAddress']").val('');
-                $("input[name='DestKppbcName']").val('');
-                $("input[name='DestPlantName']").val('');
-            } else {
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
-            }
-        }
-    });
-
-    $("#SourcePlantId").change(function () {
-        if ($("#SourcePlantId").length) {
-            var sourcePlant = $(this).find("option:selected").val();
-
-            //remove table
-            RemoveTable();
-
-            if (sourcePlant == '') {
-                $("input[name='SourceNpwp']").val('');
-                $("input[name='SourceNppbkcId']").val('');
-                $("input[name='SourceCompanyCode']").val('');
-                $("input[name='SourceCompanyName']").val('');
-                $("*[name='SourceAddress']").val('');
-                $("input[name='SourceKppbcName']").val('');
-                $("input[name='SourcePlantName']").val('');
+            if (sourcePlant != '') {
                 //enable upload
-                $('#btnUploadInfo').enable(false);
-                $('#CK5UploadSubmitBtn').enable(false);
-
-
-            } else {
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                $('#btnUploadInfo').enable(true);
+                $('#CK5UploadSubmitBtn').enable(true);
             }
-        }
-    });
 
-    $("#KppBcCity").change(function () {
-        if ($("#KppBcCity").length) {
-            var nppBkcCity = $(this).find("option:selected").val();
-            var cityName = $('option:selected', $(this)).text();
-            if (nppBkcCity == '') {
-                $("input[name='CeOfficeCode']").val('');
-                $("input[name='KppBcCityName']").val('');
-                //$("input[name='CompanyCode']").val('');
-            } else {
-                $("input[name='CeOfficeCode']").val(nppBkcCity);
-                $("input[name='KppBcCityName']").val(cityName);
+            $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+            $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+            $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+            $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
 
-                @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
+            $("#btnSave").click(function() {
+
+                if (ValidateCk5Form()) {
+                    $('#SaveCk5Forms').submit();
+                }
+
+            });
+
+        });
+
+        $("#PbckDecreeId").change(function() {
+            if ($("#PbckDecreeId").length) {
+                var pbck1 = $(this).find("option:selected").val();
+                if (pbck1 == '') {
+                    $("input[name='PbckDecreeDate']").val('');
+                } else {
+                    ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+                }
             }
-        }
 
-    });
+        });
+
+        $("#DestPlantId").change(function() {
+            if ($("#DestPlantId").length) {
+                var destPlant = $(this).find("option:selected").val();
+                if (destPlant == '') {
+                    $("input[name='DestNpwp']").val('');
+                    $("input[name='DestNppbkcId']").val('');
+                    $("input[name='DestCompanyCode']").val('');
+                    $("input[name='DestCompanyName']").val('');
+                    $("*[name='DestAddress']").val('');
+                    $("input[name='DestKppbcName']").val('');
+                    $("input[name='DestPlantName']").val('');
+                } else {
+                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                }
+            }
+        });
+
+        $("#SourcePlantId").change(function() {
+            if ($("#SourcePlantId").length) {
+                var sourcePlant = $(this).find("option:selected").val();
+
+                //remove table
+                RemoveTable();
+
+                if (sourcePlant == '') {
+                    $("input[name='SourceNpwp']").val('');
+                    $("input[name='SourceNppbkcId']").val('');
+                    $("input[name='SourceCompanyCode']").val('');
+                    $("input[name='SourceCompanyName']").val('');
+                    $("*[name='SourceAddress']").val('');
+                    $("input[name='SourceKppbcName']").val('');
+                    $("input[name='SourcePlantName']").val('');
+                    //enable upload
+                    $('#btnUploadInfo').enable(false);
+                    $('#CK5UploadSubmitBtn').enable(false);
+
+
+                } else {
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                }
+            }
+        });
+
+        $("#KppBcCity").change(function() {
+            if ($("#KppBcCity").length) {
+                var nppBkcCity = $(this).find("option:selected").val();
+                var cityName = $('option:selected', $(this)).text();
+                if (nppBkcCity == '') {
+                    $("input[name='CeOfficeCode']").val('');
+                    $("input[name='KppBcCityName']").val('');
+                    //$("input[name='CompanyCode']").val('');
+                } else {
+                    $("input[name='CeOfficeCode']").val(nppBkcCity);
+                    $("input[name='KppBcCityName']").val(cityName);
+
+                                    @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
+                }
+            }
+
+        });
 
     </script>
 }
