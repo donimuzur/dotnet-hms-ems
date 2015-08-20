@@ -22,6 +22,7 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
+                                            @Html.HiddenFor(model => model.Detail.Pbck1Id)
                                             @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
@@ -46,7 +47,12 @@
                                     <div class="row">
                                         <label class="col-md-3">Reported On</label>
                                         <div class="col-md-9">
-                                            @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Detail.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
