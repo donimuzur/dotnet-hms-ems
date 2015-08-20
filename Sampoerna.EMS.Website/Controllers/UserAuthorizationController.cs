@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.Website.Controllers
             : base (pageBll, Enums.MenuList.UserAuthorization)
         {
             _userAuthorizationBll = userAuthorization;
-            _mainMenu = Enums.MenuList.MasterData;
+            _mainMenu = Enums.MenuList.Settings;
             _pageBll = pageBll;
             _changesHistoryBll = changesHistoryBll;
         }
@@ -124,7 +124,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = SetDetailModel(id);
             var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.UserAuthorization, id);
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
-          
+            model.MainMenu = _mainMenu;
             return View("Detail", model);
         }
 

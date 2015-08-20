@@ -57,7 +57,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
-                        
+                        _xmlMapper.Errors.Add(ex.Message);
                         continue;
                         
                     }
@@ -76,6 +76,11 @@ namespace Sampoerna.EMS.XMLReader
             
             return _xmlMapper.InsertToDatabase<ZAIDM_EX_MARKET>(Items);
        
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public ZAIDM_EX_MARKET GetMarket(string MarketId)

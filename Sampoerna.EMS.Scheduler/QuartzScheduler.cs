@@ -61,10 +61,10 @@ namespace Sampoerna.HMS.Scheduler
                 //Ask the scheduler factory for a scheduler
                 IScheduler scheduler = _quartzContainer.GetInstance<IScheduler>();
                 scheduler.Start();
-                 logger.Debug("Starting scheduler, job listed : ");
+                 logger.Debug(" --- Starting scheduler --- ");
                 IList<string> jobGroups = scheduler.GetJobGroupNames();
-                logger.Debug("groups: " + string.Join(" - ", jobGroups.ToArray()));
-                IList<string> triggerGroups = scheduler.GetTriggerGroupNames();
+                //logger.Debug("groups: " + string.Join(" - ", jobGroups.ToArray()));
+                //IList<string> triggerGroups = scheduler.GetTriggerGroupNames();
 
                 foreach (string group in jobGroups)
                 {
@@ -86,11 +86,11 @@ namespace Sampoerna.HMS.Scheduler
                             //logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
                             
 
-                            DateTimeOffset? previousFireTime = trigger.GetPreviousFireTimeUtc();
-                            if (previousFireTime.HasValue)
-                            {
-                                logger.Info("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
-                            }
+                           // DateTimeOffset? previousFireTime = trigger.GetPreviousFireTimeUtc();
+                            //if (previousFireTime.HasValue)
+                            //{
+                            //    logger.Info("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
+                            //}
 
                             DateTimeOffset? nextFireTime = trigger.GetNextFireTimeUtc();
                             if (nextFireTime.HasValue)

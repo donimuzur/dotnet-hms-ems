@@ -65,6 +65,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
+                        _xmlMapper.Errors.Add(ex.Message);
                         continue;
                     }
 
@@ -79,6 +80,11 @@ namespace Sampoerna.EMS.XMLReader
         {
             return  _xmlMapper.InsertToDatabase<LFA1>(Items);
        
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public LFA1 GetExVendor(string vendorCode)

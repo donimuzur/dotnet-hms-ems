@@ -63,7 +63,8 @@ namespace Sampoerna.EMS.BLL
         private void PlantDeletion(MaterialDto data, string userId) {
 
             var original = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS, null, "").FirstOrDefault();
-            if (original.CLIENT_DELETION != data.CLIENT_DELETION) {
+            if (original.PLANT_DELETION != data.PLANT_DELETION)
+            {
                 var changes = new CHANGES_HISTORY
                 {
                     FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
@@ -128,13 +129,13 @@ namespace Sampoerna.EMS.BLL
                 data.CREATED_DATE = origin.CREATED_DATE;
                 data.CREATED_BY = origin.CREATED_BY;
 
-                if (data.CLIENT_DELETION != (origin.CLIENT_DELETION.HasValue? origin.CLIENT_DELETION : false ))
+                if (data.CLIENT_DELETION != (originDto.CLIENT_DELETION.HasValue ? originDto.CLIENT_DELETION : false))
                 {
                     ClientDeletion(data, userId);
 
                 }
 
-                if (data.PLANT_DELETION != (origin.PLANT_DELETION.HasValue ? origin.PLANT_DELETION.Value : false))
+                if (data.PLANT_DELETION != (originDto.PLANT_DELETION.HasValue ? originDto.PLANT_DELETION.Value : false))
                 {
                     PlantDeletion(data, userId);
                 }
