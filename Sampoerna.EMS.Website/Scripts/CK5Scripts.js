@@ -300,13 +300,18 @@ function ValidateCk5Form() {
     if ($('#SourcePlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'SourcePlantId');
         result = false;
-       // $('#collapseTwo').addClass('in');
+        // $('#collapseTwo').addClass('in');
+        $('#collapseTwo').removeClass('collapse');
+        $('#collapseTwo').addClass('in');
+        $("#collapseTwo").css({ height: "auto" });
     }
     
     if ($('#DestPlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'DestPlantId');
         result = false;
-       // $('#collapseThree').addClass('in');
+        $('#collapseThree').removeClass('collapse');
+        $('#collapseThree').addClass('in');
+        $("#collapseThree").css({ height: "auto" });
     }
 
     if (result) {
