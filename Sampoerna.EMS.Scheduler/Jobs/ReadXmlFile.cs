@@ -39,7 +39,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                     continue;
                     
                 }
-                result += "<p>"+error+"</p>";
+                result += String.Format("<p>[{0}] {1}</p>", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), error);
             }
             return result;
         }
@@ -81,13 +81,17 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 else
                 {
                     var body = string.Empty;
-                    foreach (var file in _svc.filesMoved)
-                    {
-                        string info = "<p>file move to archieve : " + file +"</p>";
-                        body += info;
-                        logger.Info(info);
+                    if (_svc.filesMoved.Count > 0) {
+                        foreach (var file in _svc.filesMoved)
+                        {
+                            string info = "<p>file move to archieve : " + file + "</p>";
+                            body += info;
+                            logger.Info(info);
+                        }
+                        logger.Error(EmailUtility.Email(body, null));
                     }
-                    logger.Error(EmailUtility.Email(body, null));
+                    
+                    
                 }
 
             }

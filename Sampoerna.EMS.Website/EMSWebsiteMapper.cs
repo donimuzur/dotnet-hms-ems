@@ -609,15 +609,18 @@ namespace Sampoerna.EMS.Website
             #region UOM
             Mapper.CreateMap<UOM, UomDetailViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
-                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC))
+                .ForMember(dest => dest.IsEms, opt => opt.MapFrom(src => src.IS_EMS));
 
             Mapper.CreateMap<UOM, UomDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
-                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC));
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC))
+                .ForMember(dest => dest.IsEmsString, opt => opt.MapFrom(src => src.IS_EMS.HasValue? src.IS_EMS.Value? "Yes" : "No" : "No" ));
 
             Mapper.CreateMap<UomDetailViewModel, UOM>().IgnoreAllNonExisting()
                .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
-               .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UomName));
+               .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UomName))
+               .ForMember(dest => dest.IS_EMS, opt => opt.MapFrom(src => src.IsEms));
 
 
 

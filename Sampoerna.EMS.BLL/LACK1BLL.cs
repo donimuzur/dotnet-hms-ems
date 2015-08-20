@@ -43,19 +43,19 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbKcId);
             }
-            if (!string.IsNullOrEmpty((input.PlantId)))
-            {
-                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
-                //queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId && c.LEVEL_PLANT_NAME == input.PlantId);
-            }
-            if (!string.IsNullOrEmpty((input.Creator)))
-            {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
-            }
-            if (!string.IsNullOrEmpty((input.Poa)))
-            {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
-            }
+            //if (!string.IsNullOrEmpty((input.PlantId)))
+            //{
+            //    queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
+            //    //queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId && c.LEVEL_PLANT_NAME == input.PlantId);
+            //}
+            //if (!string.IsNullOrEmpty((input.Creator)))
+            //{
+            //    queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            //}
+            //if (!string.IsNullOrEmpty((input.Poa)))
+            //{
+            //    queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            //}
             //if (input.PeriodMonth != null)
             //{
             //    queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth);
@@ -95,39 +95,31 @@ namespace Sampoerna.EMS.BLL
             var dtTo = new DateTime(input.YearTo, input.MonthTo, 1);
 
             var getData = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
-                                               && c.STATUS.HasValue &&
-                                               c.STATUS.Value >= (int) Enums.DocumentStatus.Approved, null,
+                                               &&
+                                               (int)c.STATUS >= (int)Enums.DocumentStatus.Approved, null,
                 "LACK1_ITEM").ToList().Select(p => new
                 {
                     p.LACK1_ID,
                     p.LACK1_NUMBER,
                     p.PERIOD_MONTH,
                     p.PERIOD_YEAR,
-                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1),
-                    p.LACK1_ITEM
-                }
-                ).ToList();
+                    p.BEGINING_BALANCE,
+                    p.TOTAL_INCOME,
+                    p.USAGE,
+                    p.TOTAL_PRODUCTION,
+                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
+                }).ToList();
 
             if (getData.Count == 0) return 0;
 
             var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
 
             if (selected == null) return 0;
-            
-            decimal rc = 0;
-            var dataGrouped = selected.LACK1_ITEM.GroupBy(p => new
-            {
-                p.LACK1_ID
-            }).Select(g => new
-            {
-                g.Key.LACK1_ID,
-                TotalBEGINNING_BALANCE = g.Sum(p => p.BEGINNING_BALANCE != null ? p.BEGINNING_BALANCE.Value : 0),
-                TotalINCOME = g.Sum(p => p.INCOME != null ? p.INCOME.Value : 0),
-                TotalUSAGE = g.Sum(p => p.USAGE != null ? p.USAGE.Value : 0)
-            }).FirstOrDefault();
 
-            if (dataGrouped != null)
-                rc = dataGrouped.TotalBEGINNING_BALANCE + dataGrouped.TotalINCOME - dataGrouped.TotalUSAGE;
+            decimal rc = 0;
+
+            rc = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
+
             return rc;
         }
     }

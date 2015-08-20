@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
+            this.LACK1 = new HashSet<LACK1>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -82,5 +83,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER2 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
+        public virtual ICollection<LACK1> LACK1 { get; set; }
     }
 }

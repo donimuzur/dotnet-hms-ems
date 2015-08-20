@@ -12,15 +12,14 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class LACK1_ITEM
+    public partial class LACK1_INCOME_DETAIL
     {
-        public long LACK1_ITEM_ID { get; set; }
-        public Nullable<int> LACK1_ID { get; set; }
-        public Nullable<decimal> BEGINNING_BALANCE { get; set; }
-        public Nullable<decimal> INCOME { get; set; }
-        public Nullable<decimal> USAGE { get; set; }
-        public Nullable<decimal> PRODUCTION { get; set; }
+        public long LACK1_INCOME_ID { get; set; }
+        public int LACK1_ID { get; set; }
+        public long CK5_ID { get; set; }
+        public decimal AMOUNT { get; set; }
     
+        public virtual CK5 CK5 { get; set; }
         public virtual LACK1 LACK1 { get; set; }
     }
 }

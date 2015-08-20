@@ -13,6 +13,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         }
         public Pbck1ReportInformationDto Detail { get; set; }
         public List<Pbck1ReportProdPlanDto> ProdPlanList { get; set; }
+
+        /// <summary>
+        /// Pbck-1 Prod Conv uploaded file
+        /// </summary>
         public List<Pbck1ReportBrandRegistrationDto> BrandRegistrationList { get; set; }
         public List<Pbck1RealisasiP3BkcDto> RealisasiP3Bkc { get; set; }
 
@@ -86,7 +90,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// </summary>
         public string ProductConvertedOutputs { get; set; }
         public string RequestQty { get; set; }
+        /// <summary>
+        /// Request Qty Uom Id
+        /// </summary>
         public string RequestQtyUom { get; set; }
+        /// <summary>
+        /// Request Qty Uom Desc
+        /// </summary>
+        public string RequestQtyUomName { get; set; }
         /// <summary>
         /// Latest Saldo from LACK-1 in PBCK-1 form
         /// </summary>
@@ -135,6 +146,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Brand { get; set; }
         public string Kadar { get; set; }
         public string Convertion { get; set; }
+        public string ConvertionUomId { get; set; }
         public string ConvertionUom { get; set; }
     }
 

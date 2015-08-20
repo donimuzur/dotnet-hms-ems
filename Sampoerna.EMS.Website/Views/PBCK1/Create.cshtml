@@ -103,6 +103,10 @@
                 goodTypeOnChange();
             });
 
+            $("#externalSupPort").click(function () {
+                supplierPortOnChange();
+            });
+
         });
 
         //$('#Detail_RequestQtyUomName').change(function () {
@@ -163,12 +167,13 @@
         }
 
         function ajaxSelectNppbck(formData) {
+            //debugger;
             if (formData.nppbkcid) {
                 //Load POA
                 ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
 
                 //Load company
-                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
+                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "pbck1")');
             }
         }
 
@@ -176,18 +181,18 @@
 
             ChangeLatestSaldo();
 
+            $('#Detail_NppbkcCompanyName').val('');
+            $('#Detail_NppbkcCompanyCode').val('');
+            $('#Detail_NppbkcKppbcId').val('');
+            $('#displayCompanyName').val('');
+            $('#Detail_PoaList').val('');
+            $('#displayPoaList').val('');
+
             if ($("#Detail_NppbkcId").length) {
                 var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
                 console.log(nppbkcid);
                 if (nppbkcid != '') {
                     ajaxSelectNppbck({ nppbkcid: nppbkcid });
-                } else {
-                    $('#Detail_NppbkcCompanyName').val('');
-                    $('#Detail_NppbkcCompanyCode').val('');
-                    $('#Detail_NppbkcKppbcId').val('');
-                    $('#displayCompanyName').val('');
-                    $('#Detail_PoaList').val('');
-                    $('#displayPoaList').val('');
                 }
             }
         }
@@ -210,7 +215,7 @@
                 var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
-                if (port_id == '') {
+                if ($("#externalSupPort").is(':checked')) {
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);

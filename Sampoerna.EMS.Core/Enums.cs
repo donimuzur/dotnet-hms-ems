@@ -285,10 +285,16 @@ namespace Sampoerna.EMS.Core
             Lainnya = 4
         }
 
+        public enum Lack1Level
+        {
+            [Description("NPPBKC")]
+            Nppbkc = 1,
+            [Description("Plant")]
+            Plant = 2
+        }
         public enum Pbck7Type
         {
             Pbck7List =1
         }
-
     }
 }

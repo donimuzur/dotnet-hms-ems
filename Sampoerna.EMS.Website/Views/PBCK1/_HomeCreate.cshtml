@@ -145,10 +145,11 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier NPPBKC</label>
+                                        <label class="col-md-4">External supplier port</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
+                                            <div class="row">
+                                                <input type="checkbox" id="externalSupPort"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -167,10 +168,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier KPPBC</label>
+                                        <label class="col-md-4">Supplier NPPBKC</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -182,6 +183,15 @@
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Detail.HiddendSupplierAddress)
                                             @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Supplier KPPBC</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -280,7 +290,8 @@
                                             @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                         <div class="col-md-4">
-                                            @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
+                                            @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -288,9 +299,11 @@
                                     <div class="row">
                                         <label class="col-md-4">Latest Saldo</label>
                                         <div class="col-md-4">
+                                            @Html.HiddenFor(model => model.Detail.LatestSaldo)
                                             @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                         <div class="col-md-4">
+                                            @Html.HiddenFor(model => model.Detail.LatestSaldoUomId)
                                             @Html.DropDownListFor(model => model.Detail.LatestSaldoUomId, Model.UomList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>

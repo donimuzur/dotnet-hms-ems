@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool? IS_DELETED { get; set; }
         public string ORT01 { get; set; }
         public string STRAS { get; set; }
+
+        public string IS_DELETED_STRING { get; set; }
     }
 }

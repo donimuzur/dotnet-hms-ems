@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.XMLReader
         public string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
+        public List<String> Errors; 
         public XmlDataMapper(string xmlName)
         {
             
@@ -28,7 +29,7 @@ namespace Sampoerna.EMS.XMLReader
             _xmlData = ReadXMLFile();
             logger = new NLogLogger();
             uow = new SqlUnitOfWork(logger);
-          
+            Errors = new List<string>();
         }
 
 
@@ -92,6 +93,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 errorCount++;
                 logger.Error(ex.ToString());
+                this.Errors.Add(ex.Message);
                 uow.RevertChanges();
             }
             if (errorCount == 0 && itemToInsert > 0)
@@ -177,6 +179,63 @@ namespace Sampoerna.EMS.XMLReader
             return element.Value;
 
            
+        }
+        public string GetRomanNumeralValue(XElement element)
+        {
+            if (element == null)
+                return null;
+            if (element.Value == "/")
+                return null;
+            string romanValue = null ;
+              
+            switch (element.Value)
+            {
+                  case  "01":
+                    romanValue = "I";
+                    break;
+                    
+                case  "02":
+                    romanValue = "II";
+                    break;
+                    
+                case  "03":
+                    romanValue = "III";
+                    break;
+                    
+                case  "04":
+                    romanValue = "IV";
+                    break;
+                    
+                case  "05":
+                        romanValue = "V";
+                        break;
+                        
+                case  "06":
+                        romanValue = "VI";
+                        break;
+                        
+                 case  "07":
+                        romanValue = "VII";
+                        break;
+                        
+            case  "08":
+                        romanValue = "VIII";
+                        break;
+                        
+             case  "09":
+                        romanValue = "IX";
+                        break;
+                        
+              case  "10":
+                        romanValue = "X";
+                        break;
+               
+                    
+
+            }
+            return romanValue;
+
+
         }
 
     }

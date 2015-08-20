@@ -10,11 +10,11 @@ namespace Sampoerna.EMS.XMLReader
     public class XmlPoaDataMapper : IXmlDataReader 
     {
         private XmlDataMapper _xmlMapper = null;
-
+        public List<String> ErroList; 
         public XmlPoaDataMapper(string filename)
         {
             _xmlMapper = new XmlDataMapper(filename);
-           
+            ErroList = new List<string>();
         }
 
         
@@ -25,9 +25,9 @@ namespace Sampoerna.EMS.XMLReader
           return _xmlMapper.MoveFile();
         }
 
-       
-
-
-
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
+        }
     }
 }
