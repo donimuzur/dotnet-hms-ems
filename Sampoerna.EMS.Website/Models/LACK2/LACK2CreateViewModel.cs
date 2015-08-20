@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sampoerna.EMS.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,7 +24,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public SelectList GovStatusDDL { get; set; }
 
-        public SelectList StatusDDL { get; set; }
+        //public SelectList StatusDDL { get; set; }
+
+        public Enums.UserRole UsrRole { get; set; }
 
         public LACK2Model Lack2Model { get; set; }
         

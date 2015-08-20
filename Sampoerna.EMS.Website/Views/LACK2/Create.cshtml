@@ -42,7 +42,7 @@
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
                                             <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                LACK2
+                                                LACK2 Information
                                                 <i class="fa fa-caret-down"></i>
                                             </a>
                                         </h4>
@@ -127,18 +127,8 @@
                                                         <div class="row">
                                                             @Html.LabelFor(model => model.Lack2Model.GovStatus, htmlAttributes: new { @class = "control-label col-md-2" })
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.GovStatus, Model.GovStatusDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.DropDownListFor(model => model.Lack2Model.GovStatus, Model.GovStatusDDL, "Select", new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
                                                                 @Html.ValidationMessageFor(model => model.Lack2Model.GovStatus, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.Status, Model.StatusDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.Status, "", new { @class = "text-danger" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -184,7 +174,27 @@
 
 
     <script>
+
+        var usrRole = '@Model.UsrRole';
+
+        if (usrRole == 'Manager')
+        {
+            $('#Lack2Model_Burks').attr('disabled', true);
+
+            $('#Lack2Model_NppbkcId').attr('disabled', true);
+
+            $('#Lack2Model_LevelPlantId').attr('disabled', true);
+
+            $('#Lack2Model_ExGoodTyp').attr('disabled', true);
+
+            $('#Lack2Model_LACK2Period').attr('disabled', true);
+
+            $('#Lack2Model_SubmissionDate').attr('disabled', true);
+        }
+
         $('#Lack2Model_DecreeDate').attr('disabled', true);
+
+        $('#Lack2Model_GovStatus').attr('disabled', true);
 
         // For enabaling the Decree Date
         $('#Lack2Model_Status').click(function () {

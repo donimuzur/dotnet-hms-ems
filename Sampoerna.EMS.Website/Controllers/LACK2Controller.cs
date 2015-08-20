@@ -82,14 +82,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
 
-            var GovStatuses = from Enums.DocumentStatusGov s in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)s, Name = s.ToString() };
+            model.UsrRole = CurrentUser.UserRole;
 
-            var Statuses = from Enums.DocumentStatus s in Enum.GetValues(typeof(Enums.DocumentStatus))
-                           select new { ID = (int)s, Name = s.ToString() };
+            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
+                              select new { ID = (int)ds, Name = ds.ToString() };
 
-            model.GovStatusDDL = new SelectList(GovStatuses, "ID", "Name");
-            model.StatusDDL = new SelectList(Statuses, "ID", "Name");
+            model.GovStatusDDL = new SelectList(govStatuses, "ID", "Name");
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -119,6 +117,11 @@ namespace Sampoerna.EMS.Website.Controllers
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
 
+            if (CurrentUser.UserRole == Enums.UserRole.User || CurrentUser.UserRole == Enums.UserRole.POA)
+            {
+                item.Status = Enums.DocumentStatus.WaitingForApproval;
+            }
+
             _lack2Bll.Insert(item);
 
             return RedirectToAction("Index");
@@ -141,14 +144,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
 
-            var GovStatuses = from Enums.DocumentStatusGov s in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)s, Name = s.ToString() };
+            model.UsrRole = CurrentUser.UserRole;
 
-            var Statuses = from Enums.DocumentStatus s in Enum.GetValues(typeof(Enums.DocumentStatus))
-                           select new { ID = (int)s, Name = s.ToString() };
+            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
+                              select new { ID = (int)ds, Name = ds.ToString() };
 
-            model.GovStatusDDL = new SelectList(GovStatuses, "ID", "Name", model.Lack2Model.GovStatus);
-            model.StatusDDL = new SelectList(Statuses, "ID", "Name", model.Lack2Model.Status);
+            model.GovStatusDDL = new SelectList(govStatuses, "ID", "Name");
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -175,6 +176,16 @@ namespace Sampoerna.EMS.Website.Controllers
             item.LevelPlantCity = plant.ORT01;
             item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
             item.PeriodYear = model.Lack2Model.LACK2Period.Year;
+
+            if (CurrentUser.UserRole == Enums.UserRole.POA) // && if a file is uploaded needs to be added
+            {
+                item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)// && if a file is uploaded needs to be added
+            {
+                item.Status = Enums.DocumentStatus.Completed;
+            }
 
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
