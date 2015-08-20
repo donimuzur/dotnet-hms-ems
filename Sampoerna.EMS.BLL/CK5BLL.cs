@@ -236,7 +236,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                ProcessInsertCk5(input);
+               dbData =  ProcessInsertCk5(input);
             }
 
             _uow.SaveChanges();
@@ -1255,7 +1255,7 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        private void ProcessInsertCk5(CK5SaveInput input)
+        private CK5 ProcessInsertCk5(CK5SaveInput input)
         {
             //workflowhistory
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
@@ -1305,6 +1305,7 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputWorkflowHistory);
 
+            return dbData;
         }
 
        
