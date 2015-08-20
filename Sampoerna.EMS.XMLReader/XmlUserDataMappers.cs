@@ -77,6 +77,11 @@ namespace Sampoerna.EMS.XMLReader
        
         }
 
+        public List<string> GetErrorList()
+        {
+            throw new NotImplementedException();
+        }
+
         public USER GetUser(string UserId)
         {
             var exisitingUser = _xmlMapper.uow.GetGenericRepository<USER>()

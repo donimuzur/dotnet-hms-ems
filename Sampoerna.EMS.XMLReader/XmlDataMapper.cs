@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.XMLReader
         public string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
+        public List<String> Errors; 
         public XmlDataMapper(string xmlName)
         {
             
@@ -28,7 +29,7 @@ namespace Sampoerna.EMS.XMLReader
             _xmlData = ReadXMLFile();
             logger = new NLogLogger();
             uow = new SqlUnitOfWork(logger);
-          
+            Errors = new List<string>();
         }
 
 
@@ -92,6 +93,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 errorCount++;
                 logger.Error(ex.ToString());
+                this.Errors.Add(ex.Message);
                 uow.RevertChanges();
             }
             if (errorCount == 0 && itemToInsert > 0)
@@ -181,10 +183,10 @@ namespace Sampoerna.EMS.XMLReader
         public string GetRomanNumeralValue(XElement element)
         {
             if (element == null)
-                return string.Empty;
+                return null;
             if (element.Value == "/")
-                return string.Empty;
-            var romanValue = string.Empty;
+                return null;
+            string romanValue = null ;
               
             switch (element.Value)
             {

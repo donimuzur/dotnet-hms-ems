@@ -649,7 +649,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <PropertyRef Name="UOM_ID" />
           </Key>
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
-          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UOM_DESC" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -2814,40 +2814,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="POA_MAP" EntitySet="POA_MAP" />
           </AssociationSet>
           <EntitySet Name="CURRENCY" EntityType="EMSModel.CURRENCY" />
-          <EntitySet Name="UOM" EntityType="EMSModel.UOM" />
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="EMSModel.ZAIDM_EX_PCODE" />
-          <AssociationSet Name="FK_CK5_UOM" Association="EMSModel.FK_CK5_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="CK5" EntitySet="CK5" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="EMSModel.FK_LACK1_RETURN_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="LACK1" EntitySet="LACK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="LACK1" EntitySet="LACK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_REQUEST_UOM" Association="EMSModel.FK_PBCK1_REQUEST_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_SALDO_UOM" Association="EMSModel.FK_PBCK1_SALDO_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_PROD_CONVERTER_UOM" Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UOM_MODIFIED_BY_USER" Association="EMSModel.FK_UOM_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="UOM" EntitySet="UOM" />
-          </AssociationSet>
           <EntitySet Name="LFA1" EntityType="EMSModel.LFA1" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="EMSModel.ZAIDM_EX_GOODTYP" />
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
@@ -2935,10 +2902,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="T001W" EntitySet="T001W" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-          </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -2989,6 +2952,39 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <EntitySet Name="UOM" EntityType="EMSModel.UOM" />
+          <AssociationSet Name="FK_CK5_UOM" Association="EMSModel.FK_CK5_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="CK5" EntitySet="CK5" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="EMSModel.FK_LACK1_RETURN_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="EMSModel.FK_LACK1_WASTE_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_REQUEST_UOM" Association="EMSModel.FK_PBCK1_REQUEST_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_SALDO_UOM" Association="EMSModel.FK_PBCK1_SALDO_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="PBCK1" EntitySet="PBCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_PROD_CONVERTER_UOM" Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK1_PROD_PLAN_UOM" Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="PBCK1_PROD_PLAN" EntitySet="PBCK1_PROD_PLAN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_UOM" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3469,7 +3465,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="LACK1" ToRole="USER" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="LACK1" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
-        </EntityType>
+          </EntityType>
         <Association Name="FK_LACK1_DOCUMENT_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
           <End Type="EMSModel.LACK1_DOCUMENT" Role="LACK1_DOCUMENT" Multiplicity="*" />
@@ -3670,7 +3666,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="PBCK1" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
-        </EntityType>
+          </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
@@ -3935,7 +3931,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
           <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
           <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="USER" ToRole="UOM" />
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER" ToRole="USER_PLANT_MAP" />
           <NavigationProperty Name="PBCK3_PBCK7" Relationship="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
           <NavigationProperty Name="PBCK3_PBCK71" Relationship="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
@@ -4552,28 +4547,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CURRENCY_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="CURRENCY_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="UOM">
-          <Key>
-            <PropertyRef Name="UOM_ID" />
-          </Key>
-          <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="IS_DELETED" Type="Boolean" />
-          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
-          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
-          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="UOM" ToRole="PBCK1" />
-          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="UOM" ToRole="PBCK1" />
-          <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
-          <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_UOM_MODIFIED_BY_USER" FromRole="UOM" ToRole="USER" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
-          <Property Name="IS_EMS" Type="Boolean" />
-        </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
             <PropertyRef Name="PER_CODE" />
@@ -4586,102 +4559,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
         </EntityType>
-        <Association Name="FK_CK5_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="CK5">
-              <PropertyRef Name="PACKAGE_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK1_RETURN_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="LACK1">
-              <PropertyRef Name="RETURN_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK1_WASTE_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="LACK1">
-              <PropertyRef Name="WASTE_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_REQUEST_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="REQUEST_QTY_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_SALDO_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="PBCK1">
-              <PropertyRef Name="LATEST_SALDO_UOM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_PROD_CONVERTER_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1_PROD_CONVERTER" Role="PBCK1_PROD_CONVERTER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="PBCK1_PROD_CONVERTER">
-              <PropertyRef Name="CONVERTER_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK1_PROD_PLAN_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="PBCK1_PROD_PLAN">
-              <PropertyRef Name="BKC_REQUIRED_UOM_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UOM_MODIFIED_BY_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="UOM">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="LFA1">
           <Key>
             <PropertyRef Name="LIFNR" />
@@ -5048,8 +4925,8 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="MATERIAL_UOM" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="MATERIAL_UOM" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
@@ -5074,18 +4951,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="ZAIDM_EX_MATERIAL">
               <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="BASE_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5316,6 +5181,123 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="ZAIDM_EX_BRAND">
               <PropertyRef Name="SERIES_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UOM">
+          <Key>
+            <PropertyRef Name="UOM_ID" />
+          </Key>
+          <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_DELETED" Type="Boolean" />
+          <Property Name="IS_EMS" Type="Boolean" />
+          <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_UOM" FromRole="UOM" ToRole="CK5" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="UOM" ToRole="PBCK1" />
+          <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="UOM" ToRole="PBCK1" />
+          <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
+          <NavigationProperty Name="PBCK1_PROD_PLAN" Relationship="EMSModel.FK_PBCK1_PROD_PLAN_UOM" FromRole="UOM" ToRole="PBCK1_PROD_PLAN" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_CK5_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.CK5" Role="CK5" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="CK5">
+              <PropertyRef Name="PACKAGE_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_RETURN_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="RETURN_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_WASTE_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1">
+              <PropertyRef Name="WASTE_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_REQUEST_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="REQUEST_QTY_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_SALDO_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="PBCK1">
+              <PropertyRef Name="LATEST_SALDO_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_PROD_CONVERTER_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1_PROD_CONVERTER" Role="PBCK1_PROD_CONVERTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_PROD_CONVERTER">
+              <PropertyRef Name="CONVERTER_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK1_PROD_PLAN_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK1_PROD_PLAN" Role="PBCK1_PROD_PLAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="PBCK1_PROD_PLAN">
+              <PropertyRef Name="BKC_REQUIRED_UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="BASE_UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6022,20 +6004,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UOM">
-            <EntityTypeMapping TypeName="EMSModel.UOM">
-              <MappingFragment StoreEntitySet="UOM">
-                <ScalarProperty Name="IS_EMS" ColumnName="IS_EMS" />
-                <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="UOM_DESC" ColumnName="UOM_DESC" />
-                <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ZAIDM_EX_PCODE">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_PCODE">
               <MappingFragment StoreEntitySet="ZAIDM_EX_PCODE">
@@ -6268,6 +6236,20 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
                 <ScalarProperty Name="SERIES_CODE" ColumnName="SERIES_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UOM">
+            <EntityTypeMapping TypeName="EMSModel.UOM">
+              <MappingFragment StoreEntitySet="UOM">
+                <ScalarProperty Name="IS_EMS" ColumnName="IS_EMS" />
+                <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="UOM_DESC" ColumnName="UOM_DESC" />
+                <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

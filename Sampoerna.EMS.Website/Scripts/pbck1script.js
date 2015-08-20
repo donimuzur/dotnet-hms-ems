@@ -122,6 +122,7 @@ function prodPlanSaveClick() {
     $('#Detail_Pbck1ProdPlan tbody').html('');
 
     var total = 0;
+    var uom = '';
 
     for (var i = 0; i < datarows.length; i++) {
         var data = '<tr>';
@@ -146,12 +147,13 @@ function prodPlanSaveClick() {
                 + datarows[i][8] + '" />' + datarows[i][8] + '</td>';
             
             total += parseFloat(datarows[i][6]);
-
+            uom = datarows[i][7];
         }
         data += '</tr>';
         $('#Detail_Pbck1ProdPlan tbody').append(data);
     }
     $("input[name='Detail.RequestQty']").val(total);
+    $("select[name='Detail.RequestQtyUomId']").val(uom);
     $('#prod-plan-upload-tab').removeClass('active');
     $('#home-tab').addClass('active');
     $('#home').addClass('active');

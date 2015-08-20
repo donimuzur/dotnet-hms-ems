@@ -46,7 +46,7 @@
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="row">
-                                                                <label class="col-md-2">Group Name</label>
+                                                                <label class="col-md-3">Group Name</label>
                                                                 <div class="col-md-4">
 
                                                                     @Html.TextBoxFor(model => model.GroupName, new { @class = "form-control", @disabled = "false" })
@@ -55,8 +55,8 @@
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="row">
-                                                                <label class="col-md-2">Excise Group Type</label>
-                                                                <div class="col-md-4">
+                                                                <label class="col-md-3">Excise Group Type</label>
+                                                                <div class="col-md-9">
                                                                     <div class="row">
                                                                         @for (int i = 0; i < Model.Details.Count; i++)
                                                                         {
