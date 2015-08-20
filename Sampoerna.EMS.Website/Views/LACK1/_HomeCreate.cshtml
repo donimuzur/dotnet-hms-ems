@@ -76,18 +76,22 @@
                                                 <div class="col-md-4">
                                                     <input type="radio" class="lackLevel" name="lackLevelName" checked="checked" value="1"> NPPBKC
                                                 </div>
-                                                <div class="col-md-8">
-                                                    @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
-                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <input type="radio" class="lackLevel" name="lackLevelName" value="2"> Plant
                                                 </div>
-                                                <div class="col-md-8">
-                                                    @Html.DropDownListFor(model => model.LevelPlantId, Model.PlantList, "Select", new { @class = "form-control" })
-                                                </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -96,11 +100,21 @@
                                         <label class="col-md-4">Submission Date<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Received Plant ID</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.LevelPlantId, Model.PlantList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -122,6 +136,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Waste Amount</label>
@@ -265,7 +281,7 @@
                                         <td> </td>
                                         <td> </td>
                                     </tr>
-                                  
+
                                 </tbody>
                             </table>
                         </div>

@@ -49,8 +49,6 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /LACK1/
         public ActionResult Index()
         {
-            //var x = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
-
             var data = InitLack1ViewModel(new Lack1IndexViewModel
             {
 
@@ -153,42 +151,16 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        private List<PlantData> GetListByPlant(Lack1IndexPlantViewModel filter = null)
-        {
-            if (filter == null)
-            {
-                //get all 
-                var litsByNppbkc = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
-                return Mapper.Map<List<PlantData>>(litsByNppbkc);
-            }
-            //get by param
-            var input = Mapper.Map<Lack1GetByParamInput>(filter);
-            var dbData = _lack1Bll.GetAllByParam(input);
-
-            return Mapper.Map<List<PlantData>>(dbData);
-
-        }
-
         [HttpPost]
         public PartialViewResult FilterListByPlant(Lack1Input model)
         {
-
-            //if (!string.IsNullOrEmpty(model.ReportedOn))
-            //{
-            //    var data = Convert.ToDateTime(model.ReportedOn);
-            //    model.PeriodMonth = data.Month;
-            //    model.PeriodYear = data.Year;
-            //}
-
-
             var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
 
             var dbDataPlant = _lack1Bll.GetAllByParam(inputPlant);
 
             var resultPlant = Mapper.Map<List<PlantData>>(dbDataPlant);
 
-            var viewModel = new Lack1IndexPlantViewModel();
-            viewModel.Details = resultPlant;
+            var viewModel = new Lack1IndexPlantViewModel {Details = resultPlant};
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -211,6 +183,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
             return Json(data);
+        }
+
+        public JsonResult GetPlantListByNppbkcId(string nppbkcId)
+        {
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
+            var model = new Lack1CreateNppbkcViewModel() { PlantList = listPlant };
+            return Json(model);
         }
 
         #endregion
@@ -309,8 +288,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
-            //model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
-            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode("");
+            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.SupplierList = GlobalFunctions.GetSupplierPlantList();
             model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);

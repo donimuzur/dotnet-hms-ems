@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.BusinessObject.DTOs;
-﻿using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -14,8 +9,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbKcId { get; set; }
         public string Poa { get; set; }
         public string PlantId { get; set; }
-        //public int? PeriodMonth { get; set; }
-        //public int? PeriodYear { get; set; }
         public string Creator { get; set; }
         public string SubmissionDate { get; set; }
 
@@ -27,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
       
     }
+
 
     public class Lack1SaveInput
     {

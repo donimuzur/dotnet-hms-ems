@@ -43,7 +43,6 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
-
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
             Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
@@ -55,7 +54,6 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty((input.PlantId)))
             {
                 queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
-                //queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId && c.LEVEL_PLANT_NAME == input.PlantId);
             }
             if (!string.IsNullOrEmpty((input.Creator)))
             {
@@ -65,21 +63,13 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            //if (input.PeriodMonth != null)
-            //{
-            //    queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth);
-            //}
-            //if (input.PeriodYear != null)
-            //{
-            //    queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear);
-            //}
             if (!string.IsNullOrEmpty((input.SubmissionDate)))
             {
                 var dt = Convert.ToDateTime(input.SubmissionDate);
                 DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
             }
-           
+
             Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
 
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
@@ -98,7 +88,16 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
         }
+
         
+        public List<Lack1Dto> GetOpenDocument(Lack1GetByParamInput input)
+        {
+            Expression<Func<LACK1, bool>> queryFilter = ProcessQueryFilter(input);
+            //queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+
+            return null;
+        }
+
         public SaveLack1Output Save(Lack1SaveInput input)
         {
             LACK1 dbData;
@@ -168,21 +167,50 @@ namespace Sampoerna.EMS.BLL
 
             return output;
         }
-
-        #region workflow
-
-        private void AddWorkflowHistory(Lack1WorkflowDocumentInput input)
+        
+        public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
         {
-            var dbData = Mapper.Map<WorkflowHistoryDto>(input);
+            var dtTo = new DateTime(input.YearTo, input.MonthTo, 1);
 
-            dbData.ACTION_DATE = DateTime.Now;
-            dbData.FORM_TYPE_ID = Enums.FormType.LACK1;
+            var getData = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
+                                               && c.STATUS.HasValue &&
+                                               c.STATUS.Value >= (int)Enums.DocumentStatus.Approved, null,
+                "LACK1_ITEM").ToList().Select(p => new
+                {
+                    p.LACK1_ID,
+                    p.LACK1_NUMBER,
+                    p.PERIOD_MONTH,
+                    p.PERIOD_YEAR,
+                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1),
+                    p.LACK1_ITEM
+                }
+                ).ToList();
 
-            _workflowHistoryBll.Save(dbData);
+            if (getData.Count == 0) return 0;
+
+            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
+
+            if (selected == null) return 0;
+
+            decimal rc = 0;
+            var dataGrouped = selected.LACK1_ITEM.GroupBy(p => new
+            {
+                p.LACK1_ID
+            }).Select(g => new
+            {
+                g.Key.LACK1_ID,
+                TotalBEGINNING_BALANCE = g.Sum(p => p.BEGINNING_BALANCE != null ? p.BEGINNING_BALANCE.Value : 0),
+                TotalINCOME = g.Sum(p => p.INCOME != null ? p.INCOME.Value : 0),
+                TotalUSAGE = g.Sum(p => p.USAGE != null ? p.USAGE.Value : 0)
+            }).FirstOrDefault();
+
+            if (dataGrouped != null)
+                rc = dataGrouped.TotalBEGINNING_BALANCE + dataGrouped.TotalINCOME - dataGrouped.TotalUSAGE;
+            return rc;
 
         }
 
-        #endregion
+        #region Private Methods
 
         private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
         {
@@ -214,46 +242,64 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
+        private Expression<Func<LACK1, bool>> ProcessQueryFilter(Lack1GetByParamInput input)
         {
-            var dtTo = new DateTime(input.YearTo, input.MonthTo, 1);
+            Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
 
-            var getData = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
-                                               && c.STATUS.HasValue &&
-                                               c.STATUS.Value >= (int) Enums.DocumentStatus.Approved, null,
-                "LACK1_ITEM").ToList().Select(p => new
-                {
-                    p.LACK1_ID,
-                    p.LACK1_NUMBER,
-                    p.PERIOD_MONTH,
-                    p.PERIOD_YEAR,
-                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1),
-                    p.LACK1_ITEM
-                }
-                ).ToList();
-
-            if (getData.Count == 0) return 0;
-
-            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
-
-            if (selected == null) return 0;
-            
-            decimal rc = 0;
-            var dataGrouped = selected.LACK1_ITEM.GroupBy(p => new
+            if (!string.IsNullOrEmpty(input.NppbKcId))
             {
-                p.LACK1_ID
-            }).Select(g => new
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbKcId);
+            }
+            if (!string.IsNullOrEmpty((input.PlantId)))
             {
-                g.Key.LACK1_ID,
-                TotalBEGINNING_BALANCE = g.Sum(p => p.BEGINNING_BALANCE != null ? p.BEGINNING_BALANCE.Value : 0),
-                TotalINCOME = g.Sum(p => p.INCOME != null ? p.INCOME.Value : 0),
-                TotalUSAGE = g.Sum(p => p.USAGE != null ? p.USAGE.Value : 0)
-            }).FirstOrDefault();
+                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty((input.Creator)))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty((input.Poa)))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+            if (!string.IsNullOrEmpty((input.SubmissionDate)))
+            {
+                var dt = Convert.ToDateTime(input.SubmissionDate);
+                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
+            }
+            return queryFilter;
+        }
 
-            if (dataGrouped != null)
-                rc = dataGrouped.TotalBEGINNING_BALANCE + dataGrouped.TotalINCOME - dataGrouped.TotalUSAGE;
-            return rc;
+        private List<LACK1> GetLack1Data(Expression<Func<LACK1, bool>> queryFilter, string orderColumn)
+        {
+            Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
+            if (!string.IsNullOrEmpty(orderColumn))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK1>(orderColumn));
+
+            }
+            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+
+            return dbData.ToList();
+        }
+
+        #endregion
+
+        #region workflow
+
+        private void AddWorkflowHistory(Lack1WorkflowDocumentInput input)
+        {
+            var dbData = Mapper.Map<WorkflowHistoryDto>(input);
+
+            dbData.ACTION_DATE = DateTime.Now;
+            dbData.FORM_TYPE_ID = Enums.FormType.LACK1;
+
+            _workflowHistoryBll.Save(dbData);
 
         }
+
+        #endregion
+
     }
 }

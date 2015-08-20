@@ -70,18 +70,18 @@
 
         function CheckLevelChecked() {
             var levelCheck = $('input[name=lackLevelName]:checked').val();
-            var disabledNppbkc = false;
+            //var disabledNppbkc = false;
             var disabledPlant = false;
 
             if (levelCheck == '1') {
                 disabledPlant = true;
                 $("#LevelPlantId").prop('selectedIndex', 0);
             } else if (levelCheck == '2') {
-                disabledNppbkc = true;
+                //disabledNppbkc = true;
                 $("#NppbkcId").prop('selectedIndex', 0);
             }
 
-            $("#NppbkcId").attr('disabled', disabledNppbkc);
+            //$("#NppbkcId").attr('disabled', disabledNppbkc);
             $("#LevelPlantId").attr('disabled', disabledPlant);
         }
         
@@ -103,6 +103,27 @@
                 });
             } else
             {
+                $('#NppbkcId').append('<option value="">Select</option>');
+            }
+        }
+
+        function ajaxLoadPlantList(formData, url) {
+            if (formData.companyCode) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data;
+                        $('#NppbkcId').append('<option value="">Select</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#NppbkcId').append('<option value=' + list[i].NPPBKC_ID + '>' + list[i].NPPBKC_ID + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
                 $('#NppbkcId').append('<option value="">Select</option>');
             }
         }
