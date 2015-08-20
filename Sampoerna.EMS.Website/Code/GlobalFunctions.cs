@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetUomList(IUnitOfMeasurementBLL uomBll)
         {
-            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true);
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true);
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
@@ -228,8 +228,8 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetGoodTypeGroupList()
         {
-            IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
-            var goodTypes = goodTypeBll.GetAll();
+            ExGroupTypeBLL goodTypeBll = MvcApplication.GetInstance<ExGroupTypeBLL>();
+            var goodTypes = goodTypeBll.GetAll().Where(x=> x.Inactive = false).ToList();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
             return new SelectList(selectItemSource, "ValueField", "TextField");
             //return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
