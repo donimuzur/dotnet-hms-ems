@@ -476,12 +476,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!ModelState.IsValid)
                 {
                     AddMessageInfo("Model error", Enums.MessageInfoType.Error);
-                    return View(ModelInitial(model));
+                    model = ModelInitial(model);
+                    model = SetHistory(model);
+                    return View(model);
                 }
 
                 if (!ValidateEditDocument(model))
                 {
-                    return View(ModelInitial(model));
+                    model = ModelInitial(model);
+                    model = SetHistory(model);
+                    return View(model);
                 }
 
                 //model.Detail.Status = Enums.DocumentStatus.Revised;
@@ -515,6 +519,9 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception exception)
             {
                 AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                model = ModelInitial(model);
+                model = SetHistory(model);
+                return View(model);
             }
 
             var changeHistory =
@@ -534,6 +541,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View(ModelInitial(model));
 
+        }
+
+        private Pbck1ItemViewModel SetHistory(Pbck1ItemViewModel model)
+        {
+            var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, model.Detail.Pbck1Id.ToString()));
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Detail.Pbck1Number;
+            workflowInput.DocumentStatus = model.Detail.Status;
+            workflowInput.NPPBKC_Id = model.Detail.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            model.WorkflowHistory = workflowHistory;
+            model.ChangesHistoryList = changeHistory;
+
+            return model;
         }
 
         #endregion

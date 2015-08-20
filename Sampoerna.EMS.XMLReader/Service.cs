@@ -87,6 +87,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlMaterialDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("USER"))
+            {
+                return new XmlUserDataMapper(xmlfile);
+            }
             return null;
         }
 
@@ -139,6 +143,10 @@ namespace Sampoerna.EMS.XMLReader
 
             var filesPOA = xmlfiles.Where(x => x.Contains("POA"));
             orderedXmlFiles.AddRange(filesPOA);
+
+            var filesUser = xmlfiles.Where(x => x.Contains("USER"));
+           
+            orderedXmlFiles.AddRange(filesUser);
 
             if (filesVendor.Count() == 0)
                 isComplete = false;
