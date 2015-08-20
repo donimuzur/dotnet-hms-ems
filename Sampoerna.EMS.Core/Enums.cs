@@ -286,6 +286,7 @@ namespace Sampoerna.EMS.Core
             [Description("Lainnya")]
             Lainnya = 4
         }
+
         public enum Lack1Level
         {
             [Description("NPPBKC")]

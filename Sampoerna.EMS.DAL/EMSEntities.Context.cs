@@ -45,14 +45,11 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual DbSet<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual DbSet<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
-        public virtual DbSet<LACK1_ITEM> LACK1_ITEM { get; set; }
         public virtual DbSet<WORKFLOW_HISTORY> WORKFLOW_HISTORY { get; set; }
         public virtual DbSet<MATERIAL_UOM> MATERIAL_UOM { get; set; }
         public virtual DbSet<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
-        public virtual DbSet<LACK1> LACK1 { get; set; }
         public virtual DbSet<POA_SK> POA_SK { get; set; }
         public virtual DbSet<CK5> CK5 { get; set; }
         public virtual DbSet<PBCK1> PBCK1 { get; set; }
@@ -88,5 +85,10 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<UOM> UOM { get; set; }
+        public virtual DbSet<LACK1> LACK1 { get; set; }
+        public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
+        public virtual DbSet<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
+        public virtual DbSet<LACK1_PLANT> LACK1_PLANT { get; set; }
+        public virtual DbSet<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
     }
 }

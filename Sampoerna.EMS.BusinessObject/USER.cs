@@ -24,8 +24,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK5_FILE_UPLOAD = new HashSet<CK5_FILE_UPLOAD>();
             this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
             this.HEADER_FOOTER1 = new HashSet<HEADER_FOOTER>();
-            this.LACK1 = new HashSet<LACK1>();
-            this.LACK11 = new HashSet<LACK1>();
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK12 = new HashSet<PBCK1>();
@@ -51,6 +49,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK3_PBCK7 = new HashSet<PBCK3_PBCK7>();
             this.PBCK3_PBCK71 = new HashSet<PBCK3_PBCK7>();
             this.PBCK3_PBCK72 = new HashSet<PBCK3_PBCK7>();
+            this.LACK1 = new HashSet<LACK1>();
+            this.LACK11 = new HashSet<LACK1>();
         }
     
         public string USER_ID { get; set; }
@@ -71,8 +71,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER1 { get; set; }
-        public virtual ICollection<LACK1> LACK1 { get; set; }
-        public virtual ICollection<LACK1> LACK11 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<PBCK1> PBCK12 { get; set; }
@@ -98,5 +96,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK71 { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK72 { get; set; }
+        public virtual ICollection<LACK1> LACK1 { get; set; }
+        public virtual ICollection<LACK1> LACK11 { get; set; }
     }
 }

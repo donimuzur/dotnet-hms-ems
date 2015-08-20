@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="91" >
+      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="61" >
         <EntityTypeShape EntityType="EMSModel.CHANGES_HISTORY" Width="1.5" PointX="5.25" PointY="64" />
         <EntityTypeShape EntityType="EMSModel.EMAIL_TEMPLATE" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.75" PointX="11.25" PointY="70.625" />
@@ -29,18 +29,12 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_PLAN" Width="1.5" PointX="15.75" PointY="27.625" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_MONTH" />
-        <EntityTypeShape EntityType="EMSModel.LACK1_DOCUMENT" Width="1.5" PointX="12.75" PointY="43.375" />
-        <EntityTypeShape EntityType="EMSModel.LACK1_ITEM" Width="1.5" PointX="12.75" PointY="28.125" />
         <EntityTypeShape EntityType="EMSModel.WORKFLOW_HISTORY" Width="1.5" PointX="5.25" PointY="24.25" />
         <EntityTypeShape EntityType="EMSModel.MATERIAL_UOM" Width="1.5" PointX="20.25" PointY="48" />
         <EntityTypeShape EntityType="EMSModel.CK5_MATERIAL" Width="1.5" PointX="21" PointY="35.25" />
         <EntityTypeShape EntityType="EMSModel.DOC_NUMBER_SEQ" Width="1.5" PointX="10.5" PointY="44.125" />
         <AssociationConnector Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_DECREE_DOC" Width="1.5" PointX="21.75" PointY="31.625" />
-        <EntityTypeShape EntityType="EMSModel.LACK1" Width="1.5" PointX="10.5" PointY="36.625" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_DOCUMENT_LACK1" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_ITEM_LACK1" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_MONTH" />
         <EntityTypeShape EntityType="EMSModel.POA_SK" Width="1.5" PointX="7.5" PointY="31.5" />
         <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="18.5" PointY="30.75" />
         <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
@@ -74,8 +68,6 @@
         <AssociationConnector Association="EMSModel.FK_CK5_FILE_UPLOAD_USER" />
         <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_MODIFIED_BY_USER" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_USER_APPROVED" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_USER_CREATED" />
         <AssociationConnector Association="EMSModel.FK_PAGE_MAP_PAGE" />
         <AssociationConnector Association="EMSModel.FK_PAGE_MAP_USER_BROLE" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_APPROVED_BY_USER" />
@@ -161,13 +153,27 @@
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" />
         <EntityTypeShape EntityType="EMSModel.UOM" Width="1.5" PointX="8.25" PointY="41" />
         <AssociationConnector Association="EMSModel.FK_CK5_UOM" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_RETURN_UOM" />
-        <AssociationConnector Association="EMSModel.FK_LACK1_WASTE_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_REQUEST_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_SALDO_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" />
+        <EntityTypeShape EntityType="EMSModel.LACK1" Width="1.5" PointX="13.5" PointY="26.625" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_DOCUMENT" Width="1.5" PointX="15.75" PointY="42.125" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_INCOME_DETAIL" Width="1.5" PointX="23.75" PointY="35.5" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_PLANT" Width="1.5" PointX="15.75" PointY="24" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_PRODUCTION_DETAIL" Width="1.5" PointX="15.75" PointY="20" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_INCOME_DETAIL_CK5" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_DOCUMENT_LACK1" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_INCOME_DETAIL_LACK1" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_MONTH" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_PLANT_LACK1" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_RETURN_UOM" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_USER_APPROVED" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_USER_CREATED" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_WASTE_UOM" />
+        <AssociationConnector Association="EMSModel.LACK1_PBCK1_MAPPING" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
