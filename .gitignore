@@ -131,3 +131,4 @@ aspnet_client
 /packages/*.deleteme
 /scripts/BatchSqlDBUpdates.exe.config
 /Sampoerna.EMS.Website/Web.config
+/Sampoerna.EMS.Scheduler/App.config

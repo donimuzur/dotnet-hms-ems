@@ -933,7 +933,7 @@
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
-       <Content Include="Views\CK5\CK5UploadFileDocument.cshtml" />
+    <Content Include="Views\CK5\CK5UploadFileDocument.cshtml" />
     <Content Include="Views\CK5\_CK5UploadFileDocumentsList.cshtml" />
     <Content Include="Views\POAMap\Edit.cshtml" />
     <Content Include="Views\KPPBC\Index.cshtml" />
@@ -987,6 +987,10 @@
     <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
       <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
       <Name>Sampoerna.EMS.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.XMLReader\Sampoerna.EMS.XMLReader.csproj">
+      <Project>{5370f240-5512-461a-9956-351009512c94}</Project>
+      <Name>Sampoerna.EMS.XMLReader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

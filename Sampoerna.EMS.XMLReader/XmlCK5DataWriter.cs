@@ -40,19 +40,19 @@ namespace Sampoerna.EMS.XMLReader
             var lineValid = Convert.ToInt32(line);
             var result = string.Empty;
             if (line < 10)
-                return result += "000" + lineValid;
+                return result += "0000" + lineValid;
             if (line < 100)
-                return result += "00" + lineValid;
+                return result += "000" + lineValid;
             if (line < 1000)
+                return result += "00" + lineValid;
+            if (line < 10000)
                 return result += "0" + lineValid;
             return null;
         }
 
-        public void CreateXML(CK5 ck5, string fileName)
+        public void CreateXML(CK5 ck5, string filePath)
         {
-            var outboundFolder = ConfigurationManager.AppSettings["XmlOutboundPath"];
-            using (XmlWriter writer = XmlWriter.Create(Path.Combine(outboundFolder, fileName)
-                ))
+            using (XmlWriter writer = XmlWriter.Create(filePath))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("ZAIDM_CK5_01");
