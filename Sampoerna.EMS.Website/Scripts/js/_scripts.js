@@ -63,6 +63,7 @@ $(document).ready(function() {
 				$(this).parent().removeClass('open');
 				$(this).next('ul').fadeOut('fast');
 			}else{
+				$("ul.list").fadeOut('fast');
 				$(this).parent().addClass('open');
 				$(this).next('ul').fadeIn('fast');
 			}

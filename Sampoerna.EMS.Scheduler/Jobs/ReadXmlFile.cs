@@ -81,13 +81,17 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 else
                 {
                     var body = string.Empty;
-                    foreach (var file in _svc.filesMoved)
-                    {
-                        string info = "<p>file move to archieve : " + file +"</p>";
-                        body += info;
-                        logger.Info(info);
+                    if (_svc.filesMoved.Count > 0) {
+                        foreach (var file in _svc.filesMoved)
+                        {
+                            string info = "<p>file move to archieve : " + file + "</p>";
+                            body += info;
+                            logger.Info(info);
+                        }
+                        logger.Error(EmailUtility.Email(body, null));
                     }
-                    logger.Error(EmailUtility.Email(body, null));
+                    
+                    
                 }
 
             }
