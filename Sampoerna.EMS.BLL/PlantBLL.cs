@@ -272,11 +272,28 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<T001WCompositeDto> GetCompositeListByNppbkcId(string nppbkcId)
+        {
+            Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
+            if (!string.IsNullOrEmpty(nppbkcId))
+            {
+                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
+            }
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return Mapper.Map<List<T001WCompositeDto>>(dbData);
+        }
+        
         public List<Plant> GetActivePlant()
         {
             Expression<Func<T001W, bool>> queryFilter =
                 c => c.IS_DELETED != true && c.ZAIDM_EX_NPPBKC.IS_DELETED != true;
             return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
+
     }
 }

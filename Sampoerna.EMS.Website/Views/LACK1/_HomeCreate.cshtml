@@ -1,4 +1,6 @@
-﻿
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1CreateNppbkcViewModel
+@using Sampoerna.EMS.Website.Helpers
+
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -13,47 +15,41 @@
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
-                        <form class="form-excise" role="form">
+                        <div class="form-excise" role="form">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">LACK-1 No</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="">
+                                            @Html.TextBoxFor(model => model.Lack1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Company</label>
+                                        <label class="col-md-4">Company<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>PT HM Sampoerna</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.Bukrs, Model.BukrList, "", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Period</label>
+                                        <label class="col-md-4">Period<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>May</option>
-                                                    </select>
+                                                    @Html.DropDownListFor(model => model.PeriodMonth, Model.MontList, "", new { @class = "form-control" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>2015</option>
-                                                    </select>
+                                                    @Html.DropDownListFor(model => model.PeriodYears, Model.YearsList, new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,41 +66,41 @@
                 </div>
                 <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                     <div class="panel-body">
-                        <form class="form-excise" role="form">
+                        <div class="form-excise" role="form">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Level</label>
+                                        <label class="col-md-4">Level<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <input type="radio"> NPPBKC
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <select class="form-control">
-                                                        <option>0703.1.3.0234</option>
-                                                    </select>
+                                                    <input type="radio" class="lackLevel" name="lackLevelName" checked="checked" value="1"> NPPBKC
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <input type="radio"> Plant
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <select class="form-control">
-                                                        <option>Rungkut 1</option>
-                                                    </select>
+                                                    <input type="radio" class="lackLevel" name="lackLevelName" value="2"> Plant
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Submission Date</label>
+                                        <label class="col-md-4">NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Submission Date<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -116,36 +112,42 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier</label>
+                                        <label class="col-md-4">Received Plant ID</label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>Supplier One</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.LevelPlantId, Model.PlantList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Supplier<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SupplierPlant, Model.SupplierList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4 long">Tobbaco Goods Type</label>
+                                        <label class="col-md-4 long">Excisable Goods Type<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>Supplier One</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.ExGoodsType, Model.ExGoodTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Waste Amount</label>
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control">
+                                                    @Html.TextBoxFor(model => model.WasteQty, new { @class = "form-control", maxlength = "12" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option> </option>
-                                                    </select>
+                                                    @Html.DropDownListFor(model => model.WasteUom, Model.WasteUomList, "Select", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
@@ -157,12 +159,10 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control">
+                                                    @Html.TextBoxFor(model => model.ReturnQty, new { @class = "form-control", maxlength = "12" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option> </option>
-                                                    </select>
+                                                    @Html.DropDownListFor(model => model.ReturnUom, Model.ReturnUomList, "Select", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
@@ -172,7 +172,7 @@
                                     <button class="btn btn-blue full">Generate</button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -190,29 +190,7 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
                         <div class="table-container">
-                            <table class="table table-bordered table-striped js-options-table">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Beginning Balance</th>
-                                        <th>Usage</th>
-                                        <th>Production</th>
-                                        <th>Ending Balance</th>
-                                        <th>Note</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                   
-                                </tbody>
-                            </table>
+                            @Html.Partial("_Lack1TableBalance")
                         </div>
                     </div>
                 </div>
@@ -230,15 +208,13 @@
                 </div>
                 <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                     <div class="panel-body">
-                        <form class="form-excise" role="form">
+                        <div class="form-excise" role="form">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Status</label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>Approved</option>
-                                            </select>
+                                            @Html.EnumDropDownListFor(model => model.Status, Model.GovStatus, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -247,7 +223,7 @@
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                <input type="text" class="form-control">
+                                                @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -269,7 +245,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -305,7 +281,7 @@
                                         <td> </td>
                                         <td> </td>
                                     </tr>
-                                  
+
                                 </tbody>
                             </table>
                         </div>
@@ -313,6 +289,11 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
         </div>
     </div>
 </div>

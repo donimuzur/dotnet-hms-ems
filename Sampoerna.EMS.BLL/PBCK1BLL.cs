@@ -16,6 +16,8 @@ using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
+using Sampoerna.EMS.LinqExtensions;
+
 namespace Sampoerna.EMS.BLL
 {
     public class PBCK1BLL : IPBCK1BLL
@@ -1319,9 +1321,8 @@ namespace Sampoerna.EMS.BLL
                 if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
                 {
                     var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                    var stringList = strToSplit.Split('|').ToList();
-                    rc.Detail.SupplierKppbcMengetahui = stringList.Count == 2 ? stringList[1].Replace("<br />", Environment.NewLine) : "-";
-                    
+                    List<string> stringList = strToSplit.Split('|').ToList();
+                    rc.Detail.SupplierKppbcMengetahui = stringList[1].Replace("<br />", Environment.NewLine);
                 }
 
             }
@@ -1467,8 +1468,7 @@ namespace Sampoerna.EMS.BLL
             public string Body { get; set; }
             public List<string> To { get; set; }
         }
-
-
+        
         public Pbck1Dto GetByDocumentNumber(string documentNumber)
         {
             includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
@@ -1481,12 +1481,26 @@ namespace Sampoerna.EMS.BLL
             }
             return mapResult;
         }
+        
+        public List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkByCompanyCode(string companyCode)
+        {
+            includeTables = "";
+            var dbData =
+                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_BUKRS) && c.NPPBKC_BUKRS == companyCode, null,
+                    includeTables);
+            if (dbData == null)
+                return null;
+
+            var nppbkcList = Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(dbData.ToList());
+            
+            return nppbkcList.DistinctBy(c => c.NPPBKC_ID).ToList();
+
+        }
 
         public void UpdateReportedOn(Pbck1UpdateReportedOn input)
         {
             PBCK1 dbData = _repository.Get(c => c.PBCK1_ID == input.Id, null, includeTables).FirstOrDefault();
             dbData.REPORTED_ON = input.ReportedOn;
-
             _uow.SaveChanges();
         }
     }

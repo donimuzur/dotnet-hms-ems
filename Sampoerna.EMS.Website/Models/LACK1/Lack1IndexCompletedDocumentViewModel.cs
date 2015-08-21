@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class Lack1IndexViewModel : BaseModel
+    public class Lack1IndexCompletedDocumentViewModel : BaseModel
     {
-        public Lack1IndexViewModel()
+        public Lack1IndexCompletedDocumentViewModel()
         {
-              Details = new List<Lack1NppbkcData>();
+            Details = new List<Lack1CompletedDocumentData>();
         }
         public string NppbkcId { get; set; }
         public string Poa { get; set; }
@@ -20,10 +19,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList PoaList { get; set; }
         public SelectList PlantIdList { get; set; }
         public SelectList ReportedOnList { get; set; }
-        public SelectList CreatorList { get; set;  }
+        public SelectList CreatorList { get; set; }
 
-        public Enums.LACK1Type Lack1Type { get; set; }
-
-        public List<Lack1NppbkcData> Details { get; set; }
+        public List<Lack1CompletedDocumentData> Details { get; set; }
     }
 }

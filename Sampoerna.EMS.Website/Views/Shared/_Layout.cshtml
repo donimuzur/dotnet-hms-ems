@@ -194,7 +194,7 @@
                                         <i class="fa fa-angle-right"></i>
                                         KPPBC
                                     </a>
-                                </li>                
+                                </li>
 
                             </ul>
                         </div>
@@ -287,7 +287,7 @@
                             </a>
 
                             <ul class="child list">
-                                
+
                                 <li>
                                     <a id="MenuUserPlantMap" href="@Url.Action("Index", "UserPlantMap")">
                                         <i class="fa fa-angle-right"></i>
@@ -318,7 +318,7 @@
                                         Document Sequence
                                     </a>
                                 </li>
-                                <li >
+                                <li>
 
                                     <a id="MenuGlobalSetting" href="@Url.Action("Index", "GlobalSettings")">
                                         <i class="fa fa-angle-right"></i>
@@ -348,38 +348,10 @@
                             break;
 
                         case Enums.MenuList.LACK1:
-                        <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
-                            <div class="collapse-menu active open">
-                                <a href="#" class="list-group-item list-parent">
-                                    <i class="fa fa-clipboard"></i>
-                                    <span>Document List</span>
-                                    <i class="down fa fa-caret-down"></i>
-                                </a>
-                                <ul class="child list">
-                                    <li><a id="Menulack1ListByNppbkc" href="@Url.Action("Index", "LACK1")"><i class="fa fa-angle-right"></i> List by NPPBKC </a></li>
-                                    <li><a id="MenuLack1ListByPlant" href="@Url.Action("ListByPlant", "LACK1")"><i class="fa fa-angle-right"></i> List by Plant</a></li>
-                                    <li><a href="4.2-lack1-list-completed.html"><i class="fa fa-angle-right"></i> Completed Document</a></li>
-                                </ul>
-                            </div>
-                            <div class="collapse-menu">
-                                <a href="#" class="list-group-item list-parent">
-                                    <i class="fa fa-signal"></i>
-                                    <span>Report</span>
-                                    <i class="down fa fa-caret-down"></i>
-                                </a>
-                                <ul class="child list">
-                                    <li><a href="4.3-lack1-summary-report.html"><i class="fa fa-angle-right"></i> Summary</a></li>
-                                    <li><a href="4.4-lack1-detail-report.html"><i class="fa fa-angle-right"></i> Detail</a></li>
-                                </ul>
-                            </div>
-                            <div class="other">
+                            <div class="list-group">
                                 <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
+                                    <i class="fa fa-tachometer"></i>
+                                    <span>Dashboard</span>
                                 </a>
                                 <div class="collapse-menu active open">
                                     <a href="#" class="list-group-item list-parent">
@@ -388,9 +360,9 @@
                                         <i class="down fa fa-caret-down"></i>
                                     </a>
                                     <ul class="child list">
-                                        <li><a id="Menulack1ListByNppbkc" href="@Url.Action("Index", "LACK1")"><i class="fa fa-angle-right"></i>List by NPPBKC </a></li>
-                                        <li><a id="MenuLack1ListByPlant" href="@Url.Action("ListByPlant", "LACK1")"><i class="fa fa-angle-right"></i>List by Plant</a></li>
-                                        <li><a href="4.2-lack1-list-completed.html"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+                                        <li><a id="Menulack1ListByNppbkc" href="@Url.Action("Index", "LACK1")"><i class="fa fa-angle-right"></i>List by NPPBKC Level</a></li>
+                                        <li><a id="MenuLack1ListByPlant" href="@Url.Action("ListByPlant", "LACK1")"><i class="fa fa-angle-right"></i>List by Plant Level</a></li>
+                                        <li><a id="MenuLack1CompletedDocument" href="@Url.Action("ListCompletedDocument", "LACK1")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
                                     </ul>
                                 </div>
                                 <div class="collapse-menu">
@@ -421,8 +393,6 @@
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-
                             break;
 
                         case Enums.MenuList.LACK2:
