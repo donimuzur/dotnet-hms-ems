@@ -48,6 +48,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string DocumentNumber { get; set; }
 
         public CK5WorkflowDocumentData AdditionalDocumentData { get; set; }
+
     }
 
     public class CK5WorkflowDocumentData
