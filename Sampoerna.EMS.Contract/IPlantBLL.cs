@@ -28,5 +28,6 @@ namespace Sampoerna.EMS.Contract
 
         T001WDto GetMainPlantByNppbkcId(string nppbkcId);
 
+        List<Plant> GetActivePlant();
     }
 }
