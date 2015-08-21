@@ -81,4 +81,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
     }
 
+    public class Pbck1UpdateReportedOn
+    {
+        public long Id { get; set; }
+        public DateTime? ReportedOn { get; set; }
+    }
+
 }

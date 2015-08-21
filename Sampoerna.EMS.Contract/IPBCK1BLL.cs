@@ -35,5 +35,7 @@ namespace Sampoerna.EMS.Contract
 
         Pbck1Dto GetByDocumentNumber(string documentNumber);
 
+        void UpdateReportedOn(Pbck1UpdateReportedOn input);
+
     }
 }

@@ -268,7 +268,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSupplierPlant()
         {
-            return Json(GlobalFunctions.GetSupplierPlantList());
+            return Json(GlobalFunctions.GetActiveSupplierPlantList());
         }
 
         [HttpPost]
@@ -896,6 +896,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
+                var input = new Pbck1UpdateReportedOn()
+                {
+                    Id = model.Detail.Pbck1Id,
+                    ReportedOn = model.Detail.ReportedOn
+                };
+
+                _pbck1Bll.UpdateReportedOn(input);
+                
                 Pbck1WorkflowGovApprove(model.Detail, model.Detail.GovApprovalActionType, model.Detail.Comment);
                 isSuccess = true;
             }

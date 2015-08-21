@@ -1319,8 +1319,9 @@ namespace Sampoerna.EMS.BLL
                 if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
                 {
                     var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                    List<string> stringList = strToSplit.Split('|').ToList();
-                    rc.Detail.SupplierKppbcMengetahui = stringList[1].Replace("<br />", Environment.NewLine);
+                    var stringList = strToSplit.Split('|').ToList();
+                    rc.Detail.SupplierKppbcMengetahui = stringList.Count == 2 ? stringList[1].Replace("<br />", Environment.NewLine) : "-";
+                    
                 }
 
             }
@@ -1481,6 +1482,12 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
+        public void UpdateReportedOn(Pbck1UpdateReportedOn input)
+        {
+            PBCK1 dbData = _repository.Get(c => c.PBCK1_ID == input.Id, null, includeTables).FirstOrDefault();
+            dbData.REPORTED_ON = input.ReportedOn;
 
+            _uow.SaveChanges();
+        }
     }
 }
