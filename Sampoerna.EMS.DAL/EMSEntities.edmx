@@ -387,6 +387,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="LACK2_DOCUMENT">
           <Key>
@@ -2988,36 +2989,11 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
           </AssociationSet>
-          <EntitySet Name="LACK2" EntityType="EMSModel.LACK2" />
           <EntitySet Name="LACK2_DOCUMENT" EntityType="EMSModel.LACK2_DOCUMENT" />
           <EntitySet Name="LACK2_ITEM" EntityType="EMSModel.LACK2_ITEM" />
           <AssociationSet Name="FK_LACK2_ITEM_CK5" Association="EMSModel.FK_LACK2_ITEM_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="LACK2_ITEM" EntitySet="LACK2_ITEM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK2_DOCUMENT_LACK2" Association="EMSModel.FK_LACK2_DOCUMENT_LACK2">
-            <End Role="LACK2" EntitySet="LACK2" />
-            <End Role="LACK2_DOCUMENT" EntitySet="LACK2_DOCUMENT" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK2_ITEM_LACK2" Association="EMSModel.FK_LACK2_ITEM_LACK2">
-            <End Role="LACK2" EntitySet="LACK2" />
-            <End Role="LACK2_ITEM" EntitySet="LACK2_ITEM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK2_MONTH" Association="EMSModel.FK_LACK2_MONTH">
-            <End Role="MONTH" EntitySet="MONTH" />
-            <End Role="LACK2" EntitySet="LACK2" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK2_USER_APPROVED_BY" Association="EMSModel.FK_LACK2_USER_APPROVED_BY">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK2" EntitySet="LACK2" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK2_USER_CREATED_BY" Association="EMSModel.FK_LACK2_USER_CREATED_BY">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK2" EntitySet="LACK2" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK2_USER_MODIFIED_BY" Association="EMSModel.FK_LACK2_USER_MODIFIED_BY">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="LACK2" EntitySet="LACK2" />
           </AssociationSet>
           <EntitySet Name="PRINT_HISTORY" EntityType="EMSModel.PRINT_HISTORY" />
           <AssociationSet Name="FK_PRINT_HISTORY_USER" Association="EMSModel.FK_PRINT_HISTORY_USER">
@@ -3303,6 +3279,31 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
             <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
           </AssociationSet>
+          <EntitySet Name="LACK2" EntityType="EMSModel.LACK2" />
+          <AssociationSet Name="FK_LACK2_DOCUMENT_LACK2" Association="EMSModel.FK_LACK2_DOCUMENT_LACK2">
+            <End Role="LACK2" EntitySet="LACK2" />
+            <End Role="LACK2_DOCUMENT" EntitySet="LACK2_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK2_ITEM_LACK2" Association="EMSModel.FK_LACK2_ITEM_LACK2">
+            <End Role="LACK2" EntitySet="LACK2" />
+            <End Role="LACK2_ITEM" EntitySet="LACK2_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK2_MONTH" Association="EMSModel.FK_LACK2_MONTH">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="LACK2" EntitySet="LACK2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK2_USER_APPROVED_BY" Association="EMSModel.FK_LACK2_USER_APPROVED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK2" EntitySet="LACK2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK2_USER_CREATED_BY" Association="EMSModel.FK_LACK2_USER_CREATED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK2" EntitySet="LACK2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK2_USER_MODIFIED_BY" Association="EMSModel.FK_LACK2_USER_MODIFIED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK2" EntitySet="LACK2" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3413,9 +3414,9 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="DOC_NUMBER_SEQ" Relationship="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" FromRole="MONTH" ToRole="DOC_NUMBER_SEQ" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_LACK1_MONTH_FROM" FromRole="MONTH" ToRole="PBCK1" />
           <NavigationProperty Name="PBCK11" Relationship="EMSModel.FK_PBCK1_MONTH" FromRole="MONTH" ToRole="PBCK1" />
-          <NavigationProperty Name="LACK2" Relationship="EMSModel.FK_LACK2_MONTH" FromRole="MONTH" ToRole="LACK2" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="MONTH" ToRole="LACK1" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_MONTH" FromRole="MONTH" ToRole="CK4C" />
+          <NavigationProperty Name="LACK2" Relationship="EMSModel.FK_LACK2_MONTH" FromRole="MONTH" ToRole="LACK2" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
@@ -4146,9 +4147,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="WORKFLOW_STATE_USERS" Relationship="EMSModel.FK_WORKFLOW_STATE_USERS_USER" FromRole="USER" ToRole="WORKFLOW_STATE_USERS" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
           <NavigationProperty Name="ZAIDM_EX_BRAND1" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" FromRole="USER" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="LACK2" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="USER" ToRole="LACK2" />
-          <NavigationProperty Name="LACK21" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="USER" ToRole="LACK2" />
-          <NavigationProperty Name="LACK22" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="USER" ToRole="LACK2" />
           <NavigationProperty Name="PRINT_HISTORY" Relationship="EMSModel.FK_PRINT_HISTORY_USER" FromRole="USER" ToRole="PRINT_HISTORY" />
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="USER" ToRole="POA" />
           <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="USER" ToRole="POA" />
@@ -4164,6 +4162,9 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="USER" ToRole="LACK1" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_MODIFIED_BY" FromRole="USER" ToRole="CK4C" />
           <NavigationProperty Name="CK4C1" Relationship="EMSModel.FK_CK4C_USER" FromRole="USER" ToRole="CK4C" />
+          <NavigationProperty Name="LACK2" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="USER" ToRole="LACK2" />
+          <NavigationProperty Name="LACK21" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="USER" ToRole="LACK2" />
+          <NavigationProperty Name="LACK22" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="USER" ToRole="LACK2" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -4438,37 +4439,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="LACK2">
-          <Key>
-            <PropertyRef Name="LACK2_ID" />
-          </Key>
-          <Property Name="LACK2_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PERIOD_MONTH" Type="Int32" Nullable="false" />
-          <Property Name="PERIOD_YEAR" Type="Int32" Nullable="false" />
-          <Property Name="LEVEL_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="LEVEL_PLANT_NAME" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="LEVEL_PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="SUBMISSION_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EX_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="EX_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="GOV_STATUS" Type="Int32" Nullable="false" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
-          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="LACK2_DOCUMENT" Relationship="EMSModel.FK_LACK2_DOCUMENT_LACK2" FromRole="LACK2" ToRole="LACK2_DOCUMENT" />
-          <NavigationProperty Name="LACK2_ITEM" Relationship="EMSModel.FK_LACK2_ITEM_LACK2" FromRole="LACK2" ToRole="LACK2_ITEM" />
-          <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_LACK2_MONTH" FromRole="LACK2" ToRole="MONTH" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="LACK2" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="LACK2" ToRole="USER" />
-          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="LACK2" ToRole="USER" />
-        </EntityType>
         <EntityType Name="LACK2_DOCUMENT">
           <Key>
             <PropertyRef Name="LACK2_DOCUMENT_ID" />
@@ -4498,78 +4468,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="LACK2_ITEM">
               <PropertyRef Name="CK5_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK2_DOCUMENT_LACK2">
-          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
-          <End Type="EMSModel.LACK2_DOCUMENT" Role="LACK2_DOCUMENT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LACK2">
-              <PropertyRef Name="LACK2_ID" />
-            </Principal>
-            <Dependent Role="LACK2_DOCUMENT">
-              <PropertyRef Name="LACK2_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK2_ITEM_LACK2">
-          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
-          <End Type="EMSModel.LACK2_ITEM" Role="LACK2_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LACK2">
-              <PropertyRef Name="LACK2_ID" />
-            </Principal>
-            <Dependent Role="LACK2_ITEM">
-              <PropertyRef Name="LACK2_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK2_MONTH">
-          <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="1" />
-          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MONTH">
-              <PropertyRef Name="MONTH_ID" />
-            </Principal>
-            <Dependent Role="LACK2">
-              <PropertyRef Name="PERIOD_MONTH" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK2_USER_APPROVED_BY">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="LACK2">
-              <PropertyRef Name="APPROVED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK2_USER_CREATED_BY">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="LACK2">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK2_USER_MODIFIED_BY">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="LACK2">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5829,6 +5727,110 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="LACK2">
+          <Key>
+            <PropertyRef Name="LACK2_ID" />
+          </Key>
+          <Property Name="LACK2_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PERIOD_MONTH" Type="Int32" Nullable="false" />
+          <Property Name="PERIOD_YEAR" Type="Int32" Nullable="false" />
+          <Property Name="LEVEL_PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="LEVEL_PLANT_NAME" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="LEVEL_PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EX_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="EX_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="GOV_STATUS" Type="Int32" Nullable="false" />
+          <Property Name="STATUS" Type="Int32" Nullable="false" />
+          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK2_DOCUMENT" Relationship="EMSModel.FK_LACK2_DOCUMENT_LACK2" FromRole="LACK2" ToRole="LACK2_DOCUMENT" />
+          <NavigationProperty Name="LACK2_ITEM" Relationship="EMSModel.FK_LACK2_ITEM_LACK2" FromRole="LACK2" ToRole="LACK2_ITEM" />
+          <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_LACK2_MONTH" FromRole="LACK2" ToRole="MONTH" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="LACK2" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="LACK2" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="LACK2" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_LACK2_DOCUMENT_LACK2">
+          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
+          <End Type="EMSModel.LACK2_DOCUMENT" Role="LACK2_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK2">
+              <PropertyRef Name="LACK2_ID" />
+            </Principal>
+            <Dependent Role="LACK2_DOCUMENT">
+              <PropertyRef Name="LACK2_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK2_ITEM_LACK2">
+          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
+          <End Type="EMSModel.LACK2_ITEM" Role="LACK2_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK2">
+              <PropertyRef Name="LACK2_ID" />
+            </Principal>
+            <Dependent Role="LACK2_ITEM">
+              <PropertyRef Name="LACK2_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK2_MONTH">
+          <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="1" />
+          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="MONTH_ID" />
+            </Principal>
+            <Dependent Role="LACK2">
+              <PropertyRef Name="PERIOD_MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK2_USER_APPROVED_BY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK2">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK2_USER_CREATED_BY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK2">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK2_USER_MODIFIED_BY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK2">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6372,32 +6374,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LACK2">
-            <EntityTypeMapping TypeName="EMSModel.LACK2">
-              <MappingFragment StoreEntitySet="LACK2">
-                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
-                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
-                <ScalarProperty Name="EX_TYP_DESC" ColumnName="EX_TYP_DESC" />
-                <ScalarProperty Name="EX_GOOD_TYP" ColumnName="EX_GOOD_TYP" />
-                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
-                <ScalarProperty Name="LEVEL_PLANT_CITY" ColumnName="LEVEL_PLANT_CITY" />
-                <ScalarProperty Name="LEVEL_PLANT_NAME" ColumnName="LEVEL_PLANT_NAME" />
-                <ScalarProperty Name="LEVEL_PLANT_ID" ColumnName="LEVEL_PLANT_ID" />
-                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
-                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
-                <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
-                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
-                <ScalarProperty Name="LACK2_ID" ColumnName="LACK2_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LACK2_DOCUMENT">
             <EntityTypeMapping TypeName="EMSModel.LACK2_DOCUMENT">
               <MappingFragment StoreEntitySet="LACK2_DOCUMENT">
@@ -6852,6 +6828,33 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="CK4C_ID" ColumnName="CK4C_ID" />
                 <ScalarProperty Name="CK4C_ITEM1" ColumnName="CK4C_ITEM" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK2">
+            <EntityTypeMapping TypeName="EMSModel.LACK2">
+              <MappingFragment StoreEntitySet="LACK2">
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="EX_TYP_DESC" ColumnName="EX_TYP_DESC" />
+                <ScalarProperty Name="EX_GOOD_TYP" ColumnName="EX_GOOD_TYP" />
+                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+                <ScalarProperty Name="LEVEL_PLANT_CITY" ColumnName="LEVEL_PLANT_CITY" />
+                <ScalarProperty Name="LEVEL_PLANT_NAME" ColumnName="LEVEL_PLANT_NAME" />
+                <ScalarProperty Name="LEVEL_PLANT_ID" ColumnName="LEVEL_PLANT_ID" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
+                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+                <ScalarProperty Name="LACK2_ID" ColumnName="LACK2_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

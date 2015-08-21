@@ -61,7 +61,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PAGE_MAP> PAGE_MAP { get; set; }
         public virtual DbSet<USER> USER { get; set; }
         public virtual DbSet<USER_BROLE> USER_BROLE { get; set; }
-        public virtual DbSet<LACK2> LACK2 { get; set; }
         public virtual DbSet<LACK2_DOCUMENT> LACK2_DOCUMENT { get; set; }
         public virtual DbSet<LACK2_ITEM> LACK2_ITEM { get; set; }
         public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
@@ -92,5 +91,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
         public virtual DbSet<CK4C> CK4C { get; set; }
         public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
+        public virtual DbSet<LACK2> LACK2 { get; set; }
     }
 }

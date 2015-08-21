@@ -35,9 +35,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
-            this.LACK2 = new HashSet<LACK2>();
-            this.LACK21 = new HashSet<LACK2>();
-            this.LACK22 = new HashSet<LACK2>();
             this.PRINT_HISTORY = new HashSet<PRINT_HISTORY>();
             this.POA = new HashSet<POA>();
             this.POA1 = new HashSet<POA>();
@@ -53,6 +50,9 @@ namespace Sampoerna.EMS.BusinessObject
             this.LACK11 = new HashSet<LACK1>();
             this.CK4C = new HashSet<CK4C>();
             this.CK4C1 = new HashSet<CK4C>();
+            this.LACK2 = new HashSet<LACK2>();
+            this.LACK21 = new HashSet<LACK2>();
+            this.LACK22 = new HashSet<LACK2>();
         }
     
         public string USER_ID { get; set; }
@@ -84,9 +84,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
-        public virtual ICollection<LACK2> LACK2 { get; set; }
-        public virtual ICollection<LACK2> LACK21 { get; set; }
-        public virtual ICollection<LACK2> LACK22 { get; set; }
         public virtual ICollection<PRINT_HISTORY> PRINT_HISTORY { get; set; }
         public virtual ICollection<POA> POA { get; set; }
         public virtual ICollection<POA> POA1 { get; set; }
@@ -102,5 +99,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<LACK1> LACK11 { get; set; }
         public virtual ICollection<CK4C> CK4C { get; set; }
         public virtual ICollection<CK4C> CK4C1 { get; set; }
+        public virtual ICollection<LACK2> LACK2 { get; set; }
+        public virtual ICollection<LACK2> LACK21 { get; set; }
+        public virtual ICollection<LACK2> LACK22 { get; set; }
     }
 }
