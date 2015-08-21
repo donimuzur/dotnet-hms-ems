@@ -302,6 +302,13 @@ namespace Sampoerna.EMS.Website.Code
 
         }
 
+        public static SelectList GetActiveSupplierPlantList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var data = plantBll.GetActivePlant();
+            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
+        }
+      
     }
 
 }

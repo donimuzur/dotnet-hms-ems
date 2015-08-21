@@ -1496,5 +1496,12 @@ namespace Sampoerna.EMS.BLL
             return nppbkcList.DistinctBy(c => c.NPPBKC_ID).ToList();
 
         }
+
+        public void UpdateReportedOn(Pbck1UpdateReportedOn input)
+        {
+            PBCK1 dbData = _repository.Get(c => c.PBCK1_ID == input.Id, null, includeTables).FirstOrDefault();
+            dbData.REPORTED_ON = input.ReportedOn;
+            _uow.SaveChanges();
+        }
     }
 }

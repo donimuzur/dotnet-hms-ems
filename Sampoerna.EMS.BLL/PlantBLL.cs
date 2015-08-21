@@ -287,6 +287,13 @@ namespace Sampoerna.EMS.BLL
             }
             return Mapper.Map<List<T001WCompositeDto>>(dbData);
         }
+        
+        public List<Plant> GetActivePlant()
+        {
+            Expression<Func<T001W, bool>> queryFilter =
+                c => c.IS_DELETED != true && c.ZAIDM_EX_NPPBKC.IS_DELETED != true;
+            return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
+        }
 
     }
 }

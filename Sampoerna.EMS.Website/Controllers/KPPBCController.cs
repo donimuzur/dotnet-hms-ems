@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
-using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.KPPBC;
 using Sampoerna.EMS.Website.Models.POAMap;
 using System;
@@ -62,7 +60,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-            model.MengetahuiHTML = model.Kppbc.MENGETAHUI_DETAIL;
+            model.MengetahuiHTML = !string.IsNullOrEmpty(model.Kppbc.MENGETAHUI_DETAIL) ? model.Kppbc.MENGETAHUI_DETAIL.Replace("<br />", Environment.NewLine) : "";
             return View("Edit", model);
         }
 
@@ -76,7 +74,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu
             };
-            model.MengetahuiHTML = model.Kppbc.MENGETAHUI_DETAIL;
+            model.MengetahuiHTML = !string.IsNullOrEmpty(model.Kppbc.MENGETAHUI_DETAIL) ? model.Kppbc.MENGETAHUI_DETAIL.Replace("<br />", Environment.NewLine) : "";
             return View("Detail", model);
         }
 
@@ -90,7 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add insert logic here
                 var existingData = _kppbcbll.GetKppbcById(model.Kppbc.KPPBC_ID);
-                existingData.MENGETAHUI_DETAIL = model.MengetahuiHTML;
+                existingData.MENGETAHUI_DETAIL = !string.IsNullOrEmpty(model.MengetahuiHTML) ? model.MengetahuiHTML.Replace(Environment.NewLine, "<br />") : "";
                 existingData.MODIFIED_BY = CurrentUser.USER_ID;
                 existingData.MODIFIED_DATE = DateTime.Now;
                 _kppbcbll.Save(existingData);
