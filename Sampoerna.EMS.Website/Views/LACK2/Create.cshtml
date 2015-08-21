@@ -8,11 +8,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.Lack2Model.Lack2Id)
-    @Html.HiddenFor(model => model.Lack2Model.CreatedBy)
-    @Html.HiddenFor(model => model.Lack2Model.CreatedDate)
-    @Html.HiddenFor(model => model.Lack2Model.PeriodMonth)
-    @Html.HiddenFor(model => model.Lack2Model.PeriodYear)
+   
 
     <div class="container-wrap title-page">
         <div class="row">
@@ -54,10 +50,10 @@
 
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            @Html.LabelFor(model => model.Lack2Model.Burks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                           Company Code
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.Burks, Model.CompanyCodesDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.Burks, "", new { @class = "text-danger" })
+                                                                @Html.DropDownListFor(model => model.Lack2Model.Burks, Model.CompanyCodesDDL, "Select", new {  @class = "form-control" })
+                             
                                                             </div>
                                                         </div>
                                                     </div>
@@ -78,7 +74,7 @@
                                                             @Html.LabelFor(model => model.Lack2Model.LevelPlantId, htmlAttributes: new { @class = "control-label col-md-2" })
                                                             <div class="col-md-8">
                                                                 @Html.DropDownListFor(model => model.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "Select", new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.Lack2Model.LevelPlantId, "", new { @class = "text-danger" })
+                                                               
                                                             </div>
                                                         </div>
                                                     </div>
