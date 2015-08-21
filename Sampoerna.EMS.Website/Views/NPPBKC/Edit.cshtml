@@ -123,8 +123,8 @@
                                                     <div class="row">
                                                         <label class="col-md-3">Region</label>
                                                         <div class="col-md-9">
-                                                            @Html.TextBoxFor(model => model.Detail.Region, new { @class = "form-control", disabled = "disabled" })
-
+                                                            @Html.TextBox("region_", Model.Detail.Region, new { @class = "form-control", disabled = "disabled" })
+                                                            @Html.HiddenFor(x=>x.Detail.Region)
                                                         </div>
                                                     </div>
                                                 </div>
