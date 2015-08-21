@@ -717,7 +717,7 @@ namespace Sampoerna.EMS.Website
 
             #region Lack1
 
-            Mapper.CreateMap<Lack1Dto, NppbkcData>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Lack1Dto, Lack1NppbkcData>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
                 .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
                 .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
@@ -732,7 +732,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Lack1Input, Lack1GetByParamInput>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<Lack1Dto, PlantData>().IgnoreAllNonExisting()
+            Mapper.CreateMap<Lack1Dto, Lack1PlantData>().IgnoreAllNonExisting()
                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
                .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
                .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
@@ -744,6 +744,14 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
+
+            Mapper.CreateMap<Lack1Dto, Lack1CompletedDocumentData>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
+               .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
+               .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
+               .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+               .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYears + "-" + src.PeriodMonth));
 
            #endregion
 
