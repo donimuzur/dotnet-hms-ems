@@ -94,5 +94,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DEST_COUNTRY_CODE { get; set; }
         public string DEST_COUNTRY_NAME { get; set; }
 
+        public string APPROVED_BY_POA { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
     }
 }
