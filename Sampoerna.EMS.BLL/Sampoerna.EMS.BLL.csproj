@@ -69,7 +69,7 @@
     <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
-    <Compile Include="Pbck1DecreeDocBLL.cs" />
+    <Compile Include="LACK2BLL.cs" />    <Compile Include="Pbck1DecreeDocBLL.cs" />
     <Compile Include="LACK1BLL.cs" />
     <Compile Include="Pbck1ProdConverterBLL.cs" />
     <Compile Include="EmailTemplateBLL.cs" />

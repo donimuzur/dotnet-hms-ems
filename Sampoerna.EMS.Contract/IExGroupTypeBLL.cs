@@ -5,7 +5,7 @@ using Sampoerna.EMS.BusinessObject.Business;
 
 namespace Sampoerna.EMS.Contract
 {
-   public interface IExGroupTypeBLL
+    public interface IExGroupTypeBLL
    {
        
        void Save(EX_GROUP_TYPE GroupTypes);

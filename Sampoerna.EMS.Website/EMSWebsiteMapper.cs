@@ -28,6 +28,7 @@ using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Settings;
 using Sampoerna.EMS.Website.Models.WorkflowSetting;
 using Sampoerna.EMS.Website.Models.EmailTemplate;
+using Sampoerna.EMS.Website.Models.LACK2;
 
 namespace Sampoerna.EMS.Website
 {
@@ -745,6 +746,39 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
 
            #endregion
+
+            #region Lack2
+
+            Mapper.CreateMap<Lack2Dto, LACK2NppbkcData>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
+                .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodTyp + "-" + src.ExTypDesc))
+                .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.LevelPlantName))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.LevelPlantId))
+                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYear + "-" + src.PeriodMonth));
+
+            Mapper.CreateMap<Lack2Dto, LACK2PlantData>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
+               .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodTyp + "-" + src.ExTypDesc))
+               .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.LevelPlantName))
+               .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+               .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYear + "-" + src.PeriodMonth));
+
+            Mapper.CreateMap<LACK2Model, Lack2Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack2Dto, LACK2Model>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<LACK2FilterViewModel, Lack2GetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.Poa))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
+
+            Mapper.CreateMap<Lack2GetByParamInput, LACK2FilterViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbKcId))
+                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.Poa))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
+
+            #endregion
 
             Mapper.CreateMap<PrintHistoryDto, PrintHistoryItemModel>().IgnoreAllNonExisting();
 
