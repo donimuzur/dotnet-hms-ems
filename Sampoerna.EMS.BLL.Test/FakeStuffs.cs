@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.BLL.Test
         {
 
             var fakeDatas = new List<UOM>();
-            fakeDatas.Add(new UOM() { UOM_ID = "kg", UOM_DESC = "kilogram" });
+            fakeDatas.Add(new UOM() { UOM_ID = "kg", UOM_DESC = "kilogram", IS_EMS = true});
 
             return fakeDatas;
         }
@@ -109,7 +109,7 @@ namespace Sampoerna.EMS.BLL.Test
         {
 
             var fakeDatas = new List<ZAIDM_EX_SERIES>();
-            fakeDatas.Add(new ZAIDM_EX_SERIES{ SERIES_CODE = "01", SERIES_VALUE = "223"});
+            fakeDatas.Add(new ZAIDM_EX_SERIES{ SERIES_CODE = "I", SERIES_VALUE = 223});
 
             return fakeDatas;
         }

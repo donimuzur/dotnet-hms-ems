@@ -72,6 +72,12 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK4C.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CK4C_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -92,12 +98,15 @@
     </Compile>
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
+    <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
+    <Compile Include="DTOs\CountryDto.cs" />
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
@@ -145,11 +154,13 @@
     </Compile>
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\CK5MaterialInput.cs" />
+    <Compile Include="Inputs\CK5UploadFileDocumentsInput.cs" />
     <Compile Include="Inputs\EmailTemplateInputs.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
+    <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
@@ -168,7 +179,13 @@
     <Compile Include="LACK1_DOCUMENT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="LACK1_ITEM.cs">
+    <Compile Include="LACK1_INCOME_DETAIL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_PLANT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_PRODUCTION_DETAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="LACK2.cs">
@@ -195,6 +212,7 @@
     <Compile Include="Outputs\AutoCompletePlant.cs" />
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\CK5FileUploadDocumentsOutput.cs" />
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />

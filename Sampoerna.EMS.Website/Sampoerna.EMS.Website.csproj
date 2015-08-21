@@ -236,6 +236,7 @@
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LACK2Controller.cs" />
     <Compile Include="Controllers\UserPlantMapController.cs" />
     <Compile Include="Controllers\LACK1Controller.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
@@ -299,6 +301,15 @@
     <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
     <Compile Include="Models\LACK1\NppbkcData.cs" />
     <Compile Include="Models\LACK1\PlantData.cs" />
+    <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2Input.cs" />
+    <Compile Include="Models\LACK2\LACK2Model.cs" />
+    <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
+    <Compile Include="Models\LACK2\LACK2PlantData.cs" />
+    <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -347,30 +358,35 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5Materials.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\CK5\CK5MaterialsExtend.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5MaterialsExtend.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\CK5\CK5PrintOut.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOut.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\CK5\CK5PrintOutFooter.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -396,12 +412,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck1RealisasiP3BKC.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PBCK1\Pbck1RencanaProduksi.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
@@ -892,7 +910,6 @@
     <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
     <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
     <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
     <Content Include="Views\LACK1\_Lack1Table.cshtml" />
@@ -905,18 +922,6 @@
     <Content Include="Views\UserAuthorization\Detail.cshtml" />
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReportExport.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportToggleIntercompany.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportToggleExport.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportModalExport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReportIntercompany.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportModalIntercompany.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportToggleImport.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReportImport.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportModalImport.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportToggleManual.cshtml" />
-    <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
-    <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
     <Content Include="Views\UserAuthorization\Edit.cshtml" />
     <Content Include="Views\POAMap\Create.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
@@ -925,6 +930,8 @@
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+    <Content Include="Views\CK5\CK5UploadFileDocument.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadFileDocumentsList.cshtml" />
     <Content Include="Views\POAMap\Edit.cshtml" />
     <Content Include="Views\KPPBC\Index.cshtml" />
     <Content Include="Views\KPPBC\Edit.cshtml" />
@@ -933,6 +940,14 @@
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
+    <Content Include="Views\LACK2\Create.cshtml" />
+    <Content Include="Views\LACK2\CreateDocument.cshtml" />
+    <Content Include="Views\LACK2\Index.cshtml" />
+    <Content Include="Views\LACK2\ListByPlant.cshtml" />
+    <Content Include="Views\LACK2\ListCompletedDoc.cshtml" />
+    <Content Include="Views\LACK2\_Lack2CompletedDoc.cshtml" />
+    <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
+    <Content Include="Views\LACK2\_Lack2Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -978,6 +993,10 @@
       <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
       <Name>Sampoerna.EMS.Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.XMLReader\Sampoerna.EMS.XMLReader.csproj">
+      <Project>{5370f240-5512-461a-9956-351009512c94}</Project>
+      <Name>Sampoerna.EMS.XMLReader</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Reports\EmployeeData.rdlc">
@@ -990,26 +1009,31 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\CK5\CK5Materials.rpt">
+    <Content Include="Reports\CK5\CK5Materials.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5Materials.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\CK5\CK5MaterialsExtend.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5MaterialsExtend.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5MaterialsExtend.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\CK5\CK5PrintOut.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOut.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\CK5\CK5PrintOutFooter.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOutFooter.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\CK5\CK5PrintOutMaterial.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOutMaterial.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>

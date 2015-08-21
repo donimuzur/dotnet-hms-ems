@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
+                        _xmlMapper.Errors.Add(ex.Message);
                         continue;
                     }
 
@@ -66,6 +67,11 @@ namespace Sampoerna.EMS.XMLReader
         public string InsertToDatabase()
         {
            return _xmlMapper.InsertToDatabase<UOM>(Items);
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public UOM GetUoM(string uomId)

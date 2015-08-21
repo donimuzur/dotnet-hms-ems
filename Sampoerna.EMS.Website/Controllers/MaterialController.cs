@@ -9,6 +9,7 @@ using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -139,7 +140,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var plantIds = data.PlantId;
                     foreach (var plant in plantIds)
                     {
-                        var model = Mapper.Map<ZAIDM_EX_MATERIAL>(data);
+                        var model = Mapper.Map<MaterialDto>(data);
                   
 
                         model.WERKS = plant;
@@ -244,8 +245,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                var data = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
-                    
+                var data = AutoMapper.Mapper.Map<MaterialDto>(model);
+
                 var output = _materialBll.Save(data, CurrentUser.USER_ID);
                 if (!output.Success)
                 {

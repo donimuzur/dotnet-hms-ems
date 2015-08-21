@@ -13,7 +13,7 @@
             // Setup - add a text input to each footer cell
             $('#uomtable .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 3) {
+                if (idx != 0 && idx != 4) {
                     $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
                 }
             });
@@ -81,6 +81,7 @@
                             <th class="toggle-row">Filter</th>
                             <th>UoM Code</th>
                             <th>UoM Description</th>
+                            <th>Used In EMS</th>
 
                         </tr>
 
@@ -88,6 +89,7 @@
                     <thead class="filters">
                         <tr>
                             <th>Action</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             
@@ -106,6 +108,7 @@
                                 </td>
                                 <td class="last">@Html.DisplayFor(model => item.UomId)</td>
                                 <td>@Html.DisplayFor(model => item.UomName)</td>
+                                <td>@Html.DisplayFor(model => item.IsEmsString)</td>
                                 
                             </tr>
                         }

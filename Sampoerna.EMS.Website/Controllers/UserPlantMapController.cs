@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             _changeHistoryBll = changeHistorybll;
-            _mainMenu = Enums.MenuList.MasterData;
+            _mainMenu = Enums.MenuList.Settings;
             _userPlantMapBll = userPlantMapBll;
             _plantBll = plantBll;
 

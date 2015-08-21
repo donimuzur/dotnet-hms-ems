@@ -131,5 +131,10 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.Get(queryFilter, null, includeTables);
             return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(dbData.ToList());
         }
+
+        public ZAIDM_EX_NPPBKCDto GetDetailsByCityName(string cityName)
+        {
+            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.CITY == cityName, null, ", T001W, T0011, ZAIDM_EX_KPPBC").FirstOrDefault());
+        }
     }
 }

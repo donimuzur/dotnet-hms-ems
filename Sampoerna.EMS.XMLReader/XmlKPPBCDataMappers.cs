@@ -56,6 +56,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
+                        _xmlMapper.Errors.Add(ex.Message);
                         continue;
                         
                     }
@@ -70,6 +71,11 @@ namespace Sampoerna.EMS.XMLReader
         public string InsertToDatabase()
         {
             return _xmlMapper.InsertToDatabase<ZAIDM_EX_KPPBC>(Items);
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public ZAIDM_EX_KPPBC GetKPPBC(string KppbcId)

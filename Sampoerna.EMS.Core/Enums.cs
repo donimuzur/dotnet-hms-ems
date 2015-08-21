@@ -48,13 +48,21 @@ namespace Sampoerna.EMS.Core
 
         public enum CK5Type
         {
+            [Description("Domestic")]
             Domestic = 0,
+            [Description("Intercompany")]
             Intercompany = 1,
+            [Description("Import")]
             PortToImporter = 2,
+            [Description("Import")]
             ImporterToPlant = 3,
+           [Description("Export")]
             Export = 4,
+            [Description("Manual")]
             Manual = 5,
+            [Description("Domestic Alcohol")]
             DomesticAlcohol = 6,
+            [Description("Completed")]
             Completed = 7
         }
 
@@ -194,8 +202,10 @@ namespace Sampoerna.EMS.Core
         {
             [Description("Pembayaran")]
             Pembayaran = 1,
-            [Description("Pita Cukai")]
-            PitaCukai = 2
+            [Description("Pelekatan Pita Cukai")]
+            PitaCukai = 2,
+            [Description("Pembubuhan Tanda LunasLainnya")]
+            PembubuhanTandaLunasLainnya = 3
         }
 
         public enum ExciseStatus
@@ -259,7 +269,7 @@ namespace Sampoerna.EMS.Core
         {
             ListByNppbkc = 1,
             ListByPlant = 2,
-            ComplatedDocument =3
+            ComplatedDocument = 3
         }
         public enum CK5TransType
         {
@@ -281,6 +291,14 @@ namespace Sampoerna.EMS.Core
             HasilTembakau = 3,
             [Description("Lainnya")]
             Lainnya = 4
+        }
+
+        public enum Lack1Level
+        {
+            [Description("NPPBKC")]
+            Nppbkc = 1,
+            [Description("Plant")]
+            Plant = 2
         }
     }
 }

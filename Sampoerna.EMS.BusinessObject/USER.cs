@@ -24,8 +24,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK5_FILE_UPLOAD = new HashSet<CK5_FILE_UPLOAD>();
             this.HEADER_FOOTER = new HashSet<HEADER_FOOTER>();
             this.HEADER_FOOTER1 = new HashSet<HEADER_FOOTER>();
-            this.LACK1 = new HashSet<LACK1>();
-            this.LACK11 = new HashSet<LACK1>();
             this.PBCK1 = new HashSet<PBCK1>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK12 = new HashSet<PBCK1>();
@@ -37,9 +35,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.WORKFLOW_STATE_USERS = new HashSet<WORKFLOW_STATE_USERS>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
-            this.LACK2 = new HashSet<LACK2>();
-            this.LACK21 = new HashSet<LACK2>();
-            this.LACK22 = new HashSet<LACK2>();
             this.PRINT_HISTORY = new HashSet<PRINT_HISTORY>();
             this.POA = new HashSet<POA>();
             this.POA1 = new HashSet<POA>();
@@ -47,11 +42,17 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA3 = new HashSet<POA>();
             this.POA_MAP = new HashSet<POA_MAP>();
             this.POA_MAP1 = new HashSet<POA_MAP>();
-            this.UOM = new HashSet<UOM>();
             this.USER_PLANT_MAP = new HashSet<USER_PLANT_MAP>();
             this.PBCK3_PBCK7 = new HashSet<PBCK3_PBCK7>();
             this.PBCK3_PBCK71 = new HashSet<PBCK3_PBCK7>();
             this.PBCK3_PBCK72 = new HashSet<PBCK3_PBCK7>();
+            this.LACK1 = new HashSet<LACK1>();
+            this.LACK11 = new HashSet<LACK1>();
+            this.CK4C = new HashSet<CK4C>();
+            this.CK4C1 = new HashSet<CK4C>();
+            this.LACK2 = new HashSet<LACK2>();
+            this.LACK21 = new HashSet<LACK2>();
+            this.LACK22 = new HashSet<LACK2>();
         }
     
         public string USER_ID { get; set; }
@@ -72,8 +73,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER1 { get; set; }
-        public virtual ICollection<LACK1> LACK1 { get; set; }
-        public virtual ICollection<LACK1> LACK11 { get; set; }
         public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<PBCK1> PBCK12 { get; set; }
@@ -85,9 +84,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<WORKFLOW_STATE_USERS> WORKFLOW_STATE_USERS { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
-        public virtual ICollection<LACK2> LACK2 { get; set; }
-        public virtual ICollection<LACK2> LACK21 { get; set; }
-        public virtual ICollection<LACK2> LACK22 { get; set; }
         public virtual ICollection<PRINT_HISTORY> PRINT_HISTORY { get; set; }
         public virtual ICollection<POA> POA { get; set; }
         public virtual ICollection<POA> POA1 { get; set; }
@@ -95,10 +91,16 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<POA> POA3 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP1 { get; set; }
-        public virtual ICollection<UOM> UOM { get; set; }
         public virtual ICollection<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK71 { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK72 { get; set; }
+        public virtual ICollection<LACK1> LACK1 { get; set; }
+        public virtual ICollection<LACK1> LACK11 { get; set; }
+        public virtual ICollection<CK4C> CK4C { get; set; }
+        public virtual ICollection<CK4C> CK4C1 { get; set; }
+        public virtual ICollection<LACK2> LACK2 { get; set; }
+        public virtual ICollection<LACK2> LACK21 { get; set; }
+        public virtual ICollection<LACK2> LACK22 { get; set; }
     }
 }

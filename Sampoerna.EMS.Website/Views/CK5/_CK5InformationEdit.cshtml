@@ -31,7 +31,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">KPPBC City</label>
+                                        <label class="col-md-4">KPPBC City<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })
                                         </div>
@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">CE Office Code</label>
+                                        <label class="col-md-4">@Html.LabelFor(model => model.CeOfficeCode)</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.CeOfficeCode, new { @disabled = false, @class = "form-control" })
                                         </div>
@@ -66,7 +66,7 @@
 
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Excise Goods Type</label>
+                                        <label class="col-md-4">Excise Goods Type<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
                                         </div>
@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Excise Settlement</label>
+                                        <label class="col-md-4">Excise Settlement<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.EnumDropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
 
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Excise Status</label>
+                                        <label class="col-md-4">Excise Status<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.EnumDropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
                                         </div>
@@ -91,7 +91,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Request Type</label>
+                                        <label class="col-md-4">Request Type<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.EnumDropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
                                         </div>
@@ -124,10 +124,10 @@
 
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Plant</label>
+                                        <label class="col-md-4">Plant<span class="red">*</span></label>
                                         <div class="col-md-8">
 
-                                            @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control"})
+                                            @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
 
                                         </div>
                                     </div>
@@ -203,27 +203,27 @@
                         <div class="form-excise" role="form">
                             <div class="row">
                                 @if (Model.IsCk5Export)
-                                        {
+                                {
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <label class="col-md-4">Destination Country</label>
+                                            <label class="col-md-4">Destination Country<span class="red">*</span></label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.CountryCode, Model.CountryCodeList, "Select", new {@class = "form-control"})
+                                                @Html.DropDownListFor(model => model.CountryCode, Model.CountryCodeList, "Select", new { @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
-                                        }
-                                        else
-                                        {
+                                }
+                                else
+                                {
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <label class="col-md-4">Plant</label>
+                                            <label class="col-md-4">Plant<span class="red">*</span></label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.DestPlantId, Model.DestPlantList, "Select", new {@class = "form-control"})
+                                                @Html.DropDownListFor(model => model.DestPlantId, Model.DestPlantList, "Select", new { @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
-                                        }
+                                }
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">NPWP</label>
@@ -332,89 +332,88 @@
 
                                 </div>
                             }
-                                @* end  ck5type = Export *@
-                            </div>
+                            @* end  ck5type = Export *@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <div class="panel-group" id="accordion-6" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="heading6">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion-6" href="#collapse6" aria-expanded="true" aria-controls="collapse6">
-                                Notification Data
-                                <i class="fa fa-caret-down"></i>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapse6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading6">
-                        <div class="panel-body">
-                            <div class="form-excise" role="form">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Invoice Number</label>
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.InvoiceNumber, new { @class = "form-control", @maxlength = "50" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Invoice Date</label>
-                                            <div class="col-md-8">
-                                                <div class="input-group date">
-                                                    @Html.TextBoxFor(model => model.InvoiceDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+        </div>
 
-                                    @if (!Model.IsCk5Export)
+        <div class="panel-group" id="accordion-6" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading6">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-6" href="#collapse6" aria-expanded="true" aria-controls="collapse6">
+                            Notification Data
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading6">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Invoice Number</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.InvoiceNumber, new { @class = "form-control", @maxlength = "50" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Invoice Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.InvoiceDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (!Model.IsCk5Export)
                                 {
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-4 long">PBCK-1 Decree  Number</label>
-                                                <div class="col-md-8">
-                                                    @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control selectpicker" })
-                                                </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4 long">PBCK-1 Decree  Number</label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control selectpicker" })
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-4">PBCK-1 Decree Date</label>
-                                                <div class="col-md-8">
-                                                    @Html.HiddenFor(model => model.PbckDecreeDate)
-                                                    @Html.EditorFor(model => model.PbckDecreeDate)
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">PBCK-1 Decree Date</label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.PbckDecreeDate)
+                                                @Html.EditorFor(model => model.PbckDecreeDate)
 
-                                                </div>
                                             </div>
                                         </div>
+                                    </div>
                                 }
 
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Carriage Method</label>
-                                            <div class="col-md-8">
-                                                @Html.EnumDropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
-                                            </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Carriage Method</label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Grand Total Exciseable</label>
-                                            <div class="col-md-4">
-                                                @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control" })
-                                            </div>
-                                            <div class="col-md-4">
-                                                @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control" })
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Grand Total Exciseable</label>
+                                        <div class="col-md-4">
+                                            @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -422,217 +421,217 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <div class="panel-group" id="accordion-5" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="heading5">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion-5" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
-                                Upload
-                                <i class="fa fa-caret-down"></i>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
-                        <div class="panel-body">
+        </div>
 
-                            <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" disabled />
+        <div class="panel-group" id="accordion-5" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading5">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-5" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                            Upload
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+                    <div class="panel-body">
 
-                            <div class="table-container" id="ck5EditMaterialTable">
-                                <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Brand</th>
-                                            <th>QTY</th>
-                                            <th>UOM</th>
-                                            <th>Convertion</th>
-                                            <th>Converted QTY</th>
-                                            <th>Converted UOM</th>
-                                            <th>HJE</th>
-                                            <th>Tariff</th>
-                                            <th>Excise Value</th>
-                                            <th>USD Value</th>
-                                            <th>Note</th>
-                                            <th>Message</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" disabled />
 
-                                        @for (int i = 0; i < Model.UploadItemModels.Count(); i++)
+                        <div class="table-container" id="ck5EditMaterialTable">
+                            <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>QTY</th>
+                                        <th>UOM</th>
+                                        <th>Convertion</th>
+                                        <th>Converted QTY</th>
+                                        <th>Converted UOM</th>
+                                        <th>HJE</th>
+                                        <th>Tariff</th>
+                                        <th>Excise Value</th>
+                                        <th>USD Value</th>
+                                        <th>Note</th>
+                                        <th>Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @for (int i = 0; i < Model.UploadItemModels.Count(); i++)
                                     {
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Brand)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Qty)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Uom)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Convertion)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].ConvertedQty)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].ConvertedUom)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Hje)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Tariff)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].ExciseValue)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
-                                            @Html.HiddenFor(model => model.UploadItemModels[i].Note)
-                                            <tr>
-                                                @*<td style="display: none"></td>*@
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Qty)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Uom)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Convertion)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedQty)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedUom)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Hje)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Tariff)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
-                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
-                                                <td style="display: none">@Html.DisplayFor(model => model.UploadItemModels[i].Total)</td>
-                                            </tr>
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Brand)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Qty)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Uom)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Convertion)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].ConvertedQty)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].ConvertedUom)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Hje)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Tariff)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].ExciseValue)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].Note)
+                                        <tr>
+                                            @*<td style="display: none"></td>*@
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Qty)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Uom)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Convertion)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedQty)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedUom)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Hje)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Tariff)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
+                                            <td style="display: none">@Html.DisplayFor(model => model.UploadItemModels[i].Total)</td>
+                                        </tr>
                                     }
 
 
-                                    </tbody>
-                                </table>
-                            </div>
-
-
+                                </tbody>
+                            </table>
                         </div>
+
+
                     </div>
                 </div>
-
             </div>
 
-            <div class="panel-group" id="accordion-4" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingFour">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion-4" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                                Additional Information
-                                <i class="fa fa-caret-down"></i>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                        <div class="panel-body">
-                            <div class="form-excise" role="form">
-                                <div class="row">
+        </div>
 
-                                    @if (!Model.IsCk5Manual)
+        <div class="panel-group" id="accordion-4" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-4" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            Additional Information
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+
+                                @if (!Model.IsCk5Manual)
                                 {
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.DnNumber, new { @class = "col-md-4" })
-                                                <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.DnNumber, new { @class = "form-control", @disabled = "true" })
-                                                </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.DnNumber, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DnNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.StoSenderNumber, new { @class = "col-md-4" })
-                                                <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.StoSenderNumber, new { @class = "form-control", @disabled = "true" })
-                                                </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.StoSenderNumber, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.StoSenderNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
-                                                <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.DnDate, new { @class = "form-control", @disabled = "true" })
-                                                </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DnDate, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.StoReceiverNumber, new { @class = "col-md-4" })
-                                                <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.StoReceiverNumber, new { @class = "form-control", @disabled = "true" })
-                                                </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.StoReceiverNumber, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.StoReceiverNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-md-offset-6">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.StobNumber, new { @class = "col-md-4" })
-                                                <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.StobNumber, new { @class = "form-control", @disabled = "true" })
-                                                </div>
+                                    </div>
+                                    <div class="col-md-6 col-md-offset-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.StobNumber, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.StobNumber, new { @class = "form-control", @disabled = "true" })
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div class="col-md-6">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.GiDate, new { @class = "form-control", @disabled = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
                                             <div class="row">
-                                                @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
+                                                <label class="col-md-4">GR Date</label>
                                                 <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.GiDate, new { @class = "form-control", @disabled = "true" })
+                                                    <input type="text" class="form-control" disabled>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="row">
-                                                    <label class="col-md-4">GR Date</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    </div>
 
                                 }
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.SealingNotifNumber, new { @class = "form-control", @disabled = "true" })
-                                            </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SealingNotifNumber, new { @class = "form-control", @disabled = "true" })
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.LabelFor(model => model.UnSealingNotifNumber, new { @class = "col-md-4" })
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.UnSealingNotifNumber, new { @class = "form-control", @disabled = "true" })
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.LabelFor(model => model.UnSealingNotifNumber, new { @class = "col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.UnSealingNotifNumber, new { @class = "form-control", @disabled = "true" })
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.LabelFor(model => model.SealingNotifDate, new { @class = "col-md-4" })
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.SealingNotifDate, new { @class = "form-control", @disabled = "true" })
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.LabelFor(model => model.SealingNotifDate, new { @class = "col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SealingNotifDate, new { @class = "form-control", @disabled = "true" })
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.LabelFor(model => model.UnsealingNotifDate, new { @class = "col-md-4" })
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.UnsealingNotifDate, new { @class = "form-control", @disabled = "true" })
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.LabelFor(model => model.UnsealingNotifDate, new { @class = "col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.UnsealingNotifDate, new { @class = "form-control", @disabled = "true" })
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Attachment</label>
-                                            <div class="col-md-8">
-                                                <input type="text" class="form-control" disabled>
-                                                @*<div class="input-group">
-                                                        <input type="text" class="form-control">
-                                                        <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                            Browse <input type="file" multiple>
-                                                        </span>
-                                                    </div>*@
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Attachment</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" disabled>
+                                            @*<div class="input-group">
+                                                    <input type="text" class="form-control">
+                                                    <span class=" input-group-addon file-input btn btn-primary btn-file">
+                                                        Browse <input type="file" multiple>
+                                                    </span>
+                                                </div>*@
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Requisitioner</label>
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.CreatedUser, new { @disabled = false, @class = "form-control" })
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Requisitioner</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.CreatedUser, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -640,31 +639,37 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="heading7">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
-                                Workflow History
-                                <i class="fa fa-caret-down"></i>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
-                        <div class="panel-body">
-                            <div class="table-container">
+        </div>
 
-                                @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                    <div class="panel-body">
+                        <div class="table-container">
 
-                            </div>
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
 
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
         </div>
     </div>
+</div>

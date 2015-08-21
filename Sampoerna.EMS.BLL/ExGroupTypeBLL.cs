@@ -68,18 +68,36 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(p => p.EX_GROUP_TYPE_ID == id, null, includeTables).FirstOrDefault();
         }
 
-        public List<EX_GROUP_TYPE> GetGroupTypesByName(string name)
+        public List<ExGoodTyp> GetGroupTypesByName(string name)
         {
-            return _repository.Get(g => g.GROUP_NAME == name, null, includeTables).ToList();
+            var data = _repository.Get(g => g.GROUP_NAME == name, null, includeTables).ToList();
+            return Mapper.Map<List<ExGoodTyp>>(data);
         }
 
-        public List<EX_GROUP_TYPE> GetAll(bool includedeletedchild = true)
+        public List<ExGoodTyp> GetAll()
         {
-            //var exgoodtyplist = _repositoryGoodType.Get(X => X.IS_DELETED == false).Select(X => X.EXC_GOOD_TYP).ToList();
-            //if (includedeletedchild != null && !includedeletedchild) { 
-            //    _repository.Get().Join(ZA)
-            //}
-            return _repository.Get(null, null, includeTables).OrderBy(x => x.GROUP_NAME).ToList();
+            List<ExGoodTyp> dataList = new List<ExGoodTyp>();
+            
+            var deletedexgoodtyplist = _repositoryGoodType.Get(x => x.IS_DELETED == true).Select(x=> x.EXC_GOOD_TYP).ToList();
+            var inactiveGroup = _repositoryDetail.Get().Where(x => deletedexgoodtyplist.Contains(x.GOODTYPE_ID)).Select(x => x.EX_GROUP_TYPE_ID).ToList();
+
+            var tempdata = Mapper.Map<List<ExGoodTyp>>(_repository.Get(null, null, includeTables).OrderBy(x => x.GROUP_NAME).ToList());
+            foreach (var obj in tempdata) {
+                var _data = Mapper.Map<ExGoodTyp>(obj);
+                if (inactiveGroup.Contains(obj.EX_GROUP_TYPE_ID))
+                {
+                    _data.Inactive = true;
+                }
+                else {
+                    _data.Inactive = false;
+                }
+                dataList.Add(_data);
+            }
+           
+            
+                
+           
+            return dataList;
         }
 
         public List<string> GetGoodTypeByGroup(int groupid)

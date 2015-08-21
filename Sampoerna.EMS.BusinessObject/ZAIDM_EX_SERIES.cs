@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public string SERIES_CODE { get; set; }
-        public string SERIES_VALUE { get; set; }
+        public Nullable<decimal> SERIES_VALUE { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string CREATED_BY { get; set; }

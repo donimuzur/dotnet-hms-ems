@@ -23,7 +23,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
         {
             _container = container;
             _svc = new Service();
-            
+
 
         }
 
@@ -37,15 +37,16 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
                     result += "<p>" + error + ", valid format datetime is yyyy-MM-dd</p>";
                     continue;
-                    
+
                 }
-                result += "<p>"+error+"</p>";
+                result += String.Format("<p>[{0}] {1}</p>", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), error);
             }
             return result;
         }
 
         public void Execute(IJobExecutionContext context)
         {
+
             using (_container.BeginLifetimeScope())
             {
 
@@ -55,15 +56,15 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 var errorList = new List<string>();
                 try
                 {
-                     
+
                     logger.Info("Reading XML start on " + DateTime.Now);
                     errorList.AddRange(_svc.Run());
                     logger.Info("Reading XML ended On " + DateTime.Now);
-                    
+
                 }
                 catch (Exception ex)
                 {
-                    
+
                     logger.Error("Reading XML crashed", ex);
                 }
                 if (errorList.Count > 0)
@@ -81,13 +82,18 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 else
                 {
                     var body = string.Empty;
-                    foreach (var file in _svc.filesMoved)
+                    if (_svc.filesMoved.Count > 0)
                     {
-                        string info = "<p>file move to archieve : " + file +"</p>";
-                        body += info;
-                        logger.Info(info);
+                        foreach (var file in _svc.filesMoved)
+                        {
+                            string info = "<p>file move to archieve : " + file + "</p>";
+                            body += info;
+                            logger.Info(info);
+                        }
+                        logger.Error(EmailUtility.Email(body, null));
                     }
-                    logger.Error(EmailUtility.Email(body, null));
+
+
                 }
 
             }

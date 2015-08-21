@@ -1,0 +1,9 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2PreviewModel
+
+
+<textarea>@Html.Raw(Model.RawHTMLContent)</textarea>
+
+@section Scripts {
+    <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+    <script>tinymce.init({ selector: 'textarea' });</script>
+}

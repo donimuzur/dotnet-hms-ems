@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class ZAIDM_EX_BRAND
     {
+        public ZAIDM_EX_BRAND()
+        {
+            this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
+        }
+    
         public string WERKS { get; set; }
         public string FA_CODE { get; set; }
         public string STICKER_CODE { get; set; }
@@ -47,9 +52,10 @@ namespace Sampoerna.EMS.BusinessObject
         public string PER_CODE_DESC { get; set; }
     
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
-        public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual T001W T001W { get; set; }
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
+        public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
+        public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
     }
 }
