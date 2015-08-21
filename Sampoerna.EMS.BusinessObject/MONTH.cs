@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK11 = new HashSet<PBCK1>();
             this.LACK2 = new HashSet<LACK2>();
             this.LACK1 = new HashSet<LACK1>();
+            this.CK4C = new HashSet<CK4C>();
         }
     
         public int MONTH_ID { get; set; }
@@ -34,5 +35,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual ICollection<LACK2> LACK2 { get; set; }
         public virtual ICollection<LACK1> LACK1 { get; set; }
+        public virtual ICollection<CK4C> CK4C { get; set; }
     }
 }

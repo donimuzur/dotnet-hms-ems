@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK3_PBCK72 = new HashSet<PBCK3_PBCK7>();
             this.LACK1 = new HashSet<LACK1>();
             this.LACK11 = new HashSet<LACK1>();
+            this.CK4C = new HashSet<CK4C>();
+            this.CK4C1 = new HashSet<CK4C>();
         }
     
         public string USER_ID { get; set; }
@@ -98,5 +100,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK72 { get; set; }
         public virtual ICollection<LACK1> LACK1 { get; set; }
         public virtual ICollection<LACK1> LACK11 { get; set; }
+        public virtual ICollection<CK4C> CK4C { get; set; }
+        public virtual ICollection<CK4C> CK4C1 { get; set; }
     }
 }
