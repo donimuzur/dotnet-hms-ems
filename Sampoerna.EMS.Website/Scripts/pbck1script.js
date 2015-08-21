@@ -154,6 +154,7 @@ function prodPlanSaveClick() {
     }
     $("input[name='Detail.RequestQty']").val(total);
     $("select[name='Detail.RequestQtyUomId']").val(uom);
+    $("select[name='Detail.LatestSaldoUomId']").val(uom);
     $('#prod-plan-upload-tab').removeClass('active');
     $('#home-tab').addClass('active');
     $('#home').addClass('active');

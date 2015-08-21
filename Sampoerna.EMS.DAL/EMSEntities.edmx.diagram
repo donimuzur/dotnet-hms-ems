@@ -36,7 +36,7 @@
         <AssociationConnector Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_DECREE_DOC" Width="1.5" PointX="21.75" PointY="31.625" />
         <EntityTypeShape EntityType="EMSModel.POA_SK" Width="1.5" PointX="7.5" PointY="31.5" />
-        <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="18.5" PointY="30.75" />
+        <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="18.75" PointY="20.875" />
         <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="1.5" PointX="10.5" PointY="21.125" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
