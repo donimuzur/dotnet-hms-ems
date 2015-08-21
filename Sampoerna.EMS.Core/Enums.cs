@@ -302,7 +302,10 @@ namespace Sampoerna.EMS.Core
         }
         public enum Pbck7Type
         {
-            Pbck7List =1
+            [Description("PBCK7")]
+            Pbck7List =1,
+            [Description("PBCK3")]
+            Pbck3List  =2
         }
     }
 }

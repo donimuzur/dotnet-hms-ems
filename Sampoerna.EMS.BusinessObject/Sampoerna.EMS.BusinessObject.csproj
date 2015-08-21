@@ -119,6 +119,7 @@
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
     <Compile Include="DTOs\T001KDto.cs" />
+    <Compile Include="DTOs\T001WCompositeDto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
@@ -156,7 +157,8 @@
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
-    <Compile Include="Inputs\Lack2GetByParamInput.cs" />    <Compile Include="Inputs\MaterialInput.cs" />
+    <Compile Include="Inputs\Lack2GetByParamInput.cs" />
+    <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />

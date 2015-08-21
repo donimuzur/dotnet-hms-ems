@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcBll = nppbkcBll;
         }
 
-        #region Index
+        #region Index PBCK7
         //
         // GET: /PBCK7/
         public ActionResult Index()
@@ -74,13 +74,33 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck7TableIndex",viewModel);
         }
 
-        [HttpPost]
-        public JsonResult PoaAndPlantListPartial(string nppbkcId)
+
+
+        #region PBCK3
+        public ActionResult ListPbck3Index()
         {
-            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
-            var model = new Pbck7IndexViewModel() { PoaList = listPoa, PlantList = listPlant };
-            return Json(model);
+            var data = InitPbck7ViewModel(new Pbck7IndexViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Pbck7Type = Enums.Pbck7Type.Pbck7List,
+
+                Detail = Mapper.Map<List<DataListIndexPbck7>>(_pbck7Bll.GetAllByParam(new Pbck7Input()))
+            });
+
+            return View("Index", data);
         }
+        #endregion  
+
+
+
+        //[HttpPost]
+        //public JsonResult PoaAndPlantListPartial(string nppbkcId)
+        //{
+        //    var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
+        //    var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
+        //    var model = new Pbck7IndexViewModel() { PoaList = listPoa, PlantList = listPlant };
+        //    return Json(model);
+        //}
     }
 }
