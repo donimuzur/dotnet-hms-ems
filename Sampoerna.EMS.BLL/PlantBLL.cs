@@ -130,7 +130,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
             changesData.Add("IS_MAIN_PLANT", origin.IS_MAIN_PLANT == data.IS_MAIN_PLANT);
             changesData.Add("PHONE", origin.PHONE == data.PHONE);
-            
+
             var originMaterialDesc = string.Empty;
             if (originReceive != null)
             {
@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.BLL
                         originMaterialDesc += ", ";
                     }
                 }
-               
+
             }
             var editMaterialDesc = string.Empty;
             if (data.PLANT_RECEIVE_MATERIAL != null)
@@ -247,24 +247,30 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-        }
+            }
             return Mapper.Map<List<Plant>>(dbData);
-
-
-
         }
-
-
         
-          public T001WDto GetT001ById(string id)
-          {
-              return Mapper.Map<T001WDto>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
-          }
-
-
+        public T001WDto GetT001ById(string id)
+        {
+            return Mapper.Map<T001WDto>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
+        }
+        
         List<T001W> IPlantBLL.Get(string nppbkcId)
         {
             return _repository.Get(c => c.NPPBKC_ID == nppbkcId).ToList();
         }
+
+        public T001WDto GetMainPlantByNppbkcId(string nppbkcId)
+        {
+            includeTables = "T001K, T001K.T001";
+            Expression<Func<T001W, bool>> queryFilter =
+                c => c.NPPBKC_ID == nppbkcId && c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value;
+            var dbData = _repository.Get(queryFilter, null, includeTables).FirstOrDefault();
+            return Mapper.Map<T001WDto>(dbData);
+
+
+        }
+
     }
 }

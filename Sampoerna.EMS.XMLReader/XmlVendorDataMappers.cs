@@ -44,6 +44,8 @@ namespace Sampoerna.EMS.XMLReader
                         var exsitingVendor = GetExVendor(vendorCodeXml);
                         item.LIFNR = vendorCodeXml;
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
                         item.CREATED_BY = Constans.PICreator;
 
                         if (exsitingVendor != null)
@@ -63,6 +65,7 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
+                        _xmlMapper.Errors.Add(ex.Message);
                         continue;
                     }
 
@@ -77,6 +80,11 @@ namespace Sampoerna.EMS.XMLReader
         {
             return  _xmlMapper.InsertToDatabase<LFA1>(Items);
        
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public LFA1 GetExVendor(string vendorCode)

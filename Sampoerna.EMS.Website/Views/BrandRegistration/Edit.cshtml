@@ -420,7 +420,11 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Cut Filler Code</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.CutFilterCode, new { @class = "form-control", @maxlength = "25" })
+                                                            @*<select class="form-control" id="CutFillerCode" name="CutFillerCode">
+                                                                <option value="">select</option>
+                                                            </select>*@
+                                                            @Html.DropDownListFor(model => model.CutFillerCode, Model.CutFillerCodeList, "Select", new { @class = "form-control" })
+                                                            @*@Html.TextBoxFor(model => model.CutFillerCode, new { @class = "form-control", @maxlength = "25" })*@
                                                         </div>
                                                     </div>
                                                 </div>

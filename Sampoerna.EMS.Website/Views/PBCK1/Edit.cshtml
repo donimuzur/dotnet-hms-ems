@@ -1,6 +1,7 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit PBCK-1";
 }
 
 @using (Html.BeginForm("Edit", "PBCK1"))
@@ -12,7 +13,7 @@
                 <label class="status">@Model.Detail.StatusName</label>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
@@ -78,7 +79,11 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
-            
+
+            $("#Detail_SupplierPortId").change(function () {
+                supplierPortOnChange();
+            });
+
             $('#btn-changelog-export-xls').click(function () {
                 href.location = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
             });
@@ -112,26 +117,32 @@
                 pbck1TypeOnchange();
             });
 
-            //load nppbkc detail
-            nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
-
             ajaxLoadSupplierPlant('@Url.Action("GetSupplierPlant", "PBCK1")');
 
             pbck1TypeOnchange();
-            
+
             $('#Detail_NppbkcId').change(function () {
-                nppbkcIdOnChange('@Url.Action("PoaListPartial", "pbck1")', '@Url.Action("GetNppbkcDetail", "PBCK1")');
+                nppbkcIdOnChange();
             });
-            
+
             $("#btnSubmitDocument").click(function () {
                 $('#Pbck1Modal').modal('show');
             });
 
-            $("#btnSubmitConfirm").click(function() {
+            $("#btnSubmitConfirm").click(function () {
                 window.location = "@Url.Action("SubmitDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
             });
 
+            $("#externalSupPort").click(function () {
+                supplierPortOnChange();
+            });
         });
+
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
 
         function loadSupplierPlant() {
             var list = supplierData;
@@ -148,5 +159,117 @@
                 supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             }
         }
+
+        function ajaxSelectNppbck(formData) {
+            if (formData.nppbkcid) {
+                //Load POA
+                ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
+
+                //Load company
+                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
+            }
+        }
+
+        function nppbkcIdOnChange() {
+            $('#Detail_NppbkcCompanyName').val('');
+            $('#Detail_NppbkcCompanyCode').val('');
+            $('#Detail_NppbkcKppbcId').val('');
+            $('#displayCompanyName').val('');
+            $('#Detail_PoaList').val('');
+            $('#displayPoaList').val('');
+
+            if ($("#Detail_NppbkcId").length) {
+                var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+                console.log(nppbkcid);
+                if (nppbkcid != '') {
+                    ajaxSelectNppbck({ nppbkcid: nppbkcid });
+                }
+            }
+        }
+
+        function ajaxLoadSupplierPlant(url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                success: function (data) {
+                    supplierData = data;
+                    //load supplier plant
+                    supplierPortOnChange();
+                }
+            });
+        }
+
+        function supplierPortOnChange() {
+            if ($("#Detail_SupplierPortId").length) {
+                var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                console.log(port_id);
+                $('#Detail_SupplierPlant').remove();
+                if ($("#externalSupPort").is(':checked')) {
+                    //
+                    $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
+                    disableSupplierFormInput(false);
+                    setSupplierPlantEmpty();
+                } else {
+                    $('#Detail_SupplierPortName').val(port_name);
+                    loadSupplierPlant();
+                    disableSupplierFormInput(true);
+                }
+            }
+        }
+        
+        $('#Detail_Lack1FromMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        $('#Detail_Lack1ToMonthId').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        $('#Detail_Lack1FormYear').change(function () {
+            ChangeLatestSaldo();
+        });
+
+        $('#Detail_Lack1ToYear').change(function () {
+            ChangeLatestSaldo();
+        });
+        
+        function ChangeLatestSaldo() {
+            var month = 0;
+            var year = 0;
+
+            var nppbkcid = "";
+            if ($("#Detail_NppbkcId").length) {
+                nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+            }
+            if ($("#Detail_Lack1ToMonthId").length) {
+                month = $('#Detail_Lack1ToMonthId').find("option:selected").val();
+            }
+            if ($('#Detail_Lack1ToYear').length) {
+                year = $('#Detail_Lack1ToYear').find("option:selected").val();
+            }
+            if (month != 0 && year != 0) {
+                setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+            } else {
+                $('#Detail_LatestSaldoUomName').val('0');
+            }
+        }
+        
+        function setLatestSaldo(formData, url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    if (data != null) {
+                        $('#Detail_LatestSaldo').val(data.latestSaldo);
+                    } else {
+                        $('#Detail_LatestSaldo').val('0');
+                    }
+
+                }
+            });
+        }
+
     </script>
 }

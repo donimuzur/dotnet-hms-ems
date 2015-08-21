@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
             //    throw new BLLException(ExceptionCodes.BLLExceptions.NppbkcNotFound);
 
             //generate number
-            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("00000") + "/" + ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" + (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("00000") + "/" + ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" + (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null && !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS) ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             _uow.SaveChanges();
 

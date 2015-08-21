@@ -1,7 +1,8 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Detail PBCK-1";
 }
 
 @using (Html.BeginForm("GovApproveDocument", "PBCK1", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
@@ -23,15 +24,17 @@
                     {
                         if (Model.AllowGovApproveAndReject)
                         {
-                            <input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
+                            @*<input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
 
                             <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
 
-                            <input type="button" class="btn btn-danger" value="GovPartialApprove" id="btnGovPartApprove" />
+                            <input type="button" class="btn btn-danger" value="GovPartialApprove" id="btnGovPartApprove" />*@
+
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
                     }
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
 
                     @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
                     {
@@ -179,6 +182,7 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck1script.js"></script>
 
     @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
     {
@@ -295,6 +299,32 @@
                 $('#GovApproveForm').submit();
             });
 
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateGovInput()) {
+                    $('#GovApproveForm').submit();
+                }
+            });
+            
+            $('#divComment').hide();
+
+            $('#Detail_StatusGov').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'Rejected') {
+                    $('#divComment').show();
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                }
+                else if (valueSelected == 'PartialApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                }
+                else if (valueSelected == 'FullApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+                    
+            });
+            
             openGovStatusBlock();
 
             ResetPrintHistoryDataTable();
@@ -346,6 +376,12 @@
                     ResetPrintHistoryDataTable();
                 }
             });
+        }
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
         }
         
         function ResetPrintHistoryDataTable() {

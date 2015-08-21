@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<EX_GROUP_TYPE> _repository;
         private IChangesHistoryBLL _changesHistoryBll;
         private IGenericRepository<EX_GROUP_TYPE_DETAILS> _repositoryDetail;
+        private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGoodType;
         private string includeTables = "EX_GROUP_TYPE_DETAILS, EX_GROUP_TYPE_DETAILS.ZAIDM_EX_GOODTYP";
 
         public ExGroupTypeBLL(IUnitOfWork uow, ILogger logger)
@@ -28,18 +29,12 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = uow.GetGenericRepository<EX_GROUP_TYPE>();
             _repositoryDetail = _uow.GetGenericRepository<EX_GROUP_TYPE_DETAILS>();
+            _repositoryGoodType = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
             _changesHistoryBll = new ChangesHistoryBLL(uow, logger);
         }
 
 
-        public void SaveGroup(List<EX_GROUP_TYPE> listGroupTypes)
-        {
-            foreach (var listGroupType in listGroupTypes)
-            {
-                _repository.InsertOrUpdate(listGroupType);
-            }
-            _uow.SaveChanges();
-        }
+        
 
         public void Save(EX_GROUP_TYPE GroupTypes)
         {
@@ -73,15 +68,36 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(p => p.EX_GROUP_TYPE_ID == id, null, includeTables).FirstOrDefault();
         }
 
-        public List<EX_GROUP_TYPE> GetGroupTypesByName(string name)
+        public List<ExGoodTyp> GetGroupTypesByName(string name)
         {
-            return _repository.Get(g => g.GROUP_NAME == name, null, includeTables).ToList();
+            var data = _repository.Get(g => g.GROUP_NAME == name, null, includeTables).ToList();
+            return Mapper.Map<List<ExGoodTyp>>(data);
         }
 
-        public List<EX_GROUP_TYPE> GetAll()
+        public List<ExGoodTyp> GetAll()
         {
+            List<ExGoodTyp> dataList = new List<ExGoodTyp>();
+            
+            var deletedexgoodtyplist = _repositoryGoodType.Get(x => x.IS_DELETED == true).Select(x=> x.EXC_GOOD_TYP).ToList();
+            var inactiveGroup = _repositoryDetail.Get().Where(x => deletedexgoodtyplist.Contains(x.GOODTYPE_ID)).Select(x => x.EX_GROUP_TYPE_ID).ToList();
 
-            return _repository.Get(null, null, includeTables).OrderBy(x => x.GROUP_NAME).ToList();
+            var tempdata = Mapper.Map<List<ExGoodTyp>>(_repository.Get(null, null, includeTables).OrderBy(x => x.GROUP_NAME).ToList());
+            foreach (var obj in tempdata) {
+                var _data = Mapper.Map<ExGoodTyp>(obj);
+                if (inactiveGroup.Contains(obj.EX_GROUP_TYPE_ID))
+                {
+                    _data.Inactive = true;
+                }
+                else {
+                    _data.Inactive = false;
+                }
+                dataList.Add(_data);
+            }
+           
+            
+                
+           
+            return dataList;
         }
 
         public List<string> GetGoodTypeByGroup(int groupid)
@@ -106,70 +122,78 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
-        public void InsertDetail(EX_GROUP_TYPE_DETAILS detail)
+        public void InsertDetail(int groupid,List<EX_GROUP_TYPE_DETAILS> details,string userid)
         {
             //var dbData = _repository.Get(c => c.EX_GROUP_TYPE_ID == detail.EX_GROUP_TYPE_ID, null, includeTables).FirstOrDefault();
             //var exGoodTypeUpdate = Mapper.Map<EX_GROUP_TYPE_DETAILS>(detail);
-
-            //SetChange(dbData, detail, exGoodTypeUpdate, userId);
-            _repositoryDetail.Insert(detail);
+            var objectToDelete = _repositoryDetail.Get(x => x.EX_GROUP_TYPE_ID == groupid).ToList();
+            var origin = _repository.Get(c => c.EX_GROUP_TYPE_ID == groupid, null, includeTables).FirstOrDefault();
+            
+            SetChange(origin, details, userid);
+            foreach (var obj in objectToDelete)
+            {
+                _repositoryDetail.Delete(obj);
+            }
+            foreach (var obj in details) {
+                _repositoryDetail.Insert(obj);
+            }
             _uow.SaveChanges();
         }
 
 
 
-        private void SetChange(EX_GROUP_TYPE origin, ExGoodTyp data, string userId,
-            List<EX_GROUP_TYPE_DETAILS> originGoodType)
+        private void SetChange(EX_GROUP_TYPE origin, List<EX_GROUP_TYPE_DETAILS> data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
             var originExgoodTyplDesc = string.Empty;
-            if (originGoodType != null)
+            var goodtypeslist = _repositoryGoodType.Get().ToList();
+            if (origin.EX_GROUP_TYPE_DETAILS != null)
             {
-                var orlength = originGoodType.Count;
+                var orlength = origin.EX_GROUP_TYPE_DETAILS.Count;
                 var currOr = 0;
-                foreach (var or in originGoodType)
+                foreach (var or in origin.EX_GROUP_TYPE_DETAILS)
                 {
                     currOr++;
                     originExgoodTyplDesc += or.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
                     if (currOr < orlength)
                     {
-                        originExgoodTyplDesc = ",";
+                        originExgoodTyplDesc += ",";
                     }
 
                 }
 
             }
             var editExgoodTyplDesc = string.Empty;
-            if (data.ZAIDM_EX_GOODTYP != null)
+            if (data != null)
             {
-                var orLenght = data.ZAIDM_EX_GOODTYP.Count;
-                var currOr = 0;
-                foreach (var or in data.ZAIDM_EX_GOODTYP)
+                var newLenght = data.Count;
+                var currNew = 0;
+                foreach (var newdata in data)
                 {
-                    currOr++;
-                    editExgoodTyplDesc += or.EXT_TYP_DESC;
-                    if (currOr < orLenght)
+                    currNew++;
+                    editExgoodTyplDesc += goodtypeslist.Where(x => x.EXC_GOOD_TYP ==  newdata.GOODTYPE_ID).Select(x=> x.EXT_TYP_DESC).FirstOrDefault();
+                    if (currNew < newLenght)
                     {
-                        editExgoodTyplDesc = ",";
+                        editExgoodTyplDesc += ",";
                     }
                 }
             }
-            changesData.Add("Ex Grop Details", originExgoodTyplDesc == editExgoodTyplDesc);
+            changesData.Add("Excisable Group Details", originExgoodTyplDesc == editExgoodTyplDesc);
             foreach (var listChange in changesData)
             {
                 if (!listChange.Value)
                 {
                     var changes = new CHANGES_HISTORY
                     {
-                        FORM_TYPE_ID = Core.Enums.MenuList.MasterPlant,
-                        FORM_ID = data.GROUP_NAME,
+                        FORM_TYPE_ID = Core.Enums.MenuList.GoodsTypeGroup,
+                        FORM_ID = origin.EX_GROUP_TYPE_ID.ToString(),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
                     };
                     switch (listChange.Key)
                     {
-                        case "RECEIVE_MATERIAL":
+                        case "Excisable Group Details":
                             changes.OLD_VALUE = originExgoodTyplDesc;
                             changes.NEW_VALUE = editExgoodTyplDesc;
                             break;

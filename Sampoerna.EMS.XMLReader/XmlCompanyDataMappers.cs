@@ -28,29 +28,40 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<T001>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T001();
-                    var bukrs = xElement.Element("BUKRS").Value;
-                    item.BUTXT = _xmlMapper.GetElementValue(xElement.Element("BUTXT"));
-                    item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
-                    item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
-                    item.CREATED_BY = Constans.PICreator;
-                    var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
-                        .GetByID(bukrs);
-                    item.BUKRS = bukrs;
-                    if (exisitingCompany != null)
+                    try
                     {
-                        item.CREATED_BY = exisitingCompany.CREATED_BY;
-                        item.CREATED_DATE = exisitingCompany.CREATED_DATE;
-                        item.MODIFIED_DATE = DateTime.Now;
-                        item.MODIFIED_BY = Constans.PICreator;
-                        items.Add(item);
+                        var item = new T001();
+                        var bukrs = xElement.Element("BUKRS").Value;
+                        item.BUTXT = _xmlMapper.GetElementValue(xElement.Element("BUTXT"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
+                        item.CREATED_BY = Constans.PICreator;
+                        var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
+                            .GetByID(bukrs);
+                        item.BUKRS = bukrs;
+                        if (exisitingCompany != null)
+                        {
+                            item.CREATED_BY = exisitingCompany.CREATED_BY;
+                            item.CREATED_DATE = exisitingCompany.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PICreator;
+                            items.Add(item);
+
+                        }
+                        else
+                        {
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _xmlMapper.Errors.Add(ex.Message);
+                        continue;
                         
+
                     }
-                    else
-                    {
-                        item.CREATED_DATE = DateTime.Now;
-                        items.Add(item);
-                    }
+                    
                    
                 }
                 return items;
@@ -62,6 +73,11 @@ namespace Sampoerna.EMS.XMLReader
         public string InsertToDatabase()
         {
            return _xmlMapper.InsertToDatabase<T001>(Items);
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public T001 GetCompany(string CompanyCode)

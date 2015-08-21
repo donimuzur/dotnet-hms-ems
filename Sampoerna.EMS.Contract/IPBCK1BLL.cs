@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Contract
 
         string GetPbckNumberById(long id);
 
-        List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(IEnumerable<Pbck1ProdConverterInput> inputs);
+        List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs);
 
         List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
 
@@ -32,6 +32,8 @@ namespace Sampoerna.EMS.Contract
         List<Pbck1MonitoringUsageDto> GetMonitoringUsageByParam(Pbck1GetMonitoringUsageByParamInput input);
 
         Pbck1ReportDto GetPrintOutDataById(int id);
+
+        Pbck1Dto GetByDocumentNumber(string documentNumber);
 
     }
 }

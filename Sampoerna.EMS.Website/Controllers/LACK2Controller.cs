@@ -23,8 +23,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _exGroupBll;
 
         private Enums.MenuList _mainMenu;
-
-        public LACK2Controller(IPageBLL pageBll, ILACK2BLL lack2Bll,
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IPOABLL _poabll;
+        
+        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
             IPlantBLL plantBll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
@@ -33,6 +35,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _companyBll = companyBll;
             _exGroupBll = exGroupBll;
             _mainMenu = Enums.MenuList.LACK2;
+            _nppbkcbll = nppbkcbll;
+            _poabll = poabll;
         }
 
 
@@ -60,8 +64,8 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <returns>Lack2IndexViewModel</returns>
         private Lack2IndexViewModel InitViewModel(Lack2IndexViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.PoaList = GlobalFunctions.GetPoaAll();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
@@ -77,8 +81,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll();
-            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList();
+            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
 
@@ -139,8 +143,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetById(id));
 
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll();
-            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList();
+            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
 
@@ -219,8 +223,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack2IndexPlantViewModel InitLack2LiistByPlant(Lack2IndexPlantViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.PoaList = GlobalFunctions.GetPoaAll();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
@@ -236,8 +240,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Lack2IndexViewModel();
 
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll();
-            model.SearchInput.PoaList = GlobalFunctions.GetPoaAll();
+            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchInput.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchInput.YearList = LackYearList();
 
             model.MainMenu = _mainMenu;

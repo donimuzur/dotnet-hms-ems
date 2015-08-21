@@ -37,41 +37,10 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
     });
 }
 
-function supplierPortOnChange() {
-    if ($("#Detail_SupplierPortId").length) {
-        var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
-        var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
-        console.log(port_id);
-        $('#Detail_SupplierPlant').remove();
-        if (port_id == '') {
-            //
-            $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
-            disableSupplierFormInput(false);
-            setSupplierPlantEmpty();
-        } else {
-            $('#Detail_SupplierPortName').val(port_name);
-            loadSupplierPlant();
-            disableSupplierFormInput(true);
-        }
-    }
-}
-
 function disableSupplierFormInput(isDisable) {
     $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
     $('#Detail_SupplierKppbcId').prop('disabled', isDisable);
     $('#Detail_SupplierAddress').prop('disabled', isDisable);
-}
-
-function ajaxLoadSupplierPlant(url) {
-    $.ajax({
-        type: 'POST',
-        url: url,
-        success: function (data) {
-            supplierData = data;
-            //load supplier plant
-            supplierPortOnChange();
-        }
-    });
 }
 
 function supplierChange(url) {
@@ -153,6 +122,7 @@ function prodPlanSaveClick() {
     $('#Detail_Pbck1ProdPlan tbody').html('');
 
     var total = 0;
+    var uom = '';
 
     for (var i = 0; i < datarows.length; i++) {
         var data = '<tr>';
@@ -177,12 +147,14 @@ function prodPlanSaveClick() {
                 + datarows[i][8] + '" />' + datarows[i][8] + '</td>';
             
             total += parseFloat(datarows[i][6]);
-
+            uom = datarows[i][7];
         }
         data += '</tr>';
         $('#Detail_Pbck1ProdPlan tbody').append(data);
     }
     $("input[name='Detail.RequestQty']").val(total);
+    $("select[name='Detail.RequestQtyUomId']").val(uom);
+    $("select[name='Detail.LatestSaldoUomId']").val(uom);
     $('#prod-plan-upload-tab').removeClass('active');
     $('#home-tab').addClass('active');
     $('#home').addClass('active');
@@ -288,31 +260,18 @@ function pbck1TypeOnchange() {
     }
 }
 
-function nppbkcIdOnChange(poaUrl, companyUrl) {
-    if ($("#Detail_NppbkcId").length) {
-        var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
-        console.log(nppbkcid);
-        if (nppbkcid != '') {
-            ajaxSelectNppbck({ nppbkcid: nppbkcid }, poaUrl, companyUrl);
-        } else {
-            $('#Detail_NppbkcCompanyName').val('');
-            $('#Detail_NppbkcCompanyCode').val('');
-            $('#Detail_NppbkcKppbcId').val('');
-            $('#displayCompanyName').val('');
-            $('#Detail_PoaList').val('');
-            $('#displayPoaList').val('');
-        }
-    }
+function btnProdConvUploadClick() {
+    $('#home-tab').removeClass('active');
+    $('#home').removeClass('active');
+    $('#prod-conv-upload-tab').addClass('active');
+    $('#upload').addClass('active');
 }
 
-function ajaxSelectNppbck(formData, poaUrl, companyUrl) {
-    if (formData.nppbkcid) {
-        //Load POA
-        ajaxLoadPoa(formData, poaUrl);
-
-        //Load company
-        ajaxLoadCompany(formData, companyUrl);
-    }
+function btnProdPlanUploadClick() {
+    $('#home-tab').removeClass('active');
+    $('#home').removeClass('active');
+    $('#prod-plan-upload-tab').addClass('active');
+    $('#messages').addClass('active');
 }
 
 function ajaxLoadPoa(formData, url) {
@@ -346,10 +305,10 @@ function ajaxLoadCompany(formData, url) {
             data: formData,
             success: function (data) {
                 if (data != null) {
-                    $('#Detail_NppbkcCompanyName').val(data.BUTXT);
-                    $('#Detail_NppbkcCompanyCode').val(data.BUKRS);
-                    $('#Detail_NppbkcKppbcId').val(data.NPPBKC_KPPBC_ID);
-                    $('#displayCompanyName').val(data.BUTXT);
+                    $('#Detail_NppbkcCompanyName').val(data.CompanyName);
+                    $('#Detail_NppbkcCompanyCode').val(data.CompanyCode);
+                    $('#Detail_NppbkcKppbcId').val(data.KppbcNo);
+                    $('#displayCompanyName').val(data.CompanyName);
                 } else {
                     $('#Detail_NppbkcCompanyName').val('');
                     $('#Detail_NppbkcCompanyCode').val('');
@@ -361,16 +320,30 @@ function ajaxLoadCompany(formData, url) {
     }
 }
 
-function btnProdConvUploadClick() {
-    $('#home-tab').removeClass('active');
-    $('#home').removeClass('active');
-    $('#prod-conv-upload-tab').addClass('active');
-    $('#upload').addClass('active');
+function ValidateGovInput() {
+    var result = true;
+
+    if ($('#Detail_DecreeDate').val() == '') {
+        AddValidationClass(false, 'Detail_DecreeDate');
+        result = false;
+    }
+
+    if ($('#Detail_StatusGov').val() == 'Rejected') {
+        if ($('#Detail_Comment').val() == '') {
+            AddValidationClass(false, 'Detail_Comment');
+            result = false;
+        }
+    }
+
+    return result;
 }
 
-function btnProdPlanUploadClick() {
-    $('#home-tab').removeClass('active');
-    $('#home').removeClass('active');
-    $('#prod-plan-upload-tab').addClass('active');
-    $('#messages').addClass('active');
+function AddValidationClass(isValid, objName) {
+    if (isValid) {
+        $('#' + objName).removeClass('input-validation-error');
+        $('#' + objName).addClass('valid');
+    } else {
+        $('#' + objName).removeClass('valid');
+        $('#' + objName).addClass('input-validation-error');
+    }
 }

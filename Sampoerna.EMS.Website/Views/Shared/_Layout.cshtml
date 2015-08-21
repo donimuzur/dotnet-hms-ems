@@ -123,12 +123,6 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a id="MenuUserAuthorization" href="@Url.Action("Index", "UserAuthorization")">
-                                        <i class="fa fa-angle-right"></i>
-                                        User Authorization
-                                    </a>
-                                </li>
-                                <li>
                                     <a id="MenuPOA" href="@Url.Action("Index", "POA")">
                                         <i class="fa fa-angle-right"></i>
                                         POA
@@ -238,7 +232,7 @@
                                 <i class="down fa fa-caret-down"></i>
                             </a>
                             <ul class="child list">
-                                <li><a href="#"><i class="fa fa-angle-right"></i>Upload File</a></li>
+                                <li><a id="MenuCK5FileDocuments" href="@Url.Action("CK5UploadFileDocuments", "CK5")"><i class="fa fa-angle-right"></i>Upload File</a></li>
                                 <li><a id="MenuCK5Domestic" href="@Url.Action("Index", "CK5")"><i class="fa fa-angle-right"></i>Domestic</a></li>
                                 <li><a id="MenuCK5Import" href="@Url.Action("CK5Import", "CK5")"><i class="fa fa-angle-right"></i>Importer</a></li>
                                 <li><a id="MenuCK5Export" href="@Url.Action("CK5Export", "CK5")"><i class="fa fa-angle-right"></i>Export (Union)</a></li>
@@ -288,29 +282,43 @@
                         <div class="collapse-menu active open">
                             <a href="#" class="list-group-item list-parent">
                                 <i class="fa fa-clipboard"></i>
-                                <span>Master Data</span>
+                                <span>Settings</span>
                                 <i class="down fa fa-caret-down"></i>
                             </a>
+
                             <ul class="child list">
+                                
                                 <li>
+                                    <a id="MenuUserPlantMap" href="@Url.Action("Index", "UserPlantMap")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User Plant Map
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuUserAuthorization" href="@Url.Action("Index", "UserAuthorization")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User Authorization
+                                    </a>
+                                </li>
+                                <li style="display:none">
                                     <a id="MenuWorkflowSettings" href="@Url.Action("Index", "WorkflowSettings")">
                                         <i class="fa fa-angle-right"></i>
                                         Workflow Settings
                                     </a>
                                 </li>
-                                <li>
+                                <li style="display:none">
                                     <a id="MenuEmailTemplate" href="@Url.Action("Index", "EmailTemplate")">
                                         <i class="fa fa-angle-right"></i>
                                         Email Templates
                                     </a>
                                 </li>
-                                <li>
+                                <li style="display:none">
                                     <a id="MenuDocumentSequence" href="@Url.Action("Index", "DocumentSequence")">
                                         <i class="fa fa-angle-right"></i>
                                         Document Sequence
                                     </a>
                                 </li>
-                                <li>
+                                <li >
 
                                     <a id="MenuGlobalSetting" href="@Url.Action("Index", "GlobalSettings")">
                                         <i class="fa fa-angle-right"></i>

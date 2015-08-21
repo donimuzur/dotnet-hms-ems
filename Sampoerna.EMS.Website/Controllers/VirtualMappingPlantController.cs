@@ -20,9 +20,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBLL;
         //private List<AutoCompletePlant> _plantList;
         private Enums.MenuList _mainMenu;
-       
-
-        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
+        private IUnitOfMeasurementBLL _uomBll;
+        private ICompanyBLL _companyBll;
+        public VirtualMappingPlantController(IVirtualMappingPlantBLL vitVirtualMappingPlanBll, ICompanyBLL companyBll, IUnitOfMeasurementBLL uomBll, IMasterDataBLL masterData, IChangesHistoryBLL changeLogHistoryBLL, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.VirtualMappingPlant)
         {
             _virtualMappingPlanBll = vitVirtualMappingPlanBll;
@@ -30,6 +30,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBLL = changeLogHistoryBLL;
             //_plantList = _masterDataBll.get;
             _mainMenu = Enums.MenuList.MasterData;
+            _uomBll = uomBll;
+            _companyBll = companyBll;
         }
 
         //
@@ -51,7 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.CompanyNameList = GlobalFunctions.GetCompanyList();
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             
@@ -117,9 +119,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbVirtual = AutoMapper.Mapper.Map<VIRTUAL_PLANT_MAP>(model);
                 dbVirtual.CREATED_DATE = DateTime.Now;
                 dbVirtual.CREATED_BY = CurrentUser.USER_ID;
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                }
+                
+                
             }
 
             InitCreateModel(model);
@@ -157,7 +166,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.CompanyNameList = GlobalFunctions.GetCompanyList();
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
             model.ImportPlanNameList = GlobalFunctions.GetVirtualPlantList();
             model.ExportPlanNameList = GlobalFunctions.GetVirtualPlantList();
 
@@ -241,14 +250,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbVirtual.IMPORT_PLANT_ID = model.ImportPlantId;
                 dbVirtual.EXPORT_PLANT_ID = model.ExportPlantId;
 
-                _virtualMappingPlanBll.Save(dbVirtual);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
-                return RedirectToAction("Index");
+                if (_virtualMappingPlanBll.Save(dbVirtual))
+                {
+                    TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                    return RedirectToAction("Index");
+                }
+                else {
+                    AddMessageInfo("Same Virtual plant mapping already exist", Enums.MessageInfoType.Warning);
+                    //InitEditModel(model);
+                    //return View("Edit", model);
+                }
+                
             }
 
-           
             InitEditModel(model);
             return View("Edit", model);
+            
         }
 
         public ActionResult Delete(int id)

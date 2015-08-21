@@ -1,4 +1,5 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 
@@ -15,7 +16,8 @@
                    
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" />
+                    @*<input type="button" class="btn btn-grey" value="Print Preview" />*@
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
                     
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
@@ -197,6 +199,10 @@
         $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
         $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
         $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+        
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
+        });
     });
 
     $("#PbckDecreeId").change(function () {
@@ -304,5 +310,11 @@
             }
 
         });
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
 </script>
 }

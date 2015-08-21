@@ -87,6 +87,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlMaterialDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("USER"))
+            {
+                return new XmlUserDataMapper(xmlfile);
+            }
             return null;
         }
 
@@ -140,6 +144,10 @@ namespace Sampoerna.EMS.XMLReader
             var filesPOA = xmlfiles.Where(x => x.Contains("POA"));
             orderedXmlFiles.AddRange(filesPOA);
 
+            var filesUser = xmlfiles.Where(x => x.Contains("USER"));
+           
+            orderedXmlFiles.AddRange(filesUser);
+
             if (filesVendor.Count() == 0)
                 isComplete = false;
             if (filesSeries.Count() == 0)
@@ -159,9 +167,15 @@ namespace Sampoerna.EMS.XMLReader
                 isComplete = false;
             if (filesCompany.Count() == 0)
                 isComplete = false;
-            if (!isComplete)
-                return null;
-           
+            if (ConfigurationManager.AppSettings["FileComplete"] != null)
+            {
+                if (ConfigurationManager.AppSettings["FileComplete"] == "1")
+                {
+                    if (!isComplete)
+                        return null;
+                }
+            }
+
             return orderedXmlFiles;
         }
 
@@ -169,15 +183,15 @@ namespace Sampoerna.EMS.XMLReader
         {
             var errorList = new List<string>();
             var orderedFile = OrderFile();
-            
-            
+            IXmlDataReader reader =null;
+             
             if (orderedFile != null)
             {
                 foreach (var xmlfile in orderedFile)
                 {
                     try
                     {
-                        IXmlDataReader reader = XmlReaderFactory(xmlfile);
+                        reader = XmlReaderFactory(xmlfile);
 
                         if (reader != null)
                         {
@@ -192,6 +206,10 @@ namespace Sampoerna.EMS.XMLReader
                         continue;
                     }
                 }
+            }
+            if (reader != null)
+            {
+                errorList.AddRange(reader.GetErrorList());
             }
             return errorList;
         }
