@@ -23,5 +23,9 @@ namespace Sampoerna.EMS.Contract
         string GetApprovedRejectedPoaByDocumentNumber(string documentNumber);
 
         string GetPoaByDocumentNumber(string documentNumber);
+
+        void Delete(long id);
+
+        void DeleteByActionAndFormNumber(GetByActionAndFormNumberInput input);
     }
 }
