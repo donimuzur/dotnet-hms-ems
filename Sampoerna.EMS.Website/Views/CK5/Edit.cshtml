@@ -3,7 +3,7 @@
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 
-@using (Html.BeginForm("Edit", "CK5"))
+@using (Html.BeginForm("Edit", "CK5", FormMethod.Post, new { @id = "EditCk5Forms" }))
 {
      @Html.AntiForgeryToken()
     
@@ -14,9 +14,8 @@
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
                    
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
-                    @*<input type="button" class="btn btn-grey" value="Print Preview" />*@
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
                     
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
@@ -107,6 +106,24 @@
         </div>
     </div>
 }
+<div id="ModalCk5Material" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Missing CK5 Materials
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="Ck5Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -203,6 +220,18 @@
         $('#btn-changelog-export-xls').click(function () {
             location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
         });
+        
+        $("#btnSave").click(function () {
+
+            if (ValidateCk5Form()) {
+                $('#EditCk5Forms').submit();
+            }
+
+        });
+        
+        $('#CK5UploadSubmitBtn').click(function () {
+            GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
+        });
     });
 
     $("#PbckDecreeId").change(function () {
@@ -263,7 +292,7 @@
             } else {
                 ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
 
-                ChangeBackSourceMaterial(sourcePlant);
+                ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }
     });

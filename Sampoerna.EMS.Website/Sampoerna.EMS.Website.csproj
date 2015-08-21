@@ -298,12 +298,14 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
     <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
     <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
-    <Compile Include="Models\LACK1\NppbkcData.cs" />
-    <Compile Include="Models\LACK1\PlantData.cs" />
+    <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
+    <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
@@ -928,6 +930,7 @@
     <Content Include="Views\PBCK1\SummaryReports.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
     <Content Include="Views\UserAuthorization\Edit.cshtml" />
+    <Content Include="Views\LACK1\_PrintOut.cshtml" />
     <Content Include="Views\POAMap\Create.cshtml" />
     <Content Include="Views\Uom\Index.cshtml" />
     <Content Include="Views\POAMap\Index.cshtml" />
@@ -935,6 +938,7 @@
     <Content Include="Views\Vendor\Details.cshtml" />
     <Content Include="Views\Vendor\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+    <Content Include="Views\POAMap\Edit.cshtml" />
     <Content Include="Views\CK5\CK5UploadFileDocument.cshtml" />
     <Content Include="Views\CK5\_CK5UploadFileDocumentsList.cshtml" />
     <Content Include="Views\POAMap\Edit.cshtml" />
@@ -945,6 +949,7 @@
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
+    <Content Include="Views\LACK1\_Lack1TableBalance.cshtml" />
     <Content Include="Views\PBCK7\Index.cshtml" />
     <Content Include="Views\PBCK7\_Pbck7TableIndex.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
@@ -955,6 +960,8 @@
     <Content Include="Views\LACK2\_Lack2CompletedDoc.cshtml" />
     <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
     <Content Include="Views\LACK2\_Lack2Table.cshtml" />
+    <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
+    <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
     <Content Include="Views\PBCK7\ListPbck3Index.cshtml" />
     <Content Include="Views\PBCK7\_Pbck3TableIndex.cshtml" />
   </ItemGroup>
