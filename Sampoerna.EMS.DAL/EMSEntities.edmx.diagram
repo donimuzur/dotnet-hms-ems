@@ -36,7 +36,7 @@
         <AssociationConnector Association="EMSModel.FK_DOC_NUMBER_SEQ_MONTH" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_DECREE_DOC" Width="1.5" PointX="21.75" PointY="31.625" />
         <EntityTypeShape EntityType="EMSModel.POA_SK" Width="1.5" PointX="7.5" PointY="31.5" />
-        <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="18.5" PointY="30.75" />
+        <EntityTypeShape EntityType="EMSModel.CK5" Width="1.5" PointX="18.75" PointY="20.875" />
         <AssociationConnector Association="EMSModel.FK_CK5_MATERIAL_CK5" />
         <EntityTypeShape EntityType="EMSModel.PBCK1" Width="1.5" PointX="10.5" PointY="21.125" />
         <AssociationConnector Association="EMSModel.FK_CK5_PBCK1" />
@@ -81,16 +81,9 @@
         <AssociationConnector Association="EMSModel.FK_WORKFLOW_STATE_USERS_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_CREATED_BY_USER" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_MODIFIED_BY_USER" />
-        <EntityTypeShape EntityType="EMSModel.LACK2" Width="1.5" PointX="13.5" PointY="36.25" />
         <EntityTypeShape EntityType="EMSModel.LACK2_DOCUMENT" Width="1.5" PointX="15.75" PointY="50.25" />
         <EntityTypeShape EntityType="EMSModel.LACK2_ITEM" Width="1.5" PointX="25.75" PointY="40.25" />
         <AssociationConnector Association="EMSModel.FK_LACK2_ITEM_CK5" />
-        <AssociationConnector Association="EMSModel.FK_LACK2_DOCUMENT_LACK2" />
-        <AssociationConnector Association="EMSModel.FK_LACK2_ITEM_LACK2" />
-        <AssociationConnector Association="EMSModel.FK_LACK2_MONTH" />
-        <AssociationConnector Association="EMSModel.FK_LACK2_USER_APPROVED_BY" />
-        <AssociationConnector Association="EMSModel.FK_LACK2_USER_CREATED_BY" />
-        <AssociationConnector Association="EMSModel.FK_LACK2_USER_MODIFIED_BY" />
         <EntityTypeShape EntityType="EMSModel.PRINT_HISTORY" Width="1.5" PointX="3.625" PointY="49.5" />
         <AssociationConnector Association="EMSModel.FK_PRINT_HISTORY_USER" />
         <EntityTypeShape EntityType="EMSModel.COUNTRY" Width="1.5" PointX="0.75" PointY="0.75" />
@@ -174,6 +167,22 @@
         <AssociationConnector Association="EMSModel.FK_LACK1_USER_CREATED" />
         <AssociationConnector Association="EMSModel.FK_LACK1_WASTE_UOM" />
         <AssociationConnector Association="EMSModel.LACK1_PBCK1_MAPPING" />
+        <EntityTypeShape EntityType="EMSModel.CK4C" Width="1.5" PointX="10.5" PointY="37.125" />
+        <EntityTypeShape EntityType="EMSModel.CK4C_ITEM" Width="1.5" PointX="25.5" PointY="43.125" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_CK4C" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_MODIFIED_BY" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_MONTH" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_USER" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_UOM" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" />
+        <EntityTypeShape EntityType="EMSModel.LACK2" Width="1.5" PointX="13.5" PointY="39.125" />
+        <AssociationConnector Association="EMSModel.FK_LACK2_DOCUMENT_LACK2" />
+        <AssociationConnector Association="EMSModel.FK_LACK2_ITEM_LACK2" />
+        <AssociationConnector Association="EMSModel.FK_LACK2_MONTH" />
+        <AssociationConnector Association="EMSModel.FK_LACK2_USER_APPROVED_BY" />
+        <AssociationConnector Association="EMSModel.FK_LACK2_USER_CREATED_BY" />
+        <AssociationConnector Association="EMSModel.FK_LACK2_USER_MODIFIED_BY" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

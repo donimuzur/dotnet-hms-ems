@@ -88,6 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         detail.GoodsTypeId = d.GoodsTypeId;
+                        detail.Inactive = d.Inactive;
                     }
                     detail.GroupTypeName = concatName;
 
