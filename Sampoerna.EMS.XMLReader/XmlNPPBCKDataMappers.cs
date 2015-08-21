@@ -61,6 +61,7 @@ namespace Sampoerna.EMS.XMLReader
                                 item.CITY_ALIAS = exisitingNppbkc.CITY_ALIAS;
                                 item.TEXT_TO = exisitingNppbkc.TEXT_TO;
                                 item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
+                                item.REGION = exisitingNppbkc.REGION;
                                 item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
                                 item.MODIFIED_DATE = DateTime.Now;
                                 item.MODIFIED_BY = Constans.PICreator;
