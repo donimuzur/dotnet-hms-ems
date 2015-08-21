@@ -73,6 +73,19 @@ namespace Sampoerna.EMS.BLL.Test
             Assert.AreEqual(t001w.WERKS + "-" + t001w.NAME1, result.DROPDOWNTEXTFIELD);
 
         }
-        
+
+        [TestMethod]
+        public void MappingUserName()
+        {
+            var source = new USER_PLANT_MAP();
+            source.USER = new USER();
+            source.USER.FIRST_NAME = "firstname";
+            source.USER.LAST_NAME = "lastname";
+           
+            var result = Mapper.Map<UserPlantMapDto>(source);
+
+            Assert.AreEqual(source.USER.FIRST_NAME + " " + source.USER.LAST_NAME, result.UserName);
+
+        }
     }
 }
