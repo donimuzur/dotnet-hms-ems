@@ -149,6 +149,23 @@
            
         }
         
+        $("#NppbkcId").change(function () {
+            if ($("#NppbkcId").length) {
+                var nbck = $(this).find("option:selected").text();
+                $('#SearchInput_POA option').remove();
+                $('#SearchInput_PlantId option').remove();
+                console.log(nbck);
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_POA').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId').append('<option value="">All</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
+                }
+            }
+
+
+        });
+
         $(document).ready(function () {
             setupDataTables();
         });

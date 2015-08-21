@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.BLL.Test
         {
 
             var fakeDatas = new List<UOM>();
-            fakeDatas.Add(new UOM() { UOM_ID = "kg", UOM_DESC = "kilogram" });
+            fakeDatas.Add(new UOM() { UOM_ID = "kg", UOM_DESC = "kilogram", IS_EMS = true});
 
             return fakeDatas;
         }

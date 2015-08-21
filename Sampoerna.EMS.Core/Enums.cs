@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Core
         {
             ListByNppbkc = 1,
             ListByPlant = 2,
-            ComplatedDocument =3
+            ComplatedDocument = 3
         }
         public enum CK5TransType
         {

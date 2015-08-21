@@ -237,6 +237,7 @@
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LACK2Controller.cs" />
     <Compile Include="Controllers\PBCK7Controller.cs" />
     <Compile Include="Controllers\UserPlantMapController.cs" />
     <Compile Include="Controllers\LACK1Controller.cs" />
@@ -303,6 +304,15 @@
     <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
     <Compile Include="Models\LACK1\NppbkcData.cs" />
     <Compile Include="Models\LACK1\PlantData.cs" />
+    <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2Input.cs" />
+    <Compile Include="Models\LACK2\LACK2Model.cs" />
+    <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
+    <Compile Include="Models\LACK2\LACK2PlantData.cs" />
+    <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -937,6 +947,14 @@
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
     <Content Include="Views\PBCK7\Index.cshtml" />
     <Content Include="Views\PBCK7\_Pbck7TableIndex.cshtml" />
+    <Content Include="Views\LACK2\Create.cshtml" />
+    <Content Include="Views\LACK2\CreateDocument.cshtml" />
+    <Content Include="Views\LACK2\Index.cshtml" />
+    <Content Include="Views\LACK2\ListByPlant.cshtml" />
+    <Content Include="Views\LACK2\ListCompletedDoc.cshtml" />
+    <Content Include="Views\LACK2\_Lack2CompletedDoc.cshtml" />
+    <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
+    <Content Include="Views\LACK2\_Lack2Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
