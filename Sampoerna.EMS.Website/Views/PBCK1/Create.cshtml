@@ -167,12 +167,13 @@
         }
 
         function ajaxSelectNppbck(formData) {
+            //debugger;
             if (formData.nppbkcid) {
                 //Load POA
                 ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
 
                 //Load company
-                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
+                ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "pbck1")');
             }
         }
 
@@ -180,18 +181,18 @@
 
             ChangeLatestSaldo();
 
+            $('#Detail_NppbkcCompanyName').val('');
+            $('#Detail_NppbkcCompanyCode').val('');
+            $('#Detail_NppbkcKppbcId').val('');
+            $('#displayCompanyName').val('');
+            $('#Detail_PoaList').val('');
+            $('#displayPoaList').val('');
+
             if ($("#Detail_NppbkcId").length) {
                 var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
                 console.log(nppbkcid);
                 if (nppbkcid != '') {
                     ajaxSelectNppbck({ nppbkcid: nppbkcid });
-                } else {
-                    $('#Detail_NppbkcCompanyName').val('');
-                    $('#Detail_NppbkcCompanyCode').val('');
-                    $('#Detail_NppbkcKppbcId').val('');
-                    $('#displayCompanyName').val('');
-                    $('#Detail_PoaList').val('');
-                    $('#displayPoaList').val('');
                 }
             }
         }

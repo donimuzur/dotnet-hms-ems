@@ -17,7 +17,10 @@ namespace Sampoerna.EMS.BusinessObject
         public LACK1()
         {
             this.LACK1_DOCUMENT = new HashSet<LACK1_DOCUMENT>();
-            this.LACK1_ITEM = new HashSet<LACK1_ITEM>();
+            this.LACK1_INCOME_DETAIL = new HashSet<LACK1_INCOME_DETAIL>();
+            this.LACK1_PLANT = new HashSet<LACK1_PLANT>();
+            this.LACK1_PRODUCTION_DETAIL = new HashSet<LACK1_PRODUCTION_DETAIL>();
+            this.PBCK1 = new HashSet<PBCK1>();
         }
     
         public int LACK1_ID { get; set; }
@@ -26,31 +29,41 @@ namespace Sampoerna.EMS.BusinessObject
         public string BUTXT { get; set; }
         public Nullable<int> PERIOD_MONTH { get; set; }
         public Nullable<int> PERIOD_YEAR { get; set; }
-        public string LEVEL_PLANT_ID { get; set; }
-        public string LEVEL_PLANT_NAME { get; set; }
         public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string SUPPLIER_PLANT { get; set; }
+        public string SUPPLIER_PLANT_WERKS { get; set; }
+        public string SUPPLIER_PLANT_ADDRESS { get; set; }
         public string EX_GOODTYP { get; set; }
+        public string EX_TYP_DESC { get; set; }
         public Nullable<decimal> WASTE_QTY { get; set; }
         public string WASTE_UOM { get; set; }
         public Nullable<decimal> RETURN_QTY { get; set; }
         public string RETURN_UOM { get; set; }
-        public Nullable<int> STATUS { get; set; }
-        public Nullable<int> GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
-        public System.DateTime CREATED_DATE { get; set; }
-        public string CREATED_BY { get; set; }
-        public string APPROVED_BY { get; set; }
-        public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public string NPPBKC_ID { get; set; }
-        public string EX_TYP_DESC { get; set; }
+        public decimal BEGINING_BALANCE { get; set; }
+        public decimal TOTAL_INCOME { get; set; }
+        public decimal USAGE { get; set; }
+        public decimal TOTAL_PRODUCTION { get; set; }
+        public Sampoerna.EMS.Core.Enums.Lack1Level LACK1_LEVEL { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string APPROVED_BY_POA { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_POA { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
     
         public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
-        public virtual ICollection<LACK1_ITEM> LACK1_ITEM { get; set; }
+        public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
         public virtual MONTH MONTH { get; set; }
+        public virtual ICollection<LACK1_PLANT> LACK1_PLANT { get; set; }
+        public virtual ICollection<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
+        public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
+        public virtual ICollection<PBCK1> PBCK1 { get; set; }
     }
 }

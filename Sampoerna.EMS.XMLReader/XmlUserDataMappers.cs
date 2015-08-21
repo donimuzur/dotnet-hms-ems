@@ -16,50 +16,78 @@ namespace Sampoerna.EMS.XMLReader
     {
         private XmlDataMapper _xmlMapper = null;
        
-        public XmlUserDataMapper()
+        public XmlUserDataMapper(string xmlFile)
         {
-            _xmlMapper = new XmlDataMapper("USER");
+            _xmlMapper = new XmlDataMapper(xmlFile);
            
         }
 
 
-        public List<USER> Items
+        public List<BROLE_MAP> Items
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<USER>();
+                var xmlItems = _xmlMapper.GetElements("row");
+                var items = new List<BROLE_MAP>();
+                var firstBrole = string.Empty;
+                int i = 0;
                 foreach (var xElement in xmlItems)
                 {
                     try
                     {
-                        var item = new USER();
-                        item.USER_ID = xElement.Element("USER_ID").Value;
-                        var userGroup = xElement.Element("USER_GROUP").Value;
+
+                       
 
                         
-                        item.FIRST_NAME = xElement.Element("FIRST_NAME").Value;
-                        item.LAST_NAME = xElement.Element("LAST_NAME").Value;
-                        item.EMAIL = xElement.Element("EMAIL").Value;
-                    
-                        var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                        var exsitingUser = GetUser(item.USER_ID);
-                        if (exsitingUser != null)
+                        var role = new USER_BROLE();
+                        role.BROLE = _xmlMapper.GetElementValue(xElement.Element("BROLE"));
+                        role.BROLE_DESC = _xmlMapper.GetElementValue(xElement.Element("BROLE_DESC"));
+                        var ExistBrole = GetBrole(role.BROLE);
+                       
+                        _xmlMapper.InsertOrUpdate(role);
+                        
+                        
+                        var roleMap = new BROLE_MAP();
+                        roleMap.BROLE = role.BROLE;
+                        roleMap.MSACCT = _xmlMapper.GetElementValue(xElement.Element("MSACCT"));
+                        roleMap.START_DATE = Convert.ToDateTime(xElement.Element("STRTDAT").Value);
+                        roleMap.END_DATE = Convert.ToDateTime(xElement.Element("ENDDAT").Value);
+
+                        var user = new USER();
+                        user.USER_ID = roleMap.MSACCT;
+                        user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
+                        user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
+                        user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim().Substring(0, 35);
+                       
+                        var ExistUser = GetUser(user.USER_ID);
+                        if (ExistUser == null)
                         {
+                            user.CREATED_DATE = DateTime.Now;
+                           
                             
-                            item.MODIFIED_DATE = dateXml;
-                            items.Add(item);
-                          
                         }
                         else
                         {
-                            item.CREATED_DATE = DateTime.Now;
-                            items.Add(item);
+                            user.MODIFIED_DATE = DateTime.Now;
+                            user.CREATED_DATE = ExistUser.CREATED_DATE;
                         }
+                        _xmlMapper.InsertOrUpdate(user);
+
+                        var ExistRoleMap = GetBroleMap(roleMap.BROLE, roleMap.MSACCT);
+                        if (ExistRoleMap != null)
+                        {
+                            roleMap.BROLE_MAP_ID = ExistRoleMap.BROLE_MAP_ID;
+                        }
+                       
+                        items.Add(roleMap);
+
+
+
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        _xmlMapper.Errors.Add(ex.Message);
                        continue;
                         
                     }
@@ -73,13 +101,13 @@ namespace Sampoerna.EMS.XMLReader
 
         public string InsertToDatabase()
         {
-            return _xmlMapper.InsertToDatabase<USER>(Items);
+            return _xmlMapper.InsertToDatabase<BROLE_MAP>(Items);
        
         }
 
         public List<string> GetErrorList()
         {
-            throw new NotImplementedException();
+            return _xmlMapper.Errors;
         }
 
         public USER GetUser(string UserId)
@@ -88,7 +116,18 @@ namespace Sampoerna.EMS.XMLReader
                 .GetByID(UserId);
             return exisitingUser;
         }
-     
+        public USER_BROLE GetBrole(string BroleId)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<USER_BROLE>()
+                .GetByID(BroleId);
+            return existingData;
+        }
+        public BROLE_MAP GetBroleMap(string BroleId, string UserId)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<BROLE_MAP>()
+                .Get(x=>x.BROLE == BroleId && x.MSACCT == UserId).FirstOrDefault();
+            return existingData;
+        }
 
 
 
