@@ -28,5 +28,7 @@ namespace Sampoerna.EMS.Contract
 
         T001WDto GetMainPlantByNppbkcId(string nppbkcId);
 
+        List<T001WCompositeDto> GetCompositeListByNppbkcId(string nppbkcId);
+
     }
 }

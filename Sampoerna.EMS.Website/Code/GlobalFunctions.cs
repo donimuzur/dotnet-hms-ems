@@ -13,14 +13,14 @@ namespace Sampoerna.EMS.Website.Code
 {
     public class GlobalFunctions
     {
-       
+
         public static SelectList GetPoaAll(IPOABLL poabll)
         {
             IPOABLL poaBll = poabll;
-            var poaList =  poaBll.GetAll();
+            var poaList = poaBll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(poaList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
-            
+
         }
 
         public static SelectList GetPoaByNppbkcId(string nppbkcId)
@@ -30,13 +30,13 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(poaList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-        
-        public static SelectList GetCreatorList(object selectedValue=null)
+
+        public static SelectList GetCreatorList(object selectedValue = null)
         {
             IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
             var users = userBll.GetUsers(new UserInput());
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
-            return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue );
+            return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue);
         }
 
         public static SelectList GetNppbkcAll(IZaidmExNPPBKCBLL nppbkcBll)
@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPersonalizationCodeList()
         {
             IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
-            var data = masterBll.GetDataPersonalization().Where(x=>x.IS_DELETED != true);
+            var data = masterBll.GetDataPersonalization().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem
                              {
@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website.Code
                              select new SelectListItem
                              {
                                  Value = s.PROD_CODE,
-                                 Text = s.PROD_CODE + "-" + s.PRODUCT_TYPE + " ["+s.PRODUCT_ALIAS+"]"
+                                 Text = s.PROD_CODE + "-" + s.PRODUCT_TYPE + " [" + s.PRODUCT_ALIAS + "]"
                              };
             return new SelectList(selectList, "Value", "Text");
         }
@@ -158,11 +158,11 @@ namespace Sampoerna.EMS.Website.Code
         {
             var data = _masterDataBll.GetAllDataSeries().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
-                                         select new SelectListItem
-                                                    {
-                                                      Value = s.SERIES_CODE,
-                                                      Text = s.SERIES_CODE + "-" + s.SERIES_VALUE
-                                                    };
+                             select new SelectListItem
+                                        {
+                                            Value = s.SERIES_CODE,
+                                            Text = s.SERIES_CODE + "-" + s.SERIES_VALUE
+                                        };
             return new SelectList(selectList, "Value", "Text");
         }
 
@@ -206,10 +206,10 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "STICKER_CODE", "STICKER_CODE");
         }
 
-            public static SelectList GetConversionUomList()
+        public static SelectList GetConversionUomList()
         {
             IUnitOfMeasurementBLL uomBll = MvcApplication.GetInstance<UnitOfMeasurementBLL>();
-            var data = uomBll.GetAll().Where(x=>x.IS_DELETED != true);
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true);
             var selectList = from s in data
                              select new SelectListItem
                              {
@@ -218,7 +218,7 @@ namespace Sampoerna.EMS.Website.Code
                              };
             return new SelectList(selectList, "Value", "Text");
         }
-        
+
         public static SelectList GetKppBcCityList()
         {
             IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
@@ -229,7 +229,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetGoodTypeGroupList()
         {
             ExGroupTypeBLL goodTypeBll = MvcApplication.GetInstance<ExGroupTypeBLL>();
-            var goodTypes = goodTypeBll.GetAll().Where(x=> x.Inactive = false).ToList();
+            var goodTypes = goodTypeBll.GetAll().Where(x => x.Inactive = false).ToList();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
             return new SelectList(selectItemSource, "ValueField", "TextField");
             //return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
@@ -240,7 +240,7 @@ namespace Sampoerna.EMS.Website.Code
             IZaidmExGoodTypeBLL goodTypeBll = MvcApplication.GetInstance<ZaidmExGoodTypeBLL>();
             var goodTypes = goodTypeBll.GetAll();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(goodTypes);
-           // return new SelectList(selectItemSource, "ValueField", "TextField");
+            // return new SelectList(selectItemSource, "ValueField", "TextField");
             return new SelectList(goodTypes, "EXT_TYP_DESC", "EXT_TYP_DESC");
         }
 
@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
         }
-        
+
         public static SelectList GetBroleList()
         {
             IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
@@ -286,12 +286,10 @@ namespace Sampoerna.EMS.Website.Code
             return result;
         }
 
-        public static SelectList GetPlantByNppbkcId(string nppbkcId)
+        public static SelectList GetPlantByNppbkcId(IPlantBLL plantBll, string nppbkcId)
         {
-            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plantList = plantBll.GetPlantByNppbkc(nppbkcId);
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
-            return new SelectList(selectItemSource, "ValueField", "TextField");
+            var plantList = plantBll.GetCompositeListByNppbkcId(nppbkcId);
+            return new SelectList(plantList, "WERKS", "DROPDOWNTEXTFIELD");
 
         }
 
@@ -303,9 +301,8 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
         }
-      
-        }
-       
 
-     }
+    }
+
+}
 

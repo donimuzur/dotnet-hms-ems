@@ -8,20 +8,24 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public string NppbKcId { get; set; }
         public string Poa { get; set; }
+        /// <summary>
+        /// only if Lack1Level is Plant
+        /// </summary>
         public string PlantId { get; set; }
         public string Creator { get; set; }
-        public string SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
 
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
-        public Enums.LACK1Type Lack1Type { get; set; }
 
-      
+        public Enums.Lack1Level Lack1Level { get; set; }
+
+        public bool IsOpenDocumentOnly { get; set; }
+
     }
-
-
+    
     public class Lack1SaveInput
     {
         public Lack1Dto Lack1 { get; set; }
@@ -47,6 +51,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime DecreeDate { get; set; }
         public Lack1DocumentDto Lack1Document { get; set; }
     }
+
     public class Lack1GetLatestSaldoPerPeriodInput
     {
         public int MonthTo { get; set; }

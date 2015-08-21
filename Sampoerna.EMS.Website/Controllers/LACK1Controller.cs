@@ -25,10 +25,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private ICompanyBLL _companyBll;
         private IPBCK1BLL _pbck1Bll;
+        private IPlantBLL _plantBll;
 
-        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll, 
-            IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll, 
-            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll)
+        public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll,
+            IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll,
+            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -40,6 +41,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _goodTypeBll = goodTypeBll;
             _companyBll = companyBll;
             _pbck1Bll = pbck1Bll;
+            _plantBll = plantBll;
         }
 
 
@@ -55,63 +57,40 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Type = Enums.LACK1Type.ListByNppbkc,
-
-                Details = Mapper.Map<List<NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()))
+                Details = Mapper.Map<List<Lack1NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput() { Lack1Level = Enums.Lack1Level.Nppbkc, IsOpenDocumentOnly = true }))
 
             });
 
             return View("Index", data);
         }
 
+        /// <summary>
+        /// for LACK-1 data by NPPBKC Level
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         private Lack1IndexViewModel InitLack1ViewModel(Lack1IndexViewModel model)
         {
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
-
-
             return model;
-        }
-
-        private List<NppbkcData> GetListByNppbkc(Lack1IndexViewModel filter = null)
-        {
-            if (filter == null)
-            {
-                //get all 
-                var litsByNppbkc = _lack1Bll.GetAllByParam(new Lack1GetByParamInput());
-                return Mapper.Map<List<NppbkcData>>(litsByNppbkc);
-            }
-            //get by param
-            var input = Mapper.Map<Lack1GetByParamInput>(filter);
-            var dbData = _lack1Bll.GetAllByParam(input);
-
-            return Mapper.Map<List<NppbkcData>>(dbData);
-
         }
 
         [HttpPost]
         public PartialViewResult FilterListByNppbkc(Lack1Input model)
         {
 
-
-            //if (!string.IsNullOrEmpty(model.ReportedOn))
-            //{
-            //    var data = Convert.ToDateTime(model.ReportedOn);
-            //    model.PeriodMonth = data.Month;
-            //    model.PeriodYear = data.Year;    
-            //}
-
-
-
             var input = Mapper.Map<Lack1GetByParamInput>(model);
+            input.Lack1Level = Enums.Lack1Level.Nppbkc;
+            input.IsOpenDocumentOnly = true;
 
             var dbData = _lack1Bll.GetAllByParam(input);
 
-            var result = Mapper.Map<List<NppbkcData>>(dbData);
+            var result = Mapper.Map<List<Lack1NppbkcData>>(dbData);
 
-            var viewModel = new Lack1IndexViewModel();
-            viewModel.Details = result;
+            var viewModel = new Lack1IndexViewModel { Details = result };
 
             return PartialView("_Lack1Table", viewModel);
 
@@ -132,10 +111,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Lack1Type = Enums.LACK1Type.ListByNppbkc,
-
-                Details = Mapper.Map<List<PlantData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()))
-
+                Details = Mapper.Map<List<Lack1PlantData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()
+                {
+                    Lack1Level = Enums.Lack1Level.Plant,
+                    IsOpenDocumentOnly = true
+                }))
             });
 
             return View("ListByPlant", data);
@@ -155,12 +135,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterListByPlant(Lack1Input model)
         {
             var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
+            inputPlant.Lack1Level = Enums.Lack1Level.Plant;
+            inputPlant.IsOpenDocumentOnly = true;
 
             var dbDataPlant = _lack1Bll.GetAllByParam(inputPlant);
 
-            var resultPlant = Mapper.Map<List<PlantData>>(dbDataPlant);
+            var resultPlant = Mapper.Map<List<Lack1PlantData>>(dbDataPlant);
 
-            var viewModel = new Lack1IndexPlantViewModel {Details = resultPlant};
+            var viewModel = new Lack1IndexPlantViewModel { Details = resultPlant };
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -173,7 +155,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult PoaAndPlantListPartial(string nppbkcId)
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
             var model = new Lack1IndexViewModel() { PoaList = listPoa, PlantIdList = listPlant };
             return Json(model);
         }
@@ -187,7 +169,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public JsonResult GetPlantListByNppbkcId(string nppbkcId)
         {
-            var listPlant = GlobalFunctions.GetPlantByNppbkcId(nppbkcId);
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
             var model = new Lack1CreateNppbkcViewModel() { PlantList = listPlant };
             return Json(model);
         }
@@ -309,6 +291,50 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(years, "ValueField", "TextField");
         }
+
+        #region Completed Document
+
+        public ActionResult ListCompletedDocument()
+        {
+            var data = InitListCompletedDocument(new Lack1IndexCompletedDocumentViewModel
+            {
+
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput()))
+
+            });
+
+            return View("ListCompletedDocument", data);
+        }
+
+        private Lack1IndexCompletedDocumentViewModel InitListCompletedDocument(Lack1IndexCompletedDocumentViewModel model)
+        {
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.PlantIdList = GlobalFunctions.GetPlantAll();
+            model.CreatorList = GlobalFunctions.GetCreatorList();
+
+            return model;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterListCompletedDocument(Lack1Input model)
+        {
+            var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
+            inputPlant.IsOpenDocumentOnly = false;
+
+            var dbDataPlant = _lack1Bll.GetCompletedDocumentByParam(inputPlant);
+
+            var resultPlant = Mapper.Map<List<Lack1CompletedDocumentData>>(dbDataPlant);
+
+            var viewModel = new Lack1IndexCompletedDocumentViewModel { Details = resultPlant };
+
+            return PartialView("_Lack1CompletedDocumentTable", viewModel);
+
+        }
+
+        #endregion
 
     }
 }
