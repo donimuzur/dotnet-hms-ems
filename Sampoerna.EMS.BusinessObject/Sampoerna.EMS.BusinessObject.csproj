@@ -72,6 +72,12 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK4C.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CK4C_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -95,11 +101,13 @@
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
+    <Compile Include="DTOs\CK5XmlDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
     <Compile Include="DTOs\CountryDto.cs" />
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
@@ -153,6 +161,7 @@
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
+    <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />

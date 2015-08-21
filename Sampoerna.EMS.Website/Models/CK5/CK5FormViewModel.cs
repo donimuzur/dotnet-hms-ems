@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SourceKppbcName { get; set; }
 
         //DESTINATION PLANT
-        //[Required(ErrorMessage = "Destination Plant field is required")]
+        [Required(ErrorMessage = "Destination Plant field is required")]
         public string DestPlantId { get; set; }
         public SelectList DestPlantList { get; set; }
         public string DestPlantName { get; set; }

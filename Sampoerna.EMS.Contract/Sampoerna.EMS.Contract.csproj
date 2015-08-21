@@ -48,7 +48,7 @@
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
     <Compile Include="ILFA1BLL.cs" />
-    <Compile Include="IMessageService.cs" />
+    <Compile Include="ILACK2BLL.cs" />    <Compile Include="IMessageService.cs" />
     <Compile Include="ILACK1BLL.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
