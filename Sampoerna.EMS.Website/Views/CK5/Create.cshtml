@@ -95,7 +95,7 @@
 
 }
 
-<div id="ModalCreateCk5" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div id="ModalCk5Material" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -103,7 +103,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                   Missing CK5 Materials
+                    Missing CK5 Materials
                 </p>
 
             </div>
@@ -144,6 +144,10 @@
                     $('#SaveCk5Forms').submit();
                 }
 
+            });
+
+            $('#CK5UploadSubmitBtn').click(function() {
+                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
             });
 
         });
@@ -215,7 +219,7 @@
                     $("input[name='CeOfficeCode']").val(nppBkcCity);
                     $("input[name='KppBcCityName']").val(cityName);
 
-                                    @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
+                                                        @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
                 }
             }
 

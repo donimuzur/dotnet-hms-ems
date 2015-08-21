@@ -86,8 +86,8 @@ function IsValidDataUpload() {
 
     return true;
 }
-$('#CK5UploadSubmitBtn').click(function () {
 
+function GenerateXlsCk5Material(url) {
     var fileName = $('[name="itemExcelFile"]').val().trim();
     var pos = fileName.lastIndexOf('.');
     var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -106,7 +106,7 @@ $('#CK5UploadSubmitBtn').click(function () {
     }
     $.ajax({
         type: "POST",
-        url: '/CK5/UploadFile',
+        url: url,
         data: formData,
         dataType: 'html',
         contentType: false,
@@ -116,25 +116,18 @@ $('#CK5UploadSubmitBtn').click(function () {
             $('#ProdConvContent').html(response);
             if (IsValidDataUpload())
                 $('#CK5UploadSave').enable();
-        },
-        error: function (error) {
-            alert("errror " + error);
         }
+        //error: function (error) {
+        //    alert("errror " + error);
+        //}
     });
-});
+}
 
-//function ajaxCallSave(url, formData) {
-//    if (formData.model) {
-//        $.ajax({
-//            type: 'POST',
-//            url: url,
-//            data: formData,
-//            success: function (data) {
-//                $("input[name='pbck1Date']").val(data);
-//            }
-//        });
-//    }
-//}
+//$('#CK5UploadSubmitBtn').click(function () {
+
+  
+//});
+
 
 function ajaxGetPbck1Date(url, formData) {
     if (formData.pbck1Id) {
@@ -225,14 +218,14 @@ function ajaxGetCompanyCode(url, formData) {
     }
 }
 
-function ChangeBackSourceMaterial(plantId) {
+function ChangeBackSourceMaterial(plantId, url) {
     if (plantId == plantOriginal) {
         
         var formData = new FormData();
         formData.append("ck5Id", $('#Ck5Id').val());
         $.ajax({
             type: "POST",
-            url: '/CK5/GetOriginalPlant',
+            url: url,
             data: formData,
             dataType: 'html',
             contentType: false,
@@ -241,10 +234,11 @@ function ChangeBackSourceMaterial(plantId) {
                 $('#ck5EditMaterialTable').html("");
                 $('#ck5EditMaterialTable').html(response);
                
-            },
-            error: function (error) {
-                alert("errror " + error);
             }
+            //,
+            //error: function (error) {
+            //    alert("errror " + error);
+            //}
         });
     }
 }
@@ -259,18 +253,29 @@ function ValidateGovInput() {
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
     }
     
     if ($('#RegistrationDate').val() == '') {
         AddValidationClass(false, 'RegistrationDate');
         result = false;
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
     }
 
     if ($('.ck5Attachment').length == 0) {
         AddValidationClass(false, 'poa-files');
         
-        if (result)
-            alert("Attach your files");
+        if (result) {
+            $('#ModalCk5ValidateGov').modal('show');
+            
+            $('#collapseFour').removeClass('collapse');
+            $('#collapseFour').addClass('in');
+            $("#collapseFour").css({ height: "auto" });
+        }
         result = false;
     }
     
@@ -289,13 +294,44 @@ function AddValidationClass(isValid, objName) {
 
 function ValidateCk5Form() {
     var result = true;
+    var isValidCk5Detail = true;
+   
+   
+    if ($('#KppBcCity').find("option:selected").val() == '') {
+        AddValidationClass(false, 'KppBcCity');
+        result = false;
+        isValidCk5Detail = false;
+    }
     
-    //var nppBkcCity = $('#KppBcCity').find("option:selected").val();
-    //if (nppBkcCity == '') {
-    //    AddValidationClass(false, 'KppBcCity');
-    //    result = false;
-    //    $('#collapseOne').addClass('in');
-    //}
+    if ($('#GoodType').find("option:selected").val() == '') {
+        AddValidationClass(false, 'GoodType');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#ExciseStatus').find("option:selected").val() == '') {
+        AddValidationClass(false, 'ExciseStatus');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#ExciseSettlement').find("option:selected").val() == '') {
+        AddValidationClass(false, 'ExciseSettlement');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#RequestType').find("option:selected").val() == '') {
+        AddValidationClass(false, 'RequestType');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    if (!isValidCk5Detail) {
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
+
+    }
     
     if ($('#SourcePlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'SourcePlantId');
@@ -320,7 +356,7 @@ function ValidateCk5Form() {
         if (rowCount <= 1) {
             // alert('Missing CK5 Material');
 
-            $('#ModalCreateCk5').modal('show');
+            $('#ModalCk5Material').modal('show');
             
             $('#home-tab').removeClass('active');
             $('#upload-tab').addClass('active');
