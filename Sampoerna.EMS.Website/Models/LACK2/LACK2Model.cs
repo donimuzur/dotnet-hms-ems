@@ -11,6 +11,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
     {
         public int Lack2Id { get; set; }
 
+        public string Lack2Number { get; set; }
+
         [Required]
         [Display(Name = "Company Code")]
         public string Burks { get; set; }
