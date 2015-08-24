@@ -320,8 +320,32 @@ namespace Sampoerna.EMS.Website.Code
         }
         public static SelectList GetAuthorizedPlant(List<NppbkcPlantDto> listNppbkc, string NppbckId)
         {
-            var selectItemSource = listNppbkc.Where(x => x.NppbckId == NppbckId).Select(x => x.Plants);
-            return new SelectList(selectItemSource, "WERKS", "NAME1");
+             var plants = new List<PlantDto>();
+                
+            if (NppbckId == null)
+            {
+                var items = listNppbkc.ToList();
+                foreach (var item in items)
+                {
+
+                    plants.AddRange(item.Plants);
+                }
+                var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants);
+                return new SelectList(selectItemSource, "ValueField", "TextField");
+            }
+            else
+            {
+                var items = listNppbkc.Where(x => x.NppbckId == NppbckId).ToList();
+                foreach (var item in items)
+                {
+
+                    plants.AddRange(item.Plants);
+                }
+                var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants);
+                return new SelectList(selectItemSource, "ValueField", "TextField");
+            }
+          
+          
         }
 
         public static SelectList GetYearList()

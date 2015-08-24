@@ -792,6 +792,11 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<ZAIDM_EX_NPPBKCDto, NppbkcItemModel>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<PlantDto, SelectItemModel>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
+              .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
+
+
         }
     }
 

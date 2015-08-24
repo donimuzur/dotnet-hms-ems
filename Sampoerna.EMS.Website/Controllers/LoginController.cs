@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return RedirectToAction("UnAuthorize", "Error");
+            return RedirectToAction("Unauthorized", "Error");
 
         }
 
