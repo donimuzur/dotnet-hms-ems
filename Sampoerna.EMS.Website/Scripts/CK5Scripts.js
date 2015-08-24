@@ -292,7 +292,7 @@ function AddValidationClass(isValid, objName) {
     }
 }
 
-function ValidateCk5Form() {
+function ValidateCk5Form(ck5Type) {
     var result = true;
     var isValidCk5Detail = true;
    
@@ -341,15 +341,68 @@ function ValidateCk5Form() {
         $('#collapseTwo').addClass('in');
         $("#collapseTwo").css({ height: "auto" });
     }
-    
-    if ($('#DestPlantId').find("option:selected").val() == '') {
-        AddValidationClass(false, 'DestPlantId');
-        result = false;
-        $('#collapseThree').removeClass('collapse');
-        $('#collapseThree').addClass('in');
-        $("#collapseThree").css({ height: "auto" });
-    }
 
+    if (ck5Type == 'Export') {
+        isValidCk5Detail = true;
+
+        if ($('#CountryCode').find("option:selected").val() == '') {
+            AddValidationClass(false, 'CountryCode');
+            result = false;
+            isValidCk5Detail = false;
+        }
+
+
+        if ($('#LoadingPort').val() == '') {
+            AddValidationClass(false, 'LoadingPort');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#LoadingPortName').val() == '') {
+            AddValidationClass(false, 'LoadingPortName');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#LoadingPortId').val() == '') {
+            AddValidationClass(false, 'LoadingPortId');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        
+        if ($('#FinalPort').val() == '') {
+            AddValidationClass(false, 'FinalPort');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#FinalPortName').val() == '') {
+            AddValidationClass(false, 'FinalPortName');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#FinalPortId').val() == '') {
+            AddValidationClass(false, 'FinalPortId');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        
+        if (!isValidCk5Detail) {
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+
+        }
+        
+    } else {
+
+
+        if ($('#DestPlantId').find("option:selected").val() == '') {
+            AddValidationClass(false, 'DestPlantId');
+            result = false;
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+        }
+    }
+    
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
