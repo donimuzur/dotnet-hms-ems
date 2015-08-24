@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<CK5> _repository;
         private IGenericRepository<CK5_MATERIAL> _repositoryCK5Material;
+        private IGenericRepository<CK5_FILE_UPLOAD> _repositoryCK5FileUpload;
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
       
@@ -49,6 +50,7 @@ namespace Sampoerna.EMS.BLL
 
             _repository = _uow.GetGenericRepository<CK5>();
             _repositoryCK5Material = _uow.GetGenericRepository<CK5_MATERIAL>();
+            _repositoryCK5FileUpload = _uow.GetGenericRepository<CK5_FILE_UPLOAD>();
 
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
           
@@ -236,7 +238,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                ProcessInsertCk5(input);
+               dbData =  ProcessInsertCk5(input);
             }
 
             _uow.SaveChanges();
@@ -687,6 +689,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+
         private void GovApproveDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -718,6 +721,44 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
 
           
+
+        }
+
+        private void DeleteCk5FileUploadByCk5Id(long ck5Id)
+        {
+            var dbData = _repositoryCK5FileUpload.Get(c => c.CK5_ID == ck5Id);
+            foreach (var ck5FileUpload in dbData)
+            {
+                _repositoryCK5FileUpload.Delete(ck5FileUpload);
+            }
+
+        }
+        public void GovApproveDocumentRollback(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+         
+            dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+            dbData.REGISTRATION_NUMBER = string.Empty;
+
+            dbData.REGISTRATION_DATE = null;
+
+            //dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+           // dbData.CK5_FILE_UPLOAD = null;
+            foreach (var ck5FileUpload in dbData.CK5_FILE_UPLOAD.ToList())
+            {
+                _repositoryCK5FileUpload.Delete(ck5FileUpload);
+            }
+
+            var inputHistory = new GetByActionAndFormNumberInput();
+            inputHistory.FormNumber = dbData.SUBMISSION_NUMBER;
+            inputHistory.ActionType = Enums.ActionType.GovApprove;
+
+            _workflowHistoryBll.DeleteByActionAndFormNumber(inputHistory);
+           
+
+            _uow.SaveChanges();
+
         }
 
         private void GovRejectedDocument(CK5WorkflowDocumentInput input)
@@ -834,7 +875,7 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
+            //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
             queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
           
@@ -858,6 +899,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
+     
         #region Reports
 
         public CK5ReportDto GetCk5ReportDataById(long id)
@@ -1254,7 +1296,7 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        private void ProcessInsertCk5(CK5SaveInput input)
+        private CK5 ProcessInsertCk5(CK5SaveInput input)
         {
             //workflowhistory
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
@@ -1304,6 +1346,7 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputWorkflowHistory);
 
+            return dbData;
         }
 
        
@@ -1391,6 +1434,17 @@ namespace Sampoerna.EMS.BLL
 
             //return Mapper.Map<CK5Dto>(dbData);
 
+
+        }
+
+        public CK5XmlDto GetCk5ForXmlById(long id)
+        {
+            //includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
+            var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<CK5XmlDto>(dtData);
 
         }
     }

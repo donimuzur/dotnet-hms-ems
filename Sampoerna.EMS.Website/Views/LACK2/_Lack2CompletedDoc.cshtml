@@ -1,0 +1,41 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2IndexViewModel
+
+<table id="lack1Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Company</th>
+            <th>Plant</th>
+            <th>Tobacco Goods Type</th>
+            <th>Supplier</th>
+            <th>Period</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td class="action">
+                    <a href="#"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "LACK2", new { id = item.Lack2Id})"><i class="fa fa-pencil-square-o"></i></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Company)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Nppbkc)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.TobaccoGoodType)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Supplier)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Period)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

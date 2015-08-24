@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -212,6 +214,29 @@ namespace Sampoerna.EMS.BLL
                 return dtData.ACTION_BY;
 
             return "";
+
+        }
+
+        public void Delete(long id)
+        {
+            var dbData = _repository.GetByID(id);
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            _repository.Delete(dbData);
+
+        }
+
+        public void DeleteByActionAndFormNumber(GetByActionAndFormNumberInput input)
+        {
+            var dbData =
+                _repository.Get(c => c.ACTION == input.ActionType && c.FORM_NUMBER == input.FormNumber, null,
+                    includeTables).FirstOrDefault();
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            _repository.Delete(dbData);
 
         }
     }

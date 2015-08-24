@@ -15,7 +15,7 @@
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
+                if (idx != 0 && idx != 4) {
                     var title = $('#mydata thead th').eq($(this).index()).text();
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
@@ -89,6 +89,7 @@
                             <th class="toggle-row"> Filter </th>
                             <th> Group Name </th>
                             <th> Excisable Group Type </th>
+                            <th> Inactive </th>
                         </tr>
                     </thead>
                     <thead class="filters">
@@ -96,6 +97,7 @@
                             <th> Action </th>
                             <th> Group Name </th>
                             <th> Excisable Group Type </th>
+                            <th> Inactive </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,6 +114,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.GroupTypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Inactive)
                                 </td>
                             </tr>
                         }

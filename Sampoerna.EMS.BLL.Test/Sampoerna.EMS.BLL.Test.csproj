@@ -103,6 +103,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BLLMapperTest.cs" />
     <Compile Include="CompanyBLLTest.cs" />
     <Compile Include="DocumentSequenceNumberBLLTest.cs" />
     <Compile Include="EmailTemplateBLLTest.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="GlobalFunctionTest.cs" />
     <Compile Include="HeaderFooterBLLTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Lack2BLLTests.cs" />
     <Compile Include="UserBLLTest.cs" />
   </ItemGroup>
   <ItemGroup>

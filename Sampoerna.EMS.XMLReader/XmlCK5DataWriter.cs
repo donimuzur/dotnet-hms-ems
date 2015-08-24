@@ -50,6 +50,15 @@ namespace Sampoerna.EMS.XMLReader
             return null;
         }
 
+        private string SetNullValue(object value)
+        {
+            if (value == null)
+            {
+                return "/";
+            }
+            return value.ToString();
+        }
+
         public void CreateXML(CK5 ck5, string filePath)
         {
             using (XmlWriter writer = XmlWriter.Create(filePath))
@@ -67,12 +76,12 @@ namespace Sampoerna.EMS.XMLReader
                 writer.WriteElementString("CK5_PROCS_TYP", ck5.CK5_TYPE.ToString());
                 writer.WriteElementString("SOURCE_PLANT", ck5.SOURCE_PLANT_ID);
                 writer.WriteElementString("DEST_PLANT", ck5.DEST_PLANT_ID);
-                writer.WriteElementString("CREATOR_ID", ck5.CREATED_BY);
-                writer.WriteElementString("STO_NUMBER", ck5.STO_SENDER_NUMBER);
-                writer.WriteElementString("STOB_NUMBER", ck5.STOB_NUMBER);
-                writer.WriteElementString("STO_REC_NUMBER", ck5.STO_RECEIVER_NUMBER);
-                writer.WriteElementString("GI_DATE", GetDateFormat(ck5.GI_DATE));
-                writer.WriteElementString("GR_DATE", GetDateFormat(ck5.GR_DATE));
+                writer.WriteElementString("CREATOR_ID", SetNullValue(ck5.CREATED_BY));
+                writer.WriteElementString("STO_NUMBER", SetNullValue(ck5.STO_SENDER_NUMBER));
+                writer.WriteElementString("STOB_NUMBER", SetNullValue(ck5.STOB_NUMBER));
+                writer.WriteElementString("STO_REC_NUMBER", SetNullValue(ck5.STO_RECEIVER_NUMBER));
+                writer.WriteElementString("GI_DATE", SetNullValue(GetDateFormat(ck5.GI_DATE)));
+                writer.WriteElementString("GR_DATE", SetNullValue(GetDateFormat(ck5.GR_DATE)));
 
                 
                 foreach (var item in ck5.CK5_MATERIAL)
@@ -82,13 +91,125 @@ namespace Sampoerna.EMS.XMLReader
                     writer.WriteElementString("CK5_NUMBER", ck5.REGISTRATION_NUMBER);
                     writer.WriteElementString("ITEM_NUMBER",GetLinesItem(item.LINE_ITEM));
                     writer.WriteElementString("MATERIAL", item.BRAND);
-                    writer.WriteElementString("MENGE", item.CONVERTED_QTY.ToString());
-                    writer.WriteElementString("MEINS", item.CONVERTED_UOM.ToString());
+                    writer.WriteElementString("MENGE", SetNullValue(item.CONVERTED_QTY.ToString()));
+                    writer.WriteElementString("MEINS", SetNullValue(item.CONVERTED_UOM));
+                    writer.WriteElementString("DELIVERY_NOTE", SetNullValue(item.NOTE));
+                    writer.WriteElementString("GI_OPN_QTY", SetNullValue(null));
+                    writer.WriteElementString("GI_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("GR_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_OPN_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_OPN_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("GI_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("GI_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("GI_YEAR", SetNullValue(null));
+                    writer.WriteElementString("GI_DATE", SetNullValue(null));
+                    writer.WriteElementString("GR_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("GR_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("GR_YEAR", SetNullValue(null));
+                    writer.WriteElementString("GR_DATE", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_YEAR", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_DATE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_YEAR", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_DATE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_YEAR", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_DATE", SetNullValue(null));
+                                                
+            
                     //ZAIDM_CK5_ITM
                     writer.WriteEndElement();
                 }
                 
                
+                //ZAIDM_CK5_HDR
+                writer.WriteEndElement();
+                //IDOC
+                writer.WriteEndElement();
+                //ZAIDM_CK5_01
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+
+        }
+
+        public void CreateCK5Xml(CK5XmlDto ck5XmlDto)
+        {
+            using (XmlWriter writer = XmlWriter.Create(ck5XmlDto.Ck5PathXml))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("ZAIDM_CK5_01");
+                writer.WriteStartElement("IDOC");
+                writer.WriteAttributeString("BEGIN", "1");
+
+
+                writer.WriteStartElement("ZIA_CK5_HDR");
+                writer.WriteAttributeString("SEGMENT", "1");
+
+                writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
+                writer.WriteElementString("CK5_PROCS_TYP", ck5XmlDto.CK5_TYPE.ToString());
+                writer.WriteElementString("SOURCE_PLANT", ck5XmlDto.SOURCE_PLANT_ID);
+                writer.WriteElementString("DEST_PLANT", ck5XmlDto.DEST_PLANT_ID);
+                writer.WriteElementString("CREATOR_ID", SetNullValue(ck5XmlDto.CREATED_BY));
+                writer.WriteElementString("STO_NUMBER", SetNullValue(ck5XmlDto.STO_SENDER_NUMBER));
+                writer.WriteElementString("STOB_NUMBER", SetNullValue(ck5XmlDto.STOB_NUMBER));
+                writer.WriteElementString("STO_REC_NUMBER", SetNullValue(ck5XmlDto.STO_RECEIVER_NUMBER));
+                writer.WriteElementString("GI_DATE", SetNullValue(GetDateFormat(ck5XmlDto.GI_DATE)));
+                writer.WriteElementString("GR_DATE", SetNullValue(GetDateFormat(ck5XmlDto.GR_DATE)));
+
+
+                foreach (var item in ck5XmlDto.Ck5Material)
+                {
+                    writer.WriteStartElement("ZIA_CK5_ITM");
+                    writer.WriteAttributeString("SEGMENT", "1");
+                    writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
+                    writer.WriteElementString("ITEM_NUMBER", GetLinesItem(item.LINE_ITEM));
+                    writer.WriteElementString("MATERIAL", item.BRAND);
+                    writer.WriteElementString("MENGE", SetNullValue(item.CONVERTED_QTY.ToString()));
+                    writer.WriteElementString("MEINS", SetNullValue(item.CONVERTED_UOM));
+                    writer.WriteElementString("DELIVERY_NOTE", SetNullValue(item.NOTE));
+                    writer.WriteElementString("GI_OPN_QTY", SetNullValue(null));
+                    writer.WriteElementString("GI_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("GR_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_OPN_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_OPN_QTY", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_ACC_QTY", SetNullValue(null));
+                    writer.WriteElementString("GI_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("GI_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("GI_YEAR", SetNullValue(null));
+                    writer.WriteElementString("GI_DATE", SetNullValue(null));
+                    writer.WriteElementString("GR_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("GR_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("GR_YEAR", SetNullValue(null));
+                    writer.WriteElementString("GR_DATE", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_YEAR", SetNullValue(null));
+                    writer.WriteElementString("STOB_GI_DATE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_YEAR", SetNullValue(null));
+                    writer.WriteElementString("STOR_GI_DATE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_MAT_DOC", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_ZEILE", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_YEAR", SetNullValue(null));
+                    writer.WriteElementString("STOR_GR_DATE", SetNullValue(null));
+
+
+                    //ZAIDM_CK5_ITM
+                    writer.WriteEndElement();
+                }
+
+
                 //ZAIDM_CK5_HDR
                 writer.WriteEndElement();
                 //IDOC

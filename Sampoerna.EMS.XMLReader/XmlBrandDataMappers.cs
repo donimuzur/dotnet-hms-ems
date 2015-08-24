@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.XMLReader
                         //    _xmlMapper.InsertToDatabase(prodTypeToAdd);
                         //}
                         item.PROD_CODE = prodCode;
-                        var series_id = _xmlMapper.GetElementValue(xElement.Element("SERIES_CODE"));
+                        var series_id = _xmlMapper.GetRomanNumeralValue(xElement.Element("SERIES_CODE"));
                         //var series =
                         //    new XmlSeriesDataMapper(null).GetSeries(series_id);
                         //if (series == null)
@@ -124,6 +124,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.COLOUR = _xmlMapper.GetElementValue(xElement.Element("COLOUR"));
                         item.START_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("START_DATE")));
                         item.END_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE")));
+                        item.IS_FROM_SAP = true;
                         var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
                         if (existingMaterial != null)
                         {

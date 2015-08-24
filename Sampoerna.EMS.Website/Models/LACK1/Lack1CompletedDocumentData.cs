@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Sampoerna.EMS.Website.Models.LACK1
+﻿namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class PlantData
+    public class Lack1CompletedDocumentData
     {
         public long Lack1Id { get; set; }
+        public string Lack1Number { get; set; }
         public string Company { get; set; }
         public string PlantId { get; set; }
         public string TobaccoGoodType { get; set; }

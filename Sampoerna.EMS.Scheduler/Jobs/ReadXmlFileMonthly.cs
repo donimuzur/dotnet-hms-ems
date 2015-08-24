@@ -15,15 +15,15 @@ using Container = SimpleInjector.Container;
 namespace Sampoerna.HMS.Scheduler.Jobs
 {
     [DisallowConcurrentExecution]
-    public class ReadXmlFile : IJob
+    public class ReadXmlFileMonthly : IJob
     {
         private readonly Container _container;
         private Service _svc = null;
-        public ReadXmlFile(Container container)
+        public ReadXmlFileMonthly(Container container)
         {
             _container = container;
             _svc = new Service();
-            
+
 
         }
 
@@ -37,7 +37,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
                     result += "<p>" + error + ", valid format datetime is yyyy-MM-dd</p>";
                     continue;
-                    
+
                 }
                 result += String.Format("<p>[{0}] {1}</p>", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), error);
             }
@@ -46,6 +46,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
 
         public void Execute(IJobExecutionContext context)
         {
+
             using (_container.BeginLifetimeScope())
             {
 
@@ -55,15 +56,15 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 var errorList = new List<string>();
                 try
                 {
-                     
-                    logger.Info("Reading XML start on " + DateTime.Now);
-                    errorList.AddRange(_svc.Run());
-                    logger.Info("Reading XML ended On " + DateTime.Now);
-                    
+
+                    logger.Info("Reading XML Monthly start on " + DateTime.Now);
+                    errorList.AddRange(_svc.Run(false));
+                    logger.Info("Reading XML Minthly ended On " + DateTime.Now);
+
                 }
                 catch (Exception ex)
                 {
-                    
+
                     logger.Error("Reading XML crashed", ex);
                 }
                 if (errorList.Count > 0)
@@ -81,7 +82,8 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 else
                 {
                     var body = string.Empty;
-                    if (_svc.filesMoved.Count > 0) {
+                    if (_svc.filesMoved.Count > 0)
+                    {
                         foreach (var file in _svc.filesMoved)
                         {
                             string info = "<p>file move to archieve : " + file + "</p>";
@@ -90,8 +92,8 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                         }
                         logger.Error(EmailUtility.Email(body, null));
                     }
-                    
-                    
+
+
                 }
 
             }

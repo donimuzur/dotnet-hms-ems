@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<CK5ListIndexQtyResolver>().FromMember(src => src))
-                .ForMember(dest => dest.POA, opt => opt.MapFrom(src => src.APPROVED_BY))
+                .ForMember(dest => dest.POA, opt => opt.ResolveUsing<CK5ListIndexPOAResolver>().FromMember(src => src))
                 .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + " - " + src.SOURCE_PLANT_NAME))
                 .ForMember(dest => dest.DestinationPlant, opt => opt.ResolveUsing<CK5ListIndexDestinationPlantResolver>().FromMember(src => src))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
@@ -210,58 +210,51 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5Dto, CK5SummaryReportsItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
-
-            #region Domestic
-                .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
-                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.PbckNumber))
-                .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PbckDecreeDate.HasValue ? src.PbckDecreeDate.Value.ToString("dd MMM yyyy") : string.Empty))
-                .ForMember(dest => dest.SealingNotifDate, opt => opt.MapFrom(src => src.SEALING_NOTIF_DATE))
-                .ForMember(dest => dest.SealingNotifNumber, opt => opt.MapFrom(src => src.SEALING_NOTIF_NUMBER))
-                .ForMember(dest => dest.UnSealingNotifNumber, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_NUMBER))
-                .ForMember(dest => dest.UnSealingNotifDate, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_DATE))
-            #endregion
-            
-            #region Export
-                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue ? src.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                //added
+                .ForMember(dest => dest.Ck5TypeDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CK5_TYPE)))
+                .ForMember(dest => dest.KppbcCityName, opt => opt.MapFrom(src => src.KPPBC_CITY))
+                //.ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
-                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
-                .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue ? src.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.ExGoodTypeDesc, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
-                .ForMember(dest => dest.SourceKppbcName, opt => opt.MapFrom(src => src.SOURCE_PLANT_KPPBC_NAME_OFFICE))
-
-                .ForMember(dest => dest.SourceCompanyName, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_NAME))
-                .ForMember(dest => dest.SourceNppbkcId, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPPBKC_ID))
-                .ForMember(dest => dest.SourceCompanyAddress, opt => opt.MapFrom(src => src.SOURCE_PLANT_ADDRESS))
-                //.ForMember(dest => dest.DestinationCountry, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                //.ForMember(dest => dest.TypeOfTobaccoProduct, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                .ForMember(dest => dest.GrandTotal, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.GRAND_TOTAL_EX))
-                //.ForMember(dest => dest.ContainBox, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                //.ForMember(dest => dest.TotalExcisableGoods, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                //.ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.hje))
-                //.ForMember(dest => dest.ExciseTariff, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                //.ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
-                //.ForMember(dest => dest.ForeignExchange, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))
                 .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_SETTLEMENT_ID)))
-                //public string ExciseStatus { get; set; } already
-                //public string Pbck1Number { get; set; }
-                //public string PbckDecreeDate { get; set; }
+                .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
+                .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
+                .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
+                .ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
 
-                .ForMember(dest => dest.DestKppbcName, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
-                .ForMember(dest => dest.DestNameAdress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
-                .ForMember(dest => dest.DestNppbkcId, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
+                .ForMember(dest => dest.UnpaidExciseFacilityNumber, opt => opt.MapFrom(src => src.PbckNumber))
+                .ForMember(dest => dest.UnpaidExciseFacilityDate, opt => opt.MapFrom(src => src.PbckDecreeDate.HasValue ? src.PbckDecreeDate.Value.ToString("dd MMM yyyy") : string.Empty))
+
+                .ForMember(dest => dest.SealingNotificationDate, opt => opt.MapFrom(src => src.SEALING_NOTIF_DATE.HasValue ? src.SEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.SealingNotificationNumber, opt => opt.MapFrom(src => src.SEALING_NOTIF_NUMBER))
+                .ForMember(dest => dest.UnSealingNotificationDate, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_DATE.HasValue ? src.UNSEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.UnSealingNotificationNumber, opt => opt.MapFrom(src => src.UNSEALING_NOTIF_NUMBER))
+                //.ForMember(dest => dest.Lack1, opt => opt.MapFrom(src => src.PbckNumber))
+                //.ForMember(dest => dest.Lack2, opt => opt.MapFrom(src => src.PbckNumber))
+                .ForMember(dest => dest.TanggalAju, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue ? src.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.NomerAju, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.TanggalPendaftaran, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.NomerPendaftaran, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                .ForMember(dest => dest.OriginCeOffice, opt => opt.MapFrom(src => src.KPPBC_CITY))
+                .ForMember(dest => dest.OriginCompany, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_NAME))
+                .ForMember(dest => dest.OriginCompanyNppbkc, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPPBKC_ID))
+                .ForMember(dest => dest.OriginCompanyAddress, opt => opt.MapFrom(src => src.SOURCE_PLANT_ADDRESS))
+                .ForMember(dest => dest.DestinationCountry, opt => opt.MapFrom(src => src.DEST_COUNTRY_NAME))
+                .ForMember(dest => dest.NumberBox, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.ToString()))
+                //.ForMember(dest => dest.ContainPerBox, opt => opt.MapFrom(src => src.PbckNumber))
+                //.ForMember(dest => dest.TotalOfExcisableGoods, opt => opt.MapFrom(src => src.PbckNumber))
+                //.ForMember(dest => dest.BanderolPrice, opt => opt.MapFrom(src => src.))
+                //.ForMember(dest => dest.ExciseTariff, opt => opt.MapFrom(src => src.PbckNumber))
+                //.ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.PbckNumber))
+                .ForMember(dest => dest.DestinationCeOffice, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
                 .ForMember(dest => dest.DestCompanyAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
-                .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_NAME))
-                //public string DestKppbcName { get; set; } //?
+                .ForMember(dest => dest.DestCompanyNppbkc, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
+                .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
                 .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
-                .ForMember(dest => dest.LoadingPortOffice, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
-
-                 //public string SealingNotifDate { get; set; }
-                //public string SealingNotifNumber { get; set; }
-                //public string Lack1Number { get; set; }
-                //public string Lack2Number { get; set; }
-            #endregion
-;
+                .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
+                
+                ;
 
 
             Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5SummaryReportsItem>().IgnoreAllNonExisting();

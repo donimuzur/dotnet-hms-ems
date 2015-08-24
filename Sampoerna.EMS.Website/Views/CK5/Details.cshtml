@@ -10,36 +10,8 @@
                 <h3>@Model.Ck5Type.ToString()</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
-                    @switch (Model.Ck5Type)
-                    {
-                        case Enums.CK5Type.Manual:
-                            <a href="@Url.Action("CK5Manual", "CK5")">
-                                <input type="button" class="btn btn-blue" value="Back">
-                            </a>
-                            break;
-                        case Enums.CK5Type.PortToImporter:
-                        case Enums.CK5Type.ImporterToPlant:
-                            <a href="@Url.Action("CK5Import", "CK5")">
-                                <input type="button" class="btn btn-blue" value="Back">
-                            </a>
-                            break;
-                        case Enums.CK5Type.Export:
-                            <a href="@Url.Action("CK5Export", "CK5")">
-                                <input type="button" class="btn btn-blue" value="Back">
-                            </a>
-                            break;
-                         case Enums.CK5Type.Completed:
-                            <a href="@Url.Action("CK5Completed", "CK5")">
-                                <input type="button" class="btn btn-blue" value="Back">
-                            </a>
-                            break;
-                        default:
-                        <a href="@Url.Action("Index", "CK5")">
-                            <input type="button" class="btn btn-blue" value="Back">
-                        </a>
-                            break;
-                    }
-                    @*<input type="button" class="btn btn-grey" value="Print Preview" />*@
+                   
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
 
                     @if (Model.AllowApproveAndReject)
@@ -79,7 +51,7 @@
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Ck5Id)
                         @Html.HiddenFor(model => model.DocumentStatus)
-                        
+
                         @Html.HiddenFor(model => model.IsCk5Export)
 
                         @Html.HiddenFor(model => model.CountryCode)
@@ -91,7 +63,7 @@
                         @Html.HiddenFor(model => model.FinalPort)
                         @Html.HiddenFor(model => model.FinalPortId)
                         @Html.HiddenFor(model => model.FinalPortName)
-                        
+
 
                         @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
                         {
@@ -106,8 +78,8 @@
                         {
                             @Html.Partial("_CK5InformationDetails")
                         }
-                        
-                      
+
+
 
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5ChangeLog")
@@ -241,6 +213,25 @@
 </div>
 
 
+<div id="ModalCk5ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Missing attach files
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
     @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
@@ -257,9 +248,25 @@
             OnReadyFunction('@Model.Ck5Type.ToString()');
 
             openGovStatusBlock();
-            
+
             $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
+            });
+
+            $('#btnBack').click(function (e) {
+                //alert('@Enums.CK5Type.Domestic.ToString()');
+                
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+
             });
         });
 
@@ -381,7 +388,7 @@
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
-        
+
         function PrintOutClick(reportUrl, addHistoryUrl, id) {
 
             window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
@@ -393,12 +400,12 @@
                 success: function (response) {
                     $('#PrintOutHistoryTable').html("");
                     $('#PrintOutHistoryTable').html(response);
-                    
+
                 }
             });
         }
-        
-     
-        
+
+
+
     </script>
 }
