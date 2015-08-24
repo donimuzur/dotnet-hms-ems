@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
@@ -11,7 +8,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
     {
         public Lack1IndexViewModel()
         {
-              Details = new List<NppbkcData>();
+              Details = new List<Lack1NppbkcData>();
         }
         public string NppbkcId { get; set; }
         public string Poa { get; set; }
@@ -27,6 +24,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public Enums.LACK1Type Lack1Type { get; set; }
 
-        public List<NppbkcData> Details { get; set; }
+        public List<Lack1NppbkcData> Details { get; set; }
     }
 }

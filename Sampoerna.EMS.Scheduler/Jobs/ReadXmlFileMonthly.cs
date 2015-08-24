@@ -15,11 +15,11 @@ using Container = SimpleInjector.Container;
 namespace Sampoerna.HMS.Scheduler.Jobs
 {
     [DisallowConcurrentExecution]
-    public class ReadXmlFile : IJob
+    public class ReadXmlFileMonthly : IJob
     {
         private readonly Container _container;
         private Service _svc = null;
-        public ReadXmlFile(Container container)
+        public ReadXmlFileMonthly(Container container)
         {
             _container = container;
             _svc = new Service();
@@ -57,9 +57,9 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 try
                 {
 
-                    logger.Info("Reading XML start on " + DateTime.Now);
-                    errorList.AddRange(_svc.Run());
-                    logger.Info("Reading XML ended On " + DateTime.Now);
+                    logger.Info("Reading XML Monthly start on " + DateTime.Now);
+                    errorList.AddRange(_svc.Run(false));
+                    logger.Info("Reading XML Minthly ended On " + DateTime.Now);
 
                 }
                 catch (Exception ex)

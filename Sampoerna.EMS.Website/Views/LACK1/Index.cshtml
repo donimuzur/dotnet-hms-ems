@@ -1,5 +1,4 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexViewModel
-@using Sampoerna.EMS.Website.Helpers
 
 @{
     ViewBag.Title = "LACK1";
@@ -37,17 +36,6 @@
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
                                     @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcIdList, "All", new { @class = "form-control selectreset" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row">
-                                <label class="col-md-4">PLANT ID</label>
-                                <div id="divPoaList" class="col-md-8 ui-widget">
-                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })*@
-                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
-                                        <option value="">All</option>
-                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -105,8 +93,6 @@
         </div>
     </div>
 </div>
-
-
 
 @section Scripts
 {
@@ -167,8 +153,6 @@
                     ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
                 } 
             }
-            
-
         });
         
         $(document).ready(function () {
@@ -183,23 +167,12 @@
                     data: formData,
                     success: function (data) {
                         var list = data.PoaList;
-                        var listPlant = data.PlantIdList;
                         $('#SearchInput_POA').append('<option value="">All</option>');
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
-                                
                             }
                         }
-                        
-                        if (listPlant.length > 0) {
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-
-                            }
-                        }
-                        
                     }
                 });
             }

@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         //private string includeTables = "ZAIDM_EX_NPPBKC, PLANT_RECEIVE_MATERIAL, PLANT_RECEIVE_MATERIAL.ZAIDM_EX_GOODTYP";
-        private string includeTables = "ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKC.T001";
+        private string includeTables = "ZAIDM_EX_NPPBKC, ZAIDM_EX_NPPBKC.T001,T001K.T001";
 
         private IZaidmExNPPBKCBLL _nppbkcbll;
 
@@ -253,7 +253,9 @@ namespace Sampoerna.EMS.BLL
         
         public T001WDto GetT001ById(string id)
         {
-            return Mapper.Map<T001WDto>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
+            var dbData = _repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault();
+
+            return Mapper.Map<T001WDto>(dbData);
         }
         
         List<T001W> IPlantBLL.Get(string nppbkcId)
@@ -270,6 +272,29 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<T001WDto>(dbData);
 
 
+        }
+
+        public List<T001WCompositeDto> GetCompositeListByNppbkcId(string nppbkcId)
+        {
+            Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
+            if (!string.IsNullOrEmpty(nppbkcId))
+            {
+                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
+            }
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return Mapper.Map<List<T001WCompositeDto>>(dbData);
+        }
+        
+        public List<Plant> GetActivePlant()
+        {
+            Expression<Func<T001W, bool>> queryFilter =
+                c => c.IS_DELETED != true && c.ZAIDM_EX_NPPBKC.IS_DELETED != true;
+            return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
 
     }

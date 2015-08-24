@@ -45,5 +45,9 @@ namespace Sampoerna.EMS.Contract
        List<CK5FileUploadDocumentsOutput> CK5UploadFileDocumentsProcess(List<CK5UploadFileDocumentsInput> inputs);
 
        void InsertListCk5(CK5SaveListInput input);
+
+       CK5XmlDto GetCk5ForXmlById(long id);
+
+       void GovApproveDocumentRollback(CK5WorkflowDocumentInput input);
    }
 }

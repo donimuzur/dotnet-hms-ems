@@ -72,6 +72,12 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK4C.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CK4C_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -95,6 +101,7 @@
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
+    <Compile Include="DTOs\CK5XmlDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
     <Compile Include="DTOs\CountryDto.cs" />
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
@@ -102,6 +109,7 @@
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
+    <Compile Include="DTOs\Lack1DocumentDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
@@ -117,11 +125,13 @@
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
     <Compile Include="DTOs\T001KDto.cs" />
+    <Compile Include="DTOs\T001WCompositeDto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
+    <Compile Include="DTOs\ZAIDM_EX_NPPBKCCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCDto.cs" />
     <Compile Include="EMAIL_TEMPLATE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
@@ -154,7 +164,8 @@
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
-    <Compile Include="Inputs\Lack2GetByParamInput.cs" />    <Compile Include="Inputs\MaterialInput.cs" />
+    <Compile Include="Inputs\Lack2GetByParamInput.cs" />
+    <Compile Include="Inputs\MaterialInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
@@ -211,6 +222,7 @@
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\MaterialOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
+    <Compile Include="Outputs\LACK1Outputs.cs" />
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />

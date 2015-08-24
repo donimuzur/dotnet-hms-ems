@@ -24,7 +24,16 @@ namespace Sampoerna.EMS.XMLReader
             filesMoved = new List<string>();
         }
 
-        private IXmlDataReader XmlReaderFactory(string xmlfile)
+        private IXmlDataReader XmlReaderFactoryDaily(string xmlfile)
+        {
+
+            if (xmlfile.Contains("BRANDREG"))
+            {
+                return new XmlBrandDataMapper(xmlfile);
+            }
+            return null;
+        }
+        private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
         {
             if (xmlfile.Contains("POA"))
             {
@@ -54,34 +63,30 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlVendorDataMapper(xmlfile);
             }
-           
+
             else if (xmlfile.Contains("MARKET"))
             {
-                return  new XmlMarketDataMapper(xmlfile);
+                return new XmlMarketDataMapper(xmlfile);
             }
-             else if (xmlfile.Contains("PRODTYP"))
-             {
-                 return new XmlProdTypeDataMapper(xmlfile);
-             }
-             else if (xmlfile.Contains("PCODE"))
-             {
-                 return new XmlPCodeDataMapper(xmlfile);
-             }
-             else if (xmlfile.Contains("SERIES"))
-             {
-                 return new XmlSeriesDataMapper(xmlfile);
-             }
+            else if (xmlfile.Contains("PRODTYP"))
+            {
+                return new XmlProdTypeDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PCODE"))
+            {
+                return new XmlPCodeDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("SERIES"))
+            {
+                return new XmlSeriesDataMapper(xmlfile);
+            }
             else if (xmlfile.Contains("PLANT-"))
             {
                 return new XmlPlantDataMapper(xmlfile);
             }
-             else if (xmlfile.Contains("GOODTYP"))
-             {
-                 return new XmlGoodsTypeDataMapper(xmlfile);
-             }
-            else if (xmlfile.Contains("BRANDREG"))
+            else if (xmlfile.Contains("GOODTYP"))
             {
-                return new XmlBrandDataMapper(xmlfile);
+                return new XmlGoodsTypeDataMapper(xmlfile);
             }
             else if (xmlfile.Contains("MATERIAL"))
             {
@@ -179,10 +184,20 @@ namespace Sampoerna.EMS.XMLReader
             return orderedXmlFiles;
         }
 
-        public List<string> Run()
+        public List<string> Run(bool isDaily)
         {
             var errorList = new List<string>();
-            var orderedFile = OrderFile();
+            var orderedFile = new List<string>();
+            if (!isDaily)
+            {
+                orderedFile = OrderFile();
+
+            }
+            else
+            {
+                orderedFile = xmlfiles == null ? null : xmlfiles.ToList();
+            }
+
             IXmlDataReader reader =null;
              
             if (orderedFile != null)
@@ -191,8 +206,14 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     try
                     {
-                        reader = XmlReaderFactory(xmlfile);
-
+                        if (isDaily)
+                        {
+                            reader = XmlReaderFactoryDaily(xmlfile);
+                        }
+                        else
+                        {
+                            reader = XmlReaderFactoryMonthly(xmlfile);
+                        }
                         if (reader != null)
                         {
                             filesMoved.Add(reader.InsertToDatabase());

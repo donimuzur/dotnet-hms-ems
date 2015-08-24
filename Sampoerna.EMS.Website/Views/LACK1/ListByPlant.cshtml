@@ -1,5 +1,4 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexPlantViewModel
-@using Sampoerna.EMS.Website.Helpers
 
 @{
     ViewBag.Title = "LACK1";
@@ -44,7 +43,6 @@
                             <div class="row">
                                 <label class="col-md-4">PLANT ID</label>
                                 <div id="divPoaList" class="col-md-8 ui-widget">
-                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })*@
                                     <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
                                         <option value="">All</option>
                                     </select>
