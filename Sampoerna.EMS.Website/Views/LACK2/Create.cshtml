@@ -72,8 +72,7 @@
                                                     <div class="row">
                                                            <label class="col-md-4">Plant</label>
                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "Select", new { @class = "form-control" } )
-                                                               
+                                                               <select id="Lack2Model_LevelPlantId" name="Lack2Model.LevelPlantId" class="form-control"></select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -93,8 +92,9 @@
                                                             <label class="col-md-4">Period Month</label>
 
                                                               <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.Lack2Model.PeriodMonth, new { @class = "form-control" } )
-                                                               
+                                                                  @Html.DropDownListFor(model => model.Lack2Model.PeriodMonth, Model.MonthList, "Select", new { @class = "form-control" })
+
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -103,7 +103,8 @@
                                                             <label class="col-md-4">Period Year</label>
 
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.Lack2Model.PeriodYear, new { @class = "form-control"})
+                                                                @Html.DropDownListFor(model => model.Lack2Model.PeriodMonth, Model.YearList, "Select", new { @class = "form-control" })
+
 
                                                             </div>
                                                         </div>
