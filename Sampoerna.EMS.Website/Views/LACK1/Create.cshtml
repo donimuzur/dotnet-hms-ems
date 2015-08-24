@@ -51,19 +51,32 @@
             CheckLevelChecked();
         });
 
-        $('.lackLevel').on('change', function() {
-            CheckLevelChecked();
-        });
-
-        $('#Bukrs').on('change', function () {
-            if ($("#Bukrs").length) {
+        $('#NppbkcId').on("change", function() {
+            if ($("#NppbkcId").length) {
                 var companyCode = $(this).find("option:selected").val();
                 $('#NppbkcId option').remove();
                 console.log(companyCode);
                 if (companyCode == '' || $(this).find("option:selected").val() == '') {
                     $('#NppbkcId').append('<option value="">Select</option>');
                 } else {
-                    ajaxLoadNppbkcList({ companyCode: companyCode }, '@Url.Action("GetNppbkcListByCompanyCode", "LACK1")');
+                    ajaxLoadNppbkcList({ companyCode: companyCode }, '@Url.Action("GetPlantListByNppbkcId", "LACK1")');
+                }
+            }
+        });
+
+        $('.lackLevel').on('change', function() {
+            CheckLevelChecked();
+        });
+
+        $('#Bukrs').on('change', function() {
+            if ($("#Bukrs").length) {
+                var nppbkcId = $(this).find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(nppbkcId);
+                if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { nppbkcId: nppbkcId });
                 }
             }
         });
@@ -84,7 +97,7 @@
             //$("#NppbkcId").attr('disabled', disabledNppbkc);
             $("#LevelPlantId").attr('disabled', disabledPlant);
         }
-        
+
         function ajaxLoadNppbkcList(formData, url) {
             if (formData.companyCode) {
                 $.ajax({
@@ -101,8 +114,7 @@
                         }
                     }
                 });
-            } else
-            {
+            } else {
                 $('#NppbkcId').append('<option value="">Select</option>');
             }
         }
@@ -113,7 +125,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data;
                         $('#NppbkcId').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -125,6 +137,26 @@
                 });
             } else {
                 $('#NppbkcId').append('<option value="">Select</option>');
+            }
+        }
+
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var listPlant = data.PlantList;
+                        $('#LevelPlantId').append('<option value="">All</option>');
+
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#LevelPlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
             }
         }
 

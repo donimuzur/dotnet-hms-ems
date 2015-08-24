@@ -63,5 +63,21 @@ namespace Sampoerna.EMS.BLL
         {
             return _userPlantMapBll.GetByUserId(userid).Select(x => x.PLANT_ID).ToList();
         }
+        public List<NppbkcPlantDto> GetNppbckPlants(string userid)
+        {
+            
+            var data = _userPlantMapBll.GetByUserId(userid);
+            var nppbkclist = data.GroupBy(x => x.T001W.NPPBKC_ID).Select(x => x.Key);
+            var nppbkcPlantList = new List<NppbkcPlantDto>();
+            foreach (var nppbkc in nppbkclist)
+            {
+                var nppbkcPlant = new NppbkcPlantDto();
+                nppbkcPlant.NppbckId = nppbkc;
+                var dataByNppbck = Mapper.Map<List<PlantDto>>(data.Where(x => x.T001W.NPPBKC_ID == nppbkc).Select(x => x.T001W));
+                nppbkcPlant.Plants = dataByNppbck;
+                nppbkcPlantList.Add(nppbkcPlant);
+            }
+            return nppbkcPlantList;
+        }
     }
 }
