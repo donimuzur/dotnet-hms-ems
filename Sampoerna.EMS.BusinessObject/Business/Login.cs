@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Business
@@ -14,7 +15,8 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public Enums.UserRole UserRole { get; set; }
         public List<int?> AuthorizePages { get; set; }
 
-        public List<string> Plants { get; set; } 
+        
+        public List<NppbkcPlantDto> NppbckPlants { get; set; } 
     }
 
 }
