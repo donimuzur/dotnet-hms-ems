@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
@@ -13,7 +14,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         }
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
-        public string ReportedOn { get; set; }
+
+        [DisplayFormat(DataFormatString = "{dd MMM yyyy}")]
+        public DateTime ReportedOn { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
 

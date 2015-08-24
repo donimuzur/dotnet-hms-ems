@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
@@ -14,7 +15,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
-        public string ReportedOn { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        public DateTime ReportedOn { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
 
@@ -25,13 +28,13 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public List<DataListIndexPbck3> Detail { get; set; }
 
         //Enums
-        public Enums.Pbck7Type Pbck7Type { get; set; }
+        public Enums.Pbck7Type Pbck3Type { get; set; }
     }
 
     public class DataListIndexPbck3
     {
         public string Pbck3Number { get; set; }
-        public DateTime ReportedOn { get; set; }
+        public string ReportedOn { get; set; }
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
         public string Poa { get; set; }

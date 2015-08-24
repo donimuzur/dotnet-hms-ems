@@ -53,7 +53,7 @@
                                 <label class="col-md-4 long">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="ReportedOn">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -130,7 +130,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#Pbck7 .filters th').each(function () {
+            $('#Pbck3 .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -159,7 +159,7 @@
                     $('#SearchInput_POA option').append('<option value="">All</option>');
                     $('#SearchInput_PlantId option').append('<option value="">All</option>');
                 } else {
-                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: npbkc});
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartialPbck3", "PBCK7AndPBCK3")', { nppbkcId: npbkc});
                 }
             }
         });
@@ -176,7 +176,7 @@
                     data: formData,
                     success: function (data) {
                         var list = data.PoaList;
-                        var listPlant = data.PlantIdList;
+                        var listPlant = data.PlantList;
                         $('#SearchInput_POA').append('<option value="">All</option>');
                         $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (list.length > 0) {

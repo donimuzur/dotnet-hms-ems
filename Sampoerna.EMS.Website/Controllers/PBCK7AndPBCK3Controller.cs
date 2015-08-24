@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck7Index(Pbck7IndexViewModel model)
         {
             var input = Mapper.Map<Pbck7AndPbck3Input>(model);
-            input.Pbck7Type = Enums.Pbck7Type.Pbck7List;
+            input.Pbck7AndPvck3Type = Enums.Pbck7Type.Pbck7List;
             if (input.Pbck7Date != null)
             {
                 input.Pbck7Date = Convert.ToDateTime(input.Pbck7Date).ToString();
@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Pbck7Type = Enums.Pbck7Type.Pbck3List,
+                Pbck3Type = Enums.Pbck7Type.Pbck3List,
 
                 Detail = Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
             });
@@ -115,8 +115,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck3Index(Pbck3IndexViewModel model)
         {
             var input = Mapper.Map<Pbck7AndPbck3Input>(model);
-            input.Pbck7Type = Enums.Pbck7Type.Pbck3List;
-            input.Pbck7Date = Convert.ToDateTime(input.Pbck7Date).ToString();
+            input.Pbck7AndPvck3Type = Enums.Pbck7Type.Pbck3List;
+            if (input.Pbck3Date != null)
+            {
+                input.Pbck3Date = Convert.ToDateTime(input.Pbck3Date).ToString(); 
+            }
+            
 
             var dbData = _pbck7AndPbck7And3Bll.GetAllByParam(input);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
@@ -132,7 +136,17 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion  
         
         [HttpPost]
-        public JsonResult PoaAndPlantListPartial(string nppbkcId)
+        public JsonResult PoaAndPlantListPartialPbck7(string nppbkcId)
+        {
+            var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
+            var model = new Pbck7IndexViewModel() { PoaList = listPoa, PlantList = listPlant };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult PoaAndPlantListPartialPbck3(string nppbkcId)
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);

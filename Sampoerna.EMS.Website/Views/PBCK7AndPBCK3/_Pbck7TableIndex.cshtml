@@ -35,7 +35,8 @@
                     @Html.DisplayFor(model => item.Pbck7Number)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.ReportedOn)
+                    @*@Html.DisplayFor(model => item.ReportedOn)*@
+                    @Html.TextBox("start-date", item.ReportedOn == null ? null : Convert.ToDateTime(Model.ReportedOn).ToString("dd MMM yyyy"), new { @class = "form-control", disabled = "disabled" })
                    
                 </td>
                 <td>
