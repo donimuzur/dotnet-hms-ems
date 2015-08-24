@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="dsPbck1.cs">
       <DependentUpon>dsPbck1.xsd</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsPbck1.Designer.cs">
       <AutoGen>True</AutoGen>

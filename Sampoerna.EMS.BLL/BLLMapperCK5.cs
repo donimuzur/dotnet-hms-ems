@@ -120,6 +120,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BRAND, opt => opt.MapFrom(src => src.MatNumber))
                 ;
 
+            Mapper.CreateMap<CK5, CK5XmlDto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Ck5Material, opt => opt.MapFrom(src => Mapper.Map<List<CK5MaterialDto>>(src.CK5_MATERIAL)))
+               ;
+
 
         }
     }

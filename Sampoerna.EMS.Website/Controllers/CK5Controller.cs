@@ -920,8 +920,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
                 }
 
-                CK5WorkflowGovApproval(model);
-                AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+                if (CK5WorkflowGovApproval(model))
+                    AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
@@ -930,14 +930,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
-        private void  CK5WorkflowGovApproval(CK5FormViewModel model)
+        private bool  CK5WorkflowGovApproval(CK5FormViewModel model)
         {
-            //var input = new CK5WorkflowDocumentInput();
-            //input.DocumentId = id;
-            //input.UserId = CurrentUser.USER_ID;
-            //input.UserRole = CurrentUser.UserRole;
-            //input.ActionType = actionType;
-            //input.Comment = comment;
+           
             DateTime registrationDate = DateTime.Now;
             if (model.RegistrationDate.HasValue)
                 registrationDate = model.RegistrationDate.Value;
@@ -956,6 +951,32 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             };
             _ck5Bll.CK5Workflow(input);
+
+            try
+            {
+                //create xml file
+                var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
+
+
+                //var fileName = Constans.CK5FolderPath + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
+                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5Xml" +  DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
+                //ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
+                ck5XmlDto.Ck5PathXml = fileName;
+
+                XmlCK5DataWriter rt = new XmlCK5DataWriter();
+                rt.CreateCK5Xml(ck5XmlDto);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //failed create xml...
+                //rollaback the update
+                _ck5Bll.GovApproveDocumentRollback(input);
+                AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+                return false;
+            }
+          
         }
 
         private string SaveUploadedFile(HttpPostedFileBase file, long ck5Id)

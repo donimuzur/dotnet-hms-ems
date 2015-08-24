@@ -86,7 +86,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Jobs\ReadXmlFile.cs" />
+    <Compile Include="Jobs\ReadXmlFileMonthly.cs" />
+    <Compile Include="Jobs\ReadXmlFileDaily.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

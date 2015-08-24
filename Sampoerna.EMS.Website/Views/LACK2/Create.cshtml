@@ -1,0 +1,208 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
+
+@{
+    ViewBag.Title = "Create LACK2";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+   
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="status">Draft</label>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="preview()" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+
+
+
+
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                LACK2 Information
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Company Code</label>
+
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.Lack2Model.Burks, Model.CompanyCodesDDL, "Select", new { @class = "form-control" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">NPPBKC</label>
+
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.Lack2Model.NppbkcId, Model.NPPBKCDDL, "Select", new { @class = "form-control" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                    <div class="row">
+                                                           <label class="col-md-4">Plant</label>
+                                                           <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "Select", new { @class = "form-control" } )
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Ex Goods Type</label>
+                                                             <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "Select", new { @class = "form-control" } )
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Period Month</label>
+
+                                                              <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Lack2Model.PeriodMonth, new { @class = "form-control" } )
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Period Year</label>
+
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(model => model.Lack2Model.PeriodYear, new { @class = "form-control"})
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Submission Date</label>
+
+                                                               <div class="col-md-8">
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, new { @class = "form-control" } )
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Gov Status</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.Lack2Model.GovStatus, Model.GovStatusDDL, "Select", new {  @class = "form-control", @disabled = "disabled" })
+                                                             </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Decree Date</label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.Lack2Model.DecreeDate, new { @class = "form-control", @disabled = "disabled" } )
+                                                                    <span class="input-group-addon" id="decreeDateCalendar" style="visibility: hidden;">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                   
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Put all of this top html in a partial view*@
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+   
+
+    <script type="text/javascript">
+        
+        $("#Lack2Model_NppbkcId").change(function () {
+           
+            if ($(this).length) {
+                var nppbkc = $(this).find("option:selected").val();
+              
+                $('#Lack2Model_LevelPlantId').html('');
+                $('#Lack2Model_LevelPlantId').append('<option value="">select</option>');
+                if (nppbkc != '') {
+                    ajaxGetPlantByNppbkc(nppbkc);
+                }
+            }
+
+        });       
+        function ajaxGetPlantByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    console.log(data);
+                    for (var i = 0; i < data[0].length; i++) {
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[0][i].WERKS + '>' + data[0][i].WERKS + '-' + data[0][i].NAME1 + '</option>');
+                    }
+                }
+            });
+
+        }
+
+    </script>
+
+}

@@ -141,7 +141,9 @@ namespace Sampoerna.EMS.Core
             [Description("PBCK-4")]
             PBCK4 = 3,
             [Description("PBCK-3")]
-            PBCK3 = 4
+            PBCK3 = 4,
+            [Description("LACK-1")]
+            LACK1 = 5
         }
 
         public enum ActionType
@@ -269,7 +271,7 @@ namespace Sampoerna.EMS.Core
         {
             ListByNppbkc = 1,
             ListByPlant = 2,
-            ComplatedDocument =3
+            ComplatedDocument = 3
         }
         public enum CK5TransType
         {
@@ -299,6 +301,16 @@ namespace Sampoerna.EMS.Core
             Nppbkc = 1,
             [Description("Plant")]
             Plant = 2
+        }
+
+        public enum CK5GovStatus
+        {
+            [Description("Government Approved")]
+            GovApproved = 1,
+            [Description("Government Reject")]
+            GovReject = 2,
+            [Description("Government Cancel")]
+            GovCancel = 3
         }
     }
 }

@@ -10,35 +10,7 @@
                 <h3>@Model.Ck5Type.ToString()</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
-                    @*@switch (Model.Ck5Type)
-                        {
-                            case Enums.CK5Type.Manual:
-                                <a href="@Url.Action("CK5Manual", "CK5")">
-                                    <input type="button" class="btn btn-blue" value="Back">
-                                </a>
-                                break;
-                            case Enums.CK5Type.PortToImporter:
-                            case Enums.CK5Type.ImporterToPlant:
-                                <a href="@Url.Action("CK5Import", "CK5")">
-                                    <input type="button" class="btn btn-blue" value="Back">
-                                </a>
-                                break;
-                            case Enums.CK5Type.Export:
-                                <a href="@Url.Action("CK5Export", "CK5")">
-                                    <input type="button" class="btn btn-blue" value="Back">
-                                </a>
-                                break;
-                             case Enums.CK5Type.Completed:
-                                <a href="@Url.Action("CK5Completed", "CK5")">
-                                    <input type="button" class="btn btn-blue" value="Back">
-                                </a>
-                                break;
-                            default:
-                            <a href="@Url.Action("Index", "CK5")">
-                                <input type="button" class="btn btn-blue" value="Back">
-                            </a>
-                                break;
-                        }*@
+                   
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
 
@@ -52,11 +24,12 @@
                     {
                         if (Model.AllowGovApproveAndReject)
                         {
-                            <input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
+                            @*<input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
 
                             <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
 
-                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />
+                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />*@
+                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
                     }
 
@@ -241,6 +214,25 @@
 </div>
 
 
+<div id="ModalCk5ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Missing attach files
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
     @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
@@ -277,6 +269,33 @@
                     location.href = '@Url.Action("CK5Manual", "CK5")';
 
             });
+            
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateGovInput()) {
+                    $('#GovApproveForm').submit();
+                }
+            });
+            
+            $('#divComment').hide();
+            
+            $('#GovStatus').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+                    $('#divComment').show();
+                    @*$('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');*@
+                }
+                @*else if (valueSelected == 'PartialApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                }
+                else if (valueSelected == 'FullApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }*@
+
+            });
+            
         });
 
         function openGovStatusBlock() {
@@ -320,7 +339,7 @@
         });
 
 
-        $("#btnReject").click(function () {
+        @*$("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
 
             $('#Comment').val('');
@@ -371,7 +390,7 @@
         });
 
         $("#btnConfirmGovApprove").click(function () {
-            @*window.location = "@Url.Action("GovApproveDocument", "CK5", new { id = @Model.Ck5Id })";*@
+           
             $('#Ck5Modal').modal('hide');
             $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
             $('#GovApproveForm').submit();
@@ -390,7 +409,7 @@
             $('.GovCancel').val('');
             $('#Ck5ModalGovCancel').modal('show');
 
-        });
+        });*@
 
         function printPreview(url) {
 
@@ -409,12 +428,30 @@
                 success: function (response) {
                     $('#PrintOutHistoryTable').html("");
                     $('#PrintOutHistoryTable').html(response);
-
+                    ResetPrintHistoryDataTable();
                 }
             });
         }
 
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
 
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+          
+        }
 
     </script>
 }

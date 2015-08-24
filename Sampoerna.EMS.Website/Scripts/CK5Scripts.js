@@ -70,6 +70,9 @@ function OnReadyFunction(ck5Type) {
 
         $('#collapse5').addClass('in');
     });
+    
+    $('#collapseTwo').addClass('in');
+    $('#collapseThree').addClass('in');
 }
 
 function IsValidDataUpload() {
@@ -83,8 +86,8 @@ function IsValidDataUpload() {
 
     return true;
 }
-$('#CK5UploadSubmitBtn').click(function () {
 
+function GenerateXlsCk5Material(url) {
     var fileName = $('[name="itemExcelFile"]').val().trim();
     var pos = fileName.lastIndexOf('.');
     var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -103,7 +106,7 @@ $('#CK5UploadSubmitBtn').click(function () {
     }
     $.ajax({
         type: "POST",
-        url: '/CK5/UploadFile',
+        url: url,
         data: formData,
         dataType: 'html',
         contentType: false,
@@ -113,25 +116,18 @@ $('#CK5UploadSubmitBtn').click(function () {
             $('#ProdConvContent').html(response);
             if (IsValidDataUpload())
                 $('#CK5UploadSave').enable();
-        },
-        error: function (error) {
-            alert("errror " + error);
         }
+        //error: function (error) {
+        //    alert("errror " + error);
+        //}
     });
-});
+}
 
-//function ajaxCallSave(url, formData) {
-//    if (formData.model) {
-//        $.ajax({
-//            type: 'POST',
-//            url: url,
-//            data: formData,
-//            success: function (data) {
-//                $("input[name='pbck1Date']").val(data);
-//            }
-//        });
-//    }
-//}
+//$('#CK5UploadSubmitBtn').click(function () {
+
+  
+//});
+
 
 function ajaxGetPbck1Date(url, formData) {
     if (formData.pbck1Id) {
@@ -222,14 +218,14 @@ function ajaxGetCompanyCode(url, formData) {
     }
 }
 
-function ChangeBackSourceMaterial(plantId) {
+function ChangeBackSourceMaterial(plantId, url) {
     if (plantId == plantOriginal) {
         
         var formData = new FormData();
         formData.append("ck5Id", $('#Ck5Id').val());
         $.ajax({
             type: "POST",
-            url: '/CK5/GetOriginalPlant',
+            url: url,
             data: formData,
             dataType: 'html',
             contentType: false,
@@ -238,10 +234,11 @@ function ChangeBackSourceMaterial(plantId) {
                 $('#ck5EditMaterialTable').html("");
                 $('#ck5EditMaterialTable').html(response);
                
-            },
-            error: function (error) {
-                alert("errror " + error);
             }
+            //,
+            //error: function (error) {
+            //    alert("errror " + error);
+            //}
         });
     }
 }
@@ -252,22 +249,59 @@ function OnSubmitWorkflow(id) {
 
 function ValidateGovInput() {
     var result = true;
-    
+   
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
+        $('#RegistrationNumber').focus();
     }
     
     if ($('#RegistrationDate').val() == '') {
         AddValidationClass(false, 'RegistrationDate');
         result = false;
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
+       
     }
+   // alert($('#GovStatus').val());
+    
+    if ($('#GovStatus').val() == '') {
+        AddValidationClass(false, 'GovStatus');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#GovStatus').focus();
+    } else {
+        if ($('#GovStatus').val() == 'GovReject' || $('#GovStatus').val() == 'GovCancel') {
+            if ($('#Comment').val() == '') {
+                AddValidationClass(false, 'Comment');
+                result = false;
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+                $('#Comment').focus();
+            }
+        }
 
-    if ($('.ck5Attachment').length == 0) {
+    }
+   // alert($('#poa_sk0').length);
+    
+    if ($('#poa_sk0').length == 0) {
         AddValidationClass(false, 'poa-files');
         
-        if (result)
-            alert("Attach your files");
+        if (result) {
+            $('#ModalCk5ValidateGov').modal('show');
+            
+            $('#collapseFour').removeClass('collapse');
+            $('#collapseFour').addClass('in');
+            $("#collapseFour").css({ height: "auto" });
+          
+        }
         result = false;
     }
     
@@ -282,5 +316,138 @@ function AddValidationClass(isValid, objName) {
         $('#' + objName).removeClass('valid');
         $('#' + objName).addClass('input-validation-error');
     }
+}
+
+function ValidateCk5Form(ck5Type) {
+    var result = true;
+    var isValidCk5Detail = true;
+   
+   
+    if ($('#KppBcCity').find("option:selected").val() == '') {
+        AddValidationClass(false, 'KppBcCity');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#GoodType').find("option:selected").val() == '') {
+        AddValidationClass(false, 'GoodType');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#ExciseStatus').find("option:selected").val() == '') {
+        AddValidationClass(false, 'ExciseStatus');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#ExciseSettlement').find("option:selected").val() == '') {
+        AddValidationClass(false, 'ExciseSettlement');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
+    if ($('#RequestType').find("option:selected").val() == '') {
+        AddValidationClass(false, 'RequestType');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    if (!isValidCk5Detail) {
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
+
+    }
+    
+    if ($('#SourcePlantId').find("option:selected").val() == '') {
+        AddValidationClass(false, 'SourcePlantId');
+        result = false;
+        // $('#collapseTwo').addClass('in');
+        $('#collapseTwo').removeClass('collapse');
+        $('#collapseTwo').addClass('in');
+        $("#collapseTwo").css({ height: "auto" });
+    }
+
+    if (ck5Type == 'Export') {
+        isValidCk5Detail = true;
+
+        if ($('#CountryCode').find("option:selected").val() == '') {
+            AddValidationClass(false, 'CountryCode');
+            result = false;
+            isValidCk5Detail = false;
+        }
+
+
+        if ($('#LoadingPort').val() == '') {
+            AddValidationClass(false, 'LoadingPort');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#LoadingPortName').val() == '') {
+            AddValidationClass(false, 'LoadingPortName');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#LoadingPortId').val() == '') {
+            AddValidationClass(false, 'LoadingPortId');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        
+        if ($('#FinalPort').val() == '') {
+            AddValidationClass(false, 'FinalPort');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#FinalPortName').val() == '') {
+            AddValidationClass(false, 'FinalPortName');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        if ($('#FinalPortId').val() == '') {
+            AddValidationClass(false, 'FinalPortId');
+            result = false;
+            isValidCk5Detail = false;
+        }
+        
+        if (!isValidCk5Detail) {
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+
+        }
+        
+    } else {
+
+
+        if ($('#DestPlantId').find("option:selected").val() == '') {
+            AddValidationClass(false, 'DestPlantId');
+            result = false;
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+        }
+    }
+    
+    if (result) {
+        var rowCount = $('#ck5TableItem tr').length;
+
+        if (rowCount <= 1) {
+            // alert('Missing CK5 Material');
+
+            $('#ModalCk5Material').modal('show');
+            
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
+
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
+            
+            result = false;
+        }
+        
+    }
+
+    return result;
 }
 

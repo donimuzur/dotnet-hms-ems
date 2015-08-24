@@ -159,6 +159,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "DN Number")]
         public string DnNumber { get; set; }
 
+         [UIHint("DateTime")]
         [Display(Name = "DN Date")]
         public string DnDate { get; set; }
 
@@ -171,17 +172,20 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "STOB Number")]
         public string StobNumber { get; set; }
 
-        [UIHint("FormatDateTime")]
+        [UIHint("DateTime")]
         [Display(Name = "GI Date")]
         public DateTime? GiDate { get; set; }
 
+        [UIHint("DateTime")]
+        [Display(Name = "GR Date")]
         public DateTime? GrDate { get; set; }
 
         [Display(Name = "Sealing Notification Number")]
         public string SealingNotifNumber { get; set; }
 
-        [UIHint("FormatDateTime")]
+       
         [Display(Name = "Sealing Notification Date")]
+        [UIHint("DateTime")]
         public DateTime? SealingNotifDate { get; set; }
 
         //GRDate -- todo ask
@@ -189,7 +193,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "Unsealing Notification Number")]
         public string UnSealingNotifNumber { get; set; }
 
-        [UIHint("FormatDateTime")]
+         [UIHint("DateTime")]
         [Display(Name = "Unsealing Notification Date")]
         public DateTime? UnsealingNotifDate { get; set; }
 
@@ -210,6 +214,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string Ck5TypeString { get; set; }
         public string MesssageUploadFileDocuments { get; set; }
+
+         [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
+        public Enums.CK5GovStatus GovStatus { get; set; }
+
+        public Enums.CK5GovStatus GovStatusList { get; set; }
 
     }
 }
