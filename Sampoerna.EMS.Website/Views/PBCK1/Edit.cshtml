@@ -1,10 +1,11 @@
-﻿@using Sampoerna.EMS.Website.Helpers
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
 @{
     ViewBag.Title = "Edit PBCK-1";
 }
 
-@using (Html.BeginForm("Edit", "PBCK1"))
+@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -12,10 +13,22 @@
                 <h3>PBCK-1 Form</h3>
                 <label class="status">@Model.Detail.StatusName</label>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" />
+                    }
+
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-                    <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
                 </div>
             </div>
         </div>
@@ -36,9 +49,36 @@
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Detail.Pbck1Id)
                         @Html.HiddenFor(model => model.Detail.Status)
-                        @Html.HiddenFor(model => model.Detail.CreatedDate)
                         @Html.HiddenFor(model => model.Detail.CreatedById)
-                        @Html.Partial("_HomeEdit")
+
+                        @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                            @Html.HiddenFor(model => model.Detail.Pbck1Reference)
+                            @Html.HiddenFor(model => model.Detail.Pbck1Type)
+                            @Html.HiddenFor(model => model.Detail.PeriodFrom)
+                            @Html.HiddenFor(model => model.Detail.PeriodTo)
+                            @Html.HiddenFor(model => model.Detail.NppbkcId)
+                            @Html.HiddenFor(model => model.Detail.GoodType)
+                            @Html.HiddenFor(model => model.Detail.SupplierPlant)
+                            @Html.HiddenFor(model => model.Detail.PlanProdFrom)
+                            @Html.HiddenFor(model => model.Detail.PlanProdTo)
+                            @Html.HiddenFor(model => model.Detail.RequestQty)
+                            @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
+                            @Html.HiddenFor(model => model.Detail.Lack1FromMonthId)
+                            @Html.HiddenFor(model => model.Detail.Lack1FormYear)
+                            @Html.HiddenFor(model => model.Detail.Lack1ToMonthId)
+                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
+                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
+                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
+                            @Html.HiddenFor(model => model.Detail.GovApprovalActionType)
+                            @Html.Partial("_HomeGovApproval")
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.Detail.CreatedDate)
+                            @Html.Partial("_HomeEdit")
+                        }
+                        
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ProdPlanUpload")
                         @Html.Partial("_ProdConvUpload")
@@ -72,9 +112,41 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
+    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+    {
+        <script src="~/Scripts/pbck1/docupload.js"></script>
+    }
     <script type="text/javascript">
 
         $(document).ready(function () {
+            
+            openGovStatusBlock();
+
+            $('#divComment').hide();
+
+            $('#Detail_StatusGov').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'Rejected') {
+                    $('#divComment').show();
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                }
+                else if (valueSelected == 'PartialApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                }
+                else if (valueSelected == 'FullApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+
+            });
+
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateGovInput()) {
+                    $('#GovApproveForm').submit();
+                }
+            });
 
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
@@ -136,7 +208,20 @@
             $("#externalSupPort").click(function () {
                 supplierPortOnChange();
             });
+            
         });
+
+        function openGovStatusBlock() {
+            var docStatus = '@Model.Detail.Status.ToString()';
+            var isAllow = '@Model.AllowGovApproveAndReject';
+            if (docStatus == '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() == 'true') {
+                $('#home').addClass('active');
+                $('#home-tab').addClass('active');
+                $('#collapseOne').removeClass('in');
+                $('#collapseOne').addClass('collapse');
+                $('#collapseFour').addClass("in");
+            }
+        }
 
         function printPreview(url) {
 

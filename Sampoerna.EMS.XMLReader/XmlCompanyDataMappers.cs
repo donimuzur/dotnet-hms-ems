@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.CREATED_DATE = exisitingCompany.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
                             item.MODIFIED_BY = Constans.PICreator;
+                            item.BUTXT_ALIAS = exisitingCompany.BUTXT_ALIAS;
                             items.Add(item);
 
                         }
