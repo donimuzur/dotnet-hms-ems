@@ -958,8 +958,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
 
 
-                var fileName = Constans.CK5FolderPath + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
-                ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
+                //var fileName = Constans.CK5FolderPath + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
+                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5Xml" +  DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
+                //ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
+                ck5XmlDto.Ck5PathXml = fileName;
 
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
                 rt.CreateCK5Xml(ck5XmlDto);

@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Math;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -308,7 +312,64 @@ namespace Sampoerna.EMS.Website.Code
             var data = plantBll.GetActivePlant();
             return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
         }
-      
+
+        public static SelectList GetAuthorizedNppbkc(List<NppbkcPlantDto> listNppbkc)
+        {
+            var selectItemSource = listNppbkc.Select(x => x.NppbckId);
+            return new SelectList(selectItemSource);
+        }
+        public static SelectList GetAuthorizedPlant(List<NppbkcPlantDto> listNppbkc, string NppbckId)
+        {
+             var plants = new List<PlantDto>();
+                
+            if (NppbckId == null)
+            {
+                var items = listNppbkc.ToList();
+                foreach (var item in items)
+                {
+
+                    plants.AddRange(item.Plants);
+                }
+                var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants);
+                return new SelectList(selectItemSource, "ValueField", "TextField");
+            }
+            else
+            {
+                var items = listNppbkc.Where(x => x.NppbckId == NppbckId).ToList();
+                foreach (var item in items)
+                {
+
+                    plants.AddRange(item.Plants);
+                }
+                var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants);
+                return new SelectList(selectItemSource, "ValueField", "TextField");
+            }
+          
+          
+        }
+
+        public static SelectList GetYearList()
+        {
+            var selectItemSource = new List<SelectItemModel>();
+            for (int i = 3; i > 0; i--)
+            {
+                var item = new SelectItemModel();
+        
+                item.TextField = (DateTime.Now.Year - i).ToString();
+                item.ValueField = (DateTime.Now.Year - i).ToString();
+                selectItemSource.Add(item);
+            }
+            for (int i = 1; i > 3; i++)
+            {
+                var item = new SelectItemModel();
+
+                item.TextField = (DateTime.Now.Year + i).ToString();
+                item.ValueField = (DateTime.Now.Year + i).ToString();
+                selectItemSource.Add(item);
+            }
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
     }
 
 }
