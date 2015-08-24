@@ -25,8 +25,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private Enums.MenuList _mainMenu;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IPOABLL _poabll;
+        private IMonthBLL _monthBll;
         
-        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
+        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
             IPlantBLL plantBll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
@@ -37,6 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.LACK2;
             _nppbkcbll = nppbkcbll;
             _poabll = poabll;
+            _monthBll = monthBll;
         }
 
 
@@ -84,8 +86,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
-            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
-
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GlobalFunctions.GetYearList();
             model.UsrRole = CurrentUser.UserRole;
 
             var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))

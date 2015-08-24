@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Math;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -318,6 +322,29 @@ namespace Sampoerna.EMS.Website.Code
         {
             var selectItemSource = listNppbkc.Where(x => x.NppbckId == NppbckId).Select(x => x.Plants);
             return new SelectList(selectItemSource, "WERKS", "NAME1");
+        }
+
+        public static SelectList GetYearList()
+        {
+            var selectItemSource = new List<SelectItemModel>();
+            for (int i = 3; i > 0; i--)
+            {
+                var item = new SelectItemModel();
+        
+                item.TextField = (DateTime.Now.Year - i).ToString();
+                item.ValueField = (DateTime.Now.Year - i).ToString();
+                selectItemSource.Add(item);
+            }
+            for (int i = 1; i > 3; i++)
+            {
+                var item = new SelectItemModel();
+
+                item.TextField = (DateTime.Now.Year + i).ToString();
+                item.ValueField = (DateTime.Now.Year + i).ToString();
+                selectItemSource.Add(item);
+            }
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
     }
 
