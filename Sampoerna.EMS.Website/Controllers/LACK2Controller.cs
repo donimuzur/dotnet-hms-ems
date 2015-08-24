@@ -81,7 +81,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
@@ -368,6 +368,16 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
 
+        [HttpPost]
+        public JsonResult GetPlantByNppbkcId(string nppbkcid)
+        {
+            var data = Json(CurrentUser.NppbckPlants == null
+                ? null
+                : CurrentUser.NppbckPlants.Where(
+                    x => x.NppbckId == nppbkcid).Select(x => x.Plants));
+            return data;
+
+        }
     }
 
 }

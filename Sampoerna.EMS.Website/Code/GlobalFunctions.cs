@@ -308,7 +308,17 @@ namespace Sampoerna.EMS.Website.Code
             var data = plantBll.GetActivePlant();
             return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
         }
-      
+
+        public static SelectList GetAuthorizedNppbkc(List<NppbkcPlantDto> listNppbkc)
+        {
+            var selectItemSource = listNppbkc.Select(x => x.NppbckId);
+            return new SelectList(selectItemSource);
+        }
+        public static SelectList GetAuthorizedPlant(List<NppbkcPlantDto> listNppbkc, string NppbckId)
+        {
+            var selectItemSource = listNppbkc.Where(x => x.NppbckId == NppbckId).Select(x => x.Plants);
+            return new SelectList(selectItemSource, "WERKS", "NAME1");
+        }
     }
 
 }
