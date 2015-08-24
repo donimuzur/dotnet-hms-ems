@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
             }
             //implement later
-            CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser.USER_ID);
+            /*CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser.USER_ID);
             if (CurrentUser.AuthorizePages != null)
             {
                 if (!CurrentUser.AuthorizePages.Contains(PageInfo.PAGE_ID))
@@ -127,7 +127,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     }
                 }
-            }
+            }*/
 
 
         }
