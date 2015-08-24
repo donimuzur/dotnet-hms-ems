@@ -24,6 +24,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public SelectList GovStatusDDL { get; set; }
 
+        public SelectList MonthList { get; set; }
+
+        public SelectList YearList { get; set; }
+
         //public SelectList StatusDDL { get; set; }
 
         public Enums.UserRole UsrRole { get; set; }
