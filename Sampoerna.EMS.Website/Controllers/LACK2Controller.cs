@@ -27,9 +27,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IMonthBLL _monthBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
-        
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _poabll = poabll;
             _monthBll = monthBll;
             _goodTypeBll = goodTypeBll;
+            _documentSequenceNumberBll = documentSequenceNumberBll;
         }
 
 
@@ -112,7 +113,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
             item.ExTypDesc = goods.EXT_TYP_DESC;
-
             item.Butxt = company.BUTXT;
             item.LevelPlantName = plant.NAME1;
             item.LevelPlantCity = plant.ORT01;
@@ -121,7 +121,12 @@ namespace Sampoerna.EMS.Website.Controllers
             item.PeriodYear = model.Lack2Model.PeriodYear;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
-
+             var inputDoc = new GenerateDocNumberInput();
+            inputDoc.Month = item.PeriodMonth;
+            inputDoc.Year = item.PeriodYear;
+            inputDoc.NppbkcId = item.NppbkcId;
+            item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+           
             if (CurrentUser.UserRole == Enums.UserRole.User || CurrentUser.UserRole == Enums.UserRole.POA)
             {
                 item.Status = Enums.DocumentStatus.WaitingForApproval;
