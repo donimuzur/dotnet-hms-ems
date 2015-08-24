@@ -140,7 +140,7 @@
 
             $("#btnSave").click(function() {
 
-                if (ValidateCk5Form()) {
+                if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
                     $('#SaveCk5Forms').submit();
                 }
 

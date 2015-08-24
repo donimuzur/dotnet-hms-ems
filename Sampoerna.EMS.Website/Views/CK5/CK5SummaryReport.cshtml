@@ -22,64 +22,103 @@
                 <div class="form-excise" role="form">
                     <div class="row">
                         @using (Ajax.BeginForm("SearchSummaryReports", "CK5",
-                        new AjaxOptions
-                        {
-                            HttpMethod = "POST",
-                            InsertionMode = InsertionMode.Replace,
-                            UpdateTargetId = "contenttable",
-                            OnComplete = "ReloadDataTables"
+                            new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                InsertionMode = InsertionMode.Replace,
+                                UpdateTargetId = "contenttable",
+                                OnComplete = "ReloadDataTables"
 
-                        }))
+                            }))
                         {
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Company Source - Origin</label>
-                                    <div class="col-md-8 year-from">
+                                    <label class="col-md-4">Company Source</label>
+                                    <div class="col-md-8">
                                         @(Model.SearchView.CompanyCodeSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.CompanyCodeSource, Model.SearchView.CompanyCodeSourceList, "All", new { @class = "form-control selectreset" }))
-
+                                              : Html.DropDownListFor(model => model.SearchView.CompanyCodeSource, Model.SearchView.CompanyCodeSourceList, "All", new { @class = "form-control selectreset" }))
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Company Origin</label>
+                                    <div class="col-md-8">
                                         @(Model.SearchView.CompanyCodeDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.CompanyCodeDest, Model.SearchView.CompanyCodeDestList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.CompanyCodeDest, Model.SearchView.CompanyCodeDestList, "All", new { @class = "form-control selectreset" }))
 
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            
+                            <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">NPPBKC ID Source - Origin</label>
-                                    <div class="col-md-8 year-from">
+                                    <label class="col-md-4">NPPBKC ID Source</label>
+                                    <div class="col-md-8">
                                         @(Model.SearchView.NppbkcIdSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.NppbkcIdSource, Model.SearchView.NppbkcIdSourceList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.NppbkcIdSource, Model.SearchView.NppbkcIdSourceList, "All", new { @class = "form-control selectreset" }))
 
+                                     
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC ID Origin</label>
+                                    <div class="col-md-8">
+                                       
                                         @(Model.SearchView.NppbkcIdDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.NppbkcIdDest, Model.SearchView.NppbkcIdDestList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.NppbkcIdDest, Model.SearchView.NppbkcIdDestList, "All", new { @class = "form-control selectreset" }))
 
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            
+                            <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Plant Source - Origin</label>
+                                    <label class="col-md-4">Plant Source</label>
                                     <div class="col-md-8 year-from">
                                         @(Model.SearchView.PlantSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.PlantSource, Model.SearchView.PlantSourceList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.PlantSource, Model.SearchView.PlantSourceList, "All", new { @class = "form-control selectreset" }))
 
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Plant Origin</label>
+                                    <div class="col-md-8 year-from">
+                                       
                                         @(Model.SearchView.PlantDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.PlantDest, Model.SearchView.PlantDestList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.PlantDest, Model.SearchView.PlantDestList, "All", new { @class = "form-control selectreset" }))
 
 
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            
+                            <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Date From - To</label>
+                                    <label class="col-md-4">Date From </label>
                                     <div class="col-md-8 year-from">
                                         @(Model.SearchView.DateFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.DateFrom, Model.SearchView.DateFromList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.DateFrom, Model.SearchView.DateFromList, "All", new { @class = "form-control selectreset" }))
 
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Date To</label>
+                                    <div class="col-md-8 year-from">
+                                     
                                         @(Model.SearchView.DateToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                          : Html.DropDownListFor(model => model.SearchView.DateTo, Model.SearchView.DateToList, "All", new { @class = "form-control selectreset" }))
+                                              : Html.DropDownListFor(model => model.SearchView.DateTo, Model.SearchView.DateToList, "All", new { @class = "form-control selectreset" }))
 
 
                                     </div>
@@ -121,7 +160,7 @@
                                         <div class="row toggle">
 
                                             <div class="toggle-title">
-                                                Toggle column:
+                                                Toggle column <i class="fa fa-chevron-down"></i>
                                             </div>
 
                                             <div class="toggle-component">
@@ -345,12 +384,13 @@
             }
         </div>
     </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_CK5ListSummaryReport")
+
+    </div>
 </div>
 
-<div id="contenttable" class="table-container">
-    @Html.Partial("_CK5ListSummaryReport")
 
-</div>
 
 
 

@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexViewModel
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexCompletedDocumentViewModel
 
 @{
     ViewBag.Title = "LACK1";
@@ -8,11 +8,6 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
-            <div class="action-button new">
-                <a href="@Url.Action("Create","LACK1")">
-                    <input type="button" class="btn btn-blue" value="NEW" />
-                </a>
-            </div>
         </div>
     </div>
 </div>
@@ -21,7 +16,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterListByNppbkc", "LACK1",
+                @using (Ajax.BeginForm("FilterListCompletedDocument", "LACK1",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -41,10 +36,20 @@
                         </div>
                         <div class="col-md-4">
                             <div class="row">
+                                <label class="col-md-4">PLANT ID</label>
+                                <div id="divPoaList" class="col-md-8 ui-widget">
+                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
+                                        <option value="">All</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
                                 <label class="col-md-4">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" name="SubmissionDate">
+                                        <input type="text" class="form-control" name="ReportedOn">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -88,7 +93,7 @@
                 }
             </div>
             <div id="contenttable" class="table-container">
-                @Html.Partial("_Lack1Table")
+                @Html.Partial("_Lack1CompletedDocumentTable")
             </div>
         </div>
     </div>
@@ -100,7 +105,7 @@
     <script type="text/javascript">
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function() {
+            $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
@@ -120,7 +125,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#lack1Table .filters th').each(function() {
+            $('#lack1Table .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -128,8 +133,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -137,9 +142,9 @@
                 });
             });
 
-            $('#Menulack1ListByNppbkc').addClass('active');
+            $('#MenuLack1CompletedDocument').addClass('active');
         }
-        
+
         $("#NppbkcId").change(function () {
             if ($("#NppbkcId").length) {
                 var nbck = $(this).find("option:selected").text();
@@ -150,15 +155,15 @@
                     $('#SearchInput_POA').append('<option value="">All</option>');
                     $('#SearchInput_PlantId').append('<option value="">All</option>');
                 } else {
-                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
-                } 
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
+                }
             }
         });
-        
+
         $(document).ready(function () {
             setupDataTables();
         });
-        
+
         function ajaxSelectNppbck(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
@@ -167,12 +172,23 @@
                     data: formData,
                     success: function (data) {
                         var list = data.PoaList;
+                        var listPlant = data.PlantIdList;
                         $('#SearchInput_POA').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
                                 $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+
                             }
                         }
+
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+
+                            }
+                        }
+
                     }
                 });
             }
@@ -188,5 +204,6 @@
             });
             setupDataTables();
         }
+        
     </script>
-    }
+}

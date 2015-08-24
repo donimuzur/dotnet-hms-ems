@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexViewModel
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexCompletedDocumentViewModel
 
 <table id="lack1Table" class="display" cellspacing="0" width="100%">
     <thead>
@@ -6,7 +6,7 @@
             <th class="toggle-row"> Filter </th>
             <th>Lack-1 Number</th>
             <th>Company</th>
-            <th>NPPBKC</th>
+            <th>Plant</th>
             <th>Tobacco Goods Type</th>
             <th>Supplier</th>
             <th>Period</th>
@@ -40,7 +40,7 @@
                     @Html.DisplayFor(model => item.Company)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Nppbkc)
+                    @Html.DisplayFor(model => item.PlantId)
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.TobaccoGoodType)
@@ -58,4 +58,6 @@
         }
     </tbody>
 </table>
+
+
 

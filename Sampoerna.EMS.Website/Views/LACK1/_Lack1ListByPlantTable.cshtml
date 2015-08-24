@@ -4,6 +4,7 @@
     <thead>
         <tr>
             <th class="toggle-row"> Filter </th>
+            <th>Lack-1 Number</th>
             <th>Company</th>
             <th>Plant</th>
             <th>Tobacco Goods Type</th>
@@ -16,6 +17,7 @@
         <tr>
             <th>Action</th>
             <th></th>
+            \<th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -30,6 +32,9 @@
                 <td class="action">
                     <a href="#"><i class="fa fa-eye"></i></a>
                     <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Lack1Number)
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.Company)
