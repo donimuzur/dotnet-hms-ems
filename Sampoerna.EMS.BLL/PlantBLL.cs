@@ -277,10 +277,12 @@ namespace Sampoerna.EMS.BLL
         public List<T001WCompositeDto> GetCompositeListByNppbkcId(string nppbkcId)
         {
             Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
-            if (!string.IsNullOrEmpty(nppbkcId))
-            {
-                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
-            }
+            //if (!string.IsNullOrEmpty(nppbkcId))
+            //{
+                
+            //}
+
+            queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
 
             var dbData = _repository.Get(queryFilter, null, includeTables);
             if (dbData == null)

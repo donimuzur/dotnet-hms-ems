@@ -24,11 +24,12 @@
                     {
                         if (Model.AllowGovApproveAndReject)
                         {
-                            <input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
+                            @*<input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
 
                             <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
 
-                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />
+                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />*@
+                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
                     }
 
@@ -268,6 +269,33 @@
                     location.href = '@Url.Action("CK5Manual", "CK5")';
 
             });
+            
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateGovInput()) {
+                    $('#GovApproveForm').submit();
+                }
+            });
+            
+            $('#divComment').hide();
+            
+            $('#GovStatus').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+                    $('#divComment').show();
+                    @*$('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');*@
+                }
+                @*else if (valueSelected == 'PartialApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                }
+                else if (valueSelected == 'FullApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }*@
+
+            });
+            
         });
 
         function openGovStatusBlock() {
@@ -311,7 +339,7 @@
         });
 
 
-        $("#btnReject").click(function () {
+        @*$("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
 
             $('#Comment').val('');
@@ -362,7 +390,7 @@
         });
 
         $("#btnConfirmGovApprove").click(function () {
-            @*window.location = "@Url.Action("GovApproveDocument", "CK5", new { id = @Model.Ck5Id })";*@
+           
             $('#Ck5Modal').modal('hide');
             $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
             $('#GovApproveForm').submit();
@@ -381,7 +409,7 @@
             $('.GovCancel').val('');
             $('#Ck5ModalGovCancel').modal('show');
 
-        });
+        });*@
 
         function printPreview(url) {
 
@@ -400,12 +428,30 @@
                 success: function (response) {
                     $('#PrintOutHistoryTable').html("");
                     $('#PrintOutHistoryTable').html(response);
-
+                    ResetPrintHistoryDataTable();
                 }
             });
         }
 
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
 
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+          
+        }
 
     </script>
 }
