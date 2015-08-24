@@ -12,11 +12,11 @@ namespace Sampoerna.EMS.BLL
 {
     public partial class BLLMapper
     {
-        public static void InitializePbck7()
+        public static void InitializePbck7And3()
         {
             #region PBCK7
 
-            Mapper.CreateMap<PBCK3_PBCK7, Pbck7Dto>().IgnoreAllNonExisting()
+            Mapper.CreateMap<PBCK3_PBCK7, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck3Pbck7Id, opt => opt.MapFrom(src => src.PBCK3_PBCK7_ID))
                 .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7_NUMBER))
                 .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE));
 
-            Mapper.CreateMap<BACK1, Pbck7Dto>().IgnoreAllNonExisting()
+            Mapper.CreateMap<BACK1, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck3Pbck7Id, opt => opt.MapFrom(src => src.PBCK3_PBCK7_ID));
 
 

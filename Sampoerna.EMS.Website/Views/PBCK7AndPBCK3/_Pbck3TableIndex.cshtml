@@ -1,0 +1,56 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3IndexViewModel
+
+<table id="Pbck3" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>PBCK-7 No</th>
+            <th>Reported Date</th>
+            <th>NPPBKC</th>
+            <th>Plant</th>
+            <th>POA</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detail)
+        {
+            <tr>
+                <td class="action">
+                    <a href="#"><i class="fa fa-eye"></i></a>
+                    <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Pbck3Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.ReportedOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.NppbkcId)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.PlantId)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Poa)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

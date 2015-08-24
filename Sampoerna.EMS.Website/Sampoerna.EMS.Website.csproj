@@ -238,7 +238,7 @@
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LACK2Controller.cs" />
-    <Compile Include="Controllers\PBCK7Controller.cs" />
+    <Compile Include="Controllers\PBCK7AndPBCK3Controller.cs" />
     <Compile Include="Controllers\UserPlantMapController.cs" />
     <Compile Include="Controllers\LACK1Controller.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -331,8 +331,8 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
-    <Compile Include="Models\PBCK7\Pbck3IndexViewModel.cs" />
-    <Compile Include="Models\PBCK7\Pbck7IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\PLANT\T001WModel.cs" />
@@ -950,8 +950,8 @@
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
     <Content Include="Views\LACK1\_Lack1TableBalance.cshtml" />
-    <Content Include="Views\PBCK7\Index.cshtml" />
-    <Content Include="Views\PBCK7\_Pbck7TableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Index.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7TableIndex.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
     <Content Include="Views\LACK2\CreateDocument.cshtml" />
     <Content Include="Views\LACK2\Index.cshtml" />
@@ -962,8 +962,8 @@
     <Content Include="Views\LACK2\_Lack2Table.cshtml" />
     <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
     <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
-    <Content Include="Views\PBCK7\ListPbck3Index.cshtml" />
-    <Content Include="Views\PBCK7\_Pbck3TableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\ListPbck3Index.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1088,6 +1088,8 @@
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

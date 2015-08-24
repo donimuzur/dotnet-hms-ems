@@ -49,13 +49,14 @@
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
     <Compile Include="ILFA1BLL.cs" />
-    <Compile Include="ILACK2BLL.cs" />    <Compile Include="IMessageService.cs" />
+    <Compile Include="ILACK2BLL.cs" />
+    <Compile Include="IMessageService.cs" />
     <Compile Include="ILACK1BLL.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
     <Compile Include="IPbck1QuotaBLL.cs" />
-    <Compile Include="IPBCK7BLL.cs" />
+    <Compile Include="IPBCK7And3BLL.cs" />
     <Compile Include="IPOASKBLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IDocumentSequenceNumberBLL.cs" />

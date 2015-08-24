@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website
         {
             InitializeCK5();
             InitializePBCK1();
-            InitializePBCK7();
+            InitializePbck7And3();
 
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()

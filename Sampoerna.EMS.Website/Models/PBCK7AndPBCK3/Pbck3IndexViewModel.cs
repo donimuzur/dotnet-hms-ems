@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.Website.Models.PBCK7
+namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
     public class Pbck3IndexViewModel : BaseModel
     {
