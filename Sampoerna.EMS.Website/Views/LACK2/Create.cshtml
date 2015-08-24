@@ -195,8 +195,8 @@
                 data: { nppbkcid: nppbkc },
                 success: function (data) {
                     console.log(data);
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].WERKS + '>' + data[i].WERKS + '-' + data[i].NAME1 + '</option>');
+                    for (var i = 0; i < data[0].length; i++) {
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[0][i].WERKS + '>' + data[0][i].WERKS + '-' + data[0][i].NAME1 + '</option>');
                     }
                 }
             });
