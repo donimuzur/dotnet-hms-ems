@@ -199,4 +199,17 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    public class CK5ListIndexPOAResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+
+            if (! string.IsNullOrEmpty(value.APPROVED_BY_POA))
+                return value.APPROVED_BY_POA;
+            if (!string.IsNullOrEmpty(value.APPROVED_BY_MANAGER))
+                return value.APPROVED_BY_MANAGER;
+
+            return "";
+        }
+    }
 }
