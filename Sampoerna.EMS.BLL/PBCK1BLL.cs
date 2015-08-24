@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BLL
         private IHeaderFooterBLL _headerFooterBll;
         private IUserBLL _userBll;
         private ILFA1BLL _lfaBll;
+        private IBrandRegistrationBLL _brandRegistrationBll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -67,6 +68,7 @@ namespace Sampoerna.EMS.BLL
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
             _lfaBll = new LFA1BLL(_uow, _logger);
+            _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -1244,6 +1246,35 @@ namespace Sampoerna.EMS.BLL
                 if (mainPlant != null)
                 {
                     rc.Detail.PlantPhoneNumber = mainPlant.PHONE;
+
+                    //Get BrandRegistration Data
+                    var brandRegistrationDataByMainPlant = _brandRegistrationBll.GetByPlantId(mainPlant.WERKS);
+
+                    if (dbData.PBCK1_PROD_CONVERTER != null && dbData.PBCK1_PROD_PLAN.Count > 0)
+                    {
+                        var dataJoined = (from brand in brandRegistrationDataByMainPlant
+                                          join prodConv in dbData.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
+                                          select new Pbck1ReportBrandRegistrationDto()
+                                          {
+                                              Type = prodConv.PRODUCT_ALIAS,
+                                              Brand = brand.BRAND_CE,
+                                              Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
+                                              Convertion =
+                                                  prodConv.CONVERTER_OUTPUT.HasValue ? prodConv.CONVERTER_OUTPUT.Value.ToString("N0") : "-",
+                                              ConvertionUom = prodConv.UOM.UOM_DESC,
+                                              ConvertionUomId = prodConv.CONVERTER_UOM_ID
+                                          }).DistinctBy(c => c.Brand).ToList();
+
+                        rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
+                        foreach (var dataItem in dataJoined)
+                        {
+                            rc.BrandRegistrationList.Add(dataItem);
+                        }
+                    }
+                }
+                else
+                {
+                    rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                 }
                 rc.Detail.NppbkcCity = nppbkcDetails.CITY;
             }
@@ -1335,20 +1366,7 @@ namespace Sampoerna.EMS.BLL
 
             //Set ProdPlan
             rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN);
-            //Set from Pbck1ProdConv
-            rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();//todo: get from ?
-            foreach (var dataItem in dbData.PBCK1_PROD_CONVERTER.Select(item => new Pbck1ReportBrandRegistrationDto()
-            {
-                Type = item.PRODUCT_ALIAS,
-                Brand = "todo: get from ?",
-                Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
-                Convertion = item.CONVERTER_OUTPUT.HasValue ? item.CONVERTER_OUTPUT.Value.ToString("N0") : "-",
-                ConvertionUom = item.UOM.UOM_DESC,
-                ConvertionUomId = item.CONVERTER_UOM_ID
-            }))
-            {
-                rc.BrandRegistrationList.Add(dataItem);
-            }
+            
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
@@ -1371,9 +1389,15 @@ namespace Sampoerna.EMS.BLL
 
         private string SetPeriod(int startMonth, int startYear, int endMonth, int endYear)
         {
-            var month1 = _monthBll.GetMonth(startMonth);
-            var month2 = _monthBll.GetMonth(endMonth);
-            return month1.MONTH_NAME_IND + " " + startYear + " - " + month2.MONTH_NAME_IND + " " + endYear;
+            var month1 = GetMonthName(startMonth); // _monthBll.GetMonth(startMonth);
+            var month2 = GetMonthName(endMonth); //_monthBll.GetMonth(endMonth);
+            //return month1 + " " + startYear + " - " + month2 + " " + endYear;
+            return month1 + " " + " - " + month2 + " " + endYear;
+        }
+
+        private string GetMonthName(int month)
+        {
+           return _monthBll.GetMonth(month).MONTH_NAME_IND;
         }
 
 

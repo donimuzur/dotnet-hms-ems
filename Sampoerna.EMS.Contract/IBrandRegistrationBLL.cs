@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 
@@ -25,6 +21,9 @@ namespace Sampoerna.EMS.Contract
         ZAIDM_EX_BRAND GetByFaCode(string faCode);
 
         ZAIDM_EX_BRAND GetByPlantIdAndFaCode(string plantId, string faCode);
+
+        List<ZAIDM_EX_BRAND> GetByPlantId(string plantId);
+
     }
 
 }
