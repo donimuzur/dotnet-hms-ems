@@ -1571,7 +1571,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.BkcRequiredUomId = item.BkcRequiredUomId;
                     detailRow.BkcRequiredUomName = item.BkcRequiredUomName;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
-                    detailRow.MonthId = item.MonthId.ToString();
+                    detailRow.MonthId = item.MonthId;
                     detailRow.MonthName = item.MonthName;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.No = no.ToString();
@@ -1596,7 +1596,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.BkcRequiredUomId = "";
                 detailRow.BkcRequiredUomName = "";
                 // ReSharper disable once SpecifyACultureInStringConversionExplicitly
-                detailRow.MonthId = "";
+                detailRow.MonthId = 0;
                 detailRow.MonthName = "";
                 // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                 detailRow.No = "";

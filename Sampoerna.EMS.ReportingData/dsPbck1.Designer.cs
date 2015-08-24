@@ -1367,7 +1367,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, string MonthId, string MonthName, string No, decimal AmountDecimal, string VisibilityUomAmount, string UomAmount) {
+            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, int MonthId, string MonthName, string No, decimal AmountDecimal, string VisibilityUomAmount, string UomAmount) {
                 Pbck1ProdPlanRow rowPbck1ProdPlanRow = ((Pbck1ProdPlanRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ProdTypeCode,
@@ -1433,7 +1433,7 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnBkcRequiredUomId);
                 this.columnBkcRequiredUomName = new global::System.Data.DataColumn("BkcRequiredUomName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBkcRequiredUomName);
-                this.columnMonthId = new global::System.Data.DataColumn("MonthId", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnMonthId = new global::System.Data.DataColumn("MonthId", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMonthId);
                 this.columnMonthName = new global::System.Data.DataColumn("MonthName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMonthName);
@@ -3643,10 +3643,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string MonthId {
+            public int MonthId {
                 get {
                     try {
-                        return ((string)(this[this.tablePbck1ProdPlan.MonthIdColumn]));
+                        return ((int)(this[this.tablePbck1ProdPlan.MonthIdColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'MonthId\' in table \'Pbck1ProdPlan\' is DBNull.", e);
