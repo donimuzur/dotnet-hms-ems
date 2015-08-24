@@ -423,7 +423,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
 
+                model.DocStatus = model.Detail.Status;
+
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput
+                {
+                    DocumentStatus = model.Detail.Status,
+                    FormView = Enums.FormViewType.Detail,
+                    UserRole = CurrentUser.UserRole,
+                    CreatedUser = pbck1Data.CreatedById,
+                    CurrentUser = CurrentUser.USER_ID,
+                    CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                    DocumentNumber = model.Detail.Pbck1Number,
+                    NppbkcId = model.Detail.NppbkcId
+                };
+
+                ////workflow
+                var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+                model.AllowApproveAndReject = allowApproveAndReject;
+
+                if (!allowApproveAndReject)
+                {
+                    model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                }
+
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
+
+                if(model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
+                {
+                    model.ActionType = "GovApproveDocument";
+                }
 
             }
             catch (Exception exception)
@@ -450,15 +479,6 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(
                     "Operation not allowed.",
-                    Enums.MessageInfoType.Error);
-                return false;
-            }
-
-            if (model.Detail.Status != Enums.DocumentStatus.Draft)
-            {
-                //can't edit
-                AddMessageInfo(
-                    "Can't modify document with status " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval),
                     Enums.MessageInfoType.Error);
                 return false;
             }
