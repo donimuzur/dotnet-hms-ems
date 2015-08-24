@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class Pbck1RencanaProduksi : ReportClass {
+    public class Pbck1RealisasiP3BKCTable : ReportClass {
         
-        public Pbck1RencanaProduksi() {
+        public Pbck1RealisasiP3BKCTable() {
         }
         
         public override string ResourceName {
             get {
-                return "Pbck1RencanaProduksi.rpt";
+                return "Pbck1RealisasiP3BKCTable.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.PBCK1.Pbck1RencanaProduksi.rpt";
+                return "Sampoerna.EMS.Website.Reports.PBCK1.Pbck1RealisasiP3BKCTable.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,33 +82,17 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
-            get {
-                return this.ReportDefinition.Sections[4];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[5];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[6];
+                return this.ReportDefinition.Sections[4];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPbck1RencanaProduksi : Component, ICachedReport {
+    public class CachedPbck1RealisasiP3BKCTable : Component, ICachedReport {
         
-        public CachedPbck1RencanaProduksi() {
+        public CachedPbck1RealisasiP3BKCTable() {
         }
         
         [Browsable(false)]
@@ -145,7 +129,7 @@ namespace Sampoerna.EMS.Website.Reports.PBCK1 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            Pbck1RencanaProduksi rpt = new Pbck1RencanaProduksi();
+            Pbck1RealisasiP3BKCTable rpt = new Pbck1RealisasiP3BKCTable();
             rpt.Site = this.Site;
             return rpt;
         }
