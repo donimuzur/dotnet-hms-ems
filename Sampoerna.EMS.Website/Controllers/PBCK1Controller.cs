@@ -1442,7 +1442,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var dsPbck1 = new dsPbck1();
             dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
-            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.ProdPlanList);
+            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData.ProdPlanList);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
             //dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData.RealisasiP3Bkc);
             dsPbck1 = FakeDataRealisasiP3Bkc(dsPbck1);
@@ -1527,11 +1527,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return ds;
         }
 
-        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, List<Pbck1ReportProdPlanDto> prodPlan)
+        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, string excisableGoodsType, List<Pbck1ReportProdPlanDto> prodPlan)
         {
             if (prodPlan != null && prodPlan.Count > 0)
             {
                 int no = 1;
+
+                var visibilityUomAmount = "l";
+                var uomAmount = "Kilogram";
+                if (excisableGoodsType.ToLower().Contains("hasil tembakau"))
+                {
+                    visibilityUomAmount = "b"; //strikeout except "Batang" / "batang"
+                    uomAmount = "Batang";
+                }
+                else if (excisableGoodsType.ToLower().Contains("tembakau iris"))
+                {
+                    visibilityUomAmount = "k"; //strikeout except "Kilogram" / "kilogram"
+                    uomAmount = "Kilogram";
+                }
+                else if (excisableGoodsType.ToLower().Contains("alkohol"))
+                {
+                    visibilityUomAmount = "l"; //strikeout except "liter" / "Liter"
+                    uomAmount = "Liter";
+                }
                 
                 foreach (var item in prodPlan)
                 {
@@ -1557,6 +1575,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.MonthName = item.MonthName;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.No = no.ToString();
+
+                    detailRow.VisibilityUomAmount = visibilityUomAmount;
+                    detailRow.UomAmount = uomAmount;
                     
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
                     no++;

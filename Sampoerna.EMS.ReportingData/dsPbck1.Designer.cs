@@ -1197,6 +1197,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnAmountDecimal;
             
+            private global::System.Data.DataColumn columnVisibilityUomAmount;
+            
+            private global::System.Data.DataColumn columnUomAmount;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck1ProdPlanDataTable() {
@@ -1312,6 +1316,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn VisibilityUomAmountColumn {
+                get {
+                    return this.columnVisibilityUomAmount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn UomAmountColumn {
+                get {
+                    return this.columnUomAmount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1347,7 +1367,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, string MonthId, string MonthName, string No, decimal AmountDecimal) {
+            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, string MonthId, string MonthName, string No, decimal AmountDecimal, string VisibilityUomAmount, string UomAmount) {
                 Pbck1ProdPlanRow rowPbck1ProdPlanRow = ((Pbck1ProdPlanRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ProdTypeCode,
@@ -1359,7 +1379,9 @@ namespace Sampoerna.EMS.ReportingData {
                         MonthId,
                         MonthName,
                         No,
-                        AmountDecimal};
+                        AmountDecimal,
+                        VisibilityUomAmount,
+                        UomAmount};
                 rowPbck1ProdPlanRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck1ProdPlanRow);
                 return rowPbck1ProdPlanRow;
@@ -1392,6 +1414,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnMonthName = base.Columns["MonthName"];
                 this.columnNo = base.Columns["No"];
                 this.columnAmountDecimal = base.Columns["AmountDecimal"];
+                this.columnVisibilityUomAmount = base.Columns["VisibilityUomAmount"];
+                this.columnUomAmount = base.Columns["UomAmount"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1417,6 +1441,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnNo);
                 this.columnAmountDecimal = new global::System.Data.DataColumn("AmountDecimal", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnAmountDecimal);
+                this.columnVisibilityUomAmount = new global::System.Data.DataColumn("VisibilityUomAmount", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVisibilityUomAmount);
+                this.columnUomAmount = new global::System.Data.DataColumn("UomAmount", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUomAmount);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3679,6 +3707,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string VisibilityUomAmount {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.VisibilityUomAmountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'VisibilityUomAmount\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.VisibilityUomAmountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string UomAmount {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.UomAmountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'UomAmount\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.UomAmountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsProdTypeCodeNull() {
                 return this.IsNull(this.tablePbck1ProdPlan.ProdTypeCodeColumn);
             }
@@ -3795,6 +3855,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetAmountDecimalNull() {
                 this[this.tablePbck1ProdPlan.AmountDecimalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsVisibilityUomAmountNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.VisibilityUomAmountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetVisibilityUomAmountNull() {
+                this[this.tablePbck1ProdPlan.VisibilityUomAmountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsUomAmountNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.UomAmountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetUomAmountNull() {
+                this[this.tablePbck1ProdPlan.UomAmountColumn] = global::System.Convert.DBNull;
             }
         }
         
