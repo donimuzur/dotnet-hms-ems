@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.Website.Controllers
              
                 
             }
-            var isUsePageAuth = Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);
+            var isUsePageAuth = ConfigurationManager.AppSettings["UsePageAuth"] != null && Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);
             if (isUsePageAuth)
             {
                 CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser.USER_ID);
