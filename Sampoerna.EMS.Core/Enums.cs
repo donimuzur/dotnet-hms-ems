@@ -309,5 +309,14 @@ namespace Sampoerna.EMS.Core
             [Description("PBCK3")]
             Pbck3List  =2
         }
+
+        public enum DocumentTypePbck7AndPbck3
+        {
+            [Description("Pemusnahan")]
+            Pemusnahan=1,
+            [Description("Pengolahan")]
+            Pengolahaan=2,
+            
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => src.PBCK3_STATUS))
                 .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.PBCK7_DATE))
                 .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE))
-                .ForMember(dest => dest.DocumnetType, opt => opt.MapFrom(src => src.DOC_TYPE))
+                .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DOC_TYPE))
                 .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.PBCK7_DATE))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBCK_ID))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))

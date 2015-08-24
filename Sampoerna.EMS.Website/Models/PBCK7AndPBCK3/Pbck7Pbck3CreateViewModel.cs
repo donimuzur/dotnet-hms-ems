@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime Pbck7Date { get; set; }
         public string Pbck3Number { get; set; }
         public DateTime? Pbck3Date { get; set; }
-        public int DocumnetType { get; set; }
+        public string DocumentType { get; set; }
         public DateTime? ExecDateFrom { get; set; }
         public DateTime? ExecDateTo { get; set; }
         public string NppbkcId { get; set; }
@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public SelectList NppbkIdList { get; set; }
         public SelectList PlantList { get; set; }
 
+        public SelectList DocumentTypeList { get; set; }
 
 
 

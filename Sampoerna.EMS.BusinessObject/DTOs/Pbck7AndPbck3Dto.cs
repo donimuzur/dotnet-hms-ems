@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int Pbck3Status { get; set; }
         public DateTime Pbck7Date { get; set; }
         public DateTime? Pbck3Date { get; set; }
-        public int DocumnetType { get; set; }
+        public int DocumentType { get; set; }
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
         public string PlantName { get; set; }

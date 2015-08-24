@@ -67,9 +67,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
-                                            <select class="form-control">
-                                                <option>Pengolahan</option>
-                                            </select>
+                                            @Html.DropDownListFor(model => model.DocumentType, Model.DocumentTypeList,"", new {@class="form-control"})
                                         </div>
                                     </div>
                                 </div>
