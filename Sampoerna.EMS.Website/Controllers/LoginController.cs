@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = loginResult;
                 CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
                 CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
-                CurrentUser.Plants = _userAuthorizationBll.GetPlants(loginResult.USER_ID);
+                CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
                 return RedirectToAction("Index", "Home");
             }
 

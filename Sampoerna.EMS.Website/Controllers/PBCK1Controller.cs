@@ -77,13 +77,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Status).ThenBy(d => d.ApprovedByManagerId).ThenByDescending(d => d.Pbck1Number);
+                var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Pbck1Number);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
-            var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Status).ThenBy(d => d.ApprovedByManagerId).ThenByDescending(d => d.Pbck1Number);
+            var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Pbck1Number);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
 

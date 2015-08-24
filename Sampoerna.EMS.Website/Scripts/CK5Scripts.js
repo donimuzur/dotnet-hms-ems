@@ -249,13 +249,14 @@ function OnSubmitWorkflow(id) {
 
 function ValidateGovInput() {
     var result = true;
-    
+   
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
         $("#collapseOne").css({ height: "auto" });
+        $('#RegistrationNumber').focus();
     }
     
     if ($('#RegistrationDate').val() == '') {
@@ -264,9 +265,33 @@ function ValidateGovInput() {
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
         $("#collapseOne").css({ height: "auto" });
+       
     }
+   // alert($('#GovStatus').val());
+    
+    if ($('#GovStatus').val() == '') {
+        AddValidationClass(false, 'GovStatus');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#GovStatus').focus();
+    } else {
+        if ($('#GovStatus').val() == 'GovReject' || $('#GovStatus').val() == 'GovCancel') {
+            if ($('#Comment').val() == '') {
+                AddValidationClass(false, 'Comment');
+                result = false;
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+                $('#Comment').focus();
+            }
+        }
 
-    if ($('.ck5Attachment').length == 0) {
+    }
+   // alert($('#poa_sk0').length);
+    
+    if ($('#poa_sk0').length == 0) {
         AddValidationClass(false, 'poa-files');
         
         if (result) {
@@ -275,6 +300,7 @@ function ValidateGovInput() {
             $('#collapseFour').removeClass('collapse');
             $('#collapseFour').addClass('in');
             $("#collapseFour").css({ height: "auto" });
+          
         }
         result = false;
     }
