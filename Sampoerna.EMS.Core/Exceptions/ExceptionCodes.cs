@@ -39,7 +39,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             StartDateGreaterThanEndDate,
 
             [Description("BPPKBC data could not found")]
-            NppbkcNotFound
+            NppbkcNotFound,
+
+            [Description("Pbck1 Ref is null")]
+            Pbck1RefNull
 
         }
         

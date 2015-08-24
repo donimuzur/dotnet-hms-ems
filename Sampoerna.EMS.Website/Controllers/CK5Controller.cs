@@ -902,9 +902,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+                           
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenameCk5Check,
                                 FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = currentUserId

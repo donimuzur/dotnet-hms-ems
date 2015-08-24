@@ -241,7 +241,25 @@ namespace Sampoerna.EMS.BLL
                dbData =  ProcessInsertCk5(input);
             }
 
-            _uow.SaveChanges();
+            try
+            {
+                _uow.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+
 
             return Mapper.Map<CK5Dto>(dbData);
 
@@ -1445,6 +1463,44 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             return Mapper.Map<CK5XmlDto>(dtData);
+
+        }
+
+        public void GrandTotalCK5ByPeriodAndSourcePlant()
+        {
+            
+        }
+
+        public decimal GetQtyApprovedQuotaPbck1(int pbckId)
+        {
+            var pbck1 = _pbck1Bll.GetById(pbckId);
+            if (pbck1 == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (pbck1.Pbck1Type == Enums.PBCK1Type.New)
+            {
+                return pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
+            }
+
+            else
+            {
+                decimal remainQuota = 0;
+                //additional
+                //
+                var parentIdPbck1 = pbck1.Pbck1Reference;
+                if (!pbck1.Pbck1Reference.HasValue)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1RefNull);
+
+                var listPbck1 = _pbck1Bll.GetAllPbck1ByPbck1Ref(Convert.ToInt32(parentIdPbck1));
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        remainQuota += pbck1Dto.QtyApproved.Value;
+                }
+
+                return remainQuota;
+            }
 
         }
     }

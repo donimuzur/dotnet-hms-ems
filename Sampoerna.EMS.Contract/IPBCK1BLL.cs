@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.Contract
         List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkByCompanyCode(string companyCode);
         void UpdateReportedOn(Pbck1UpdateReportedOn input);
 
+        List<Pbck1Dto> GetAllPbck1ByPbck1Ref(int pbckRef);
+
     }
 }
