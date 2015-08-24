@@ -10,6 +10,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class Lack2Dto
     {
         public int Lack2Id { get; set; }
+        public string Lack2Number { get; set; }
         public string Burks { get; set; }
         public string Butxt { get; set; }
         public int PeriodMonth { get; set; }

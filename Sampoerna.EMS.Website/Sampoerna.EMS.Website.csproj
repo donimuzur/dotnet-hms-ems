@@ -233,6 +233,7 @@
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\DocumenSequenceController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\GlobalSettingsController.cs" />
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
@@ -963,6 +964,7 @@
     <Content Include="Views\LACK2\_Lack2Table.cshtml" />
     <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
     <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
+    <Content Include="Views\Error\Unauthorized.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\ListPbck3Index.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Create.cshtml" />

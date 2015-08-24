@@ -25,9 +25,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private Enums.MenuList _mainMenu;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IPOABLL _poabll;
-        
-        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IZaidmExGoodTypeBLL exGroupBll)
+        private IMonthBLL _monthBll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
+        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
+            IPlantBLL plantBll, ICompanyBLL companyBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -37,6 +39,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.LACK2;
             _nppbkcbll = nppbkcbll;
             _poabll = poabll;
+            _monthBll = monthBll;
+            _goodTypeBll = goodTypeBll;
+            _documentSequenceNumberBll = documentSequenceNumberBll;
         }
 
 
@@ -81,17 +86,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
-            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
-
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GlobalFunctions.GetYearList();
             model.UsrRole = CurrentUser.UserRole;
-
-            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)ds, Name = ds.ToString() };
-
-            model.GovStatusDDL = new SelectList(govStatuses, "ID", "Name");
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -107,20 +108,25 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
+            var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
             item.ExTypDesc = goods.EXT_TYP_DESC;
-
             item.Butxt = company.BUTXT;
             item.LevelPlantName = plant.NAME1;
             item.LevelPlantCity = plant.ORT01;
-            item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
-            item.PeriodYear = model.Lack2Model.LACK2Period.Year;
+            item.LevelPlantId = plant.WERKS;
+            item.PeriodMonth = model.Lack2Model.PeriodMonth;
+            item.PeriodYear = model.Lack2Model.PeriodYear;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
-
+             var inputDoc = new GenerateDocNumberInput();
+            inputDoc.Month = item.PeriodMonth;
+            inputDoc.Year = item.PeriodYear;
+            inputDoc.NppbkcId = item.NppbkcId;
+            item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+           
             if (CurrentUser.UserRole == Enums.UserRole.User || CurrentUser.UserRole == Enums.UserRole.POA)
             {
                 item.Status = Enums.DocumentStatus.WaitingForApproval;
@@ -368,6 +374,13 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
 
+        [HttpPost]
+        public JsonResult GetPlantByNppbkcId(string nppbkcid)
+        {
+            var data = Json(GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, nppbkcid));
+            return data;
+
+        }
     }
 
 }

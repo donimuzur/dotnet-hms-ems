@@ -73,7 +73,6 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-            model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
             return model;
         }
@@ -271,7 +270,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
-            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.SupplierList = GlobalFunctions.GetSupplierPlantList();
             model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);

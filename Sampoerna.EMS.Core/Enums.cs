@@ -302,6 +302,16 @@ namespace Sampoerna.EMS.Core
             [Description("Plant")]
             Plant = 2
         }
+
+        public enum CK5GovStatus
+        {
+            [Description("Government Approved")]
+            GovApproved = 1,
+            [Description("Government Reject")]
+            GovReject = 2,
+            [Description("Government Cancel")]
+            GovCancel = 3
+        }
         public enum Pbck7Type
         {
             [Description("PBCK7")]
