@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.XMLReader
                         //    _xmlMapper.InsertToDatabase(prodTypeToAdd);
                         //}
                         item.PROD_CODE = prodCode;
-                        var series_id = _xmlMapper.GetElementValue(xElement.Element("SERIES_CODE"));
+                        var series_id = _xmlMapper.GetRomanNumeralValue(xElement.Element("SERIES_CODE"));
                         //var series =
                         //    new XmlSeriesDataMapper(null).GetSeries(series_id);
                         //if (series == null)

@@ -9,20 +9,29 @@ $('#upload-file-sk').click(function () {
         poa_sk.push(name);
     }
 
+   
+		
     $('#poa-files').html("");
     for (var j = 0; j < poa_sk.length; j++) {
-        $('#poa-files').append('<p class="ck5Attachment"  id="poa_sk' + j + '">' + poa_sk[j] + '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ')">-</button></p>');
+        var attachmentDiv = '<div class="row">' +
+       '<div class="col-xs-8 col-sm-10 col-md-8 col-lg-10"> ' +
+       '<a href="#" id="poa_sk' + j + '">' + poa_sk[j] + '</a>' +
+       '</div>' +
+       '<div class="col-xs-4 col-sm-2 col-md-4 col-lg-2">' +
+       '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ')" ><i class="fa fa-times"></i></button>	' +
+       '</div>' +
+       '</div>';
+        
+        $('#poa-files').append(attachmentDiv);
     }
+    
+    //$('#poa-files').html("");
+    //for (var j = 0; j < poa_sk.length; j++) {
+    //    $('#poa-files').append('<div class="row"> <div class="ck5Attachment"  id="poa_sk' + j + '">' + poa_sk[j]
+    //        + '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ')">-</button></p>');
+    //}
 
 });
-
-//$('#file-decree-doc-container').on('click', '.add-files', (function () {
-//    file_sk++;
-//    $('#file-decree-doc-container').append(' <div class="row"><div class="col-sm-9"> ' +
-//                                 '<input type="file" id="Ck5FileUploadFileList_' + file_sk + '_" name="Ck5FileUploadFileList[' + file_sk + ']" class="form-control">' +
-//                             '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + file_sk + ', $(this))">Remove</button>' +
-//                             '</div></div>');
-//}));
 
 
 $('#file-sk-container').on('click', '.add-files', (function () {
