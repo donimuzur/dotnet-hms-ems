@@ -32,5 +32,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int MonthId { get; set; }
         public string MonthNameIndo { get; set; }
         public string MonthNameEng { get; set; }
+
+        //CK4CItem
+        public long Ck4CItem { get; set; }
+        public string FaCode { get; set; }
+        public string Werks { get; set; }
+        public Decimal ProdQty { get; set; }
+        public string UomProudQty { get; set; }
+        public string ProdDate { get; set; }
+
     }
 }

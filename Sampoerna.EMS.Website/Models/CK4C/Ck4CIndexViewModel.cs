@@ -4,11 +4,16 @@ using System.Linq;
 using System.Security.RightsManagement;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK4C
 {
-    public class Ck4CIndexViewModel
+    public class Ck4CIndexViewModel : BaseModel
     {
+        public Ck4CIndexViewModel()
+        {
+          Detail = new List<DataIndecCk4C>();    
+        }
         public DateTime? ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantId { get; set; }
@@ -17,7 +22,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         //selectlist
         public SelectList CompanyNameList { get; set; }
         public SelectList PlanIdList { get; set; }
-
+        public Enums.CK4CType Ck4CType { get; set; }
+        public List<DataIndecCk4C> Detail { get; set; }
     }
 
     public class DataIndecCk4C
