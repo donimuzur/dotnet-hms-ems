@@ -270,12 +270,16 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(MaterialDto origin, MaterialDto data,string userid)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC.Equals(data.MATERIAL_DESC));
-            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP.Equals(data.PURCHASING_GROUP));
-            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP.Equals(data.MATERIAL_GROUP));
-            changesData.Add("BASE_UOM", origin.BASE_UOM_ID.Equals(data.BASE_UOM_ID));
-            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC.Equals(data.ISSUE_STORANGE_LOC));
-            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP.Equals(data.EXC_GOOD_TYP));
+            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC == data.MATERIAL_DESC);
+            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP == data.PURCHASING_GROUP);
+            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP == data.MATERIAL_GROUP);
+            changesData.Add("BASE_UOM", origin.BASE_UOM_ID == data.BASE_UOM_ID);
+            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC == data.ISSUE_STORANGE_LOC);
+            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP == data.EXC_GOOD_TYP);
+            changesData.Add("TARIFF", origin.TARIFF == data.TARIFF);
+            changesData.Add("HJE", origin.HJE == data.HJE);
+            changesData.Add("TARIFF_CURR", origin.TARIFF_CURR == data.TARIFF_CURR);
+            changesData.Add("HJE_CURR", origin.HJE_CURR == data.HJE_CURR);
             //changesData.Add("PLANT_DELETION", origin.PLANT_DELETION.Equals(data.PLANT_DELETION));
             //changesData.Add("CLIENT_DELETION", origin.CLIENT_DELETION.Equals(data.CLIENT_DELETION));
 
@@ -314,6 +318,22 @@ namespace Sampoerna.EMS.BLL
                         case "ISSUE_STORANGE_LOC":
                             changes.OLD_VALUE = origin.ISSUE_STORANGE_LOC;
                             changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
+                            break;
+                        case "TARIFF":
+                            changes.OLD_VALUE = origin.TARIFF.HasValue ? origin.TARIFF.Value.ToString() : "0";
+                            changes.NEW_VALUE = data.TARIFF.HasValue ? data.TARIFF.Value.ToString() : "0";
+                            break;
+                        case "HJE":
+                            changes.OLD_VALUE = origin.HJE.HasValue ? origin.HJE.Value.ToString() : "0";
+                            changes.NEW_VALUE = data.HJE.HasValue ? data.HJE.Value.ToString() : "0";
+                            break;
+                        case "TARIFF_CURR":
+                            changes.OLD_VALUE = origin.TARIFF_CURR;
+                            changes.NEW_VALUE = data.TARIFF_CURR;
+                            break;
+                        case "HJE_CURR":
+                            changes.OLD_VALUE = origin.HJE_CURR;
+                            changes.NEW_VALUE = data.HJE_CURR;
                             break;
                         //case "PLANT_DELETION":
                         //    changes.OLD_VALUE = origin.IsPlantDelete.ToString();
@@ -372,6 +392,13 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        
+        public MaterialDto GetByPlantIdAndFaCode(string plantid, string matnumber)
+        {
+            ZAIDM_EX_MATERIAL data = _repository.Get(x => x.STICKER_CODE == matnumber && x.WERKS == plantid, null, includeTables).FirstOrDefault();
+
+            MaterialDto returnData = AutoMapper.Mapper.Map<MaterialDto>(data);
+
+            return returnData;
+        }
     }
 }
