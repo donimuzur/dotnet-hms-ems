@@ -312,5 +312,21 @@ namespace Sampoerna.EMS.Core
             [Description("Government Cancel")]
             GovCancel = 3
         }
+        public enum Pbck7Type
+        {
+            [Description("PBCK7")]
+            Pbck7List =1,
+            [Description("PBCK3")]
+            Pbck3List  =2
+        }
+
+        public enum DocumentTypePbck7AndPbck3
+        {
+            [Description("Pemusnahan")]
+            Pemusnahan=1,
+            [Description("Pengolahan")]
+            Pengolahaan=2,
+            
+        }
     }
 }
