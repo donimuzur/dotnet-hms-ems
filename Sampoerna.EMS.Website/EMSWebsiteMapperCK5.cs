@@ -304,6 +304,11 @@ namespace Sampoerna.EMS.Website
              ;
 
             Mapper.CreateMap<CK5FileDocumentItems, CK5FileDocumentDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1Dto, Ck5ListPbck1Completed>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.Pbck1Id))
+                .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.Pbck1Number))
+                ;
         }
     }
 }

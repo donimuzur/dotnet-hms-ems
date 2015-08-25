@@ -1466,20 +1466,21 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void GrandTotalCK5ByPeriodAndSourcePlant()
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId)
         {
-            
-        }
+            var output = new GetQuotaAndRemainOutput();
 
-        public decimal GetQtyApprovedQuotaPbck1(int pbckId)
-        {
             var pbck1 = _pbck1Bll.GetById(pbckId);
             if (pbck1 == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+            output.Pbck1DecreeDate = "";
+            if (pbck1.DecreeDate.HasValue)
+                output.Pbck1DecreeDate =  pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
+
             if (pbck1.Pbck1Type == Enums.PBCK1Type.New)
             {
-                return pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
+                output.QtyApprovedPbck1 =  pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
             }
 
             else
@@ -1499,9 +1500,28 @@ namespace Sampoerna.EMS.BLL
                         remainQuota += pbck1Dto.QtyApproved.Value;
                 }
 
-                return remainQuota;
+                output.QtyApprovedPbck1 = remainQuota;
             }
 
+            var periodEnd = pbck1.PeriodTo.Value.AddDays(1);
+            
+            //get ck5 
+            var lisCk5 =
+                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks
+                                     && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd);
+
+            decimal qtyCk5 = 0;
+
+            foreach (var ck5 in lisCk5)
+            {
+                if (ck5.GRAND_TOTAL_EX.HasValue)
+                    qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
+            }
+
+            output.QtyCk5 = qtyCk5;
+
+            return output;
         }
+        
     }
 }

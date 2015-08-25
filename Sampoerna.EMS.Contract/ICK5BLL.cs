@@ -49,5 +49,7 @@ namespace Sampoerna.EMS.Contract
        CK5XmlDto GetCk5ForXmlById(long id);
 
        void GovApproveDocumentRollback(CK5WorkflowDocumentInput input);
+
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId);
    }
 }

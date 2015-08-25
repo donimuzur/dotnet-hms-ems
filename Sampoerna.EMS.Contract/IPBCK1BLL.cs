@@ -40,5 +40,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1Dto> GetAllPbck1ByPbck1Ref(int pbckRef);
 
+        List<Pbck1Dto> GetPbck1CompletedDocumentByPlant(string plant);
+
     }
 }

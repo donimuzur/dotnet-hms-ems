@@ -1510,5 +1510,13 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
+
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlant(string plant)
+        {
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plant);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
     }
 }

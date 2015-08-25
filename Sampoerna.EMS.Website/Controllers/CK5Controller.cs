@@ -246,14 +246,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-
-           //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+          
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-          
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
+
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
@@ -368,14 +367,45 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetSourcePlantDetailsAndPbckList(string plantId)
+        {
+            var dbPlant = _plantBll.GetT001ById(plantId);
+            var model = Mapper.Map<CK5PlantModel>(dbPlant);
+
+            //model.PbckList = new List<Ck5ListPbck1Completed>();
+            List<Pbck1Dto> pbck1Data;
+            pbck1Data = _pbck1Bll.GetPbck1CompletedDocumentByPlant(plantId);
+            model.PbckList = Mapper.Map<List<Ck5ListPbck1Completed>>(pbck1Data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
         public JsonResult Pbck1DatePartial(long pbck1Id)
         {
-            //var pbck1 = _pbck1Bll.GetById(pbck1Id);
-
-            //return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
+         
             return Json(GetDatePbck1ByPbckId(pbck1Id));
         }
 
+        [HttpPost]
+        public JsonResult GetDateAndQuotaPbck1(int? id)
+        {
+            var model = new QuotaPbck1Model();
+            if (id.HasValue)
+            {
+                var result = _ck5Bll.GetQuotaRemainAndDatePbck1(id.Value);
+                model.Pbck1QtyApproved = result.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = result.QtyCk5.ToString();
+                model.RemainQuota = (result.QtyApprovedPbck1 - result.QtyCk5).ToString();
+
+                model.Pbck1DecreeDate = result.Pbck1DecreeDate;
+            }
+            
+            
+
+            return Json(model);
+
+        }
         private string GetDatePbck1ByPbckId(long? id)
         {
             if (id == null)
@@ -477,14 +507,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            
-            
-            //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+           
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant(model.SourcePlantId);
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
