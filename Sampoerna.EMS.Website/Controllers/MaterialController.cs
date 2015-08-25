@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetVirtualPlantListMultiSelect();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.BaseUOM = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
+            model.CurrencyList = GlobalFunctions.GetCurrencyList();
             model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
         }
@@ -103,6 +104,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.BaseUOM = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
             model.ConversionUomList = GlobalFunctions.GetConversionUomList();
+            model.CurrencyList = GlobalFunctions.GetCurrencyList();
             return model;
         }
 
@@ -191,12 +193,12 @@ namespace Sampoerna.EMS.Website.Controllers
             
             
 
-            if (data.IS_FROM_SAP)
-            {
+            //if (data.IS_FROM_SAP)
+            //{
              
-                return RedirectToAction("Details", new {mn=mn, p=p});
-            }
-            else {
+            //    return RedirectToAction("Details", new {mn=mn, p=p});
+            //}
+            //else {
 
                 var model = Mapper.Map<MaterialEditViewModel>(data);
 
@@ -204,11 +206,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, mn+p));
                 model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
-
+                
                 InitEditModel(model);
 
                 return View("Edit", model);
-            }
+            //}
 
             
         }
