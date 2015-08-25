@@ -43,7 +43,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CompanyAddress))
-                .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.KppbcCity + "-" + src.KppbcNo ));
+                .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.KppbcCity + "-" + src.KppbcNo ))
+                .ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.KppbcCity))
+                .ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.KppbcNo))
+                ;
 
             Mapper.CreateMap<CK5FormViewModel, CK5Dto>().IgnoreAllNonExisting()
               .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id))
@@ -53,7 +56,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
 
-              .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.KppBcCityName))
+              .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.KppBcCity))
               .ForMember(dest => dest.CE_OFFICE_CODE, opt => opt.MapFrom(src => src.CeOfficeCode))
               .ForMember(dest => dest.SUBMISSION_NUMBER, opt => opt.MapFrom(src => src.SubmissionNumber))
               .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
@@ -114,8 +117,8 @@ namespace Sampoerna.EMS.Website
 
             .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => src.STATUS_ID))
             .ForMember(dest => dest.DocumentStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
-            
-            .ForMember(dest => dest.KppBcCityName, opt => opt.MapFrom(src => src.KPPBC_CITY))
+
+            .ForMember(dest => dest.KppBcCity, opt => opt.MapFrom(src => src.KPPBC_CITY))
             .ForMember(dest => dest.CeOfficeCode, opt => opt.MapFrom(src => src.CE_OFFICE_CODE))
             .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
             .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
