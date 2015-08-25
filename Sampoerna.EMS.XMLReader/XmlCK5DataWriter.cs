@@ -33,6 +33,20 @@ namespace Sampoerna.EMS.XMLReader
             return result.ToString("yyyyMMdd");
         }
 
+        private string GetTimeFormat(DateTime? date)
+        {
+            var result = DateTime.MinValue;
+            if (date == null)
+                return null;
+            else
+            {
+                result = Convert.ToDateTime(date);
+            }
+            //var monthFormat = result.Month < 10 ? "0" + result.Month : result.Month.ToString();
+            //return string.Format("{0}{1}{2}", result.Year, monthFormat, result.Day);
+            return result.ToString("hhmmss");
+        }
+
         private string GetLinesItem(int? line)
         {
             if (line == null)
@@ -68,7 +82,12 @@ namespace Sampoerna.EMS.XMLReader
                     return "01";
                  case Enums.CK5Type.Intercompany:
                     return "02";
-
+                 case Enums.CK5Type.ImporterToPlant:
+                    return "03";
+                 case Enums.CK5Type.PortToImporter:
+                    return "04";
+                 case Enums.CK5Type.Export:
+                    return "05";
             }
             return null;
             
@@ -79,17 +98,40 @@ namespace Sampoerna.EMS.XMLReader
         {
             using (XmlWriter writer = XmlWriter.Create(ck5XmlDto.Ck5PathXml))
             {
-                writer.WriteStartDocument();
+
+               
+
                 writer.WriteStartElement("ZAIDM_CK5_01");
                 writer.WriteStartElement("IDOC");
                 writer.WriteAttributeString("BEGIN", "1");
 
-
+                writer.WriteStartElement("EDI_DC40");
+                writer.WriteAttributeString("SEGMENT", "1");
+                writer.WriteElementString("TABNAM", SetNullValue(null));
+                writer.WriteElementString("MANDT", SetNullValue(null));
+                writer.WriteElementString("DOCNUM", SetNullValue(null));
+                writer.WriteElementString("DOCREL", SetNullValue(null));
+                writer.WriteElementString("STATUS", SetNullValue(null));
+                writer.WriteElementString("DIRECT", SetNullValue(null));
+                writer.WriteElementString("OUTMOD", SetNullValue(null));
+                writer.WriteElementString("IDOCTYP", "ZAIDM_CK5_01");
+                writer.WriteElementString("MESTYP", "ZAIDM_EMS_CK5");
+                writer.WriteElementString("MESCOD", "EMS");
+                writer.WriteElementString("SNDPOR", SetNullValue(null));
+                writer.WriteElementString("SNDPRT", SetNullValue(null));
+                writer.WriteElementString("SNDPRN", SetNullValue(null));
+                writer.WriteElementString("CREDAT", GetDateFormat(DateTime.Now));
+                writer.WriteElementString("CRETIM", GetTimeFormat(DateTime.Now));
+                writer.WriteElementString("SERIAL", SetNullValue(null));
+               
+                writer.WriteEndElement();
+              
                 writer.WriteStartElement("ZIA_CK5_HDR");
                 writer.WriteAttributeString("SEGMENT", "1");
 
                 writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
                 writer.WriteElementString("CK5_PROCS_TYP", MappingCk5Type(ck5XmlDto.CK5_TYPE));
+                writer.WriteElementString("STATUS", "01");
                 writer.WriteElementString("SOURCE_PLANT", ck5XmlDto.SOURCE_PLANT_ID);
                 writer.WriteElementString("DEST_PLANT", ck5XmlDto.DEST_PLANT_ID);
                 writer.WriteElementString("CREATOR_ID", SetNullValue(ck5XmlDto.CREATED_BY));
@@ -99,13 +141,13 @@ namespace Sampoerna.EMS.XMLReader
                 writer.WriteElementString("GI_DATE", SetNullValue(GetDateFormat(ck5XmlDto.GI_DATE)));
                 writer.WriteElementString("GR_DATE", SetNullValue(GetDateFormat(ck5XmlDto.GR_DATE)));
 
-
+                var lineItem = 1;
                 foreach (var item in ck5XmlDto.Ck5Material)
                 {
                     writer.WriteStartElement("ZIA_CK5_ITM");
                     writer.WriteAttributeString("SEGMENT", "1");
                     writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
-                    writer.WriteElementString("ITEM_NUMBER", GetLinesItem(item.LINE_ITEM));
+                    writer.WriteElementString("ITEM_NUMBER", lineItem.ToString());
                     writer.WriteElementString("MATERIAL", item.BRAND);
                     writer.WriteElementString("MENGE", SetNullValue(item.CONVERTED_QTY.ToString()));
                     writer.WriteElementString("MEINS", SetNullValue(item.CONVERTED_UOM));
@@ -142,6 +184,7 @@ namespace Sampoerna.EMS.XMLReader
 
                     //ZAIDM_CK5_ITM
                     writer.WriteEndElement();
+                    lineItem++;
                 }
 
 
