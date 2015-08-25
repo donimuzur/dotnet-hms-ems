@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.XMLReader
                
                 writer.WriteEndElement();
               
-                writer.WriteStartElement("ZIA_CK5_HDR");
+                writer.WriteStartElement("Z1A_CK5_HDR");
                 writer.WriteAttributeString("SEGMENT", "1");
 
                 writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
@@ -144,7 +144,7 @@ namespace Sampoerna.EMS.XMLReader
                 var lineItem = 1;
                 foreach (var item in ck5XmlDto.Ck5Material)
                 {
-                    writer.WriteStartElement("ZIA_CK5_ITM");
+                    writer.WriteStartElement("Z1A_CK5_ITM");
                     writer.WriteAttributeString("SEGMENT", "1");
                     writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
                     writer.WriteElementString("ITEM_NUMBER", GetLinesItem(lineItem));
