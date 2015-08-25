@@ -147,7 +147,7 @@ namespace Sampoerna.EMS.XMLReader
                     writer.WriteStartElement("ZIA_CK5_ITM");
                     writer.WriteAttributeString("SEGMENT", "1");
                     writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
-                    writer.WriteElementString("ITEM_NUMBER", lineItem.ToString());
+                    writer.WriteElementString("ITEM_NUMBER", GetLinesItem(lineItem));
                     writer.WriteElementString("MATERIAL", item.BRAND);
                     writer.WriteElementString("MENGE", SetNullValue(item.CONVERTED_QTY.ToString()));
                     writer.WriteElementString("MEINS", SetNullValue(item.CONVERTED_UOM));
