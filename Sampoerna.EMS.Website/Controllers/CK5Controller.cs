@@ -428,6 +428,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
+                        GetQuotaAndRemainOutput output;
+
+                        if (model.PbckDecreeId.HasValue)
+                            output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
+                        else
+                            output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+
+                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+
                         var saveResult = SaveCk5ToDatabase(model);
 
                         AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
@@ -548,9 +557,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
-                //model.Pbck1QtyApproved = "100";
-                //model.Ck5TotalExciseable = "10";
-                //model.RemainQuota = "5";
+                var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
+                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
             }
             catch (Exception ex)
@@ -580,7 +590,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         input.CurrentUser = CurrentUser.USER_ID;
                         if (_workflowBll.AllowEditDocument(input))
                         {
-
+                            //quota
+                            var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+                            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                            model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                            model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
                             SaveCk5ToDatabase(model);
 
@@ -992,10 +1006,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //create xml file
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
+                //todo check validation
+                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                               Convert.ToInt32(model.SubmissionNumber.Split('/')[0]) + "-" +
+                               DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
 
-                //var fileName = Constans.CK5FolderPath + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
-                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5Xml" +  DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
                 //ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
                 ck5XmlDto.Ck5PathXml = fileName;
 

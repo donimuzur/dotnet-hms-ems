@@ -42,7 +42,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             NppbkcNotFound,
 
             [Description("Pbck1 Ref is null")]
-            Pbck1RefNull
+            Pbck1RefNull,
+
+            [Description("Ck5 Quota Exceeded")]
+            CK5QuotaExceeded
 
         }
         

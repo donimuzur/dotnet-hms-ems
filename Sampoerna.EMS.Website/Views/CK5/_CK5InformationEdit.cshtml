@@ -427,6 +427,8 @@
                                         <div class="row">
                                             <label class="col-md-4">Remain</label>
                                             <div class="col-md-8">
+                                                @*@Html.HiddenFor(model => model.RemainQuota);*@
+
                                                 @Html.TextBoxFor(model => model.RemainQuota, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
