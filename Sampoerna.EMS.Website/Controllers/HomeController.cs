@@ -8,13 +8,13 @@ using Sampoerna.EMS.Core;
 namespace Sampoerna.EMS.Website.Controllers
 {
     
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private ICompanyBLL _companyBll;
         private IWorkflowBLL _workflowBll;
 
-        public HomeController(ICompanyBLL companyBll, IWorkflowBLL workflowBll, IPageBLL pageBll, Enums.MenuList menuID):
-            base(pageBll, Enums.MenuList.User)
+        public HomeController(ICompanyBLL companyBll, IWorkflowBLL workflowBll)
+           
         {
             _companyBll = companyBll;
             _workflowBll = workflowBll;
