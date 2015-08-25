@@ -27,4 +27,12 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 
         public List<PrintHistoryDto> ListPrintHistorys { get; set; }
     }
+
+    public class GetQuotaAndRemainOutput
+    {
+        public decimal QtyApprovedPbck1 { get; set; }
+        public decimal QtyCk5 { get; set; }
+
+        public string Pbck1DecreeDate { get; set; }
+    }
 }

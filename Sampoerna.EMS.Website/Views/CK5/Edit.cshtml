@@ -241,8 +241,13 @@
             if (pbck1 == '') {
                 $("input[name='PbckDecreeDate']").val('');
                 $("input[name='PbckDecreeNumber']").val('');
+                
+                $("input[name='Pbck1QtyApproved']").val('');
+                $("input[name='Ck5TotalExciseable']").val('');
+                $("input[name='RemainQuota']").val('');
             } else {
-                ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+                //ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+                ajaxGetDateAndQuotaPbck1('@Url.Action("GetDateAndQuotaPbck1", "CK5")', { id: pbck1 });
                 $("input[name='PbckDecreeNumber']").val(pbck1Number);
             }
         }
@@ -290,8 +295,8 @@
 
 
             } else {
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
-
+               // ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });
                 ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }

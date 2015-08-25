@@ -29,18 +29,13 @@
             <h3>Excise Management System</h3>
         </div>
         <div class="main-menu-content">
-            <div class="excise-menu login">
+            <div >
                  <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <h2 class="text-center"> Unauthorized Page </h2>
-                            </div>
-                        </div>
-
-                     <div class="col-md-12">
-                         <div class="row">
-                             <a href="@Url.Action("Index", "Home")" class="text-center">Back To Home Page</a>
-                         </div>
+                     <center>
+                         <h3 style="color:red">You don’t have access to this application</h3>
+                         <h4>Please contact your administrator !</h4>
+                         <button class="btn btn-default" onclick="window.location.href = '@Url.Action("Index", "Home")'">Back To Home</button>
+                     </center> 
                     </div>
                 
             </div>

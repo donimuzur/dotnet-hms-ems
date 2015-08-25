@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BLL
         {
             InitializeCK5();
             InitializePBCK1();
+            InitializePbck7And3();
             //Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
             //    .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
@@ -304,7 +305,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.UserId));
                 
 	    
-	    #region ExGoodTyp
+	        #region ExGoodTyp
 
             Mapper.CreateMap<EX_GROUP_TYPE, ExGoodTyp>().IgnoreAllNonExisting();
             
