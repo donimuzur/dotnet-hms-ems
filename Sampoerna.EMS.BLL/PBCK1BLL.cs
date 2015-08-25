@@ -1379,11 +1379,7 @@ namespace Sampoerna.EMS.BLL
             });
 
             rc.RealisasiP3Bkc = Mapper.Map<List<Pbck1RealisasiP3BkcDto>>(dataLack1ByPeriod.ToList());
-            //todo: for field
-            //Jenis : Jenis is Product Type Alias in PBCK-1 form
-            //Uom : ??
             
-
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {

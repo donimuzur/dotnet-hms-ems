@@ -160,5 +160,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal Jumlah { get; set; }
         public decimal SaldoAkhir { get; set; }
         public string Uom { get; set; }
+        public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
     }
 }

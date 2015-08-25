@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
@@ -41,6 +42,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
         public decimal TotalProduction { get; set; }
+
+        public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
 
     }
 }

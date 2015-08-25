@@ -165,13 +165,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
                 .ForMember(dest => dest.TotalProduction, opt => opt.MapFrom(src => src.TOTAL_PRODUCTION))
+                .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
                 ;
 
             Mapper.CreateMap<MONTH, Lack1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.MONTH_ID))
                 .ForMember(dest => dest.PeriodNameInd, opt => opt.MapFrom(src => src.MONTH_NAME_IND))
                 .ForMember(dest => dest.PerionNameEng, opt => opt.MapFrom(src => src.MONTH_NAME_ENG));
-            
+
+            Mapper.CreateMap<LACK1_PRODUCTION_DETAIL, Lack1ProductionDetailDto>().IgnoreAllNonExisting();
+
             #endregion
 
             #region LACK2
