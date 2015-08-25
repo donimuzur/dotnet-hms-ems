@@ -5,22 +5,24 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Helpers;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-
+    [AuthorizeAD]
     public class BaseController : Controller
     {
 
         private IPageBLL _pageBLL;
         private Enums.MenuList _menuID;
-
+       
         public BaseController(IPageBLL pageBll, Enums.MenuList menuID)
         {
             _pageBLL = pageBll;
@@ -70,12 +72,26 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             get
             {
+                if (Session[Core.Constans.SessionKey.CurrentUser] == null)
+                {
+                    var userId =  User.Identity.Name.Remove(0,4);
+                    IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
+                    IPOABLL poabll = MvcApplication.GetInstance<POABLL>();
+                    IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
+                    var loginResult = userBll.GetLogin(userId);
+
+                    if (loginResult != null)
+                    {
+
+                        loginResult.UserRole = poabll.GetUserRole(loginResult.USER_ID);
+                        loginResult.AuthorizePages = userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
+                        loginResult.NppbckPlants = userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
+                        Session[Core.Constans.SessionKey.CurrentUser] = loginResult;
+                    }
+                }
                 return (Login)Session[Core.Constans.SessionKey.CurrentUser];
             }
-            set
-            {
-                Session[Core.Constans.SessionKey.CurrentUser] = value;
-            }
+            
         }
 
         protected PAGE PageInfo
@@ -106,12 +122,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var controllerName = descriptor.ControllerDescriptor.ControllerName;
 
             if (controllerName == "Login" && actionName == "Index") return;
+            if (controllerName == "Home" && actionName == "Index") return;
 
             if (CurrentUser == null )
             {
                 filterContext.Result = new RedirectToRouteResult(
-                   new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
-                
+                            new RouteValueDictionary { { "controller", "Error" }, { "action", "Unauthorized" } });
+ 
              
                 
             }

@@ -13,10 +13,7 @@ namespace Sampoerna.EMS.Website.Helpers
         private bool _authenticated;
         private bool _authorized;
        
-        public string Groups
-        {
-            get { return ConfigurationManager.AppSettings["GroupAD"].ToString(); }
-        }
+        
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
@@ -24,7 +21,7 @@ namespace Sampoerna.EMS.Website.Helpers
 
             if (!_authenticated || !_authorized)
             {
-                var baseUrl = ConfigurationManager.AppSettings["BaseUrl"].ToString();
+                var baseUrl = ConfigurationManager.AppSettings["WebRootUrl"].ToString();
                 filterContext.Result = new RedirectResult(baseUrl +"/Error/Unauthorized");
             }
         }
@@ -35,29 +32,9 @@ namespace Sampoerna.EMS.Website.Helpers
 
             if (_authenticated)
             {
-                if (string.IsNullOrEmpty(Groups))
-                {
-                    _authorized = true;
-                    return _authorized;
-                }
 
-                var groups = Groups.Split(',');
-                string username = httpContext.User.Identity.Name;
-                try
-                {
-                    foreach (var group in groups)
-                    {
-                        if (httpContext.User.IsInRole(group))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _authorized = false;
-                    return _authorized;
-                }
+                _authorized = true;
+                return _authorized;
             }
 
             _authorized = false;
