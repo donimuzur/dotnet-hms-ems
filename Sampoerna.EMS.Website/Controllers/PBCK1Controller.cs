@@ -1556,6 +1556,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var visibilityUomAmount = "l";
                 var uomAmount = "Kilogram";
+                var visibilityUomBkc = "k";
                 if (excisableGoodsType.ToLower().Contains("hasil tembakau"))
                 {
                     visibilityUomAmount = "b"; //strikeout except "Batang" / "batang"
@@ -1568,8 +1569,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else if (excisableGoodsType.ToLower().Contains("alkohol"))
                 {
-                    visibilityUomAmount = "l"; //strikeout except "liter" / "Liter"
                     uomAmount = "Liter";
+                    visibilityUomAmount = "l";
                 }
                 
                 foreach (var item in prodPlan)
@@ -1599,6 +1600,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     detailRow.VisibilityUomAmount = visibilityUomAmount;
                     detailRow.UomAmount = uomAmount;
+                    detailRow.VisibilityUomBkc = visibilityUomBkc;
                     
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
                     no++;
