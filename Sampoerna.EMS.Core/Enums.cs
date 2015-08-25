@@ -66,6 +66,20 @@ namespace Sampoerna.EMS.Core
             Completed = 7
         }
 
+       
+
+        public enum CK5XmlStatus
+        {
+
+            StoCreated = 10,
+
+            GICompleted = 16,
+
+            GRCompleted = 21
+         
+
+        }
+
         public enum Pbck1DocumentType
         {
             OpenDocument = 1,

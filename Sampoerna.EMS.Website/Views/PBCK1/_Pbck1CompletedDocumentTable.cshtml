@@ -8,7 +8,7 @@
             <th>Year</th>
             <th>NPPBKC ID</th>
             <th>PBCK-1 Number</th>
-            <th>Proposed Ammount</th>
+            <th>Proposed Amount</th>
             <th>Last Update</th>
             <th>Status</th>
         </tr>
@@ -40,7 +40,7 @@
                 <td>
                     @Html.DisplayFor(model => item.Pbck1Number)
                 </td>
-                <td>@Html.DisplayFor(model => item.RequestQty)</td>
+                <td class="number">@Html.DisplayFor(model => item.RequestQty)</td>
                 <td>
                     @item.ApprovedByManagerId
                 </td>

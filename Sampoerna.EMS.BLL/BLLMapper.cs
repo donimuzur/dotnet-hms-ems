@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
@@ -159,7 +160,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.ExTypDesc, opt => opt.MapFrom(src => src.EX_TYP_DESC))
                 .ForMember(dest => dest.PerionNameEng, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_ENG))
-                .ForMember(dest => dest.PeriodNameInd,opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND));
+                .ForMember(dest => dest.PeriodNameInd,opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND))
+                .ForMember(dest => dest.Periode, opt => opt.MapFrom(src => new DateTime(src.PERIOD_YEAR.Value, src.PERIOD_MONTH.Value, 1)))
+                .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
+                .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
+                .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.TotalProduction, opt => opt.MapFrom(src => src.TOTAL_PRODUCTION))
+                ;
 
             Mapper.CreateMap<MONTH, Lack1Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.MONTH_ID))
