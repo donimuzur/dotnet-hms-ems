@@ -56,9 +56,7 @@
                         @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
-
-                        @*@Html.HiddenFor(model => model.PbckDecreeDate)*@
-
+                     
                         @Html.HiddenFor(model => model.DnNumber)
                         @Html.HiddenFor(model => model.StoSenderNumber)
                         @Html.HiddenFor(model => model.DnDate)
@@ -71,17 +69,6 @@
                         @Html.HiddenFor(model => model.UnsealingNotifDate)
                         
                         @Html.HiddenFor(model => model.IsCk5Export)
-
-                        @*@Html.HiddenFor(model => model.CountryCode)
-                        @Html.HiddenFor(model => model.CountryName)
-                        
-                        @Html.HiddenFor(model => model.LoadingPort)
-                        @Html.HiddenFor(model => model.LoadingPortId)
-                        @Html.HiddenFor(model => model.LoadingPortName)
-                        @Html.HiddenFor(model => model.FinalPort)
-                        @Html.HiddenFor(model => model.FinalPortId)
-                        @Html.HiddenFor(model => model.FinalPortName)*@
-                       
 
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
@@ -157,8 +144,13 @@
                 var pbck1 = $(this).find("option:selected").val();
                 if (pbck1 == '') {
                     $("input[name='PbckDecreeDate']").val('');
+                    $("input[name='Pbck1QtyApproved']").val('');
+                    $("input[name='Ck5TotalExciseable']").val('');
+                    $("input[name='RemainQuota']").val('');
                 } else {
-                    ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+                    @*ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });*@
+                    ajaxGetDateAndQuotaPbck1('@Url.Action("GetDateAndQuotaPbck1", "CK5")', { id: pbck1 });
+                    
                 }
             }
 
@@ -200,9 +192,8 @@
                     $('#btnUploadInfo').enable(false);
                     $('#CK5UploadSubmitBtn').enable(false);
 
-
                 } else {
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });
                 }
             }
         });
@@ -214,12 +205,10 @@
                 if (nppBkcCity == '') {
                     $("input[name='CeOfficeCode']").val('');
                     $("input[name='KppBcCityName']").val('');
-                    //$("input[name='CompanyCode']").val('');
+                   
                 } else {
                     $("input[name='CeOfficeCode']").val(nppBkcCity);
                     $("input[name='KppBcCityName']").val(cityName);
-
-                                                        @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
                 }
             }
 

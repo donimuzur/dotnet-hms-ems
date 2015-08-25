@@ -168,8 +168,8 @@ namespace Sampoerna.EMS.BLL
             //    orderBy = c => c.OrderByDescending(OrderByHelper.GetOrderByFunction<CK5>(input.SortOrderColumn));
             //}
             //default case of ordering
-            //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
-            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.STATUS_ID).ThenBy(z=>z.APPROVED_BY_MANAGER);
+            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
+            //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.STATUS_ID).ThenBy(z=>z.APPROVED_BY_MANAGER);
 
 
             var rc = _repository.Get(queryFilter, orderByFilter, includeTables);
@@ -185,8 +185,23 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private void ValidateCk5(CK5SaveInput input)
+        {
+            decimal remainQuota = 0;
+            if (Utils.ConvertHelper.IsNumeric(input.Ck5Dto.RemainQuota))
+            {
+                remainQuota = Convert.ToDecimal(input.Ck5Dto.RemainQuota);
+            }
+
+            if (remainQuota < input.Ck5Dto.GRAND_TOTAL_EX)
+                throw new BLLException(ExceptionCodes.BLLExceptions.CK5QuotaExceeded);
+
+        
+        }
         public CK5Dto SaveCk5(CK5SaveInput input)
         {
+            ValidateCk5(input);
+
             //workflowhistory
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
 
@@ -241,7 +256,25 @@ namespace Sampoerna.EMS.BLL
                dbData =  ProcessInsertCk5(input);
             }
 
-            _uow.SaveChanges();
+            try
+            {
+                _uow.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+
 
             return Mapper.Map<CK5Dto>(dbData);
 
@@ -1446,6 +1479,119 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<CK5XmlDto>(dtData);
 
+        }
+
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId)
+        {
+            var output = new GetQuotaAndRemainOutput();
+
+            var pbck1 = _pbck1Bll.GetById(pbckId);
+            if (pbck1 == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            output.Pbck1DecreeDate = "";
+            if (pbck1.DecreeDate.HasValue)
+                output.Pbck1DecreeDate =  pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
+
+            if (pbck1.Pbck1Type == Enums.PBCK1Type.New)
+            {
+                output.QtyApprovedPbck1 =  pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
+            }
+
+            else
+            {
+                decimal remainQuota = 0;
+                //additional
+                //
+                var parentIdPbck1 = pbck1.Pbck1Reference;
+                if (!pbck1.Pbck1Reference.HasValue)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1RefNull);
+
+                var listPbck1 = _pbck1Bll.GetAllPbck1ByPbck1Ref(Convert.ToInt32(parentIdPbck1));
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        remainQuota += pbck1Dto.QtyApproved.Value;
+                }
+
+                output.QtyApprovedPbck1 = remainQuota;
+            }
+
+            var periodEnd = pbck1.PeriodTo.Value.AddDays(1);
+            
+            //get ck5 
+            var lisCk5 =
+                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks
+                                     && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd);
+
+            decimal qtyCk5 = 0;
+
+            foreach (var ck5 in lisCk5)
+            {
+                if (ck5.GRAND_TOTAL_EX.HasValue)
+                    qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
+            }
+
+            output.QtyCk5 = qtyCk5;
+
+            return output;
+        }
+
+
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByCk5Id(long ck5Id)
+        {
+            var output = new GetQuotaAndRemainOutput();
+
+            var ck5DbData = _repository.GetByID(ck5Id);
+
+            if (ck5DbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (ck5DbData.PBCK1_DECREE_ID.HasValue)
+            {
+                return GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value);
+            }
+
+            else
+            {
+                var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID,
+                    ck5DbData.SUBMISSION_DATE);
+
+                output.QtyApprovedPbck1 = 0;
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
+                }
+
+                if (listPbck1.Count == 0)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1RefNull);
+
+                var periodStart = listPbck1[0].PeriodFrom;
+                var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
+
+                //get ck5 
+                var lisCk5 =
+                    _repository.Get(
+                        c =>
+                            c.STATUS_ID != Enums.DocumentStatus.Cancelled &&
+                            c.SOURCE_PLANT_ID == ck5DbData.SOURCE_PLANT_ID
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd);
+
+                decimal qtyCk5 = 0;
+
+                foreach (var ck5 in lisCk5)
+                {
+                    if (ck5.GRAND_TOTAL_EX.HasValue)
+                        qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
+                }
+
+                output.QtyCk5 = qtyCk5;
+            }
+
+            return output;
         }
     }
 }
