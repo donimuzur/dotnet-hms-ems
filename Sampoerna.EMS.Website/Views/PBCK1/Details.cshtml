@@ -20,19 +20,6 @@
 
                         <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
-                    else
-                    {
-                        if (Model.AllowGovApproveAndReject)
-                        {
-                            @*<input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
-
-                            <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
-
-                            <input type="button" class="btn btn-danger" value="GovPartialApprove" id="btnGovPartApprove" />*@
-
-                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
-                        }
-                    }
 
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
 
@@ -61,34 +48,7 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
-                        {
-                            @Html.HiddenFor(model => model.Detail.Pbck1Id)
-                            @Html.HiddenFor(model => model.Detail.Pbck1Reference)
-                            @Html.HiddenFor(model => model.Detail.Pbck1Type)
-                            @Html.HiddenFor(model => model.Detail.PeriodFrom)
-                            @Html.HiddenFor(model => model.Detail.PeriodTo)
-                            @Html.HiddenFor(model => model.Detail.NppbkcId)
-                            @Html.HiddenFor(model => model.Detail.GoodType)
-                            @Html.HiddenFor(model => model.Detail.SupplierPlant)
-                            @Html.HiddenFor(model => model.Detail.PlanProdFrom)
-                            @Html.HiddenFor(model => model.Detail.PlanProdTo)
-                            @Html.HiddenFor(model => model.Detail.RequestQty)
-                            @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
-                            @Html.HiddenFor(model => model.Detail.Lack1FromMonthId)
-                            @Html.HiddenFor(model => model.Detail.Lack1FormYear)
-                            @Html.HiddenFor(model => model.Detail.Lack1ToMonthId)
-                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
-                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
-                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
-                            @Html.HiddenFor(model => model.Detail.GovApprovalActionType)
-                            @Html.Partial("_HomeGovApproval")
-                        }
-                        else
-                        {
-                            @Html.Partial("_HomeDetails")
-                        }
-
+                        @Html.Partial("_HomeDetails")
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
                     </div>
@@ -182,12 +142,6 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
-
-    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
-    {
-        <script src="~/Scripts/pbck1/docupload.js"></script>
-    }
-
     <script type="text/javascript">
         $('#MenuPBCK1OpenListDocument').addClass('active');
         $(document).ready(function () {
@@ -298,49 +252,9 @@
                 $('#GovApproveForm').submit();
             });
 
-            $("#btnSaveGovStatus").click(function () {
-                if (ValidateGovInput()) {
-                    $('#GovApproveForm').submit();
-                }
-            });
-            
-            $('#divComment').hide();
-
-            $('#Detail_StatusGov').on('change', function (e) {
-                var valueSelected = this.value;
-
-                $('#divComment').hide();
-
-                if (valueSelected == 'Rejected') {
-                    $('#divComment').show();
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
-                }
-                else if (valueSelected == 'PartialApproved') {
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
-                }
-                else if (valueSelected == 'FullApproved') {
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-                }
-                    
-            });
-            
-            openGovStatusBlock();
-
             ResetPrintHistoryDataTable();
 
         });
-
-        function openGovStatusBlock() {
-            var docStatus = '@Model.Detail.Status.ToString()';
-            var isAllow = '@Model.AllowGovApproveAndReject';
-            if (docStatus == '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() == 'true') {
-                $('#home').addClass('active');
-                $('#home-tab').addClass('active');
-                $('#collapseOne').removeClass('in');
-                $('#collapseOne').addClass('collapse');
-                $('#collapseFour').addClass("in");
-            }
-        }
 
         function ajaxLoadPoa(formData) {
             $.ajax({

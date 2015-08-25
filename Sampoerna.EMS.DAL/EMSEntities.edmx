@@ -388,6 +388,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="LACK2_NUMBER" Type="nvarchar" MaxLength="35" />
         </EntityType>
         <EntityType Name="LACK2_DOCUMENT">
           <Key>
@@ -5191,7 +5192,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PBCK3_PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PBCK7_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PBCK3_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="PBCK7_STATUS" Type="Int32" Nullable="false" />
+          <Property Name="PBCK7_STATUS" Type="EMSModel.DocumentTypePbck7AndPbck3" Nullable="false" />
           <Property Name="PBCK3_STATUS" Type="Int32" />
           <Property Name="PBCK7_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
@@ -5758,6 +5759,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="LACK2" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="LACK2" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="LACK2" ToRole="USER" />
+          <Property Name="LACK2_NUMBER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK2_DOCUMENT_LACK2">
           <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
@@ -5831,6 +5833,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="DocumentTypePbck7AndPbck3" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentTypePbck7AndPbck3" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6834,6 +6837,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="LACK2">
             <EntityTypeMapping TypeName="EMSModel.LACK2">
               <MappingFragment StoreEntitySet="LACK2">
+                <ScalarProperty Name="LACK2_NUMBER" ColumnName="LACK2_NUMBER" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
                 <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />

@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.Website
         {
             InitializeCK5();
             InitializePBCK1();
+            InitializePbck7AndPbck3();
 
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
@@ -791,6 +792,11 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<PrintHistoryDto, PrintHistoryItemModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<ZAIDM_EX_NPPBKCDto, NppbkcItemModel>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PlantDto, SelectItemModel>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
+              .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
+
 
         }
     }

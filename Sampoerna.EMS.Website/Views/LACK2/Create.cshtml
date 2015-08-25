@@ -5,170 +5,542 @@
 }
 
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-   
 
+@using (@Html.BeginForm("Create", "LACK2"))
+{
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
+                <h3>LACK-2 Form</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="preview()" />
+                    <button class="btn btn-blue" type="Submit">Save</button>
+                    <button class="btn btn-grey">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="container-wrap">
         <div class="row">
             <div class="col-sm-12">
                 <div role="tabpanel">
 
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="tab-wrapper">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    LACK-2 Detail
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body">
+                                              
+                                               
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">LACK-2 No</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(x => x.Lack2Model.Lack2Number, new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Company</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new {@class = "form-control"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                               
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Period</label>
+                                                            <div class="col-md-8">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select", new {@class = "form-control"})
 
 
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, "select", new {@class = "form-control"})
 
 
-                    <div role="tabpanel" class="tab-pane active" id="information">
-                        <div class="tab-wrapper">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                   
 
-                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingOne">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                LACK2 Information
-                                                <i class="fa fa-caret-down"></i>
-                                            </a>
-                                        </h4>
+                                                    </div>
+                                                </div>
+                                        </div>
                                     </div>
-                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                        <div class="panel-body">
-                                            <div class="form-excise" role="form">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Company Code</label>
-
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.Burks, Model.CompanyCodesDDL, "Select", new { @class = "form-control" })
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">NPPBKC</label>
-
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.NppbkcId, Model.NPPBKCDDL, "Select", new { @class = "form-control" })
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
+                                </div>
+                                <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwo">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                                    Information
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                            <div class="panel-body">
+                                                <form class="form-excise" role="form">
                                                     <div class="row">
-                                                           <label class="col-md-4">Plant</label>
-                                                           <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "Select", new { @class = "form-control" } )
-                                                               
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">NPPBKC</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(x => x.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+
+
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Plant</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(x => x.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new {@class = "form-control"})
 
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Ex Goods Type</label>
-                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "Select", new { @class = "form-control" } )
-                                                               
+
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Period Month</label>
-
-                                                              <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.Lack2Model.PeriodMonth, new { @class = "form-control" } )
-                                                               
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Period Year</label>
-
-                                                            <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.Lack2Model.PeriodYear, new { @class = "form-control"})
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Submission Date</label>
-
-                                                               <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, new { @class = "form-control" } )
-                                                                    <span class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Gov Status</label>
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(model => model.Lack2Model.GovStatus, Model.GovStatusDDL, "Select", new {  @class = "form-control", @disabled = "disabled" })
-                                                             </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Decree Date</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group date">
-                                                                    @Html.TextBoxFor(model => model.Lack2Model.DecreeDate, new { @class = "form-control", @disabled = "disabled" } )
-                                                                    <span class="input-group-addon" id="decreeDateCalendar" style="visibility: hidden;">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
-                                                                   
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Submission Date</label>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group date">
+                                                                        @Html.TextBoxFor(x => x.Lack2Model.SubmissionDate, new {@class = "form-control"})
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4 long">Excisable Goods Type</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(x => x.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new {@class = "form-control"})
 
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-md-offset-4">
+                                                            <button class="btn btn-blue full">Generate</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group not-upload" id="accordionThree" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingThree">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapse6">
+                                                    Table
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    <table class="table table-bordered table-striped js-options-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>No. CK-5</th>
+                                                                <th>Date</th>
+                                                                <th>Amount</th>
+                                                                <th>Company</th>
+                                                                <th>NPPBKC</th>
+                                                                <th>Address</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingFour">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                    Status
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                            <div class="panel-body">
+                                                <form class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Status</label>
+                                                                <div class="col-md-8">
+                                                                    <select class="form-control">
+                                                                        <option>Approved</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Decree Date</label>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group date">
+                                                                        <input type="text" class="form-control">
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Decree Doc</label>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control">
+                                                                        <span class=" input-group-addon file-input btn btn-primary btn-file">
+                                                                            Browse <input type="file" multiple="">
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading7">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                    Workflow History
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    <table class="table table-bordered table-striped js-options-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Account Name</th>
+                                                                <th>Role</th>
+                                                                <th>Action</th>
+                                                                <th>Date</th>
+                                                                <th>Comment</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                                <td> </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="printout">
+                            <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingPrint">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionPrint" href="#collapsePrint" aria-expanded="true" aria-controls="collapsePrint">
+                                                Print Out
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapsePrint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrint">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <form class="form-excise " role="form">
+                                                    <div class="last-form">
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-5">LACK-2 No</label>
+                                                                <div class="col-md-7">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">Date</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">User</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <button class="btn btn-blue full">Print</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="panel-group" id="accordionChanges" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingChanges">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionChanges" href="#collapseChanges" aria-expanded="true" aria-controls="collapseChanges">
+                                                Changes Log
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseChanges" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChanges">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <form class="form-excise " role="form">
+                                                    <div class="last-form">
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-5">LACK-2 No</label>
+                                                                <div class="col-md-7">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">Date</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group date">
+                                                                        <input type="text" class="form-control">
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">User</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <button class="btn btn-blue full">Export to xls</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Field</th>
+                                            <th>Old Value</th>
+                                            <th>New Value</th>
+                                            <th>User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-
-                    @*Put all of this top html in a partial view*@
-
-
-
-
-
                 </div>
             </div>
         </div>
     </div>
 }
-
 @section Scripts {
    
 
@@ -195,8 +567,8 @@
                 data: { nppbkcid: nppbkc },
                 success: function (data) {
                     console.log(data);
-                    for (var i = 0; i < data[0].length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[0][i].WERKS + '>' + data[0][i].WERKS + '-' + data[0][i].NAME1 + '</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
                     }
                 }
             });
