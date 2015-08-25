@@ -151,7 +151,7 @@ namespace Sampoerna.EMS.XMLReader
                     writer.WriteElementString("MATERIAL", item.BRAND);
                     writer.WriteElementString("MENGE", SetNullValue(item.CONVERTED_QTY.ToString()));
                     writer.WriteElementString("MEINS", SetNullValue(item.CONVERTED_UOM));
-                    writer.WriteElementString("DELIVERY_NOTE", SetNullValue(item.NOTE));
+                    writer.WriteElementString("DELIVERY_NOTE", SetNullValue(null));
                     writer.WriteElementString("GI_OPN_QTY", SetNullValue(null));
                     writer.WriteElementString("GI_ACC_QTY", SetNullValue(null));
                     writer.WriteElementString("GR_ACC_QTY", SetNullValue(null));

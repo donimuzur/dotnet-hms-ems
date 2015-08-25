@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.XMLReader
                 case "05":
                     return Enums.CK5Type.Export;
             }
-            return Enums.CK5Type.Domestic;
+            return Enums.CK5Type.Manual;
 
         }
         private Enums.CK5XmlStatus GetEMSCk5Status(string type)
@@ -71,13 +71,13 @@ namespace Sampoerna.EMS.XMLReader
                         var type = _xmlMapper.GetElementValue(xElement.Element("CK5_PROCS_TYP"));
                         item.CK5_TYPE = GetEMSCk5Type(type);
                         var existingCk5 = GetExistingCK5(item.SUBMISSION_NUMBER);
-
+                        
                         if (existingCk5 != null)
                         {
                             item = existingCk5;
                             var statusCk5 = GetEMSCk5Status(status);
                             var typeCk5 = GetEMSCk5Type(type);
-                            if (typeCk5 == Enums.CK5Type.Domestic)
+                            if (typeCk5 != Enums.CK5Type.Manual)
                             {
                                 if (statusCk5 == Enums.CK5XmlStatus.StoCreated)
                                 {
@@ -85,11 +85,40 @@ namespace Sampoerna.EMS.XMLReader
                                     item.STO_SENDER_NUMBER = stoNumber;
                                 }
 
-                                else if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
+                                else 
+                                    if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
                                 {
                                     var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
                                     item.GI_DATE = _xmlMapper.GetDate(giDate);
-                                   
+
+                                    var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
+                                    if (ck5Item.Count > 0)
+                                    {
+                                        var ck5ItemIndex = 0;
+                                        var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
+                                        if (ck5Item.Count() >= xmlCk5Items.Count())
+                                        {
+                                            foreach (var ckt5Item in xmlCk5Items)
+                                            {
+                                                var dn_number =
+                                                    _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
+                                                 var brand =
+                                                    _xmlMapper.GetElementValue(ckt5Item.Element("MATERIAL"));
+
+                                                 var ck5Ems = ck5Item.Where(x=>x.BRAND == brand).FirstOrDefault();
+                                                if (ck5Ems!= null)
+                                                {
+                                                    ck5Ems.NOTE = dn_number;
+                                                    _xmlMapper.InsertOrUpdate(ck5Ems);
+                                                    
+                                                }
+                                                ck5ItemIndex++;
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted)
                                 {
@@ -135,8 +164,13 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(p => p.SUBMISSION_NUMBER == ck5Number).FirstOrDefault();
             return existingData;
         }
-
-
+        public List<CK5_MATERIAL> GetExistingCK5Material(long ck5Id)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<CK5_MATERIAL>()
+                .Get(p => p.CK5_ID  == ck5Id).ToList();
+            return existingData;
+        }
+       
 
     }
 }
