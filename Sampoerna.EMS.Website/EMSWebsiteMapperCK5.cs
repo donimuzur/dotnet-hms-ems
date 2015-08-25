@@ -101,6 +101,9 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomName))
               .ForMember(dest => dest.DEST_COUNTRY_CODE, opt => opt.MapFrom(src => src.CountryCode))
               .ForMember(dest => dest.DEST_COUNTRY_NAME, opt => opt.MapFrom(src => src.CountryName))
+
+              .ForMember(dest => dest.RemainQuota, opt => opt.MapFrom(src => src.RemainQuota))
+
               ;
 
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()
@@ -304,6 +307,11 @@ namespace Sampoerna.EMS.Website
              ;
 
             Mapper.CreateMap<CK5FileDocumentItems, CK5FileDocumentDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck1Dto, Ck5ListPbck1Completed>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.Pbck1Id))
+                .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.Pbck1Number))
+                ;
         }
     }
 }

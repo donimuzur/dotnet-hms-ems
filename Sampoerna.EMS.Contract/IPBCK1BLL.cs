@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -37,6 +38,12 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkByCompanyCode(string companyCode);
         void UpdateReportedOn(Pbck1UpdateReportedOn input);
+
+        List<Pbck1Dto> GetAllPbck1ByPbck1Ref(int pbckRef);
+
+        List<Pbck1Dto> GetPbck1CompletedDocumentByPlant(string plant);
+
+        List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate);
 
     }
 }

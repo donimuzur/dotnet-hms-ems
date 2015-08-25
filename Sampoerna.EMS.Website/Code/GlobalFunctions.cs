@@ -261,8 +261,9 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPbck1CompletedList()
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
-            var input = new Pbck1GetByParamInput();
-            var data = pbck1.GetAllByParam(input);
+            var input = new Pbck1GetCompletedDocumentByParamInput();
+            //var data = pbck1.GetAllByParam(input);
+            var data = pbck1.GetCompletedDocumentByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
         public static SelectList GetPlantAll()
@@ -369,6 +370,14 @@ namespace Sampoerna.EMS.Website.Code
             }
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetPbck1CompletedListByPlant(string plantId)
+        {
+            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
+            
+            var data = pbck1.GetPbck1CompletedDocumentByPlant(plantId);
+            return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
     }
 
