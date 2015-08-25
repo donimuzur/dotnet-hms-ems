@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_MATERIAL> GetByFlagDeletion(bool? isDelete, string plant = "");
 
+        ZAIDM_EX_MATERIAL GetByPlantIdAndStickerCode(string plantId, string stickerCode);
 
-        MaterialDto GetByPlantIdAndFaCode(string plantid, string matnumber);
     }
 }

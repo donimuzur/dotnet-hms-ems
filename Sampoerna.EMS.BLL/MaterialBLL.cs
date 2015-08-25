@@ -270,15 +270,15 @@ namespace Sampoerna.EMS.BLL
         private void SetChanges(MaterialDto origin, MaterialDto data,string userid)
         {
             var changesData = new Dictionary<string, bool>();
-            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC == data.MATERIAL_DESC);
-            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP == data.PURCHASING_GROUP);
-            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP == data.MATERIAL_GROUP);
-            changesData.Add("BASE_UOM", origin.BASE_UOM_ID == data.BASE_UOM_ID);
-            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC == data.ISSUE_STORANGE_LOC);
-            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP == data.EXC_GOOD_TYP);
+            changesData.Add("MATERIAL_DESC", origin.MATERIAL_DESC==data.MATERIAL_DESC);
+            changesData.Add("PURCHASING_GROUP", origin.PURCHASING_GROUP==data.PURCHASING_GROUP);
+            changesData.Add("MATERIAL_GROUP", origin.MATERIAL_GROUP==data.MATERIAL_GROUP);
+            changesData.Add("BASE_UOM", origin.BASE_UOM_ID==data.BASE_UOM_ID);
+            changesData.Add("ISSUE_STORANGE_LOC", origin.ISSUE_STORANGE_LOC==data.ISSUE_STORANGE_LOC);
+            changesData.Add("EX_GOODTYP", origin.EXC_GOOD_TYP==data.EXC_GOOD_TYP);
             changesData.Add("TARIFF", origin.TARIFF == data.TARIFF);
-            changesData.Add("HJE", origin.HJE == data.HJE);
             changesData.Add("TARIFF_CURR", origin.TARIFF_CURR == data.TARIFF_CURR);
+            changesData.Add("HJE", origin.HJE == data.HJE);
             changesData.Add("HJE_CURR", origin.HJE_CURR == data.HJE_CURR);
             //changesData.Add("PLANT_DELETION", origin.PLANT_DELETION.Equals(data.PLANT_DELETION));
             //changesData.Add("CLIENT_DELETION", origin.CLIENT_DELETION.Equals(data.CLIENT_DELETION));
@@ -320,16 +320,16 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.ISSUE_STORANGE_LOC;
                             break;
                         case "TARIFF":
-                            changes.OLD_VALUE = origin.TARIFF.HasValue ? origin.TARIFF.Value.ToString() : "0";
-                            changes.NEW_VALUE = data.TARIFF.HasValue ? data.TARIFF.Value.ToString() : "0";
-                            break;
-                        case "HJE":
-                            changes.OLD_VALUE = origin.HJE.HasValue ? origin.HJE.Value.ToString() : "0";
-                            changes.NEW_VALUE = data.HJE.HasValue ? data.HJE.Value.ToString() : "0";
+                            changes.OLD_VALUE = origin.TARIFF.HasValue? origin.TARIFF.Value.ToString() : "0";
+                            changes.NEW_VALUE = data.TARIFF.HasValue? data.TARIFF.Value.ToString() : "0";
                             break;
                         case "TARIFF_CURR":
                             changes.OLD_VALUE = origin.TARIFF_CURR;
                             changes.NEW_VALUE = data.TARIFF_CURR;
+                            break;
+                        case "HJE":
+                            changes.OLD_VALUE = origin.HJE.HasValue ? origin.HJE.Value.ToString() : "0";
+                            changes.NEW_VALUE = data.HJE.HasValue ? data.HJE.Value.ToString() : "0";
                             break;
                         case "HJE_CURR":
                             changes.OLD_VALUE = origin.HJE_CURR;
@@ -392,13 +392,10 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public MaterialDto GetByPlantIdAndFaCode(string plantid, string matnumber)
+        public ZAIDM_EX_MATERIAL GetByPlantIdAndStickerCode(string plantId, string stickerCode)
         {
-            ZAIDM_EX_MATERIAL data = _repository.Get(x => x.STICKER_CODE == matnumber && x.WERKS == plantid, null, includeTables).FirstOrDefault();
-
-            MaterialDto returnData = AutoMapper.Mapper.Map<MaterialDto>(data);
-
-            return returnData;
+            var dbData = _repository.Get(b => b.WERKS == plantId && b.STICKER_CODE == stickerCode).FirstOrDefault();
+            return dbData;
         }
     }
 }
