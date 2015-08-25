@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 
@@ -24,17 +25,17 @@ namespace Sampoerna.EMS.XMLReader
         {
 
             Service svc = new Service();
-            svc.Run(true);
-           /* XmlCK5DataWriter rt= new XmlCK5DataWriter();
-             var ck5 = new CK5();
+            //svc.Run(true);
+            XmlCK5DataWriter rt= new XmlCK5DataWriter();
+             var ck5 = new CK5XmlDto();
              ck5.REGISTRATION_NUMBER = "8100000011";
-             ck5.CK5_TYPE = Enums.CK5Type.Domestic;
+             ck5.CK5_TYPE = Enums.CK5Type.ImporterToPlant;
              ck5.SOURCE_PLANT_ID = "ID01";
              ck5.DEST_PLANT_ID = "ID02";
              ck5.GI_DATE = DateTime.Now;
              ck5.GR_DATE = DateTime.Now.AddDays(-1);
-             ck5.CK5_MATERIAL = new List<CK5_MATERIAL>();
-               ck5.CK5_MATERIAL.Add(new CK5_MATERIAL()
+             ck5.Ck5Material = new List<CK5MaterialDto>();
+             ck5.Ck5Material.Add(new CK5MaterialDto()
                {
                    LINE_ITEM = 1,
                    BRAND = "22.8011",
@@ -42,7 +43,7 @@ namespace Sampoerna.EMS.XMLReader
                    CONVERTED_UOM = "G"
                    
                });
-               ck5.CK5_MATERIAL.Add(new CK5_MATERIAL()
+             ck5.Ck5Material.Add(new CK5MaterialDto()
                {
                    LINE_ITEM = 10,
                    BRAND = "22.8022",
@@ -50,7 +51,8 @@ namespace Sampoerna.EMS.XMLReader
                    CONVERTED_UOM = "G"
 
                });
-             rt.CreateXML(ck5, @"H:\ck5_file.xml");*/
+             ck5.Ck5PathXml = @"H:\test-ck5.xml";
+             rt.CreateCK5Xml(ck5);
              Console.ReadLine();
         }
     }

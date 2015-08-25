@@ -114,5 +114,11 @@ namespace Sampoerna.EMS.BLL
             return dbData;
         }
 
+        public List<ZAIDM_EX_BRAND> GetByPlantId(string plantId)
+        {
+            var dbData = _repository.Get(b => b.WERKS == plantId).ToList();
+            return dbData;
+        }
+
     }
 }

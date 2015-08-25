@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public string NPPBKC_ID { get; set; }
+        public string LACK2_NUMBER { get; set; }
     
         public virtual ICollection<LACK2_DOCUMENT> LACK2_DOCUMENT { get; set; }
         public virtual ICollection<LACK2_ITEM> LACK2_ITEM { get; set; }
