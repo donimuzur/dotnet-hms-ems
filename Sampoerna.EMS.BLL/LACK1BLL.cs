@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Remoting.Messaging;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -167,7 +165,7 @@ namespace Sampoerna.EMS.BLL
             var getData = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
                                                &&
                                                (int)c.STATUS >= (int)Enums.DocumentStatus.Approved, null,
-                "LACK1_ITEM").ToList().Select(p => new
+                "").ToList().Select(p => new
                 {
                     p.LACK1_ID,
                     p.LACK1_NUMBER,
@@ -289,10 +287,27 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
-        private bool IsFoundPlant(IEnumerable<LACK1_PLANT> input, string plantId)
+        public List<Lack1Dto> GetByPeriod(Lack1GetByPeriodParamInput input)
         {
-            var rc = input.Where(c => c.PLANT_ID == plantId).ToList();
-            return rc.Count > 0;
+            var getData =
+                _repository.Get(
+                    c => c.NPPBKC_ID == input.NppbkcId && (int) c.STATUS >= (int) Enums.DocumentStatus.Approved, null,
+                    "").ToList();
+
+            if (getData.Count == 0) return new List<Lack1Dto>();
+
+            var mappedData = Mapper.Map<List<Lack1Dto>>(getData);
+
+            var selected =
+                mappedData.Where(c => c.Periode <= input.PeriodTo.AddDays(1) && c.Periode >= input.PeriodFrom)
+                    .OrderByDescending(o => o.Periode)
+                    .ToList();
+
+            if (selected.Count == 0) return new List<Lack1Dto>();
+
+            return selected;
+
         }
+
     }
 }
