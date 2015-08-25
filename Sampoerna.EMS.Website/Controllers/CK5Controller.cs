@@ -548,7 +548,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
-             
+                //model.Pbck1QtyApproved = "100";
+                //model.Ck5TotalExciseable = "10";
+                //model.RemainQuota = "5";
+
             }
             catch (Exception ex)
             {
@@ -577,6 +580,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         input.CurrentUser = CurrentUser.USER_ID;
                         if (_workflowBll.AllowEditDocument(input))
                         {
+
 
                             SaveCk5ToDatabase(model);
 
