@@ -232,7 +232,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<T001W> GetAllPlant()
         {
-            return _repository.Get().ToList();
+            return _repository.Get(null, null, includeTables).ToList();
         }
 
         public List<Plant> GetPlantByNppbkc(string nppbkcId)

@@ -223,12 +223,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectList, "Value", "Text");
         }
 
-        public static SelectList GetKppBcCityList()
-        {
-            IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
-            var data = nppbkcBll.GetAll().Where(x => x.IS_DELETED != true);
-            return new SelectList(data, "KPPBC_ID", "CITY");
-        }
+        //public static SelectList GetKppBcCityList()
+        //{
+        //    IZaidmExNPPBKCBLL nppbkcBll = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+        //    var data = nppbkcBll.GetAll().Where(x => x.IS_DELETED != true);
+        //    return new SelectList(data, "KPPBC_ID", "CITY");
+        //}
 
         public static SelectList GetGoodTypeGroupList()
         {
@@ -261,14 +261,21 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPbck1CompletedList()
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
-            var input = new Pbck1GetByParamInput();
-            var data = pbck1.GetAllByParam(input);
+            var input = new Pbck1GetCompletedDocumentByParamInput();
+            //var data = pbck1.GetAllByParam(input);
+            var data = pbck1.GetCompletedDocumentByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
-            var plantIdList = plantBll.GetAllPlant().Where(x => x.IS_DELETED != true);
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true)
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
@@ -369,6 +376,14 @@ namespace Sampoerna.EMS.Website.Code
             }
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetPbck1CompletedListByPlant(string plantId)
+        {
+            IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
+            
+            var data = pbck1.GetPbck1CompletedDocumentByPlant(plantId);
+            return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
     }
 

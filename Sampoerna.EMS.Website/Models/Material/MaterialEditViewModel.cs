@@ -46,7 +46,7 @@ namespace Sampoerna.EMS.Website.Models.Material
 
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
-        public Nullable<bool> IsFromSap { get; set; }
+        public bool IsFromSap { get; set; }
 
         [Display(Name = "Changed On"), Editable(false)]
         public Nullable<System.DateTime> ChangedDate { get; set; }
@@ -63,7 +63,17 @@ namespace Sampoerna.EMS.Website.Models.Material
             get; set;
         }
 
+        [Display(Name = "HJE")]
+        public decimal? Hje { get; set; }
 
+        [Display(Name = "Tariff")]
+        public decimal? Tariff { get; set; }
+
+        [Display(Name = "Tariff Currency")]
+        public string Tariff_Curr { get; set; }
+
+        [Display(Name = "Hje Currency")]
+        public string Hje_Curr { get; set; }
         
         [Display(Name = "Client Deletion")]
         public bool IsClientDelete
@@ -92,6 +102,8 @@ namespace Sampoerna.EMS.Website.Models.Material
        
         public string ConversionUom { get; set; }
         public SelectList ConversionUomList { get; set; }
+
+        public SelectList CurrencyList { get; set; }
 
         public List<MaterialUomDetails> MaterialUom { get; set; }
     }

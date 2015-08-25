@@ -15,5 +15,25 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string KppBcName { get; set; }
         public string PlantName { get; set; }
         public string CompanyCode { get; set; }
+        public string KppbcCity { get; set; }
+        public string KppbcNo { get; set; }
+
+        public List<Ck5ListPbck1Completed> PbckList { get; set; } 
+
+    }
+
+    public class Ck5ListPbck1Completed
+    {
+        public int PbckId { get; set; }
+        public string PbckNumber { get; set; }
+        
+    }
+
+    public class QuotaPbck1Model
+    {
+        public string Pbck1QtyApproved { get; set; }
+        public string Ck5TotalExciseable { get; set; }
+        public string RemainQuota { get; set; }
+        public string Pbck1DecreeDate { get; set; }
     }
 }

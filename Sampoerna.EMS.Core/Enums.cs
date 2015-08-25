@@ -66,6 +66,20 @@ namespace Sampoerna.EMS.Core
             Completed = 7
         }
 
+       
+
+        public enum CK5XmlStatus
+        {
+
+            StoCreated = 10,
+
+            GICompleted = 16,
+
+            GRCompleted = 21
+         
+
+        }
+
         public enum Pbck1DocumentType
         {
             OpenDocument = 1,
@@ -311,6 +325,22 @@ namespace Sampoerna.EMS.Core
             GovReject = 2,
             [Description("Government Cancel")]
             GovCancel = 3
+        }
+        public enum Pbck7Type
+        {
+            [Description("PBCK7")]
+            Pbck7List =1,
+            [Description("PBCK3")]
+            Pbck3List  =2
+        }
+
+        public enum DocumentTypePbck7AndPbck3
+        {
+            [Description("Pemusnahan")]
+            Pemusnahan=1,
+            [Description("Pengolahan")]
+            Pengolahaan=2,
+            
         }
     }
 }

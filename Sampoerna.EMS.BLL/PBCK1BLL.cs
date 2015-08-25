@@ -969,17 +969,19 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-                                    {
-                                        CreatedUser = dbData.CREATED_BY,
-                                        CurrentUser = input.UserId,
-                                        DocumentStatus = dbData.STATUS,
-                                        UserRole = input.UserRole,
-                                        DocumentNumber = dbData.NUMBER,
-                                        NppbkcId = dbData.NPPBKC_ID
-                                    });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //                        {
+            //                            CreatedUser = dbData.CREATED_BY,
+            //                            CurrentUser = input.UserId,
+            //                            DocumentStatus = dbData.STATUS,
+            //                            UserRole = input.UserRole,
+            //                            DocumentNumber = dbData.NUMBER,
+            //                            NppbkcId = dbData.NPPBKC_ID
+            //                        });
 
-            if (!isOperationAllow)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -1542,6 +1544,30 @@ namespace Sampoerna.EMS.BLL
             PBCK1 dbData = _repository.Get(c => c.PBCK1_ID == input.Id, null, includeTables).FirstOrDefault();
             dbData.REPORTED_ON = input.ReportedOn;
             _uow.SaveChanges();
+        }
+
+        public List<Pbck1Dto> GetAllPbck1ByPbck1Ref(int pbckRef)
+        {
+            var dbData = _repository.Get(p => p.PBCK1_REF == pbckRef && p.STATUS == Enums.DocumentStatus.Completed);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
+
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlant(string plant)
+        {
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plant);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
+
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate)
+        {
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
     }
 }
