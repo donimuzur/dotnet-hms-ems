@@ -33,7 +33,8 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })
+                                            @*@Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })*@
+                                            @Html.TextBoxFor(model => model.KppBcCity, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
