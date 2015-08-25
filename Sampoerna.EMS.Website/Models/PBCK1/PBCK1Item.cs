@@ -175,6 +175,5 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public Enums.DocumentStatusGov DocStatusGov { get; set; }
 
         public Enums.ActionType GovApprovalActionType { get; set; }
-        
     }
 }

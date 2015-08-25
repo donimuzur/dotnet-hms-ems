@@ -246,14 +246,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-
-           //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+          
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-          
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
+
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
@@ -368,14 +367,45 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetSourcePlantDetailsAndPbckList(string plantId)
+        {
+            var dbPlant = _plantBll.GetT001ById(plantId);
+            var model = Mapper.Map<CK5PlantModel>(dbPlant);
+
+            //model.PbckList = new List<Ck5ListPbck1Completed>();
+            List<Pbck1Dto> pbck1Data;
+            pbck1Data = _pbck1Bll.GetPbck1CompletedDocumentByPlant(plantId);
+            model.PbckList = Mapper.Map<List<Ck5ListPbck1Completed>>(pbck1Data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
         public JsonResult Pbck1DatePartial(long pbck1Id)
         {
-            //var pbck1 = _pbck1Bll.GetById(pbck1Id);
-
-            //return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
+         
             return Json(GetDatePbck1ByPbckId(pbck1Id));
         }
 
+        [HttpPost]
+        public JsonResult GetDateAndQuotaPbck1(int? id)
+        {
+            var model = new QuotaPbck1Model();
+            if (id.HasValue)
+            {
+                var result = _ck5Bll.GetQuotaRemainAndDatePbck1(id.Value);
+                model.Pbck1QtyApproved = result.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = result.QtyCk5.ToString();
+                model.RemainQuota = (result.QtyApprovedPbck1 - result.QtyCk5).ToString();
+
+                model.Pbck1DecreeDate = result.Pbck1DecreeDate;
+            }
+            
+            
+
+            return Json(model);
+
+        }
         private string GetDatePbck1ByPbckId(long? id)
         {
             if (id == null)
@@ -398,6 +428,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
+                        GetQuotaAndRemainOutput output;
+
+                        if (model.PbckDecreeId.HasValue)
+                            output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
+                        else
+                            output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+
+                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+
                         var saveResult = SaveCk5ToDatabase(model);
 
                         AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
@@ -477,14 +516,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            
-            
-            //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+           
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant(model.SourcePlantId);
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
@@ -520,7 +557,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
-             
+                var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
+                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+
             }
             catch (Exception ex)
             {
@@ -549,6 +590,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         input.CurrentUser = CurrentUser.USER_ID;
                         if (_workflowBll.AllowEditDocument(input))
                         {
+                            //quota
+                            var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+                            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                            model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                            model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
                             SaveCk5ToDatabase(model);
 
@@ -902,9 +948,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+                           
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenameCk5Check,
                                 FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = currentUserId
@@ -956,10 +1006,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //create xml file
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
+                //todo check validation
+                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                               Convert.ToInt32(model.SubmissionNumber.Split('/')[0]) + "-" +
+                               DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
 
-                //var fileName = Constans.CK5FolderPath + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
-                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5Xml" +  DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
                 //ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
                 ck5XmlDto.Ck5PathXml = fileName;
 
