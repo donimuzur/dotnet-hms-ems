@@ -698,6 +698,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject) 
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
                
                 //gov approval purpose
@@ -706,8 +707,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
 
-                if (CurrentUser.UserRole == Enums.UserRole.Manager)
-                    model.IsManager = true;
+             
 
             }
             catch (Exception ex)
