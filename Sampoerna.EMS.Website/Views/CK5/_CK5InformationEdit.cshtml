@@ -45,6 +45,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Submission Number</label>
@@ -63,7 +66,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Excise Goods Type<span class="red">*</span></label>
@@ -81,6 +86,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Excise Status<span class="red">*</span></label>
@@ -382,7 +390,7 @@
                                         <div class="row">
                                             <label class="col-md-4 long">PBCK-1 Decree  Number</label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control selectpicker" })
+                                                @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
@@ -393,6 +401,35 @@
                                                 @*@Html.HiddenFor(model => model.PbckDecreeDate)*@
                                                 @Html.EditorFor(model => model.PbckDecreeDate)
 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                       <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Pbck1 Qty Approved</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Pbck1QtyApproved, new { @disabled = false, @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK5 Total Qty</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck5TotalExciseable, new { @disabled = false, @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Remain</label>
+                                            <div class="col-md-8">
+                                                @*@Html.HiddenFor(model => model.RemainQuota);*@
+
+                                                @Html.TextBoxFor(model => model.RemainQuota, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
