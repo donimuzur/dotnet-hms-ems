@@ -162,5 +162,15 @@ namespace Sampoerna.EMS.BLL
         }
 
 
+        public bool AllowManagerReject(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                if (input.UserRole == Enums.UserRole.Manager)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

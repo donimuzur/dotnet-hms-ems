@@ -967,17 +967,19 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-                                    {
-                                        CreatedUser = dbData.CREATED_BY,
-                                        CurrentUser = input.UserId,
-                                        DocumentStatus = dbData.STATUS,
-                                        UserRole = input.UserRole,
-                                        DocumentNumber = dbData.NUMBER,
-                                        NppbkcId = dbData.NPPBKC_ID
-                                    });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //                        {
+            //                            CreatedUser = dbData.CREATED_BY,
+            //                            CurrentUser = input.UserId,
+            //                            DocumentStatus = dbData.STATUS,
+            //                            UserRole = input.UserRole,
+            //                            DocumentNumber = dbData.NUMBER,
+            //                            NppbkcId = dbData.NPPBKC_ID
+            //                        });
 
-            if (!isOperationAllow)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
