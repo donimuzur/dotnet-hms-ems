@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string SupplierNppkbc { get; set; }
 
         public string SupplierKppkbc { get; set; }
+
+        public string SupplierPlantName { get; set; }
     }
 }

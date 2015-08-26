@@ -159,6 +159,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Plant<span class="red">*</span></label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierPlantName)
                                             @Html.HiddenFor(model => model.SupInfo.SupplierPlantWerks)
                                             @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
                                             <div id="supp-plant">

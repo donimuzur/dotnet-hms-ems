@@ -270,12 +270,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MonthName, opt => opt.MapFrom(src => src.MONTH1 != null ? src.MONTH1.MONTH_NAME_IND : string.Empty))
                 ;
 
-            Mapper.CreateMap<Lack1Dto, Pbck1RealisasiP3BkcDto>()
-                .ForMember(dest => dest.Bulan, opt => opt.MapFrom(src => src.PeriodNameInd))
-                .ForMember(dest => dest.SaldoAwal, opt => opt.MapFrom(src => src.BeginingBalance))
-                .ForMember(dest => dest.Pemasukan, opt => opt.MapFrom(src => src.TotalIncome))
-                .ForMember(dest => dest.Penggunaan, opt => opt.MapFrom(src => src.Usage))
-                .ForMember(dest => dest.SaldoAkhir, opt => opt.MapFrom(src => (src.BeginingBalance + src.TotalIncome - src.Usage)))
+            Mapper.CreateMap<LACK1_PRODUCTION_DETAIL, Pbck1RealisasiP3BkcDto>()
+                .ForMember(dest => dest.Bulan, opt => opt.MapFrom(src => src.LACK1.MONTH != null ? src.LACK1.MONTH.MONTH_NAME_IND : string.Empty))
+                .ForMember(dest => dest.SaldoAwal, opt => opt.MapFrom(src => src.LACK1.BEGINING_BALANCE))
+                .ForMember(dest => dest.Pemasukan, opt => opt.MapFrom(src => src.LACK1.TOTAL_INCOME))
+                .ForMember(dest => dest.Penggunaan, opt => opt.MapFrom(src => src.LACK1.USAGE))
+                .ForMember(dest => dest.SaldoAkhir, opt => opt.MapFrom(src => (src.LACK1.BEGINING_BALANCE + src.LACK1.TOTAL_INCOME - src.LACK1.USAGE)))
+                .ForMember(dest => dest.ProdAmount, opt => opt.MapFrom(src => src.AMOUNT))
+                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
                 ;
 
             #endregion

@@ -3840,7 +3840,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="EXC_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PLANT" Type="String" Nullable="false" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PORT_ID" Type="Int32" />
-          <Property Name="SUPPLIER_ADDRESS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_ADDRESS" Type="String" FixedLength="false" Unicode="true" MaxLength="250" />
           <Property Name="SUPPLIER_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="PLAN_PROD_FROM" Type="DateTime" Precision="3" />
           <Property Name="PLAN_PROD_TO" Type="DateTime" Precision="3" />
