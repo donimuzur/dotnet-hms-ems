@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSupplierPlant()
         {
-            return Json(GlobalFunctions.GetActiveSupplierPlantList());
+            return Json(GlobalFunctions.GetPlantAll());
         }
 
         [HttpPost]

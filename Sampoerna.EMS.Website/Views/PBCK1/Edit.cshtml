@@ -372,6 +372,15 @@
             $('#Detail_HiddendSupplierAddress').val($('#SupInfo_SupplierAddress').val());
             $('#Detail_HiddenSupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
             $('#Detail_SupplierPlant').val($('#SupInfo_SupplierPlantName').val());
+
+            if($('#SupInfo_SupplierPlantWerks').val() == '')
+            {
+                disableSupplierFormInput(false);
+                $("#externalSupPort").prop('checked', true);
+                $("#Detail_SupplierPlant_ddl").hide();
+                $("#Detail_SupplierPlant").prop("type", "text");
+                $("#Detail_SupplierPlant").addClass('form-control');
+            }
         }
 
     </script>
