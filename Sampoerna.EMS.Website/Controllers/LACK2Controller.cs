@@ -28,8 +28,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
+        private ICK5BLL _ck5Bll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -42,6 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _monthBll = monthBll;
             _goodTypeBll = goodTypeBll;
             _documentSequenceNumberBll = documentSequenceNumberBll;
+            _ck5Bll = ck5Bll;
         }
 
 
@@ -127,10 +129,9 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.NppbkcId = item.NppbkcId;
             item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
            
-            if (CurrentUser.UserRole == Enums.UserRole.User || CurrentUser.UserRole == Enums.UserRole.POA)
-            {
-                item.Status = Enums.DocumentStatus.WaitingForApproval;
-            }
+            
+             item.Status = Enums.DocumentStatus.Draft;
+            
 
             _lack2Bll.Insert(item);
 
@@ -379,6 +380,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = Json(GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, nppbkcid));
             return data;
+
+        }
+
+        [HttpPost]
+        public JsonResult GetCK5ByLack2Period(int month, int year)
+        {
+            var data =  _ck5Bll.GetByGIDate(month, year).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            return Json(data);
 
         }
     }
