@@ -75,7 +75,9 @@ namespace Sampoerna.EMS.Core
 
             GICompleted = 16,
 
-            GRCompleted = 21
+            GRCompleted = 21,
+
+            Cancel = 03
          
 
         }
