@@ -3639,7 +3639,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
           <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
@@ -4468,7 +4468,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRINT_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PRINT_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="PRINT_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PRINT_HISTORY_USER" FromRole="PRINT_HISTORY" ToRole="USER" />
