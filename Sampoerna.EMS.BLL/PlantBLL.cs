@@ -299,5 +299,29 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
 
+
+        public List<T001K> GetCompany(string compnayId)
+        {
+            throw new NotImplementedException();
+        }
+        public List<T001KCompositDto> GetCompositListByCompany(string companyId)
+        {
+            //Expression<Func<T001K, bool>> queryFilter = PredicateHelper.True<T001K>();
+
+            //queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.BWKEY) && c.BWKEY.Contains(companyId));
+
+            //var dbData = _repository.Get(queryFilter, null, includeTables);
+            //if (dbData == null)
+            //{
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            //}
+            //return Mapper.Map<List<T001KCompositDto>>(dbData);
+          
+
+            throw new NotImplementedException();
+        }
+
+
+       
     }
 }

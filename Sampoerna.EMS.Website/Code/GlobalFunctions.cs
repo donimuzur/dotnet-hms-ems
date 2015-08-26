@@ -385,6 +385,20 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetPbck1CompletedDocumentByPlant(plantId);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
+
+         public static SelectList GetPlantByCompany(string companyId)
+        {
+
+            IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
+            var companyList = t001Kbll.GetCompositListByCompany(companyId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(companyList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+            //var plantList = t001Kbll.GetCompositListByCompany(companyId);
+            //return new SelectList(plantList, "WERKS", "DROPDOWNTEXTFIELD");
+
+        
+        }
     }
 
 }

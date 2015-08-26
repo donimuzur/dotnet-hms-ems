@@ -128,6 +128,7 @@
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
+    <Compile Include="DTOs\T001KCompositDto.cs" />
     <Compile Include="DTOs\T001KDto.cs" />
     <Compile Include="DTOs\T001WCompositeDto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />

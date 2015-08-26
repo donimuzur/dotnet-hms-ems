@@ -45,6 +45,11 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH_ID))
                 .ForMember(dest => dest.MonthNameEng, opt => opt.MapFrom(src => src.MONTH_NAME_ENG))
                 .ForMember(dest => dest.MonthNameIndo, opt => opt.MapFrom(src => src.MONTH_NAME_IND));
+            
+            Mapper.CreateMap<T001K, T001KCompositDto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.BWKEY));
+
+            Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting();
 
             #endregion
         }

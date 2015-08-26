@@ -1,12 +1,13 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexViewModel
+@using Sampoerna.EMS.Helpers
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
             <h3>Dialy Production List</h3>
             <div class="action-button new">
-                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">New</button>
-                <a href="7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">UPLOAD</button></a>
+                <a href="#7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">NEW</button></a>
+                <a href="#7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">UPLOAD</button></a>
             </div>
         </div>
     </div>
@@ -14,125 +15,69 @@
 
 <div class="white-wrapper">
     <div role="form" class="form-excise">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="row">
-                    <label class="col-md-3 long">Date</label>
-                    <div class="col-md-8">
-                        <div class="input-group date">
-                            <input type="text" class="form-control">
-                            <span class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <label class="col-md-4">Company</label>
-                    <div class="col-md-8">
-                        <select class="form-control">
-                            <option>PT HM Sampoerna</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <label class="col-md-4">Plant ID</label>
-                    <div class="col-md-8">
-                        <select class="form-control">
-                            <option>001 - Plant</option>
+       @using (Ajax.BeginForm("FilterCk4CDailyProductionIndex", "CK4C",
+           new AjaxOptions
+           {
+               HttpMethod = "POST",
+               InsertionMode = InsertionMode.Replace,
+               UpdateTargetId = "contenttable",
+               OnComplete = "ReloadDataTables",
+           }, new {@class = "form-excise", role = "form"}))
+       {
 
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="last-form">
-                <div class="col-md-4 col-md-offset-8">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button class="btn btn-blue full">FILTER</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-blue full">RESET</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+           <div class="row">
+               <div class="col-md-4">
+                   <div class="row">
+                       <label class="col-md-3 long">Date</label>
+                       <div class="col-md-8">
+                           <div class="input-group date">
+                               <input type="text" class="form-control">
+                               <span class="input-group-addon">
+                                   <i class="fa fa-calendar"></i>
+                               </span>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-4">
+                   <div class="row">
+                       <label class="col-md-4">Company</label>
+                       <div class="col-md-8">
+                           @Html.DropDownListFor(model => model.CompanyName, Model.CompanyNameList, "all", new {@class = " form-control selectreset"})
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-4">
+                   <div class="row">
+                       <label class="col-md-4">Plant ID</label>
+                       <div class="col-md-8">
+                           @*@Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "all", new {@class = "form-control selectreset"})*@
+                           <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
+                               <option value="">All</option>
+                           </select>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <div class="row">
+               <div class="last-form">
+                   <div class="col-md-4 col-md-offset-8">
+                       <div class="row">
+                           <div class="col-md-6">
+                               <button class="btn btn-blue full">FILTER</button>
+                           </div>
+                           <div class="col-md-6">
+                               <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       }
     </div>
 </div>
-<div class="container-wrap">
-    <div class="row">
-        <div class="col-sm-12">
-            <div id="contenttable" class="table-container">
-                <table id="InLineEdit" class="table table-striped table-hover" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th class="toggle-row"> Action </th>
-                            <th> Date </th>
-                            <th> Company </th>
-                            <th> Plant</th>
-                            <th> Finish Goods </th>
-                            <th> Description </th>
-                            <th> Quality </th>
-                            <th> Uom </th>
-                        </tr>
-
-                    </thead>
-                    <thead class="filters">
-                        <tr>
-                            <th> Filter </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th></th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @foreach (var item in Model.Detail)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ReportedOn)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CompanyName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PlantId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FinishGoods)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Quality)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Uom)
-                                </td>
-                                <td class="action">
-                                    <a href="#" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div id="contenttable" >
+    @Html.Partial("_Ck4CTableIndex")
 </div>
 
 
@@ -142,18 +87,32 @@
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cDailyProduction').addClass('active');
-        var EditTable = $("#InLineEdit").dataTable();
+        
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#DailyProduction')) {
+            table = $('#DailyProduction').DataTable();
+            table.destroy();
+        }
+
+        table = $('#DailyProduction').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
+                }
+            });
 
         // Setup - add a text input to each footer cell
-        $('#InLineEdit .filters th').each(function () {
+        $('#DailyProduction .filters th').each(function () {
             var idx = $(this).index();
-            if (idx != 0 && idx != 0) {
-                var title = $('#InLineEdit thead th').eq($(this).index()).text();
-                $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
-
+            if (idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
             }
         });
 
+        // Apply the search
         table.columns().eq(0).each(function (colIdx) {
             $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                 table
@@ -162,6 +121,56 @@
                     .draw();
             });
         });
+        
+        $("#CompanyName").change(function () {
+            if ($("#CompanyName").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                console.log(cpy);
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+                    
+                } else {
+                    console.log('test');
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialCk4C", "CK4C")', { companyId: cpy });
+                }
+            }
+        });
+        
+        $(document).ready(function () {
+            setupDataTables();
+        });
+        
+        function ajaxSelectCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                       var listPlant = data.PlantList;
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + list[i].Text + '</option>');
 
+                            }
+                        }
+                        
+                    }
+                });
+            }
+        }
+        
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            setupDataTables();
+        }
     </script>
 }

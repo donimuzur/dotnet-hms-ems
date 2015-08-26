@@ -20,16 +20,22 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private ICompanyBLL _companyBll;
         private IPlantBLL _plantBll;
+        private IT001KBLL _t001KBll;
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll,
-            ICompanyBLL companyBll) : base (pageBll, Enums.MenuList.CK4C)
+            ICompanyBLL companyBll, IT001KBLL t001Kbll) : base (pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
             _plantBll = plantbll;
             _monthBll = monthBll;
             _plantBll = plantbll;
             _poabll = poabll;
+            _companyBll = companyBll;
             _mainMenu = Enums.MenuList.CK4C;
+            _t001KBll = t001Kbll;
         }
+
+
+        #region Index Daily Production
         //
         // GET: /CK4C/
         public ActionResult Index()
@@ -39,18 +45,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
-                Detail = Mapper.Map<List<DataIndecCk4C>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))   
+                Detail = Mapper.Map<List<DataIndecCk4C>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
 
             });
 
-            return View("Index",data);
+            return View("Index", data);
         }
 
         private Ck4CIndexViewModel InitCk4ViewModel(Ck4CIndexViewModel model)
         {
-            //model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
-            //model.PlanIdList = GlobalFunctions.GetPlantAll();
-           return model;
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlanIdList = GlobalFunctions.GetPlantAll();
+            return model;
         }
+
+        #endregion 
+        
+        #region Json
+        [HttpPost]
+        public JsonResult CompanyListPartialCk4C(string companyId)
+        {
+            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+            var model = new Ck4CIndexViewModel() { CompanyNameList = listPlant };
+            
+            return Json(model);
+        }
+
+  
+        #endregion
+
 	}
 }

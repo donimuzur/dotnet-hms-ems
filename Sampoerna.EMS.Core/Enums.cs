@@ -346,7 +346,7 @@ namespace Sampoerna.EMS.Core
         public enum CK4CType
         {
             [Description("DailyProduction")]
-            DailyProduction =1,
+            DailyProduction = 1,
             [Description("WasteProduction")]
             WasteProduction = 2,
             [Description("CK4CDocument")]
