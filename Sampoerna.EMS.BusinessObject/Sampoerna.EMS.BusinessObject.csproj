@@ -231,6 +231,7 @@
     <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\WorkflowHistoryOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAOutput.cs" />
