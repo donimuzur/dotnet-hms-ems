@@ -453,7 +453,6 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (model.PbckDecreeId.HasValue)
                             output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
                         else
-                            //    output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
                         {
                             if (!model.SubmissionDate.HasValue)
                                 model.SubmissionDate = DateTime.Now;
@@ -464,11 +463,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
-                        //var saveResult = SaveCk5ToDatabase(model);
+                        var saveResult = SaveCk5ToDatabase(model);
 
-                        //AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+                        AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
-                        //return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
+                        return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
                     }
 
                     AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
@@ -1068,10 +1067,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
 
-                //ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
+               
                 ck5XmlDto.Ck5PathXml = fileName;
 
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
+                
+                ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
                 rt.CreateCK5Xml(ck5XmlDto);
 
                 return true;

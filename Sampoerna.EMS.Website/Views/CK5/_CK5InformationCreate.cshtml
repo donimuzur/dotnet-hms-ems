@@ -35,7 +35,7 @@
                                         <label class="col-md-4">Submission Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.SubmissionDate,  "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -367,7 +367,7 @@
                                         <label class="col-md-4">Invoice Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.InvoiceDate, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.InvoiceDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
