@@ -49,7 +49,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<T001K, T001KCompositDto>().IgnoreAllNonExisting()
                .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.BWKEY));
 
-            Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<T001W, T001KDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
             #endregion
         }

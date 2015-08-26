@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T001W> _repository;
         private IGenericRepository<PLANT_RECEIVE_MATERIAL> _plantReceiveMaterialRepository;
         private IGenericRepository<T001W> _t001WRepository;
+        private IGenericRepository<T001K> _repositoryT001K;
 
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
@@ -37,6 +38,7 @@ namespace Sampoerna.EMS.BLL
             _t001WRepository = _uow.GetGenericRepository<T001W>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _repositoryT001K = _uow.GetGenericRepository<T001K>();
         }
 
         public T001W GetT001W(string NppbkcId, bool? IsPlant)
@@ -298,30 +300,24 @@ namespace Sampoerna.EMS.BLL
                 c => c.IS_DELETED != true && c.ZAIDM_EX_NPPBKC.IS_DELETED != true;
             return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
+        
+       public List<T001KDto> GetPlantbyCompany(string companyId)
+       {
+           
+               includeTables = "T001W";
+               Expression<Func<T001K, bool>> queryFilter = PredicateHelper.True<T001K>();
 
+               queryFilter = queryFilter.And(c => c.BWKEY.Contains(companyId));
 
-        public List<T001K> GetCompany(string compnayId)
-        {
-            throw new NotImplementedException();
-        }
-        public List<T001KCompositDto> GetCompositListByCompany(string companyId)
-        {
-            //Expression<Func<T001K, bool>> queryFilter = PredicateHelper.True<T001K>();
-
-            //queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.BWKEY) && c.BWKEY.Contains(companyId));
-
-            //var dbData = _repository.Get(queryFilter, null, includeTables);
-            //if (dbData == null)
-            //{
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            //}
-            //return Mapper.Map<List<T001KCompositDto>>(dbData);
+               var dbData = _repositoryT001K.Get(queryFilter, null, includeTables);
+               if (dbData == null)
+               {
+                   throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+               }
+               return Mapper.Map<List<T001KDto>>(dbData);
+           
           
-
-            throw new NotImplementedException();
+            
         }
-
-
-       
     }
 }

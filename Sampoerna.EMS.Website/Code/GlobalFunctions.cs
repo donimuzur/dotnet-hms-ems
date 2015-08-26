@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Math;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
@@ -388,17 +389,17 @@ namespace Sampoerna.EMS.Website.Code
 
          public static SelectList GetPlantByCompany(string companyId)
         {
-
-            IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
-            var companyList = t001Kbll.GetCompositListByCompany(companyId);
-            var selectItemSource = Mapper.Map<List<SelectItemModel>>(companyList);
+            
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            var plantList = plantBll.GetPlantbyCompany(companyId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
             //var plantList = t001Kbll.GetCompositListByCompany(companyId);
             //return new SelectList(plantList, "WERKS", "DROPDOWNTEXTFIELD");
-
-        
+             
         }
+        
     }
 
 }

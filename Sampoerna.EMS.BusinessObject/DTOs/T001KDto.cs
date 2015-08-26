@@ -5,6 +5,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class T001KDto
     {
         public string BWKEY { get; set; }
+        public string NAME1 { get; set; }
         public string BUKRS { get; set; }
         public string BUTXT { get; set; }
         public string NPWP { get; set; }
@@ -17,5 +18,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool? IS_DELETED { get; set; }
         public string NPPBKC_ID { get; set; }
         public string NPPBKC_KPPBC_ID { get; set; }
+
+
     }
 }

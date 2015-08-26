@@ -65,11 +65,13 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CompanyListPartialCk4C(string companyId)
         {
-            var listCompany = GlobalFunctions.GetPlantByCompany(companyId);
+            //var listCompany = GlobalFunctions.GetPlantByCompany(companyId);
 
-            var model = new Ck4CIndexViewModel() { CompanyNameList = listCompany };
+            //var model = new Ck4CIndexViewModel() { PlanIdList = listCompany };
             
-            return Json(model);
+            //return Json(model);
+
+            return Json(GlobalFunctions.GetPlantByCompany(companyId));
         }
 
   
