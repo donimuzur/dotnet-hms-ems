@@ -13,5 +13,8 @@ namespace Sampoerna.EMS.Contract
         SaveLack1Output Save(Lack1SaveInput input);
         
         decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input);
+
+        List<Lack1Dto> GetByPeriod(Lack1GetByPeriodParamInput input);
+
     }
 }

@@ -43,8 +43,9 @@
                         @Html.HiddenFor(model => model.CreatedBy)
                         @Html.HiddenFor(model => model.CreatedDate)
                         @Html.HiddenFor(model => model.DocumentStatus)
+                        
+                        @Html.HiddenFor(model => model.KppBcCity)
                         @Html.HiddenFor(model => model.CeOfficeCode)
-                        @Html.HiddenFor(model => model.KppBcCityName)
                         
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
@@ -66,9 +67,14 @@
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
 
+                       
+                        @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
+                        @Html.HiddenFor(model => model.Pbck1QtyApproved)
+                        @Html.HiddenFor(model => model.Ck5TotalExciseable)
+                        @Html.HiddenFor(model => model.RemainQuota)
 
-                        @Html.HiddenFor(model => model.DnNumber)
+                        @*@Html.HiddenFor(model => model.DnNumber)
                         @Html.HiddenFor(model => model.StoSenderNumber)
                         @Html.HiddenFor(model => model.DnDate)
                         @Html.HiddenFor(model => model.StoReceiverNumber)
@@ -77,21 +83,12 @@
                         @Html.HiddenFor(model => model.SealingNotifNumber)
                         @Html.HiddenFor(model => model.UnSealingNotifNumber)
                         @Html.HiddenFor(model => model.SealingNotifDate)
-                        @Html.HiddenFor(model => model.UnsealingNotifDate)
+                        @Html.HiddenFor(model => model.UnsealingNotifDate)*@
                         
                       @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.CountryName)
 
-                        @*@Html.HiddenFor(model => model.CountryCode)
-                        @Html.HiddenFor(model => model.CountryName)
-
-                        @Html.HiddenFor(model => model.LoadingPort)
-                        @Html.HiddenFor(model => model.LoadingPortId)
-                        @Html.HiddenFor(model => model.LoadingPortName)
-                        @Html.HiddenFor(model => model.FinalPort)
-                        @Html.HiddenFor(model => model.FinalPortId)
-                        @Html.HiddenFor(model => model.FinalPortName)*@
-                        
+                     
 
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
@@ -216,11 +213,11 @@
         $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
         $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
         $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
-        
+
         $('#btn-changelog-export-xls').click(function () {
             location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
         });
-        
+
         $("#btnSave").click(function () {
 
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
@@ -228,26 +225,31 @@
             }
 
         });
-        
+
         $('#CK5UploadSubmitBtn').click(function () {
             GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
         });
     });
 
-    $("#PbckDecreeId").change(function () {
+    @*$("#PbckDecreeId").change(function () {
         if ($("#PbckDecreeId").length) {
             var pbck1 = $(this).find("option:selected").val();
             var pbck1Number = $('option:selected', $(this)).text();
             if (pbck1 == '') {
                 $("input[name='PbckDecreeDate']").val('');
                 $("input[name='PbckDecreeNumber']").val('');
+
+                $("input[name='Pbck1QtyApproved']").val('');
+                $("input[name='Ck5TotalExciseable']").val('');
+                $("input[name='RemainQuota']").val('');
             } else {
-                ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+
+                ajaxGetDateAndQuotaPbck1('@Url.Action("GetDateAndQuotaPbck1", "CK5")', { id: pbck1 });
                 $("input[name='PbckDecreeNumber']").val(pbck1Number);
             }
         }
 
-    });
+    });*@
 
     var plantOriginal = '@Model.SourcePlantId';
 
@@ -272,7 +274,7 @@
     $("#SourcePlantId").change(function () {
         if ($("#SourcePlantId").length) {
             var sourcePlant = $(this).find("option:selected").val();
-
+            var submissionDate = $('#SubmissionDate').val();
             //remove table
             RemoveTable();
 
@@ -288,32 +290,45 @@
                 $('#btnUploadInfo').enable(false);
                 $('#CK5UploadSubmitBtn').enable(false);
 
+                $("input[name='KppBcCity']").val('');
+                $("input[name='CeOfficeCode']").val('');
+
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('');
+                $("input[name='Ck5TotalExciseable']").val('');
+                $("input[name='RemainQuota']").val('');
+
 
             } else {
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+
+                @*ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });*@
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: submissionDate });
 
                 ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }
     });
 
-    $("#KppBcCity").change(function () {
-        if ($("#KppBcCity").length) {
-            var nppBkcCity = $(this).find("option:selected").val();
-            var cityName = $('option:selected', $(this)).text();
-            if (nppBkcCity == '') {
-                $("input[name='CeOfficeCode']").val('');
-                $("input[name='KppBcCityName']").val('');
-                //$("input[name='CompanyCode']").val('');
-            } else {
-                $("input[name='CeOfficeCode']").val(nppBkcCity);
-                $("input[name='KppBcCityName']").val(cityName);
+    //$("#KppBcCity").change(function () {
+    //    if ($("#KppBcCity").length) {
+    //        var nppBkcCity = $(this).find("option:selected").val();
+    //        var cityName = $('option:selected', $(this)).text();
+    //        if (nppBkcCity == '') {
+    //            $("input[name='CeOfficeCode']").val('');
+    //            $("input[name='KppBcCityName']").val('');
+    //            //$("input[name='CompanyCode']").val('');
+    //        } else {
+    //            $("input[name='CeOfficeCode']").val(nppBkcCity);
+    //            $("input[name='KppBcCityName']").val(cityName);
 
-                 @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
-                 }
-        }
 
-    });
+    //             }
+    //    }
+
+    //});
+
     $("#btnSubmitDocument").click(function () {
         $('#Ck5Modal').modal('show');
         @*var r = confirm("Submit Documents ?");
@@ -325,25 +340,25 @@
     $("#btnSubmitConfirm").click(function () {
         window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
     });
-    
-        $("#CountryCode").change(function () {
-            if ($("#CountryCode").length) {
-                var countryName = $('option:selected', $(this)).text();
-                if (countryName == '') {
-                    $("input[name='CountryName']").val('');
-                   
-                } else {
-                    $("input[name='CountryName']").val(countryName);
-                 
-                     }
+
+    $("#CountryCode").change(function () {
+        if ($("#CountryCode").length) {
+            var countryName = $('option:selected', $(this)).text();
+            if (countryName == '') {
+                $("input[name='CountryName']").val('');
+
+            } else {
+                $("input[name='CountryName']").val(countryName);
+
             }
-
-        });
-        
-        function printPreview(url) {
-
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
         }
+
+    });
+
+    function printPreview(url) {
+
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
 </script>
 }

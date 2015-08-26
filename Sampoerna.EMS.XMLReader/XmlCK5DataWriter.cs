@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             if (value == null)
             {
-                return "/";
+                return null;
             }
             return value.ToString();
         }
@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.XMLReader
                
                 writer.WriteEndElement();
               
-                writer.WriteStartElement("ZIA_CK5_HDR");
+                writer.WriteStartElement("Z1A_CK5_HDR");
                 writer.WriteAttributeString("SEGMENT", "1");
 
                 writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
@@ -144,14 +144,14 @@ namespace Sampoerna.EMS.XMLReader
                 var lineItem = 1;
                 foreach (var item in ck5XmlDto.Ck5Material)
                 {
-                    writer.WriteStartElement("ZIA_CK5_ITM");
+                    writer.WriteStartElement("Z1A_CK5_ITM");
                     writer.WriteAttributeString("SEGMENT", "1");
                     writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
                     writer.WriteElementString("ITEM_NUMBER", GetLinesItem(lineItem));
                     writer.WriteElementString("MATERIAL", item.BRAND);
                     writer.WriteElementString("MENGE", SetNullValue(item.CONVERTED_QTY.ToString()));
                     writer.WriteElementString("MEINS", SetNullValue(item.CONVERTED_UOM));
-                    writer.WriteElementString("DELIVERY_NOTE", SetNullValue(item.NOTE));
+                    writer.WriteElementString("DELIVERY_NOTE", SetNullValue(null));
                     writer.WriteElementString("GI_OPN_QTY", SetNullValue(null));
                     writer.WriteElementString("GI_ACC_QTY", SetNullValue(null));
                     writer.WriteElementString("GR_ACC_QTY", SetNullValue(null));

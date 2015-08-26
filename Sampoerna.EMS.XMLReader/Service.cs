@@ -31,6 +31,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlBrandDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("CK5"))
+            {
+                return new XmlCk5DataMapper(xmlfile);
+            }
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
@@ -96,6 +100,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlUserDataMapper(xmlfile);
             }
+
             return null;
         }
 

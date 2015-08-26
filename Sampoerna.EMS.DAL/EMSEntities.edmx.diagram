@@ -183,6 +183,7 @@
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_APPROVED_BY" />
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_CREATED_BY" />
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_MODIFIED_BY" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_UOM" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

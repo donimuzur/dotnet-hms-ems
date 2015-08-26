@@ -59,4 +59,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
     }
 
+    public class Lack1GetByPeriodParamInput
+    {
+        public DateTime PeriodFrom { get; set; }
+        public DateTime PeriodTo { get; set; }
+        public string NppbkcId { get; set; }
+    }
+
 }

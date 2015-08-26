@@ -84,6 +84,18 @@ namespace Sampoerna.EMS.Website.Models.Material
             set;
         }
 
+        [Display(Name = "HJE")]
+        public decimal? Hje { get; set; }
+
+        [Display(Name = "Tariff")]
+        public decimal? Tariff { get; set; }
+
+        [Display(Name = "Tariff Currency")]
+        public string Tariff_Curr { get; set; }
+
+        [Display(Name = "Hje Currency")]
+        public string Hje_Curr { get; set; }
+
        
         // list for dropdown in the form
         public MultiSelectList PlantList { get; set; }
@@ -93,6 +105,8 @@ namespace Sampoerna.EMS.Website.Models.Material
         public string ConversionUom { get; set; }
         
         public SelectList ConversionUomList { get; set; }
+
+        public SelectList CurrencyList { get; set; }
 
         public List<MaterialUomDetails> MaterialUom { get; set; }       
     }

@@ -48,8 +48,9 @@ function OnReadyFunction(ck5Type) {
 
                 total += parseFloat(datarows[i][1]); //Qty
                 if (i == 0) {
-                    $("#PackageUomId option").each(function () {
-                        if ($(this).text().toLowerCase() == datarows[i][5].toLowerCase()) {
+                    //alert(datarows[i][5]);
+                    $("#PackageUomName option").each(function () {
+                        if ($(this).val().toLowerCase() == datarows[i][5].toLowerCase()) {
                             $(this).attr('selected', 'selected');
                         }
                     });
@@ -123,11 +124,22 @@ function GenerateXlsCk5Material(url) {
     });
 }
 
-//$('#CK5UploadSubmitBtn').click(function () {
 
-  
-//});
-
+function ajaxGetDateAndQuotaPbck1(url, formData) {
+    if (formData.id) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                $("input[name='RemainQuota']").val(data.RemainQuota);
+            }
+        });
+    }
+}
 
 function ajaxGetPbck1Date(url, formData) {
     if (formData.pbck1Id) {
@@ -182,15 +194,49 @@ function ajaxGetPlantDetails(url, formData) {
                 $("*[name='SourceAddress']").val(data.CompanyAddress);
                 $("input[name='SourceKppbcName']").val(data.KppBcName);
                 $("input[name='SourcePlantName']").val(data.PlantName);
+                
+                $("input[name='KppBcCity']").val(data.KppbcCity);
+                $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                
                 //enable upload
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
 
+                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                $("input[name='RemainQuota']").val(data.RemainQuota);
+                
+               // PopulateListPbckNumber(data.PbckList);
             }
         });
     }
 }
 
+function PopulateListPbckNumber(listPbck1) {
+    var selectbox = $("#PbckDecreeId");
+    selectbox.empty(); // remove old options
+    
+    var list = '<option value>Select</option>';
+
+    if (listPbck1 != null) {
+        for (var i = 0; i < listPbck1.length; i++) {
+            list += "<option value='" + listPbck1[i].PbckId + "'>" + listPbck1[i].PbckNumber + "</option>";
+        }
+
+    }
+    selectbox.html(list);
+    
+    //clear rellated field
+    $("input[name='PbckDecreeDate']").val('');
+    $("input[name='Pbck1QtyApproved']").val('');
+    $("input[name='Ck5TotalExciseable']").val('');
+    $("input[name='RemainQuota']").val('');
+    
+    //selectbox.html('refresh', true);
+}
 
 function ajaxGetCeOfficeCode(url, formData) {
     if (formData.nppBkcCityId) {

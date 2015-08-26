@@ -17,20 +17,20 @@
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
-
                         <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
                     else
                     {
                         if (Model.AllowGovApproveAndReject)
                         {
-                            @*<input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
-
-                            <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
-
-                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />*@
-                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
+
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+
                     }
 
                 </div>
@@ -245,7 +245,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            //$('#MenuCK5Domestic').addClass('active');
+           
             OnReadyFunction('@Model.Ck5Type.ToString()');
 
             openGovStatusBlock();
@@ -338,8 +338,7 @@
             window.location = "@Url.Action("ApproveDocument", "CK5", new {id = @Model.Ck5Id})";
         });
 
-
-        @*$("#btnReject").click(function () {
+        $("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
 
             $('#Comment').val('');
@@ -347,70 +346,21 @@
             $('#Ck5ModalReject').modal('show');
 
         });
+   
 
         $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmReject').attr('disabled', 'disabled');
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            //$('#btnConfirmGovReject').attr('disabled', 'disabled');
+            //$('#btnConfirmGovCancel').attr('disabled', 'disabled');
 
             if (this.value.length) {
                 $('#btnConfirmReject').removeAttr('disabled');
-                $('#btnConfirmGovReject').removeAttr('disabled');
-                $('#btnConfirmGovCancel').removeAttr('disabled');
+                //$('#btnConfirmGovReject').removeAttr('disabled');
+                //$('#btnConfirmGovCancel').removeAttr('disabled');
             }
         });
-
-        $('.GovCancel').bind('input propertychange', function () {
-            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
-            if (this.value.length) {
-                $('#btnConfirmGovCancel').removeAttr('disabled');
-            }
-        });
-
-        $('.GovReject').bind('input propertychange', function () {
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            if (this.value.length) {
-                $('#btnConfirmGovReject').removeAttr('disabled');
-            }
-        });
-
-
-        $("#btnGovApprove").click(function () {
-            // alert('1');
-            if (ValidateGovInput()) {
-                //  alert('2');
-                $('#btnConfirm').hide();
-                $('#btnConfirmGovApprove').show();
-                $("#lblTitleModal").text('GovApproval');
-                $("#lblMessageModal").text('GovApprove Documents ?');
-                $('#Ck5Modal').modal('show');
-            }
-            // alert('3');
-        });
-
-        $("#btnConfirmGovApprove").click(function () {
-           
-            $('#Ck5Modal').modal('hide');
-            $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-            $('#GovApproveForm').submit();
-        });
-
-
-        $("#btnGovReject").click(function () {
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            $('.GovReject').val('');
-            $('#Ck5ModalGovReject').modal('show');
-
-        });
-
-        $("#btnGovCancel").click(function () {
-            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
-            $('.GovCancel').val('');
-            $('#Ck5ModalGovCancel').modal('show');
-
-        });*@
-
+        
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
