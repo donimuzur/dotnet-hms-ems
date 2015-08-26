@@ -1063,7 +1063,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
                 //todo check validation
                 var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
-                               Convert.ToInt32(model.SubmissionNumber.Split('/')[0]) + "-" +
+                               Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000") + "-" +
                                DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
 
