@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.XMLReader
                 case "21":
                     return Enums.CK5XmlStatus.GRCompleted;
                 case "03":
-                    return Enums.CK5XmlStatus.Cancel;
+                    return Enums.CK5XmlStatus.StoCancel;
 
             }
             return Enums.CK5XmlStatus.StoCreated; 
@@ -81,12 +81,20 @@ namespace Sampoerna.EMS.XMLReader
                             var typeCk5 = GetEMSCk5Type(type);
                             if (typeCk5 != Enums.CK5Type.Manual)
                             {
+                                var workflowHistory = new WORKFLOW_HISTORY();
+                                workflowHistory.FORM_ID = existingCk5.CK5_ID;
+                                workflowHistory.ACTION_BY = existingCk5.APPROVED_BY_MANAGER;
+                                workflowHistory.ROLE = Enums.UserRole.Manager;
+                                workflowHistory.FORM_NUMBER = existingCk5.SUBMISSION_NUMBER;
+                                workflowHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+                                
+
                                 if (statusCk5 == Enums.CK5XmlStatus.StoCreated)
                                 {
                                     var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
                                     item.STO_SENDER_NUMBER = stoNumber;
                                     item.STATUS_ID = Enums.DocumentStatus.STOCreated;
-                                    
+                                    workflowHistory.ACTION = Enums.ActionType.StoCreated;
                                 }
 
                                 else 
@@ -95,6 +103,7 @@ namespace Sampoerna.EMS.XMLReader
                                     var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
                                     item.GI_DATE = _xmlMapper.GetDate(giDate);
                                     item.STATUS_ID = Enums.DocumentStatus.GICompleted;
+                                    workflowHistory.ACTION = Enums.ActionType.GICompleted;
                                     var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
                                     if (ck5Item.Count > 0)
                                     {
@@ -129,8 +138,18 @@ namespace Sampoerna.EMS.XMLReader
                                     var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
                                     item.GR_DATE = _xmlMapper.GetDate(grDate);
                                     item.STATUS_ID = Enums.DocumentStatus.GRCompleted;
-                                    
+                                    workflowHistory.ACTION = Enums.ActionType.GRCompleted;
                                 }
+                                else if (statusCk5 == Enums.CK5XmlStatus.StoCancel)
+                                {
+                                    var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
+                                    if (string.IsNullOrEmpty(stoNumber))
+                                    {
+                                        item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                        workflowHistory.ACTION = Enums.ActionType.StoCanceled;
+                                    }
+                                }
+                                AddWorkflowHistory(workflowHistory);
                             }
                             items.Add(item);
 
@@ -175,7 +194,12 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(p => p.CK5_ID  == ck5Id).ToList();
             return existingData;
         }
-       
+        public void AddWorkflowHistory(WORKFLOW_HISTORY workflowHistory)
+        {
+           
+            _xmlMapper.InsertOrUpdate(workflowHistory);
+
+        }
 
     }
 }

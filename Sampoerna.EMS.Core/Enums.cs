@@ -77,7 +77,7 @@ namespace Sampoerna.EMS.Core
 
             GRCompleted = 21,
 
-            Cancel = 03
+            StoCancel = 03
          
 
         }
@@ -188,6 +188,14 @@ namespace Sampoerna.EMS.Core
             GovCancel = 35,
             [Description("Completed")]
             Completed = 40,
+            [Description("Sto Created")]
+            StoCreated = 45,
+            [Description("Good Issue Completed")]
+            GICompleted = 50,
+            [Description("Good Receive Completed")]
+            GRCompleted = 55,
+            [Description("Sto Canceled")]
+            StoCanceled = 60
         }
 
         /// <summary>
