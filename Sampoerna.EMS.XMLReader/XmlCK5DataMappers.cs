@@ -48,7 +48,8 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.GICompleted;
                 case "21":
                     return Enums.CK5XmlStatus.GRCompleted;
-
+                case "03":
+                    return Enums.CK5XmlStatus.Cancel;
 
             }
             return Enums.CK5XmlStatus.StoCreated; 
