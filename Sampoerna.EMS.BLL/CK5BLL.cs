@@ -342,7 +342,11 @@ namespace Sampoerna.EMS.BLL
 
         private CK5MaterialOutput GetAdditionalValueCk5Material(CK5MaterialOutput input)
         {
-            input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            //input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            input.ConvertedQty = Utils.ConvertHelper.GetDecimal(input.Qty) * Utils.ConvertHelper.GetDecimal(input.Convertion);
+
+            input.Convertion = Utils.ConvertHelper.GetDecimal(input.Convertion).ToString();
+
 
             var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(input.Plant, input.Brand);
             if (dbMaterial == null)

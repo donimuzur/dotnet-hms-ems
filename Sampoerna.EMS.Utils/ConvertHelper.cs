@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Sampoerna.EMS.Utils
         {
             try
             {
-                var result = Convert.ToDecimal(value);
+                var result = GetDecimal(value);
                 return true;
             }
             catch (Exception ex)
@@ -22,6 +23,15 @@ namespace Sampoerna.EMS.Utils
             }
         }
 
+        public static decimal GetDecimal(string value)
+        {
+            return Decimal.Parse(value, NumberStyles.Any, CultureInfo.InvariantCulture);
+        }
+
+        public static decimal GetDecimal(int value)
+        {
+            return GetDecimal(value.ToString());
+        }
         public static DateTime? StringToDateTimeCk5FileDocuments(string value)
         {
             DateTime? result = null;
