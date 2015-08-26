@@ -97,7 +97,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         //[UIHint("FormatDateTime")]
         public DateTime? PlanProdTo { get; set; }
         
-        [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
         public decimal? RequestQty { get; set; }
 

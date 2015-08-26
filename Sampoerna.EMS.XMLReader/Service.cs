@@ -221,7 +221,11 @@ namespace Sampoerna.EMS.XMLReader
                         }
                         if (reader != null)
                         {
-                            filesMoved.Add(reader.InsertToDatabase());
+                            var fileIsMoved = reader.InsertToDatabase();
+                            if (!string.IsNullOrEmpty(fileIsMoved))
+                            {
+                                filesMoved.Add(fileIsMoved);
+                            }
                         }
                     }
                     catch (Exception ex)

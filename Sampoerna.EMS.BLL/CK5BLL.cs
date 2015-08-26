@@ -749,7 +749,7 @@ namespace Sampoerna.EMS.BLL
             if (input.AdditionalDocumentData.RegistrationDate == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.STOCreated;
+            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
             dbData.REGISTRATION_NUMBER = input.AdditionalDocumentData.RegistrationNumber;
 
             dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
