@@ -278,6 +278,7 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
@@ -982,6 +983,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
     <Content Include="Views\CK4C\Index.cshtml" />
+    <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
