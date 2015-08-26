@@ -1201,6 +1201,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnUomAmount;
             
+            private global::System.Data.DataColumn columnVisibilityUomBkc;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck1ProdPlanDataTable() {
@@ -1332,6 +1334,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn VisibilityUomBkcColumn {
+                get {
+                    return this.columnVisibilityUomBkc;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1367,7 +1377,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, int MonthId, string MonthName, string No, decimal AmountDecimal, string VisibilityUomAmount, string UomAmount) {
+            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, int MonthId, string MonthName, string No, decimal AmountDecimal, string VisibilityUomAmount, string UomAmount, string VisibilityUomBkc) {
                 Pbck1ProdPlanRow rowPbck1ProdPlanRow = ((Pbck1ProdPlanRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ProdTypeCode,
@@ -1381,7 +1391,8 @@ namespace Sampoerna.EMS.ReportingData {
                         No,
                         AmountDecimal,
                         VisibilityUomAmount,
-                        UomAmount};
+                        UomAmount,
+                        VisibilityUomBkc};
                 rowPbck1ProdPlanRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck1ProdPlanRow);
                 return rowPbck1ProdPlanRow;
@@ -1416,6 +1427,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnAmountDecimal = base.Columns["AmountDecimal"];
                 this.columnVisibilityUomAmount = base.Columns["VisibilityUomAmount"];
                 this.columnUomAmount = base.Columns["UomAmount"];
+                this.columnVisibilityUomBkc = base.Columns["VisibilityUomBkc"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1445,6 +1457,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnVisibilityUomAmount);
                 this.columnUomAmount = new global::System.Data.DataColumn("UomAmount", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnUomAmount);
+                this.columnVisibilityUomBkc = new global::System.Data.DataColumn("VisibilityUomBkc", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVisibilityUomBkc);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3739,6 +3753,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string VisibilityUomBkc {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.VisibilityUomBkcColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'VisibilityUomBkc\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.VisibilityUomBkcColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsProdTypeCodeNull() {
                 return this.IsNull(this.tablePbck1ProdPlan.ProdTypeCodeColumn);
             }
@@ -3879,6 +3909,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetUomAmountNull() {
                 this[this.tablePbck1ProdPlan.UomAmountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsVisibilityUomBkcNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.VisibilityUomBkcColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetVisibilityUomBkcNull() {
+                this[this.tablePbck1ProdPlan.VisibilityUomBkcColumn] = global::System.Convert.DBNull;
             }
         }
         

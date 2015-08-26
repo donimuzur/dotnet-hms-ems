@@ -25,8 +25,8 @@ namespace Sampoerna.EMS.XMLReader
         {
 
             Service svc = new Service();
-            //svc.Run(true);
-            XmlCK5DataWriter rt= new XmlCK5DataWriter();
+            svc.Run(true);
+            /*XmlCK5DataWriter rt= new XmlCK5DataWriter();
              var ck5 = new CK5XmlDto();
              ck5.REGISTRATION_NUMBER = "8100000011";
              ck5.CK5_TYPE = Enums.CK5Type.ImporterToPlant;
@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.XMLReader
 
                });
              ck5.Ck5PathXml = @"H:\test-ck5.xml";
-             rt.CreateCK5Xml(ck5);
+             rt.CreateCK5Xml(ck5);*/
              Console.ReadLine();
         }
     }

@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private ILFA1BLL _lfaBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private ILACK1BLL _lack1Bll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -69,6 +70,7 @@ namespace Sampoerna.EMS.BLL
             _userBll = new UserBLL(_uow, _logger);
             _lfaBll = new LFA1BLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
+            _lack1Bll = new LACK1BLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -967,17 +969,19 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-                                    {
-                                        CreatedUser = dbData.CREATED_BY,
-                                        CurrentUser = input.UserId,
-                                        DocumentStatus = dbData.STATUS,
-                                        UserRole = input.UserRole,
-                                        DocumentNumber = dbData.NUMBER,
-                                        NppbkcId = dbData.NPPBKC_ID
-                                    });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //                        {
+            //                            CreatedUser = dbData.CREATED_BY,
+            //                            CurrentUser = input.UserId,
+            //                            DocumentStatus = dbData.STATUS,
+            //                            UserRole = input.UserRole,
+            //                            DocumentNumber = dbData.NUMBER,
+            //                            NppbkcId = dbData.NPPBKC_ID
+            //                        });
 
-            if (!isOperationAllow)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -1368,6 +1372,20 @@ namespace Sampoerna.EMS.BLL
             rc.ProdPlanList = (Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN)).OrderBy(c => c.MonthId).ToList();
             
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
+
+            //get from LACK-1 by LACK-1 PERIOD FROM - TO on PBCK-1 Document
+            var dataLack1ByPeriod = _lack1Bll.GetByPeriod(new Lack1GetByPeriodParamInput()
+            {
+                NppbkcId = rc.Detail.NppbkcId, PeriodFrom = new DateTime(dbData.LACK1_FROM_YEAR.Value, dbData.LACK1_FROM_MONTH.Value, 1), 
+                PeriodTo =  new DateTime(dbData.LACK1_TO_YEAR.Value, dbData.LACK1_TO_MONTH.Value, 1)
+            });
+
+            rc.RealisasiP3Bkc = Mapper.Map<List<Pbck1RealisasiP3BkcDto>>(dataLack1ByPeriod.ToList());
+            //todo: for field
+            //Jenis : Jenis is Product Type Alias in PBCK-1 form
+            //Uom : ??
+            
+
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {
@@ -1547,7 +1565,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData =
                 _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate);
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate).OrderByDescending(p=>p.CREATED_DATE);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }

@@ -33,7 +33,8 @@
                                     <div class="row">
                                         <label class="col-md-4">KPPBC City<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })
+                                            @*@Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })*@
+                                            @Html.TextBoxFor(model => model.KppBcCity, new { @disabled = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -383,14 +384,15 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                @if (!Model.IsCk5Export)
-                                {
+                            </div>
+                            @if (!Model.IsCk5Export)
+                            {
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4 long">PBCK-1 Decree  Number</label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.PbckDecreeNumber, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
@@ -398,14 +400,13 @@
                                         <div class="row">
                                             <label class="col-md-4">PBCK-1 Decree Date</label>
                                             <div class="col-md-8">
-                                                @*@Html.HiddenFor(model => model.PbckDecreeDate)*@
                                                 @Html.EditorFor(model => model.PbckDecreeDate)
-
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                       <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Pbck1 Qty Approved</label>
                                             <div class="col-md-8">
@@ -413,7 +414,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">CK5 Total Qty</label>
@@ -422,19 +423,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                      <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Remain</label>
                                             <div class="col-md-8">
-                                                @*@Html.HiddenFor(model => model.RemainQuota);*@
-
                                                 @Html.TextBoxFor(model => model.RemainQuota, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
-                                }
-
+                                </div>
+                            }
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
@@ -481,7 +482,7 @@
                             <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
-                                        <th>Brand</th>
+                                        <th>Material Number</th>
                                         <th>QTY</th>
                                         <th>UOM</th>
                                         <th>Convertion</th>
@@ -608,11 +609,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <div class="row">
-                                                <label class="col-md-4">GR Date</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" disabled>
-                                                </div>
+                                            @Html.LabelFor(model => model.GrDate, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.EditorFor(model => model.GrDate)
                                             </div>
                                         </div>
                                     </div>
@@ -655,12 +654,7 @@
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
                                             <input type="text" class="form-control" disabled>
-                                            @*<div class="input-group">
-                                                    <input type="text" class="form-control">
-                                                    <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                        Browse <input type="file" multiple>
-                                                    </span>
-                                                </div>*@
+
                                         </div>
                                     </div>
                                 </div>

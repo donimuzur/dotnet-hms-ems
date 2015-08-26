@@ -128,15 +128,19 @@
                 var valueSelected = this.value;
 
                 $('#divComment').hide();
+                $('#Detail_QtyApproved').attr('disabled', 'disabled');
 
                 if (valueSelected == 'Rejected') {
                     $('#divComment').show();
+                    $('#Detail_QtyApproved').val(0);
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
                 }
                 else if (valueSelected == 'PartialApproved') {
+                    $("#Detail_QtyApproved").removeAttr('disabled');
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
                 }
                 else if (valueSelected == 'FullApproved') {
+                    $('#Detail_QtyApproved').val($('#Detail_RequestQty').val());
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                 }
 
