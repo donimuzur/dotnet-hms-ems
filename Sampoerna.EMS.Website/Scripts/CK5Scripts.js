@@ -296,7 +296,7 @@ function OnSubmitWorkflow(id) {
 
 function ValidateGovInput() {
     var result = true;
-   
+  
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
@@ -336,12 +336,12 @@ function ValidateGovInput() {
         }
 
     }
-   // alert($('#poa_sk0').length);
-    
+  
     if ($('#poa_sk0').length == 0) {
         AddValidationClass(false, 'poa-files');
         
         if (result) {
+            $('#modalBodyMessage').text('Missing attach files');
             $('#ModalCk5ValidateGov').modal('show');
             
             $('#collapseFour').removeClass('collapse');
@@ -350,6 +350,23 @@ function ValidateGovInput() {
           
         }
         result = false;
+    }
+    
+    if (result) {
+        if ($('#RegistrationNumber').val().length < 6) {
+            
+            AddValidationClass(false, 'RegistrationNumber');
+            result = false;
+            $('#collapseOne').removeClass('collapse');
+            $('#collapseOne').addClass('in');
+            $("#collapseOne").css({ height: "auto" });
+            $('#RegistrationNumber').focus();
+            
+            $('#modalBodyMessage').text('Registration Number Length must be 6');
+            $('#ModalCk5ValidateGov').modal('show');
+            
+           
+        }
     }
     
     return result;
@@ -399,6 +416,12 @@ function ValidateCk5Form(ck5Type) {
         result = false;
         isValidCk5Detail = false;
     }
+    if ($('#SubmissionDate').val() == '') {
+        AddValidationClass(false, 'SubmissionDate');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
     if (!isValidCk5Detail) {
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
