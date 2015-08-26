@@ -426,6 +426,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.DocStatus = model.Detail.Status;
 
+                model.SupInfo.SupplierPlantWerks = model.Detail.SupplierPlantWerks;
+                model.SupInfo.SupplierAddress = model.Detail.SupplierAddress;
+                model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
+                model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcId;
+                model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
+
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
                 {
@@ -1646,7 +1652,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Jenis = item.Jenis;
                     detailRow.Jumlah = item.Jumlah;
                     detailRow.SaldoAkhir = item.SaldoAkhir;
-                    detailRow.Uom = item.Uom;
+                    detailRow.Uom = item.Lack1UomId;
                     ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
 
                 }

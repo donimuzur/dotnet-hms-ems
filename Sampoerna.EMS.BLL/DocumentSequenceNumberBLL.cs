@@ -41,15 +41,10 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(lastSeqData);
             }
 
-            //var nppbkcData = _nppbkcRepository.GetByID(input.NppbkcId);
-            //var nppbkcData = _nppbkcRepository.Get(c => c.NPPBKC_ID == input.NppbkcId, null, "T001").FirstOrDefault();
             var t001Data = _t001KReporRepository.Get(c => c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
-            //if (nppbkcData == null)
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.NppbkcNotFound);
-
             //generate number
-            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("00000") + "/" + ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" + (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null && !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS) ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000") + "/" + ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" + (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null && !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS) ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             _uow.SaveChanges();
 

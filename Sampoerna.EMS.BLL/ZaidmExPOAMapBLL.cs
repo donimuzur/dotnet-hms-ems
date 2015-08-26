@@ -44,11 +44,11 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public POA_MAPDto GetByUserLogin(string userLogin)
+        public List<POA_MAPDto> GetByUserLogin(string userLogin)
         {
             var rc =
-                _repository.Get(c => c.POA != null && c.POA.LOGIN_AS == userLogin, null, includeTables).FirstOrDefault();
-            return AutoMapper.Mapper.Map<POA_MAPDto>(rc);
+                _repository.Get(c => c.POA != null && c.POA.LOGIN_AS == userLogin, null, includeTables).ToList();
+            return AutoMapper.Mapper.Map<List<POA_MAPDto>>(rc);
         }
 
         //public List<POA_MAPDto> GetPoaIdByPlantAndNppbkc(string plantId, string nppbkcId)

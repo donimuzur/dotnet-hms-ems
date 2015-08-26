@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<LACK1> _repository;
+        private IGenericRepository<LACK1_PRODUCTION_DETAIL> _productionDetailRepository;
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
@@ -34,6 +35,7 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<LACK1>();
+            _productionDetailRepository = _uow.GetGenericRepository<LACK1_PRODUCTION_DETAIL>();
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
         }
@@ -309,5 +311,21 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
+        {
+            var getData =
+                _productionDetailRepository.Get(
+                    c =>
+                        c.LACK1.NPPBKC_ID == input.NppbkcId &&
+                        (int) c.LACK1.STATUS >= (int) Enums.DocumentStatus.Approved, null,
+                    "LACK1, LACK1.UOM11, LACK1.MONTH");
+            
+            if(getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
+            
+            //todo: select by periode in range period from and period to from input param
+
+            return getData.ToList();
+        }
+        
     }
 }

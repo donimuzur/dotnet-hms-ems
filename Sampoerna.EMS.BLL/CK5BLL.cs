@@ -342,7 +342,11 @@ namespace Sampoerna.EMS.BLL
 
         private CK5MaterialOutput GetAdditionalValueCk5Material(CK5MaterialOutput input)
         {
-            input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            //input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            input.ConvertedQty = Utils.ConvertHelper.GetDecimal(input.Qty) * Utils.ConvertHelper.GetDecimal(input.Convertion);
+
+            input.Convertion = Utils.ConvertHelper.GetDecimal(input.Convertion).ToString();
+
 
             var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(input.Plant, input.Brand);
             if (dbMaterial == null)
@@ -749,7 +753,7 @@ namespace Sampoerna.EMS.BLL
             if (input.AdditionalDocumentData.RegistrationDate == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.STOCreated;
+            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
             dbData.REGISTRATION_NUMBER = input.AdditionalDocumentData.RegistrationNumber;
 
             dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
