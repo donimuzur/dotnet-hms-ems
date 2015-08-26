@@ -463,11 +463,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
-                        //var saveResult = SaveCk5ToDatabase(model);
+                        var saveResult = SaveCk5ToDatabase(model);
 
-                        //AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+                        AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
-                        //return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
+                        return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
                     }
 
                     AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
