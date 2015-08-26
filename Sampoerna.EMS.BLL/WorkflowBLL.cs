@@ -28,6 +28,17 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
         {
+            if (input.DocumentStatus != Enums.DocumentStatus.Draft)
+                return false;
+
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return true;
+        }
+
+        public bool AllowEditDocumentPbck1(WorkflowAllowEditAndSubmitInput input)
+        {
             bool isEditable = false;
 
             if (input.DocumentStatus == Enums.DocumentStatus.Draft || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)

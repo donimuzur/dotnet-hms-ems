@@ -27,7 +27,9 @@ namespace Sampoerna.EMS.BLL
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
       
-        private IBrandRegistrationBLL _brandRegistrationBll;
+        //private IBrandRegistrationBLL _brandRegistrationBll;
+        private IMaterialBLL _materialBll;
+
         private IUnitOfMeasurementBLL _uomBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
@@ -54,7 +56,7 @@ namespace Sampoerna.EMS.BLL
 
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
           
-            _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
+            //_brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
@@ -68,6 +70,7 @@ namespace Sampoerna.EMS.BLL
             _plantBll = new PlantBLL(_uow, _logger);
             _pbck1Bll = new PBCK1BLL(_uow,_logger);
             _countryBll = new CountryBLL(_uow,_logger);
+            _materialBll = new MaterialBLL(_uow, _logger);
         }
         
 
@@ -188,7 +191,7 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             decimal remainQuota = 0;
-            if (Utils.ConvertHelper.IsNumeric(input.Ck5Dto.RemainQuota))
+            if (Utils.ConvertHelper.IsNumeric(input.Ck5Dto.RemainQuota))    
             {
                 remainQuota = Convert.ToDecimal(input.Ck5Dto.RemainQuota);
             }
@@ -293,10 +296,13 @@ namespace Sampoerna.EMS.BLL
                 //var output = new CK5MaterialOutput();
                 var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
 
+                //change to 
+                //zaidm_ex_material
+                //where werks and sticker_code
                 //validate
-                var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
-                if (dbBrand == null)
-                    messageList.Add("Brand Not Exist");
+                var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (dbMaterial == null)
+                    messageList.Add("Material Number Not Exist");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
@@ -338,16 +344,16 @@ namespace Sampoerna.EMS.BLL
         {
             input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
 
-            var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(input.Plant, input.Brand);
-            if (dbBrand == null)
+            var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(input.Plant, input.Brand);
+            if (dbMaterial == null)
             {
                 input.Hje = 0;
                 input.Tariff = 0;
             }
             else
             {
-                input.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
-                input.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+                input.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
+                input.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
             }
 
             input.ExciseValue = input.ConvertedQty * input.Tariff;
@@ -708,7 +714,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
          
@@ -1487,7 +1494,7 @@ namespace Sampoerna.EMS.BLL
 
             var pbck1 = _pbck1Bll.GetById(pbckId);
             if (pbck1 == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1PeriodNotFound);
 
             output.Pbck1DecreeDate = "";
             if (pbck1.DecreeDate.HasValue)
@@ -1590,6 +1597,60 @@ namespace Sampoerna.EMS.BLL
 
                 output.QtyCk5 = qtyCk5;
             }
+
+            return output;
+        }
+
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate)
+        {
+            var output = new GetQuotaAndRemainOutput();
+
+            //var ck5DbData = _repository.GetByID(ck5Id);
+
+            //if (ck5DbData == null)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //if (ck5DbData.PBCK1_DECREE_ID.HasValue)
+            //{
+            //    return GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value);
+            //}
+
+            //else
+            //{
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate);
+
+                output.QtyApprovedPbck1 = 0;
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
+                }
+
+                if (listPbck1.Count == 0)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1RefNull);
+
+                var periodStart = listPbck1[0].PeriodFrom;
+                var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
+
+                //get ck5 
+                var lisCk5 =
+                    _repository.Get(
+                        c =>
+                            c.STATUS_ID != Enums.DocumentStatus.Cancelled &&
+                            c.SOURCE_PLANT_ID == plantId
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd);
+
+                decimal qtyCk5 = 0;
+
+                foreach (var ck5 in lisCk5)
+                {
+                    if (ck5.GRAND_TOTAL_EX.HasValue)
+                        qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
+                }
+
+                output.QtyCk5 = qtyCk5;
+            //}
 
             return output;
         }

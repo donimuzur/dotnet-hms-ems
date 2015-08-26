@@ -474,7 +474,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             //check is Allow Edit Document
-            var isAllowEditDocument = _workflowBll.AllowEditDocument(new WorkflowAllowEditAndSubmitInput()
+            var isAllowEditDocument = _workflowBll.AllowEditDocumentPbck1(new WorkflowAllowEditAndSubmitInput()
             {
                 DocumentStatus = model.Detail.Status,
                 CreatedUser = model.Detail.CreatedById,

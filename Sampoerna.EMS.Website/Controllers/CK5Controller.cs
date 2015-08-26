@@ -245,7 +245,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
           
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
@@ -433,7 +433,14 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (model.PbckDecreeId.HasValue)
                             output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
                         else
-                            output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+                            //    output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+                        {
+                            if (!model.SubmissionDate.HasValue)
+                                model.SubmissionDate = DateTime.Now;
+
+                            output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
+                                model.SubmissionDate.Value);
+                        }
 
                         model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
@@ -515,7 +522,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
            
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
@@ -561,6 +568,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
                 model.Ck5TotalExciseable = output.QtyCk5.ToString();
                 model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+
+           
 
             }
             catch (Exception ex)
@@ -689,13 +698,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject) 
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
                
                 //gov approval purpose
-                if (model.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
-                    model.KppBcCity = model.KppBcCityName;
+                //if (model.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+                //    model.KppBcCity = model.KppBcCityName;
 
                 model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
+
+             
+
             }
             catch (Exception ex)
             {

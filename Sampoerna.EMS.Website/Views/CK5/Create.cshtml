@@ -32,11 +32,9 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Ck5Type)
-
+                        
+                        @Html.HiddenFor(model => model.KppBcCity)
                         @Html.HiddenFor(model => model.CeOfficeCode)
-                        @Html.HiddenFor(model => model.KppBcCityName)
-                        @*@Html.HiddenFor(model => model.CompanyCode)*@
-
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
                         @Html.HiddenFor(model => model.SubmissionDate)
@@ -57,7 +55,7 @@
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
                      
-                        @Html.HiddenFor(model => model.DnNumber)
+                        @*@Html.HiddenFor(model => model.DnNumber)
                         @Html.HiddenFor(model => model.StoSenderNumber)
                         @Html.HiddenFor(model => model.DnDate)
                         @Html.HiddenFor(model => model.StoReceiverNumber)
@@ -66,7 +64,7 @@
                         @Html.HiddenFor(model => model.SealingNotifNumber)
                         @Html.HiddenFor(model => model.UnSealingNotifNumber)
                         @Html.HiddenFor(model => model.SealingNotifDate)
-                        @Html.HiddenFor(model => model.UnsealingNotifDate)
+                        @Html.HiddenFor(model => model.UnsealingNotifDate)*@
                         
                         @Html.HiddenFor(model => model.IsCk5Export)
 
@@ -191,6 +189,9 @@
                     //enable upload
                     $('#btnUploadInfo').enable(false);
                     $('#CK5UploadSubmitBtn').enable(false);
+                    
+                    $("input[name='KppBcCity']").val('');
+                    $("input[name='CeOfficeCode']").val('');
 
                 } else {
                     ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });
@@ -198,21 +199,21 @@
             }
         });
 
-        $("#KppBcCity").change(function() {
-            if ($("#KppBcCity").length) {
-                var nppBkcCity = $(this).find("option:selected").val();
-                var cityName = $('option:selected', $(this)).text();
-                if (nppBkcCity == '') {
-                    $("input[name='CeOfficeCode']").val('');
-                    $("input[name='KppBcCityName']").val('');
+        //$("#KppBcCity").change(function() {
+        //    if ($("#KppBcCity").length) {
+        //        var nppBkcCity = $(this).find("option:selected").val();
+        //        var cityName = $('option:selected', $(this)).text();
+        //        if (nppBkcCity == '') {
+        //            $("input[name='CeOfficeCode']").val('');
+        //            $("input[name='KppBcCityName']").val('');
                    
-                } else {
-                    $("input[name='CeOfficeCode']").val(nppBkcCity);
-                    $("input[name='KppBcCityName']").val(cityName);
-                }
-            }
+        //        } else {
+        //            $("input[name='CeOfficeCode']").val(nppBkcCity);
+        //            $("input[name='KppBcCityName']").val(cityName);
+        //        }
+        //    }
 
-        });
+        //});
 
     </script>
 }
