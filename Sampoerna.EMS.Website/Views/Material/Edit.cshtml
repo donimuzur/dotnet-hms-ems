@@ -34,6 +34,7 @@
                                         </a>
                                     </h4>
                                 </div>
+                                @Html.HiddenFor(model => model.IsFromSap)
                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                     <div class="panel-body">
                                         <form class="form-excise" role="form">
@@ -42,8 +43,11 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Material Number<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.MaterialNumber)
-                                                            @Html.TextBox("materialNumber", Model.MaterialNumber, new { @class = "form-control", maxlength = "18", disabled = "disabled" })
+                                                            
+                                                                @Html.HiddenFor(model => model.MaterialNumber)
+                                                                @Html.TextBox("materialNumber", Model.MaterialNumber, new { @class = "form-control", maxlength = "18", @disabled = "disabled" })
+                                                            
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -51,7 +55,14 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Material Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
+                                                            @if (!Model.IsFromSap) { 
+                                                                @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35" })
+                                                            }
+                                                            else { 
+                                                                @Html.TextBoxFor(model => model.MaterialGroup, new { @class = "form-control", maxlength = "35", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.MaterialGroup)
+                                                            }
+                                                            
 
                                                         </div>
                                                     </div>
@@ -62,8 +73,17 @@
                                                     <div class="row">
                                                         <label class="col-md-4 long">Material Description<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50", rows = "5" })
-                                                            @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
+                                                            @if (!Model.IsFromSap)
+                                                            {
+                                                                @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50", rows = "5" })
+                                                                @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
+                                                            }
+                                                            else { 
+                                                                @Html.TextAreaFor(model => model.MaterialDesc, new { @class = "form-control", maxlength = "50", rows = "5", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.MaterialDesc)
+                                                                @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
+                                                            }
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -71,7 +91,14 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Purchasing Group<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
+                                                            @if (!Model.IsFromSap)
+                                                            {
+                                                                @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35" })
+                                                            }
+                                                            else { 
+                                                                @Html.TextAreaFor(model => model.PurchasingGroup, new { @class = "form-control", maxlength = "35", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.PurchasingGroup)
+                                                            }
 
                                                         </div>
                                                     </div>
@@ -80,9 +107,10 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.PlantId)
-                                                            @Html.DropDownList("plantid", Model.PlantList, "select", new { @class = "selectpicker form-control", disabled = "disabled" })
-
+                                                            
+                                                                @Html.HiddenFor(model => model.PlantId)
+                                                                @Html.DropDownList("plantid", Model.PlantList, "select", new { @class = "selectpicker form-control", @disabled = "disabled" })
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -90,7 +118,14 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Base UOM (SAP)<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
+                                                            @if (!Model.IsFromSap)
+                                                            {
+                                                                @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control" })
+                                                            }
+                                                            else { 
+                                                                @Html.DropDownListFor(model => model.UomId, Model.BaseUOM, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.UomId)
+                                                            }
 
                                                         </div>
                                                     </div>
@@ -99,9 +134,14 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Excisable Good Type<span class="red">*</span></label>
                                                         <div class="col-md-8">
-
-                                                            @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
-
+                                                            @if (!Model.IsFromSap)
+                                                            {
+                                                                @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control" })
+                                                            }
+                                                            else { 
+                                                                @Html.DropDownListFor(model => model.GoodTypeId, Model.GoodTypeList, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.GoodTypeId)
+                                                            }
 
                                                         </div>
                                                     </div>
@@ -110,9 +150,55 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Issue Storage Loc<span class="red">*</span></label>
                                                         <div class="col-md-8">
+                                                            @if (!Model.IsFromSap)
+                                                            {
+                                                                @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
+                                                            }
+                                                            else { 
+                                                                @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50", @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.IssueStorageLoc)
+                                                            }
 
-                                                            @Html.TextBoxFor(model => model.IssueStorageLoc, new { @class = "form-control", maxlength = "50" })
 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Tariff</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.Tariff, new { @class = "form-control", maxlength = "15" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">HJE</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.Hje, new { @class = "form-control", maxlength = "15" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Tariff Currency</label>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(model => model.Tariff_Curr, Model.CurrencyList, null, new { @class = "form-control" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">HJE Currency</label>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(model => model.Hje_Curr, Model.CurrencyList, null, new { @class = "form-control" })
 
                                                         </div>
                                                     </div>

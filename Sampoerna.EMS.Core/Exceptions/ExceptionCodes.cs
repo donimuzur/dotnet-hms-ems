@@ -45,7 +45,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             Pbck1RefNull,
 
             [Description("Ck5 Quota Exceeded")]
-            CK5QuotaExceeded
+            CK5QuotaExceeded,
+
+            [Description("PBCK-1 Data in this period not found")]
+            Pbck1PeriodNotFound,
 
         }
         

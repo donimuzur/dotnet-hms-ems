@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.LACK1 = new HashSet<LACK1>();
             this.LACK11 = new HashSet<LACK1>();
             this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
+            this.LACK111 = new HashSet<LACK1>();
         }
     
         public string UOM_ID { get; set; }
@@ -45,5 +46,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<LACK1> LACK1 { get; set; }
         public virtual ICollection<LACK1> LACK11 { get; set; }
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
+        public virtual ICollection<LACK1> LACK111 { get; set; }
     }
 }
