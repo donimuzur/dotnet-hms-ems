@@ -502,6 +502,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        //get error details
+                    }
+
                     AddMessageInfo("Model error", Enums.MessageInfoType.Error);
                     model = ModelInitial(model);
                     model = SetHistory(model);
