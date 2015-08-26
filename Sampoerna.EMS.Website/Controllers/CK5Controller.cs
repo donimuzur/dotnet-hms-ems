@@ -234,6 +234,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
             model.DocumentStatus = Enums.DocumentStatus.Draft;
+            model.SubmissionDate = DateTime.Now;
             model = InitCK5List(model);
 
             return model;
