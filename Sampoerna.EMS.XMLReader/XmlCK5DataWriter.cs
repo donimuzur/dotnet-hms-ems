@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             if (value == null)
             {
-                return "/";
+                return null;
             }
             return value.ToString();
         }
