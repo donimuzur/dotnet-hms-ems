@@ -1374,13 +1374,21 @@ namespace Sampoerna.EMS.BLL
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
 
             //get from LACK-1 by LACK-1 PERIOD FROM - TO on PBCK-1 Document
-            var dataLack1ByPeriod = _lack1Bll.GetByPeriod(new Lack1GetByPeriodParamInput()
+            //var dataLack1ByPeriod = _lack1Bll.GetByPeriod(new Lack1GetByPeriodParamInput()
+            //{
+            //    NppbkcId = rc.Detail.NppbkcId, PeriodFrom = new DateTime(dbData.LACK1_FROM_YEAR.Value, dbData.LACK1_FROM_MONTH.Value, 1), 
+            //    PeriodTo =  new DateTime(dbData.LACK1_TO_YEAR.Value, dbData.LACK1_TO_MONTH.Value, 1)
+            //});
+
+            var lack1Bll = new LACK1BLL(_uow, _logger);
+            var dataLack1 = lack1Bll.GetProductionDetailByPeriode(new Lack1GetByPeriodParamInput()
             {
-                NppbkcId = rc.Detail.NppbkcId, PeriodFrom = new DateTime(dbData.LACK1_FROM_YEAR.Value, dbData.LACK1_FROM_MONTH.Value, 1), 
-                PeriodTo =  new DateTime(dbData.LACK1_TO_YEAR.Value, dbData.LACK1_TO_MONTH.Value, 1)
+                NppbkcId = rc.Detail.NppbkcId,
+                PeriodFrom = new DateTime(dbData.LACK1_FROM_YEAR.Value, dbData.LACK1_FROM_MONTH.Value, 1),
+                PeriodTo = new DateTime(dbData.LACK1_TO_YEAR.Value, dbData.LACK1_TO_MONTH.Value, 1)
             });
 
-            rc.RealisasiP3Bkc = Mapper.Map<List<Pbck1RealisasiP3BkcDto>>(dataLack1ByPeriod.ToList());
+            rc.RealisasiP3Bkc = Mapper.Map<List<Pbck1RealisasiP3BkcDto>>(dataLack1);
             
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()

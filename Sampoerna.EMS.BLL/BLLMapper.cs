@@ -167,6 +167,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
                 .ForMember(dest => dest.TotalProduction, opt => opt.MapFrom(src => src.TOTAL_PRODUCTION))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
+                .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
+                .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 ;
 
             Mapper.CreateMap<MONTH, Lack1Dto>().IgnoreAllNonExisting()

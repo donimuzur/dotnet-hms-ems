@@ -43,6 +43,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal Usage { get; set; }
         public decimal TotalProduction { get; set; }
 
+        public string Lack1UomId { get; set; }
+        public string Lack1UomName { get; set; }
+
         public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
 
     }
