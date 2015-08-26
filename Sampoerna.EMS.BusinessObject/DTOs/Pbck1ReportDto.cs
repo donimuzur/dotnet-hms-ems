@@ -159,6 +159,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Jenis { get; set; }
         public decimal Jumlah { get; set; }
         public decimal SaldoAkhir { get; set; }
-        public string Uom { get; set; }
+        public string Lack1UomId { get; set; }
+        public string Lack1UomName { get; set; }
+        
+        //lack1 production detail
+        public decimal ProdAmount { get; set; }
+        public string ProductCode { get; set; }
+        public string ProductType { get; set; }
+        public string ProductAlias { get; set; }
     }
 }
