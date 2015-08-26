@@ -302,7 +302,7 @@ namespace Sampoerna.EMS.BLL
                 //validate
                 var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
                 if (dbMaterial == null)
-                    messageList.Add("Brand Not Exist");
+                    messageList.Add("Material Number Not Exist");
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
