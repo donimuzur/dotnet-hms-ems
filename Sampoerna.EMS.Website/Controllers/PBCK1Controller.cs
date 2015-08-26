@@ -1646,7 +1646,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Jenis = item.Jenis;
                     detailRow.Jumlah = item.Jumlah;
                     detailRow.SaldoAkhir = item.SaldoAkhir;
-                    detailRow.Uom = item.Uom;
+                    detailRow.Uom = item.Lack1UomId;
                     ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
 
                 }
