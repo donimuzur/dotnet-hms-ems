@@ -1353,13 +1353,13 @@ namespace Sampoerna.EMS.BLL
 
             CK5 dbData = null;
 
-
             //create new ck5 documents
             var generateNumberInput = new GenerateDocNumberInput()
             {
                 Year = DateTime.Now.Year,
                 Month = DateTime.Now.Month,
-                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID
+                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
+                FormType = Enums.FormType.CK5
             };
 
             input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
@@ -1370,13 +1370,11 @@ namespace Sampoerna.EMS.BLL
 
             dbData = new CK5();
 
-
             Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
             dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
             inputWorkflowHistory.ActionType = Enums.ActionType.Created;
-
 
             foreach (var ck5Item in input.Ck5Material)
             {
@@ -1392,7 +1390,6 @@ namespace Sampoerna.EMS.BLL
             inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
             inputWorkflowHistory.UserId = input.UserId;
             inputWorkflowHistory.UserRole = input.UserRole;
-
 
             AddWorkflowHistory(inputWorkflowHistory);
 
