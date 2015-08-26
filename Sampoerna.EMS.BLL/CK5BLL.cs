@@ -415,6 +415,8 @@ namespace Sampoerna.EMS.BLL
 
             changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
 
+            changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
+
             foreach (var listChange in changesData)
             {
                 if (listChange.Value) continue;
@@ -490,7 +492,10 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.DEST_COUNTRY_NAME;
                         changes.NEW_VALUE = data.DEST_COUNTRY_NAME;
                         break;
-
+                    case "SUBMISSION_DATE":
+                        changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                        changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                        break;
                 }
                 _changesHistoryBll.AddHistory(changes);
             }
