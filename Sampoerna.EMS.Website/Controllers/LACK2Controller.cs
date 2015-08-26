@@ -384,9 +384,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCK5ByLack2Period(int month, int year)
+        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId)
         {
-            var data =  _ck5Bll.GetByGIDate(month, year).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            var data =  _ck5Bll.GetByGIDate(month, year, desPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
 
         }

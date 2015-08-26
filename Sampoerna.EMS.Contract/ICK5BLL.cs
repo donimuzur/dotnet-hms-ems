@@ -58,6 +58,6 @@ namespace Sampoerna.EMS.Contract
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate);
 
-       List<CK5> GetByGIDate(int month, int year);
+       List<CK5> GetByGIDate(int month, int year,string desPlantId);
    }
 }
