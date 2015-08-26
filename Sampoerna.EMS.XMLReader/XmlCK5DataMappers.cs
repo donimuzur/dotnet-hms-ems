@@ -48,7 +48,8 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.GICompleted;
                 case "21":
                     return Enums.CK5XmlStatus.GRCompleted;
-
+                case "03":
+                    return Enums.CK5XmlStatus.Cancel;
 
             }
             return Enums.CK5XmlStatus.StoCreated; 
@@ -67,6 +68,7 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new CK5();
                         item.SUBMISSION_NUMBER = _xmlMapper.GetElementValue(xElement.Element("CK5_NUMBER"));
+                        
                         var status = _xmlMapper.GetElementValue(xElement.Element("STATUS"));
                         var type = _xmlMapper.GetElementValue(xElement.Element("CK5_PROCS_TYP"));
                         item.CK5_TYPE = GetEMSCk5Type(type);
@@ -83,6 +85,8 @@ namespace Sampoerna.EMS.XMLReader
                                 {
                                     var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
                                     item.STO_SENDER_NUMBER = stoNumber;
+                                    item.STATUS_ID = Enums.DocumentStatus.STOCreated;
+                                    
                                 }
 
                                 else 
@@ -90,7 +94,7 @@ namespace Sampoerna.EMS.XMLReader
                                 {
                                     var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
                                     item.GI_DATE = _xmlMapper.GetDate(giDate);
-
+                                    item.STATUS_ID = Enums.DocumentStatus.GICompleted;
                                     var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
                                     if (ck5Item.Count > 0)
                                     {
@@ -124,7 +128,8 @@ namespace Sampoerna.EMS.XMLReader
                                 {
                                     var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
                                     item.GR_DATE = _xmlMapper.GetDate(grDate);
-
+                                    item.STATUS_ID = Enums.DocumentStatus.GRCompleted;
+                                    
                                 }
                             }
                             items.Add(item);
@@ -161,7 +166,7 @@ namespace Sampoerna.EMS.XMLReader
         public CK5 GetExistingCK5(string ck5Number)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK5>()
-                .Get(p => p.SUBMISSION_NUMBER == ck5Number).FirstOrDefault();
+                .Get(p => p.SUBMISSION_NUMBER.Contains(ck5Number)).FirstOrDefault();
             return existingData;
         }
         public List<CK5_MATERIAL> GetExistingCK5Material(long ck5Id)

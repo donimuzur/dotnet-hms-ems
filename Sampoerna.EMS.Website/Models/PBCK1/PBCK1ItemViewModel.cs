@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         {
             WorkflowHistory = new List<WorkflowHistoryViewModel>();
             ActionType = "Edit";
+            SupInfo = new Pbck1SupInfo();
         }
 
         public string SubmitType { get; set; }
@@ -52,5 +53,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string ActionType { get; set; }
 
         public bool AllowManagerReject { get; set; }
+
+        public Pbck1SupInfo SupInfo { get; set; }
     }
 }

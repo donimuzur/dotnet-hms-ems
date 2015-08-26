@@ -3639,7 +3639,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="WORKFLOW_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
           <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
@@ -3736,7 +3736,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CK5_TYPE" Type="EMSModel.CK5Type" Nullable="false" />
           <Property Name="KPPBC_CITY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CE_OFFICE_CODE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
           <Property Name="REGISTRATION_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="EX_GOODS_TYPE_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
@@ -3827,7 +3827,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <PropertyRef Name="PBCK1_ID" />
           </Key>
           <Property Name="PBCK1_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PBCK1_REF" Type="Int32" />
           <Property Name="PBCK1_TYPE" Type="EMSModel.PBCK1Type" Nullable="false" />
           <Property Name="PERIOD_FROM" Type="DateTime" Precision="3" />
@@ -3840,7 +3840,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="EXC_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PLANT" Type="String" Nullable="false" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PORT_ID" Type="Int32" />
-          <Property Name="SUPPLIER_ADDRESS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_ADDRESS" Type="String" FixedLength="false" Unicode="true" MaxLength="250" />
           <Property Name="SUPPLIER_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="PLAN_PROD_FROM" Type="DateTime" Precision="3" />
           <Property Name="PLAN_PROD_TO" Type="DateTime" Precision="3" />
@@ -4468,7 +4468,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRINT_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.FormType" Nullable="false" />
           <Property Name="FORM_ID" Type="Int64" Nullable="false" />
-          <Property Name="FORM_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PRINT_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="PRINT_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PRINT_HISTORY_USER" FromRole="PRINT_HISTORY" ToRole="USER" />
@@ -5378,7 +5378,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <PropertyRef Name="LACK1_ID" />
           </Key>
           <Property Name="LACK1_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LACK1_NUMBER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="LACK1_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BUKRS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="BUTXT" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PERIOD_MONTH" Type="Int32" />
@@ -5751,7 +5751,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="LACK2" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="LACK2" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="LACK2" ToRole="USER" />
-          <Property Name="LACK2_NUMBER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="LACK2_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK2_DOCUMENT_LACK2">
           <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />

@@ -25,12 +25,12 @@ namespace Sampoerna.EMS.Utils
 
         public static decimal GetDecimal(string value)
         {
-            return  Decimal.Parse(value, NumberStyles.Any, CultureInfo.InvariantCulture);
+            return Decimal.Parse(value, NumberStyles.Any, CultureInfo.InvariantCulture);
         }
 
         public static decimal GetDecimal(int value)
         {
-           return  GetDecimal(value.ToString());
+            return GetDecimal(value.ToString());
         }
         public static DateTime? StringToDateTimeCk5FileDocuments(string value)
         {
