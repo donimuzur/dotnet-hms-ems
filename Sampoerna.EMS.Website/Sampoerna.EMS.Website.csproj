@@ -774,6 +774,7 @@
     <Content Include="Scripts\js\custom.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-select-custom.js" />
     <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
     <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
