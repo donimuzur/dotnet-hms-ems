@@ -202,7 +202,14 @@ function ajaxGetPlantDetails(url, formData) {
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
 
-                PopulateListPbckNumber(data.PbckList);
+                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                $("input[name='RemainQuota']").val(data.RemainQuota);
+                
+               // PopulateListPbckNumber(data.PbckList);
             }
         });
     }

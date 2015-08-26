@@ -217,8 +217,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
          [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
         public Enums.CK5GovStatus GovStatus { get; set; }
-
+        public string GovStatusDesc { get; set; }
         public Enums.CK5GovStatus GovStatusList { get; set; }
+        public string CommentGov { get; set; }
 
         public string Pbck1QtyApproved { get; set; }
         public string Ck5TotalExciseable { get; set; }
