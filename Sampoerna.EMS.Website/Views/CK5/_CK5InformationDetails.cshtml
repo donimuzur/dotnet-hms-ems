@@ -47,6 +47,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Submission Number</label>
@@ -64,6 +66,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Registration Number</label>
@@ -80,6 +84,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Goods Type Group</label>
@@ -96,6 +102,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Excise Status</label>
@@ -215,23 +223,23 @@
                             <div class="row">
                                 @if (Model.IsCk5Export)
                                 {
-                                        <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Destination Country</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.DisplayDetailsDestinationCountry, new {@disabled = false, @class = "form-control"})
+                                                @Html.TextBoxFor(model => model.DisplayDetailsDestinationCountry, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
-                                   
+
                                 }
                                 else
                                 {
-                                     <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Plant</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.DestPlantId, new {@disabled = false, @class = "form-control"})
+                                                @Html.TextBoxFor(model => model.DestPlantId, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
@@ -379,14 +387,13 @@
                                         <label class="col-md-4">Invoice Date</label>
                                         <div class="col-md-8">
                                             @Html.EditorFor(model => model.InvoiceDate)
-                                            @*@Html.TextBoxFor(model => model.InvoiceDate, new { @disabled = false, @class = "form-control" })*@
-
                                         </div>
                                     </div>
                                 </div>
-
-                                @if (!Model.IsCk5Export)
-                                {
+                            </div>
+                            @if (!Model.IsCk5Export)
+                            {
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4 long">PBCK-1 Decree  Number</label>
@@ -403,8 +410,39 @@
                                             </div>
                                         </div>
                                     </div>
-                                }
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Pbck1 Qty Approved</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Pbck1QtyApproved, new { @disabled = false, @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK5 Total Qty</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck5TotalExciseable, new { @disabled = false, @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Remain</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.RemainQuota, new { @disabled = false, @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
@@ -424,6 +462,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -524,7 +563,7 @@
                                         <div class="row">
                                             @Html.LabelFor(model => model.GrDate, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.EditorFor(model => model.GiDate)
+                                                @Html.EditorFor(model => model.GrDate)
                                             </div>
                                         </div>
                                     </div>
@@ -564,6 +603,31 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <label class="col-md-4">Status Gov</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.GovStatusDesc, new { @disabled = false, @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Requisitioner</label>
+                                        <div class="col-md-8">
+                                            @*<input type="text" class="form-control" disabled="">*@
+                                            @Html.TextBoxFor(model => model.CreatedUser, new { @disabled = false, @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Comment</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.CommentGov, new { @rows = "5", @disabled = false, @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
                                             @*<input type="text" class="form-control" disabled="">*@
@@ -583,15 +647,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Requisitioner</label>
-                                        <div class="col-md-8">
-                                            @*<input type="text" class="form-control" disabled="">*@
-                                            @Html.TextBoxFor(model => model.CreatedUser, new { @disabled = false, @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>

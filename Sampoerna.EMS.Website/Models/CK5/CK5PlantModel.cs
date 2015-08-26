@@ -18,6 +18,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string KppbcCity { get; set; }
         public string KppbcNo { get; set; }
 
+        public int? Pbck1Id { get; set; }
+        public string Pbck1Number { get; set; }
+        public string Pbck1QtyApproved { get; set; }
+        public string Ck5TotalExciseable { get; set; }
+        public string RemainQuota { get; set; }
+        public string Pbck1DecreeDate { get; set; }
+
         public List<Ck5ListPbck1Completed> PbckList { get; set; } 
 
     }

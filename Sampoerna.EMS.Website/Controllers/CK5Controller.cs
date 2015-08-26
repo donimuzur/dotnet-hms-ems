@@ -367,6 +367,24 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string plantId, DateTime submissionDate)
+        {
+            var dbPlant = _plantBll.GetT001ById(plantId);
+            var model = Mapper.Map<CK5PlantModel>(dbPlant);
+           
+            var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(plantId, submissionDate);
+
+            model.Pbck1Id = output.Pbck1Id;
+            model.Pbck1Number = output.Pbck1Number;
+            model.Pbck1DecreeDate = output.Pbck1DecreeDate;
+            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+            model.Ck5TotalExciseable = output.QtyCk5.ToString();
+            model.RemainQuota = output.RemainQuota.ToString();
+
+            return Json(model);
+        }
+
+        [HttpPost]
         public JsonResult GetSourcePlantDetailsAndPbckList(string plantId)
         {
             var dbPlant = _plantBll.GetT001ById(plantId);
@@ -428,6 +446,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
+                        //double check
                         GetQuotaAndRemainOutput output;
 
                         if (model.PbckDecreeId.HasValue)
@@ -444,11 +463,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
-                        var saveResult = SaveCk5ToDatabase(model);
+                        //var saveResult = SaveCk5ToDatabase(model);
 
-                        AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+                        //AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
-                        return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
+                        //return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
                     }
 
                     AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
@@ -706,8 +725,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 //    model.KppBcCity = model.KppBcCityName;
 
                 model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
+                
+                var outputHistory = _workflowHistoryBll.GetStatusGovHistory(ck5Details.Ck5Dto.SUBMISSION_NUMBER);
+                model.GovStatusDesc = outputHistory.StatusGov;
+                model.CommentGov = outputHistory.Comment;
 
-             
+                var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
+                model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = outputQuota.QtyCk5.ToString();
+                model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
 
             }
             catch (Exception ex)
@@ -983,8 +1009,24 @@ namespace Sampoerna.EMS.Website.Controllers
                     RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
                 }
 
-                if (CK5WorkflowGovApproval(model))
-                    AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+                switch (model.GovStatus)
+                {
+                    case Enums.CK5GovStatus.GovApproved:
+                        if (CK5WorkflowGovApproval(model))
+                            AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+                        break;
+                    case Enums.CK5GovStatus.GovReject:
+                        CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
+                        AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+                        break;
+                    case Enums.CK5GovStatus.GovCancel:
+                        CK5Workflow(model.Ck5Id, Enums.ActionType.GovCancel, model.Comment);
+                        AddMessageInfo("Success GovCancel Document", Enums.MessageInfoType.Success);
+                        break;
+                    default:
+                        AddMessageInfo("Undefined Gov Status", Enums.MessageInfoType.Error);
+                        break;
+                }
             }
             catch (Exception ex)
             {

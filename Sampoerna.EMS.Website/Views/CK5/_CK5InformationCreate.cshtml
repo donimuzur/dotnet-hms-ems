@@ -361,16 +361,15 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                @if (!Model.IsCk5Export)
-                                {
+                            </div>
+                            @if (!Model.IsCk5Export)
+                            {
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4 long">PBCK-1 Decree  Number</label>
                                             <div class="col-md-8">
-                                                @*@Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control selectpicker" })*@
-                                                @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })
-
+                                                @Html.TextBoxFor(model => model.PbckDecreeNumber, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
@@ -382,7 +381,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+                                </div>
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Pbck1 Qty Approved</label>
@@ -391,7 +391,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">CK5 Total Qty</label>
@@ -400,8 +400,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                      <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Remain</label>
                                             <div class="col-md-8">
@@ -409,8 +410,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                }
-
+                                </div>
+                            }
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
@@ -635,22 +637,12 @@
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
                                             <input type="text" class="form-control" disabled>
-                                            @*<div class="input-group">
-                                                    <input type="text" class="form-control">
-                                                    <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                        Browse <input type="file" multiple>
-                                                    </span>
-                                                </div>*@
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    @*<div class="row">
-                                            <label class="col-md-4">Requisitioner</label>
-                                            <div class="col-md-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>*@
+
                                 </div>
                             </div>
                         </div>
