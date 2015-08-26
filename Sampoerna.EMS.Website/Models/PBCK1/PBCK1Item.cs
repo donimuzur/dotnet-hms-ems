@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             //PlanProdTo = DateTime.Now;
             //DecreeDate = DateTime.Now;
             ReportedOn = DateTime.Now;
+            RequestQty = 0;
         }
         public int Pbck1Id { get; set; }
 
@@ -96,7 +97,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [Required, Display(Name = "Plan Production To")]
         //[UIHint("FormatDateTime")]
         public DateTime? PlanProdTo { get; set; }
-        
+
+        [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
         public decimal? RequestQty { get; set; }
 

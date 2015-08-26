@@ -38,9 +38,9 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
 }
 
 function disableSupplierFormInput(isDisable) {
-    $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
-    $('#Detail_SupplierKppbcId').prop('disabled', isDisable);
-    $('#Detail_SupplierAddress').prop('disabled', isDisable);
+    $('#Detail_SupplierNppbkcId').prop('readonly', isDisable);
+    $('#Detail_SupplierKppbcId').prop('readonly', isDisable);
+    $('#Detail_SupplierAddress').prop('readonly', isDisable);
 }
 
 function supplierChange(url) {
