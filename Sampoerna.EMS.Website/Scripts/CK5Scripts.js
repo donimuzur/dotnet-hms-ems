@@ -504,7 +504,7 @@ function ValidateCk5Form(ck5Type) {
 
         if (rowCount <= 1) {
             // alert('Missing CK5 Material');
-
+            $('#modalBodyMessage').text('Missing CK5 Materials');
             $('#ModalCk5Material').modal('show');
             
             $('#home-tab').removeClass('active');
@@ -518,6 +518,22 @@ function ValidateCk5Form(ck5Type) {
         
     }
 
+    if (result) {
+        //total = parseFloat(datarows[i][1]); //Qty
+        var total = parseFloat($('#GrandTotalEx').val());
+        var remainQuota = parseFloat($('#RemainQuota').val());
+        if (total > remainQuota) {
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+
+            $('#modalBodyMessage').text('CK5 Quota Exceeded');
+            $('#ModalCk5Material').modal('show');
+            
+            AddValidationClass(false, 'GrandTotalEx');
+            result = false;
+        }
+    }
     return result;
 }
 
