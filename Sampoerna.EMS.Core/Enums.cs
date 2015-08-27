@@ -79,6 +79,9 @@ namespace Sampoerna.EMS.Core
 
             StoCancel = 03,
 
+            GRReversal = 22,
+          
+
             None = 00
 
          
