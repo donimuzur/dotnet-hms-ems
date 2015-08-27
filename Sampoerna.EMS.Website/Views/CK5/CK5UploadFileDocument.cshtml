@@ -4,46 +4,52 @@
 {
     @Html.AntiForgeryToken()
 
-    <div role="tabpanel" class="tab-pane" id="upload">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Upload Excel File Documents
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-6">
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel" class="tab-pane" id="upload">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-                                <div class="input-group">
-                                    <input type="file" class="form-control" name="itemExcelFile" id="itemExcelFile">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Upload Excel File Documents
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+
+                                            <div class="input-group">
+                                                <input type="file" class="form-control" name="itemExcelFile" id="itemExcelFile">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="button" id="btnGenerate" class="btn btn-grey generate" value="Generate" />
+                                            <input type="submit" class="btn btn-blue" id="btnSave" value="Save" disabled />
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <input type="button" id="btnGenerate" class="btn btn-grey generate" value="Generate" />
-                                <input type="submit" class="btn btn-blue" id="btnSave" value="Save" disabled />
-                            </div>
-
                         </div>
+
+
+
                     </div>
+
+                    <div class="table-container" id="listFileDocuments">
+                        @Html.Partial("_CK5UploadFileDocumentsList", Model)
+                    </div>
+
                 </div>
             </div>
-
-
-
         </div>
-
-        <div class="table-container" id="listFileDocuments">
-            @Html.Partial("_CK5UploadFileDocumentsList", Model)
-        </div>
-
     </div>
-
 }
 @section scripts
 {
@@ -52,10 +58,10 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#MenuCK5FileDocuments').addClass('active');
         });
-    
+
         $('#btnGenerate').click(function () {
 
             $('#btnSave').prop('disabled', true);
@@ -75,11 +81,11 @@
                 formData.append("itemExcelFile", file);
                 //formData.append("plantId", $('#SourcePlantId').val());
             }
-            
+
             $.ajax({
                 type: "POST",
                 //url: '/CK5/UploadFileDocuments',
-                url : '@Url.Action("UploadFileDocuments", "CK5")',
+                url: '@Url.Action("UploadFileDocuments", "CK5")',
                 data: formData,
                 dataType: 'html',
                 contentType: false,
@@ -96,7 +102,7 @@
             });
         });
 
-      
+
 
         function IsValidFileDocumentDataUpload() {
 
@@ -109,7 +115,7 @@
 
             return true;
         }
-        
+
     </script>
 
-    }
+}

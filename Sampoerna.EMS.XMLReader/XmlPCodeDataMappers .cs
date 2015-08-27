@@ -34,12 +34,12 @@ namespace Sampoerna.EMS.XMLReader
                         item.PER_CODE = xElement.Element("PER_CODE").Value;
                         item.PER_DESC = _xmlMapper.GetElementValue(xElement.Element("PER_DESC"));
                         item.CREATED_DATE = DateTime.Now;
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
                         var existingPCode = GetPCode(item.PER_CODE);
                         if (existingPCode != null)
                         {
                             item.CREATED_DATE = existingPCode.CREATED_DATE;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             item.MODIFIED_DATE = DateTime.Now;
                             items.Add(item);
 

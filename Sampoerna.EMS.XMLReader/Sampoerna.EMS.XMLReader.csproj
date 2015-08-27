@@ -80,6 +80,8 @@
     <Compile Include="XmlBrandDataMappers.cs" />
     <Compile Include="XmlCK5DataWriter.cs" />
     <Compile Include="XmlCK5DataMappers.cs" />
+    <Compile Include="XmlBOMDataMappers.cs" />
+    <Compile Include="XmlMovementDataMappers.cs" />
     <Compile Include="XmlPoaDataMappers.cs" />
     <Compile Include="XmlUoMDataMappers.cs" />
     <Compile Include="XmlT001KDataMappers.cs" />

@@ -5,6 +5,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using System.Collections.Generic;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -27,12 +28,19 @@ namespace Sampoerna.EMS.BLL
 
         public string GenerateNumber(GenerateDocNumberInput input)
         {
+            string docNumber;
+
             var lastSeqData = _repository.Get(c => c.MONTH == input.Month && c.YEAR == input.Year).FirstOrDefault();
 
             if (lastSeqData == null)
             {
                 //insert new record
-                lastSeqData = new DOC_NUMBER_SEQ() { YEAR = input.Year, MONTH = input.Month, DOC_NUMBER_SEQ_LAST = 1 };
+                lastSeqData = new DOC_NUMBER_SEQ()
+                {
+                    YEAR = input.Year, 
+                    MONTH = input.Month, 
+                    DOC_NUMBER_SEQ_LAST = 1
+                };
                 _repository.Insert(lastSeqData);
             }
             else
@@ -41,14 +49,30 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(lastSeqData);
             }
 
-            var t001Data = _t001KReporRepository.Get(c => c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
+            docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000");
 
-            //generate number
-            string rc = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000") + "/" + ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" + (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null && !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS) ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            if (input.FormType != Enums.FormType.CK5)
+            {
+                var t001Data =
+                    _t001KReporRepository.Get(
+                        c =>
+                            c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
+                            c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
+                //generate number
+                docNumber = docNumber + "/" +
+                            ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" +
+                            (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null &&
+                             !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS)
+                                ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS
+                                : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" +
+                            input.Year.ToString();
+
+            }
+            
             _uow.SaveChanges();
 
-            return rc;
+            return docNumber;
 
         }
 

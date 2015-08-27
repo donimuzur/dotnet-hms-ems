@@ -36,14 +36,14 @@ namespace Sampoerna.EMS.XMLReader
                         item.MENGETAHUI = _xmlMapper.GetElementValue(xElement.Element("MENGETAHUI"));
                         item.CK1_KEP_FOOTER = _xmlMapper.GetElementValue(xElement.Element("CK1_KEP_FOOTER"));
                         item.CK1_KEP_HEADER = _xmlMapper.GetElementValue(xElement.Element("CK1_KEP_HEADER"));
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
                         var existingKppbc = GetKPPBC(item.KPPBC_ID);
                         if (existingKppbc != null)
                         {
                             item.CREATED_BY = existingKppbc.CREATED_BY;
                             item.CREATED_DATE = existingKppbc.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
 
                         }

@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.XMLReader
                                 item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
                                 item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
                                 item.MODIFIED_DATE = DateTime.Now;
-                                item.MODIFIED_BY = Constans.PICreator;
+                                item.MODIFIED_BY = Constans.PI;
                                 item.CREATED_BY = exisitingNppbkc.CREATED_BY;
                                 items.Add(item);
 

@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSupplierPlant()
         {
-            return Json(GlobalFunctions.GetActiveSupplierPlantList());
+            return Json(GlobalFunctions.GetPlantAll());
         }
 
         [HttpPost]
@@ -430,6 +430,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SupInfo.SupplierAddress = model.Detail.SupplierAddress;
                 model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
                 model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcId;
+                model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
@@ -501,6 +502,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        //get error details
+                    }
+
                     AddMessageInfo("Model error", Enums.MessageInfoType.Error);
                     model = ModelInitial(model);
                     model = SetHistory(model);
@@ -1651,7 +1659,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Jenis = item.Jenis;
                     detailRow.Jumlah = item.Jumlah;
                     detailRow.SaldoAkhir = item.SaldoAkhir;
-                    detailRow.Uom = item.Uom;
+                    detailRow.Uom = item.Lack1UomId;
                     ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
 
                 }

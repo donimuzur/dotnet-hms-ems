@@ -158,7 +158,7 @@
             });
 
             $("#Detail_SupplierPortId").change(function () {
-                supplierPortOnChange();
+                //supplierPortOnChange();
             });
 
             $('#btn-changelog-export-xls').click(function () {
@@ -245,7 +245,7 @@
                 htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
                 $('#supp-plant').html(htmlSelect);
                 //selected to 1
-                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+                //supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             }
         }
 
@@ -371,6 +371,16 @@
             $('#Detail_HiddenSupplierNppbkcId').val($('#SupInfo_SupplierNppkbc').val());
             $('#Detail_HiddendSupplierAddress').val($('#SupInfo_SupplierAddress').val());
             $('#Detail_HiddenSupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
+            $('#Detail_SupplierPlant').val($('#SupInfo_SupplierPlantName').val());
+
+            if($('#SupInfo_SupplierPlantWerks').val() == '')
+            {
+                disableSupplierFormInput(false);
+                $("#externalSupPort").prop('checked', true);
+                $("#Detail_SupplierPlant_ddl").hide();
+                $("#Detail_SupplierPlant").prop("type", "text");
+                $("#Detail_SupplierPlant").addClass('form-control');
+            }
         }
 
     </script>
