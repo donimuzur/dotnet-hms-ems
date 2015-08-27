@@ -919,9 +919,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
                             var decreeDoc = new Pbck1DecreeDocModel()
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenamecheck,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
                                 CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now

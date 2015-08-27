@@ -3937,7 +3937,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="SUPPLIER_PORT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="SUPPLIER_KPPBC_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_KPPBC_ID" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PLANT_WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE_MANAGER" Type="DateTime" Precision="3" />
