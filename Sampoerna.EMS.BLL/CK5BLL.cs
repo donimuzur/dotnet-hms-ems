@@ -342,7 +342,12 @@ namespace Sampoerna.EMS.BLL
 
         private CK5MaterialOutput GetAdditionalValueCk5Material(CK5MaterialOutput input)
         {
-            input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            //input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            input.ConvertedQty = Utils.ConvertHelper.GetDecimal(input.Qty) * Utils.ConvertHelper.GetDecimal(input.Convertion);
+
+            input.Convertion = Utils.ConvertHelper.GetDecimal(input.Convertion).ToString();
+
+           
 
             var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(input.Plant, input.Brand);
             if (dbMaterial == null)
@@ -409,6 +414,8 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID == data.PACKAGE_UOM_ID);
 
             changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
+
+            changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
 
             foreach (var listChange in changesData)
             {
@@ -485,7 +492,10 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.DEST_COUNTRY_NAME;
                         changes.NEW_VALUE = data.DEST_COUNTRY_NAME;
                         break;
-
+                    case "SUBMISSION_DATE":
+                        changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                        changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                        break;
                 }
                 _changesHistoryBll.AddHistory(changes);
             }
@@ -749,7 +759,7 @@ namespace Sampoerna.EMS.BLL
             if (input.AdditionalDocumentData.RegistrationDate == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.STATUS_ID = Enums.DocumentStatus.STOCreated;
+            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
             dbData.REGISTRATION_NUMBER = input.AdditionalDocumentData.RegistrationNumber;
 
             dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
@@ -1343,13 +1353,13 @@ namespace Sampoerna.EMS.BLL
 
             CK5 dbData = null;
 
-
             //create new ck5 documents
             var generateNumberInput = new GenerateDocNumberInput()
             {
                 Year = DateTime.Now.Year,
                 Month = DateTime.Now.Month,
-                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID
+                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
+                FormType = Enums.FormType.CK5
             };
 
             input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
@@ -1360,13 +1370,11 @@ namespace Sampoerna.EMS.BLL
 
             dbData = new CK5();
 
-
             Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
             dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
             inputWorkflowHistory.ActionType = Enums.ActionType.Created;
-
 
             foreach (var ck5Item in input.Ck5Material)
             {
@@ -1382,7 +1390,6 @@ namespace Sampoerna.EMS.BLL
             inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
             inputWorkflowHistory.UserId = input.UserId;
             inputWorkflowHistory.UserRole = input.UserRole;
-
 
             AddWorkflowHistory(inputWorkflowHistory);
 

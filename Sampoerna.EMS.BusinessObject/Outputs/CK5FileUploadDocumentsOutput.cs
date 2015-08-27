@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 
 
        //additional material
-        public int ConvertedQty { get; set; }
+        public decimal ConvertedQty { get; set; }
         public decimal Hje { get; set; }
         public decimal Tariff { get; set; }
         public decimal ExciseValue { get; set; }

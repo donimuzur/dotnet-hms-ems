@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
@@ -63,8 +64,12 @@ namespace Sampoerna.EMS.BLL
         private bool IsOneNppbkc(string nppbkcId, string approvalUser)
         {
             var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
-            
-            return nppbkcId == poaApprovalUserData.NPPBKC_ID;
+
+            //return nppbkcId == poaApprovalUserData.NPPBKC_ID;
+            var data = poaApprovalUserData.Where(c => c.NPPBKC_ID == nppbkcId).ToList();
+
+            return data.Count > 0;
+
             //var poaCreatedUserData = _poaMapBll.GetByUserLogin(createdUser);
             //var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
             //return poaCreatedUserData != null && poaApprovalUserData != null &&

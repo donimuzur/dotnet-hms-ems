@@ -38,9 +38,9 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
 }
 
 function disableSupplierFormInput(isDisable) {
-    $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
-    $('#Detail_SupplierKppbcId').prop('disabled', isDisable);
-    $('#Detail_SupplierAddress').prop('disabled', isDisable);
+    $('#Detail_SupplierNppbkcId').prop('readonly', isDisable);
+    $('#Detail_SupplierKppbcId').prop('readonly', isDisable);
+    $('#Detail_SupplierAddress').prop('readonly', isDisable);
 }
 
 function supplierChange(url) {
@@ -152,7 +152,8 @@ function prodPlanSaveClick() {
         data += '</tr>';
         $('#Detail_Pbck1ProdPlan tbody').append(data);
     }
-    $("input[name='Detail.RequestQty']").val(total);
+    $("input[name='Detail.RequestQty']:hidden").val(total);
+    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(total, 2));
     $("select[name='Detail.RequestQtyUomId']").val(uom);
     $("select[name='Detail.LatestSaldoUomId']").val(uom);
     $("input[name='Detail.RequestQtyUomId']").val(uom);
