@@ -27,5 +27,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> ENTRY_DATE { get; set; }
         public Nullable<System.TimeSpan> TIME { get; set; }
         public string CREATED_USER { get; set; }
+        public string MAT_DOC { get; set; }
     }
 }
