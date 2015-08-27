@@ -13,40 +13,43 @@ using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
 {
-    public class XmlMovementDataMapper : IXmlDataReader 
+    public class XmlBOMDataMapper : IXmlDataReader 
     {
         private XmlDataMapper _xmlMapper = null;
 
-        public XmlMovementDataMapper(string filename)
+        public XmlBOMDataMapper(string filename)
         {
             _xmlMapper = new XmlDataMapper(filename);
            
         }
 
 
-        public List<INVENTORY_MOVEMENT> Items
+        public List<BOM> Items
         {
            get
             {
-                var xmlRoot = _xmlMapper.GetElement("InvMovementDetails");
-                var xmlItems = xmlRoot.Elements("Movement");
-                var items = new List<INVENTORY_MOVEMENT>();
+                var xmlRoot = _xmlMapper.GetElement("BOMDetails");
+                var xmlItems = xmlRoot.Elements("BOM");
+                var items = new List<BOM>();
                 foreach (var xElement in xmlItems)
                 {
                     try
                     {
-                        var item = new INVENTORY_MOVEMENT();
-                        item.MVT = xElement.Element("MvT").Value;
-                        item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
-                        item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
-                        item.QTY = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
-                        item.VENDOR = _xmlMapper.GetElementValue(xElement.Element("Vendor"));
-                        item.BUN = _xmlMapper.GetElementValue(xElement.Element("BUn"));
-                        item.PURCH_DOC = _xmlMapper.GetElementValue(xElement.Element("PurchDoc"));
-                        item.POSTING_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PstngDate")));
-                        item.ENTRY_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EntryDate")));
-                        item.CREATED_USER = _xmlMapper.GetElementValue(xElement.Element("Username"));
-                        
+                        var item = new BOM();
+                        item.PLANT = _xmlMapper.GetElementValue(xElement.Element("Plnt")); ;
+                        item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("BaseMaterial"));
+                        item.MATERIAL_DESC = _xmlMapper.GetElementValue(xElement.Element("BaseMaterialDescription"));
+                        item.LEVEL1 = _xmlMapper.GetElementValue(xElement.Element("Level1"));
+                        item.LEVEL2 = _xmlMapper.GetElementValue(xElement.Element("Level2"));
+                        item.LEVEL3 = _xmlMapper.GetElementValue(xElement.Element("Level3"));
+                        item.LEVEL4 = _xmlMapper.GetElementValue(xElement.Element("Level4"));
+                        item.LEVEL5 = _xmlMapper.GetElementValue(xElement.Element("Level5"));
+                        item.LEVEL6 = _xmlMapper.GetElementValue(xElement.Element("Level6"));
+                        item.LEVEL7 = _xmlMapper.GetElementValue(xElement.Element("Level7"));
+                        item.LEVEL8 = _xmlMapper.GetElementValue(xElement.Element("Level8"));
+                        item.LEVEL9 = _xmlMapper.GetElementValue(xElement.Element("Level9"));
+                        item.LEVEL10 = _xmlMapper.GetElementValue(xElement.Element("Level10"));
+                       
                         //var exisitingMarket = GetMarket(item.MARKET_ID);
                         //if (exisitingMarket != null)
                         //{
@@ -83,7 +86,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             
             
-            return _xmlMapper.InsertToDatabase<INVENTORY_MOVEMENT>(Items);
+            return _xmlMapper.InsertToDatabase<BOM>(Items);
        
         }
 
