@@ -213,7 +213,7 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("Cancelled")]
+            [Description("STO Cancelled")]
             Cancelled = 100,
             
         }
