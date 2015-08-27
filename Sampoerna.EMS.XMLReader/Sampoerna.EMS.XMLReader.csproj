@@ -123,6 +123,10 @@
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.MessagingService\Sampoerna.EMS.MessagingService.csproj">
+      <Project>{c0c96fbc-d939-4121-b79c-1ab8b96092de}</Project>
+      <Name>Sampoerna.EMS.MessagingService</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
