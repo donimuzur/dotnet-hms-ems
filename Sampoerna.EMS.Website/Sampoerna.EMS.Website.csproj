@@ -985,6 +985,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
+    <Content Include="Views\CK5\_CK5InputMaterial.cshtml" />
     <Content Include="Views\CK4C\Index.cshtml" />
     <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
     <Content Include="Views\CK4C\_Ck4CTableIndex.cshtml" />
