@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -101,5 +102,62 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        #region create daily Production
+
+        public ActionResult Ck4CCreateDailyProduction()
+        {
+            var model = new Ck4cCreateViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+            };
+
+            return CreateInitial(model);
+        }
+
+        public ActionResult CreateInitial(Ck4cCreateViewModel model)
+        {
+            return View("Ck4CCreateDailyProduction", InitialModel(model));
+        }
+
+        private Ck4cCreateViewModel InitialModel(Ck4cCreateViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return (model);
+
+        }
+
+        #endregion 
+        #region create Waste Production
+
+        public ActionResult Ck4CCreateWasteProduction()
+        {
+            var model = new Ck4CCreateWasteProductionViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+            };
+
+            return CreateInitial(model);
+        }
+
+        public ActionResult CreateInitial(Ck4CCreateWasteProductionViewModel model)
+        {
+            return View("Ck4CCreateWasteProduction", InitialModel(model));
+        }
+
+        private Ck4CCreateWasteProductionViewModel InitialModel(Ck4CCreateWasteProductionViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return (model);
+
+        }
+
+        #endregion 
     }
 }

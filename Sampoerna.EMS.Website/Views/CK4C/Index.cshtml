@@ -6,7 +6,7 @@
         <div class="col-sm-12">
             <h3>Dialy Production List</h3>
             <div class="action-button new">
-                <a href="#7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">NEW</button></a>
+                <a href="@Url.Action("Ck4CCreateDailyProduction", "CK4C")"><button class="btn btn-blue">NEW</button></a>
                 <a href="#7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">UPLOAD</button></a>
             </div>
         </div>
@@ -53,7 +53,7 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "all", new {@class = "form-control selectreset"})*@
+                                    @*@Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "All", new {@class = "form-control selectreset"})*@
                                     <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
                                         <option value="">All</option>
                                     </select>

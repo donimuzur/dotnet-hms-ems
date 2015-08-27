@@ -280,6 +280,7 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
@@ -992,6 +993,8 @@
     <Content Include="Views\CK4C\_Ck4CTableIndex.cshtml" />
     <Content Include="Views\CK4C\WasteProductionIndex.cshtml" />
     <Content Include="Views\CK4C\_CK4CTableWasteProduction.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDailyProduction.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

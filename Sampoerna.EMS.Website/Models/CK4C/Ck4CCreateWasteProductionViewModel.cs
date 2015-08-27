@@ -6,7 +6,7 @@ using DocumentFormat.OpenXml.Math;
 
 namespace Sampoerna.EMS.Website.Models.CK4C
 {
-    public class Ck4cCreateViewModel : BaseModel
+    public class Ck4CCreateWasteProductionViewModel : BaseModel
     {
         public DateTime? ReportedOn { get; set; }
         public string CompanyCode { get; set; }
@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string PlantName { get; set; }
         public string FinishGoods { get; set; }
         public string Description { get; set; }
-        public string Qty { get; set; }
+        public string WasteQty { get; set; }
         public string Uom { get; set; }
     }
 }
