@@ -169,7 +169,17 @@ namespace Sampoerna.EMS.XMLReader
             }
             return null;
         }
-
+        public DateTime? GetDateDotSeparator(string valueStr)
+        {
+            if (valueStr.Length == 10)
+            {
+                var year = Convert.ToInt32(valueStr.Substring(6, 4));
+                var month = Convert.ToInt32(valueStr.Substring(3, 2));
+                var date = Convert.ToInt32(valueStr.Substring(0, 2));
+                return new DateTime(year, month, date);
+            }
+            return null;
+        }
         public string GetElementValue(XElement element)
         {
             if (element == null)

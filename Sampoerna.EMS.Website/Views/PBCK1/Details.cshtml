@@ -261,6 +261,8 @@
 
             ResetPrintHistoryDataTable();
 
+            setSupplierName();
+
         });
 
         function ajaxLoadPoa(formData) {
@@ -338,6 +340,20 @@
             //            .draw();
             //    });
             //});
+        }
+
+        function setSupplierName() {
+            var suppId = $("#Detail_SupplierPlantWerks").val();
+            var suppName = $("input[name='Detail.SupplierPlant']:hidden").val();
+            var correctSupName = suppId + '-' + suppName;
+            var isExternal = true;
+
+            if (suppId != '') {
+                $("input[name='Detail.SupplierPlant']:text").val(correctSupName);
+                isExternal = false;
+            }
+
+            $("#externalSupPort").prop('checked', isExternal);
         }
         
     </script>

@@ -77,7 +77,10 @@ namespace Sampoerna.EMS.Core
 
             GRCompleted = 21,
 
-            Cancel = 03
+            StoCancel = 03,
+
+            None = 00
+
          
 
         }
@@ -214,7 +217,7 @@ namespace Sampoerna.EMS.Core
             GIReversal = 95,
             [Description("STO Cancelled")]
             Cancelled = 100,
-
+            
         }
 
         /// <summary>
@@ -232,7 +235,8 @@ namespace Sampoerna.EMS.Core
         {
             User = 1,
             POA = 2,
-            Manager = 3
+            Manager = 3,
+            System = 10
         }
 
         public enum FormViewType

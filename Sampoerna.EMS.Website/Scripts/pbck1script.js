@@ -325,6 +325,22 @@ function ajaxLoadCompany(formData, url) {
 
 function ValidateGovInput() {
     var result = true;
+    var requestQty = parseInt($("input[name='Detail.RequestQty']:hidden").val());
+    var approvedQty = parseInt($('#Detail_QtyApproved').val());
+    var govStatus = $('#Detail_StatusGov').find("option:selected").val();
+
+    if (approvedQty > requestQty) {
+        $('#modalBodyMessage').text('PBCK1 Quota Exceeded');
+        $('#ModalPbck1ValidateGov').modal('show');
+
+        AddValidationClass(false, 'Detail_QtyApproved');
+        result = false;
+    }
+
+    if (govStatus == '') {
+        AddValidationClass(false, 'Detail_StatusGov');
+        result = false;
+    }
 
     if ($('#Detail_DecreeDate').val() == '') {
         AddValidationClass(false, 'Detail_DecreeDate');

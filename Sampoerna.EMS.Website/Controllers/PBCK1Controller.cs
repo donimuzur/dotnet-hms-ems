@@ -897,10 +897,10 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck1ItemViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            //}
 
             if (model.Detail.Pbck1DecreeFiles == null)
             {
@@ -919,17 +919,30 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
                             var decreeDoc = new Pbck1DecreeDocModel()
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenamecheck,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
                                 CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
                         }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                        }
                     }
                 }
+                
 
                 var input = new Pbck1UpdateReportedOn()
                 {
@@ -1522,6 +1535,8 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.ProdPlanPeriod = d.ProdPlanPeriode;
             detailRow.LackPeriod = d.Lack1Periode;
             detailRow.DocumentText = printTitle;
+            detailRow.PoaAddress = d.PoaAddress;
+            detailRow.SupplierPlantId = d.SupplierPlantId;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }
