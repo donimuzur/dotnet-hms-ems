@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.BWKEY));
 
             Mapper.CreateMap<T001W, T001KDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
+                .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
             #endregion
         }

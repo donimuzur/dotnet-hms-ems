@@ -303,13 +303,8 @@ namespace Sampoerna.EMS.BLL
         
        public List<T001KDto> GetPlantbyCompany(string companyId)
        {
-           
                includeTables = "T001W";
-               Expression<Func<T001K, bool>> queryFilter = PredicateHelper.True<T001K>();
-
-               queryFilter = queryFilter.And(c => c.BWKEY.Contains(companyId));
-
-               var dbData = _repositoryT001K.Get(queryFilter, null, includeTables);
+               var dbData = _repositoryT001K.Get(c => c.BUKRS == companyId, null, includeTables);
                if (dbData == null)
                {
                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

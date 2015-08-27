@@ -22,7 +22,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IT001KBLL _t001KBll;
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll,
-            ICompanyBLL companyBll, IT001KBLL t001Kbll) : base (pageBll, Enums.MenuList.CK4C)
+            ICompanyBLL companyBll, IT001KBLL t001Kbll)
+            : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
             _plantBll = plantbll;
@@ -59,23 +60,46 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        #endregion 
-        
+        #endregion
+
+        #region Index Waste Production
+
+        public ActionResult WasteProductionIndex()
+        {
+            var data =
+            InitIndexWasteProductionViewModel(new Ck4CIndexWasteProductionViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Ck4CType = Enums.CK4CType.WasteProduction,
+            });
+
+            return View("WasteProductionIndex", data);
+        }
+
+        private Ck4CIndexWasteProductionViewModel InitIndexWasteProductionViewModel(
+            Ck4CIndexWasteProductionViewModel model)
+        {
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlanIdList = GlobalFunctions.GetPlantAll();
+            return model;
+        }
+        #endregion
+
         #region Json
         [HttpPost]
         public JsonResult CompanyListPartialCk4C(string companyId)
         {
-            //var listCompany = GlobalFunctions.GetPlantByCompany(companyId);
+            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
 
-            //var model = new Ck4CIndexViewModel() { PlanIdList = listCompany };
-            
-            //return Json(model);
+            var model = new Ck4CIndexViewModel() { PlanIdList = listPlant };
 
-            return Json(GlobalFunctions.GetPlantByCompany(companyId));
+            return Json(model);
+
         }
 
-  
+
         #endregion
 
-	}
+    }
 }
