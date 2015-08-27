@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new INVENTORY_MOVEMENT();
+                        item.MAT_DOC = xElement.Element("MatDoc").Value;
                         item.MVT = xElement.Element("MvT").Value;
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));

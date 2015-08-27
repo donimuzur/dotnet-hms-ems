@@ -304,6 +304,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
           </Key>
           <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MAT_DOC" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
@@ -5947,6 +5948,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="ENTRY_DATE" Type="DateTime" Precision="3" />
           <Property Name="TIME" Type="Time" Precision="7" />
           <Property Name="CREATED_USER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MAT_DOC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -7000,6 +7002,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="INVENTORY_MOVEMENT">
             <EntityTypeMapping TypeName="EMSModel.INVENTORY_MOVEMENT">
               <MappingFragment StoreEntitySet="INVENTORY_MOVEMENT">
+                <ScalarProperty Name="MAT_DOC" ColumnName="MAT_DOC" />
                 <ScalarProperty Name="CREATED_USER" ColumnName="CREATED_USER" />
                 <ScalarProperty Name="TIME" ColumnName="TIME" />
                 <ScalarProperty Name="ENTRY_DATE" ColumnName="ENTRY_DATE" />
