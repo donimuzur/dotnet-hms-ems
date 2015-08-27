@@ -46,14 +46,14 @@ namespace Sampoerna.EMS.XMLReader
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
                         item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
 
                         if (exsitingVendor != null)
                         {
                             item.CREATED_DATE = exsitingVendor.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
                             item.CREATED_BY = exsitingVendor.CREATED_BY;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
 
                         }

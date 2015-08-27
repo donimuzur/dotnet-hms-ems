@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -61,7 +62,7 @@ namespace Sampoerna.EMS.BLL
 
                 //generate number
                 docNumber = docNumber + "/" +
-                            ((t001Data != null && t001Data.T001 != null) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" +
+                            ((t001Data != null && t001Data.T001 != null && !string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS)) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" +
                             (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null &&
                              !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS)
                                 ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS

@@ -57,6 +57,9 @@
     <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BOM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="BROLE_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -185,6 +188,9 @@
     <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
+    <Compile Include="INVENTORY_MOVEMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

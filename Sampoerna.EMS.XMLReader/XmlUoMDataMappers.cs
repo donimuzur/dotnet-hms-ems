@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.XMLReader
                         var item = new UOM();
                         item.UOM_ID = xElement.Element("MSEHI").Value;
                         item.UOM_DESC =_xmlMapper.GetElementValue(xElement.Element("MSEHL"));
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
 
                         var existingData = GetUoM(item.UOM_ID);
                         if (existingData != null)
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.CREATED_BY = existingData.CREATED_BY;
                             item.CREATED_DATE = existingData.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             item.IS_EMS = existingData.IS_EMS;
                             items.Add(item);
 
