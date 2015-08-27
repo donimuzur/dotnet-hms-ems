@@ -38,7 +38,15 @@ namespace Sampoerna.EMS.XMLReader
                         var item = new INVENTORY_MOVEMENT();
                         item.MVT = xElement.Element("MvT").Value;
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
-                        //item.CREATED_BY = Constans.PI;
+                        item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
+                        item.QTY = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
+                        item.VENDOR = _xmlMapper.GetElementValue(xElement.Element("Vendor"));
+                        item.BUN = _xmlMapper.GetElementValue(xElement.Element("BUn"));
+                        item.PURCH_DOC = _xmlMapper.GetElementValue(xElement.Element("PurchDoc"));
+                        item.POSTING_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PstngDate")));
+                        item.ENTRY_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EntryDate")));
+                        item.CREATED_USER = _xmlMapper.GetElementValue(xElement.Element("Username"));
+                        
                         //var exisitingMarket = GetMarket(item.MARKET_ID);
                         //if (exisitingMarket != null)
                         //{
@@ -54,6 +62,7 @@ namespace Sampoerna.EMS.XMLReader
                         //    item.CREATED_DATE = DateTime.Now;
                         //    items.Add(item);
                         //}
+                        items.Add(item);
                     }
                     catch (Exception ex)
                     {
@@ -82,6 +91,12 @@ namespace Sampoerna.EMS.XMLReader
         {
             return _xmlMapper.Errors;
         }
+        //public INVENTORY_MOVEMENT GetPCode(string PCode)
+        //{
+        //    var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PCODE>()
+        //        .GetByID(PCode);
+        //    return exisitingPlant;
+        //}
 
 
 
