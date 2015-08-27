@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.XMLReader
                                     var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
                                     item.STO_SENDER_NUMBER = stoNumber;
                                     item.STATUS_ID = Enums.DocumentStatus.STOCreated;
-                                    workflowHistory.ACTION = Enums.ActionType.StoCreated;
+                                    workflowHistory.ACTION = Enums.ActionType.STOCreated;
                                 }
 
                                 else 
@@ -148,7 +148,7 @@ namespace Sampoerna.EMS.XMLReader
                                     if (string.IsNullOrEmpty(stoNumber))
                                     {
                                         item.STATUS_ID = Enums.DocumentStatus.Cancelled;
-                                        workflowHistory.ACTION = Enums.ActionType.StoCanceled;
+                                        workflowHistory.ACTION = Enums.ActionType.Cancelled;
                                     }
                                 }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
