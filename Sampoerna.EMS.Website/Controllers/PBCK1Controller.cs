@@ -1535,6 +1535,8 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.ProdPlanPeriod = d.ProdPlanPeriode;
             detailRow.LackPeriod = d.Lack1Periode;
             detailRow.DocumentText = printTitle;
+            detailRow.PoaAddress = d.PoaAddress;
+            detailRow.SupplierPlantId = d.SupplierPlantId;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }
