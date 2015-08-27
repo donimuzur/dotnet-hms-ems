@@ -107,6 +107,25 @@
     </div>
 </div>
 
+<div id="ModalPbck1ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Missing attach files</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -138,6 +157,7 @@
                 }
                 else if (valueSelected == 'PartialApproved') {
                     $("#Detail_QtyApproved").prop("readonly", false);
+                    $('#Detail_QtyApproved').val($('#Detail_RequestQty').val());
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
                 }
                 else if (valueSelected == 'FullApproved') {
@@ -213,6 +233,7 @@
             $("#externalSupPort").click(function () {
                 supplierPortOnChange();
             });
+
         });
 
         function openGovStatusBlock() {
@@ -224,6 +245,8 @@
                 $('#collapseOne').removeClass('in');
                 $('#collapseOne').addClass('collapse');
                 $('#collapseFour').addClass("in");
+
+                setSupplierName();
             }
         }
 
@@ -373,6 +396,8 @@
             $('#Detail_HiddenSupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
             $('#Detail_SupplierPlant').val($('#SupInfo_SupplierPlantName').val());
 
+            var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+
             if($('#SupInfo_SupplierPlantWerks').val() == '')
             {
                 disableSupplierFormInput(false);
@@ -381,6 +406,22 @@
                 $("#Detail_SupplierPlant").prop("type", "text");
                 $("#Detail_SupplierPlant").addClass('form-control');
             }
+
+            ajaxSelectNppbck({ nppbkcid: nppbkcid });
+        }
+
+        function setSupplierName() {
+            var suppId = $("#Detail_SupplierPlantWerks").val();
+            var suppName = $("input[name='Detail.SupplierPlant']:hidden").val();
+            var correctSupName = suppId + '-' + suppName;
+            var isExternal = true;
+
+            if (suppId != '') {
+                $("input[name='Detail.SupplierPlant']:text").val(correctSupName);
+                isExternal = false;
+            }
+
+            $("#externalSupPortCheck").prop('checked', isExternal);
         }
 
     </script>
