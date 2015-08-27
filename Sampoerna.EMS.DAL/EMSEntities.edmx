@@ -48,7 +48,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="LEVEL7" Type="nvarchar" MaxLength="18" />
           <Property Name="LEVEL8" Type="nvarchar" MaxLength="18" />
           <Property Name="LEVEL9" Type="nvarchar" MaxLength="18" />
-          <Property Name="LEVEL19" Type="nvarchar" MaxLength="18" />
           <Property Name="LEVEL10" Type="nvarchar" MaxLength="18" />
         </EntityType>
         <EntityType Name="BROLE_MAP">
@@ -5903,7 +5902,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="LEVEL8" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="LEVEL9" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="LEVEL10" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="LEVEL19" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="INVENTORY_MOVEMENT">
           <Key>
@@ -6958,7 +6956,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="BOM">
             <EntityTypeMapping TypeName="EMSModel.BOM">
               <MappingFragment StoreEntitySet="BOM">
-                <ScalarProperty Name="LEVEL19" ColumnName="LEVEL19" />
                 <ScalarProperty Name="LEVEL10" ColumnName="LEVEL10" />
                 <ScalarProperty Name="LEVEL9" ColumnName="LEVEL9" />
                 <ScalarProperty Name="LEVEL8" ColumnName="LEVEL8" />

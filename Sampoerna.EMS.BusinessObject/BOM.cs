@@ -28,6 +28,5 @@ namespace Sampoerna.EMS.BusinessObject
         public string LEVEL8 { get; set; }
         public string LEVEL9 { get; set; }
         public string LEVEL10 { get; set; }
-        public string LEVEL19 { get; set; }
     }
 }
