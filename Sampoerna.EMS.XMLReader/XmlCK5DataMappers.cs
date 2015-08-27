@@ -50,7 +50,8 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.GRCompleted;
                 case "03":
                     return Enums.CK5XmlStatus.StoCancel;
-
+                default:
+                    return Enums.CK5XmlStatus.None;
             }
             return Enums.CK5XmlStatus.StoCreated; 
 
@@ -59,6 +60,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
+                
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
                 var xmlItems = xmlRoot.Elements("Z1A_CK5_HDR");
                 var items = new List<CK5>();
@@ -84,11 +86,11 @@ namespace Sampoerna.EMS.XMLReader
                                 var workflowHistory = new WORKFLOW_HISTORY();
                                 workflowHistory.FORM_ID = existingCk5.CK5_ID;
                                 workflowHistory.ACTION_BY = Constans.PI;
-                                workflowHistory.ROLE = Enums.UserRole.Manager;
+                                workflowHistory.ROLE = Enums.UserRole.System;
                                 workflowHistory.FORM_NUMBER = existingCk5.SUBMISSION_NUMBER;
                                 workflowHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+                                workflowHistory.ACTION_DATE = DateTime.Now;
                                 
-
                                 if (statusCk5 == Enums.CK5XmlStatus.StoCreated)
                                 {
                                     var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
@@ -107,7 +109,7 @@ namespace Sampoerna.EMS.XMLReader
                                     var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
                                     if (ck5Item.Count > 0)
                                     {
-                                        var ck5ItemIndex = 0;
+                                       
                                         var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
                                         if (ck5Item.Count() >= xmlCk5Items.Count())
                                         {
@@ -125,7 +127,7 @@ namespace Sampoerna.EMS.XMLReader
                                                     _xmlMapper.InsertOrUpdate(ck5Ems);
                                                     
                                                 }
-                                                ck5ItemIndex++;
+                                                
                                             }
                                         }
                                         
@@ -149,7 +151,10 @@ namespace Sampoerna.EMS.XMLReader
                                         workflowHistory.ACTION = Enums.ActionType.StoCanceled;
                                     }
                                 }
-                                AddWorkflowHistory(workflowHistory);
+                                if (statusCk5 != Enums.CK5XmlStatus.None)
+                                {
+                                    AddWorkflowHistory(workflowHistory);
+                                }
                             }
                             items.Add(item);
 
