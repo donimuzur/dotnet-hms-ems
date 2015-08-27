@@ -143,23 +143,7 @@
 
         });
 
-        @*$("#PbckDecreeId").change(function() {
-            if ($("#PbckDecreeId").length) {
-                var pbck1 = $(this).find("option:selected").val();
-                if (pbck1 == '') {
-                    $("input[name='PbckDecreeDate']").val('');
-                    $("input[name='Pbck1QtyApproved']").val('');
-                    $("input[name='Ck5TotalExciseable']").val('');
-                    $("input[name='RemainQuota']").val('');
-                } else {
-                   
-                    ajaxGetDateAndQuotaPbck1('@Url.Action("GetDateAndQuotaPbck1", "CK5")', { id: pbck1 });
-                    
-                }
-            }
-
-        });*@
-
+      
         $("#DestPlantId").change(function() {
             if ($("#DestPlantId").length) {
                 var destPlant = $(this).find("option:selected").val();
@@ -213,8 +197,7 @@
             }
         });
 
-        //function setupDataTables() {
-
+       
         //    // DataTable
         //    var table = null;
         //    if ($.fn.dataTable.isDataTable('#ck5TableItem')) {
@@ -222,17 +205,22 @@
         //        table.destroy();
         //    }
 
-        //    table = $('#ck5TableItem').DataTable(
-        //          {
-        //              "sDom": "Rlfrtip",
-        //              "language": {
-        //                  "zeroRecords": "No records found",
-        //                  "infoFiltered": "(filtered from _MAX_ total records)"
-        //              }
-        //          });
+        //    table = $('#ck5TableItem').DataTable();
 
-         
-        //}
+      
 
+        ////$('#btnAddMaterial').on('click', function () {
+        ////    table.row.add([
+        ////        '.1',
+        ////         '.2',
+        ////         '.3',
+        ////         '.4'
+                 
+        ////    ]).draw();
+
+           
+        ////});
+        //$('#btnAddMaterial').click();
+        
     </script>
 }
