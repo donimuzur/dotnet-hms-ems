@@ -184,6 +184,8 @@
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_CREATED_BY" />
         <AssociationConnector Association="EMSModel.FK_LACK2_USER_MODIFIED_BY" />
         <AssociationConnector Association="EMSModel.FK_LACK1_UOM" />
+        <EntityTypeShape EntityType="EMSModel.BOM" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="EMSModel.INVENTORY_MOVEMENT" Width="1.5" PointX="9.375" PointY="9.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
