@@ -39,19 +39,16 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.Get(c => c.T001W.NPPBKC_ID == nppbkcId && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value, null, includeTables).FirstOrDefault();
             return Mapper.Map<T001KDto>(dbData);
         }
-        
-        public List<T001KCompositDto> GetCompositListByCompany(string companyId)
+
+        public List<T001KDto> GetPlantbyCompany(string companyId)
         {
-            Expression<Func<T001K, bool>> queryFilter = PredicateHelper.True<T001K>();
-
-            queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.BUKRS) && c.BUKRS.Contains(companyId));
-
-            var dbData = _repository.Get(queryFilter, null, includeTables);
+            includeTables = "T001W";
+            var dbData = _repository.Get(c => c.BUKRS == companyId, null, includeTables);
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return Mapper.Map<List<T001KCompositDto>>(dbData);
+            return Mapper.Map<List<T001KDto>>(dbData);
         }
 
         public System.Collections.Generic.List<T001KCompositDto> GetCompositListByPlant(string plantId)

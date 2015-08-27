@@ -18,7 +18,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool? IS_DELETED { get; set; }
         public string NPPBKC_ID { get; set; }
         public string NPPBKC_KPPBC_ID { get; set; }
-
-
+        public string DROPDOWNTEXTFIELD { get; set; }
     }
 }

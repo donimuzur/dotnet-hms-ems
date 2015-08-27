@@ -155,8 +155,9 @@
                         success: function(data) {
                             var listPlant = data.PlanIdList;
                             $('#SearchInput_PlantId').append('<option value="">All</option>');
-                            if (list.length > 0) {
-                                for (var i = 0; i < list.length; i++) {
+                            console.log(data);
+                            if (listPlant.length > 0) {
+                                for (var i = 0; i < listPlant.length; i++) {
                                     $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
 
                                 }
