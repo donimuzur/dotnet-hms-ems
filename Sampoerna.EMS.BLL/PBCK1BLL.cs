@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
         private ILFA1BLL _lfaBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private ILACK1BLL _lack1Bll;
+        private IT001KBLL _t001Kbll;
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -71,6 +72,7 @@ namespace Sampoerna.EMS.BLL
             _lfaBll = new LFA1BLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _lack1Bll = new LACK1BLL(_uow, _logger);
+            _t001Kbll = new T001KBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -1290,6 +1292,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.Detail.PoaName = poaDetails.PRINTED_NAME;
                 rc.Detail.PoaTitle = poaDetails.TITLE;
+                rc.Detail.PoaAddress = poaDetails.POA_ADDRESS;
                 if (!string.IsNullOrEmpty(poaDetails.MANAGER_ID))
                 {
                     var managerData = _userBll.GetUserById(poaDetails.MANAGER_ID);
@@ -1344,11 +1347,20 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
             if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
-            rc.Detail.SupplierCompanyName = dbData.SUPPLIER_PLANT;
+            rc.Detail.SupplierPlantName = dbData.SUPPLIER_PLANT;
+            rc.Detail.SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS;
             rc.Detail.SupplierNppbkcId = dbData.SUPPLIER_NPPBKC_ID;
             rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
-            rc.Detail.SupplierPlantPhone = dbData.SUPPLIER_PHONE;
+            rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
+
+            //get supplier company name
+            var t001KData = _t001Kbll.GetByBwkey(dbData.SUPPLIER_PLANT_WERKS);
+            if (t001KData != null)
+            {
+                rc.Detail.SupplierCompanyName = t001KData.BUTXT;
+            }
+
             var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
             if (kppbcDetail != null)
             {
@@ -1357,12 +1369,17 @@ namespace Sampoerna.EMS.BLL
                 {
                     var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
                     List<string> stringList = strToSplit.Split('|').ToList();
-                    rc.Detail.SupplierKppbcMengetahui = stringList[1].Replace("<br />", Environment.NewLine);
+                    rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
+                    rc.Detail.SupplierKppbcMengetahui = rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty).Replace("mengetahui", string.Empty);
                 }
 
             }
-            rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME;
-            rc.Detail.PrintedDate = DateReportString(DateTime.Now);
+
+            rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME.ToLower() == "none" || string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME) ? "-" : dbData.SUPPLIER_PORT_NAME;
+            //rc.Detail.PrintedDate = DateReportString(DateTime.Now);
+            rc.Detail.PrintedDate = dbData.REPORTED_ON.HasValue
+                ? DateReportString(dbData.REPORTED_ON.Value)
+                : string.Empty;
             rc.Detail.ProdPlanPeriode = SetPeriod(dbData.PLAN_PROD_FROM.Value.Month, dbData.PLAN_PROD_FROM.Value.Year,
                 dbData.PLAN_PROD_TO.Value.Month, dbData.PLAN_PROD_TO.Value.Year);
             rc.Detail.Lack1Periode = SetPeriod(dbData.LACK1_FROM_MONTH.Value, dbData.LACK1_FROM_YEAR.Value,
