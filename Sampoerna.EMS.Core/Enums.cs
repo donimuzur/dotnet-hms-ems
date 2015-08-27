@@ -190,6 +190,31 @@ namespace Sampoerna.EMS.Core
             GovCancel = 35,
             [Description("Completed")]
             Completed = 40,
+            [Description("Sto Created")]
+            STOCreated = 45,
+            [Description("STO Failed")]
+            STOFailed = 50,
+            [Description("Outbound Delivery Created")]
+            ODCreated = 55,
+            [Description("Good Received Created")]
+            GRCreated = 60,
+            [Description("Good Received Partial")]
+            GRPartial = 65,
+            [Description("Good Received Completed")]
+            GRCompleted = 70,
+            [Description("Good Received Reversal")]
+            GRReversal = 75,
+            [Description("Good Issue Created")]
+            GICreated = 80,
+            [Description("Good Issue Partial")]
+            GIPartial = 85,
+            [Description("Good Issue Completed")]
+            GICompleted = 90,
+            [Description("Good Issue Reversal")]
+            GIReversal = 95,
+            [Description("STO Cancelled")]
+            Cancelled = 100,
+
         }
 
         /// <summary>

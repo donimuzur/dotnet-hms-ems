@@ -394,7 +394,7 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_MATERIAL GetByPlantIdAndStickerCode(string plantId, string stickerCode)
         {
-            var dbData = _repository.Get(b => b.WERKS == plantId && b.STICKER_CODE == stickerCode).FirstOrDefault();
+            var dbData = _repository.Get(b => b.WERKS == plantId && b.STICKER_CODE == stickerCode, null, includeTables).FirstOrDefault();
             return dbData;
         }
     }

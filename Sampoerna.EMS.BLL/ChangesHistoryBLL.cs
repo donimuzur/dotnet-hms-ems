@@ -51,5 +51,15 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && c.FORM_ID == id, null, includeTables).OrderByDescending(c => c.MODIFIED_DATE).ToList();
         }
 
+        public void DeleteByFormIdAndNewValue(string formId , string newValue)
+        {
+            var dbData =
+                _repository.Get(c => c.FORM_ID == formId && c.NEW_VALUE == newValue, null,
+                    includeTables).FirstOrDefault();
+
+            if (dbData != null)
+                _repository.Delete(dbData);
+
+        }
     }
 }
