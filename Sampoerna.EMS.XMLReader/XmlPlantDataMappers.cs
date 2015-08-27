@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
                         item.ADDRESS = _xmlMapper.GetElementValue(xElement.Element("STRAS")) + " " + item.ORT01;
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
                         var exisitingPlant = GetPlant(item.WERKS);
                         if (exisitingPlant != null)
                         {
@@ -46,7 +46,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.CREATED_BY = exisitingPlant.CREATED_BY;
                             item.CREATED_DATE = exisitingPlant.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
 
                         }

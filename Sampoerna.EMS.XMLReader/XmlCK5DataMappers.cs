@@ -83,7 +83,7 @@ namespace Sampoerna.EMS.XMLReader
                             {
                                 var workflowHistory = new WORKFLOW_HISTORY();
                                 workflowHistory.FORM_ID = existingCk5.CK5_ID;
-                                workflowHistory.ACTION_BY = existingCk5.APPROVED_BY_MANAGER;
+                                workflowHistory.ACTION_BY = Constans.PI;
                                 workflowHistory.ROLE = Enums.UserRole.Manager;
                                 workflowHistory.FORM_NUMBER = existingCk5.SUBMISSION_NUMBER;
                                 workflowHistory.FORM_TYPE_ID = Enums.FormType.CK5;
