@@ -144,7 +144,7 @@
                                         <div class="col-md-8">
                                             <div id="supp-plant">
                                                 @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
-                                                @Html.HiddenFor(model => model.Detail.SupplierPlant)
+                                                
                                                 @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant", @disabled = "disabled" })
                                             </div>
                                         </div>
@@ -154,6 +154,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier NPPBKC</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierNppkbc)
                                             @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
@@ -164,6 +165,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Address</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierAddress)
                                             @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
@@ -172,6 +174,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier KPPBC</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierKppkbc)
                                             @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>

@@ -897,10 +897,10 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck1ItemViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            //}
 
             if (model.Detail.Pbck1DecreeFiles == null)
             {
@@ -935,8 +935,14 @@ namespace Sampoerna.EMS.Website.Controllers
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
                         }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                        }
                     }
                 }
+                
 
                 var input = new Pbck1UpdateReportedOn()
                 {
