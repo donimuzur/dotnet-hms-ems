@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSupplierPlant()
         {
-            return Json(GlobalFunctions.GetActiveSupplierPlantList());
+            return Json(GlobalFunctions.GetPlantAll());
         }
 
         [HttpPost]
@@ -426,6 +426,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.DocStatus = model.Detail.Status;
 
+                model.SupInfo.SupplierPlantWerks = model.Detail.SupplierPlantWerks;
+                model.SupInfo.SupplierAddress = model.Detail.SupplierAddress;
+                model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
+                model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcId;
+                model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
+
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
                 {
@@ -496,6 +502,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        //get error details
+                    }
+
                     AddMessageInfo("Model error", Enums.MessageInfoType.Error);
                     model = ModelInitial(model);
                     model = SetHistory(model);
@@ -884,10 +897,10 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck1ItemViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            //}
 
             if (model.Detail.Pbck1DecreeFiles == null)
             {
@@ -906,17 +919,30 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
                             var decreeDoc = new Pbck1DecreeDocModel()
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenamecheck,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
                                 CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
                         }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                        }
                     }
                 }
+                
 
                 var input = new Pbck1UpdateReportedOn()
                 {

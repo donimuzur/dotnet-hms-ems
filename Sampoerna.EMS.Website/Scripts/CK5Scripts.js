@@ -30,6 +30,7 @@ function OnReadyFunction(ck5Type) {
         var datarows = GetTableData($('#Ck5UploadTable'));
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
+        total = 0;
         for (var i = 0; i < datarows.length; i++) {
             var data = '<tr>';
             if (columnLength > 0) {
@@ -45,12 +46,12 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-
+                //alert(total);
                 total += parseFloat(datarows[i][1]); //Qty
                 if (i == 0) {
-                    //alert(datarows[i][5]);
+                    //alert(datarows[i][2]);
                     $("#PackageUomName option").each(function () {
-                        if ($(this).val().toLowerCase() == datarows[i][5].toLowerCase()) {
+                        if ($(this).val().toLowerCase() == datarows[i][2].toLowerCase()) {
                             $(this).attr('selected', 'selected');
                         }
                     });
@@ -60,7 +61,7 @@ function OnReadyFunction(ck5Type) {
             $('#ck5TableItem tbody').append(data);
         }
 
-
+        //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
 
         $('#upload-tab').removeClass('active');
@@ -202,7 +203,14 @@ function ajaxGetPlantDetails(url, formData) {
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
 
-                PopulateListPbckNumber(data.PbckList);
+                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                $("input[name='RemainQuota']").val(data.RemainQuota);
+                
+               // PopulateListPbckNumber(data.PbckList);
             }
         });
     }
@@ -288,7 +296,7 @@ function OnSubmitWorkflow(id) {
 
 function ValidateGovInput() {
     var result = true;
-   
+  
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
@@ -328,12 +336,12 @@ function ValidateGovInput() {
         }
 
     }
-   // alert($('#poa_sk0').length);
-    
+  
     if ($('#poa_sk0').length == 0) {
         AddValidationClass(false, 'poa-files');
         
         if (result) {
+            $('#modalBodyMessage').text('Missing attach files');
             $('#ModalCk5ValidateGov').modal('show');
             
             $('#collapseFour').removeClass('collapse');
@@ -342,6 +350,23 @@ function ValidateGovInput() {
           
         }
         result = false;
+    }
+    
+    if (result) {
+        if ($('#RegistrationNumber').val().length < 6) {
+            
+            AddValidationClass(false, 'RegistrationNumber');
+            result = false;
+            $('#collapseOne').removeClass('collapse');
+            $('#collapseOne').addClass('in');
+            $("#collapseOne").css({ height: "auto" });
+            $('#RegistrationNumber').focus();
+            
+            $('#modalBodyMessage').text('Registration Number Length must be 6');
+            $('#ModalCk5ValidateGov').modal('show');
+            
+           
+        }
     }
     
     return result;
@@ -391,6 +416,12 @@ function ValidateCk5Form(ck5Type) {
         result = false;
         isValidCk5Detail = false;
     }
+    if ($('#SubmissionDate').val() == '') {
+        AddValidationClass(false, 'SubmissionDate');
+        result = false;
+        isValidCk5Detail = false;
+    }
+    
     if (!isValidCk5Detail) {
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
@@ -473,7 +504,7 @@ function ValidateCk5Form(ck5Type) {
 
         if (rowCount <= 1) {
             // alert('Missing CK5 Material');
-
+            $('#modalBodyMessage').text('Missing CK5 Materials');
             $('#ModalCk5Material').modal('show');
             
             $('#home-tab').removeClass('active');
@@ -487,6 +518,22 @@ function ValidateCk5Form(ck5Type) {
         
     }
 
+    if (result) {
+        //total = parseFloat(datarows[i][1]); //Qty
+        var total = parseFloat($('#GrandTotalEx').val());
+        var remainQuota = parseFloat($('#RemainQuota').val());
+        if (total > remainQuota) {
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+
+            $('#modalBodyMessage').text('CK5 Quota Exceeded');
+            $('#ModalCk5Material').modal('show');
+            
+            AddValidationClass(false, 'GrandTotalEx');
+            result = false;
+        }
+    }
     return result;
 }
 

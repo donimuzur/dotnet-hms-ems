@@ -1569,7 +1569,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData =
                 _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate);
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate).OrderByDescending(p=>p.CREATED_DATE);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }

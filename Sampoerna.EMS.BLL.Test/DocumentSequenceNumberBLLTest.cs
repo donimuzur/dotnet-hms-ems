@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.BLL.Test
             _repository.Get().ReturnsForAnyArgs(new List<DOC_NUMBER_SEQ>() { docNumberSeq });
             _t001KReporRepository.Get().ReturnsForAnyArgs(new List<T001K> { t001k });
 
-            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("00000") + "/" + t001k.T001.BUTXT_ALIAS + "/" + t001k.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
+            string expectedResult = (docNumberSeq.DOC_NUMBER_SEQ_LAST + 1).ToString("0000000000") + "/" + t001k.T001.BUTXT_ALIAS + "/" + t001k.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year.ToString();
 
             //act
             var result = _bll.GenerateNumber(input);

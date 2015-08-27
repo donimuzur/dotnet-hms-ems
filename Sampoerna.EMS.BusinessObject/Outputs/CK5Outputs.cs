@@ -32,7 +32,9 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     {
         public decimal QtyApprovedPbck1 { get; set; }
         public decimal QtyCk5 { get; set; }
-
+        public decimal RemainQuota { get; set; }
         public string Pbck1DecreeDate { get; set; }
+        public string Pbck1Number { get; set; }
+        public int? Pbck1Id { get; set; }
     }
 }

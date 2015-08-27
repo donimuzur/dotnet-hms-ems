@@ -10,7 +10,7 @@
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
         public static string DelimeterSelectItem = " - ";
-        public static string PICreator = "PI";
+        public const string PI = "PI";
 
         /// <summary>
         /// list of SessionKey constanta

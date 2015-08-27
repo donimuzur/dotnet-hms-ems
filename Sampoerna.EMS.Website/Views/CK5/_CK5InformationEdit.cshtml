@@ -4,116 +4,8 @@
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            CK-5 Detail
-                            <i class="fa fa-caret-down"></i>
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                        <div class="form-excise" role="form">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-5 Type</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Ck5Type, new { @disabled = false, @class = "form-control" })
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">KPPBC City<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @*@Html.DropDownListFor(model => model.KppBcCity, Model.KppBcCityList, "Select", new { @class = "form-control" })*@
-                                            @Html.TextBoxFor(model => model.KppBcCity, new { @disabled = false, @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">@Html.LabelFor(model => model.CeOfficeCode)</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.CeOfficeCode, new { @disabled = false, @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Submission Number</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SubmissionNumber, new { @class = "form-control", @disabled = "disabled" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Submission Date</label>
-                                        <div class="col-md-8">
-                                            @*@Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control", @disabled = "disabled" })*@
-                                            @Html.EditorFor(model => model.SubmissionDate)
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Excise Goods Type<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Excise Settlement<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Excise Status<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Request Type<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
+        
+      
 
         <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
@@ -342,13 +234,137 @@
                                 </div>
                             }
                             @* end  ck5type = Export *@
-                        </div>
+    </div>
                     </div>
                 </div>
             </div>
 
         </div>
+        
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            CK-5 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-5 Type</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Ck5Type, new { @disabled = false, @class = "form-control" })
 
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Submission Date<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">KPPBC City<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.KppBcCity, new { @disabled = false, @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">@Html.LabelFor(model => model.CeOfficeCode)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.CeOfficeCode, new { @disabled = false, @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Submission Number</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SubmissionNumber, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Submission Date</label>
+                                        <div class="col-md-8">
+                                            @*@Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control", @disabled = "disabled" })*@
+                                            @Html.EditorFor(model => model.SubmissionDate)
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Excise Goods Type<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Excise Settlement<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.ExciseSettlement, Model.ExciseSettlementList, "Select", new { @class = "form-control" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Excise Status<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.ExciseStatus, Model.ExciseStatusList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Request Type<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.RequestType, Model.RequestTypeList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
         <div class="panel-group" id="accordion-6" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="heading6">
@@ -384,14 +400,15 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                @if (!Model.IsCk5Export)
-                                {
+                            </div>
+                            @if (!Model.IsCk5Export)
+                            {
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4 long">PBCK-1 Decree  Number</label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.PbckDecreeId, Model.PbckDecreeList, "Select", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.PbckDecreeNumber, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
@@ -399,14 +416,13 @@
                                         <div class="row">
                                             <label class="col-md-4">PBCK-1 Decree Date</label>
                                             <div class="col-md-8">
-                                                @*@Html.HiddenFor(model => model.PbckDecreeDate)*@
                                                 @Html.EditorFor(model => model.PbckDecreeDate)
-
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                       <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Pbck1 Qty Approved</label>
                                             <div class="col-md-8">
@@ -414,7 +430,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">CK5 Total Qty</label>
@@ -423,19 +439,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                      <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Remain</label>
                                             <div class="col-md-8">
-                                                @*@Html.HiddenFor(model => model.RemainQuota);*@
-
                                                 @Html.TextBoxFor(model => model.RemainQuota, new { @disabled = false, @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
-                                }
-
+                                </div>
+                            }
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Carriage Method</label>
@@ -609,11 +625,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <div class="row">
-                                                <label class="col-md-4">GR Date</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" disabled>
-                                                </div>
+                                            @Html.LabelFor(model => model.GrDate, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.EditorFor(model => model.GrDate)
                                             </div>
                                         </div>
                                     </div>
@@ -656,12 +670,7 @@
                                         <label class="col-md-4">Attachment</label>
                                         <div class="col-md-8">
                                             <input type="text" class="form-control" disabled>
-                                            @*<div class="input-group">
-                                                    <input type="text" class="form-control">
-                                                    <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                        Browse <input type="file" multiple>
-                                                    </span>
-                                                </div>*@
+
                                         </div>
                                     </div>
                                 </div>

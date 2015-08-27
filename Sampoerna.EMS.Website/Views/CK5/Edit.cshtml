@@ -49,7 +49,7 @@
                         
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                        @Html.HiddenFor(model => model.SubmissionDate)
+                        @*@Html.HiddenFor(model => model.SubmissionDate)*@
                        
                         @Html.HiddenFor(model => model.SourceNpwp)
                         @Html.HiddenFor(model => model.SourceNppbkcId)
@@ -67,7 +67,12 @@
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
 
+                       
+                        @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
+                        @Html.HiddenFor(model => model.Pbck1QtyApproved)
+                        @Html.HiddenFor(model => model.Ck5TotalExciseable)
+                        @Html.HiddenFor(model => model.RemainQuota)
 
                         @*@Html.HiddenFor(model => model.DnNumber)
                         @Html.HiddenFor(model => model.StoSenderNumber)
@@ -106,7 +111,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Missing CK5 Materials
+                    <span id="modalBodyMessage">Missing CK5 Materials</span>
                 </p>
 
             </div>
@@ -208,11 +213,11 @@
         $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
         $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
         $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
-        
+
         $('#btn-changelog-export-xls').click(function () {
             location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
         });
-        
+
         $("#btnSave").click(function () {
 
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
@@ -220,31 +225,31 @@
             }
 
         });
-        
+
         $('#CK5UploadSubmitBtn').click(function () {
             GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
         });
     });
 
-    $("#PbckDecreeId").change(function () {
+    @*$("#PbckDecreeId").change(function () {
         if ($("#PbckDecreeId").length) {
             var pbck1 = $(this).find("option:selected").val();
             var pbck1Number = $('option:selected', $(this)).text();
             if (pbck1 == '') {
                 $("input[name='PbckDecreeDate']").val('');
                 $("input[name='PbckDecreeNumber']").val('');
-                
+
                 $("input[name='Pbck1QtyApproved']").val('');
                 $("input[name='Ck5TotalExciseable']").val('');
                 $("input[name='RemainQuota']").val('');
             } else {
-                //ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
+
                 ajaxGetDateAndQuotaPbck1('@Url.Action("GetDateAndQuotaPbck1", "CK5")', { id: pbck1 });
                 $("input[name='PbckDecreeNumber']").val(pbck1Number);
             }
         }
 
-    });
+    });*@
 
     var plantOriginal = '@Model.SourcePlantId';
 
@@ -269,7 +274,7 @@
     $("#SourcePlantId").change(function () {
         if ($("#SourcePlantId").length) {
             var sourcePlant = $(this).find("option:selected").val();
-
+            var submissionDate = $('#SubmissionDate').val();
             //remove table
             RemoveTable();
 
@@ -284,14 +289,23 @@
                 //enable upload
                 $('#btnUploadInfo').enable(false);
                 $('#CK5UploadSubmitBtn').enable(false);
-                
+
                 $("input[name='KppBcCity']").val('');
                 $("input[name='CeOfficeCode']").val('');
 
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('');
+                $("input[name='Ck5TotalExciseable']").val('');
+                $("input[name='RemainQuota']").val('');
+
 
             } else {
-               // ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });
+
+                @*ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });*@
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: submissionDate });
+
                 ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }
@@ -309,12 +323,12 @@
     //            $("input[name='CeOfficeCode']").val(nppBkcCity);
     //            $("input[name='KppBcCityName']").val(cityName);
 
-                 
+
     //             }
     //    }
 
     //});
-    
+
     $("#btnSubmitDocument").click(function () {
         $('#Ck5Modal').modal('show');
         @*var r = confirm("Submit Documents ?");
@@ -326,25 +340,25 @@
     $("#btnSubmitConfirm").click(function () {
         window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
     });
-    
-        $("#CountryCode").change(function () {
-            if ($("#CountryCode").length) {
-                var countryName = $('option:selected', $(this)).text();
-                if (countryName == '') {
-                    $("input[name='CountryName']").val('');
-                   
-                } else {
-                    $("input[name='CountryName']").val(countryName);
-                 
-                     }
+
+    $("#CountryCode").change(function () {
+        if ($("#CountryCode").length) {
+            var countryName = $('option:selected', $(this)).text();
+            if (countryName == '') {
+                $("input[name='CountryName']").val('');
+
+            } else {
+                $("input[name='CountryName']").val(countryName);
+
             }
-
-        });
-        
-        function printPreview(url) {
-
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
         }
+
+    });
+
+    function printPreview(url) {
+
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
 </script>
 }
