@@ -227,5 +227,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool AllowManagerReject { get; set; }
 
+        public string Command { get; set; }
+
+        public bool AllowGiCreated { get; set; }
+
+        public bool AllowGrCreated { get; set; }
+
+        public string ActionType { get; set; }
+        
     }
 }

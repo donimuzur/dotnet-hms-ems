@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<CK5, CK5ReportDetailsDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.OfficeName, opt => opt.MapFrom(src => src.KPPBC_CITY))
-                .ForMember(dest => dest.OfficeCode, opt => opt.MapFrom(src => src.CE_OFFICE_CODE))
+                //.ForMember(dest => dest.OfficeCode, opt => opt.MapFrom(src => src.CE_OFFICE_CODE))
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 //.ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue?src.SUBMISSION_DATE.Value.ToString("dd MMMM yyyy") : ""))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.BLL
                 //.ForMember(dest => dest.DestOfficeCode, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE))
 
                 .ForMember(dest => dest.FacilityNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
-                //.ForMember(dest => dest.FacilityDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
+                .ForMember(dest => dest.FacilityDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE.HasValue ? src.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
 
                 .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => (Convert.ToInt32(src.CARRIAGE_METHOD_ID)).ToString()))

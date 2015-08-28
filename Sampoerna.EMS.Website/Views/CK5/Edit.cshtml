@@ -18,7 +18,7 @@
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
                     
-                    <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    <input type="button" id="btnSubmitDocument" class="btn btn-blue"  value="Submit" />
                 </div>
             </div>
         </div>
@@ -73,22 +73,11 @@
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
-
-                        @*@Html.HiddenFor(model => model.DnNumber)
-                        @Html.HiddenFor(model => model.StoSenderNumber)
-                        @Html.HiddenFor(model => model.DnDate)
-                        @Html.HiddenFor(model => model.StoReceiverNumber)
-                        @Html.HiddenFor(model => model.StobNumber)
-                        @Html.HiddenFor(model => model.GiDate)
-                        @Html.HiddenFor(model => model.SealingNotifNumber)
-                        @Html.HiddenFor(model => model.UnSealingNotifNumber)
-                        @Html.HiddenFor(model => model.SealingNotifDate)
-                        @Html.HiddenFor(model => model.UnsealingNotifDate)*@
                         
                       @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.CountryName)
 
-                     
+                        @Html.HiddenFor(model => model.Command)
 
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
@@ -221,6 +210,7 @@
         $("#btnSave").click(function () {
 
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                $('#Command').val('Save');
                 $('#EditCk5Forms').submit();
             }
 
@@ -230,26 +220,6 @@
             GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
         });
     });
-
-    @*$("#PbckDecreeId").change(function () {
-        if ($("#PbckDecreeId").length) {
-            var pbck1 = $(this).find("option:selected").val();
-            var pbck1Number = $('option:selected', $(this)).text();
-            if (pbck1 == '') {
-                $("input[name='PbckDecreeDate']").val('');
-                $("input[name='PbckDecreeNumber']").val('');
-
-                $("input[name='Pbck1QtyApproved']").val('');
-                $("input[name='Ck5TotalExciseable']").val('');
-                $("input[name='RemainQuota']").val('');
-            } else {
-
-                ajaxGetDateAndQuotaPbck1('@Url.Action("GetDateAndQuotaPbck1", "CK5")', { id: pbck1 });
-                $("input[name='PbckDecreeNumber']").val(pbck1Number);
-            }
-        }
-
-    });*@
 
     var plantOriginal = '@Model.SourcePlantId';
 
@@ -303,42 +273,26 @@
 
             } else {
 
-                @*ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });*@
+                
                 ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: submissionDate });
 
                 ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }
     });
-
-    //$("#KppBcCity").change(function () {
-    //    if ($("#KppBcCity").length) {
-    //        var nppBkcCity = $(this).find("option:selected").val();
-    //        var cityName = $('option:selected', $(this)).text();
-    //        if (nppBkcCity == '') {
-    //            $("input[name='CeOfficeCode']").val('');
-    //            $("input[name='KppBcCityName']").val('');
-    //            //$("input[name='CompanyCode']").val('');
-    //        } else {
-    //            $("input[name='CeOfficeCode']").val(nppBkcCity);
-    //            $("input[name='KppBcCityName']").val(cityName);
-
-
-    //             }
-    //    }
-
-    //});
+   
 
     $("#btnSubmitDocument").click(function () {
         $('#Ck5Modal').modal('show');
-        @*var r = confirm("Submit Documents ?");
-            if (r == true) {
-                window.location = "@Url.Action("Delete", "CK5", new {id = @Model.Ck5Id})";
-            }*@
+     
     });
 
     $("#btnSubmitConfirm").click(function () {
-        window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
+        @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
+        if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+            $('#Command').val('Submit');
+            $('#EditCk5Forms').submit();
+        }
     });
 
     $("#CountryCode").change(function () {

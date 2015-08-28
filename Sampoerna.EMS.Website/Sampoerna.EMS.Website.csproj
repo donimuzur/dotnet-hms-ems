@@ -982,6 +982,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
     <Content Include="Views\CK5\_CK5InputMaterial.cshtml" />
+    <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
