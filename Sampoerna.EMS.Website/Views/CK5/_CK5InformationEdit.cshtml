@@ -4,8 +4,8 @@
 
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
-        
-      
+
+
 
         <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
@@ -234,13 +234,13 @@
                                 </div>
                             }
                             @* end  ck5type = Export *@
-    </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
-        
+
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingOne">
@@ -265,19 +265,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Submission Date<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                               
 
                             </div>
                             <div class="row">
@@ -310,11 +298,14 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Submission Date</label>
+                                        <label class="col-md-4">Submission Date<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @*@Html.TextBoxFor(model => model.SubmissionDate, new { @class = "form-control", @disabled = "disabled" })*@
-                                            @Html.EditorFor(model => model.SubmissionDate)
-
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -570,10 +561,10 @@
                 <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                     <div class="panel-body">
                         <div class="form-excise" role="form">
-                            <div class="row">
 
-                                @if (!Model.IsCk5Manual)
-                                {
+                            @if (!Model.IsCk5Manual)
+                            {
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.DnNumber, new { @class = "col-md-4" })
@@ -582,6 +573,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="row">
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.StoSenderNumber, new { @class = "col-md-4" })
@@ -590,14 +585,19 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.DnDate, new { @class = "form-control", @disabled = "true" })
+                                                @Html.EditorFor(model => model.DnDate)
                                             </div>
                                         </div>
                                     </div>
+
+                                </div>
+
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.StoReceiverNumber, new { @class = "col-md-4" })
@@ -606,7 +606,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-md-offset-6">
+
+                                    <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.StobNumber, new { @class = "col-md-4" })
                                             <div class="col-md-8">
@@ -615,14 +616,18 @@
                                         </div>
                                     </div>
 
+                                </div>
+
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.GiDate, new { @class = "form-control", @disabled = "true" })
+                                                @Html.EditorFor(model => model.GiDate)
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.GrDate, new { @class = "col-md-4" })
@@ -631,8 +636,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                }
+                            }
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
@@ -641,6 +648,20 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.LabelFor(model => model.SealingNotifDate, new { @class = "col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.SealingNotifDate)
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         @Html.LabelFor(model => model.UnSealingNotifNumber, new { @class = "col-md-4" })
@@ -649,22 +670,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        @Html.LabelFor(model => model.SealingNotifDate, new { @class = "col-md-4" })
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SealingNotifDate, new { @class = "form-control", @disabled = "true" })
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         @Html.LabelFor(model => model.UnsealingNotifDate, new { @class = "col-md-4" })
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.UnsealingNotifDate, new { @class = "form-control", @disabled = "true" })
+                                            @Html.EditorFor(model => model.UnsealingNotifDate)
+
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Attachment</label>

@@ -489,6 +489,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnRequestQtyUomName;
             
+            private global::System.Data.DataColumn columnPoaAddress;
+            
+            private global::System.Data.DataColumn columnSupplierPlantId;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck1DataTable() {
@@ -804,6 +808,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PoaAddressColumn {
+                get {
+                    return this.columnPoaAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SupplierPlantIdColumn {
+                get {
+                    return this.columnSupplierPlantId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -874,7 +894,9 @@ namespace Sampoerna.EMS.ReportingData {
                         string ProdPlanPeriod, 
                         string LackPeriod, 
                         string DocumentText, 
-                        string RequestQtyUomName) {
+                        string RequestQtyUomName, 
+                        string PoaAddress, 
+                        string SupplierPlantId) {
                 Pbck1Row rowPbck1Row = ((Pbck1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Pbck1Id,
@@ -911,7 +933,9 @@ namespace Sampoerna.EMS.ReportingData {
                         ProdPlanPeriod,
                         LackPeriod,
                         DocumentText,
-                        RequestQtyUomName};
+                        RequestQtyUomName,
+                        PoaAddress,
+                        SupplierPlantId};
                 rowPbck1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck1Row);
                 return rowPbck1Row;
@@ -969,6 +993,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnLackPeriod = base.Columns["LackPeriod"];
                 this.columnDocumentText = base.Columns["DocumentText"];
                 this.columnRequestQtyUomName = base.Columns["RequestQtyUomName"];
+                this.columnPoaAddress = base.Columns["PoaAddress"];
+                this.columnSupplierPlantId = base.Columns["SupplierPlantId"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1044,6 +1070,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnDocumentText);
                 this.columnRequestQtyUomName = new global::System.Data.DataColumn("RequestQtyUomName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnRequestQtyUomName);
+                this.columnPoaAddress = new global::System.Data.DataColumn("PoaAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPoaAddress);
+                this.columnSupplierPlantId = new global::System.Data.DataColumn("SupplierPlantId", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSupplierPlantId);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3126,6 +3156,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PoaAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1.PoaAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PoaAddress\' in table \'Pbck1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1.PoaAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SupplierPlantId {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1.SupplierPlantIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SupplierPlantId\' in table \'Pbck1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1.SupplierPlantIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPbck1IdNull() {
                 return this.IsNull(this.tablePbck1.Pbck1IdColumn);
             }
@@ -3542,6 +3604,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetRequestQtyUomNameNull() {
                 this[this.tablePbck1.RequestQtyUomNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPoaAddressNull() {
+                return this.IsNull(this.tablePbck1.PoaAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPoaAddressNull() {
+                this[this.tablePbck1.PoaAddressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSupplierPlantIdNull() {
+                return this.IsNull(this.tablePbck1.SupplierPlantIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSupplierPlantIdNull() {
+                this[this.tablePbck1.SupplierPlantIdColumn] = global::System.Convert.DBNull;
             }
         }
         
