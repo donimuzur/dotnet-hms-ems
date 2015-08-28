@@ -106,8 +106,7 @@ namespace Sampoerna.EMS.XMLReader
 
         public string InsertToDatabase()
         {
-            var items = Items;
-            return _xmlFile;
+            return _xmlMapper.NoInsert(Items);
 
         }
 
