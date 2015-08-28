@@ -24,8 +24,8 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
                 $('#Detail_SupplierPlantWerks').val(data.Werks);
                 $('#Detail_SupplierNppbkcId').val(data.NPPBKC_ID);
                 $('#Detail_HiddenSupplierNppbkcId').val(data.NPPBKC_ID);
-                $('#Detail_HiddenSupplierKppbcId').val(data.KPPBC_NO);
-                $('#Detail_SupplierKppbcId').val(data.KPPBC_NO);
+                $('#Detail_HiddenSupplierKppbcId').val(data.KPPBC_NAME);
+                $('#Detail_SupplierKppbcId').val(data.KPPBC_NAME);
                 $('#Detail_SupplierPhone').val('');
                 $('#Detail_SupplierAddress').val(data.Address);
                 $('#Detail_HiddendSupplierAddress').val(data.Address);

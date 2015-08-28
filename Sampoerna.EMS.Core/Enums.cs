@@ -177,6 +177,8 @@ namespace Sampoerna.EMS.Core
             Created = 1,
             [Description("Cancel")]
             Cancel = 2,
+            [Description("CancelSAP")]
+            CancelSAP = 3,
             [Description("Modified")]
             Modified = 5,
             [Description("Submit")]
