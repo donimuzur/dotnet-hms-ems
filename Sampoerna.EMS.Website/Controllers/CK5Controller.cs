@@ -1158,18 +1158,15 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //create xml file
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
-                //todo check validation
+              
                 var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
-                               Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000") + "-" +
-                               DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-
-
-               
+                               model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                
                 ck5XmlDto.Ck5PathXml = fileName;
 
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
                 
-                ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
+                //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
                 rt.CreateCK5Xml(ck5XmlDto);
 
                 return true;
@@ -1252,8 +1249,35 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
-                AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                var ck5 = _ck5Bll.GetById(id);
+
+                if (ck5.STATUS_ID == Enums.DocumentStatus.STOCreated && string.IsNullOrEmpty(ck5.DN_NUMBER))
+                {
+                    CK5Workflow(id, Enums.ActionType.CancelSTOCreated, string.Empty);
+
+                    //create xml file
+                    var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
+                    //todo check validation
+                    var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                                   ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                    
+
+                    ck5XmlDto.Ck5PathXml = fileName;
+
+                    XmlCK5DataWriter rt = new XmlCK5DataWriter();
+
+                    
+                    rt.CreateCK5Xml(ck5XmlDto);
+
+                    AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                }
+                else
+                {
+                    CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
+                    AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                }
+                
+                
             }
             catch (Exception ex)
             {

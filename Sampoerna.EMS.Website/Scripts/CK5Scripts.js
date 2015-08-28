@@ -538,11 +538,16 @@ function ValidateCk5Form(ck5Type) {
         }
         
     }
-
+    //alert('type : ' + ck5Type);
+    //alert('Source Plant : ' + $('#SourceNppbkcId').val());
+    //alert('Dest Plant : ' + $('#DestNppbkcId').val());
+    
     // && (ck5Type != 'Domestic')
     if (result) {
-      
-        //total = parseFloat(datarows[i][1]); //Qty
+
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
+            return result;
+
         var total = parseFloat($('#GrandTotalEx').val());
         var remainQuota = parseFloat($('#RemainQuota').val());
         if (total > remainQuota) {

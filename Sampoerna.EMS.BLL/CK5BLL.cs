@@ -161,10 +161,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             if (input.Ck5Type == Enums.CK5Type.Completed)
-                queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled);
             else
-                queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Completed 
-                                    && c.CK5_TYPE == input.Ck5Type);
+                queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type
+                                    && (c.STATUS_ID != Enums.DocumentStatus.Completed && c.STATUS_ID != Enums.DocumentStatus.Cancelled));
                 
             
             //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
@@ -193,7 +193,12 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             //if domestic not check quota
-            //if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic) return;
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
+            {
+                if (input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID == input.Ck5Dto.DEST_PLANT_NPPBKC_ID)
+                    return;
+            }
+            
 
             decimal remainQuota = 0;
             if (Utils.ConvertHelper.IsNumeric(input.Ck5Dto.RemainQuota))    
@@ -220,10 +225,7 @@ namespace Sampoerna.EMS.BLL
                 dbData = _repository.Get(c => c.CK5_ID == input.Ck5Dto.CK5_ID, null, includeTables).FirstOrDefault();
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                //input.Ck5Dto.RemainQuota = (Convert.ToDecimal(input.Ck5Dto.RemainQuota) - dbData.GRAND_TOTAL_EX).ToString();
-               
-
+                
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
@@ -665,6 +667,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.CancelSAP:
                     CancelSAPDocument(input);
                     break;
+                case Enums.ActionType.CancelSTOCreated:
+                    CancelSTOCreated(input);
+                    break;
             }
 
             //todo sent mail
@@ -1017,6 +1022,32 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
         }
 
+        private void CancelSTOCreated(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID < Enums.DocumentStatus.CreateSTO)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+
+
+            AddWorkflowHistory(input);
+        }
+
         private void CancelSAPDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -1026,6 +1057,7 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS_ID < Enums.DocumentStatus.CreateSTO)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+          
             if (dbData.GI_DATE.HasValue || dbData.GR_DATE.HasValue)
                 throw new BLLException(ExceptionCodes.BLLExceptions.ReversalManualSAP);
 
