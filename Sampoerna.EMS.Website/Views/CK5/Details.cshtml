@@ -2,7 +2,7 @@
 @using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
-@using (Html.BeginForm("GovApproveDocument", "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm(Model.ActionType, "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -24,6 +24,10 @@
                         if (Model.AllowGovApproveAndReject)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                        }
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
                         }
 
                         if (Model.AllowManagerReject)
@@ -74,6 +78,16 @@
                             @Html.HiddenFor(model => model.DestPlantId)
 
                             @Html.Partial("_CK5GovApproval")
+                        }
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        {
+                            @Html.HiddenFor(model => model.KppBcCity)
+                            @Html.HiddenFor(model => model.GoodTypeName)
+                            @Html.HiddenFor(model => model.SourcePlantId)
+                            @Html.HiddenFor(model => model.DestPlantId)
+                            
+                            
+                             @Html.Partial("_CK5SealingInput")
                         }
                         else
                         {
@@ -285,16 +299,42 @@
 
                 if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
                     $('#divComment').show();
-                    @*$('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');*@
+                    
                 }
-                @*else if (valueSelected == 'PartialApproved') {
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
-                }
-                else if (valueSelected == 'FullApproved') {
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-                }*@
-
+               
             });
+            
+            $("#btnGiCreated").click(function () {
+                
+                if ('@Model.AllowGiCreated' == "True") {
+                    
+                    if (ValidateGiCreated()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+                else if ('@Model.AllowGrCreated' == "True") {
+                    
+                    if (ValidateGRCreated()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+                
+            });
+            
+            if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True") {
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+                
+                $('#collapseThree').removeClass('in');
+                $("#collapseThree").css({ height: "0" });
+                
+                $('#collapseTwo').removeClass('in');
+                $("#collapseTwo").css({ height: "0" });
+                
+                $('#collapseOne').removeClass('in');
+                $("#collapseOne").css({ height: "0" });
+            }
             
         });
 
