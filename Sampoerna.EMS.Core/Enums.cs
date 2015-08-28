@@ -73,7 +73,11 @@ namespace Sampoerna.EMS.Core
 
             StoCreated = 10,
 
+            GIPartial = 15,
+
             GICompleted = 16,
+
+            GRPartial = 20,
 
             GRCompleted = 21,
 

@@ -51,8 +51,12 @@ namespace Sampoerna.EMS.XMLReader
             {
                 case "10":
                     return Enums.CK5XmlStatus.StoCreated;
+                case "15":
+                    return Enums.CK5XmlStatus.GIPartial;
                 case "16":
                     return Enums.CK5XmlStatus.GICompleted;
+                case "20":
+                    return Enums.CK5XmlStatus.GRPartial;
                 case "21":
                     return Enums.CK5XmlStatus.GRCompleted;
                 case "22":
@@ -106,12 +110,20 @@ namespace Sampoerna.EMS.XMLReader
                                     workflowHistory.ACTION = Enums.ActionType.STOCreated;
                                 }
 
-                                else 
-                                    if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
+                                else
+                                    if (statusCk5 == Enums.CK5XmlStatus.GICompleted || statusCk5 == Enums.CK5XmlStatus.GIPartial)
                                 {
-                                    workflowHistory.ACTION = Enums.ActionType.GICompleted;
-                                    item.STATUS_ID = Enums.DocumentStatus.GICompleted;
-                                      
+                                    if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
+                                    {
+                                        workflowHistory.ACTION = Enums.ActionType.GICompleted;
+                                        item.STATUS_ID = Enums.DocumentStatus.GICompleted;
+                                    }
+                                    else
+                                    {
+                                        workflowHistory.ACTION = Enums.ActionType.GIPartial;
+                                        item.STATUS_ID = Enums.DocumentStatus.GIPartial;
+                                    }
+
                                     if (typeCk5 == Enums.CK5Type.Domestic)
                                     {
                                         #region "Domestic"
@@ -150,12 +162,21 @@ namespace Sampoerna.EMS.XMLReader
 
 
                                 }
-                                else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted)
+                                    else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted || statusCk5 == Enums.CK5XmlStatus.GRPartial)
                                 {
+                                    if (statusCk5 == Enums.CK5XmlStatus.GRCompleted)
+                                    {
+                                        workflowHistory.ACTION = Enums.ActionType.GRCompleted;
+                                        item.STATUS_ID = Enums.DocumentStatus.GRCompleted;
+                                    }
+                                    else
+                                    {
+                                        workflowHistory.ACTION = Enums.ActionType.GRPartial;
+                                        item.STATUS_ID = Enums.DocumentStatus.GRPartial;
+                                    }
                                     var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
                                     item.GR_DATE = _xmlMapper.GetDate(grDate);
-                                    item.STATUS_ID = Enums.DocumentStatus.GRCompleted;
-                                    workflowHistory.ACTION = Enums.ActionType.GRCompleted;
+                                   
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.GRReversal)
                                 {
