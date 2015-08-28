@@ -57,7 +57,13 @@ namespace Sampoerna.EMS.XMLReader
 
             return _xmlData.Elements(elementName);
         }
-       
+
+        public string NoInsert<T>(List<T> items) where T : class
+        {
+            return MoveFile();
+           
+        }
+
         public string InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
