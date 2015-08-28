@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.IO;
 using System.Linq;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -154,10 +159,10 @@ namespace Sampoerna.EMS.XMLReader
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.GRReversal)
                                 {
-                                  
+                                    CreateCk5XmlCancel(item);
                                     item.STATUS_ID = Enums.DocumentStatus.Cancelled;
                                     workflowHistory.ACTION = Enums.ActionType.Cancelled;
-                                    //create xml file status 03 implement later
+                                    
                                 }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
@@ -191,7 +196,8 @@ namespace Sampoerna.EMS.XMLReader
       
         public string InsertToDatabase()
         {
-           return _xmlMapper.InsertToDatabase<CK5>(Items);
+            
+            return _xmlMapper.InsertToDatabase<CK5>(Items);
         }
 
         public List<string> GetErrorList()
@@ -235,6 +241,23 @@ namespace Sampoerna.EMS.XMLReader
                 emailList.Add(EmailManager);
             messageService.SendEmailToList(emailList, subject, emailBody, false);
 
+        }
+
+        private void CreateCk5XmlCancel(CK5 ck5)
+        {
+            //create xml file status 03 
+            var ck5Writer = new XmlCK5DataWriter();
+            BLLMapper.InitializeCK5();
+            var outboundPath = ConfigurationManager.AppSettings["XmlOutboundPath"];
+            var date = DateTime.Now.ToString("yyyyMMdd");
+            var time = DateTime.Now.ToString("hhmmss");
+
+            var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
+            var Ck5XmlDto = new CK5BLL(_xmlMapper.uow, new NullLogger()).GetCk5ForXmlById(ck5.CK5_ID);
+          
+            Ck5XmlDto.Ck5PathXml = Path.Combine(outboundPath, fileName);
+          
+            ck5Writer.CreateCK5Xml(Ck5XmlDto, "03");
         }
 
     }

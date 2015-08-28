@@ -142,6 +142,7 @@ namespace Sampoerna.EMS.Core
             GIReversal = 95,
             [Description("Cancelled")]
             Cancelled = 100,
+            
             [Description("Completed")]
             Completed = 105
         }
