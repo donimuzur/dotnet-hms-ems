@@ -72,14 +72,22 @@ namespace Sampoerna.EMS.Core
         {
 
             StoCreated = 10,
+            StoFailed = 11,
+            StobGICompleted = 31,
+            StoRecCreated = 40,
+
+            GIPartial = 15,
 
             GICompleted = 16,
+
+            GRPartial = 20,
 
             GRCompleted = 21,
 
             StoCancel = 03,
 
             GRReversal = 22,
+            GIReversal = 17,
           
 
             None = 00
@@ -144,7 +152,13 @@ namespace Sampoerna.EMS.Core
             Cancelled = 100,
             
             [Description("Completed")]
-            Completed = 105
+            Completed = 105,
+
+            [Description("STOB Good Issue Completed")]
+            StobGICompleted = 110,
+
+            [Description("Rec STO Created")]
+            StoRecCreated = 200
         }
 
         public enum DocumentStatusGov
@@ -223,7 +237,10 @@ namespace Sampoerna.EMS.Core
             GIReversal = 95,
             [Description("STO Cancelled")]
             Cancelled = 100,
-            
+            [Description("STOB Good Issue Completed")]
+            StobGICompleted = 105,
+            [Description("REC STO Created")]
+            StoRecCreated = 200
         }
 
         /// <summary>
