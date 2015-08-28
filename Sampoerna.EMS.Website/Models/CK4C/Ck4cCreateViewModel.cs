@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Web;
 using System.Web.Mvc;
 using DocumentFormat.OpenXml.Math;
@@ -18,7 +19,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string Description { get; set; }
         public string Qty { get; set; }
         public string Uom { get; set; }
-
+        public string CreatedBy { get; set; }
         //selectList
         public SelectList CompanyList { get; set; }
         public SelectList PlantList { get; set; }
