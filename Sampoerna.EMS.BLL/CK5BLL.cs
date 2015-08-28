@@ -1022,6 +1022,26 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
         }
 
+        public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+
+            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
+            
+            var inputHistory = new GetByActionAndFormNumberInput();
+            inputHistory.FormNumber = dbData.SUBMISSION_NUMBER;
+            inputHistory.ActionType = Enums.ActionType.CancelSTOCreated;
+
+            _workflowHistoryBll.DeleteByActionAndFormNumber(inputHistory);
+
+            //todo delete changehistory
+            _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.CK5_ID.ToString(), EnumHelper.GetDescription(Enums.ActionType.CancelSTOCreated));
+
+            _uow.SaveChanges();
+
+        }
+
         private void CancelSTOCreated(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -1044,6 +1064,7 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
 
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
         }
@@ -1069,7 +1090,8 @@ namespace Sampoerna.EMS.BLL
 
 
             dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
-            
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
         }
@@ -1723,11 +1745,11 @@ namespace Sampoerna.EMS.BLL
 
             output.Pbck1DecreeDate = "";
             if (pbck1.DecreeDate.HasValue)
-                output.Pbck1DecreeDate =  pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
+                output.Pbck1DecreeDate = pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
 
             if (pbck1.Pbck1Type == Enums.PBCK1Type.New)
             {
-                output.QtyApprovedPbck1 =  pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
+                output.QtyApprovedPbck1 = pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
             }
 
             else
@@ -1751,7 +1773,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             var periodEnd = pbck1.PeriodTo.Value.AddDays(1);
-            
+
             //get ck5 
             var lisCk5 =
                 _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks
@@ -1788,7 +1810,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID,
-                    ck5DbData.SUBMISSION_DATE);
+                    ck5DbData.SUBMISSION_DATE, ck5DbData.DEST_PLANT_NPPBKC_ID);
 
                 output.QtyApprovedPbck1 = 0;
 
@@ -1826,12 +1848,11 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate, string destPlantNppbkc)
         {
             var output = new GetQuotaAndRemainOutput();
 
-          
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate);
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkc);
 
                 output.QtyApprovedPbck1 = 0;
 
@@ -1870,11 +1891,11 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate, string destPlantNppbkcId)
         {
             var output = new GetQuotaAndRemainOutput();
 
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate);
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkcId);
 
             if (listPbck1.Count == 0)
             {
