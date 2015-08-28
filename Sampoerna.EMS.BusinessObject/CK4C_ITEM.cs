@@ -14,13 +14,13 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class CK4C_ITEM
     {
-        public long CK4C_ITEM1 { get; set; }
         public int CK4C_ID { get; set; }
         public string FA_CODE { get; set; }
         public string WERKS { get; set; }
         public decimal PROD_QTY { get; set; }
         public string UOM_PROD_QTY { get; set; }
         public System.DateTime PROD_DATE { get; set; }
+        public long CK4C_ITEM_ID { get; set; }
     
         public virtual CK4C CK4C { get; set; }
         public virtual UOM UOM { get; set; }
