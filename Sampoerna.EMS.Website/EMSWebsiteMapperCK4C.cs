@@ -14,6 +14,7 @@ namespace Sampoerna.EMS.Website
     {
         public static void InitializeCk4C()
         {
+            #region Index Daily Prduction
             Mapper.CreateMap<Ck4CDto, DataIndecCk4C>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompnayName))
@@ -24,7 +25,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate));
+            #endregion 
 
+            #region Index Waste Production
             Mapper.CreateMap<Ck4CDto, DataWasteProduction>().IgnoreAllNonExisting()
              .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompnayName))
@@ -35,6 +38,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate));
+            #endregion
+
+            #region Create Daily Production
+
+            Mapper.CreateMap<Ck4CDto, Ck4cCreateViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.FinishGoods, opt => opt.MapFrom(src => src.FaCode));
+
+            #endregion
 
         }
     }
