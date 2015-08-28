@@ -50,6 +50,9 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("PBCK-1 Data in this period not found")]
             Pbck1PeriodNotFound,
 
+            [Description("Do Reversal Manual SAP")]
+            ReversalManualSAP,
+
         }
         
         /// <summary>

@@ -234,6 +234,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowGrCreated { get; set; }
 
         public string ActionType { get; set; }
+
+        public bool AllowCancelSAP { get; set; }
         
     }
 }

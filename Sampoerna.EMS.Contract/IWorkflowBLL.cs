@@ -22,5 +22,7 @@ namespace Sampoerna.EMS.Contract
         bool AllowGiCreated(WorkflowAllowApproveAndRejectInput input);
 
         bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input);
     }
 }
