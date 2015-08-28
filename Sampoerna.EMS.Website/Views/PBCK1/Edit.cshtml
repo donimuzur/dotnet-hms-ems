@@ -181,7 +181,8 @@
             });
 
             $("#Detail_SupplierPortId").change(function () {
-                //supplierPortOnChange();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                $('#Detail_SupplierPortName').val(port_name);
             });
 
             $('#btn-changelog-export-xls').click(function () {
@@ -231,6 +232,7 @@
             
             $("#externalSupPort").click(function () {
                 supplierPortOnChange();
+                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             });
 
         });
@@ -314,16 +316,14 @@
         function supplierPortOnChange() {
             if ($("#Detail_SupplierPortId").length) {
                 var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
-                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if ($("#externalSupPort").is(':checked')) {
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
-                    setSupplierPlantEmpty();
+                    setSupplierInfo();
                 } else {
-                    $('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();
                     disableSupplierFormInput(true);
                 }
