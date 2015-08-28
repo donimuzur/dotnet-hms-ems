@@ -220,7 +220,10 @@ namespace Sampoerna.EMS.BLL
                 dbData = _repository.Get(c => c.CK5_ID == input.Ck5Dto.CK5_ID, null, includeTables).FirstOrDefault();
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-                
+
+                //input.Ck5Dto.RemainQuota = (Convert.ToDecimal(input.Ck5Dto.RemainQuota) - dbData.GRAND_TOTAL_EX).ToString();
+               
+
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
