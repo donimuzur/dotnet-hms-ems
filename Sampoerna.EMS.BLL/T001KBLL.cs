@@ -51,9 +51,16 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<T001KDto>>(dbData);
         }
 
-        public System.Collections.Generic.List<T001KCompositDto> GetCompositListByPlant(string plantId)
+        public List<T001KDto> GetCompanyByPlant(string plantId)
         {
-            throw new System.NotImplementedException();
+            includeTables = "T001";
+            var dbData = _repository.Get(c => c.BWKEY == plantId, null, includeTables);
+            if (dbData == null)
+            {
+                throw  new BLLException((ExceptionCodes.BLLExceptions.DataNotFound));
+            }
+            return Mapper.Map<List<T001KDto>>(dbData);
+
         }
     }
 }

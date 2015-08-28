@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MonthNameIndo, opt => opt.MapFrom(src => src.MONTH_NAME_IND));
 
             Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
-               .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.BWKEY + "-" + src.T001W.NAME1));
+               .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.T001W.NAME1));
 
             Mapper.CreateMap<T001W, T001KDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));

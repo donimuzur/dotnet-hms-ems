@@ -99,6 +99,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult CompanyListPartialCk4CWaste(string companyId)
+        {
+            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+
+            var model = new Ck4CIndexWasteProductionViewModel() { PlanIdList = listPlant };
+
+            return Json(model);
+
+        }
+
 
         #endregion
 

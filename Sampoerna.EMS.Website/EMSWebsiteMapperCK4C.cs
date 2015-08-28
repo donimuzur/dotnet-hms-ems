@@ -25,6 +25,16 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate));
 
+            Mapper.CreateMap<Ck4CDto, DataWasteProduction>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
+             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompnayName))
+             .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+             .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName));
+
+            Mapper.CreateMap<Ck4CIndexWasteProductionViewModel, Ck4CGetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate));
 
         }
     }
