@@ -748,9 +748,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
                 model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
-                decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
-                model.Ck5TotalExciseable = currentCk5.ToString();
-                model.RemainQuota = (outputQuota.QtyApprovedPbck1 - currentCk5).ToString();
+                //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
+                model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
+                model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
 
                 model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
                 model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
