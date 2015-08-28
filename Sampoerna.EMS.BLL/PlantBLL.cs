@@ -59,7 +59,9 @@ namespace Sampoerna.EMS.BLL
 
         public Plant GetId(string id)
         {
-            return Mapper.Map<Plant>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
+            var data = _repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault();
+
+            return Mapper.Map<Plant>(data);
         }
 
         public List<Plant> GetAll()
