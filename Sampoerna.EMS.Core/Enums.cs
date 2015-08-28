@@ -72,7 +72,7 @@ namespace Sampoerna.EMS.Core
         {
 
             StoCreated = 10,
-
+            StoFailed = 11,
             GIPartial = 15,
 
             GICompleted = 16,
@@ -84,6 +84,7 @@ namespace Sampoerna.EMS.Core
             StoCancel = 03,
 
             GRReversal = 22,
+            GIReversal = 17,
           
 
             None = 00

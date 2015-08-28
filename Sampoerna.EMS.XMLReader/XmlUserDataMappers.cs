@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,11 @@ namespace Sampoerna.EMS.XMLReader
     public class XmlUserDataMapper : IXmlDataReader 
     {
         private XmlDataMapper _xmlMapper = null;
-       
+        private string _xmlFile = null;
         public XmlUserDataMapper(string xmlFile)
         {
             _xmlMapper = new XmlDataMapper(xmlFile);
-           
+            _xmlFile = xmlFile;
         }
 
 
@@ -30,7 +31,7 @@ namespace Sampoerna.EMS.XMLReader
                 var xmlItems = _xmlMapper.GetElements("row");
                 var items = new List<BROLE_MAP>();
                 var firstBrole = string.Empty;
-                int i = 0;
+               
                 foreach (var xElement in xmlItems)
                 {
                     try
@@ -40,8 +41,8 @@ namespace Sampoerna.EMS.XMLReader
 
                         
                         var role = new USER_BROLE();
-                        role.BROLE = _xmlMapper.GetElementValue(xElement.Element("BROLE"));
-                        role.BROLE_DESC = _xmlMapper.GetElementValue(xElement.Element("BROLE_DESC"));
+                        role.BROLE = _xmlMapper.GetElementValue(xElement.Element("BROLE")).Trim();
+                        role.BROLE_DESC = _xmlMapper.GetElementValue(xElement.Element("BROLE_DESC")).TrimEnd();
                         var ExistBrole = GetBrole(role.BROLE);
                        
                         _xmlMapper.InsertOrUpdate(role);
@@ -49,7 +50,7 @@ namespace Sampoerna.EMS.XMLReader
                         
                         var roleMap = new BROLE_MAP();
                         roleMap.BROLE = role.BROLE;
-                        roleMap.MSACCT = _xmlMapper.GetElementValue(xElement.Element("MSACCT"));
+                        roleMap.MSACCT = _xmlMapper.GetElementValue(xElement.Element("MSACCT")).Trim();
                         roleMap.START_DATE = Convert.ToDateTime(xElement.Element("STRTDAT").Value);
                         roleMap.END_DATE = Convert.ToDateTime(xElement.Element("ENDDAT").Value);
 
@@ -57,7 +58,11 @@ namespace Sampoerna.EMS.XMLReader
                         user.USER_ID = roleMap.MSACCT;
                         user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
                         user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
-                        user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim().Substring(0, 35);
+                        user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
+                        if (user.EMAIL.Length > 35)
+                        {
+                            user.EMAIL = user.EMAIL.Substring(0, 35);
+                        }
                        
                         var ExistUser = GetUser(user.USER_ID);
                         if (ExistUser == null)
@@ -78,7 +83,7 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             roleMap.BROLE_MAP_ID = ExistRoleMap.BROLE_MAP_ID;
                         }
-                       
+                       _xmlMapper.InsertOrUpdate(roleMap);
                         items.Add(roleMap);
 
 
@@ -101,8 +106,9 @@ namespace Sampoerna.EMS.XMLReader
 
         public string InsertToDatabase()
         {
-            return _xmlMapper.InsertToDatabase<BROLE_MAP>(Items);
-       
+            var items = Items;
+            return _xmlFile;
+
         }
 
         public List<string> GetErrorList()

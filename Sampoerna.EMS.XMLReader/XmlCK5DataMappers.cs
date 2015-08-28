@@ -51,10 +51,14 @@ namespace Sampoerna.EMS.XMLReader
             {
                 case "10":
                     return Enums.CK5XmlStatus.StoCreated;
+                case "11":
+                    return Enums.CK5XmlStatus.StoFailed;
                 case "15":
                     return Enums.CK5XmlStatus.GIPartial;
                 case "16":
                     return Enums.CK5XmlStatus.GICompleted;
+                case "17":
+                    return Enums.CK5XmlStatus.GIReversal;
                 case "20":
                     return Enums.CK5XmlStatus.GRPartial;
                 case "21":
@@ -140,9 +144,12 @@ namespace Sampoerna.EMS.XMLReader
                                             {
                                                 foreach (var ckt5Item in xmlCk5Items)
                                                 {
-                                                    item.DN_NUMBER =
-                                                        _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
-                                                   
+                                                    var dn_number = _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
+                                                    if (!string.IsNullOrEmpty(dn_number))
+                                                    {
+                                                        item.DN_NUMBER = dn_number;
+                                                    }
+
 
                                                 }
                                             }
@@ -151,15 +158,7 @@ namespace Sampoerna.EMS.XMLReader
 
                                         #endregion
                                     }
-                                    else if(typeCk5 == Enums.CK5Type.Intercompany)
-                                    {
-                                        #region "intercompany"
-
-                                        item.STO_SENDER_NUMBER = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER")); ;
-                                       
-                                        #endregion
-                                    }
-
+                                   
 
                                 }
                                     else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted || statusCk5 == Enums.CK5XmlStatus.GRPartial)
@@ -178,12 +177,16 @@ namespace Sampoerna.EMS.XMLReader
                                     item.GR_DATE = _xmlMapper.GetDate(grDate);
                                    
                                 }
-                                else if (statusCk5 == Enums.CK5XmlStatus.GRReversal)
+                                else if (statusCk5 == Enums.CK5XmlStatus.GIReversal)
                                 {
                                     CreateCk5XmlCancel(item);
                                     item.STATUS_ID = Enums.DocumentStatus.Cancelled;
                                     workflowHistory.ACTION = Enums.ActionType.Cancelled;
-                                    
+
+                                }else if (statusCk5 == Enums.CK5XmlStatus.StoFailed)
+                                {
+                                    item.STATUS_ID = Enums.DocumentStatus.STOFailed;
+                                    workflowHistory.ACTION = Enums.ActionType.STOFailed;
                                 }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
