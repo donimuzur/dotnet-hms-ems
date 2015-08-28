@@ -63,7 +63,8 @@ function OnReadyFunction(ck5Type) {
 
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
-
+        ValidateRemainQuota(total);
+        
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
 
@@ -75,6 +76,22 @@ function OnReadyFunction(ck5Type) {
     
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
+}
+
+function ValidateRemainQuota(total) {
+    // var total = parseFloat($('#GrandTotalEx').val());
+    var remainQuota = parseFloat($('#RemainQuota').val());
+    if (total > remainQuota) {
+        $('#collapseThree').removeClass('collapse');
+        $('#collapseThree').addClass('in');
+        $("#collapseThree").css({ height: "auto" });
+
+        $('#modalBodyMessage').text('CK5 Quota Exceeded');
+        $('#ModalCk5Material').modal('show');
+
+        AddValidationClass(false, 'GrandTotalEx');
+
+    }
 }
 
 function IsValidDataUpload() {
