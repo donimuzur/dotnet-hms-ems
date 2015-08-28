@@ -26,7 +26,7 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
                 $('#Detail_HiddenSupplierNppbkcId').val(data.NPPBKC_ID);
                 $('#Detail_HiddenSupplierKppbcId').val(data.KPPBC_NAME);
                 $('#Detail_SupplierKppbcId').val(data.KPPBC_NAME);
-                $('#Detail_SupplierPhone').val('');
+                $('#Detail_SupplierPhone').val(data.Phone);
                 $('#Detail_SupplierAddress').val(data.Address);
                 $('#Detail_HiddendSupplierAddress').val(data.Address);
                 $('#Detail_SupplierPlant').val(data.Name1);
@@ -41,6 +41,7 @@ function disableSupplierFormInput(isDisable) {
     $('#Detail_SupplierNppbkcId').prop('readonly', isDisable);
     $('#Detail_SupplierKppbcId').prop('readonly', isDisable);
     $('#Detail_SupplierAddress').prop('readonly', isDisable);
+    $('#Detail_SupplierPhone').prop('readonly', isDisable);
 }
 
 function supplierChange(url) {

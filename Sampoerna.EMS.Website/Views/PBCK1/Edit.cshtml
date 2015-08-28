@@ -231,6 +231,7 @@
             
             $("#externalSupPort").click(function () {
                 supplierPortOnChange();
+                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             });
 
         });
@@ -321,7 +322,7 @@
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
-                    setSupplierPlantEmpty();
+                    setSupplierInfo();
                 } else {
                     $('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();
