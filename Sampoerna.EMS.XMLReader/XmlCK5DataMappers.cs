@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.IO;
 using System.Linq;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -50,8 +55,8 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.GICompleted;
                 case "21":
                     return Enums.CK5XmlStatus.GRCompleted;
-                case "03":
-                    return Enums.CK5XmlStatus.StoCancel;
+                case "22":
+                    return Enums.CK5XmlStatus.GRReversal;
                 default:
                     return Enums.CK5XmlStatus.None;
             }
@@ -104,37 +109,45 @@ namespace Sampoerna.EMS.XMLReader
                                 else 
                                     if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
                                 {
-                                    var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                    item.GI_DATE = _xmlMapper.GetDate(giDate);
-                                    item.STATUS_ID = Enums.DocumentStatus.GICompleted;
                                     workflowHistory.ACTION = Enums.ActionType.GICompleted;
-                                    var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
-                                    if (ck5Item.Count > 0)
+                                    item.STATUS_ID = Enums.DocumentStatus.GICompleted;
+                                      
+                                    if (typeCk5 == Enums.CK5Type.Domestic)
                                     {
-                                       
-                                        var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
-                                        if (ck5Item.Count() >= xmlCk5Items.Count())
-                                        {
-                                            foreach (var ckt5Item in xmlCk5Items)
-                                            {
-                                                var dn_number =
-                                                    _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
-                                                 var brand =
-                                                    _xmlMapper.GetElementValue(ckt5Item.Element("MATERIAL"));
+                                        #region "Domestic"
 
-                                                 var ck5Ems = ck5Item.Where(x=>x.BRAND == brand).FirstOrDefault();
-                                                if (ck5Ems!= null)
+                                        var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                        item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                       
+                                        var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
+                                        if (ck5Item.Count > 0)
+                                        {
+                                            
+                                            var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
+                                            if (ck5Item.Count() >= xmlCk5Items.Count())
+                                            {
+                                                foreach (var ckt5Item in xmlCk5Items)
                                                 {
-                                                    ck5Ems.NOTE = dn_number;
-                                                    _xmlMapper.InsertOrUpdate(ck5Ems);
-                                                    
+                                                    item.DN_NUMBER =
+                                                        _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
+                                                   
+
                                                 }
-                                                
                                             }
+
                                         }
-                                        
+
+                                        #endregion
                                     }
-                                    
+                                    else if(typeCk5 == Enums.CK5Type.Intercompany)
+                                    {
+                                        #region "intercompany"
+
+                                        item.STO_SENDER_NUMBER = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER")); ;
+                                       
+                                        #endregion
+                                    }
+
 
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted)
@@ -144,14 +157,12 @@ namespace Sampoerna.EMS.XMLReader
                                     item.STATUS_ID = Enums.DocumentStatus.GRCompleted;
                                     workflowHistory.ACTION = Enums.ActionType.GRCompleted;
                                 }
-                                else if (statusCk5 == Enums.CK5XmlStatus.StoCancel)
+                                else if (statusCk5 == Enums.CK5XmlStatus.GRReversal)
                                 {
-                                    var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
-                                    if (string.IsNullOrEmpty(stoNumber))
-                                    {
-                                        item.STATUS_ID = Enums.DocumentStatus.Cancelled;
-                                        workflowHistory.ACTION = Enums.ActionType.Cancelled;
-                                    }
+                                    CreateCk5XmlCancel(item);
+                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                    workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                                    
                                 }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
@@ -185,7 +196,8 @@ namespace Sampoerna.EMS.XMLReader
       
         public string InsertToDatabase()
         {
-           return _xmlMapper.InsertToDatabase<CK5>(Items);
+            
+            return _xmlMapper.InsertToDatabase<CK5>(Items);
         }
 
         public List<string> GetErrorList()
@@ -229,6 +241,23 @@ namespace Sampoerna.EMS.XMLReader
                 emailList.Add(EmailManager);
             messageService.SendEmailToList(emailList, subject, emailBody, false);
 
+        }
+
+        private void CreateCk5XmlCancel(CK5 ck5)
+        {
+            //create xml file status 03 
+            var ck5Writer = new XmlCK5DataWriter();
+            BLLMapper.InitializeCK5();
+            var outboundPath = ConfigurationManager.AppSettings["XmlOutboundPath"];
+            var date = DateTime.Now.ToString("yyyyMMdd");
+            var time = DateTime.Now.ToString("hhmmss");
+
+            var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
+            var Ck5XmlDto = new CK5BLL(_xmlMapper.uow, new NullLogger()).GetCk5ForXmlById(ck5.CK5_ID);
+          
+            Ck5XmlDto.Ck5PathXml = Path.Combine(outboundPath, fileName);
+          
+            ck5Writer.CreateCK5Xml(Ck5XmlDto, "03");
         }
 
     }
