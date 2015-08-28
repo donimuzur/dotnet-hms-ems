@@ -166,7 +166,12 @@
                 var sourcePlant = $(this).find("option:selected").val();
                
                 //remove table
-                RemoveTable();
+                try {
+                    RemoveTable();
+                } catch(e) {
+
+                } 
+                
 
                 if (sourcePlant == '') {
                     $("input[name='SourceNpwp']").val('');

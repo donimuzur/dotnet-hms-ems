@@ -403,6 +403,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" Nullable="false" />
+          <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -1425,6 +1426,18 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="LACK1_PRODUCTION_DETAIL">
               <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_PRODUCTION_DETAIL_UOM">
+          <End Role="UOM" Type="Self.UOM" Multiplicity="1" />
+          <End Role="LACK1_PRODUCTION_DETAIL" Type="Self.LACK1_PRODUCTION_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PRODUCTION_DETAIL">
+              <PropertyRef Name="UOM_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2520,6 +2533,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="LACK1" EntitySet="LACK1" />
             <End Role="LACK1_PRODUCTION_DETAIL" EntitySet="LACK1_PRODUCTION_DETAIL" />
           </AssociationSet>
+          <AssociationSet Name="FK_LACK1_PRODUCTION_DETAIL_UOM" Association="Self.FK_LACK1_PRODUCTION_DETAIL_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1_PRODUCTION_DETAIL" EntitySet="LACK1_PRODUCTION_DETAIL" />
+          </AssociationSet>
           <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="Self.FK_LACK1_RETURN_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
@@ -3338,6 +3355,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           </AssociationSet>
           <EntitySet Name="BOM" EntityType="EMSModel.BOM" />
           <EntitySet Name="INVENTORY_MOVEMENT" EntityType="EMSModel.INVENTORY_MOVEMENT" />
+          <AssociationSet Name="FK_LACK1_PRODUCTION_DETAIL_UOM" Association="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK1_PRODUCTION_DETAIL" EntitySet="LACK1_PRODUCTION_DETAIL" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5344,6 +5365,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
           <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="UOM" ToRole="CK4C_ITEM" />
           <NavigationProperty Name="LACK111" Relationship="EMSModel.FK_LACK1_UOM" FromRole="UOM" ToRole="LACK1" />
+          <NavigationProperty Name="LACK1_PRODUCTION_DETAIL" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" FromRole="UOM" ToRole="LACK1_PRODUCTION_DETAIL" />
         </EntityType>
         <Association Name="FK_CK5_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
@@ -5510,6 +5532,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRODUCT_TYPE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_ALIAS" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" FromRole="LACK1_PRODUCTION_DETAIL" ToRole="LACK1" />
+          <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" FromRole="LACK1_PRODUCTION_DETAIL" ToRole="UOM" />
         </EntityType>
         <Association Name="FK_LACK1_INCOME_DETAIL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="1" />
@@ -5922,6 +5946,18 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CREATED_USER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MAT_DOC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
+        <Association Name="FK_LACK1_PRODUCTION_DETAIL_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_PRODUCTION_DETAIL" Role="LACK1_PRODUCTION_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PRODUCTION_DETAIL">
+              <PropertyRef Name="UOM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6870,6 +6906,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="LACK1_PRODUCTION_DETAIL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_PRODUCTION_DETAIL">
               <MappingFragment StoreEntitySet="LACK1_PRODUCTION_DETAIL">
+                <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
                 <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
                 <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
                 <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
