@@ -587,10 +587,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
                 model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
                 //
-                decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
+                //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
 
-                model.Ck5TotalExciseable = currentCk5.ToString();
-                model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+                model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
+                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
            
 
@@ -639,9 +639,10 @@ namespace Sampoerna.EMS.Website.Controllers
                                 return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
                                
                             }
-
-
+                            //update info quota
+                            //model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5 - model.GrandTotalEx).ToString();
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
+                            return RedirectToAction("Edit", "CK5", new {@id = model.Ck5Id});
                         }
                         else
                         {
