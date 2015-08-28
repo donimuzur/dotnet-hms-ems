@@ -436,7 +436,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SupInfo.SupplierPlantWerks = model.Detail.SupplierPlantWerks;
                 model.SupInfo.SupplierAddress = model.Detail.SupplierAddress;
                 model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
-                model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcId;
+                model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcName;
                 model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
 
                 //validate approve and reject

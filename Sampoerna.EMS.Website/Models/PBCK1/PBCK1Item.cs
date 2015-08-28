@@ -88,6 +88,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string SupplierKppbcId { get; set; }
 
+        public string SupplierKppbcName { get; set; }
+
         public string HiddenSupplierKppbcId { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
