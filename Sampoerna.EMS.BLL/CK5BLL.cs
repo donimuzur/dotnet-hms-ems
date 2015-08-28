@@ -662,6 +662,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GRCreated:
                     GrCreatedDocument(input);
                     break;
+                case Enums.ActionType.CancelSAP:
+                    CancelSAPDocument(input);
+                    break;
             }
 
             //todo sent mail
@@ -1010,6 +1013,31 @@ namespace Sampoerna.EMS.BLL
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            AddWorkflowHistory(input);
+        }
+
+        private void CancelSAPDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID < Enums.DocumentStatus.CreateSTO)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            if (dbData.GI_DATE.HasValue || dbData.GR_DATE.HasValue)
+                throw new BLLException(ExceptionCodes.BLLExceptions.ReversalManualSAP);
+
+            string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+            
 
             AddWorkflowHistory(input);
         }

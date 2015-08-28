@@ -754,6 +754,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
                 model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
 
+                model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
+
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocument";
                 else if (model.AllowGiCreated)
@@ -1243,6 +1245,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        public ActionResult CancelSAPDocument(long id)
+        {
+            try
+            {
+                CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
+                AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = id });
         }
 
         #endregion
