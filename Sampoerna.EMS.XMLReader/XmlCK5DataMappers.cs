@@ -191,6 +191,11 @@ namespace Sampoerna.EMS.XMLReader
                                 else if (statusCk5 == Enums.CK5XmlStatus.GIReversal)
                                 {
                                     CreateCk5XmlCancel(item);
+                                    workflowHistory.ACTION = Enums.ActionType.GIReversal;
+                                    AddWorkflowHistory(workflowHistory,null, null, null, null);
+                                    workflowHistory.ACTION = Enums.ActionType.GRReversal;
+                                    AddWorkflowHistory(workflowHistory, null, null, null, null);
+
                                     item.STATUS_ID = Enums.DocumentStatus.Cancelled;
                                     workflowHistory.ACTION = Enums.ActionType.Cancelled;
 
@@ -316,7 +321,10 @@ namespace Sampoerna.EMS.XMLReader
                 emailList.Add(EmailPOA);
             if(!string.IsNullOrEmpty(EmailManager))
                 emailList.Add(EmailManager);
-            messageService.SendEmailToList(emailList, subject, emailBody, false);
+            if (emailList.Count > 0)
+            {
+                messageService.SendEmailToList(emailList, subject, emailBody, false);
+            }
 
         }
 

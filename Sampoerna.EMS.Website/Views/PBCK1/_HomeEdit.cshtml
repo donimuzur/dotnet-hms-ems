@@ -21,6 +21,7 @@
                                     <div class="row">
                                         <label class="col-md-3">PBCK-1 No</label>
                                         <div class="col-md-9">
+                                            @Html.HiddenFor(model => model.Detail.IsSaveSubmit)
                                             @Html.HiddenFor(model => model.Detail.Pbck1Number)
                                             @Html.HiddenFor(model => model.Detail.Status)
                                             @Html.TextBoxFor(model => model.Detail.Pbck1Number, new { @class = "form-control", @disabled = "disabled", @id = "pbck1-number-display" })
