@@ -34,7 +34,10 @@
                         {
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
-
+                         if (Model.AllowCancelSAP)
+                        {
+                            <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
+                        }
                     }
 
                 </div>
@@ -247,6 +250,24 @@
     </div>
 </div>
 
+<div id="Ck5ModalCancelSap" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Cancel </span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Cancel Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirmCancel" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
     @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
@@ -442,6 +463,18 @@
 
           
         }
+
+        $("#btnCancelSAP").click(function () {
+
+           
+            $('#Ck5ModalCancelSap').modal('show');
+
+        });
+        
+        $("#btnConfirmCancel").click(function () {
+
+            window.location = "@Url.Action("CancelSAPDocument", "CK5", new {id = @Model.Ck5Id})";
+        });
 
     </script>
 }
