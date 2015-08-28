@@ -209,5 +209,17 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+        public bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus < Enums.DocumentStatus.CreateSTO)
+                return false;
+            if (input.DocumentStatus == Enums.DocumentStatus.Cancelled)
+                return false;
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return true;
+        }
+
     }
 }

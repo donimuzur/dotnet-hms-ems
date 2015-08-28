@@ -5,7 +5,7 @@
     ViewBag.Title = "Edit PBCK-1";
 }
 
-@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "EditForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -142,6 +142,11 @@
 
             $('#divComment').hide();
 
+            $("#btnSubmitConfirm").click(function () {
+                $('#Detail_IsSaveSubmit').val('submit');
+                $('#EditForm').submit();
+            });
+
             $('#Detail_StatusGov').on('change', function (e) {
                 var valueSelected = this.value;
 
@@ -167,7 +172,7 @@
 
             $("#btnSaveGovStatus").click(function () {
                 if (ValidateGovInput()) {
-                    $('#GovApproveForm').submit();
+                    $('#EditForm').submit();
                 }
             });
 
@@ -223,13 +228,10 @@
             $("#btnSubmitDocument").click(function () {
                 $('#Pbck1Modal').modal('show');
             });
-
-            $("#btnSubmitConfirm").click(function () {
-                window.location = "@Url.Action("SubmitDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
-            });
-
+            
             $("#externalSupPort").click(function () {
                 supplierPortOnChange();
+                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             });
 
         });
@@ -320,7 +322,7 @@
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
-                    setSupplierPlantEmpty();
+                    setSupplierInfo();
                 } else {
                     $('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();

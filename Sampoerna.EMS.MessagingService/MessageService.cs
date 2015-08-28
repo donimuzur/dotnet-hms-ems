@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.MessagingService
                 smtpClient.SendCompleted += (s, e) =>
                 {
                     smtpClient.Dispose();
+
                     mailMessage.Dispose();
                 };
 
