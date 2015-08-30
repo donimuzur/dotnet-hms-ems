@@ -38,14 +38,14 @@ namespace Sampoerna.EMS.XMLReader
                         var item = new ZAIDM_EX_MARKET();
                         item.MARKET_ID = xElement.Element("MARKET").Value;
                         item.MARKET_DESC = _xmlMapper.GetElementValue(xElement.Element("MARKET_DESC"));
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
                         var exisitingMarket = GetMarket(item.MARKET_ID);
                         if (exisitingMarket != null)
                         {
                             item.CREATED_BY = exisitingMarket.CREATED_BY;
                             item.CREATED_DATE = exisitingMarket.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
 
                         }

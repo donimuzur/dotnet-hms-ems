@@ -57,6 +57,9 @@
     <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BOM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="BROLE_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -108,6 +111,7 @@
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
@@ -181,6 +185,9 @@
     <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
+    <Compile Include="INVENTORY_MOVEMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

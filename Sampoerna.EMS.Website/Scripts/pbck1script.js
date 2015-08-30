@@ -9,7 +9,7 @@
     $('#Detail_HiddenSupplierNppbkcId').val('');
     $('#Detail_SupplierPlant').val('');
     $('#Detail_SupplierPlantWerks').val('');
-
+    $('#Detail_SupplierKppbcName').val('');
 }
 
 function ajaxLoadDetailSupplierPlant(formData, url) {
@@ -24,9 +24,10 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
                 $('#Detail_SupplierPlantWerks').val(data.Werks);
                 $('#Detail_SupplierNppbkcId').val(data.NPPBKC_ID);
                 $('#Detail_HiddenSupplierNppbkcId').val(data.NPPBKC_ID);
-                $('#Detail_HiddenSupplierKppbcId').val(data.KPPBC_NO);
+                $('#Detail_HiddenSupplierKppbcId').val(data.KPPBC_NAME);
                 $('#Detail_SupplierKppbcId').val(data.KPPBC_NO);
-                $('#Detail_SupplierPhone').val('');
+                $('#Detail_SupplierKppbcName').val(data.KPPBC_NAME);
+                $('#Detail_SupplierPhone').val(data.Phone);
                 $('#Detail_SupplierAddress').val(data.Address);
                 $('#Detail_HiddendSupplierAddress').val(data.Address);
                 $('#Detail_SupplierPlant').val(data.Name1);
@@ -38,9 +39,10 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
 }
 
 function disableSupplierFormInput(isDisable) {
-    $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
-    $('#Detail_SupplierKppbcId').prop('disabled', isDisable);
-    $('#Detail_SupplierAddress').prop('disabled', isDisable);
+    $('#Detail_SupplierNppbkcId').prop('readonly', isDisable);
+    $('#Detail_SupplierKppbcName').prop('readonly', isDisable);
+    $('#Detail_SupplierAddress').prop('readonly', isDisable);
+    $('#Detail_SupplierPhone').prop('readonly', isDisable);
 }
 
 function supplierChange(url) {
@@ -325,6 +327,22 @@ function ajaxLoadCompany(formData, url) {
 
 function ValidateGovInput() {
     var result = true;
+    var requestQty = parseInt($("input[name='Detail.RequestQty']:hidden").val());
+    var approvedQty = parseInt($('#Detail_QtyApproved').val());
+    var govStatus = $('#Detail_StatusGov').find("option:selected").val();
+
+    if (approvedQty > requestQty) {
+        $('#modalBodyMessage').text('PBCK1 Quota Exceeded');
+        $('#ModalPbck1ValidateGov').modal('show');
+
+        AddValidationClass(false, 'Detail_QtyApproved');
+        result = false;
+    }
+
+    if (govStatus == '') {
+        AddValidationClass(false, 'Detail_StatusGov');
+        result = false;
+    }
 
     if ($('#Detail_DecreeDate').val() == '') {
         AddValidationClass(false, 'Detail_DecreeDate');

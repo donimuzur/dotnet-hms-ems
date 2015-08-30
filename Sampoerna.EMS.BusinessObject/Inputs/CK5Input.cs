@@ -49,6 +49,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public CK5WorkflowDocumentData AdditionalDocumentData { get; set; }
 
+        public string SealingNumber { get; set; }
+        public DateTime? SealingDate { get; set; }
+
+        public string UnSealingNumber { get; set; }
+        public DateTime? UnSealingDate { get; set; }
+
     }
 
     public class CK5WorkflowDocumentData

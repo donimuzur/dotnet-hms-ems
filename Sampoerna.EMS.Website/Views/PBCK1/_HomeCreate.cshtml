@@ -191,7 +191,8 @@
                                         <label class="col-md-4">Supplier KPPBC</label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.SupplierKppbcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcName, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

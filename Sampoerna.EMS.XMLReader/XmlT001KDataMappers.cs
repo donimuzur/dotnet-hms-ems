@@ -33,17 +33,17 @@ namespace Sampoerna.EMS.XMLReader
                         var item = new T001K();
                         var bwkey = xElement.Element("BWKEY").Value;
                         item.BUKRS = _xmlMapper.GetElementValue(xElement.Element("BUKRS"));
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
                         var existingData = _xmlMapper.uow.GetGenericRepository<T001K>()
                             .GetByID(bwkey);
                         item.BWKEY = bwkey;
-                        item.CREATED_BY = Constans.PICreator;
+                        item.CREATED_BY = Constans.PI;
                         if (existingData != null)
                         {
                             item.CREATED_BY = existingData.CREATED_BY;
                             item.CREATED_DATE = existingData.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
 
                         }

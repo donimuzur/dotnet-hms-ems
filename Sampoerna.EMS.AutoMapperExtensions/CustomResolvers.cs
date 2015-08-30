@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-               resultValue = value.GRAND_TOTAL_EX.Value.ToString("f2");
+               resultValue = value.GRAND_TOTAL_EX.Value.ToString();
         
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
                 resultUOM = value.PackageUomName;
@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             if (!value.HasValue)
                 return "0";
 
-            return value.Value.ToString("f2");
+            return value.Value.ToString();
 
         }
 
