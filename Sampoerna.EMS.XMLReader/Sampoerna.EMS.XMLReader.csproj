@@ -47,6 +47,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
@@ -122,6 +129,10 @@
     <ProjectReference Include="..\Sampoerna.EMS.DAL\Sampoerna.EMS.DAL.csproj">
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.MessagingService\Sampoerna.EMS.MessagingService.csproj">
+      <Project>{c0c96fbc-d939-4121-b79c-1ab8b96092de}</Project>
+      <Name>Sampoerna.EMS.MessagingService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

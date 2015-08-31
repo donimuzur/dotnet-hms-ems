@@ -18,5 +18,11 @@ namespace Sampoerna.EMS.Contract
         bool AllowPrint(Enums.DocumentStatus documentStatus);
 
         bool AllowManagerReject(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowGiCreated(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input);
     }
 }

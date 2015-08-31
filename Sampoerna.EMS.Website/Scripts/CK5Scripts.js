@@ -63,7 +63,8 @@ function OnReadyFunction(ck5Type) {
 
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
-
+        ValidateRemainQuota(total);
+        
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
 
@@ -75,6 +76,22 @@ function OnReadyFunction(ck5Type) {
     
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
+}
+
+function ValidateRemainQuota(total) {
+    // var total = parseFloat($('#GrandTotalEx').val());
+    var remainQuota = parseFloat($('#RemainQuota').val());
+    if (total > remainQuota) {
+        $('#collapseThree').removeClass('collapse');
+        $('#collapseThree').addClass('in');
+        $("#collapseThree").css({ height: "auto" });
+
+        $('#modalBodyMessage').text('CK5 Quota Exceeded');
+        $('#ModalCk5Material').modal('show');
+
+        AddValidationClass(false, 'GrandTotalEx');
+
+    }
 }
 
 function IsValidDataUpload() {
@@ -169,6 +186,13 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
                 $("input[name='DestPlantName']").val(data.PlantName);
+                
+                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                $("input[name='RemainQuota']").val(data.RemainQuota);
             }
         });
     }
@@ -203,12 +227,12 @@ function ajaxGetPlantDetails(url, formData) {
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
 
-                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
-                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
-                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
-                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
-                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
-                $("input[name='RemainQuota']").val(data.RemainQuota);
+                //$("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                //$("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                //$("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                //$("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                //$("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                //$("input[name='RemainQuota']").val(data.RemainQuota);
                 
                // PopulateListPbckNumber(data.PbckList);
             }
@@ -385,8 +409,12 @@ function AddValidationClass(isValid, objName) {
 function ValidateCk5Form(ck5Type) {
     var result = true;
     var isValidCk5Detail = true;
-   
-   
+
+    //if ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val())
+    //    alert("True");
+    //else
+    //    alert('false');
+    
     if ($('#KppBcCity').find("option:selected").val() == '') {
         AddValidationClass(false, 'KppBcCity');
         result = false;
@@ -517,9 +545,16 @@ function ValidateCk5Form(ck5Type) {
         }
         
     }
-
+    //alert('type : ' + ck5Type);
+    //alert('Source Plant : ' + $('#SourceNppbkcId').val());
+    //alert('Dest Plant : ' + $('#DestNppbkcId').val());
+    
+    // && (ck5Type != 'Domestic')
     if (result) {
-        //total = parseFloat(datarows[i][1]); //Qty
+
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
+            return result;
+
         var total = parseFloat($('#GrandTotalEx').val());
         var remainQuota = parseFloat($('#RemainQuota').val());
         if (total > remainQuota) {
@@ -537,3 +572,48 @@ function ValidateCk5Form(ck5Type) {
     return result;
 }
 
+function ValidateGiCreated() {
+    var result = true;
+
+    if ($('#SealingNotifNumber').val() == '') {
+        AddValidationClass(false, 'SealingNotifNumber');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#SealingNotifNumber').focus();
+    }
+
+    if ($('#SealingNotifDate').val() == '') {
+        AddValidationClass(false, 'SealingNotifDate');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+       
+    }
+    return result;
+}
+
+function ValidateGRCreated() {
+    var result = true;
+
+    if ($('#UnSealingNotifNumber').val() == '') {
+        AddValidationClass(false, 'UnSealingNotifNumber');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#UnSealingNotifNumber').focus();
+    }
+
+    if ($('#UnsealingNotifDate').val() == '') {
+        AddValidationClass(false, 'UnsealingNotifDate');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+
+    }
+    return result;
+}

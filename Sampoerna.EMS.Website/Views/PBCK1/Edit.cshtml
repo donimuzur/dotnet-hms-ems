@@ -5,7 +5,7 @@
     ViewBag.Title = "Edit PBCK-1";
 }
 
-@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "EditForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -59,7 +59,6 @@
                             @Html.HiddenFor(model => model.Detail.PeriodTo)
                             @Html.HiddenFor(model => model.Detail.NppbkcId)
                             @Html.HiddenFor(model => model.Detail.GoodType)
-                            @Html.HiddenFor(model => model.Detail.SupplierPlant)
                             @Html.HiddenFor(model => model.Detail.PlanProdFrom)
                             @Html.HiddenFor(model => model.Detail.PlanProdTo)
                             @Html.HiddenFor(model => model.Detail.RequestQty)
@@ -68,9 +67,8 @@
                             @Html.HiddenFor(model => model.Detail.Lack1FormYear)
                             @Html.HiddenFor(model => model.Detail.Lack1ToMonthId)
                             @Html.HiddenFor(model => model.Detail.Lack1ToYear)
-                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
-                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
                             @Html.HiddenFor(model => model.Detail.GovApprovalActionType)
+                            @*@Html.HiddenFor(model => model.Detail.SupplierPlant)*@
                             @Html.Partial("_HomeGovApproval")
                         }
                         else
@@ -144,6 +142,11 @@
 
             $('#divComment').hide();
 
+            $("#btnSubmitConfirm").click(function () {
+                $('#Detail_IsSaveSubmit').val('submit');
+                $('#EditForm').submit();
+            });
+
             $('#Detail_StatusGov').on('change', function (e) {
                 var valueSelected = this.value;
 
@@ -169,7 +172,7 @@
 
             $("#btnSaveGovStatus").click(function () {
                 if (ValidateGovInput()) {
-                    $('#GovApproveForm').submit();
+                    $('#EditForm').submit();
                 }
             });
 
@@ -178,7 +181,8 @@
             });
 
             $("#Detail_SupplierPortId").change(function () {
-                //supplierPortOnChange();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                $('#Detail_SupplierPortName').val(port_name);
             });
 
             $('#btn-changelog-export-xls').click(function () {
@@ -225,13 +229,10 @@
             $("#btnSubmitDocument").click(function () {
                 $('#Pbck1Modal').modal('show');
             });
-
-            $("#btnSubmitConfirm").click(function () {
-                window.location = "@Url.Action("SubmitDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
-            });
-
+            
             $("#externalSupPort").click(function () {
                 supplierPortOnChange();
+                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             });
 
         });
@@ -315,7 +316,6 @@
         function supplierPortOnChange() {
             if ($("#Detail_SupplierPortId").length) {
                 var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
-                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if ($("#externalSupPort").is(':checked')) {
@@ -324,9 +324,9 @@
                     disableSupplierFormInput(false);
                     setSupplierPlantEmpty();
                 } else {
-                    $('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();
                     disableSupplierFormInput(true);
+                    //supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
                 }
 
             }
@@ -390,11 +390,12 @@
             $('#Detail_SupplierPlant_ddl').val($('#SupInfo_SupplierPlantWerks').val());
             $('#Detail_SupplierNppbkcId').val($('#SupInfo_SupplierNppkbc').val());
             $('#Detail_SupplierAddress').val($('#SupInfo_SupplierAddress').val());
-            $('#Detail_SupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
+            $('#Detail_SupplierKppbcName').val($('#SupInfo_SupplierKppkbc').val());
             $('#Detail_HiddenSupplierNppbkcId').val($('#SupInfo_SupplierNppkbc').val());
             $('#Detail_HiddendSupplierAddress').val($('#SupInfo_SupplierAddress').val());
             $('#Detail_HiddenSupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
             $('#Detail_SupplierPlant').val($('#SupInfo_SupplierPlantName').val());
+            $('#Detail_SupplierPhone').val($('#SupInfo_SupplierPhone').val());
 
             var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
 
