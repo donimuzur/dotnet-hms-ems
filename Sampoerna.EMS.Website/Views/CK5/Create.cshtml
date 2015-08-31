@@ -105,6 +105,25 @@
     </div>
 </div>
 
+<div id="ModalCk5PBCK1Quota" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Please fill Source and Destination plant</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -147,6 +166,7 @@
             if ($("#DestPlantId").length) {
                
                 var destPlant = $(this).find("option:selected").val();
+                
                 if (destPlant == '') {
                     $("input[name='DestNpwp']").val('');
                     $("input[name='DestNppbkcId']").val('');
@@ -163,7 +183,16 @@
                     $("input[name='Ck5TotalExciseable']").val('');
                     $("input[name='RemainQuota']").val('');
                 } else {
-                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: destPlant, submissionDate: '@DateTime.Now' });
+                    //debugger;
+                    var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                    if (sourcePlant == '') {
+
+                    } else {
+                        //var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
+                        @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: '@DateTime.Now' });*@
+                    }
+                    
                 }
             }
         });
