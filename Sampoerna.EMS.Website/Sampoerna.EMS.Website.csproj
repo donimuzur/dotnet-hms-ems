@@ -300,11 +300,11 @@
     <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
     <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
+    <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
-    <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />

@@ -95,4 +95,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
     }
 
+    public class Pbck1GetSupplierPlantByParamInput
+    {
+        public string NppbkcId { get; set; }
+        public string ExciseableGoodsTypeId { get; set; }
+    }
+
 }

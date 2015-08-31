@@ -92,11 +92,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexViewModel { Details = result };
 
             return PartialView("_Lack1Table", viewModel);
-
-
-            //model.Details = GetListByNppbkc(model);
-            //return PartialView("_Lack1Table", model);
-            return null;
         }
 
         #endregion
@@ -166,10 +161,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(data);
         }
 
+        /// <summary>
+        /// user for get received plant id
+        /// </summary>
+        /// <param name="nppbkcId"></param>
+        /// <returns></returns>
         public JsonResult GetPlantListByNppbkcId(string nppbkcId)
         {
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
-            var model = new Lack1CreateNppbkcViewModel() { PlantList = listPlant };
+            var model = new Lack1CreateViewModel() { ReceivePlantList = listPlant };
+            return Json(model);
+        }
+
+        public JsonResult GetExcisableGoodsTypeByNppbkcId(string nppbkcId)
+        {
+            var data = GetExciseGoodsTypeList(nppbkcId);
+            var model = new Lack1CreateViewModel() { ExGoodTypeList = data };
+            return Json(model);
+        }
+
+        public JsonResult GetSupplierListByParam(string nppbkcId, string excisableGoodsType)
+        {
+            var data = GetSupplierPlantListByParam(nppbkcId, excisableGoodsType);
+            var model = new Lack1CreateViewModel() { SupplierList = data };
             return Json(model);
         }
 
@@ -177,12 +191,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ----- create -----
 
-        public ActionResult Create()
+        public ActionResult Create(Enums.Lack1Level? lack1Level)
         {
-            var model = new Lack1CreateNppbkcViewModel
+
+            if (!lack1Level.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new Lack1CreateViewModel
             {
                 MainMenu = _mainMenu,
-                CurrentMenu = PageInfo
+                CurrentMenu = PageInfo,
+                Lack1Level = lack1Level.Value,
+                MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
+                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : ""
             };
 
             return CreateInitial(model);
@@ -190,7 +213,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Lack1CreateNppbkcViewModel model)
+        public ActionResult Create(Lack1CreateViewModel model)
         {
             try
             {
@@ -248,7 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult CreateInitial(Lack1CreateNppbkcViewModel model)
+        public ActionResult CreateInitial(Lack1CreateViewModel model)
         {
             return View("Create", InitialModel(model));
         }
@@ -261,7 +284,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(data, "NPPBKC_ID", "NPPBKC_ID");
         }
 
-        private Lack1CreateNppbkcViewModel InitialModel(Lack1CreateNppbkcViewModel model)
+        private SelectList GetExciseGoodsTypeList(string nppbkcId)
+        {
+            var data = _pbck1Bll.GetGoodsTypeByNppbkcId(nppbkcId);
+            return new SelectList(data, "EXC_GOOD_TYP", "EXT_TYP_DESC");
+        }
+
+        private SelectList GetSupplierPlantListByParam(string nppbkcId, string excisableGoodsType)
+        {
+            var data = _pbck1Bll.GetSupplierPlantByParam(new Pbck1GetSupplierPlantByParamInput()
+            {
+                NppbkcId = nppbkcId,
+                ExciseableGoodsTypeId = excisableGoodsType
+            });
+            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
+        }
+
+        private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -270,9 +309,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
-            model.PlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
-            model.SupplierList = GlobalFunctions.GetSupplierPlantList();
-            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsType);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
 
