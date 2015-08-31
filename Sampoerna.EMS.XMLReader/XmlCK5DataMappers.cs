@@ -217,6 +217,9 @@ namespace Sampoerna.EMS.XMLReader
                                     workflowHistory.ACTION = Enums.ActionType.StobGICompleted;
                                     var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
                                     item.STOB_NUMBER = stobNumber;
+                                    var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                    item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                       
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.StoRecCreated)
                                 {
