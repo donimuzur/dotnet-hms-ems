@@ -89,4 +89,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     }
 
+    public class Lack1GetLatestLack1ByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public Enums.Lack1Level? Lack1Level { get; set; }
+        public string NppbkcId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string ReceivedPlantId { get; set; }
+        public DateTime PeriodTo { get; set; }
+    }
+
 }

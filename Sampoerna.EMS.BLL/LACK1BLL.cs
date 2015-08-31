@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
-using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -21,8 +19,7 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private IGenericRepository<LACK1> _repository;
-        private IGenericRepository<LACK1_PRODUCTION_DETAIL> _productionDetailRepository;
+        
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
@@ -36,15 +33,12 @@ namespace Sampoerna.EMS.BLL
         private ICK5Service _ck5Service;
         private IPBCK1Service _pbck1Service;
         private IT001KService _t001KService;
+        private ILACK1Service _lack1Service;
         
-        private string includeTables = "UOM, UOM1, MONTH";
-
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
-            _repository = _uow.GetGenericRepository<LACK1>();
-            _productionDetailRepository = _uow.GetGenericRepository<LACK1_PRODUCTION_DETAIL>();
 
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
@@ -54,55 +48,18 @@ namespace Sampoerna.EMS.BLL
             _ck5Service = new CK5Service(_uow, _logger);
             _pbck1Service = new PBCK1Service(_uow, _logger);
             _t001KService = new T001KService(_uow, _logger);
+            _lack1Service = new LACK1Service(_uow, _logger);
         }
         
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
-            includeTables += ", LACK1_PLANT";
-            Expression<Func<LACK1, bool>> queryFilter = c => c.LACK1_LEVEL == input.Lack1Level;
-
-            queryFilter = queryFilter.And(ProcessQueryFilter(input));
-            
-            Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
-
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK1>(input.SortOrderColumn));
-            }
-
-            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            if (dbData == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
-
-            var mapResult = Mapper.Map<List<Lack1Dto>>(dbData.ToList());
-
-            return mapResult;
+            return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
         }
 
         public List<Lack1Dto> GetCompletedDocumentByParam(Lack1GetByParamInput input)
         {
-            includeTables += ", LACK1_PLANT";
-            Expression<Func<LACK1, bool>> queryFilter = c => (int) c.STATUS >= (int) Enums.DocumentStatus.Completed;
-
-            queryFilter = queryFilter.And(ProcessQueryFilter(input));
-
-            Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
-
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK1>(input.SortOrderColumn));
-            }
-
-            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            if (dbData == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
-
+            var dbData = _lack1Service.GetCompletedDocumentByParam(input);
             var mapResult = Mapper.Map<List<Lack1Dto>>(dbData.ToList());
-
             return mapResult;
         }
 
@@ -114,7 +71,7 @@ namespace Sampoerna.EMS.BLL
             {
 
                 //update
-                dbData = _repository.Get(c => c.LACK1_ID == input.Lack1.Lack1Id, null, includeTables).FirstOrDefault();
+                dbData = _lack1Service.GetById(input.Lack1.Lack1Id);
 
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -145,7 +102,7 @@ namespace Sampoerna.EMS.BLL
                 dbData = new LACK1();
                 Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
 
-                _repository.Insert(dbData);
+                _lack1Service.Insert(dbData);
 
             }
 
@@ -178,35 +135,7 @@ namespace Sampoerna.EMS.BLL
 
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
         {
-            var dtTo = new DateTime(input.YearTo, input.MonthTo, 1);
-
-            var getData = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
-                                               &&
-                                               (int)c.STATUS >= (int)Enums.DocumentStatus.Approved, null,
-                "").ToList().Select(p => new
-                {
-                    p.LACK1_ID,
-                    p.LACK1_NUMBER,
-                    p.PERIOD_MONTH,
-                    p.PERIOD_YEAR,
-                    p.BEGINING_BALANCE,
-                    p.TOTAL_INCOME,
-                    p.USAGE,
-                    p.TOTAL_PRODUCTION,
-                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
-                }).ToList();
-
-            if (getData.Count == 0) return 0;
-
-            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
-
-            if (selected == null) return 0;
-
-            decimal rc = 0;
-
-            rc = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
-
-            return rc;
+            return _lack1Service.GetLatestSaldoPerPeriod(input);
         }
 
         #region Private Methods
@@ -240,54 +169,7 @@ namespace Sampoerna.EMS.BLL
             }
 
         }
-
-        private Expression<Func<LACK1, bool>> ProcessQueryFilter(Lack1GetByParamInput input)
-        {
-
-            Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
-
-            //filter search by nppbkc id, both Level NPPBKC and Level Plant
-            if (!string.IsNullOrEmpty(input.NppbKcId))
-            {
-                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbKcId);
-            }
-
-            //filter search by plant id, only LACK-1 Level Plant
-            if (!string.IsNullOrEmpty(input.PlantId))
-            {
-                queryFilter =
-                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.PlantId));
-            }
-
-            //filter search by poa, both Lack-1 Level
-            if (!string.IsNullOrEmpty(input.Poa))
-            {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY_POA == input.Poa);
-            }
-
-            //filter search by creator
-            if (!string.IsNullOrEmpty(input.Creator))
-            {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
-            }
-
-            if (input.SubmissionDate.HasValue)
-            {
-                queryFilter =
-                    queryFilter.And(
-                        c =>
-                            c.SUBMISSION_DATE.HasValue &&
-                            c.SUBMISSION_DATE.Value == input.SubmissionDate.Value);
-            }
-
-            if (input.IsOpenDocumentOnly)
-            {
-                queryFilter = queryFilter.And(c => (int) c.STATUS <= (int) Enums.DocumentStatus.WaitingGovApproval);
-            }
-
-            return queryFilter;
-        }
-
+        
         #endregion
 
         #region workflow
@@ -307,10 +189,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetByPeriod(Lack1GetByPeriodParamInput input)
         {
-            var getData =
-                _repository.Get(
-                    c => c.NPPBKC_ID == input.NppbkcId && (int) c.STATUS >= (int) Enums.DocumentStatus.Approved, null,
-                    "").ToList();
+            var getData = _lack1Service.GetByPeriod(input);
 
             if (getData.Count == 0) return new List<Lack1Dto>();
 
@@ -321,20 +200,12 @@ namespace Sampoerna.EMS.BLL
                     .OrderByDescending(o => o.Periode)
                     .ToList();
 
-            if (selected.Count == 0) return new List<Lack1Dto>();
-
-            return selected;
-
+            return selected.Count == 0 ? new List<Lack1Dto>() : selected;
         }
 
         internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
         {
-            var getData =
-                _productionDetailRepository.Get(
-                    c =>
-                        c.LACK1.NPPBKC_ID == input.NppbkcId &&
-                        (int) c.LACK1.STATUS >= (int) Enums.DocumentStatus.Approved, null,
-                    "LACK1, LACK1.UOM11, LACK1.MONTH");
+            var getData = _lack1Service.GetProductionDetailByPeriode(input);
             
             if(getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
             
@@ -456,35 +327,16 @@ namespace Sampoerna.EMS.BLL
 
             //valid input
             var dtTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1);
-
-            Expression<Func<LACK1, bool>> queryFilter =
-                c => c.BUKRS == input.CompanyCode && c.LACK1_LEVEL == input.Lack1Level
-                     && c.NPPBKC_ID == input.NppbkcId && c.NPPBKC_ID == input.NppbkcId
-                     && (int)c.STATUS >= (int)Enums.DocumentStatus.Approved
-                     && c.EX_GOODTYP == input.ExcisableGoodsType
-                     && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId;
-
-            if (input.Lack1Level == Enums.Lack1Level.Plant)
+            var selected = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
             {
-                queryFilter =
-                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivedPlantId));
-            }
-
-            var getData = _repository.Get(queryFilter, null,
-                "").ToList().Select(p => new
-                {
-                    p.LACK1_ID,
-                    p.LACK1_NUMBER,
-                    p.PERIOD_MONTH,
-                    p.PERIOD_YEAR,
-                    p.BEGINING_BALANCE,
-                    p.TOTAL_INCOME,
-                    p.USAGE,
-                    p.TOTAL_PRODUCTION,
-                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
-                }).ToList();
-
-            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
+                CompanyCode = input.CompanyCode,
+                Lack1Level = input.Lack1Level,
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+                SupplierPlantId = input.SupplierPlantId,
+                ReceivedPlantId = input.ReceivedPlantId,
+                PeriodTo = dtTo
+            });
 
             if (selected != null)
             {
