@@ -152,10 +152,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier NPPBKC</label>
+                                        <label class="col-md-4">Supplier Company</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.SupInfo.SupplierNppkbc)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Detail.SupplierCompany, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -167,6 +166,15 @@
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.SupInfo.SupplierAddress)
                                             @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Supplier NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierNppkbc)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
