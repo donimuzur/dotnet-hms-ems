@@ -173,7 +173,7 @@ function ajaxGetPbck1Date(url, formData) {
 }
 
 function ajaxGetDestPlantDetails(url, formData) {
-    if (formData.plantId) {
+    if (formData.destPlantId) {
         $.ajax({
             type: 'POST',
             url: url,

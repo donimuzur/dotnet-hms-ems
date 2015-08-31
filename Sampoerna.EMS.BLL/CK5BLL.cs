@@ -1922,13 +1922,15 @@ namespace Sampoerna.EMS.BLL
                 var periodStart = listPbck1[0].PeriodFrom;
                 var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
 
+                var pbck1npbkc = listPbck1[0].NppbkcId;
                 //get ck5 
                 var lisCk5 =
                     _repository.Get(
                         c =>
-                            c.STATUS_ID != Enums.DocumentStatus.Cancelled &&
-                            c.SOURCE_PLANT_ID == plantId
-                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd);
+                            c.STATUS_ID != Enums.DocumentStatus.Cancelled 
+                            && c.SOURCE_PLANT_ID == plantId
+                            && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc 
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd).ToList();
 
                 decimal qtyCk5 = 0;
 
