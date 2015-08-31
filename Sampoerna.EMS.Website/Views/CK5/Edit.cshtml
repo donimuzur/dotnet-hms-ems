@@ -243,7 +243,8 @@
                 $("input[name='RemainQuota']").val('');
 
             } else {
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: destPlant, submissionDate: '@DateTime.Now' });
+                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
 
             }
         }
