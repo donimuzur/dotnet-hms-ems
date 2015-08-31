@@ -62,6 +62,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
                .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
+               .ForMember(dest => dest.SUPPLIER_COMPANY, opt => opt.MapFrom(src => src.T001K.T001.BUTXT))
                 ;
 
             Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting()
