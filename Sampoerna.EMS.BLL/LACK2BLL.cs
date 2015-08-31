@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -162,6 +163,7 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2Dto GetByIdAndItem(int id)
         {
+           
             return Mapper.Map<Lack2Dto>(_repositoryItem.Get(x=>x.LACK2_ID == id, null, "LACK2, CK5"));
         }
 
