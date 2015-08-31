@@ -59,10 +59,7 @@ namespace Sampoerna.EMS.XMLReader
                         user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
                         user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
                         user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
-                        if (user.EMAIL.Length > 35)
-                        {
-                            user.EMAIL = user.EMAIL.Substring(0, 35);
-                        }
+                        
                        
                         var ExistUser = GetUser(user.USER_ID);
                         if (ExistUser == null)

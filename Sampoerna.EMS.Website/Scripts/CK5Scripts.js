@@ -186,6 +186,13 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
                 $("input[name='DestPlantName']").val(data.PlantName);
+                
+                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                $("input[name='RemainQuota']").val(data.RemainQuota);
             }
         });
     }
@@ -220,12 +227,12 @@ function ajaxGetPlantDetails(url, formData) {
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
 
-                $("input[name='PbckDecreeId']").val(data.Pbck1Id);
-                $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
-                $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
-                $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
-                $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
-                $("input[name='RemainQuota']").val(data.RemainQuota);
+                //$("input[name='PbckDecreeId']").val(data.Pbck1Id);
+                //$("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
+                //$("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
+                //$("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
+                //$("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
+                //$("input[name='RemainQuota']").val(data.RemainQuota);
                 
                // PopulateListPbckNumber(data.PbckList);
             }
@@ -538,11 +545,16 @@ function ValidateCk5Form(ck5Type) {
         }
         
     }
-
+    //alert('type : ' + ck5Type);
+    //alert('Source Plant : ' + $('#SourceNppbkcId').val());
+    //alert('Dest Plant : ' + $('#DestNppbkcId').val());
+    
     // && (ck5Type != 'Domestic')
     if (result) {
-      
-        //total = parseFloat(datarows[i][1]); //Qty
+
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
+            return result;
+
         var total = parseFloat($('#GrandTotalEx').val());
         var remainQuota = parseFloat($('#RemainQuota').val());
         if (total > remainQuota) {

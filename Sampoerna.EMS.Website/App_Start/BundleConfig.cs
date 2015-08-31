@@ -41,13 +41,13 @@ namespace Sampoerna.EMS.Website
                       "~/Scripts/js/vendors/jquery.fixedheadertable.min.js"
                       ));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
+            bundles.Add(new StyleBundle("~/bundles/css").Include(
                       "~/Content/css/main.min.css",
                       "~/Content/css/vendors/yamm.css",
                       "~/Content/css/vendors/font-awesome.min.css"
                       ));
 
-            bundles.Add(new StyleBundle("~/Content/jqueryui/autocomplete/css").Include(
+            bundles.Add(new StyleBundle("~/bundles/jqueryui/autocomplete/css").Include(
                         "~/Content/themes/base/core.css",
                         "~/Content/themes/base/autocomplete.css")
                         );
@@ -59,6 +59,7 @@ namespace Sampoerna.EMS.Website
                       "~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"
                     
                       ));
+            BundleTable.EnableOptimizations = false;
         }
     }
 }

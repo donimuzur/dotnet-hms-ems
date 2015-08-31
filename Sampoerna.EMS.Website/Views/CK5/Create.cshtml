@@ -134,7 +134,6 @@
                 if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
                     $('#SaveCk5Forms').submit();
                 }
-
             });
 
             $('#CK5UploadSubmitBtn').click(function() {
@@ -146,6 +145,7 @@
       
         $("#DestPlantId").change(function() {
             if ($("#DestPlantId").length) {
+               
                 var destPlant = $(this).find("option:selected").val();
                 if (destPlant == '') {
                     $("input[name='DestNpwp']").val('');
@@ -155,8 +155,15 @@
                     $("*[name='DestAddress']").val('');
                     $("input[name='DestKppbcName']").val('');
                     $("input[name='DestPlantName']").val('');
+                    
+                    $("input[name='PbckDecreeId']").val('');
+                    $("input[name='PbckDecreeNumber']").val('');
+                    $("input[name='PbckDecreeDate']").val('');
+                    $("input[name='Pbck1QtyApproved']").val('');
+                    $("input[name='Ck5TotalExciseable']").val('');
+                    $("input[name='RemainQuota']").val('');
                 } else {
-                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: destPlant, submissionDate: '@DateTime.Now' });
                 }
             }
         });
@@ -171,8 +178,6 @@
                 } catch(e) {
 
                 } 
-                
-
                 if (sourcePlant == '') {
                     $("input[name='SourceNpwp']").val('');
                     $("input[name='SourceNppbkcId']").val('');
@@ -188,16 +193,16 @@
                     $("input[name='KppBcCity']").val('');
                     $("input[name='CeOfficeCode']").val('');
                     
-                    $("input[name='PbckDecreeId']").val('');
-                    $("input[name='PbckDecreeNumber']").val('');
-                    $("input[name='PbckDecreeDate']").val('');
-                    $("input[name='Pbck1QtyApproved']").val('');
-                    $("input[name='Ck5TotalExciseable']").val('');
-                    $("input[name='RemainQuota']").val('');
+                    //$("input[name='PbckDecreeId']").val('');
+                    //$("input[name='PbckDecreeNumber']").val('');
+                    //$("input[name='PbckDecreeDate']").val('');
+                    //$("input[name='Pbck1QtyApproved']").val('');
+                    //$("input[name='Ck5TotalExciseable']").val('');
+                    //$("input[name='RemainQuota']").val('');
 
                 } else {
-                    @*ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckList", "CK5")', { plantId: sourcePlant });*@
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: '@DateTime.Now' });
+                  
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
                 }
             }
         });

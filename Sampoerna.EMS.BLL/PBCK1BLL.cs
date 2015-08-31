@@ -1583,11 +1583,11 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
 
-        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate)
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId)
         {
             var dbData =
                 _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate).OrderByDescending(p=>p.CREATED_DATE);
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId).OrderByDescending(p => p.CREATED_DATE);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
