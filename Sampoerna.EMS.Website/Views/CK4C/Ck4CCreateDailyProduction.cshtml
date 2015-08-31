@@ -48,19 +48,17 @@
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">CK-4C No</label>
+                                                                <label class="col-md-4">Company<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    <input type="text" placeholder="" class="form-control">
+                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyList, "All", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Company</label>
+                                                                <label class="col-md-4">Plant<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    <select class="form-control">
-                                                                        <option>PT HM Sampoerna</option>
-                                                                    </select>
+                                                                    @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "All", new { @class = "form-control", id = "SearchInput_PlantId" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -79,29 +77,33 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Finish Goods</label>
+                                                                <label class="col-md-4">Finish Good<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    <select class="form-control">
-                                                                        <option>SKT</option>
-                                                                    </select>
+                                                                    @Html.DropDownListFor(model => model.FinishGoods, Model.FinishGoodList, "All", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Qty</label>
+                                                                <label class="col-md-4">Qty Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    <input type="text" placeholder="" class="form-control">
+                                                                    @Html.TextBoxFor(model => model.QtyPacked, new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Uom</label>
+                                                                <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    <select class="form-control">
-                                                                        <option>Stick</option>
-                                                                    </select>
+                                                                    @Html.TextBoxFor(model => model.QtyUnpacked, new { @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Uom<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(model => model.Uom, Model.UomList, "All", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -109,15 +111,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Description</label>
                                                                 <div class="col-md-8">
-                                                                    <textarea rows="5" class="form-control"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4">Created By</label>
-                                                                <div class="col-md-8">
-                                                                    <input type="text" placeholder="" class="form-control">
+                                                                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -182,5 +176,38 @@
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cDailyProduction').addClass('active');
 
+
+        $("#CompanyCode").change(function () {
+            if ($("#CompanyCode").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+
+                } else {
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialCk4C", "CK4C")', { companyId: cpy });
+                }
+            }
+        });
+
+        function ajaxSelectCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var listPlant = data.PlanIdList;
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
     </script>
 }

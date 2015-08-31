@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.Ck4CItemId, opt => opt.MapFrom(dest => dest.CK4C_ITEM_ID))
                 .ForMember(src => src.FaCode, opt => opt.MapFrom(dest => dest.FA_CODE))
                 .ForMember(src => src.Werks, opt => opt.MapFrom(dest => dest.WERKS))
-                .ForMember(src => src.ProdQty, opt => opt.MapFrom(dest => dest.PROD_QTY))
+                .ForMember(src => src.ProdQtyPacked, opt => opt.MapFrom(dest => dest.PROD_QTY))
                 .ForMember(src => src.UomProudQty, opt => opt.MapFrom(dest => dest.UOM_PROD_QTY))
                 .ForMember(src => src.ProdDate, opt => opt.MapFrom(dest => dest.PROD_DATE));
 

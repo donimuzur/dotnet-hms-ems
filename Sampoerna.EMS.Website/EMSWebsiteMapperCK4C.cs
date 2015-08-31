@@ -47,8 +47,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.FinishGoods, opt => opt.MapFrom(src => src.FaCode))
-                //.ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.));
-                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ProdQty))
+                .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.ProdQtyPacked))
+                .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.ProdQtyUnpacked))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UomProudQty))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy));
 
@@ -57,8 +57,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CompnayId, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FinishGoods))
-                //.ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.));
-                .ForMember(dest => dest.ProdQty, opt => opt.MapFrom(src => src.Qty))
+                .ForMember(dest => dest.ProdQtyPacked, opt => opt.MapFrom(src => src.QtyPacked))
+                .ForMember(dest => dest.ProdQtyUnpacked, opt => opt.MapFrom(src => src.QtyUnpacked))
                 .ForMember(dest => dest.UomProudQty, opt => opt.MapFrom(src => src.Uom))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy));
 

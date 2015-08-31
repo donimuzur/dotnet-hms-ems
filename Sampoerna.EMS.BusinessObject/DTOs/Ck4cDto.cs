@@ -37,7 +37,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public long Ck4CItemId { get; set; }
         public string FaCode { get; set; }
         public string Werks { get; set; }
-        public Decimal ProdQty { get; set; }
+        public Decimal ProdQtyPacked { get; set; }
+        public Decimal ProdQtyUnpacked { get; set; }
         public string UomProudQty { get; set; }
         public string ProdDate { get; set; }
 
