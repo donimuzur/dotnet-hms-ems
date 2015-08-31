@@ -65,10 +65,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
 
-        public List<Lack2Item> Items;
+        public List<Lack2ItemModel> Items { get; set; }
     }
 
-    public class Lack2Item
+    public class Lack2ItemModel
     {
         public long Lack2ItemId { get; set; }
 

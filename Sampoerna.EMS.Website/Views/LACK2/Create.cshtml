@@ -147,8 +147,9 @@
                                                             <div class="row">
                                                                 <label class="col-md-4 long">Excisable Goods Type</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(x => x.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new {@class = "form-control"})
-
+                                                                    <select name="Lack2Model.ExGoodTyp" id="Lack2Model_ExGoodTyp" class="form-control">
+                                                                        <option>select</option>
+                                                                    </select>
 
                                                                 </div>
                                                             </div>
@@ -568,8 +569,10 @@
                 type: 'POST',
                 url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
-                success: function(data) {
-                   
+                success: function (data) {
+                    $('#Lack2Model_LevelPlantId').html('');
+                    $('#Lack2Model_LevelPlantId').append('<option></option>');
+                    
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
                     }
@@ -584,8 +587,9 @@
                 url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
                 data: { nppbkcid: nppbkc },
                 success: function (data) {
-                    console.log(data);
+                    
                     $('#Lack2Model_ExGoodTyp').html('');
+                    $('#Lack2Model_ExGoodTyp').append('<option>select</option>');
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
                     }
@@ -596,16 +600,18 @@
         function GetCk5ByPeriod() {
             var month = parseInt($('#Lack2Model_PeriodMonth').val());
             var year = parseInt($('#Lack2Model_PeriodYear').val());
+            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
+            var desPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-                data: { month: month, year: year },
+                data: { month: month, year: year, desPlantId : desPlantId, goodstype: goodstype },
                 success: function (data) {
                    
                     if (data.length > 0) {
                         $('#tb-body-ck5-lack2').html("");
                         for (var i = 0; i < data.length; i++) {
-                            var tableCk5Item = '<tr><td><input type="hidden" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '/>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                            var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
                                 '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
                                 '<td>' + data[i].GIDateStr + '</td>' +
                                 '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +

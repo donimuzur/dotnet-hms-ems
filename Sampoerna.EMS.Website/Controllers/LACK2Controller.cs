@@ -99,7 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            //model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = GlobalFunctions.GetYearList();
@@ -137,7 +137,7 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = item.PeriodYear;
             inputDoc.NppbkcId = item.NppbkcId;
             item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
-           
+            item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
             
              item.Status = Enums.DocumentStatus.Draft;
             
@@ -393,7 +393,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId)
+        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId, string goodstype)
         {
             var data =  _ck5Bll.GetByGIDate(month, year, desPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
