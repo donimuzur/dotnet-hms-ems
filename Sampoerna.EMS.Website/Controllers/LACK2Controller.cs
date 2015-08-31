@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using CrystalDecisions.CrystalReports.Engine;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using System;
@@ -402,8 +403,13 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetGoodsTypeByNPPBKC(string nppbkcid)
         {
-            var data = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() {NppbkcId = nppbkcid});
-
+            var pbck1list = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() {NppbkcId = nppbkcid});
+            var data = pbck1list.GroupBy(x => new {x.GoodType, x.GoodTypeDesc}).Select(x=>new SelectItemModel()
+            {
+               ValueField = x.Key.GoodType,
+               TextField = x.Key.GoodType + "-" + x.Key.GoodTypeDesc,
+            }).ToList();
+            
             return Json(data);
 
         }
