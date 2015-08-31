@@ -556,6 +556,7 @@
                 $('#Lack2Model_LevelPlantId').append('<option value="">select</option>');
                 if (nppbkc != '') {
                     ajaxGetPlantByNppbkc(nppbkc);
+                    ajaxGetGoodsTypeByNppbkc(nppbkc);
                 }
             }
 
@@ -568,7 +569,7 @@
                 url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
                 success: function(data) {
-                    console.log(data);
+                   
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
                     }
@@ -576,7 +577,21 @@
             });
 
         }
+        function ajaxGetGoodsTypeByNppbkc(nppbkc) {
 
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        //$('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                    }
+                }
+            });
+
+        }
         function GetCk5ByPeriod() {
             var month = parseInt($('#Lack2Model_PeriodMonth').val());
             var year = parseInt($('#Lack2Model_PeriodYear').val());
@@ -591,7 +606,7 @@
                         for (var i = 0; i < data.length; i++) {
                             var tableCk5Item = '<tr><td><input type="hidden" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '/>' + (parseInt(i) + parseInt(1)) + '</td>' +
                                 '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                                '<td>' + $.parseJSON(data[i].GI_DATE) + '</td>' +
+                                '<td>' + data[i].GI_DATE + '</td>' +
                                 '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
                                 '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
                                 '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +

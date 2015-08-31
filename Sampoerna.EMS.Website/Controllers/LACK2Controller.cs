@@ -1,4 +1,8 @@
-﻿using Sampoerna.EMS.Contract;
+﻿using System.Configuration;
+using System.Data;
+using System.IO;
+using CrystalDecisions.CrystalReports.Engine;
+using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
@@ -29,7 +33,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
         private ICK5BLL _ck5Bll;
-        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
+        private IPBCK1BLL _pbck1Bll;
+        private IHeaderFooterBLL _headerFooterBll;
+        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
             IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
@@ -44,6 +50,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _goodTypeBll = goodTypeBll;
             _documentSequenceNumberBll = documentSequenceNumberBll;
             _ck5Bll = ck5Bll;
+            _pbck1Bll = pbck1Bll;
+            _headerFooterBll = headerFooterBll;
         }
 
 
@@ -390,6 +398,91 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(data);
 
         }
+
+        [HttpPost]
+        public JsonResult GetGoodsTypeByNPPBKC(string nppbkcid)
+        {
+            var data = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() {NppbkcId = nppbkcid});
+
+            return Json(data);
+
+        }
+
+        public ActionResult PrintPreview()
+        {
+            DataSet ds = new DataSet("Lack2Ds");
+
+            DataTable dt = new DataTable("Master");
+
+            // object of data row 
+            DataRow drow;
+            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
+            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
+            drow = dt.NewRow();
+            drow[0] = "company name";
+            drow[1] = "nppb ck nn";
+            drow[2] = "ssssss";
+            drow[3] = GetHeader("~/files_upload/1616_header04082015165943_.jpg");
+            drow[4] = "this is footer";
+            dt.Rows.Add(drow);
+            ds.Tables.Add(dt);
+            ReportClass rpt = new ReportClass();
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "LACK2\\Preview.rpt";
+            rpt.Load();
+            rpt.SetDataSource(dt);
+
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+              
+
+                br.Close();
+                // close the binary reader 
+                fs.Close();
+                // close the file stream 
+
+              
+
+
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
+
+        }
+
     }
 
 }
