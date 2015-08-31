@@ -417,11 +417,6 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Reports\LACK2\Lack2Ds.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Lack2Ds.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -767,17 +762,6 @@
     </None>
     <Content Include="Reports\HeaderFooter\HeaderFooterDs.xss">
       <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
-    </Content>
-    <Content Include="Reports\LACK2\Lack2Ds.xsc">
-      <DependentUpon>Lack2Ds.xsd</DependentUpon>
-    </Content>
-    <None Include="Reports\LACK2\Lack2Ds.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>Lack2Ds.Designer.cs</LastGenOutput>
-    </None>
-    <Content Include="Reports\LACK2\Lack2Ds.xss">
-      <DependentUpon>Lack2Ds.xsd</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />

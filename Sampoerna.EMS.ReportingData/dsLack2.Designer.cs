@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace Sampoerna.EMS.Website.Reports.LACK2 {
+namespace Sampoerna.EMS.ReportingData {
     
     
     /// <summary>
@@ -20,19 +20,19 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
     [global::System.ComponentModel.DesignerCategoryAttribute("code")]
     [global::System.ComponentModel.ToolboxItem(true)]
     [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedDataSetSchema")]
-    [global::System.Xml.Serialization.XmlRootAttribute("LACK2")]
+    [global::System.Xml.Serialization.XmlRootAttribute("dsLack2")]
     [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.DataSet")]
-    public partial class LACK2 : global::System.Data.DataSet {
+    public partial class dsLack2 : global::System.Data.DataSet {
         
-        private MasterDataTable tableMaster;
+        private Lack2DataTable tableLack2;
         
-        private DetailDataTable tableDetail;
+        private Lack2ItemDataTable tableLack2Item;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public LACK2() {
+        public dsLack2() {
             this.BeginInit();
             this.InitClass();
             global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        protected LACK2(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+        protected dsLack2(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                 base(info, context, false) {
             if ((this.IsBinarySerialized(info, context) == true)) {
                 this.InitVars(false);
@@ -56,11 +56,11 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             if ((this.DetermineSchemaSerializationMode(info, context) == global::System.Data.SchemaSerializationMode.IncludeSchema)) {
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXmlSchema(new global::System.Xml.XmlTextReader(new global::System.IO.StringReader(strSchema)));
-                if ((ds.Tables["Master"] != null)) {
-                    base.Tables.Add(new MasterDataTable(ds.Tables["Master"]));
+                if ((ds.Tables["Lack2"] != null)) {
+                    base.Tables.Add(new Lack2DataTable(ds.Tables["Lack2"]));
                 }
-                if ((ds.Tables["Detail"] != null)) {
-                    base.Tables.Add(new DetailDataTable(ds.Tables["Detail"]));
+                if ((ds.Tables["Lack2Item"] != null)) {
+                    base.Tables.Add(new Lack2ItemDataTable(ds.Tables["Lack2Item"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -84,9 +84,9 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public MasterDataTable Master {
+        public Lack2DataTable Lack2 {
             get {
-                return this.tableMaster;
+                return this.tableLack2;
             }
         }
         
@@ -94,9 +94,9 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public DetailDataTable Detail {
+        public Lack2ItemDataTable Lack2Item {
             get {
-                return this.tableDetail;
+                return this.tableLack2Item;
             }
         }
         
@@ -142,7 +142,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public override global::System.Data.DataSet Clone() {
-            LACK2 cln = ((LACK2)(base.Clone()));
+            dsLack2 cln = ((dsLack2)(base.Clone()));
             cln.InitVars();
             cln.SchemaSerializationMode = this.SchemaSerializationMode;
             return cln;
@@ -167,11 +167,11 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
                 this.Reset();
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXml(reader);
-                if ((ds.Tables["Master"] != null)) {
-                    base.Tables.Add(new MasterDataTable(ds.Tables["Master"]));
+                if ((ds.Tables["Lack2"] != null)) {
+                    base.Tables.Add(new Lack2DataTable(ds.Tables["Lack2"]));
                 }
-                if ((ds.Tables["Detail"] != null)) {
-                    base.Tables.Add(new DetailDataTable(ds.Tables["Detail"]));
+                if ((ds.Tables["Lack2Item"] != null)) {
+                    base.Tables.Add(new Lack2ItemDataTable(ds.Tables["Lack2Item"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -206,16 +206,16 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         internal void InitVars(bool initTable) {
-            this.tableMaster = ((MasterDataTable)(base.Tables["Master"]));
+            this.tableLack2 = ((Lack2DataTable)(base.Tables["Lack2"]));
             if ((initTable == true)) {
-                if ((this.tableMaster != null)) {
-                    this.tableMaster.InitVars();
+                if ((this.tableLack2 != null)) {
+                    this.tableLack2.InitVars();
                 }
             }
-            this.tableDetail = ((DetailDataTable)(base.Tables["Detail"]));
+            this.tableLack2Item = ((Lack2ItemDataTable)(base.Tables["Lack2Item"]));
             if ((initTable == true)) {
-                if ((this.tableDetail != null)) {
-                    this.tableDetail.InitVars();
+                if ((this.tableLack2Item != null)) {
+                    this.tableLack2Item.InitVars();
                 }
             }
         }
@@ -223,26 +223,26 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private void InitClass() {
-            this.DataSetName = "LACK2";
+            this.DataSetName = "dsLack2";
             this.Prefix = "";
-            this.Namespace = "http://tempuri.org/LACK2.xsd";
+            this.Namespace = "http://tempuri.org/dsLack2.xsd";
             this.EnforceConstraints = true;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
-            this.tableMaster = new MasterDataTable();
-            base.Tables.Add(this.tableMaster);
-            this.tableDetail = new DetailDataTable();
-            base.Tables.Add(this.tableDetail);
+            this.tableLack2 = new Lack2DataTable();
+            base.Tables.Add(this.tableLack2);
+            this.tableLack2Item = new Lack2ItemDataTable();
+            base.Tables.Add(this.tableLack2Item);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        private bool ShouldSerializeMaster() {
+        private bool ShouldSerializeLack2() {
             return false;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        private bool ShouldSerializeDetail() {
+        private bool ShouldSerializeLack2Item() {
             return false;
         }
         
@@ -257,7 +257,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedDataSetSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
-            LACK2 ds = new LACK2();
+            dsLack2 ds = new dsLack2();
             global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
             global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
             global::System.Xml.Schema.XmlSchemaAny any = new global::System.Xml.Schema.XmlSchemaAny();
@@ -302,17 +302,17 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         }
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public delegate void MasterRowChangeEventHandler(object sender, MasterRowChangeEvent e);
+        public delegate void Lack2RowChangeEventHandler(object sender, Lack2RowChangeEvent e);
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public delegate void DetailRowChangeEventHandler(object sender, DetailRowChangeEvent e);
+        public delegate void Lack2ItemRowChangeEventHandler(object sender, Lack2ItemRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class MasterDataTable : global::System.Data.TypedTableBase<MasterRow> {
+        public partial class Lack2DataTable : global::System.Data.TypedTableBase<Lack2Row> {
             
             private global::System.Data.DataColumn columnCompanyName;
             
@@ -324,12 +324,10 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             private global::System.Data.DataColumn columnFooter;
             
-            private global::System.Data.DataColumn columnPeriod;
-            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterDataTable() {
-                this.TableName = "Master";
+            public Lack2DataTable() {
+                this.TableName = "Lack2";
                 this.BeginInit();
                 this.InitClass();
                 this.EndInit();
@@ -337,7 +335,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal MasterDataTable(global::System.Data.DataTable table) {
+            internal Lack2DataTable(global::System.Data.DataTable table) {
                 this.TableName = table.TableName;
                 if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
                     this.CaseSensitive = table.CaseSensitive;
@@ -354,7 +352,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected MasterDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+            protected Lack2DataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
             }
@@ -401,14 +399,6 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn PeriodColumn {
-                get {
-                    return this.columnPeriod;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -418,50 +408,49 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRow this[int index] {
+            public Lack2Row this[int index] {
                 get {
-                    return ((MasterRow)(this.Rows[index]));
+                    return ((Lack2Row)(this.Rows[index]));
                 }
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event MasterRowChangeEventHandler MasterRowChanging;
+            public event Lack2RowChangeEventHandler Lack2RowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event MasterRowChangeEventHandler MasterRowChanged;
+            public event Lack2RowChangeEventHandler Lack2RowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event MasterRowChangeEventHandler MasterRowDeleting;
+            public event Lack2RowChangeEventHandler Lack2RowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event MasterRowChangeEventHandler MasterRowDeleted;
+            public event Lack2RowChangeEventHandler Lack2RowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void AddMasterRow(MasterRow row) {
+            public void AddLack2Row(Lack2Row row) {
                 this.Rows.Add(row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRow AddMasterRow(string CompanyName, string Nppbkc, string Alamat, byte[] Header, string Footer, string Period) {
-                MasterRow rowMasterRow = ((MasterRow)(this.NewRow()));
+            public Lack2Row AddLack2Row(string CompanyName, string Nppbkc, string Alamat, byte[] Header, string Footer) {
+                Lack2Row rowLack2Row = ((Lack2Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         CompanyName,
                         Nppbkc,
                         Alamat,
                         Header,
-                        Footer,
-                        Period};
-                rowMasterRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowMasterRow);
-                return rowMasterRow;
+                        Footer};
+                rowLack2Row.ItemArray = columnValuesArray;
+                this.Rows.Add(rowLack2Row);
+                return rowLack2Row;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public override global::System.Data.DataTable Clone() {
-                MasterDataTable cln = ((MasterDataTable)(base.Clone()));
+                Lack2DataTable cln = ((Lack2DataTable)(base.Clone()));
                 cln.InitVars();
                 return cln;
             }
@@ -469,7 +458,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataTable CreateInstance() {
-                return new MasterDataTable();
+                return new Lack2DataTable();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -480,7 +469,6 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
                 this.columnAlamat = base.Columns["Alamat"];
                 this.columnHeader = base.Columns["Header"];
                 this.columnFooter = base.Columns["Footer"];
-                this.columnPeriod = base.Columns["Period"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -496,34 +484,32 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
                 base.Columns.Add(this.columnHeader);
                 this.columnFooter = new global::System.Data.DataColumn("Footer", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFooter);
-                this.columnPeriod = new global::System.Data.DataColumn("Period", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnPeriod);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRow NewMasterRow() {
-                return ((MasterRow)(this.NewRow()));
+            public Lack2Row NewLack2Row() {
+                return ((Lack2Row)(this.NewRow()));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new MasterRow(builder);
+                return new Lack2Row(builder);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Type GetRowType() {
-                return typeof(MasterRow);
+                return typeof(Lack2Row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanged(e);
-                if ((this.MasterRowChanged != null)) {
-                    this.MasterRowChanged(this, new MasterRowChangeEvent(((MasterRow)(e.Row)), e.Action));
+                if ((this.Lack2RowChanged != null)) {
+                    this.Lack2RowChanged(this, new Lack2RowChangeEvent(((Lack2Row)(e.Row)), e.Action));
                 }
             }
             
@@ -531,8 +517,8 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanging(e);
-                if ((this.MasterRowChanging != null)) {
-                    this.MasterRowChanging(this, new MasterRowChangeEvent(((MasterRow)(e.Row)), e.Action));
+                if ((this.Lack2RowChanging != null)) {
+                    this.Lack2RowChanging(this, new Lack2RowChangeEvent(((Lack2Row)(e.Row)), e.Action));
                 }
             }
             
@@ -540,8 +526,8 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleted(e);
-                if ((this.MasterRowDeleted != null)) {
-                    this.MasterRowDeleted(this, new MasterRowChangeEvent(((MasterRow)(e.Row)), e.Action));
+                if ((this.Lack2RowDeleted != null)) {
+                    this.Lack2RowDeleted(this, new Lack2RowChangeEvent(((Lack2Row)(e.Row)), e.Action));
                 }
             }
             
@@ -549,14 +535,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleting(e);
-                if ((this.MasterRowDeleting != null)) {
-                    this.MasterRowDeleting(this, new MasterRowChangeEvent(((MasterRow)(e.Row)), e.Action));
+                if ((this.Lack2RowDeleting != null)) {
+                    this.Lack2RowDeleting(this, new Lack2RowChangeEvent(((Lack2Row)(e.Row)), e.Action));
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void RemoveMasterRow(MasterRow row) {
+            public void RemoveLack2Row(Lack2Row row) {
                 this.Rows.Remove(row);
             }
             
@@ -565,7 +551,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
                 global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
                 global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                LACK2 ds = new LACK2();
+                dsLack2 ds = new dsLack2();
                 global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
                 any1.Namespace = "http://www.w3.org/2001/XMLSchema";
                 any1.MinOccurs = new decimal(0);
@@ -583,7 +569,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
                 type.Attributes.Add(attribute1);
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "MasterDataTable";
+                attribute2.FixedValue = "Lack2DataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -629,24 +615,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class DetailDataTable : global::System.Data.TypedTableBase<DetailRow> {
+        public partial class Lack2ItemDataTable : global::System.Data.TypedTableBase<Lack2ItemRow> {
             
             private global::System.Data.DataColumn columnNomor;
             
-            private global::System.Data.DataColumn columnTanggal;
-            
-            private global::System.Data.DataColumn columnJumlah;
-            
-            private global::System.Data.DataColumn columnNamaPerusahaan;
-            
-            private global::System.Data.DataColumn columnNppbck;
-            
-            private global::System.Data.DataColumn columnAlamat;
-            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailDataTable() {
-                this.TableName = "Detail";
+            public Lack2ItemDataTable() {
+                this.TableName = "Lack2Item";
                 this.BeginInit();
                 this.InitClass();
                 this.EndInit();
@@ -654,7 +630,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal DetailDataTable(global::System.Data.DataTable table) {
+            internal Lack2ItemDataTable(global::System.Data.DataTable table) {
                 this.TableName = table.TableName;
                 if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
                     this.CaseSensitive = table.CaseSensitive;
@@ -671,7 +647,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected DetailDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+            protected Lack2ItemDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
             }
@@ -686,46 +662,6 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn TanggalColumn {
-                get {
-                    return this.columnTanggal;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn JumlahColumn {
-                get {
-                    return this.columnJumlah;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn NamaPerusahaanColumn {
-                get {
-                    return this.columnNamaPerusahaan;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn NppbckColumn {
-                get {
-                    return this.columnNppbck;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn AlamatColumn {
-                get {
-                    return this.columnAlamat;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -735,50 +671,45 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow this[int index] {
+            public Lack2ItemRow this[int index] {
                 get {
-                    return ((DetailRow)(this.Rows[index]));
+                    return ((Lack2ItemRow)(this.Rows[index]));
                 }
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event DetailRowChangeEventHandler DetailRowChanging;
+            public event Lack2ItemRowChangeEventHandler Lack2ItemRowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event DetailRowChangeEventHandler DetailRowChanged;
+            public event Lack2ItemRowChangeEventHandler Lack2ItemRowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event DetailRowChangeEventHandler DetailRowDeleting;
+            public event Lack2ItemRowChangeEventHandler Lack2ItemRowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event DetailRowChangeEventHandler DetailRowDeleted;
+            public event Lack2ItemRowChangeEventHandler Lack2ItemRowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void AddDetailRow(DetailRow row) {
+            public void AddLack2ItemRow(Lack2ItemRow row) {
                 this.Rows.Add(row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow AddDetailRow(string Nomor, string Tanggal, string Jumlah, string NamaPerusahaan, string Nppbck, string Alamat) {
-                DetailRow rowDetailRow = ((DetailRow)(this.NewRow()));
+            public Lack2ItemRow AddLack2ItemRow(string Nomor) {
+                Lack2ItemRow rowLack2ItemRow = ((Lack2ItemRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        Nomor,
-                        Tanggal,
-                        Jumlah,
-                        NamaPerusahaan,
-                        Nppbck,
-                        Alamat};
-                rowDetailRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowDetailRow);
-                return rowDetailRow;
+                        Nomor};
+                rowLack2ItemRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowLack2ItemRow);
+                return rowLack2ItemRow;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public override global::System.Data.DataTable Clone() {
-                DetailDataTable cln = ((DetailDataTable)(base.Clone()));
+                Lack2ItemDataTable cln = ((Lack2ItemDataTable)(base.Clone()));
                 cln.InitVars();
                 return cln;
             }
@@ -786,18 +717,13 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataTable CreateInstance() {
-                return new DetailDataTable();
+                return new Lack2ItemDataTable();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnNomor = base.Columns["Nomor"];
-                this.columnTanggal = base.Columns["Tanggal"];
-                this.columnJumlah = base.Columns["Jumlah"];
-                this.columnNamaPerusahaan = base.Columns["NamaPerusahaan"];
-                this.columnNppbck = base.Columns["Nppbck"];
-                this.columnAlamat = base.Columns["Alamat"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -805,42 +731,32 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             private void InitClass() {
                 this.columnNomor = new global::System.Data.DataColumn("Nomor", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNomor);
-                this.columnTanggal = new global::System.Data.DataColumn("Tanggal", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnTanggal);
-                this.columnJumlah = new global::System.Data.DataColumn("Jumlah", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnJumlah);
-                this.columnNamaPerusahaan = new global::System.Data.DataColumn("NamaPerusahaan", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnNamaPerusahaan);
-                this.columnNppbck = new global::System.Data.DataColumn("Nppbck", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnNppbck);
-                this.columnAlamat = new global::System.Data.DataColumn("Alamat", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnAlamat);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow NewDetailRow() {
-                return ((DetailRow)(this.NewRow()));
+            public Lack2ItemRow NewLack2ItemRow() {
+                return ((Lack2ItemRow)(this.NewRow()));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new DetailRow(builder);
+                return new Lack2ItemRow(builder);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Type GetRowType() {
-                return typeof(DetailRow);
+                return typeof(Lack2ItemRow);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanged(e);
-                if ((this.DetailRowChanged != null)) {
-                    this.DetailRowChanged(this, new DetailRowChangeEvent(((DetailRow)(e.Row)), e.Action));
+                if ((this.Lack2ItemRowChanged != null)) {
+                    this.Lack2ItemRowChanged(this, new Lack2ItemRowChangeEvent(((Lack2ItemRow)(e.Row)), e.Action));
                 }
             }
             
@@ -848,8 +764,8 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanging(e);
-                if ((this.DetailRowChanging != null)) {
-                    this.DetailRowChanging(this, new DetailRowChangeEvent(((DetailRow)(e.Row)), e.Action));
+                if ((this.Lack2ItemRowChanging != null)) {
+                    this.Lack2ItemRowChanging(this, new Lack2ItemRowChangeEvent(((Lack2ItemRow)(e.Row)), e.Action));
                 }
             }
             
@@ -857,8 +773,8 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleted(e);
-                if ((this.DetailRowDeleted != null)) {
-                    this.DetailRowDeleted(this, new DetailRowChangeEvent(((DetailRow)(e.Row)), e.Action));
+                if ((this.Lack2ItemRowDeleted != null)) {
+                    this.Lack2ItemRowDeleted(this, new Lack2ItemRowChangeEvent(((Lack2ItemRow)(e.Row)), e.Action));
                 }
             }
             
@@ -866,14 +782,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleting(e);
-                if ((this.DetailRowDeleting != null)) {
-                    this.DetailRowDeleting(this, new DetailRowChangeEvent(((DetailRow)(e.Row)), e.Action));
+                if ((this.Lack2ItemRowDeleting != null)) {
+                    this.Lack2ItemRowDeleting(this, new Lack2ItemRowChangeEvent(((Lack2ItemRow)(e.Row)), e.Action));
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void RemoveDetailRow(DetailRow row) {
+            public void RemoveLack2ItemRow(Lack2ItemRow row) {
                 this.Rows.Remove(row);
             }
             
@@ -882,7 +798,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
                 global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
                 global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                LACK2 ds = new LACK2();
+                dsLack2 ds = new dsLack2();
                 global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
                 any1.Namespace = "http://www.w3.org/2001/XMLSchema";
                 any1.MinOccurs = new decimal(0);
@@ -900,7 +816,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
                 type.Attributes.Add(attribute1);
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "DetailDataTable";
+                attribute2.FixedValue = "Lack2ItemDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -944,15 +860,15 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
-        public partial class MasterRow : global::System.Data.DataRow {
+        public partial class Lack2Row : global::System.Data.DataRow {
             
-            private MasterDataTable tableMaster;
+            private Lack2DataTable tableLack2;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal MasterRow(global::System.Data.DataRowBuilder rb) : 
+            internal Lack2Row(global::System.Data.DataRowBuilder rb) : 
                     base(rb) {
-                this.tableMaster = ((MasterDataTable)(this.Table));
+                this.tableLack2 = ((Lack2DataTable)(this.Table));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -960,14 +876,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public string CompanyName {
                 get {
                     try {
-                        return ((string)(this[this.tableMaster.CompanyNameColumn]));
+                        return ((string)(this[this.tableLack2.CompanyNameColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'CompanyName\' in table \'Master\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'CompanyName\' in table \'Lack2\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMaster.CompanyNameColumn] = value;
+                    this[this.tableLack2.CompanyNameColumn] = value;
                 }
             }
             
@@ -976,14 +892,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public string Nppbkc {
                 get {
                     try {
-                        return ((string)(this[this.tableMaster.NppbkcColumn]));
+                        return ((string)(this[this.tableLack2.NppbkcColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Nppbkc\' in table \'Master\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Nppbkc\' in table \'Lack2\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMaster.NppbkcColumn] = value;
+                    this[this.tableLack2.NppbkcColumn] = value;
                 }
             }
             
@@ -992,14 +908,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public string Alamat {
                 get {
                     try {
-                        return ((string)(this[this.tableMaster.AlamatColumn]));
+                        return ((string)(this[this.tableLack2.AlamatColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Alamat\' in table \'Master\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Alamat\' in table \'Lack2\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMaster.AlamatColumn] = value;
+                    this[this.tableLack2.AlamatColumn] = value;
                 }
             }
             
@@ -1008,14 +924,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public byte[] Header {
                 get {
                     try {
-                        return ((byte[])(this[this.tableMaster.HeaderColumn]));
+                        return ((byte[])(this[this.tableLack2.HeaderColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Header\' in table \'Master\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Header\' in table \'Lack2\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMaster.HeaderColumn] = value;
+                    this[this.tableLack2.HeaderColumn] = value;
                 }
             }
             
@@ -1024,118 +940,90 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public string Footer {
                 get {
                     try {
-                        return ((string)(this[this.tableMaster.FooterColumn]));
+                        return ((string)(this[this.tableLack2.FooterColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Footer\' in table \'Master\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Footer\' in table \'Lack2\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMaster.FooterColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Period {
-                get {
-                    try {
-                        return ((string)(this[this.tableMaster.PeriodColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Period\' in table \'Master\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableMaster.PeriodColumn] = value;
+                    this[this.tableLack2.FooterColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCompanyNameNull() {
-                return this.IsNull(this.tableMaster.CompanyNameColumn);
+                return this.IsNull(this.tableLack2.CompanyNameColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCompanyNameNull() {
-                this[this.tableMaster.CompanyNameColumn] = global::System.Convert.DBNull;
+                this[this.tableLack2.CompanyNameColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsNppbkcNull() {
-                return this.IsNull(this.tableMaster.NppbkcColumn);
+                return this.IsNull(this.tableLack2.NppbkcColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetNppbkcNull() {
-                this[this.tableMaster.NppbkcColumn] = global::System.Convert.DBNull;
+                this[this.tableLack2.NppbkcColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsAlamatNull() {
-                return this.IsNull(this.tableMaster.AlamatColumn);
+                return this.IsNull(this.tableLack2.AlamatColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetAlamatNull() {
-                this[this.tableMaster.AlamatColumn] = global::System.Convert.DBNull;
+                this[this.tableLack2.AlamatColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsHeaderNull() {
-                return this.IsNull(this.tableMaster.HeaderColumn);
+                return this.IsNull(this.tableLack2.HeaderColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetHeaderNull() {
-                this[this.tableMaster.HeaderColumn] = global::System.Convert.DBNull;
+                this[this.tableLack2.HeaderColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsFooterNull() {
-                return this.IsNull(this.tableMaster.FooterColumn);
+                return this.IsNull(this.tableLack2.FooterColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetFooterNull() {
-                this[this.tableMaster.FooterColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsPeriodNull() {
-                return this.IsNull(this.tableMaster.PeriodColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetPeriodNull() {
-                this[this.tableMaster.PeriodColumn] = global::System.Convert.DBNull;
+                this[this.tableLack2.FooterColumn] = global::System.Convert.DBNull;
             }
         }
         
         /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
-        public partial class DetailRow : global::System.Data.DataRow {
+        public partial class Lack2ItemRow : global::System.Data.DataRow {
             
-            private DetailDataTable tableDetail;
+            private Lack2ItemDataTable tableLack2Item;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal DetailRow(global::System.Data.DataRowBuilder rb) : 
+            internal Lack2ItemRow(global::System.Data.DataRowBuilder rb) : 
                     base(rb) {
-                this.tableDetail = ((DetailDataTable)(this.Table));
+                this.tableLack2Item = ((Lack2ItemDataTable)(this.Table));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1143,167 +1031,27 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
             public string Nomor {
                 get {
                     try {
-                        return ((string)(this[this.tableDetail.NomorColumn]));
+                        return ((string)(this[this.tableLack2Item.NomorColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Nomor\' in table \'Detail\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Nomor\' in table \'Lack2Item\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableDetail.NomorColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Tanggal {
-                get {
-                    try {
-                        return ((string)(this[this.tableDetail.TanggalColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Tanggal\' in table \'Detail\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableDetail.TanggalColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Jumlah {
-                get {
-                    try {
-                        return ((string)(this[this.tableDetail.JumlahColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Jumlah\' in table \'Detail\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableDetail.JumlahColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string NamaPerusahaan {
-                get {
-                    try {
-                        return ((string)(this[this.tableDetail.NamaPerusahaanColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'NamaPerusahaan\' in table \'Detail\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableDetail.NamaPerusahaanColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Nppbck {
-                get {
-                    try {
-                        return ((string)(this[this.tableDetail.NppbckColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Nppbck\' in table \'Detail\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableDetail.NppbckColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Alamat {
-                get {
-                    try {
-                        return ((string)(this[this.tableDetail.AlamatColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Alamat\' in table \'Detail\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableDetail.AlamatColumn] = value;
+                    this[this.tableLack2Item.NomorColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsNomorNull() {
-                return this.IsNull(this.tableDetail.NomorColumn);
+                return this.IsNull(this.tableLack2Item.NomorColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetNomorNull() {
-                this[this.tableDetail.NomorColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsTanggalNull() {
-                return this.IsNull(this.tableDetail.TanggalColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetTanggalNull() {
-                this[this.tableDetail.TanggalColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsJumlahNull() {
-                return this.IsNull(this.tableDetail.JumlahColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetJumlahNull() {
-                this[this.tableDetail.JumlahColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsNamaPerusahaanNull() {
-                return this.IsNull(this.tableDetail.NamaPerusahaanColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetNamaPerusahaanNull() {
-                this[this.tableDetail.NamaPerusahaanColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsNppbckNull() {
-                return this.IsNull(this.tableDetail.NppbckColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetNppbckNull() {
-                this[this.tableDetail.NppbckColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsAlamatNull() {
-                return this.IsNull(this.tableDetail.AlamatColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetAlamatNull() {
-                this[this.tableDetail.AlamatColumn] = global::System.Convert.DBNull;
+                this[this.tableLack2Item.NomorColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -1311,22 +1059,22 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public class MasterRowChangeEvent : global::System.EventArgs {
+        public class Lack2RowChangeEvent : global::System.EventArgs {
             
-            private MasterRow eventRow;
+            private Lack2Row eventRow;
             
             private global::System.Data.DataRowAction eventAction;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRowChangeEvent(MasterRow row, global::System.Data.DataRowAction action) {
+            public Lack2RowChangeEvent(Lack2Row row, global::System.Data.DataRowAction action) {
                 this.eventRow = row;
                 this.eventAction = action;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRow Row {
+            public Lack2Row Row {
                 get {
                     return this.eventRow;
                 }
@@ -1345,22 +1093,22 @@ namespace Sampoerna.EMS.Website.Reports.LACK2 {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public class DetailRowChangeEvent : global::System.EventArgs {
+        public class Lack2ItemRowChangeEvent : global::System.EventArgs {
             
-            private DetailRow eventRow;
+            private Lack2ItemRow eventRow;
             
             private global::System.Data.DataRowAction eventAction;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRowChangeEvent(DetailRow row, global::System.Data.DataRowAction action) {
+            public Lack2ItemRowChangeEvent(Lack2ItemRow row, global::System.Data.DataRowAction action) {
                 this.eventRow = row;
                 this.eventAction = action;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow Row {
+            public Lack2ItemRow Row {
                 get {
                     return this.eventRow;
                 }

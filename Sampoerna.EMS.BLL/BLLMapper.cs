@@ -339,6 +339,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<T001W, T001WCompositeDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
+            Mapper.CreateMap<LACK2_ITEM, Lack2ItemDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.Ck5ItemQty, opt => opt.MapFrom(src => src.CK5.GRAND_TOTAL_EX));
+
+
+
         }
     }
 }

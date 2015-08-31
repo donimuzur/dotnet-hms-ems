@@ -414,11 +414,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult PrintPreview()
+        public ActionResult PrintPreview(int id)
         {
-            DataSet ds = new DataSet("Lack2Ds");
+            var lack2 = _lack2Bll.GetById(id);
 
-            DataTable dt = new DataTable("Master");
+            DataSet ds = new DataSet("dsLack2");
+
+            DataTable dt = new DataTable("Lack2");
 
             // object of data row 
             DataRow drow;
@@ -434,7 +436,27 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[3] = GetHeader("~/files_upload/1616_header04082015165943_.jpg");
             drow[4] = "this is footer";
             dt.Rows.Add(drow);
+
+
+            //detail
+            DataTable dtDetail = new DataTable("Lack2Item");
+
+            // object of data row 
+            DataRow drowDetail;
+            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
+
+            //dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            drowDetail = dtDetail.NewRow();
+            drowDetail[0] = "xxxx";
+            dtDetail.Rows.Add(drowDetail);
+
+
             ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
             rpt.FileName = report_path + "LACK2\\Preview.rpt";
