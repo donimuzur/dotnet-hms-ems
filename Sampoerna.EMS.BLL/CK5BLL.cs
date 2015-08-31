@@ -1003,8 +1003,25 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.GRCreated)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            string oldValue = dbData.UNSEALING_NOTIF_NUMBER;
-            string newValue = input.UnSealingNumber;
+            string oldValue = dbData.SEALING_NOTIF_NUMBER;
+            string newValue = input.SealingNumber;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.SEALING_NOTIF_NUMBER = input.SealingNumber;
+
+            oldValue = dbData.SEALING_NOTIF_DATE.HasValue ? dbData.SEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.SealingDate.HasValue ? input.SealingDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.SEALING_NOTIF_DATE = input.SealingDate;
+
+            oldValue = dbData.UNSEALING_NOTIF_NUMBER;
+            newValue = input.UnSealingNumber;
+
+            //string oldValue = dbData.UNSEALING_NOTIF_NUMBER;
+            //string newValue = input.UnSealingNumber;
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
@@ -1016,6 +1033,14 @@ namespace Sampoerna.EMS.BLL
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
+
+
+            oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+            newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+            //set change history
+            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -1292,6 +1317,9 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPortName = "-";
                 result.ReportDetails.FinalPortId = "-";
             }
+
+            //get material desc
+
             return result;
             //return Mapper.Map<CK5ReportDto>(dtData);
         }
