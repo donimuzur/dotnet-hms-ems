@@ -34,6 +34,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1GeneratedIncomeDataDto> IncomeList { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
+        public decimal TotalProduction { get; set; }
+        public decimal EndingBalance { get; set; }
         public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
         public string Noted { get; set; }
     }

@@ -100,4 +100,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime PeriodTo { get; set; }
     }
 
+    public class Lack1GetBySelectionCriteriaParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string ReceivingPlantId { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+    }
+
 }

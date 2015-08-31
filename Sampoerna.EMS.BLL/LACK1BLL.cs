@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CrystalDecisions.Shared;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -217,6 +218,21 @@ namespace Sampoerna.EMS.BLL
         public Lack1GeneratedDto GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
         {
 
+            //check if already exists with same selection criteria
+            var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+                ReceivingPlantId = input.ReceivedPlantId,
+                SupplierPlantId = input.SupplierPlantId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear
+            });
+
+            if(lack1Check != null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria);
+
             var rc = new Lack1GeneratedDto
             {
                 CompanyCode = input.CompanyCode,
@@ -236,7 +252,10 @@ namespace Sampoerna.EMS.BLL
             //Set Income List by selection Criteria
             //from CK5 data
             rc = SetIncomeListBySelectionCriteria(rc, input);
-
+            if (rc.IncomeList.Count > 0)
+            {
+                rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
+            }
 
             rc.ProductionList = SetProductionDetailBySelectionCriteria(input);
 
@@ -250,8 +269,12 @@ namespace Sampoerna.EMS.BLL
 
             rc.PeriodYear = input.PeriodYear;
             rc.Noted = input.Noted;
-
+            
             rc.TotalUsage = 0; //todo: get from Inventory Movement
+
+            rc.TotalProduction = 0; //todo: can more than 1 record, so need to create logic
+
+            rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
             return rc;
         }
@@ -338,10 +361,12 @@ namespace Sampoerna.EMS.BLL
                 PeriodTo = dtTo
             });
 
+            rc.BeginingBalance = 0;
             if (selected != null)
             {
                 rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
             }
+            
             return rc;
         }
 

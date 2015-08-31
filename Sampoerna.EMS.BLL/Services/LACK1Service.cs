@@ -129,8 +129,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             Expression<Func<LACK1, bool>> queryFilter =
                 c => c.BUKRS == input.CompanyCode && c.LACK1_LEVEL == input.Lack1Level
-                     && c.NPPBKC_ID == input.NppbkcId && c.NPPBKC_ID == input.NppbkcId
-                     && (int)c.STATUS >= (int)Core.Enums.DocumentStatus.Approved
+                     && c.NPPBKC_ID == input.NppbkcId && (int)c.STATUS >= (int)Core.Enums.DocumentStatus.Approved
                      && c.EX_GOODTYP == input.ExcisableGoodsType
                      && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId;
 
@@ -154,8 +153,14 @@ namespace Sampoerna.EMS.BLL.Services
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
+            if (getData.Count <= 0)
+            {
+                return null;
+            }
+
             var selected = getData.Where(c => c.PERIODE <= input.PeriodTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
-            return _repository.GetByID(selected.LACK1_ID);
+            if (selected != null) return _repository.GetByID(selected.LACK1_ID);
+            return null;
         }
 
         public LACK1 GetById(int id)
@@ -213,6 +218,23 @@ namespace Sampoerna.EMS.BLL.Services
             }
 
             return queryFilter;
+        }
+
+        public LACK1 GetBySelectionCriteria(Lack1GetBySelectionCriteriaParamInput input)
+        {
+            Expression<Func<LACK1, bool>> queryFilter =
+                c => c.BUKRS == input.CompanyCode && c.NPPBKC_ID == input.NppbkcId
+                     && c.EX_GOODTYP == input.ExcisableGoodsType
+                     && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId
+                     && c.PERIOD_MONTH == input.PeriodMonth && c.PERIOD_YEAR == input.PeriodYear;
+            if (!string.IsNullOrEmpty(input.ReceivingPlantId))
+            {
+                queryFilter =
+                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivingPlantId));
+            }
+
+            return _repository.Get(queryFilter).FirstOrDefault();
+
         }
 
     }

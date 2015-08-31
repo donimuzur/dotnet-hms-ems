@@ -8,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
@@ -187,12 +188,20 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
-        public JsonResult Generate(Lack1GenerateInputModel param)
+        public PartialViewResult Generate(Lack1GenerateInputModel param)
         {
-            var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
-            var generatedData = _lack1Bll.GenerateLack1DataByParam(input);
-            var model = new Lack1CreateViewModel() { Lack1Generated = generatedData };
-            return Json(model);
+            try
+            {
+                var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
+                var generatedData = _lack1Bll.GenerateLack1DataByParam(input);
+                var model = new Lack1CreateViewModel() { Lack1Generated = Mapper.Map<Lack1GeneratedItemModel>(generatedData) };
+                return PartialView("_Lack1TableBalance", model);
+            }
+            catch (BLLException ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return null;
+            }
         }
         
         #endregion

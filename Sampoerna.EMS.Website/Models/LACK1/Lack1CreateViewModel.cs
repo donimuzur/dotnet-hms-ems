@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Validations;
 
@@ -68,7 +66,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string MenuPlantAddClassCss { get; set; }
         public string MenuNppbkcAddClassCss { get; set; }
 
-        public Lack1GeneratedDto Lack1Generated { get; set; }
+        public Lack1GeneratedItemModel Lack1Generated { get; set; }
 
     }
 }

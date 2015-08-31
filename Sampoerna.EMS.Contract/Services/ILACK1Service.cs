@@ -24,5 +24,7 @@ namespace Sampoerna.EMS.Contract.Services
 
         void Insert(LACK1 data);
 
+        LACK1 GetBySelectionCriteria(Lack1GetBySelectionCriteriaParamInput input);
+
     }
 }

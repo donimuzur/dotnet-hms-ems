@@ -207,7 +207,14 @@
             param.Lack1Level = lackLevel;
             param.NppbkcId = $('#NppbkcId').find("option:selected").val();
             param.ExcisableGoodsType = $('#ExGoodsType').find("option:selected").val();
+            param.ExcisableGoodsTypeDesc = $('#ExGoodsType').find("option:selected").text();
             param.SupplierPlantId = $('#SupplierPlant').find("option:selected").val();
+            param.WasteAmount = parseFloat($('#WasteQty').val());
+            param.WasteAmountUom = $('#WasteUom').find("option:selected").val();
+            param.ReturnAmount = parseFloat($('#ReturnQty').val());
+            param.ReturnAmountUom = $('#ReturnUom').find("option:selected").val();
+            param.Noted = $('#Lack1Generated_Noted').val();
+            param.CompanyName = $('#Bukrs').find("option:selected").text();
             
             var plantAttr = $('#LevelPlantId').attr('disabled');
             // For some browsers, `attr` is undefined; for others,
@@ -226,18 +233,9 @@
                 contentType: "application/json",
                 data: JSON.stringify({ param: param }),
                 success: function(response) {
-                    if (response.Lack1Generated) {
-                        //$('#tb-body-ck5-lack2').html("");
-                        //for (var i = 0; i < data.length; i++) {
-                        //    var tableCk5Item = '<tr><td><input type="hidden" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '/>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                        //        '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                        //        '<td>' + data[i].GI_DATE + '</td>' +
-                        //        '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                        //        '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                        //        '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                        //        '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                        //    $('#tb-body-ck5-lack2').append(tableCk5Item);
-                        //}
+                    if (response) {
+                        $('#table-generated-data').html("");
+                        $('#table-generated-data').html(response);
                     }
                 }
             });
