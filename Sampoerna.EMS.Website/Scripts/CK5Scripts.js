@@ -13,7 +13,7 @@ function OnReadyFunction(ck5Type) {
     else {
         $('#MenuCK5Domestic').addClass('active');
     }
-   
+
 
     $('#btnUploadInfo').click(function () {
 
@@ -64,7 +64,7 @@ function OnReadyFunction(ck5Type) {
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
         ValidateRemainQuota(total);
-        
+
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
 
@@ -73,7 +73,7 @@ function OnReadyFunction(ck5Type) {
 
         $('#collapse5').addClass('in');
     });
-    
+
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
 }
@@ -186,7 +186,7 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
                 $("input[name='DestPlantName']").val(data.PlantName);
-                
+
                 $("input[name='PbckDecreeId']").val(data.Pbck1Id);
                 $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
                 $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
@@ -219,10 +219,10 @@ function ajaxGetPlantDetails(url, formData) {
                 $("*[name='SourceAddress']").val(data.CompanyAddress);
                 $("input[name='SourceKppbcName']").val(data.KppBcName);
                 $("input[name='SourcePlantName']").val(data.PlantName);
-                
+
                 $("input[name='KppBcCity']").val(data.KppbcCity);
                 $("input[name='CeOfficeCode']").val(data.KppbcNo);
-                
+
                 //enable upload
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
@@ -233,8 +233,8 @@ function ajaxGetPlantDetails(url, formData) {
                 //$("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
                 //$("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
                 //$("input[name='RemainQuota']").val(data.RemainQuota);
-                
-               // PopulateListPbckNumber(data.PbckList);
+
+                // PopulateListPbckNumber(data.PbckList);
             }
         });
     }
@@ -243,7 +243,7 @@ function ajaxGetPlantDetails(url, formData) {
 function PopulateListPbckNumber(listPbck1) {
     var selectbox = $("#PbckDecreeId");
     selectbox.empty(); // remove old options
-    
+
     var list = '<option value>Select</option>';
 
     if (listPbck1 != null) {
@@ -253,13 +253,13 @@ function PopulateListPbckNumber(listPbck1) {
 
     }
     selectbox.html(list);
-    
+
     //clear rellated field
     $("input[name='PbckDecreeDate']").val('');
     $("input[name='Pbck1QtyApproved']").val('');
     $("input[name='Ck5TotalExciseable']").val('');
     $("input[name='RemainQuota']").val('');
-    
+
     //selectbox.html('refresh', true);
 }
 
@@ -291,7 +291,7 @@ function ajaxGetCompanyCode(url, formData) {
 
 function ChangeBackSourceMaterial(plantId, url) {
     if (plantId == plantOriginal) {
-        
+
         var formData = new FormData();
         formData.append("ck5Id", $('#Ck5Id').val());
         $.ajax({
@@ -304,7 +304,7 @@ function ChangeBackSourceMaterial(plantId, url) {
             success: function (response) {
                 $('#ck5EditMaterialTable').html("");
                 $('#ck5EditMaterialTable').html(response);
-               
+
             }
             //,
             //error: function (error) {
@@ -315,12 +315,12 @@ function ChangeBackSourceMaterial(plantId, url) {
 }
 
 function OnSubmitWorkflow(id) {
-    
+
 }
 
 function ValidateGovInput() {
     var result = true;
-  
+
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
@@ -329,17 +329,17 @@ function ValidateGovInput() {
         $("#collapseOne").css({ height: "auto" });
         $('#RegistrationNumber').focus();
     }
-    
+
     if ($('#RegistrationDate').val() == '') {
         AddValidationClass(false, 'RegistrationDate');
         result = false;
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
         $("#collapseOne").css({ height: "auto" });
-       
+
     }
-   // alert($('#GovStatus').val());
-    
+    // alert($('#GovStatus').val());
+
     if ($('#GovStatus').val() == '') {
         AddValidationClass(false, 'GovStatus');
         result = false;
@@ -360,39 +360,39 @@ function ValidateGovInput() {
         }
 
     }
-  
+
     if ($('#poa_sk0').length == 0) {
         AddValidationClass(false, 'poa-files');
-        
+
         if (result) {
             $('#modalBodyMessage').text('Missing attach files');
             $('#ModalCk5ValidateGov').modal('show');
-            
+
             $('#collapseFour').removeClass('collapse');
             $('#collapseFour').addClass('in');
             $("#collapseFour").css({ height: "auto" });
-          
+
         }
         result = false;
     }
-    
+
     if (result) {
         if ($('#RegistrationNumber').val().length < 6) {
-            
+
             AddValidationClass(false, 'RegistrationNumber');
             result = false;
             $('#collapseOne').removeClass('collapse');
             $('#collapseOne').addClass('in');
             $("#collapseOne").css({ height: "auto" });
             $('#RegistrationNumber').focus();
-            
+
             $('#modalBodyMessage').text('Registration Number Length must be 6');
             $('#ModalCk5ValidateGov').modal('show');
-            
-           
+
+
         }
     }
-    
+
     return result;
 }
 
@@ -414,31 +414,31 @@ function ValidateCk5Form(ck5Type) {
     //    alert("True");
     //else
     //    alert('false');
-    
+
     if ($('#KppBcCity').find("option:selected").val() == '') {
         AddValidationClass(false, 'KppBcCity');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#GoodType').find("option:selected").val() == '') {
         AddValidationClass(false, 'GoodType');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#ExciseStatus').find("option:selected").val() == '') {
         AddValidationClass(false, 'ExciseStatus');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#ExciseSettlement').find("option:selected").val() == '') {
         AddValidationClass(false, 'ExciseSettlement');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#RequestType').find("option:selected").val() == '') {
         AddValidationClass(false, 'RequestType');
         result = false;
@@ -449,14 +449,14 @@ function ValidateCk5Form(ck5Type) {
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if (!isValidCk5Detail) {
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
         $("#collapseOne").css({ height: "auto" });
 
     }
-    
+
     if ($('#SourcePlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'SourcePlantId');
         result = false;
@@ -491,7 +491,7 @@ function ValidateCk5Form(ck5Type) {
             result = false;
             isValidCk5Detail = false;
         }
-        
+
         if ($('#FinalPort').val() == '') {
             AddValidationClass(false, 'FinalPort');
             result = false;
@@ -507,14 +507,14 @@ function ValidateCk5Form(ck5Type) {
             result = false;
             isValidCk5Detail = false;
         }
-        
+
         if (!isValidCk5Detail) {
             $('#collapseThree').removeClass('collapse');
             $('#collapseThree').addClass('in');
             $("#collapseThree").css({ height: "auto" });
 
         }
-        
+
     } else {
 
 
@@ -526,7 +526,7 @@ function ValidateCk5Form(ck5Type) {
             $("#collapseThree").css({ height: "auto" });
         }
     }
-    
+
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
@@ -534,21 +534,21 @@ function ValidateCk5Form(ck5Type) {
             // alert('Missing CK5 Material');
             $('#modalBodyMessage').text('Missing CK5 Materials');
             $('#ModalCk5Material').modal('show');
-            
+
             $('#home-tab').removeClass('active');
             $('#upload-tab').addClass('active');
 
             $('#information').removeClass('active');
             $('#upload').addClass('active');
-            
+
             result = false;
         }
-        
+
     }
     //alert('type : ' + ck5Type);
     //alert('Source Plant : ' + $('#SourceNppbkcId').val());
     //alert('Dest Plant : ' + $('#DestNppbkcId').val());
-    
+
     // && (ck5Type != 'Domestic')
     if (result) {
 
@@ -564,7 +564,7 @@ function ValidateCk5Form(ck5Type) {
 
             $('#modalBodyMessage').text('CK5 Quota Exceeded');
             $('#ModalCk5Material').modal('show');
-            
+
             AddValidationClass(false, 'GrandTotalEx');
             result = false;
         }
@@ -590,7 +590,7 @@ function ValidateGiCreated() {
         $('#collapseFour').removeClass('collapse');
         $('#collapseFour').addClass('in');
         $("#collapseFour").css({ height: "auto" });
-       
+
     }
     return result;
 }
@@ -616,4 +616,48 @@ function ValidateGRCreated() {
 
     }
     return result;
+}
+
+function AddRow(url) {
+    $('#Ck5UploadModal').modal('hide');
+
+
+
+    $("#Ck5UploadTable tbody").append(
+
+		"<tr>" +
+		"<td>" + $('#uploadMaterialNumber').val() + "</td>" +
+		"<td>" + $('#uploadMaterialQty').val() + "</td>" +
+		"<td>" + $('#uploadMaterialUom').val() + "</td>" +
+		"<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
+		"<td></td>" +
+		"<td>" + $('#uploadConvertedUom').val() + "</td>" +
+		"<td></td>" +
+		"<td></td>" +
+		"<td></td>" +
+		"<td>" + $('#uploadUsdValue').val() + "</td>" +
+		"<td>" + $('#uploadNote').val() + "</td>" +
+		"<td></td>" +
+
+		"</tr>");
+    
+    var formData = new FormData();
+    formData.append("ck5Id", 122);
+    //alert('url : ' + url);
+    
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            alert(response);
+        }
+        //,
+        //error: function (error) {
+        //    alert("errror " + error);
+        //}
+    });
 }

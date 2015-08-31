@@ -106,11 +106,67 @@
 </div>
 
 
+<div id="Ck5UploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Row</h4>
+            </div>
+            <div class="modal-body">
+                <p></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="col-md-4">Material Number<span class="red">*</span></label>
+                        <input class="form-control" id="uploadMaterialNumber" type="text" value="">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-md-4">Qty<span class="red">*</span></label>
+                        <input class="form-control" id="uploadMaterialQty" type="text" value="">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="col-md-4">UOM</label>
+                        <input class="form-control" id="uploadMaterialUom" type="text" value="">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-md-4">Convertion</label>
+                        <input class="form-control" id="uploadMaterialConvertion" type="text" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="col-md-4">Converted UOM</label>
+                        <input class="form-control" id="uploadConvertedUom" type="text" value="">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-md-4">USD Value</label>
+                        <input class="form-control" id="uploadUsdValue" type="text" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="col-md-4">Note</label>
+                        <input class="form-control" id="uploadNote" type="text" value="">
+                    </div>
+                  
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveMaterial" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
 
@@ -139,7 +195,10 @@
             $('#CK5UploadSubmitBtn').click(function() {
                 GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
             });
-
+            
+            //$('#Ck5UploadTable').dataTable().makeEditable({
+            //    sAddURL: "/CK5/AddData"
+            //});
         });
 
       
@@ -208,29 +267,14 @@
         });
 
        
-        //    // DataTable
-        //    var table = null;
-        //    if ($.fn.dataTable.isDataTable('#ck5TableItem')) {
-        //        table = $('#ck5TableItem').DataTable();
-        //        table.destroy();
-        //    }
-
-        //    table = $('#ck5TableItem').DataTable();
-
-      
-
-        ////$('#btnAddMaterial').on('click', function () {
-        ////    table.row.add([
-        ////        '.1',
-        ////         '.2',
-        ////         '.3',
-        ////         '.4'
-                 
-        ////    ]).draw();
-
-           
-        ////});
-        //$('#btnAddMaterial').click();
         
+        //$('#btnAddMaterial').click();
+        $("#btnAddRow").click(function () {
+            $('#Ck5UploadModal').modal('show');
+        });
+        
+        $("#btnSaveMaterial").click(function () {
+            AddRow('@Url.Action("GetSourcePlantDetails", "CK5")');
+        });
     </script>
 }
