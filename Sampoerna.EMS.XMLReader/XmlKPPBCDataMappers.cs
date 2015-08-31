@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             item.CREATED_BY = existingKppbc.CREATED_BY;
                             item.CREATED_DATE = existingKppbc.CREATED_DATE;
+                            item.MENGETAHUI_DETAIL = existingKppbc.MENGETAHUI_DETAIL;
                             item.MODIFIED_DATE = DateTime.Now;
                             item.MODIFIED_BY = Constans.PI;
                             items.Add(item);

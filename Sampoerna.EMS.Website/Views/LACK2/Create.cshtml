@@ -243,7 +243,7 @@
                                         </div>
                                         <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                                             <div class="panel-body">
-                                                <form class="form-excise" role="form">
+                                                <div class="form-excise" role="form">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
@@ -282,7 +282,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -585,13 +585,13 @@
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
                 data: { month: month, year: year },
                 success: function (data) {
-                    console.log(data);
+                   
                     if (data.length > 0) {
                         $('#tb-body-ck5-lack2').html("");
                         for (var i = 0; i < data.length; i++) {
-                            var tableCk5Item = '<tr><td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                            var tableCk5Item = '<tr><td><input type="hidden" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '/>' + (parseInt(i) + parseInt(1)) + '</td>' +
                                 '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                                '<td>' + new Date(parseInt(data[i].GI_DATE.substr(6))) + '</td>' +
+                                '<td>' + $.parseJSON(data[i].GI_DATE) + '</td>' +
                                 '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
                                 '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
                                 '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +

@@ -9,6 +9,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 {
     public class LACK2Model
     {
+        
         public int Lack2Id { get; set; }
 
         public string Lack2Number { get; set; }
@@ -63,6 +64,17 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
+
+        public List<Lack2Item> Items;
+    }
+
+    public class Lack2Item
+    {
+        public long Lack2ItemId { get; set; }
+
+        public int Lack2Id { get; set; }
+
+        public int Ck5Id { get; set; }
 
     }
 }
