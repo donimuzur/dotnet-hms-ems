@@ -1776,7 +1776,7 @@ namespace Sampoerna.EMS.BLL
 
             //get ck5 
             var lisCk5 =
-                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks
+                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks && c.DEST_PLANT_NPPBKC_ID == pbck1.NppbkcId
                                      && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd);
 
             decimal qtyCk5 = 0;
