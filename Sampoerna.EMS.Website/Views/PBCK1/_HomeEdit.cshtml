@@ -197,7 +197,8 @@
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.SupInfo.SupplierKppkbc)
                                             @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcId, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.SupplierKppbcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcName, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -205,6 +206,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Phone</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierPhone)
                                             @Html.TextBoxFor(model => model.Detail.SupplierPhone, new { @class = "form-control" })
                                         </div>
                                     </div>
