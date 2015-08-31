@@ -390,7 +390,8 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPlantByCompany(string companyId)
         {
             IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
-            var plantList = t001Kbll.GetPlantbyCompany(companyId);
+            //var plantList = t001Kbll.GetPlantbyCompany(companyId);
+            var plantList = t001Kbll.GetPlantByCompany(companyId);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
@@ -404,6 +405,7 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selecItemSource, "ValueField", "TextField");
         }
 
+        
     }
 
 }

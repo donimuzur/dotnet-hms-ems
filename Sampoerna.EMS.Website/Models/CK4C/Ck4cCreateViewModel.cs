@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Web;
@@ -18,7 +19,9 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string PlantName { get; set; }
         public string FinishGoods { get; set; }
         public string Description { get; set; }
+        [Required]
         public string QtyPacked { get; set; }
+        [Required]
         public string QtyUnpacked { get; set; }
         public string Uom { get; set; }
         public string CreatedBy { get; set; }
@@ -30,5 +33,5 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList UomList { get; set; }
 
 
-    }   
+    }
 }

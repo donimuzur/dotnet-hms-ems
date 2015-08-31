@@ -23,9 +23,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IT001KBLL _t001KBll;
         private IUnitOfMeasurementBLL _uomBll;
-        private IZaidmExProdTypeBLL _productBll;
+        private IBrandRegistrationBLL _brandRegistrationBll;
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
-            IZaidmExProdTypeBLL prodTypeBll, ICompanyBLL companyBll, IT001KBLL t001Kbll)
+            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.CK4C;
             _t001KBll = t001Kbll;
             _uomBll = uomBll;
-            _productBll = prodTypeBll;
+            _brandRegistrationBll = brandRegistrationBll;
         }
 
 
@@ -114,7 +114,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult GetFaCodeDescription(string faCode)
+        {
+            var fa = _brandRegistrationBll.GetByFaCode(faCode);
+            return Json(fa.BRAND_CE);
+        }
 
+        
         #endregion
 
 
@@ -143,7 +150,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            model.FinishGoodList = GlobalFunctions.GetProductCodeList(_productBll);
+            model.FinishGoodList = GlobalFunctions.GetBrandList();
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
             
             return (model);
