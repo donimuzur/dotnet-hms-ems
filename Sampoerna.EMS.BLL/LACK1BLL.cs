@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -28,6 +30,13 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
 
+        //services
+        private ICK4CItemService _ck4cItemService;
+        private IBrandRegistrationService _brandRegistrationService;
+        private ICK5Service _ck5Service;
+        private IPBCK1Service _pbck1Service;
+        private IT001KService _t001KService;
+        
         private string includeTables = "UOM, UOM1, MONTH";
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
@@ -36,8 +45,15 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<LACK1>();
             _productionDetailRepository = _uow.GetGenericRepository<LACK1_PRODUCTION_DETAIL>();
+
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+
+            _ck4cItemService = new CK4CItemService(_uow, _logger);
+            _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
+            _ck5Service = new CK5Service(_uow, _logger);
+            _pbck1Service = new PBCK1Service(_uow, _logger);
+            _t001KService = new T001KService(_uow, _logger);
         }
         
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -326,6 +342,188 @@ namespace Sampoerna.EMS.BLL
 
             return getData.ToList();
         }
-        
+
+        public Lack1GeneratedDto GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
+        {
+
+            var rc = new Lack1GeneratedDto
+            {
+                CompanyCode = input.CompanyCode,
+                CompanyName = input.CompanyName,
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+                ExcisableGoodsTypeDesc = input.ExcisableGoodsTypeDesc,
+                BeginingBalance = 0 //set default
+            };
+
+            //set begining balance
+            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+
+            //set Pbck-1 Data by selection criteria
+            rc = SetPbck1DataBySelectionCriteria(rc, input);
+
+            //Set Income List by selection Criteria
+            //from CK5 data
+            rc = SetIncomeListBySelectionCriteria(rc, input);
+
+
+            rc.ProductionList = SetProductionDetailBySelectionCriteria(input);
+
+            rc.PeriodMonthId = input.PeriodMonth;
+
+            var monthData = _monthBll.GetMonth(rc.PeriodMonthId);
+            if (monthData != null)
+            {
+                rc.PeriodMonthName = monthData.MONTH_NAME_IND;
+            }
+
+            rc.PeriodYear = input.PeriodYear;
+            rc.Noted = input.Noted;
+
+            rc.TotalUsage = 0; //todo: get from Inventory Movement
+
+            return rc;
+        }
+
+        #region ----------------Private Method-------------------
+
+        /// <summary>
+        /// Set Production Detail from CK4C Item table 
+        /// for Generate LACK-1 data by Selection Criteria
+        /// </summary>
+        private List<Lack1GeneratedProductionDataDto> SetProductionDetailBySelectionCriteria(
+            Lack1GenerateDataParamInput input)
+        {
+
+            var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
+            var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
+            var faCodeList = ck4CItemData.Select(c => c.FA_CODE).Distinct().ToList();
+
+            //get prod_code by fa_code list on selected CK4C_ITEM by selection criteria
+            var brandDataSelected = _brandRegistrationService.GetByFaCodeList(faCodeList);
+
+            //joined data
+            var dataCk4CItemJoined = (from ck4CItem in ck4CItemData
+                                      join brandData in brandDataSelected on ck4CItem.FA_CODE equals brandData.FA_CODE
+                                      select new Lack1GeneratedProductionDataDto()
+                                      {
+                                          ProdCode = brandData.PROD_CODE,
+                                          ProductType = brandData.ZAIDM_EX_PRODTYP.PRODUCT_TYPE,
+                                          ProductAlias = brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS,
+                                          Amount = ck4CItem.PROD_QTY,
+                                          UomId = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
+                                      });
+
+            return dataCk4CItemJoined.ToList();
+        }
+
+        /// <summary>
+        /// Get CK5 by selection criteria
+        /// Set Income list on Generating LACK-1 by Selection Criteria
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private Lack1GeneratedDto SetIncomeListBySelectionCriteria(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
+        {
+            var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
+            var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
+            rc.IncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
+
+            if (rc.IncomeList.Count > 0)
+            {
+                rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
+            }
+
+            return rc;
+        }
+
+        /// <summary>
+        /// Get Latest Saldo on Latest LACK-1 
+        /// Use for generate LACK-1 data by selection criteria
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private Lack1GeneratedDto SetBeginingBalanceBySelectionCritera(Lack1GeneratedDto rc,
+            Lack1GenerateDataParamInput input)
+        {
+            //validate period input
+            if (input.PeriodMonth < 1 || input.PeriodMonth > 12)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.InvalidData);
+            }
+
+            //valid input
+            var dtTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1);
+
+            Expression<Func<LACK1, bool>> queryFilter =
+                c => c.BUKRS == input.CompanyCode && c.LACK1_LEVEL == input.Lack1Level
+                     && c.NPPBKC_ID == input.NppbkcId && c.NPPBKC_ID == input.NppbkcId
+                     && (int)c.STATUS >= (int)Enums.DocumentStatus.Approved
+                     && c.EX_GOODTYP == input.ExcisableGoodsType
+                     && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId;
+
+            if (input.Lack1Level == Enums.Lack1Level.Plant)
+            {
+                queryFilter =
+                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivedPlantId));
+            }
+
+            var getData = _repository.Get(queryFilter, null,
+                "").ToList().Select(p => new
+                {
+                    p.LACK1_ID,
+                    p.LACK1_NUMBER,
+                    p.PERIOD_MONTH,
+                    p.PERIOD_YEAR,
+                    p.BEGINING_BALANCE,
+                    p.TOTAL_INCOME,
+                    p.USAGE,
+                    p.TOTAL_PRODUCTION,
+                    PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
+                }).ToList();
+
+            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
+
+            if (selected != null)
+            {
+                rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
+            }
+            return rc;
+        }
+
+        /// <summary>
+        /// Set Pbck1 Data on Generating LACK-1 Data by Selection Criteria
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private Lack1GeneratedDto SetPbck1DataBySelectionCriteria(Lack1GeneratedDto rc,
+            Lack1GenerateDataParamInput input)
+        {
+            var pbck1Input = Mapper.Map<Pbck1GetDataForLack1ParamInput>(input);
+            var pbck1Data = _pbck1Service.GetForLack1ByParam(pbck1Input);
+
+            if (pbck1Data.Count > 0)
+            {
+                var latestDecreeDate = pbck1Data.OrderByDescending(c => c.DECREE_DATE).FirstOrDefault();
+
+                if (latestDecreeDate != null)
+                {
+                    var companyData = _t001KService.GetByBwkey(latestDecreeDate.SUPPLIER_PLANT_WERKS);
+                    if (companyData != null)
+                    {
+                        rc.SupplierCompanyCode = companyData.BUKRS;
+                        rc.SupplierCompanyName = companyData.T001.BUTXT;
+                    }
+                    rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
+                }
+            }
+            return rc;
+        }
+
+        #endregion
+
     }
 }

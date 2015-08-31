@@ -94,6 +94,12 @@
     <Compile Include="IZaidmExProdTypeBLL.cs" />
     <Compile Include="IZaidmExPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IBrandRegistrationService.cs" />
+    <Compile Include="Services\ICK4CItemService.cs" />
+    <Compile Include="Services\ICK5Service.cs" />
+    <Compile Include="Services\IExGroupTypeService.cs" />
+    <Compile Include="Services\IPBCK1Service.cs" />
+    <Compile Include="Services\IT001KService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">

@@ -111,6 +111,7 @@
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\Lack1GeneratedDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="HEADER_FOOTER_FORM_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inputs\CK4CItemInput.cs" />
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\CK5MaterialInput.cs" />
     <Compile Include="Inputs\CK5UploadFileDocumentsInput.cs" />
