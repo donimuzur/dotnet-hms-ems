@@ -43,22 +43,22 @@
 
         $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
         $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
-        
-        $(document).ready(function () {
-            $('#btnCancel').click(function (e) {
+
+        $(document).ready(function() {
+            $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
-            $('#Bukrs').on('change', function () {
+            $('#Bukrs').on('change', function() {
                 BukrsOnChange();
             });
-            $('#NppbkcId').on('change', function () {
+            $('#NppbkcId').on('change', function() {
                 NppbkcIdOnChange();
             });
-            $('#ExGoodsType').on('change', function () {
+            $('#ExGoodsType').on('change', function() {
                 ExGoodsTypeOnChange();
             });
         });
-        
+
         function BukrsOnChange() {
             if ($("#Bukrs").length) {
                 var companyCode = $('#Bukrs').find("option:selected").val();
@@ -71,7 +71,7 @@
                 }
             }
         }
-        
+
         function ExGoodsTypeOnChange() {
             if ($("#NppbkcId").length && $("#ExGoodsType").length) {
                 var excisableGoodsType = $('#ExGoodsType').find("option:selected").val();
@@ -84,7 +84,7 @@
                 } else {
                     $('#SupplierPlant').append('<option value="">Select</option>');
                 }
-            } 
+            }
         }
 
         function NppbkcIdOnChange() {
@@ -105,10 +105,10 @@
                         ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
                     }
                 }
-                
+
                 //load excisablegoodstype
                 ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
-                
+
                 //load supplier list
                 ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
 
@@ -121,7 +121,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data;
                         $('#NppbkcId').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -142,8 +142,8 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
-                        var list = data.PlantList;
+                    success: function(data) {
+                        var list = data.ReceivePlantList;
                         $('#LevelPlantId').append('<option value="">Select</option>');
                         if (list.length > 0) {
                             for (var i = 0; i < list.length; i++) {
@@ -164,7 +164,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.ExGoodTypeList;
                         $('#ExGoodsType').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -185,7 +185,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.SupplierList;
                         $('#SupplierPlant').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -199,6 +199,48 @@
                 $('#SupplierPlant option').remove();
                 $('#SupplierPlant').append('<option value="">Select</option>');
             }
+        }
+
+        function generateDataClick(lackLevel) {
+            var param = {};
+            param.CompanyCode = $('#Bukrs').find("option:selected").val();
+            param.Lack1Level = lackLevel;
+            param.NppbkcId = $('#NppbkcId').find("option:selected").val();
+            param.ExcisableGoodsType = $('#ExGoodsType').find("option:selected").val();
+            param.SupplierPlantId = $('#SupplierPlant').find("option:selected").val();
+            
+            var plantAttr = $('#LevelPlantId').attr('disabled');
+            // For some browsers, `attr` is undefined; for others,
+            // `attr` is false.  Check for both.
+            //load plant if enable
+            if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
+                param.ReceivedPlantId = $('#LevelPlantId').find("option:selected").val();
+            }
+            
+            param.PeriodMonth = parseInt($('#PeriodMonth').find("option:selected").val());
+            param.PeriodYear = parseInt($('#PeriodYears').find("option:selected").val());
+            
+            $.ajax({
+                url: "@Url.Action("Generate", "LACK1")",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ param: param }),
+                success: function(response) {
+                    if (response.Lack1Generated) {
+                        //$('#tb-body-ck5-lack2').html("");
+                        //for (var i = 0; i < data.length; i++) {
+                        //    var tableCk5Item = '<tr><td><input type="hidden" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '/>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        //        '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
+                        //        '<td>' + data[i].GI_DATE + '</td>' +
+                        //        '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                        //        '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                        //        '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                        //        '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                        //    $('#tb-body-ck5-lack2').append(tableCk5Item);
+                        //}
+                    }
+                }
+            });
         }
 
     </script>

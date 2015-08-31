@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string MenuPlantAddClassCss { get; set; }
         public string MenuNppbkcAddClassCss { get; set; }
 
-        public List<Lack1GeneratedDto> Lack1Generated { get; set; }
+        public Lack1GeneratedDto Lack1Generated { get; set; }
 
     }
 }

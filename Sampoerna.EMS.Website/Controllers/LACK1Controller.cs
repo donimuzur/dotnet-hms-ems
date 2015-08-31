@@ -187,6 +187,14 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+        public JsonResult Generate(Lack1GenerateInputModel param)
+        {
+            var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
+            var generatedData = _lack1Bll.GenerateLack1DataByParam(input);
+            var model = new Lack1CreateViewModel() { Lack1Generated = generatedData };
+            return Json(model);
+        }
+        
         #endregion
 
         #region ----- create -----
