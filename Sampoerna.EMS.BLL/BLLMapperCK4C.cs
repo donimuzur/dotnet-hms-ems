@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -16,7 +17,7 @@ namespace Sampoerna.EMS.BLL
 
         public static void InitializeCk4C()
         {
-             #region Ck4c Daily Produxction
+            #region Ck4c Daily Produxction
 
             Mapper.CreateMap<CK4C, Ck4CDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck4CId, opt => opt.MapFrom(src => src.CK4C_ID))
@@ -28,10 +29,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
-                .ForMember(dest => dest.Createdby, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
                 .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
-                .ForMember(dest => dest.Createdby, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
@@ -51,8 +51,16 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<T001W, T001KDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
-            
-             #endregion
+
+            Mapper.CreateMap<CK4C_ITEM, Ck4CDto>().IgnoreAllNonExisting()
+                .ForMember(src => src.Ck4CItemId, opt => opt.MapFrom(dest => dest.CK4C_ITEM_ID))
+                .ForMember(src => src.FaCode, opt => opt.MapFrom(dest => dest.FA_CODE))
+                .ForMember(src => src.Werks, opt => opt.MapFrom(dest => dest.WERKS))
+                .ForMember(src => src.ProdQty, opt => opt.MapFrom(dest => dest.PROD_QTY))
+                .ForMember(src => src.UomProudQty, opt => opt.MapFrom(dest => dest.UOM_PROD_QTY))
+                .ForMember(src => src.ProdDate, opt => opt.MapFrom(dest => dest.PROD_DATE));
+
+            #endregion
         }
 
 
