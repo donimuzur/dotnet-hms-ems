@@ -6,7 +6,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Lack1Dto
     {
-        public long Lack1Id { get; set; }
+        public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         public string Bukrs { get; set; }
         public string Butxt { get; set; }

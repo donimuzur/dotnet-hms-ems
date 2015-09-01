@@ -484,40 +484,7 @@
 
         }
 
-        $("#PlantId").change(function () {
-            
-            if ($("#PlantId").length) {
-                var PlantId = $(this).find("option:selected").val();
-                $('#CutFillerCode').html('');
-                $('#CutFillerCode').append('<option value="">select</option>');
-                if (!PlantId == '') {
-                    ajaxGetCutFillerCodeByPlant(PlantId);
-                } 
-            }
-
-        });
-
-        function ajaxGetCutFillerCodeByPlant(plantid) {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetCutFillerCodeByPlant", "BrandRegistration")',
-                data: { plant: plantid },
-                success: function (data) {
-                    debugger;
-                    for (var i = 0; i < data.length; i++) {
-                        $('#CutFillerCode').append('<option value="' + data[i].Value + '">' + data[i].Value +  '</option>');
-                    }
-                }
-            });
-        }
-
-        function PersonalizationCodeOnChange() {
-            if ($("#PersonalizationCode").length) {
-                var PersonalizationName = $('#PersonalizationCode').find("option:selected").text();
-                console.log(PersonalizationName);
-                $('#PersonalizationCodeDescription').val(PersonalizationName);
-            }
-        }
+        
 
     </script>
 }

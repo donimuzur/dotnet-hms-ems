@@ -405,5 +405,16 @@ namespace Sampoerna.EMS.Core
             Pengolahaan=2,
             
         }
+
+        public enum CK4CType
+        {
+            [Description("DailyProduction")]
+            DailyProduction = 1,
+            [Description("WasteProduction")]
+            WasteProduction = 2,
+            [Description("CK4CDocument")]
+            Ck4CDocument = 3
+
+        }
     }
 }
