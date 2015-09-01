@@ -46,6 +46,11 @@ namespace Sampoerna.EMS.XMLReader
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
                         item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
+                        var isDeleted = _xmlMapper.GetElementValue(xElement.Element("LOEVM"));
+                        if (isDeleted != null)
+                        {
+                            item.IS_DELETED = true;
+                        }
                         item.CREATED_BY = Constans.PI;
 
                         if (exsitingVendor != null)
