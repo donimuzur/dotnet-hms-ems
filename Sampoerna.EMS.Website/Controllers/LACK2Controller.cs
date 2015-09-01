@@ -71,8 +71,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
             model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
-            GetNppbkcByCompanyId("1616");
-            return View("Index", model);
+             return View("Index", model);
         }
 
         /// <summary>
@@ -99,14 +98,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
+           // model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             //model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            //model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = GlobalFunctions.GetYearList();
             model.UsrRole = CurrentUser.UserRole;
-
+            model.Lack2Model.SubmissionDate = DateTime.Now;
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
@@ -165,7 +164,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
             model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
-
+           
             model.UsrRole = CurrentUser.UserRole;
 
             var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
@@ -393,7 +392,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
 
         }
+        [HttpPost]
+        public JsonResult GetPoaByNppbkcId(string nppbkcid)
+        {
+            var data = _poabll.GetPoaByNppbkcId(nppbkcid);
+            return Json(data.Distinct());
 
+        }
         [HttpPost]
         public JsonResult GetCK5ByLack2Period(int month, int year, string sendPlantId, string goodstype)
         {

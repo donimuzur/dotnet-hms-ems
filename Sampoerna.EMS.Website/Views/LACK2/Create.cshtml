@@ -112,8 +112,9 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">NPPBKC</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(x => x.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
-
+                                                                    <select name="Lack2Model.NppbkcId" id="Lack2Model_NppbkcId" class="form-control">
+                                                                        <option>select</option>
+                                                                    </select>
 
                                                                 </div>
                                                             </div>
@@ -122,9 +123,19 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(x => x.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new {@class = "form-control"})
+                                                                    <select name="Lack2Model.LevelPlantId" id="Lack2Model_LevelPlantId" class="form-control">
+                                                                        <option>select</option>
+                                                                    </select>
 
 
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">POA</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -133,7 +144,7 @@
                                                                 <label class="col-md-4">Submission Date</label>
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.TextBoxFor(x => x.Lack2Model.SubmissionDate, new {@class = "form-control"})
+                                                                        @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -547,8 +558,7 @@
    
 
     <script type="text/javascript">
-
-        $("#Lack2Model_NppbkcId").change(function() {
+        $('#Lack2Model_NppbkcId').change(function() {
 
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();
@@ -558,10 +568,39 @@
                 if (nppbkc != '') {
                     ajaxGetPlantByNppbkc(nppbkc);
                     ajaxGetGoodsTypeByNppbkc(nppbkc);
+                    ajaxGetPoaByNppbkc(nppbkc);
                 }
             }
 
         });
+
+        $('#Lack2Model_Burks').change(function() {
+
+            if ($(this).length) {
+                var company = $(this).find("option:selected").val();
+                if (company !== '') {
+                    ajaxGetNppbkcByCompany(company);
+                }
+            }
+        });
+
+        function ajaxGetNppbkcByCompany(company) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
+                data: { companyId: company },
+                success: function(data) {
+                    $('#Lack2Model_NppbkcId').html('');
+                    $('#Lack2Model_NppbkcId').append('<option>select</option>');
+
+                    for (var i = 0; i < data.length; i++) {
+                        $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                    }
+                }
+            });
+
+        }
 
         function ajaxGetPlantByNppbkc(nppbkc) {
 
@@ -569,10 +608,10 @@
                 type: 'POST',
                 url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
-                success: function (data) {
+                success: function(data) {
                     $('#Lack2Model_LevelPlantId').html('');
-                    $('#Lack2Model_LevelPlantId').append('<option></option>');
-                    
+                    $('#Lack2Model_LevelPlantId').append('<option>select</option>');
+
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
                     }
@@ -580,14 +619,38 @@
             });
 
         }
+
+        function ajaxGetPoaByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function(data) {
+                    console.log(data);
+                    $('#displayPoaList').html('');
+                    var poalist = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        poalist += data[i].PRINTED_NAME;
+                        if (data.length - 1 != i) {
+                            poalist += ', ';
+                        }
+                    }
+                    $('#displayPoaList').html(poalist);
+                }
+            });
+
+        }
+
         function ajaxGetGoodsTypeByNppbkc(nppbkc) {
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
                 data: { nppbkcid: nppbkc },
-                success: function (data) {
-                    
+                success: function(data) {
+
                     $('#Lack2Model_ExGoodTyp').html('');
                     $('#Lack2Model_ExGoodTyp').append('<option>select</option>');
                     for (var i = 0; i < data.length; i++) {
@@ -597,6 +660,7 @@
             });
 
         }
+
         function GetCk5ByPeriod() {
             var month = parseInt($('#Lack2Model_PeriodMonth').val());
             var year = parseInt($('#Lack2Model_PeriodYear').val());
@@ -606,8 +670,8 @@
                 type: 'POST',
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
                 data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-                success: function (data) {
-                   
+                success: function(data) {
+
                     if (data.length > 0) {
                         $('#tb-body-ck5-lack2').html("");
                         for (var i = 0; i < data.length; i++) {
@@ -617,14 +681,13 @@
                                 '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
                                 '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
                                 '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                                '<td>'+data[i].DEST_PLANT_ADDRESS+'</td></tr>';
+                                '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
                             $('#tb-body-ck5-lack2').append(tableCk5Item);
                         }
                     }
                 }
             });
         }
-
     </script>
 
 }
