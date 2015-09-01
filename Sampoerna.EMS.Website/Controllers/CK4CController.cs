@@ -106,6 +106,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlanIdList = GlobalFunctions.GetPlantAll();
             return model;
         }
+
+
         #endregion
 
         #region Json
