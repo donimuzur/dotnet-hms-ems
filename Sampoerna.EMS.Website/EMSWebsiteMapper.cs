@@ -819,6 +819,10 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
+            Mapper.CreateMap<Lack2ItemModel, Lack2ItemDto>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.Ck5Id));
+           
+
 
         }
     }

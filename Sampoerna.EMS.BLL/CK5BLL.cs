@@ -1948,6 +1948,9 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        
+        public List<CK5> GetByGIDate(int month,  int year, string desPlantId)
+        {
+            return _repository.Get(p => p.GI_DATE.HasValue && p.GI_DATE.Value.Month ==month && p.GI_DATE.Value.Year == year && p.DEST_PLANT_ID == desPlantId).ToList();
+        }
     }
 }

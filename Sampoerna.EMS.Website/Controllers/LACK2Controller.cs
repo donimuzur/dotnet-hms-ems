@@ -1,4 +1,9 @@
-﻿using Sampoerna.EMS.Contract;
+﻿using System.Configuration;
+using System.Data;
+using System.IO;
+using CrystalDecisions.CrystalReports.Engine;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
@@ -28,8 +33,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMonthBLL _monthBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
-        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+        private ICK5BLL _ck5Bll;
+        private IPBCK1BLL _pbck1Bll;
+        private IHeaderFooterBLL _headerFooterBll;
+        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
+            IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -42,6 +50,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _monthBll = monthBll;
             _goodTypeBll = goodTypeBll;
             _documentSequenceNumberBll = documentSequenceNumberBll;
+            _ck5Bll = ck5Bll;
+            _pbck1Bll = pbck1Bll;
+            _headerFooterBll = headerFooterBll;
         }
 
 
@@ -88,7 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            //model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = GlobalFunctions.GetYearList();
@@ -126,11 +137,10 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = item.PeriodYear;
             inputDoc.NppbkcId = item.NppbkcId;
             item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
-           
-            if (CurrentUser.UserRole == Enums.UserRole.User || CurrentUser.UserRole == Enums.UserRole.POA)
-            {
-                item.Status = Enums.DocumentStatus.WaitingForApproval;
-            }
+            item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
+            
+             item.Status = Enums.DocumentStatus.Draft;
+            
 
             _lack2Bll.Insert(item);
 
@@ -381,6 +391,126 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
 
         }
+
+        [HttpPost]
+        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId, string goodstype)
+        {
+            var data =  _ck5Bll.GetByGIDate(month, year, desPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            return Json(data);
+
+        }
+
+        [HttpPost]
+        public JsonResult GetGoodsTypeByNPPBKC(string nppbkcid)
+        {
+            var pbck1list = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() {NppbkcId = nppbkcid});
+            var data = pbck1list.GroupBy(x => new {x.GoodType, x.GoodTypeDesc}).Select(x=>new SelectItemModel()
+            {
+               ValueField = x.Key.GoodType,
+               TextField = x.Key.GoodType + "-" + x.Key.GoodTypeDesc,
+            }).ToList();
+            
+            return Json(data);
+
+        }
+
+        public ActionResult PrintPreview(int id)
+        {
+            var lack2 = _lack2Bll.GetById(id);
+
+            DataSet ds = new DataSet("dsLack2");
+
+            DataTable dt = new DataTable("Lack2");
+
+            // object of data row 
+            DataRow drow;
+            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
+            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
+            drow = dt.NewRow();
+            drow[0] = "company name";
+            drow[1] = "nppb ck nn";
+            drow[2] = "ssssss";
+            drow[3] = GetHeader("~/files_upload/1616_header04082015165943_.jpg");
+            drow[4] = "this is footer";
+            dt.Rows.Add(drow);
+
+
+            //detail
+            DataTable dtDetail = new DataTable("Lack2Item");
+
+            // object of data row 
+            DataRow drowDetail;
+            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
+
+            //dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            //dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            drowDetail = dtDetail.NewRow();
+            drowDetail[0] = "xxxx";
+            dtDetail.Rows.Add(drowDetail);
+
+
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            ReportClass rpt = new ReportClass();
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "LACK2\\Preview.rpt";
+            rpt.Load();
+            rpt.SetDataSource(dt);
+
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+              
+
+                br.Close();
+                // close the binary reader 
+                fs.Close();
+                // close the file stream 
+
+              
+
+
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
+
+        }
+
     }
 
 }
