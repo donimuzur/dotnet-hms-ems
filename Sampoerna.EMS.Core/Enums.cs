@@ -75,6 +75,8 @@ namespace Sampoerna.EMS.Core
             StoFailed = 11,
             StobGIPartial = 30,
             StobGICompleted = 31,
+            StobGRPartial = 35,
+            StobGRCompleted = 36,
             StoRecCreated = 40,
             StoRecGIPartial = 41,
             StoRecGICompleted = 42,
@@ -189,7 +191,14 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Receive Reversal")]
             STOBGRReversal = 240,
+
+            [Description("STOB Good Issue Partial")]
+            STOBGIPartial = 245,
+            
+            [Description("STOB Good Receive Partial")]
+            STOBGRPartial = 250
         }
+        
 
         public enum DocumentStatusGov
         {
@@ -300,6 +309,12 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Receive Reversal")]
             STOBGRReversal = 240,
+
+            [Description("STOB Good Issue Partial")]
+            STOBGIPartial = 245,
+            
+            [Description("STOB Good Receive Partial")]
+            STOBGRPartial = 250
         }
 
         /// <summary>
