@@ -190,19 +190,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public JsonResult Generate(Lack1GenerateInputModel param)
         {
-            //try
-            //{
-            //    var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
-            //    var generatedData = _lack1Bll.GenerateLack1DataByParam(input);
-            //    var model = new Lack1CreateViewModel() { Lack1Generated = Mapper.Map<Lack1GeneratedItemModel>(generatedData) };
-            //    return PartialView("_Lack1TableBalance", model);
-            //}
-            //catch (BLLException ex)
-            //{
-            //    AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-            //    return null;
-            //}
-
             var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
             var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
             return Json(outGeneratedData);
@@ -241,7 +228,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 

@@ -285,9 +285,9 @@ namespace Sampoerna.EMS.BLL
             rc.Noted = input.Noted;
             
             rc.TotalUsage = 0; //todo: get from Inventory Movement
-
-            rc.TotalProduction = 0; //todo: can more than 1 record, so need to create logic
-
+            
+            //set summary
+            rc = SetSummaryProductionlist(rc);
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
             oReturn.Data = rc;
@@ -413,6 +413,42 @@ namespace Sampoerna.EMS.BLL
                     rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
                 }
             }
+            return rc;
+        }
+
+        /// <summary>
+        /// set Summary Production List 
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        private Lack1GeneratedDto SetSummaryProductionlist(Lack1GeneratedDto rc)
+        {
+            if (rc.ProductionList.Count > 0)
+            {
+                var groupedData = rc.ProductionList.GroupBy(p => new
+                {
+                    p.ProdCode,
+                    p.ProductType,
+                    p.ProductAlias,
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1GeneratedProductionDataDto()
+                {
+                    ProdCode = g.Key.ProdCode,
+                    ProductType = g.Key.ProductType,
+                    ProductAlias = g.Key.ProductAlias,
+                    UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                rc.SummaryProductionList = groupedData.ToList();
+            }
+            else
+            {
+                rc.SummaryProductionList = new List<Lack1GeneratedProductionDataDto>();
+            }
+            
             return rc;
         }
 

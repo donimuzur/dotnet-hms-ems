@@ -346,6 +346,10 @@
             }
             return rc;
         }
+
+        function generateSummaryJumlahProduksi(data) {
+            
+        }
         
         function generateEmptyTable() {
             var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
@@ -400,6 +404,17 @@
             if ($('#ReturnUom').find("option:selected").val() == '') {
                 rc = false;
                 $('#ReturnUom').addClass('input-validation-error');
+            }
+            
+            var plantAttr = $('#LevelPlantId').attr('disabled');
+            // For some browsers, `attr` is undefined; for others,
+            // `attr` is false.  Check for both.
+            //load plant if enable
+            if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
+                if (param.ReceivedPlantId = $('#LevelPlantId').find("option:selected").val() == '') {
+                    rc = false;
+                    $('#LevelPlantId').addClass('input-validation-error');
+                }
             }
             return rc;
         }
