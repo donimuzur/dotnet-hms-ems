@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int Ck5Id { get; set; }
         public string Ck5Number { get; set; }
-        public string Ck5SubmissionNumber { get; set; }
+        public string Ck5GIDate { get; set; }
         public decimal Ck5ItemQty { get; set;  }
 
         public string CompanyName { get; set; }
