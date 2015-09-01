@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Qty { get; set; }
         public string Uom { get; set; }
         public string Convertion { get; set; }
-        public int ConvertedQty { get; set; }
+        public decimal ConvertedQty { get; set; }
         public string ConvertedUom { get; set; }
         public decimal Hje { get; set; }
         public decimal Tariff { get; set; }

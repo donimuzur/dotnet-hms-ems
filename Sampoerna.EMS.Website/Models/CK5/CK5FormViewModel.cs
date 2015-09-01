@@ -35,16 +35,15 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //DETAIL INFORMATION
         public Enums.CK5Type Ck5Type { get; set; }
 
+       
+        //public SelectList KppBcCityList { get; set; }
         //[Required(ErrorMessage = "KPPBC City field is required")]
-        //public long? KppBcCityId { get; set; }
-        public SelectList KppBcCityList { get; set; }
-        [Required(ErrorMessage = "KPPBC City field is required")]
         public string KppBcCity { get; set; }
 
          [Display(Name = "KPPBC code")]
         public string CeOfficeCode { get; set; }
 
-        public string KppBcCityName { get; set; }
+        //public string KppBcCityName { get; set; }
         
         public string SubmissionNumber { get; set; }
 
@@ -218,12 +217,25 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
          [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
         public Enums.CK5GovStatus GovStatus { get; set; }
-
+        public string GovStatusDesc { get; set; }
         public Enums.CK5GovStatus GovStatusList { get; set; }
+        public string CommentGov { get; set; }
 
         public string Pbck1QtyApproved { get; set; }
         public string Ck5TotalExciseable { get; set; }
         public string RemainQuota { get; set; }
 
+        public bool AllowManagerReject { get; set; }
+
+        public string Command { get; set; }
+
+        public bool AllowGiCreated { get; set; }
+
+        public bool AllowGrCreated { get; set; }
+
+        public string ActionType { get; set; }
+
+        public bool AllowCancelSAP { get; set; }
+        
     }
 }

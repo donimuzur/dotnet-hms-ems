@@ -21,6 +21,8 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public bool? IS_MAIN_PLANT { get; set; }
         public DateTime? CREATED_DATE { get; set; }
         public List<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL { get; set; }
+        public string KPPBC_NAME { get; set; }
+        public string SUPPLIER_COMPANY { get; set; }
 
         //FOR CK5
         public string NPWP { get; set; }

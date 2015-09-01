@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             //PlanProdTo = DateTime.Now;
             //DecreeDate = DateTime.Now;
             ReportedOn = DateTime.Now;
+            RequestQty = 0;
         }
         public int Pbck1Id { get; set; }
 
@@ -87,6 +88,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string SupplierKppbcId { get; set; }
 
+        public string SupplierKppbcName { get; set; }
+
+        public string SupplierCompany { get; set; }
+
         public string HiddenSupplierKppbcId { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
@@ -96,7 +101,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [Required, Display(Name = "Plan Production To")]
         //[UIHint("FormatDateTime")]
         public DateTime? PlanProdTo { get; set; }
-        
+
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
         public decimal? RequestQty { get; set; }
@@ -175,5 +180,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public Enums.DocumentStatusGov DocStatusGov { get; set; }
 
         public Enums.ActionType GovApprovalActionType { get; set; }
+
+        public string IsSaveSubmit { get; set; }
     }
 }

@@ -57,6 +57,9 @@
     <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BOM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="BROLE_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -98,6 +101,7 @@
     </Compile>
     <Compile Include="DTOs\Back1Dto.cs" />
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
+    <Compile Include="DTOs\Ck4CDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
@@ -108,6 +112,8 @@
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\Lack1GeneratedDto.cs" />
+    <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
@@ -127,12 +133,14 @@
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
+    <Compile Include="DTOs\T001KCompositDto.cs" />
     <Compile Include="DTOs\T001KDto.cs" />
     <Compile Include="DTOs\T001WCompositeDto.cs" />
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
+    <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCDto.cs" />
@@ -159,6 +167,8 @@
     <Compile Include="HEADER_FOOTER_FORM_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inputs\CK4CItemInput.cs" />
+    <Compile Include="Inputs\Ck4CGetByParamInput.cs" />
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\CK5MaterialInput.cs" />
     <Compile Include="Inputs\CK5UploadFileDocumentsInput.cs" />
@@ -181,6 +191,9 @@
     <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
+    <Compile Include="INVENTORY_MOVEMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -231,6 +244,7 @@
     <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\WorkflowHistoryOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAOutput.cs" />

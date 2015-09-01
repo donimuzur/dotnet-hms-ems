@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -27,5 +28,7 @@ namespace Sampoerna.EMS.Contract
         void Delete(long id);
 
         void DeleteByActionAndFormNumber(GetByActionAndFormNumberInput input);
+
+        GetStatusGovHistoryOutput GetStatusGovHistory(string formNumber);
     }
 }

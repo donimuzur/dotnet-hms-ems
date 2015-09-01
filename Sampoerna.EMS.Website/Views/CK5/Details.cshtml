@@ -2,7 +2,7 @@
 @using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
-@using (Html.BeginForm("GovApproveDocument", "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm(Model.ActionType, "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -17,22 +17,27 @@
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
-
                         <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
                     else
                     {
                         if (Model.AllowGovApproveAndReject)
                         {
-                            
-                            @*<input type="button" class="btn btn-blue" value="GovApprove" id="btnGovApprove" />
-
-                            <input type="button" class="btn btn-danger" value="GovReject" id="btnGovReject" />
-
-                            <input type="button" class="btn btn-danger" value="GovCancel" id="btnGovCancel" />*@
-                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
-                         
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
+                        }
+
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+                         if (Model.AllowCancelSAP)
+                        {
+                            <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
+                        }
                     }
 
                 </div>
@@ -76,6 +81,16 @@
                             @Html.HiddenFor(model => model.DestPlantId)
 
                             @Html.Partial("_CK5GovApproval")
+                        }
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        {
+                            @Html.HiddenFor(model => model.KppBcCity)
+                            @Html.HiddenFor(model => model.GoodTypeName)
+                            @Html.HiddenFor(model => model.SourcePlantId)
+                            @Html.HiddenFor(model => model.DestPlantId)
+                            
+                            
+                             @Html.Partial("_CK5SealingInput")
                         }
                         else
                         {
@@ -224,12 +239,30 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Missing attach files
+                   <span id="modalBodyMessage">Missing attach files</span> 
                 </p>
 
             </div>
             <div class="modal-footer">
                 <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Ck5ModalCancelSap" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Cancel </span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Cancel Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirmCancel" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
             </div>
         </div>
     </div>
@@ -247,7 +280,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            //$('#MenuCK5Domestic').addClass('active');
+           
             OnReadyFunction('@Model.Ck5Type.ToString()');
 
             openGovStatusBlock();
@@ -287,16 +320,42 @@
 
                 if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
                     $('#divComment').show();
-                    @*$('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');*@
+                    
                 }
-                @*else if (valueSelected == 'PartialApproved') {
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
-                }
-                else if (valueSelected == 'FullApproved') {
-                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-                }*@
-
+               
             });
+            
+            $("#btnGiCreated").click(function () {
+                
+                if ('@Model.AllowGiCreated' == "True") {
+                    
+                    if (ValidateGiCreated()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+                else if ('@Model.AllowGrCreated' == "True") {
+                    
+                    if (ValidateGRCreated()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+                
+            });
+            
+            if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True") {
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+                
+                $('#collapseThree').removeClass('in');
+                $("#collapseThree").css({ height: "0" });
+                
+                $('#collapseTwo').removeClass('in');
+                $("#collapseTwo").css({ height: "0" });
+                
+                $('#collapseOne').removeClass('in');
+                $("#collapseOne").css({ height: "0" });
+            }
             
         });
 
@@ -340,8 +399,7 @@
             window.location = "@Url.Action("ApproveDocument", "CK5", new {id = @Model.Ck5Id})";
         });
 
-
-        @*$("#btnReject").click(function () {
+        $("#btnReject").click(function () {
             $('#btnConfirmReject').attr('disabled', 'disabled');
 
             $('#Comment').val('');
@@ -349,70 +407,21 @@
             $('#Ck5ModalReject').modal('show');
 
         });
+   
 
         $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmReject').attr('disabled', 'disabled');
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
+            //$('#btnConfirmGovReject').attr('disabled', 'disabled');
+            //$('#btnConfirmGovCancel').attr('disabled', 'disabled');
 
             if (this.value.length) {
                 $('#btnConfirmReject').removeAttr('disabled');
-                $('#btnConfirmGovReject').removeAttr('disabled');
-                $('#btnConfirmGovCancel').removeAttr('disabled');
+                //$('#btnConfirmGovReject').removeAttr('disabled');
+                //$('#btnConfirmGovCancel').removeAttr('disabled');
             }
         });
-
-        $('.GovCancel').bind('input propertychange', function () {
-            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
-            if (this.value.length) {
-                $('#btnConfirmGovCancel').removeAttr('disabled');
-            }
-        });
-
-        $('.GovReject').bind('input propertychange', function () {
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            if (this.value.length) {
-                $('#btnConfirmGovReject').removeAttr('disabled');
-            }
-        });
-
-
-        $("#btnGovApprove").click(function () {
-            // alert('1');
-            if (ValidateGovInput()) {
-                //  alert('2');
-                $('#btnConfirm').hide();
-                $('#btnConfirmGovApprove').show();
-                $("#lblTitleModal").text('GovApproval');
-                $("#lblMessageModal").text('GovApprove Documents ?');
-                $('#Ck5Modal').modal('show');
-            }
-            // alert('3');
-        });
-
-        $("#btnConfirmGovApprove").click(function () {
-           
-            $('#Ck5Modal').modal('hide');
-            $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-            $('#GovApproveForm').submit();
-        });
-
-
-        $("#btnGovReject").click(function () {
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            $('.GovReject').val('');
-            $('#Ck5ModalGovReject').modal('show');
-
-        });
-
-        $("#btnGovCancel").click(function () {
-            $('#btnConfirmGovCancel').attr('disabled', 'disabled');
-            $('.GovCancel').val('');
-            $('#Ck5ModalGovCancel').modal('show');
-
-        });*@
-
+        
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
@@ -454,6 +463,18 @@
 
           
         }
+
+        $("#btnCancelSAP").click(function () {
+
+           
+            $('#Ck5ModalCancelSap').modal('show');
+
+        });
+        
+        $("#btnConfirmCancel").click(function () {
+
+            window.location = "@Url.Action("CancelSAPDocument", "CK5", new {id = @Model.Ck5Id})";
+        });
 
     </script>
 }

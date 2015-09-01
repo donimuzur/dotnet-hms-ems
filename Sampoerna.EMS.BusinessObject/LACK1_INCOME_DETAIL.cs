@@ -18,6 +18,8 @@ namespace Sampoerna.EMS.BusinessObject
         public int LACK1_ID { get; set; }
         public long CK5_ID { get; set; }
         public decimal AMOUNT { get; set; }
+        public string REGISTRATION_NUMBER { get; set; }
+        public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
     
         public virtual CK5 CK5 { get; set; }
         public virtual LACK1 LACK1 { get; set; }

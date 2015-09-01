@@ -221,6 +221,7 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
     <Compile Include="Code\IFormsAuthenticationService.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="Controllers\AspxReportViewerController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BrandRegistrationController.cs" />
+    <Compile Include="Controllers\CK4CController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\DocumenSequenceController.cs" />
@@ -259,6 +261,7 @@
     <Compile Include="Controllers\WorkflowSettingsController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
+    <Compile Include="EMSWebsiteMapperLack1.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
     <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />
     <Compile Include="Filters\EncryptedParameterAttribute.cs" />
@@ -277,6 +280,10 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
@@ -300,11 +307,13 @@
     <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
     <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
+    <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
+    <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
-    <Compile Include="Models\LACK1\Lack1CreateNppbkcViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
@@ -325,6 +334,7 @@
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1SupInfo.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
     <Compile Include="Models\PBCK1\Pbck1MonitoringUsageViewModel.cs" />
@@ -408,6 +418,13 @@
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\LACK2\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -773,6 +790,7 @@
     <Content Include="Scripts\js\custom.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-select-custom.js" />
     <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
     <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
@@ -979,7 +997,16 @@
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
+    <Content Include="Views\CK5\_CK5InputMaterial.cshtml" />
     <Content Include="Views\Error\NotRegistered.cshtml" />
+    <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
+    <Content Include="Views\CK4C\Index.cshtml" />
+    <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
+    <Content Include="Views\CK4C\_Ck4CTableIndex.cshtml" />
+    <Content Include="Views\CK4C\WasteProductionIndex.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableWasteProduction.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDailyProduction.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1086,6 +1113,11 @@
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Reports\LACK2\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>

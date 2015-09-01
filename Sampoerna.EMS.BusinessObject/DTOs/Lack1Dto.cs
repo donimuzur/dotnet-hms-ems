@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Lack1Dto
     {
-        public long Lack1Id { get; set; }
+        public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         public string Bukrs { get; set; }
         public string Butxt { get; set; }
@@ -41,6 +42,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
         public decimal TotalProduction { get; set; }
+
+        public string Lack1UomId { get; set; }
+        public string Lack1UomName { get; set; }
+
+        public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
 
     }
 }

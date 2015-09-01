@@ -50,8 +50,16 @@ namespace Sampoerna.EMS.Contract
 
        void GovApproveDocumentRollback(CK5WorkflowDocumentInput input);
 
+       void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input);
+
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId);
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByCk5Id(long ck5Id);
+
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate,string destPlantNppbkc);
+
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate,string destPlantNppbkcId);
+
+       List<CK5> GetByGIDate(int month, int year,string desPlantId);
    }
 }

@@ -5,8 +5,10 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -238,6 +240,37 @@ namespace Sampoerna.EMS.BLL
 
             _repository.Delete(dbData);
 
+        }
+
+        public GetStatusGovHistoryOutput GetStatusGovHistory(string formNumber)
+        {
+            //List<int> listStatusGov = new List<int>();
+            //listStatusGov.Add(Convert.ToInt32(Enums.DocumentStatus.GovApproved));
+            //listStatusGov.Add(Convert.ToInt32(Enums.DocumentStatus.GovRejected));
+            //listStatusGov.Add(Convert.ToInt32(Enums.DocumentStatus.GovCanceled));
+            //listStatusGov.Add(Convert.ToInt32(Enums.DocumentStatus.WaitingGovApproval));
+
+            var dbData =
+                _repository.Get(
+                    c =>
+                        c.FORM_NUMBER == formNumber &&
+                        (c.ACTION == Enums.ActionType.GovApprove || c.ACTION == Enums.ActionType.GovReject ||
+                         c.ACTION == Enums.ActionType.GovCancel), null, includeTables)
+                    .OrderByDescending(c => c.ACTION_DATE)
+                    .FirstOrDefault();
+
+            var output = new GetStatusGovHistoryOutput();
+            output.StatusGov = string.Empty;
+            output.Comment = string.Empty;
+
+            if (dbData != null)
+            {
+                output.StatusGov = EnumHelper.GetDescription(dbData.ACTION);
+                output.Comment = dbData.COMMENT;
+            }
+
+
+            return output;
         }
     }
 }

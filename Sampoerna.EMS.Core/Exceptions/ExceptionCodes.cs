@@ -41,11 +41,20 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("BPPKBC data could not found")]
             NppbkcNotFound,
 
-            [Description("Pbck1 Ref is null")]
+            [Description("PBCK-11 Ref is null")]
             Pbck1RefNull,
 
-            [Description("Ck5 Quota Exceeded")]
-            CK5QuotaExceeded
+            [Description("CK5 Quota Exceeded")]
+            CK5QuotaExceeded,
+
+            [Description("PBCK-1 Data in this period not found")]
+            Pbck1PeriodNotFound,
+
+            [Description("Do Reversal Manual SAP")]
+            ReversalManualSAP,
+
+            [Description("A record with same parameter is already exist")]
+            Lack1DuplicateSelectionCriteria
 
         }
         

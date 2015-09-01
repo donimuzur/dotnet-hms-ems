@@ -132,3 +132,5 @@ aspnet_client
 /scripts/BatchSqlDBUpdates.exe.config
 /Sampoerna.EMS.Website/Web.config
 /Sampoerna.EMS.Scheduler/App.config
+/Sampoerna.EMS.DAL/App.config
+/Sampoerna.EMS.DAL/App.Config

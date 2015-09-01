@@ -35,6 +35,14 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlCk5DataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("InvMovement"))
+            {
+                return new XmlMovementDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("BOMMAP"))
+            {
+                return new XmlBOMDataMapper(xmlfile);
+            }
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
@@ -221,7 +229,11 @@ namespace Sampoerna.EMS.XMLReader
                         }
                         if (reader != null)
                         {
-                            filesMoved.Add(reader.InsertToDatabase());
+                            var fileIsMoved = reader.InsertToDatabase();
+                            if (!string.IsNullOrEmpty(fileIsMoved))
+                            {
+                                filesMoved.Add(fileIsMoved);
+                            }
                         }
                     }
                     catch (Exception ex)

@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             if (value == null)
             {
-                return "/";
+                return null;
             }
             return value.ToString();
         }
@@ -94,7 +94,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
     
-        public void CreateCK5Xml(CK5XmlDto ck5XmlDto)
+        public void CreateCK5Xml(CK5XmlDto ck5XmlDto, string status=null)
         {
             using (XmlWriter writer = XmlWriter.Create(ck5XmlDto.Ck5PathXml))
             {
@@ -131,7 +131,14 @@ namespace Sampoerna.EMS.XMLReader
 
                 writer.WriteElementString("CK5_NUMBER", ck5XmlDto.SUBMISSION_NUMBER);
                 writer.WriteElementString("CK5_PROCS_TYP", MappingCk5Type(ck5XmlDto.CK5_TYPE));
-                writer.WriteElementString("STATUS", "01");
+                if (string.IsNullOrEmpty(status))
+                {
+                    writer.WriteElementString("STATUS", "01");
+                }
+                else
+                {
+                    writer.WriteElementString("STATUS", status);
+                }
                 writer.WriteElementString("SOURCE_PLANT", ck5XmlDto.SOURCE_PLANT_ID);
                 writer.WriteElementString("DEST_PLANT", ck5XmlDto.DEST_PLANT_ID);
                 writer.WriteElementString("CREATOR_ID", SetNullValue(ck5XmlDto.CREATED_BY));

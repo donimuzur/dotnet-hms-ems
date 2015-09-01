@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.Website
             InitializeCK5();
             InitializePBCK1();
             InitializePbck7AndPbck3();
+            InitializeLACK1();
 
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
@@ -59,7 +60,7 @@ namespace Sampoerna.EMS.Website
             #endregion
 
             Mapper.CreateMap<BrandRegistrationOutput, SelectItemModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.BrandIdZaidmExBrand))
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FaCode))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.BrandCe));
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, SelectItemModel>().IgnoreAllNonExisting()
@@ -511,6 +512,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
                 .ForMember(dest => dest.MaterialGroup, opt => opt.MapFrom(src => src.MATERIAL_GROUP))
                 .ForMember(dest => dest.PurchasingGroup, opt => opt.MapFrom(src => src.PURCHASING_GROUP))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                .ForMember(dest => dest.Tariff_Curr, opt => opt.MapFrom(src => src.TARIFF_CURR))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                .ForMember(dest => dest.Hje_Curr, opt => opt.MapFrom(src => src.HJE_CURR))
                 .ForMember(dest => dest.IssueStorageLoc, opt => opt.MapFrom(src => src.ISSUE_STORANGE_LOC))
                 .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
                 .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION))
@@ -528,6 +533,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialGroup, opt => opt.MapFrom(src => src.MATERIAL_GROUP))
                 .ForMember(dest => dest.PurchasingGroup, opt => opt.MapFrom(src => src.PURCHASING_GROUP))
                 .ForMember(dest => dest.IssueStorageLoc, opt => opt.MapFrom(src => src.ISSUE_STORANGE_LOC))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                .ForMember(dest => dest.Tariff_Curr, opt => opt.MapFrom(src => src.TARIFF_CURR))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                .ForMember(dest => dest.Hje_Curr, opt => opt.MapFrom(src => src.HJE_CURR))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP))
@@ -548,6 +557,11 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MATERIAL_GROUP, opt => opt.MapFrom(src => src.MaterialGroup))
                 .ForMember(dest => dest.PURCHASING_GROUP, opt => opt.MapFrom(src => src.PurchasingGroup))
                 .ForMember(dest => dest.ISSUE_STORANGE_LOC, opt => opt.MapFrom(src => src.IssueStorageLoc))
+                .ForMember(dest => dest.TARIFF_CURR, opt => opt.MapFrom(src => src.Tariff_Curr))
+                .ForMember(dest => dest.HJE_CURR, opt => opt.MapFrom(src => src.Hje_Curr))
+                .ForMember(dest => dest.TARIFF, opt => opt.MapFrom(src => src.Tariff))
+                .ForMember(dest => dest.HJE, opt => opt.MapFrom(src => src.Hje))
+                .ForMember(dest => dest.MATERIAL_UOM, opt => opt.MapFrom(src => src.MaterialUom))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedById))
                 .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSap))
@@ -568,6 +582,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MATERIAL_GROUP, opt => opt.MapFrom(src => src.MaterialGroup))
                 .ForMember(dest => dest.PURCHASING_GROUP, opt => opt.MapFrom(src => src.PurchasingGroup))
                 .ForMember(dest => dest.ISSUE_STORANGE_LOC, opt => opt.MapFrom(src => src.IssueStorageLoc))
+                .ForMember(dest => dest.TARIFF_CURR, opt => opt.MapFrom(src => src.Tariff_Curr))
+                .ForMember(dest => dest.HJE_CURR, opt => opt.MapFrom(src => src.Hje_Curr))
+                .ForMember(dest => dest.TARIFF, opt => opt.MapFrom(src => src.Tariff))
+                .ForMember(dest => dest.HJE, opt => opt.MapFrom(src => src.Hje))
                 .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => false))
                 .ForMember(dest => dest.MATERIAL_UOM, opt => opt.MapFrom(src => src.MaterialUom));
 
@@ -582,6 +600,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialGroup, opt => opt.MapFrom(src => src.MATERIAL_GROUP))
                 .ForMember(dest => dest.PurchasingGroup, opt => opt.MapFrom(src => src.PURCHASING_GROUP))
                 .ForMember(dest => dest.IssueStorageLoc, opt => opt.MapFrom(src => src.ISSUE_STORANGE_LOC))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                .ForMember(dest => dest.Tariff_Curr, opt => opt.MapFrom(src => src.TARIFF_CURR))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                .ForMember(dest => dest.Hje_Curr, opt => opt.MapFrom(src => src.HJE_CURR))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.CreatedBy,
                     opt => opt.MapFrom(src => src.CREATED_BY))
@@ -796,8 +818,18 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<PlantDto, SelectItemModel>().IgnoreAllNonExisting()
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
+            Mapper.CreateMap<T001KCompositDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.BUKRS));
 
+            Mapper.CreateMap<T001WDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NAME1));
 
+            Mapper.CreateMap<Lack2ItemModel, Lack2ItemDto>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.Ck5Id));
+           
+
+          
         }
     }
 

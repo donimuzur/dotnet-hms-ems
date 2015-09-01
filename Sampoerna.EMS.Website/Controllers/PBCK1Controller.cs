@@ -51,9 +51,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private ICompanyBLL _companyBll;
         private IUnitOfMeasurementBLL _uomBll;
+        private ILFA1BLL _lfa1Bll;
       
-        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll, 
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll)
+        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -70,6 +71,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _supplierPortBll = supplierPortBll;
             _goodTypeBll = goodTypeBll;
             _companyBll = companyBll;
+            _lfa1Bll = lfa1Bll;
             _uomBll = uomBll;
         }
 
@@ -269,7 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSupplierPlant()
         {
-            return Json(GlobalFunctions.GetActiveSupplierPlantList());
+            return Json(GlobalFunctions.GetPlantAll());
         }
 
         [HttpPost]
@@ -283,6 +285,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetSupplierPlantDetail(string plantid)
         {
             var data = _plantBll.GetId(plantid);
+
+            var lfa1Data = _lfa1Bll.GetById(data.KPPBC_NO);
+
+            data.KPPBC_NAME = lfa1Data.NAME1;
+
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }
 
@@ -426,6 +433,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.DocStatus = model.Detail.Status;
 
+                model.SupInfo.SupplierPlantWerks = model.Detail.SupplierPlantWerks;
+                model.SupInfo.SupplierAddress = model.Detail.SupplierAddress;
+                model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
+                model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcName;
+                model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
+                model.SupInfo.SupplierPhone = model.Detail.SupplierPhone;
+
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
                 {
@@ -469,7 +483,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             //check is Allow Edit Document
-            var isAllowEditDocument = _workflowBll.AllowEditDocument(new WorkflowAllowEditAndSubmitInput()
+            var isAllowEditDocument = _workflowBll.AllowEditDocumentPbck1(new WorkflowAllowEditAndSubmitInput()
             {
                 DocumentStatus = model.Detail.Status,
                 CreatedUser = model.Detail.CreatedById,
@@ -496,6 +510,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        //get error details
+                    }
+
                     AddMessageInfo("Model error", Enums.MessageInfoType.Error);
                     model = ModelInitial(model);
                     model = SetHistory(model);
@@ -527,10 +548,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.Pbck1.StatusGov = null;
                 input.Pbck1.Pbck1DecreeDoc = null;
 
+                bool isSubmit = model.Detail.IsSaveSubmit == "submit";
+
                 var saveResult = _pbck1Bll.Save(input);
 
                 if (saveResult.Success)
                 {
+                    if (isSubmit)
+                    {
+                        Pbck1Workflow(model.Detail.Pbck1Id, Enums.ActionType.Submit, string.Empty);
+                        AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                        return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                    }
+
                     //return RedirectToAction("Index");
                     AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = model.Detail.Pbck1Id });
@@ -884,10 +914,10 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck1ItemViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            //}
 
             if (model.Detail.Pbck1DecreeFiles == null)
             {
@@ -906,17 +936,30 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
                             var decreeDoc = new Pbck1DecreeDocModel()
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenamecheck,
                                 FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
                                 CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
                         }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                        }
                     }
                 }
+                
 
                 var input = new Pbck1UpdateReportedOn()
                 {
@@ -1509,6 +1552,8 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.ProdPlanPeriod = d.ProdPlanPeriode;
             detailRow.LackPeriod = d.Lack1Periode;
             detailRow.DocumentText = printTitle;
+            detailRow.PoaAddress = d.PoaAddress;
+            detailRow.SupplierPlantId = d.SupplierPlantId;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }
@@ -1646,7 +1691,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Jenis = item.Jenis;
                     detailRow.Jumlah = item.Jumlah;
                     detailRow.SaldoAkhir = item.SaldoAkhir;
-                    detailRow.Uom = item.Uom;
+                    detailRow.Uom = item.Lack1UomId;
                     ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
 
                 }

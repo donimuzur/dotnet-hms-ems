@@ -20,7 +20,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string PROD_CODE { get; set; }
         public string PRODUCT_TYPE { get; set; }
         public string PRODUCT_ALIAS { get; set; }
+        public string UOM_ID { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
+        public virtual UOM UOM { get; set; }
     }
 }

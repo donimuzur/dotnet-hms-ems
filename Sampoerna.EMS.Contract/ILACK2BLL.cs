@@ -19,6 +19,9 @@ namespace Sampoerna.EMS.Contract
 
         Lack2Dto GetById(int id);
 
+        Lack2Dto GetByIdAndItem(int id);
+
+
         Lack2Dto Insert(Lack2Dto item);
     }
 }

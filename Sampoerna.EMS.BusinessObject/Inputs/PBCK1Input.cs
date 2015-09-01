@@ -87,4 +87,18 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? ReportedOn { get; set; }
     }
 
+    public class Pbck1GetDataForLack1ParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ExcisableGoodsTypeId { get; set; }
+        public string SupplierPlantId { get; set; }
+    }
+
+    public class Pbck1GetSupplierPlantByParamInput
+    {
+        public string NppbkcId { get; set; }
+        public string ExciseableGoodsTypeId { get; set; }
+    }
+
 }

@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.XMLReader
 
                                     item.MATERIAL_UOM.Add(matUom);
                                 }
-                                item.CREATED_BY = Constans.PICreator;
+                                item.CREATED_BY = Constans.PI;
 
                                 item.IS_FROM_SAP = true;
                                 var existingMaterial = GetMaterial(item.STICKER_CODE, item.WERKS);
@@ -102,6 +102,10 @@ namespace Sampoerna.EMS.XMLReader
                                     var tempUoms = item.MATERIAL_UOM;
                                     item.MATERIAL_UOM = null;
                                     item.MATERIAL_UOM = new List<MATERIAL_UOM>();
+                                    item.HJE = existingMaterial.HJE;
+                                    item.HJE_CURR = existingMaterial.HJE_CURR;
+                                    item.TARIFF_CURR = existingMaterial.TARIFF_CURR;
+                                    item.TARIFF = existingMaterial.TARIFF;
                                     foreach (var uom in existingMaterial.MATERIAL_UOM)
                                     {
                                         foreach (var tempUom in tempUoms)
@@ -115,7 +119,7 @@ namespace Sampoerna.EMS.XMLReader
                                         }
                                     }
 
-                                    item.MODIFIED_BY = Constans.PICreator;
+                                    item.MODIFIED_BY = Constans.PI;
                                     item.CREATED_BY = existingMaterial.CREATED_BY;
                                     item.CREATED_DATE = existingMaterial.CREATED_DATE;
                                     item.MODIFIED_DATE = DateTime.Now;

@@ -33,5 +33,21 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public string NppbkcId { get; set; }
+
+        public List<Lack2ItemDto> Items { get; set; } 
+    }
+
+    public class Lack2ItemDto
+    {
+        public int Ck5Id { get; set; }
+        public string Ck5Number { get; set; }
+        public string Ck5GIDate { get; set; }
+        public decimal Ck5ItemQty { get; set;  }
+
+        public string CompanyName { get; set; }
+
+        public string CompanyNppbkc { get; set; }
+
+        public string CompanyAddress { get; set; }
     }
 }

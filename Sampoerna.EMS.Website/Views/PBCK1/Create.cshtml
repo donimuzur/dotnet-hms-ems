@@ -48,6 +48,7 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
 
         var supplierData;
@@ -58,7 +59,8 @@
             });
 
             $("#Detail_SupplierPortId").change(function() {
-                supplierPortOnChange();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                $('#Detail_SupplierPortName').val(port_name);
             });
 
             $('#prod-conv-save').click(function() {
