@@ -74,14 +74,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 input.DateProduction = Convert.ToDateTime(input.DateProduction).ToString();
             }
+
             var dbData = _ck4CBll.GetAllByParam(input);
-
             var result = Mapper.Map<List<DataIndecCk4C>>(dbData);
-
             var viewModel = new Ck4CIndexViewModel();
-
             viewModel.Detail = result;
-
             return PartialView("_Ck4CTableIndex", viewModel);
         }
 

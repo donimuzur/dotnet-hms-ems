@@ -817,13 +817,11 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<PlantDto, SelectItemModel>().IgnoreAllNonExisting()
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
-              .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
-            Mapper.CreateMap<T001KCompositDto, SelectItemModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.BUKRS));
-
+              .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NAME1));
+           
             Mapper.CreateMap<T001WDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NAME1));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src =>  src.WERKS + "-" + src.NAME1));
 
             Mapper.CreateMap<Lack2ItemModel, Lack2ItemDto>().IgnoreAllNonExisting()
             .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.Ck5Id));
