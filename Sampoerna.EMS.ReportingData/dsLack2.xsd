@@ -12,7 +12,7 @@
   <xs:element name="dsLack2" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsLack2" msprop:Generator_UserDSName="dsLack2">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Lack2" msprop:Generator_TableClassName="Lack2DataTable" msprop:Generator_TableVarName="tableLack2" msprop:Generator_TablePropName="Lack2" msprop:Generator_RowDeletingName="Lack2RowDeleting" msprop:Generator_RowChangingName="Lack2RowChanging" msprop:Generator_RowEvHandlerName="Lack2RowChangeEventHandler" msprop:Generator_RowDeletedName="Lack2RowDeleted" msprop:Generator_UserTableName="Lack2" msprop:Generator_RowChangedName="Lack2RowChanged" msprop:Generator_RowEvArgName="Lack2RowChangeEvent" msprop:Generator_RowClassName="Lack2Row">
+        <xs:element name="Lack2" msprop:Generator_TableClassName="Lack2DataTable" msprop:Generator_TableVarName="tableLack2" msprop:Generator_RowChangedName="Lack2RowChanged" msprop:Generator_TablePropName="Lack2" msprop:Generator_RowDeletingName="Lack2RowDeleting" msprop:Generator_RowChangingName="Lack2RowChanging" msprop:Generator_RowEvHandlerName="Lack2RowChangeEventHandler" msprop:Generator_RowDeletedName="Lack2RowDeleted" msprop:Generator_RowClassName="Lack2Row" msprop:Generator_UserTableName="Lack2" msprop:Generator_RowEvArgName="Lack2RowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="CompanyName" msprop:Generator_ColumnVarNameInTable="columnCompanyName" msprop:Generator_ColumnPropNameInRow="CompanyName" msprop:Generator_ColumnPropNameInTable="CompanyNameColumn" msprop:Generator_UserColumnName="CompanyName" type="xs:string" minOccurs="0" />
@@ -23,10 +23,15 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Lack2Item" msprop:Generator_TableClassName="Lack2ItemDataTable" msprop:Generator_TableVarName="tableLack2Item" msprop:Generator_TablePropName="Lack2Item" msprop:Generator_RowDeletingName="Lack2ItemRowDeleting" msprop:Generator_RowChangingName="Lack2ItemRowChanging" msprop:Generator_RowEvHandlerName="Lack2ItemRowChangeEventHandler" msprop:Generator_RowDeletedName="Lack2ItemRowDeleted" msprop:Generator_UserTableName="Lack2Item" msprop:Generator_RowChangedName="Lack2ItemRowChanged" msprop:Generator_RowEvArgName="Lack2ItemRowChangeEvent" msprop:Generator_RowClassName="Lack2ItemRow">
+        <xs:element name="Lack2Item" msprop:Generator_TableClassName="Lack2ItemDataTable" msprop:Generator_TableVarName="tableLack2Item" msprop:Generator_RowChangedName="Lack2ItemRowChanged" msprop:Generator_TablePropName="Lack2Item" msprop:Generator_RowDeletingName="Lack2ItemRowDeleting" msprop:Generator_RowChangingName="Lack2ItemRowChanging" msprop:Generator_RowEvHandlerName="Lack2ItemRowChangeEventHandler" msprop:Generator_RowDeletedName="Lack2ItemRowDeleted" msprop:Generator_RowClassName="Lack2ItemRow" msprop:Generator_UserTableName="Lack2Item" msprop:Generator_RowEvArgName="Lack2ItemRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Nomor" msprop:Generator_ColumnVarNameInTable="columnNomor" msprop:Generator_ColumnPropNameInRow="Nomor" msprop:Generator_ColumnPropNameInTable="NomorColumn" msprop:Generator_UserColumnName="Nomor" type="xs:string" minOccurs="0" />
+              <xs:element name="Tanggal" msprop:Generator_ColumnVarNameInTable="columnTanggal" msprop:Generator_ColumnPropNameInRow="Tanggal" msprop:Generator_ColumnPropNameInTable="TanggalColumn" msprop:Generator_UserColumnName="Tanggal" type="xs:string" minOccurs="0" />
+              <xs:element name="Jumlah" msprop:Generator_ColumnVarNameInTable="columnJumlah" msprop:Generator_ColumnPropNameInRow="Jumlah" msprop:Generator_ColumnPropNameInTable="JumlahColumn" msprop:Generator_UserColumnName="Jumlah" type="xs:string" minOccurs="0" />
+              <xs:element name="NamaPerusahaan" msprop:Generator_ColumnVarNameInTable="columnNamaPerusahaan" msprop:Generator_ColumnPropNameInRow="NamaPerusahaan" msprop:Generator_ColumnPropNameInTable="NamaPerusahaanColumn" msprop:Generator_UserColumnName="NamaPerusahaan" type="xs:string" minOccurs="0" />
+              <xs:element name="Nppbkc" msprop:Generator_ColumnVarNameInTable="columnNppbkc" msprop:Generator_ColumnPropNameInRow="Nppbkc" msprop:Generator_ColumnPropNameInTable="NppbkcColumn" msprop:Generator_UserColumnName="Nppbkc" type="xs:string" minOccurs="0" />
+              <xs:element name="Alamat" msprop:Generator_ColumnVarNameInTable="columnAlamat" msprop:Generator_ColumnPropNameInRow="Alamat" msprop:Generator_ColumnPropNameInTable="AlamatColumn" msprop:Generator_UserColumnName="Alamat" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

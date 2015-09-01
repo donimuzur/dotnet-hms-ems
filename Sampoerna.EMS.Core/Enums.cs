@@ -73,9 +73,13 @@ namespace Sampoerna.EMS.Core
 
             StoCreated = 10,
             StoFailed = 11,
+            StobGIPartial = 30,
             StobGICompleted = 31,
             StoRecCreated = 40,
-            StobGRCompleted = 46,
+            StoRecGIPartial = 41,
+            StoRecGICompleted = 42,
+            StoRecGRPartial = 45,
+            StoRecGRCompleted = 46,
 
             GIPartial = 15,
 
@@ -89,7 +93,8 @@ namespace Sampoerna.EMS.Core
 
             GRReversal = 22,
             GIReversal = 17,
-          
+            STOBGIReversal = 32,
+            STOBGRReversal = 37,
 
             None = 00
 
@@ -160,8 +165,30 @@ namespace Sampoerna.EMS.Core
 
             [Description("Rec STO Created")]
             StoRecCreated = 200,
-            [Description("Rec STOB GR Completed")]
-            StobGRCompleted = 205
+            [Description("Rec STO GR Completed")]
+            StobGRCompleted = 205,
+
+            [Description("STOB GI Partial")]
+            StobGIPartial = 210,
+
+            [Description("Rec STO GI Partial")]
+            StoRecGIPartial = 215,
+
+            [Description("Rec STO GI Completed")]
+            StoRecGICompleted = 220,
+
+            [Description("Rec STO GR Partial")]
+            StoRecGRPartial = 225,
+
+            [Description("Rec STO GR Completed")]
+            StoRecGRCompleted = 230,
+
+           
+            [Description("STOB Good Issue Reversal")]
+            STOBGIReversal = 235,
+
+            [Description("STOB Good Receive Reversal")]
+            STOBGRReversal = 240,
         }
 
         public enum DocumentStatusGov
@@ -185,7 +212,9 @@ namespace Sampoerna.EMS.Core
             [Description("PBCK-3")]
             PBCK3 = 4,
             [Description("LACK-1")]
-            LACK1 = 5
+            LACK1 = 5,
+            [Description("LACK-2")]
+            LACK2 = 6
         }
 
         public enum ActionType
@@ -247,7 +276,30 @@ namespace Sampoerna.EMS.Core
             [Description("REC STO Created")]
             StoRecCreated = 200,
             [Description("REC GR Completed")]
-            StobGRCompleted = 205
+            StobGRCompleted = 205,
+
+            [Description("STOB GI Partial")]
+            StobGIPartial = 210,
+
+            [Description("Rec STO GI Partial")]
+            StoRecGIPartial = 215,
+
+            [Description("Rec STO GI Completed")]
+            StoRecGICompleted = 220,
+
+            [Description("Rec STO GR Partial")]
+            StoRecGRPartial = 225,
+
+
+            [Description("Rec STO GR Completed")]
+            StoRecGRCompleted = 230,
+
+
+            [Description("STOB Good Issue Reversal")]
+            STOBGIReversal = 235,
+
+            [Description("STOB Good Receive Reversal")]
+            STOBGRReversal = 240,
         }
 
         /// <summary>

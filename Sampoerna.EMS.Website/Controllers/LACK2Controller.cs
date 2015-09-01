@@ -416,7 +416,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult PrintPreview(int id)
         {
-            var lack2 = _lack2Bll.GetById(id);
+            var lack2 = _lack2Bll.GetByIdAndItem(id);
 
             DataSet ds = new DataSet("dsLack2");
 
@@ -430,30 +430,48 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
             drow = dt.NewRow();
-            drow[0] = "company name";
-            drow[1] = "nppb ck nn";
-            drow[2] = "ssssss";
-            drow[3] = GetHeader("~/files_upload/1616_header04082015165943_.jpg");
-            drow[4] = "this is footer";
+
+            drow[0] = lack2.Butxt;
+            drow[1] = lack2.NppbkcId;
+            drow[2] = "xxx";
+            var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
+            {
+                CompanyCode = lack2.Burks,
+                FormTypeId = Enums.FormType.LACK2
+            });
+            if (headerFooter != null)
+            {
+                drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                drow[4] = headerFooter.FOOTER_CONTENT;
+            }
             dt.Rows.Add(drow);
 
 
             //detail
             DataTable dtDetail = new DataTable("Lack2Item");
-
-            // object of data row 
-            DataRow drowDetail;
             dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
-            //dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
-            //dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
 
-            //dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
-            //dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            //dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
-            drowDetail = dtDetail.NewRow();
-            drowDetail[0] = "xxxx";
-            dtDetail.Rows.Add(drowDetail);
+            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+        
+            foreach (var item in lack2.Items)
+            {
+                DataRow drowDetail;
+                drowDetail = dtDetail.NewRow();
+                drowDetail[0] = item.Ck5Number;
+                drowDetail[1] = item.Ck5Number;
+                drowDetail[2] = item.Ck5ItemQty;
+                drowDetail[3] = item.CompanyName;
+                drowDetail[4] = item.CompanyNppbkc;
+                drowDetail[5] = item.CompanyAddress;
+                dtDetail.Rows.Add(drowDetail);
 
+            }
+            // object of data row 
+           
 
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);
@@ -461,7 +479,7 @@ namespace Sampoerna.EMS.Website.Controllers
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
             rpt.FileName = report_path + "LACK2\\Preview.rpt";
             rpt.Load();
-            rpt.SetDataSource(dt);
+            rpt.SetDataSource(ds);
 
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
