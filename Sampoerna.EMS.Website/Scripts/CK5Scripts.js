@@ -46,7 +46,8 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                //alert(total);
+                data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                //alert(datarows[i][13]);
                 total += parseFloat(datarows[i][1]); //Qty
                 if (i == 0) {
                     //alert(datarows[i][2]);
