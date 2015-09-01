@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICK5BLL _ck5Bll;
         private IPBCK1BLL _pbck1Bll;
         private IHeaderFooterBLL _headerFooterBll;
+        
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
             IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
@@ -393,9 +394,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId, string goodstype)
+        public JsonResult GetCK5ByLack2Period(int month, int year, string sendPlantId, string goodstype)
         {
-            var data =  _ck5Bll.GetByGIDate(month, year, desPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
 
         }
@@ -434,11 +435,16 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
             dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
+            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
+            dt.Columns.Add("Period", System.Type.GetType("System.String"));
             drow = dt.NewRow();
 
             drow[0] = lack2.Butxt;
             drow[1] = lack2.NppbkcId;
-            drow[2] = "xxx";
+            drow[2] = lack2.LevelPlantName + ", " +lack2.LevelPlantCity;
+            
+
+
             var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
             {
                 CompanyCode = lack2.Burks,
@@ -449,6 +455,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
                 drow[4] = headerFooter.FOOTER_CONTENT;
             }
+            drow[5] = lack2.ExTypDesc;
+            drow[6] = _monthBll.GetMonth(lack2.PeriodMonth).MONTH_NAME_IND + " " + lack2.PeriodYear;
+           
+
             dt.Rows.Add(drow);
 
 
