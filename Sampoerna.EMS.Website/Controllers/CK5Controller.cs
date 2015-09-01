@@ -1094,8 +1094,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-                input.ActionType = Enums.ActionType.GICreated;
-                
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.GICreated:
+                        input.ActionType = Enums.ActionType.GICreated;
+                        break;
+                    case Enums.DocumentStatus.GICompleted:
+                        input.ActionType = Enums.ActionType.GICompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
                 input.SealingNumber = model.SealingNotifNumber;
                 input.SealingDate = model.SealingNotifDate;
 
@@ -1127,14 +1139,30 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-                input.ActionType = Enums.ActionType.GRCreated;
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.GRCreated:
+                        input.ActionType = Enums.ActionType.GRCreated;
+                        break;
+                    case Enums.DocumentStatus.GRCompleted:
+                        input.ActionType = Enums.ActionType.GRCompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
 
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
                 _ck5Bll.CK5Workflow(input);
 
-                AddMessageInfo("Success update UnSealing Number and Date", Enums.MessageInfoType.Success);
+                AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {

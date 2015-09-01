@@ -564,7 +564,9 @@
 
                             @if (!Model.IsCk5Manual)
                             {
+                               
                                 <div class="row">
+
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.DnNumber, new { @class = "col-md-4" })
@@ -573,19 +575,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.LabelFor(model => model.StoSenderNumber, new { @class = "col-md-4" })
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.StoSenderNumber, new { @class = "form-control", @disabled = "true" })
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
