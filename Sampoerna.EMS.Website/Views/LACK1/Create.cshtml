@@ -6,7 +6,7 @@
     <link href="~/Content/css/print.css" rel="stylesheet" />
 }
 
-@using (Html.BeginForm("Create", "LACK1"))
+@using (Html.BeginForm("Create", "LACK1", FormMethod.Post, new { @id = "CreateLack1Form" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -14,7 +14,8 @@
                 <h3>List by NPPBKC</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    @*<input type="submit" class="btn btn-blue" value="Save" />*@
+                    <input type="button" class="btn btn-blue" onclick="saveClick()" value="Save"/>
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
@@ -208,6 +209,11 @@
         }
 
         function generateDataClick(lackLevel) {
+            if (!generateInputValidation()) {
+                alert('Input selection criteria not valid.');
+                return;
+            }
+            
             var param = {};
             param.CompanyCode = $('#Bukrs').find("option:selected").val();
             param.Lack1Level = lackLevel;
@@ -308,25 +314,7 @@
 
             return rc;
         }
-
-        function printOutFooterInfo() {
-            var rc = '<div class="page-break"></div>' +
-                '<div class="lack-bottom">' +
-                '<div class="lack-date-bottom">' +
-                'Diisi pejabat Bea dan Cukai<br />' +
-                'Diterima tanggal :<br />' +
-                'a.n Kepala Kantor <br /><br />NIP : </div>' +
-                '<div class="lack-signature">' +
-                'Dibuat di Surabaya<br />' +
-                'Pada Tanggal 5 Oktober 2014<br />' +
-                '<span>Pengusaha Pabrik</span>(Kusno)</div></div>' +
-                '<div class="lack-note">' +
-                'Keterangan:<br />' +
-                'LACK-1 ini dibuat dalam 2 rangkap, dengan peruntukan:<br />' +
-                '<ol><li>Lembar ke-1 : untuk Kepala KPPBKC yang mengawasi Pabrik</li><li>Lembar ke-2 : untuk Direktue Jenderal u.p Direktur Cukai</li></ol></div>';
-            return rc;
-        }
-
+        
         function generateJenisHasilProduksi(data) {
             var rc = "";
             if (data.length > 0) {
@@ -377,6 +365,51 @@
             rc = rc + '<tr><td></td><td></td><td></td><td>Total : -</td><td></td><td></td><td>Total: -</td><td></td></tr>' +
                 '</tbody></table>';
             return rc;
+        }
+        
+        function generateInputValidation() {
+            var rc = true;
+            if ($('#Bukrs').find("option:selected").val() == '') {
+                rc = false;
+                $('#Bukrs').addClass('input-validation-error');
+            }
+            if ($('#NppbkcId').find("option:selected").val() == '') {
+                rc = false;
+                $('#NppbkcId').addClass('input-validation-error');
+            }
+            if ($('#ExGoodsType').find("option:selected").val() == '') {
+                rc = false;
+                $('#ExGoodsType').addClass('input-validation-error');
+            }
+            if ($('#SupplierPlant').find("option:selected").val() == '') {
+                rc = false;
+                $('#SupplierPlant').addClass('input-validation-error');
+            }
+            if ($('#PeriodMonth').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodMonth').addClass('input-validation-error');
+            }
+            if ($('#PeriodYears').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodYears').addClass('input-validation-error');
+            }
+            if ($('#WasteUom').find("option:selected").val() == '') {
+                rc = false;
+                $('#WasteUom').addClass('input-validation-error');
+            }
+            if ($('#ReturnUom').find("option:selected").val() == '') {
+                rc = false;
+                $('#ReturnUom').addClass('input-validation-error');
+            }
+            return rc;
+        }
+        
+        function saveClick() {
+            if (!generateInputValidation()) {
+                alert('Invalid input, please review the input.');
+                return;
+            }
+            $('#CreateLack1Form').submit();
         }
 
     </script>
