@@ -75,6 +75,10 @@ namespace Sampoerna.EMS.XMLReader
                 var existingData = repo.Get();
                 foreach (var item in existingData)
                 {
+                    if (item is LFA1)
+                    {
+                        continue;
+                    }
                     var is_deleted = item.GetType().GetProperty("IS_DELETED");
                     if (is_deleted != null)
                     {
