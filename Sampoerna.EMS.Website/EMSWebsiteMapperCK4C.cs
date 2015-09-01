@@ -76,6 +76,19 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region Create Waste Production
+
+            //Mapper.CreateMap<Ck4CDto, Ck4CCreateWasteProductionViewModel>().IgnoreAllNonExisting()
+            //    .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
+            //    .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+            //    .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn))
+            //    .ForMember(dest => dest.FinishGoods, opt => opt.MapFrom(src => src.FaCode))
+            //    .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.ProdQtyPacked))
+            //    .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.ProdQtyUnpacked))
+            //    .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UomProudQty));
+
+
+            #endregion
         }
     }
 }

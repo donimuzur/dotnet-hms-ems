@@ -213,6 +213,10 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.FinishGoodsList = GlobalFunctions.GetBrandList();
+            model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             return (model);
 
