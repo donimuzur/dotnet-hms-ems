@@ -45,7 +45,7 @@
     <Compile Include="IBACK1BLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
-    <Compile Include="ICK4C_BLL.cs" />
+    <Compile Include="ICK4CBLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
     <Compile Include="ILFA1BLL.cs" />

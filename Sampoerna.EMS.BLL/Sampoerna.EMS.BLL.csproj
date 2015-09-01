@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="BACK1BLL.cs" />
     <Compile Include="BLLMapper.cs" />
+    <Compile Include="BLLMapperCK4C.cs" />
     <Compile Include="BLLMapperCK5.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
     <Compile Include="BLLMapperPBCK7.cs" />
@@ -98,7 +99,7 @@
     <Compile Include="MonthBLL.cs" />
     <Compile Include="PageBLL.cs" />
     <Compile Include="PBCK1BLL.cs" />
-    <Compile Include="CK4C_BLL.cs" />
+    <Compile Include="CK4CBLL.cs" />
     <Compile Include="PlantBLL.cs" />
     <Compile Include="PrintHistoryBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
