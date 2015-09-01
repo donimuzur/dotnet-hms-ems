@@ -324,6 +324,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnFooter;
             
+            private global::System.Data.DataColumn columnBKC;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Lack2DataTable() {
@@ -399,6 +401,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn BKCColumn {
+                get {
+                    return this.columnBKC;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -434,14 +444,15 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Lack2Row AddLack2Row(string CompanyName, string Nppbkc, string Alamat, byte[] Header, string Footer) {
+            public Lack2Row AddLack2Row(string CompanyName, string Nppbkc, string Alamat, byte[] Header, string Footer, string BKC) {
                 Lack2Row rowLack2Row = ((Lack2Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         CompanyName,
                         Nppbkc,
                         Alamat,
                         Header,
-                        Footer};
+                        Footer,
+                        BKC};
                 rowLack2Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLack2Row);
                 return rowLack2Row;
@@ -469,6 +480,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnAlamat = base.Columns["Alamat"];
                 this.columnHeader = base.Columns["Header"];
                 this.columnFooter = base.Columns["Footer"];
+                this.columnBKC = base.Columns["BKC"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -484,6 +496,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnHeader);
                 this.columnFooter = new global::System.Data.DataColumn("Footer", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFooter);
+                this.columnBKC = new global::System.Data.DataColumn("BKC", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBKC);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1023,6 +1037,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string BKC {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack2.BKCColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BKC\' in table \'Lack2\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack2.BKCColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCompanyNameNull() {
                 return this.IsNull(this.tableLack2.CompanyNameColumn);
             }
@@ -1079,6 +1109,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetFooterNull() {
                 this[this.tableLack2.FooterColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBKCNull() {
+                return this.IsNull(this.tableLack2.BKCColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBKCNull() {
+                this[this.tableLack2.BKCColumn] = global::System.Convert.DBNull;
             }
         }
         

@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
             model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
-
+            GetNppbkcByCompanyId("1616");
             return View("Index", model);
         }
 
@@ -412,6 +412,11 @@ namespace Sampoerna.EMS.Website.Controllers
             
             return Json(data);
 
+        }
+        [HttpPost]
+        public JsonResult GetNppbkcByCompanyId(string companyId)
+        {
+            return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
         }
 
         public ActionResult PrintPreview(int id)
