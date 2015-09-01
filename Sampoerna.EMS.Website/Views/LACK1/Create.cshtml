@@ -2,6 +2,10 @@
     ViewBag.Title = "Create";
 }
 
+@section styles{
+    <link href="~/Content/css/print.css" rel="stylesheet" />
+}
+
 @using (Html.BeginForm("Create", "LACK1"))
 {
     <div class="container-wrap title-page">
@@ -44,19 +48,21 @@
         $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
         $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
 
-        $(document).ready(function() {
-            $('#btnCancel').click(function(e) {
+        $(document).ready(function () {
+            $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
-            $('#Bukrs').on('change', function() {
+            $('#Bukrs').on('change', function () {
                 BukrsOnChange();
             });
-            $('#NppbkcId').on('change', function() {
+            $('#NppbkcId').on('change', function () {
                 NppbkcIdOnChange();
             });
-            $('#ExGoodsType').on('change', function() {
+            $('#ExGoodsType').on('change', function () {
                 ExGoodsTypeOnChange();
             });
+            $('#generated-data-container').html('');
+            $('#generated-data-container').append(generateEmptyTable());
         });
 
         function BukrsOnChange() {
@@ -121,7 +127,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var list = data;
                         $('#NppbkcId').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -142,7 +148,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var list = data.ReceivePlantList;
                         $('#LevelPlantId').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -164,7 +170,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var list = data.ExGoodTypeList;
                         $('#ExGoodsType').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -185,7 +191,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var list = data.SupplierList;
                         $('#SupplierPlant').append('<option value="">Select</option>');
                         if (list.length > 0) {
@@ -215,7 +221,7 @@
             param.ReturnAmountUom = $('#ReturnUom').find("option:selected").val();
             param.Noted = $('#Lack1Generated_Noted').val();
             param.CompanyName = $('#Bukrs').find("option:selected").text();
-            
+
             var plantAttr = $('#LevelPlantId').attr('disabled');
             // For some browsers, `attr` is undefined; for others,
             // `attr` is false.  Check for both.
@@ -223,22 +229,247 @@
             if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
                 param.ReceivedPlantId = $('#LevelPlantId').find("option:selected").val();
             }
-            
+
             param.PeriodMonth = parseInt($('#PeriodMonth').find("option:selected").val());
             param.PeriodYear = parseInt($('#PeriodYears').find("option:selected").val());
-            
+
             $.ajax({
                 url: "@Url.Action("Generate", "LACK1")",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ param: param }),
-                success: function(response) {
-                    if (response) {
-                        $('#table-generated-data').html("");
-                        $('#table-generated-data').html(response);
+                success: function (response) {
+                    $('#generated-data-container').html("");
+                    if (response.Success) {
+                        var data = response.Data;
+                        var tableGenerated = generateTable(data);
+                        console.log(tableGenerated);
+                        $('#generated-data-container').append(tableGenerated);
+                    } else {
+                        alert(response.ErrorMessage);
                     }
                 }
             });
+        }
+
+        function drawingPrintOut() {
+            var rc = printOutLack1Info() + printOutDrawingTable()
+                + '<div class="page-break"></div></div>' +
+                +printOutFooterInfo();
+            return rc;
+        }
+
+        function printOutLack1Info() {
+            var rc = '<div class="print-out">' +
+                '<img class="logo" width="130" src="http://wwx.hms-ems-dev.voxteneo.com/content/upload/header/header_sampoerna.jpg">' +
+                '<p class="heading">Laporan Penggunaan/Persediaan Barang Kena Cukai <br />Dengan Fasilitas Tidak dipungut Cukai</p>' +
+                '<div class="modul">Lack-1</div>' +
+                '<table border="0" class="lack-title">' +
+                '<tr>' +
+                '<td class="first">Nama Perusahaan</td>' +
+                '<td>: </td>' +
+                '<td>PT HM Sampoerna Tbk.</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td class="first">NPPBKC</td>' +
+                '<td>: </td>' +
+                '<td>0705.1.3.0234</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td class="first">Alamat</td>' +
+                '<td>: </td>' +
+                '<td>JL. Testing 123, Surabya, Jawa Timur</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td class="first">No & Tanggal PBCK-1</td>' +
+                '<td>: </td>' +
+                '<td>HMS-E/SUR/II/2015</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td class="first">Jenis BKC sebagai bahan baku/penolong</td>' +
+                '<td>: </td>' +
+                '<td>Tembakau Iris (TIS)</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td class="first">Nama Pemasok</td>' +
+                '<td>: </td>' +
+                '<td>PT HM Sampoerna Tbk. <br>JL. Testing 123, Surabya, Jawa Tengah</td>' +
+                '</tr>' +
+                '</table>' +
+                '<div class="date">Laporan Bulan: Agustus 2015</div>'
+            ;
+            return rc;
+        }
+
+        function printOutDrawingTable() {
+            var rc = '<div class="lack-table-container"><table border="0" class="lack-content">' +
+                        /*start header*/
+				        '<tr><td rowspan="2">No<br>Urut</td>' +
+                        '<td rowspan="2">Saldo<br>Awal</td>' +
+                        '<td colspan="2">Pemasukan</td' +
+                        '><td rowspan="2">Penggunaan</td>' +
+                        '<td colspan="2">Hasil Produksi BKC</td>' +
+                        '<td rowspan="2">Saldo<br>Akhir</td>' +
+                        '<td rowspan="2">Keterangan</td></tr>' +
+                        '<tr><td>No. & Tgl. CK-5</td>' +
+                        '<td>Jumlah</td><td>Jenis</td>' +
+                        '<td>Jumlah</td></tr>' +
+                        '<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>' +
+                        /*end of header*/
+                        /*loop record*/
+                        '<tr><td>1</td>' +
+                        '<td rowspan="3">1.000.000</td>' +
+                        '<td>000123 - 11.09.2014</td>' +
+                        '<td>10.000.000</td>' +
+                        '<td rowspan="3">1.000.000</td>' +
+                        '<td rowspan="3">SKT<br>CRT</td>' +
+                        '<td rowspan="3">100.000.000 batang<br>50.000.000 batang</td>' +
+                        '<td rowspan="3">50.000.000</td>' +
+                        '<td rowspan="4">Total waste: 100 Gram<br>Tembakau Retur:</td></tr>' +
+				        '<tr><td>2</td><td>000124 - 12.09.2014</td>' +
+                '<td>20.000.000</td></tr>' +
+                '<tr><td>3</td><td>000125 - 13.09.2014</td><td>30.000.000</td></tr>' +
+                /*end loop record*/
+                /*footer*/
+                '<tr><td> </td><td> </td><td> </td><td>Total:<br />60.000.000</td><td></td><td></td><td>Total: 150.000.000<br />batang</td><td></td></tr>' +
+                '</table></div>';
+            return rc;
+        }
+
+        function generateHeaderTable() {
+            var rc =  /*start header*/
+                '<tr><td rowspan="2">No<br>Urut</td>' +
+                '<td rowspan="2">Saldo<br>Awal</td>' +
+                '<td colspan="2">Pemasukan</td' +
+                '><td rowspan="2">Penggunaan</td>' +
+                '<td colspan="2">Hasil Produksi BKC</td>' +
+                '<td rowspan="2">Saldo<br>Akhir</td>' +
+                '<td rowspan="2">Keterangan</td></tr>' +
+                '<tr><td>No. & Tgl. CK-5</td>' +
+                '<td>Jumlah</td><td>Jenis</td>' +
+                '<td>Jumlah</td></tr>' +
+                '<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+            /*end of header*/
+            return rc;
+        }
+
+        function generateTable(data) {
+
+            //var rc = '<div class="lack-table-container"><table border="1" class="lack-content">' + generateHeaderTable();
+            var rc = '<div><table border="1" class="table table-bordered table-striped">' + generateHeaderTable();
+               
+            if (data.IncomeList.length > 0) {
+                var rowIndex = 1;
+                var rowCount = data.IncomeList.length;
+                rc = rc +
+                /*First Record*/
+                '<tr><td>' + rowIndex + '</td>' +
+                '<td rowspan="' + rowCount + '">' + data.BeginingBalance + '</td>' +
+                '<td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
+                '<td>' + data.IncomeList[0].Amount + '</td>' +
+                '<td rowspan="' + rowCount + '">' + data.TotalUsage + '</td>' +
+                '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
+                '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + data.EndingBalance + '</td>' +
+                '<td rowspan="' + (rowCount + 1) + '">' + data.Noted + '</td></tr>';
+                /*loop record*/
+                for (var i = 1; i < data.IncomeList.length; i++) {
+                    rowIndex = rowIndex + 1;
+                    var item = '<tr><td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
+                                '<td>' + data.IncomeList[0].Amount + '</td></tr>';
+                    rc.append(item);
+                }
+                /*end loop record*/
+
+            } else {
+                rc = rc +
+                /*Only 1 Record*/
+                '<tr><td>1</td>' +
+                '<td>' + data.BeginingBalance + '</td>' +
+                '<td>-</td>' +
+                '<td>0</td>' +
+                '<td>0</td>' +
+                '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
+                '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
+                '<td>' + data.EndingBalance + '</td>' +
+                '<td>' + data.Noted + '</td></tr>';
+            }
+
+            /*footer*/
+            rc = rc + '<tr><td></td><td></td><td></td><td>Total:<br />'
+                + data.TotalIncome + '</td><td></td><td></td><td>Total: 150.000.000<br />batang</td><td colspan="2"></td></tr>' +
+                '</table></div>';
+
+            return rc;
+        }
+
+        function printOutFooterInfo() {
+            var rc = '<div class="page-break"></div>' +
+                '<div class="lack-bottom">' +
+                '<div class="lack-date-bottom">' +
+                'Diisi pejabat Bea dan Cukai<br />' +
+                'Diterima tanggal :<br />' +
+                'a.n Kepala Kantor <br /><br />NIP : </div>' +
+                '<div class="lack-signature">' +
+                'Dibuat di Surabaya<br />' +
+                'Pada Tanggal 5 Oktober 2014<br />' +
+                '<span>Pengusaha Pabrik</span>(Kusno)</div></div>' +
+                '<div class="lack-note">' +
+                'Keterangan:<br />' +
+                'LACK-1 ini dibuat dalam 2 rangkap, dengan peruntukan:<br />' +
+                '<ol><li>Lembar ke-1 : untuk Kepala KPPBKC yang mengawasi Pabrik</li><li>Lembar ke-2 : untuk Direktue Jenderal u.p Direktur Cukai</li></ol></div>';
+            return rc;
+        }
+
+        function generateJenisHasilProduksi(data) {
+            var rc = "";
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    if (i == data.length) {
+                        rc = rc + data.ProductAlias;
+                    } else {
+                        rc = rc + data.ProductAlias + "<br/>";
+                    }
+                }
+            } else {
+                rc = "-";
+            }
+            return rc;
+        }
+
+        function generateJumlahHasilProduksi(data) {
+            var rc = "";
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    if (i == data.length) {
+                        rc = rc + data.Amount;
+                    } else {
+                        rc = rc + data.Amount + " " + data.UomDesc + "<br/>";
+                    }
+                }
+            } else {
+                rc = "-";
+            }
+            return rc;
+        }
+        
+        function generateEmptyTable() {
+            var rc = '<div class="lack-table-container"><table border="1" class="lack-content">' + generateHeaderTable();
+            rc = rc +
+                /*Only 1 Record*/
+                '<tr><td>-</td>' +
+                '<td>-</td>' +
+                '<td>-</td>' +
+                '<td>0</td>' +
+                '<td>0</td>' +
+                '<td>-</td>' +
+                '<td>-</td>' +
+                '<td>0</td>' +
+                '<td rowspan="2">-</td></tr>';
+            /*footer*/
+            rc = rc + '<tr><td></td><td></td><td></td><td>Total:<br />0</td><td></td><td></td><td>Total: -</td><td></td></tr>' +
+                '</table></div>';
+            return rc;
         }
 
     </script>

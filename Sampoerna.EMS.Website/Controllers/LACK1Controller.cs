@@ -188,22 +188,27 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
-        public PartialViewResult Generate(Lack1GenerateInputModel param)
+        public JsonResult Generate(Lack1GenerateInputModel param)
         {
-            try
-            {
-                var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
-                var generatedData = _lack1Bll.GenerateLack1DataByParam(input);
-                var model = new Lack1CreateViewModel() { Lack1Generated = Mapper.Map<Lack1GeneratedItemModel>(generatedData) };
-                return PartialView("_Lack1TableBalance", model);
-            }
-            catch (BLLException ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                return null;
-            }
+            //try
+            //{
+            //    var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
+            //    var generatedData = _lack1Bll.GenerateLack1DataByParam(input);
+            //    var model = new Lack1CreateViewModel() { Lack1Generated = Mapper.Map<Lack1GeneratedItemModel>(generatedData) };
+            //    return PartialView("_Lack1TableBalance", model);
+            //}
+            //catch (BLLException ex)
+            //{
+            //    AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            //    return null;
+            //}
+
+            var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
+            var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
+            return Json(outGeneratedData);
+
         }
-        
+
         #endregion
 
         #region ----- create -----
