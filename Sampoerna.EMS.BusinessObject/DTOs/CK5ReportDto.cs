@@ -100,6 +100,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UsdValue { get; set; }
         public string Note { get; set; }
 
+        public string MaterialDescription { get; set; }
 
     }
 }

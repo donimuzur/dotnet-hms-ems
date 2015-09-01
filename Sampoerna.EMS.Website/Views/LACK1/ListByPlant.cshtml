@@ -9,9 +9,11 @@
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
-                <a href="#">
-                    <input type="button" class="btn btn-blue" value="NEW" />
-                </a>
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "LACK1", new { lack1Level = Sampoerna.EMS.Core.Enums.Lack1Level.Plant })">
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    </a>
+                </div>
             </div>
         </div>
     </div>

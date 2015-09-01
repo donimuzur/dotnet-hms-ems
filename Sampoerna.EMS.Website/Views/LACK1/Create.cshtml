@@ -41,64 +41,81 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script type="text/javascript">
 
-        var supplierData;
-        $(document).ready(function() {
+        $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
+        $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
 
+        $(document).ready(function() {
             $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
-
-            CheckLevelChecked();
+            $('#Bukrs').on('change', function() {
+                BukrsOnChange();
+            });
+            $('#NppbkcId').on('change', function() {
+                NppbkcIdOnChange();
+            });
+            $('#ExGoodsType').on('change', function() {
+                ExGoodsTypeOnChange();
+            });
         });
 
-        $('#NppbkcId').on("change", function() {
-            if ($("#NppbkcId").length) {
-                var companyCode = $(this).find("option:selected").val();
+        function BukrsOnChange() {
+            if ($("#Bukrs").length) {
+                var companyCode = $('#Bukrs').find("option:selected").val();
                 $('#NppbkcId option').remove();
                 console.log(companyCode);
                 if (companyCode == '' || $(this).find("option:selected").val() == '') {
                     $('#NppbkcId').append('<option value="">Select</option>');
                 } else {
-                    ajaxLoadNppbkcList({ companyCode: companyCode }, '@Url.Action("GetPlantListByNppbkcId", "LACK1")');
+                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
                 }
             }
-        });
+        }
 
-        $('.lackLevel').on('change', function() {
-            CheckLevelChecked();
-        });
-
-        $('#Bukrs').on('change', function() {
-            if ($("#Bukrs").length) {
-                var nppbkcId = $(this).find("option:selected").val();
-                $('#NppbkcId option').remove();
-                console.log(nppbkcId);
-                if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
-                    $('#NppbkcId').append('<option value="">Select</option>');
+        function ExGoodsTypeOnChange() {
+            if ($("#NppbkcId").length && $("#ExGoodsType").length) {
+                var excisableGoodsType = $('#ExGoodsType').find("option:selected").val();
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                console.log(excisableGoodsType + "," + nppbkcId);
+                //load supplier list
+                $('#SupplierPlant option').remove();
+                if (excisableGoodsType != '' && nppbkcId != '') {
+                    ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
                 } else {
-                    ajaxSelectNppbck('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { nppbkcId: nppbkcId });
+                    $('#SupplierPlant').append('<option value="">Select</option>');
                 }
             }
-        });
-
-        function CheckLevelChecked() {
-            var levelCheck = $('input[name=lackLevelName]:checked').val();
-            //var disabledNppbkc = false;
-            var disabledPlant = false;
-
-            if (levelCheck == '1') {
-                disabledPlant = true;
-                $("#LevelPlantId").prop('selectedIndex', 0);
-            } else if (levelCheck == '2') {
-                //disabledNppbkc = true;
-                $("#NppbkcId").prop('selectedIndex', 0);
-            }
-
-            //$("#NppbkcId").attr('disabled', disabledNppbkc);
-            $("#LevelPlantId").attr('disabled', disabledPlant);
         }
 
-        function ajaxLoadNppbkcList(formData, url) {
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var attr = $('#LevelPlantId').attr('disabled');
+                console.log(attr);
+                // For some browsers, `attr` is undefined; for others,
+                // `attr` is false.  Check for both.
+                //load plant if enable
+                if (!(typeof attr !== typeof undefined && attr !== false)) {
+                    // ...
+                    $('#LevelPlantId option').remove();
+                    console.log(nppbkcId);
+                    if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
+                        $('#LevelPlantId').append('<option value="">Select</option>');
+                    } else {
+                        ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+                    }
+                }
+
+                //load excisablegoodstype
+                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                //load supplier list
+                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
+
+            }
+        }
+
+        function ajaxLoadNppbkcList(url, formData) {
             if (formData.companyCode) {
                 $.ajax({
                     type: 'POST',
@@ -119,45 +136,109 @@
             }
         }
 
-        function ajaxLoadPlantList(formData, url) {
-            if (formData.companyCode) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function(data) {
-                        var list = data;
-                        $('#NppbkcId').append('<option value="">Select</option>');
-                        if (list.length > 0) {
-                            for (var i = 0; i < list.length; i++) {
-                                $('#NppbkcId').append('<option value=' + list[i].NPPBKC_ID + '>' + list[i].NPPBKC_ID + '</option>');
-                            }
-                        }
-                    }
-                });
-            } else {
-                $('#NppbkcId').append('<option value="">Select</option>');
-            }
-        }
-
-        function ajaxSelectNppbck(url, formData) {
+        function ajaxLoadPlantList(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
                     success: function(data) {
-                        var listPlant = data.PlantList;
-                        $('#LevelPlantId').append('<option value="">All</option>');
-
-                        if (listPlant.length > 0) {
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#LevelPlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                        var list = data.ReceivePlantList;
+                        $('#LevelPlantId').append('<option value="">Select</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#LevelPlantId').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
                             }
                         }
                     }
                 });
+            } else {
+                $('#LevelPlantId').append('<option value="">Select</option>');
             }
+        }
+
+        function ajaxLoadExcisableGoodsType(url, formData) {
+            $('#ExGoodsType option').remove();
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.ExGoodTypeList;
+                        $('#ExGoodsType').append('<option value="">Select</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#ExGoodsType').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#ExGoodsType').append('<option value="">Select</option>');
+            }
+        }
+
+        function ajaxLoadSupplier(url, formData) {
+            if (formData.nppbkcId && formData.excisableGoodsType) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.SupplierList;
+                        $('#SupplierPlant').append('<option value="">Select</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SupplierPlant').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SupplierPlant option').remove();
+                $('#SupplierPlant').append('<option value="">Select</option>');
+            }
+        }
+
+        function generateDataClick(lackLevel) {
+            var param = {};
+            param.CompanyCode = $('#Bukrs').find("option:selected").val();
+            param.Lack1Level = lackLevel;
+            param.NppbkcId = $('#NppbkcId').find("option:selected").val();
+            param.ExcisableGoodsType = $('#ExGoodsType').find("option:selected").val();
+            param.ExcisableGoodsTypeDesc = $('#ExGoodsType').find("option:selected").text();
+            param.SupplierPlantId = $('#SupplierPlant').find("option:selected").val();
+            param.WasteAmount = parseFloat($('#WasteQty').val());
+            param.WasteAmountUom = $('#WasteUom').find("option:selected").val();
+            param.ReturnAmount = parseFloat($('#ReturnQty').val());
+            param.ReturnAmountUom = $('#ReturnUom').find("option:selected").val();
+            param.Noted = $('#Lack1Generated_Noted').val();
+            param.CompanyName = $('#Bukrs').find("option:selected").text();
+            
+            var plantAttr = $('#LevelPlantId').attr('disabled');
+            // For some browsers, `attr` is undefined; for others,
+            // `attr` is false.  Check for both.
+            //load plant if enable
+            if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
+                param.ReceivedPlantId = $('#LevelPlantId').find("option:selected").val();
+            }
+            
+            param.PeriodMonth = parseInt($('#PeriodMonth').find("option:selected").val());
+            param.PeriodYear = parseInt($('#PeriodYears').find("option:selected").val());
+            
+            $.ajax({
+                url: "@Url.Action("Generate", "LACK1")",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ param: param }),
+                success: function(response) {
+                    if (response) {
+                        $('#table-generated-data').html("");
+                        $('#table-generated-data').html(response);
+                    }
+                }
+            });
         }
 
     </script>
