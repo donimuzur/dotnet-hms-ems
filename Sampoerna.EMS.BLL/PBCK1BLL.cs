@@ -1376,7 +1376,13 @@ namespace Sampoerna.EMS.BLL
 
             }
 
-            rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME.ToLower() == "none" || string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME) ? "-" : dbData.SUPPLIER_PORT_NAME;
+            string supplierPortName;
+            if (dbData.SUPPLIER_PORT_NAME == null)
+                supplierPortName = "-";
+            else
+                supplierPortName = dbData.SUPPLIER_PORT_NAME.ToLower() == "none" ? "-" : dbData.SUPPLIER_PORT_NAME;
+
+            rc.Detail.SupplierPortName = supplierPortName;
             //rc.Detail.PrintedDate = DateReportString(DateTime.Now);
             rc.Detail.PrintedDate = dbData.REPORTED_ON.HasValue
                 ? DateReportString(dbData.REPORTED_ON.Value)
