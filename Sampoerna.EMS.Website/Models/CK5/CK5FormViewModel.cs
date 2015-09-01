@@ -198,6 +198,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? UnsealingNotifDate { get; set; }
 
         public bool IsCk5Export { get; set; }
+        public bool IsCk5PortToImporter { get; set; }
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
 

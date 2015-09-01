@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using AutoMapper;
-using CrystalDecisions.Shared;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -195,6 +193,9 @@ namespace Sampoerna.EMS.BLL
 
         private void ValidateCk5(CK5SaveInput input)
         {
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                return;
             //if domestic not check quota
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
             {
@@ -367,11 +368,13 @@ namespace Sampoerna.EMS.BLL
             {
                 input.Hje = 0;
                 input.Tariff = 0;
+                
             }
             else
             {
                 input.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
                 input.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+                input.MaterialDesc = dbMaterial.MATERIAL_DESC;
             }
 
             input.ExciseValue = input.ConvertedQty * input.Tariff;
