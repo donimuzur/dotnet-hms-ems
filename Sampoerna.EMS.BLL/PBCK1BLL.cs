@@ -1377,7 +1377,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             string supplierPortName;
-            if (dbData.SUPPLIER_PORT_NAME == null)
+            if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
                 supplierPortName = "-";
             else
                 supplierPortName = dbData.SUPPLIER_PORT_NAME.ToLower() == "none" ? "-" : dbData.SUPPLIER_PORT_NAME;
