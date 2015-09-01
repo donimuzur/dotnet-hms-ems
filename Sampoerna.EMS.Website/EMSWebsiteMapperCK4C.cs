@@ -23,7 +23,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName))
                 .ForMember(dest => dest.FinishGoods, opt => opt.MapFrom(src => src.FaCode))
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ProdQtyPacked))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.FaCode))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn));
 
             Mapper.CreateMap<Ck4CIndexViewModel, Ck4CGetByParamInput>().IgnoreAllNonExisting()
@@ -40,12 +39,17 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompnayId))
              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
              .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
-             .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName));
-
+             .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName))
+             .ForMember(dest => dest.FinishGoods, opt => opt.MapFrom(src => src.FaCode))
+             .ForMember(dest => dest.WasteQty, opt => opt.MapFrom(src => src.ProdQtyUnpacked))
+             .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn));
+            
             Mapper.CreateMap<Ck4CIndexWasteProductionViewModel, Ck4CGetByParamInput>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
-                .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate));
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantName))
+               .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+               .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode))
+               .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate));
             #endregion
 
             #region Create Daily Production

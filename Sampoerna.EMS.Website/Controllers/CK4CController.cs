@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -94,6 +95,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.WasteProduction,
+                Detail = Mapper.Map<List<DataWasteProduction>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
             });
 
             return View("WasteProductionIndex", data);
@@ -107,7 +109,19 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
+        [HttpPost]
+        public PartialViewResult FilterWasteProductionIndex(Ck4CIndexWasteProductionViewModel model)
+        {
+            var input = Mapper.Map<Ck4CGetByParamInput>(model);
+            input.Ck4CType = Enums.CK4CType.WasteProduction;
 
+            var dbData = _ck4CBll.GetAllByParam(input);
+            var result = Mapper.Map<List<DataWasteProduction>>(dbData);
+            var viewModel = new Ck4CIndexWasteProductionViewModel();
+            viewModel.Detail = result;
+
+            return PartialView("_CK4CTableWasteProduction", viewModel);
+        }
         #endregion
 
         #region Json
@@ -139,7 +153,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var fa = _brandRegistrationBll.GetByFaCode(faCode);
             return Json(fa.BRAND_CE);
         }
-        
+
         #endregion
 
 
@@ -151,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                
+
             };
 
             return CreateInitial(model);
@@ -170,12 +184,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.FinishGoodList = GlobalFunctions.GetBrandList();
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
-            
+
             return (model);
 
         }
 
-        #endregion 
+        #endregion
+
         #region create Waste Production
 
         public ActionResult Ck4CCreateWasteProduction()
@@ -203,6 +218,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        #endregion 
+        #endregion
     }
 }
