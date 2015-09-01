@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_BRAND> GetByPlantId(string plantId);
 
+      
     }
 
 }

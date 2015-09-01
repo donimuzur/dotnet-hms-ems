@@ -1,8 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -35,5 +40,27 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<T001KDto>(dbData);
         }
 
+        public List<T001WDto> GetPlantByCompany(string companyId)
+        {
+            includeTables = "T001W";
+            var dbData = _repository.Get(c => c.BUKRS == companyId, null, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return Mapper.Map<List<T001WDto>>(dbData.Select(x=>x.T001W));
+        }
+
+        public List<T001Dto> GetCompanyByPlant(string plantId)
+        {
+            includeTables = "T001";
+            var dbData = _repository.Get(c => c.BWKEY == plantId, null, includeTables);
+            if (dbData == null)
+            {
+                throw  new BLLException((ExceptionCodes.BLLExceptions.DataNotFound));
+            }
+            return Mapper.Map<List<T001Dto>>(dbData.Select(x=>x.T001));
+
+        }
     }
 }

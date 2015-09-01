@@ -69,6 +69,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> REMAINING_QUOTA { get; set; }
         public string NPPBKC_KPPBC_ID { get; set; }
         public string SUPPLIER_KPPBC_NAME { get; set; }
+        public string SUPPLIER_COMPANY { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }

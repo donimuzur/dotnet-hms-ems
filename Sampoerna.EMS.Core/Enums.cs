@@ -75,6 +75,7 @@ namespace Sampoerna.EMS.Core
             StoFailed = 11,
             StobGICompleted = 31,
             StoRecCreated = 40,
+            StobGRCompleted = 46,
 
             GIPartial = 15,
 
@@ -158,7 +159,9 @@ namespace Sampoerna.EMS.Core
             StobGICompleted = 110,
 
             [Description("Rec STO Created")]
-            StoRecCreated = 200
+            StoRecCreated = 200,
+            [Description("Rec STOB GR Completed")]
+            StobGRCompleted = 205
         }
 
         public enum DocumentStatusGov
@@ -242,7 +245,9 @@ namespace Sampoerna.EMS.Core
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
             [Description("REC STO Created")]
-            StoRecCreated = 200
+            StoRecCreated = 200,
+            [Description("REC GR Completed")]
+            StobGRCompleted = 205
         }
 
         /// <summary>
@@ -399,6 +404,17 @@ namespace Sampoerna.EMS.Core
             [Description("Pengolahan")]
             Pengolahaan=2,
             
+        }
+
+        public enum CK4CType
+        {
+            [Description("DailyProduction")]
+            DailyProduction = 1,
+            [Description("WasteProduction")]
+            WasteProduction = 2,
+            [Description("CK4CDocument")]
+            Ck4CDocument = 3
+
         }
     }
 }

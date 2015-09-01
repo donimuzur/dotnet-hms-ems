@@ -1812,7 +1812,7 @@ namespace Sampoerna.EMS.BLL
 
             //get ck5 
             var lisCk5 =
-                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks
+                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks && c.DEST_PLANT_NPPBKC_ID == pbck1.NppbkcId
                                      && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd);
 
             decimal qtyCk5 = 0;
@@ -1958,13 +1958,15 @@ namespace Sampoerna.EMS.BLL
                 var periodStart = listPbck1[0].PeriodFrom;
                 var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
 
+                var pbck1npbkc = listPbck1[0].NppbkcId;
                 //get ck5 
                 var lisCk5 =
                     _repository.Get(
                         c =>
-                            c.STATUS_ID != Enums.DocumentStatus.Cancelled &&
-                            c.SOURCE_PLANT_ID == plantId
-                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd);
+                            c.STATUS_ID != Enums.DocumentStatus.Cancelled 
+                            && c.SOURCE_PLANT_ID == plantId
+                            && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc 
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd).ToList();
 
                 decimal qtyCk5 = 0;
 
@@ -1982,6 +1984,9 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        
+        public List<CK5> GetByGIDate(int month,  int year, string desPlantId)
+        {
+            return _repository.Get(p => p.GI_DATE.HasValue && p.GI_DATE.Value.Month ==month && p.GI_DATE.Value.Year == year && p.DEST_PLANT_ID == desPlantId).ToList();
+        }
     }
 }

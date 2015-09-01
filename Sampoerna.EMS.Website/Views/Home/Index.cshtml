@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Load the site CSS after Boostrap's to override -->
-    @Styles.Render("~/Content/css")
+    @Styles.Render("~/bundles/css")
     <!-- Load jQuery -->
     @Scripts.Render("~/bundles/jquery")
     <!-- Load Modernizr.js -->
@@ -101,7 +101,7 @@
                             </a>
                         </div>
                         <div class="col-md-15">
-                            <a href="#" class="child-menu">
+                            <a href="@Url.Action("Index","CK4C")" class="child-menu">
                                 CK-4C
                             </a>
                         </div>

@@ -438,6 +438,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
                 model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcName;
                 model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
+                model.SupInfo.SupplierPhone = model.Detail.SupplierPhone;
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput

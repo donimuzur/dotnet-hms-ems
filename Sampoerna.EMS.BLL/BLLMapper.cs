@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BLL
             InitializeCK5();
             InitializePBCK1();
             InitializePbck7And3();
+            InitializeCk4C();
             //Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
             //    .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));
@@ -62,6 +63,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
                .ForMember(dest => dest.KPPBC_NO, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC == null ? string.Empty : src.ZAIDM_EX_NPPBKC.KPPBC_ID))
                .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
+               .ForMember(dest => dest.SUPPLIER_COMPANY, opt => opt.MapFrom(src => src.T001K.T001.BUTXT))
                 ;
 
             Mapper.CreateMap<T001W, T001WDto>().IgnoreAllNonExisting()
@@ -206,6 +208,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID));
 
 
+
             Mapper.CreateMap<Lack2Dto, LACK2>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.LACK2_ID, opt => opt.MapFrom(src => src.Lack2Id))
                 .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.Burks))
@@ -227,7 +230,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.APPROVED_BY, opt => opt.MapFrom(src => src.ApprovedBy))
                 .ForMember(dest => dest.APPROVED_DATE, opt => opt.MapFrom(src => src.ApprovedDate))
-                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId));
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.LACK2_ITEM, opt => opt.MapFrom(src => src.Items));
 
 
 
@@ -339,6 +343,33 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<T001W, T001WCompositeDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
+            Mapper.CreateMap<Lack2ItemDto, LACK2_ITEM>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id));
+
+            Mapper.CreateMap<LACK2_ITEM, Lack2ItemDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_COMPANY_CODE + "-" + src.CK5.DEST_PLANT_COMPANY_NAME))
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_ADDRESS))
+               .ForMember(dest => dest.CompanyNppbkc, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_NPPBKC_ID))
+                .ForMember(dest => dest.Ck5ItemQty, opt => opt.MapFrom(src => src.CK5.GRAND_TOTAL_EX));
+
+                           
+
+            Mapper.CreateMap<Lack1GenerateDataParamInput, CK4CItemGetByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GenerateDataParamInput, Ck5GetForLack1ByParamInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1GenerateDataParamInput, Pbck1GetDataForLack1ParamInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK1, ZAIDM_EX_NPPBKCCompositeDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK1, T001WCompositeDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
+                .ForMember(dest => dest.DROPDOWNTEXTFIELD,
+                    opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS + "-" + src.SUPPLIER_PLANT));
+            Mapper.CreateMap<PBCK1, ZAIDM_EX_GOODTYPCompositeDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EXT_TYP_DESC, opt => opt.MapFrom(src => src.EXC_TYP_DESC))
+                ;
         }
     }
 }
