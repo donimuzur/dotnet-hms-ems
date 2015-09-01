@@ -94,4 +94,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public Enums.CK5Type Ck5Type { get; set; }
     }
+
+    public class Ck5GetForLack1ByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivedPlantId { get; set; }
+        public Enums.Lack1Level Lack1Level { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+    }
+
 }

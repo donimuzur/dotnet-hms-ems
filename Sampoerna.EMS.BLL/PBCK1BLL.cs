@@ -1388,7 +1388,7 @@ namespace Sampoerna.EMS.BLL
 
             //Set ProdPlan
             rc.ProdPlanList = (Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN)).OrderBy(c => c.MonthId).ToList();
-            
+
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
 
             //get from LACK-1 by LACK-1 PERIOD FROM - TO on PBCK-1 Document
@@ -1407,7 +1407,7 @@ namespace Sampoerna.EMS.BLL
             });
 
             rc.RealisasiP3Bkc = Mapper.Map<List<Pbck1RealisasiP3BkcDto>>(dataLack1);
-            
+
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {
@@ -1437,7 +1437,7 @@ namespace Sampoerna.EMS.BLL
 
         private string GetMonthName(int month)
         {
-           return _monthBll.GetMonth(month).MONTH_NAME_IND;
+            return _monthBll.GetMonth(month).MONTH_NAME_IND;
         }
 
 
@@ -1532,7 +1532,7 @@ namespace Sampoerna.EMS.BLL
             public string Body { get; set; }
             public List<string> To { get; set; }
         }
-        
+
         public Pbck1Dto GetByDocumentNumber(string documentNumber)
         {
             includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
@@ -1545,7 +1545,7 @@ namespace Sampoerna.EMS.BLL
             }
             return mapResult;
         }
-        
+
         public List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkByCompanyCode(string companyCode)
         {
             includeTables = "";
@@ -1556,7 +1556,7 @@ namespace Sampoerna.EMS.BLL
                 return null;
 
             var nppbkcList = Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(dbData.ToList());
-            
+
             return nppbkcList.DistinctBy(c => c.NPPBKC_ID).ToList();
 
         }
@@ -1590,6 +1590,35 @@ namespace Sampoerna.EMS.BLL
                  && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId).OrderByDescending(p => p.CREATED_DATE);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
+
+        public List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId)
+        {
+            includeTables = "";
+            var dbData =
+                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == nppbkcId, null,
+                    includeTables);
+            if (dbData == null)
+                return null;
+
+            var nppbkcList = Mapper.Map<List<ZAIDM_EX_GOODTYPCompositeDto>>(dbData.ToList());
+
+            return nppbkcList.DistinctBy(c => c.EXC_GOOD_TYP).ToList();
+        }
+
+        public List<T001WCompositeDto> GetSupplierPlantByParam(Pbck1GetSupplierPlantByParamInput input)
+        {
+            includeTables = "";
+            var dbData =
+                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == input.NppbkcId && !string.IsNullOrEmpty(c.EXC_GOOD_TYP)
+                    && c.EXC_GOOD_TYP == input.ExciseableGoodsTypeId, null,
+                    includeTables);
+            if (dbData == null)
+                return null;
+
+            var nppbkcList = Mapper.Map<List<T001WCompositeDto>>(dbData.ToList());
+
+            return nppbkcList.DistinctBy(c => c.WERKS).ToList();
         }
     }
 }
