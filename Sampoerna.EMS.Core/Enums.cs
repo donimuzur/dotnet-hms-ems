@@ -73,9 +73,13 @@ namespace Sampoerna.EMS.Core
 
             StoCreated = 10,
             StoFailed = 11,
+            StobGIPartial = 30,
             StobGICompleted = 31,
             StoRecCreated = 40,
-            StobGRCompleted = 46,
+            StoRecGIPartial = 41,
+            StoRecGICompleted = 42,
+            StoRecGRPartial = 45,
+            StoRecGRCompleted = 46,
 
             GIPartial = 15,
 
@@ -160,8 +164,23 @@ namespace Sampoerna.EMS.Core
 
             [Description("Rec STO Created")]
             StoRecCreated = 200,
-            [Description("Rec STOB GR Completed")]
-            StobGRCompleted = 205
+            [Description("Rec STO GR Completed")]
+            StobGRCompleted = 205,
+
+            [Description("STOB GI Partial")]
+            StobGIPartial = 210,
+
+            [Description("Rec STO GI Partial")]
+            StoRecGIPartial = 215,
+
+            [Description("Rec STO GI Completed")]
+            StoRecGICompleted = 220,
+
+            [Description("Rec STO GR Partial")]
+            StoRecGRPartial = 225,
+
+            [Description("Rec STO GR Completed")]
+            StoRecGRCompleted = 230,
         }
 
         public enum DocumentStatusGov
@@ -249,7 +268,23 @@ namespace Sampoerna.EMS.Core
             [Description("REC STO Created")]
             StoRecCreated = 200,
             [Description("REC GR Completed")]
-            StobGRCompleted = 205
+            StobGRCompleted = 205,
+
+            [Description("STOB GI Partial")]
+            StobGIPartial = 210,
+
+            [Description("Rec STO GI Partial")]
+            StoRecGIPartial = 215,
+
+            [Description("Rec STO GI Completed")]
+            StoRecGICompleted = 220,
+
+            [Description("Rec STO GR Partial")]
+            StoRecGRPartial = 225,
+
+
+            [Description("Rec STO GR Completed")]
+            StoRecGRCompleted = 230,
         }
 
         /// <summary>

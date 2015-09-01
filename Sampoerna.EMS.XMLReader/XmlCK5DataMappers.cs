@@ -65,12 +65,20 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.GRCompleted;
                 case "22":
                     return Enums.CK5XmlStatus.GRReversal;
+                case "30":
+                    return Enums.CK5XmlStatus.StobGIPartial;
                 case "31":
                     return Enums.CK5XmlStatus.StobGICompleted;
                 case "40":
                     return Enums.CK5XmlStatus.StoRecCreated;
+                case "41":
+                    return Enums.CK5XmlStatus.StoRecGIPartial;
+                case "42":
+                    return Enums.CK5XmlStatus.StoRecGICompleted;
+                case "45":
+                    return Enums.CK5XmlStatus.StoRecGRPartial;
                 case "46":
-                    return Enums.CK5XmlStatus.StobGRCompleted;
+                    return Enums.CK5XmlStatus.StoRecGRCompleted;
                 default:
                     return Enums.CK5XmlStatus.None;
             }
@@ -256,13 +264,63 @@ namespace Sampoerna.EMS.XMLReader
                                     
                                      
                                 }
-                                else if (statusCk5 == Enums.CK5XmlStatus.StobGRCompleted)
+                               
+                                else if (statusCk5 == Enums.CK5XmlStatus.StoRecGIPartial)
+                                {
+
+                                    item.STATUS_ID = Enums.DocumentStatus.StoRecGIPartial;
+                                    workflowHistory.ACTION = Enums.ActionType.StoRecGIPartial;
+                                    var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
+                                    item.STO_SENDER_NUMBER = stoNumber;
+
+                                }
+                                    else if (statusCk5 == Enums.CK5XmlStatus.StoRecGICompleted)
+                                    {
+                                        #region "sto rec gicompleted"
+                                        item.STATUS_ID = Enums.DocumentStatus.StoRecGIPartial;
+                                        workflowHistory.ACTION = Enums.ActionType.StoRecGIPartial;
+                                        var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
+                                        item.STOB_NUMBER = stobNumber;
+                                        var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                        item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                        var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
+                                        if (ck5Item.Count > 0)
+                                        {
+
+                                            var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
+                                            if (ck5Item.Count() >= xmlCk5Items.Count())
+                                            {
+                                                foreach (var ckt5Item in xmlCk5Items)
+                                                {
+                                                    var dn_number = _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
+                                                    if (!string.IsNullOrEmpty(dn_number))
+                                                    {
+                                                        item.DN_NUMBER = dn_number;
+                                                    }
+
+
+                                                }
+                                            }
+
+                                        }
+                                        #endregion
+
+                                    }
+                                else if (statusCk5 == Enums.CK5XmlStatus.StoRecGRPartial)
+                                {
+
+                                    item.STATUS_ID = Enums.DocumentStatus.StoRecGRPartial;
+                                    workflowHistory.ACTION = Enums.ActionType.StoRecGRPartial;
+
+
+                                }
+                                else if (statusCk5 == Enums.CK5XmlStatus.StoRecGRCompleted)
                                 {
                                     var grdate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
                                     item.GR_DATE = _xmlMapper.GetDate(grdate);
 
-                                    item.STATUS_ID = Enums.DocumentStatus.StobGRCompleted;
-                                    workflowHistory.ACTION = Enums.ActionType.StobGRCompleted;
+                                    item.STATUS_ID = Enums.DocumentStatus.StoRecGRCompleted;
+                                    workflowHistory.ACTION = Enums.ActionType.StoRecGRCompleted;
 
 
 
