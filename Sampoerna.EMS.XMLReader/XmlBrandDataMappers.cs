@@ -124,6 +124,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.COLOUR = _xmlMapper.GetElementValue(xElement.Element("COLOUR"));
                         item.START_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("START_DATE")));
                         item.END_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE")));
+                        item.STATUS = _xmlMapper.GetElementValue(xElement.Element("STATUS")) == "X";
                         item.IS_FROM_SAP = true;
                         var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
                         if (existingMaterial != null)
