@@ -16,6 +16,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Reports.HeaderFooter;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -420,10 +421,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
         }
 
-        public ActionResult PrintPreview(int id)
+        private DataSet CreateLack2Ds()
         {
-            var lack2 = _lack2Bll.GetByIdAndItem(id);
-
             DataSet ds = new DataSet("dsLack2");
 
             DataTable dt = new DataTable("Lack2");
@@ -437,8 +436,32 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
             dt.Columns.Add("BKC", System.Type.GetType("System.String"));
             dt.Columns.Add("Period", System.Type.GetType("System.String"));
-            drow = dt.NewRow();
+            dt.Columns.Add("City", System.Type.GetType("System.String"));
+            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
+            //detail
+            DataTable dtDetail = new DataTable("Lack2Item");
+            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
 
+            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            return ds;
+        }
+
+        public ActionResult PrintPreview(int id)
+        {
+            var lack2 = _lack2Bll.GetByIdAndItem(id);
+
+            var dsLack2 = CreateLack2Ds();
+            var dt = dsLack2.Tables[0];
+            DataRow drow;
+            drow = dt.NewRow();
             drow[0] = lack2.Butxt;
             drow[1] = lack2.NppbkcId;
             drow[2] = lack2.LevelPlantName + ", " +lack2.LevelPlantCity;
@@ -457,21 +480,17 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             drow[5] = lack2.ExTypDesc;
             drow[6] = _monthBll.GetMonth(lack2.PeriodMonth).MONTH_NAME_IND + " " + lack2.PeriodYear;
-           
-
+            drow[7] = lack2.LevelPlantCity;
+            drow[8] = lack2.SubmissionDate == null ? null : lack2.SubmissionDate.ToString("dd MMMM yyyy");
+            if (lack2.ApprovedBy != null)
+            {
+                drow[9] = _poabll.GetDetailsById(lack2.ApprovedBy).PRINTED_NAME;
+            }
             dt.Rows.Add(drow);
 
 
-            //detail
-            DataTable dtDetail = new DataTable("Lack2Item");
-            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
 
-            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
-        
+            var dtDetail = dsLack2.Tables[1];
             foreach (var item in lack2.Items)
             {
                 DataRow drowDetail;
@@ -487,14 +506,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             // object of data row 
            
-
-            ds.Tables.Add(dt);
-            ds.Tables.Add(dtDetail);
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
             rpt.FileName = report_path + "LACK2\\Preview.rpt";
             rpt.Load();
-            rpt.SetDataSource(ds);
+            rpt.SetDataSource(dsLack2);
 
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
