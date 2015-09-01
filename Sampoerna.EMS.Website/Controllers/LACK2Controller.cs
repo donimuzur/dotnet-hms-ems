@@ -477,7 +477,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataRow drowDetail;
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.Ck5Number;
-                drowDetail[1] = item.Ck5Number;
+                drowDetail[1] = item.Ck5GIDate;
                 drowDetail[2] = item.Ck5ItemQty;
                 drowDetail[3] = item.CompanyName;
                 drowDetail[4] = item.CompanyNppbkc;
