@@ -459,24 +459,31 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
-                        if (model.Ck5Type != Enums.CK5Type.Export &&
-                            model.Ck5Type != Enums.CK5Type.PortToImporter)
+                        if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
                         {
-                            //double check
-                            GetQuotaAndRemainOutput output;
 
-                            if (model.PbckDecreeId.HasValue)
-                                output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
-                            else
+                        }
+                        else
+                        {
+                            if (model.Ck5Type != Enums.CK5Type.Export &&
+                                model.Ck5Type != Enums.CK5Type.PortToImporter)
                             {
-                                if (!model.SubmissionDate.HasValue)
-                                    model.SubmissionDate = DateTime.Now;
+                                //double check
+                                GetQuotaAndRemainOutput output;
 
-                                output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
-                                    model.SubmissionDate.Value, model.DestNppbkcId);
+                                if (model.PbckDecreeId.HasValue)
+                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
+                                else
+                                {
+                                    if (!model.SubmissionDate.HasValue)
+                                        model.SubmissionDate = DateTime.Now;
+
+                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
+                                        model.SubmissionDate.Value, model.DestNppbkcId);
+                                }
+
+                                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                             }
-
-                            model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                         }
 
                         var saveResult = SaveCk5ToDatabase(model);
@@ -600,19 +607,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
-                if (model.Ck5Type != Enums.CK5Type.Export &&
-                    model.Ck5Type != Enums.CK5Type.PortToImporter)
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
                 {
-                    var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
-                    model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-                    //
-                    //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
 
-                    model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
-                    model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                 }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                    {
 
+                        var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
+                        model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                        //
+                        //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
 
+                        model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
+                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+                    }
+
+                }
             }
             catch (Exception ex)
             {
@@ -644,14 +658,21 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (_workflowBll.AllowEditDocument(input))
                         {
                             //quota
-                            if (model.Ck5Type != Enums.CK5Type.Export &&
-                                model.Ck5Type != Enums.CK5Type.PortToImporter)
+                            if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
                             {
-                                var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
-                                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-                                decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
-                                model.Ck5TotalExciseable = currentCk5.ToString();
-                                model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+
+                            }
+                            else
+                            {
+                                if (model.Ck5Type != Enums.CK5Type.Export &&
+                                    model.Ck5Type != Enums.CK5Type.PortToImporter)
+                                {
+                                    var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+                                    model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                                    decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
+                                    model.Ck5TotalExciseable = currentCk5.ToString();
+                                    model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+                                }
                             }
 
                             SaveCk5ToDatabase(model);
@@ -769,15 +790,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.GovStatusDesc = outputHistory.StatusGov;
                 model.CommentGov = outputHistory.Comment;
 
-                if (model.Ck5Type != Enums.CK5Type.Export &&
-                    model.Ck5Type != Enums.CK5Type.PortToImporter)
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
                 {
-                    var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
-                    model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
-                    //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
-                    model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
-                    model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+
                 }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                    {
+                        var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
+                        model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
+                        //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
+                        model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
+                        model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                    }
+                }
+
                 model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
                 model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
 
