@@ -1093,14 +1093,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-                if (model.DocumentStatus == Enums.DocumentStatus.GICreated)
-                    input.ActionType = Enums.ActionType.GICreated;
-                if (model.DocumentStatus == Enums.DocumentStatus.GICompleted)
-                    input.ActionType = Enums.ActionType.GICompleted;
-                else
+
+                switch (model.DocumentStatus)
                 {
-                    AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
-                    return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                    case Enums.DocumentStatus.GICreated:
+                        input.ActionType = Enums.ActionType.GICreated;
+                        break;
+                    case Enums.DocumentStatus.GICompleted:
+                        input.ActionType = Enums.ActionType.GICompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
                 }
 
                 input.SealingNumber = model.SealingNotifNumber;
@@ -1135,14 +1139,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
 
-                if (model.DocumentStatus == Enums.DocumentStatus.GRCreated)
-                    input.ActionType = Enums.ActionType.GRCreated;
-                if (model.DocumentStatus == Enums.DocumentStatus.GRCompleted)
-                    input.ActionType = Enums.ActionType.GRCompleted;
-                else
+                switch (model.DocumentStatus)
                 {
-                    AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
-                    return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                    case Enums.DocumentStatus.GRCreated:
+                        input.ActionType = Enums.ActionType.GRCreated;
+                        break;
+                    case Enums.DocumentStatus.GRCompleted:
+                        input.ActionType = Enums.ActionType.GRCompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
                 }
 
 
