@@ -367,7 +367,7 @@ namespace Sampoerna.EMS.Website.Code
                 item.ValueField = (DateTime.Now.Year - i).ToString();
                 selectItemSource.Add(item);
             }
-            for (int i = 1; i > 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 var item = new SelectItemModel();
 

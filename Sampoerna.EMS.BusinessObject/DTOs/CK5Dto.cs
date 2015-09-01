@@ -97,6 +97,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string APPROVED_BY_POA { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
 
-       public string RemainQuota;
+        public string RemainQuota;
+
+      
+        public string GIDateStr { get; set; }
     }
 }

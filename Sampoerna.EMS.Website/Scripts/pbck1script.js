@@ -10,6 +10,7 @@
     $('#Detail_SupplierPlant').val('');
     $('#Detail_SupplierPlantWerks').val('');
     $('#Detail_SupplierKppbcName').val('');
+    $('#Detail_SupplierCompany').val('');
 }
 
 function ajaxLoadDetailSupplierPlant(formData, url) {
@@ -31,6 +32,7 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
                 $('#Detail_SupplierAddress').val(data.Address);
                 $('#Detail_HiddendSupplierAddress').val(data.Address);
                 $('#Detail_SupplierPlant').val(data.Name1);
+                $('#Detail_SupplierCompany').val(data.SUPPLIER_COMPANY);
             } else {
                 setSupplierPlantEmpty();
             }
@@ -43,6 +45,7 @@ function disableSupplierFormInput(isDisable) {
     $('#Detail_SupplierKppbcName').prop('readonly', isDisable);
     $('#Detail_SupplierAddress').prop('readonly', isDisable);
     $('#Detail_SupplierPhone').prop('readonly', isDisable);
+    $('#Detail_SupplierCompany').prop('readonly', isDisable);
 }
 
 function supplierChange(url) {

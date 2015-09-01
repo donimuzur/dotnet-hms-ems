@@ -171,11 +171,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier NPPBKC</label>
+                                        <label class="col-md-4">Supplier Company</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.SupInfo.SupplierNppkbc)
-                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.Detail.SupplierCompany, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -188,6 +186,16 @@
                                             @Html.HiddenFor(model => model.SupInfo.SupplierAddress)
                                             @Html.HiddenFor(model => model.Detail.HiddendSupplierAddress)
                                             @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Supplier NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.SupInfo.SupplierNppkbc)
+                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
+                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
