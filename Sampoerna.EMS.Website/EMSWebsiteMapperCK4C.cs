@@ -10,7 +10,7 @@ using Sampoerna.EMS.Website.Models.CK4C;
 
 namespace Sampoerna.EMS.Website
 {
-    public partial class EMSWebsiteMapperCK4C
+    public partial class EMSWebsiteMapper
     {
         public static void InitializeCk4C()
         {

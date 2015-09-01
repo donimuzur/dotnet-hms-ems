@@ -65,6 +65,26 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
+        [HttpPost]
+        public PartialViewResult FilterCk4CDailyProductionIndex(Ck4CIndexViewModel model)
+        {
+            var input = Mapper.Map<Ck4CGetByParamInput>(model);
+            input.Ck4CType = Enums.CK4CType.DailyProduction;
+            if (input.DateProduction != null)
+            {
+                input.DateProduction = Convert.ToDateTime(input.DateProduction).ToString();
+            }
+            var dbData = _ck4CBll.GetAllByParam(input);
+
+            var result = Mapper.Map<List<DataIndecCk4C>>(dbData);
+
+            var viewModel = new Ck4CIndexViewModel();
+
+            viewModel.Detail = result;
+
+            return PartialView("_Ck4CTableIndex", viewModel);
+        }
+
         #endregion
 
         #region Index Waste Production

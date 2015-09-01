@@ -35,6 +35,9 @@
                         @foreach (var item in Model.Detail)
                         {
                             <tr>
+                                <td class="action">
+                                    <a href="#" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
+                                </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ReportedOn)
                                 </td>
@@ -56,9 +59,7 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Uom)
                                 </td>
-                                <td class="action">
-                                    <a href="#" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
-                                </td>
+                               
                             </tr>
                         }
                     </tbody>
