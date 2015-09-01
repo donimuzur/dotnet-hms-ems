@@ -471,9 +471,9 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 if (!model.SubmissionDate.HasValue)
                                     model.SubmissionDate = DateTime.Now;
-
+                                
                                 output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
-                                    model.SubmissionDate.Value, model.DestNppbkcId);
+                                    model.SubmissionDate.Value, model.DestNppbkcId,(int)model.GoodType);
                             }
 
                             model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();

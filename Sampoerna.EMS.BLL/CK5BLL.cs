@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.BLL
         private ICountryBLL _countryBll;
         private IExGroupTypeBLL _goodTypeGroupBLL;
 
-        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
+        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD, EX_GROUP_TYPE,EX_GROUP_TYPE.EX_GROUP_TYPE_DETAILS";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -1840,7 +1840,7 @@ namespace Sampoerna.EMS.BLL
             var output = new GetQuotaAndRemainOutput();
 
             var ck5DbData = _repository.GetByID(ck5Id);
-
+            var goodTypeGroups = _goodTypeGroupBLL.GetById((int)ck5DbData.EX_GOODS_TYPE).EX_GROUP_TYPE_DETAILS.Select(x=> x.GOODTYPE_ID).ToList();
             if (ck5DbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1852,7 +1852,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID,
-                    ck5DbData.SUBMISSION_DATE, ck5DbData.DEST_PLANT_NPPBKC_ID);
+                    ck5DbData.SUBMISSION_DATE, ck5DbData.DEST_PLANT_NPPBKC_ID, goodTypeGroups);
 
                 output.QtyApprovedPbck1 = 0;
 
@@ -1890,11 +1890,11 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate, string destPlantNppbkc)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate, string destPlantNppbkc,int goodtypegroupid)
         {
             var output = new GetQuotaAndRemainOutput();
-
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkc);
+            var goodtypelist = _goodTypeGroupBLL.GetById(goodtypegroupid).EX_GROUP_TYPE_DETAILS.Select(x=> x.GOODTYPE_ID).ToList();
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkc, goodtypelist);
 
                 output.QtyApprovedPbck1 = 0;
 
@@ -1937,8 +1937,9 @@ namespace Sampoerna.EMS.BLL
         {
             var output = new GetQuotaAndRemainOutput();
 
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkcId);
-            var grouptype = _goodTypeGroupBLL.GetById(goodtypegroupid);
+            var goodtypelist = _goodTypeGroupBLL.GetById(goodtypegroupid).EX_GROUP_TYPE_DETAILS.Select(x=> x.GOODTYPE_ID).ToList();
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkcId, goodtypelist);
+            
             
             if (listPbck1.Count == 0)
             {
@@ -1950,49 +1951,47 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var pbckgoodtype = listPbck1[0].GoodType;
-                var pbck1GoodTypeExist = grouptype.EX_GROUP_TYPE_DETAILS.Where(x => x.GOODTYPE_ID == pbckgoodtype).Count() > 0;
+                //var pbckgoodtype = listPbck1[0].GoodType;
+                //var pbck1GoodTypeExist = grouptype.EX_GROUP_TYPE_DETAILS.Where(x => x.GOODTYPE_ID == pbckgoodtype).Count() > 0;
 
-                if (pbck1GoodTypeExist) {
-                    output.Pbck1Id = listPbck1[0].Pbck1Id;
-                    output.Pbck1Number = listPbck1[0].Pbck1Number;
-                    output.Pbck1DecreeDate = listPbck1[0].DecreeDate.HasValue
-                        ? listPbck1[0].DecreeDate.Value.ToString("dd/MM/yyyy")
-                        : string.Empty;
-
-                    foreach (var pbck1Dto in listPbck1)
-                    {
-                        if (pbck1Dto.QtyApproved.HasValue)
-                            output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
-                    }
-
-                    var periodStart = listPbck1[0].PeriodFrom;
-                    var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
-
-                    var pbck1npbkc = listPbck1[0].NppbkcId;
-                    //get ck5 
-                    var lisCk5 =
-                        _repository.Get(
-                            c =>
-                                c.STATUS_ID != Enums.DocumentStatus.Cancelled
-                                && c.SOURCE_PLANT_ID == plantId
-                                && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc
-                                && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd).ToList();
-
-                    decimal qtyCk5 = 0;
-
-                    foreach (var ck5 in lisCk5)
-                    {
-                        if (ck5.GRAND_TOTAL_EX.HasValue)
-                            qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
-                    }
-
-                    output.QtyCk5 = qtyCk5;
-                    output.RemainQuota = output.QtyApprovedPbck1 - output.QtyCk5;
-                }
-                else { 
                 
+                output.Pbck1Id = listPbck1[0].Pbck1Id;
+                output.Pbck1Number = listPbck1[0].Pbck1Number;
+                output.Pbck1DecreeDate = listPbck1[0].DecreeDate.HasValue
+                    ? listPbck1[0].DecreeDate.Value.ToString("dd/MM/yyyy")
+                    : string.Empty;
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
                 }
+
+                var periodStart = listPbck1[0].PeriodFrom;
+                var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
+
+                var pbck1npbkc = listPbck1[0].NppbkcId;
+                //get ck5 
+                var lisCk5 =
+                    _repository.Get(
+                        c =>
+                            c.STATUS_ID != Enums.DocumentStatus.Cancelled
+                            && c.SOURCE_PLANT_ID == plantId
+                            && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd).ToList();
+
+                decimal qtyCk5 = 0;
+
+                foreach (var ck5 in lisCk5)
+                {
+                    if (ck5.GRAND_TOTAL_EX.HasValue)
+                        qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
+                }
+
+                output.QtyCk5 = qtyCk5;
+                output.RemainQuota = output.QtyApprovedPbck1 - output.QtyCk5;
+                
+                
 
                 
 
