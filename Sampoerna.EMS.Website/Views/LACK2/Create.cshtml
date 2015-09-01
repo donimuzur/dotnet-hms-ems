@@ -50,12 +50,12 @@
                                         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                             <div class="panel-body">
                                               
-                                               
+                                                <div class="form-excise" role="form">
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <label class="col-md-4">LACK-2 No</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(x => x.Lack2Model.Lack2Number, new {@class = "form-control"})
+                                                                @Html.TextBoxFor(x => x.Lack2Model.Lack2Number, new { @class = "form-control" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -63,33 +63,34 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Company</label>
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new {@class = "form-control"})
+                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
                                                             </div>
                                                         </div>
                                                     </div>
-                                               
+
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <label class="col-md-4">Period</label>
                                                             <div class="col-md-8">
                                                                 <div class="row">
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select", new {@class = "form-control"})
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select", new { @class = "form-control" })
 
 
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, "select", new {@class = "form-control"})
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, "select", new { @class = "form-control" })
 
 
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                   
+
 
                                                     </div>
-                                                </div>
+                                                    </div>
+</div>
                                         </div>
                                     </div>
                                 </div>
@@ -105,7 +106,7 @@
                                         </div>
                                         <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                             <div class="panel-body">
-                                                <form class="form-excise" role="form">
+                                                <div class="form-excise" role="form">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
@@ -146,19 +147,20 @@
                                                             <div class="row">
                                                                 <label class="col-md-4 long">Excisable Goods Type</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(x => x.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new {@class = "form-control"})
-
+                                                                    <select name="Lack2Model.ExGoodTyp" id="Lack2Model_ExGoodTyp" class="form-control">
+                                                                        <option>select</option>
+                                                                    </select>
 
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4 col-md-offset-4">
-                                                            <button class="btn btn-blue full">Generate</button>
+                                                            <input type="button" class="btn btn-blue full" onclick="GetCk5ByPeriod();" value="Generate"/>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </div> 
                                     </div>
                                 </div>
                                 <div class="panel-group not-upload" id="accordionThree" role="tablist" aria-multiselectable="true">
@@ -186,7 +188,7 @@
                                                                 <th>Address</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody id="tb-body-ck5-lack2">
                                                             <tr>
                                                                 <td> </td>
                                                                 <td> </td>
@@ -242,7 +244,7 @@
                                         </div>
                                         <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                                             <div class="panel-body">
-                                                <form class="form-excise" role="form">
+                                                <div class="form-excise" role="form">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
@@ -281,7 +283,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -545,20 +547,22 @@
    
 
     <script type="text/javascript">
-        
-        $("#Lack2Model_NppbkcId").change(function () {
-           
+
+        $("#Lack2Model_NppbkcId").change(function() {
+
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();
-              
+
                 $('#Lack2Model_LevelPlantId').html('');
                 $('#Lack2Model_LevelPlantId').append('<option value="">select</option>');
                 if (nppbkc != '') {
                     ajaxGetPlantByNppbkc(nppbkc);
+                    ajaxGetGoodsTypeByNppbkc(nppbkc);
                 }
             }
 
-        });       
+        });
+
         function ajaxGetPlantByNppbkc(nppbkc) {
 
             $.ajax({
@@ -566,13 +570,59 @@
                 url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
                 success: function (data) {
-                    console.log(data);
+                    $('#Lack2Model_LevelPlantId').html('');
+                    $('#Lack2Model_LevelPlantId').append('<option></option>');
+                    
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
                     }
                 }
             });
 
+        }
+        function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    
+                    $('#Lack2Model_ExGoodTyp').html('');
+                    $('#Lack2Model_ExGoodTyp').append('<option>select</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                    }
+                }
+            });
+
+        }
+        function GetCk5ByPeriod() {
+            var month = parseInt($('#Lack2Model_PeriodMonth').val());
+            var year = parseInt($('#Lack2Model_PeriodYear').val());
+            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
+            var desPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
+                data: { month: month, year: year, desPlantId : desPlantId, goodstype: goodstype },
+                success: function (data) {
+                   
+                    if (data.length > 0) {
+                        $('#tb-body-ck5-lack2').html("");
+                        for (var i = 0; i < data.length; i++) {
+                            var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                                '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
+                                '<td>' + data[i].GIDateStr + '</td>' +
+                                '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                                '<td>'+data[i].DEST_PLANT_ADDRESS+'</td></tr>';
+                            $('#tb-body-ck5-lack2').append(tableCk5Item);
+                        }
+                    }
+                }
+            });
         }
 
     </script>

@@ -161,10 +161,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             if (input.Ck5Type == Enums.CK5Type.Completed)
-                queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled);
             else
-                queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Completed 
-                                    && c.CK5_TYPE == input.Ck5Type);
+                queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type
+                                    && (c.STATUS_ID != Enums.DocumentStatus.Completed && c.STATUS_ID != Enums.DocumentStatus.Cancelled));
                 
             
             //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderBy = null;
@@ -193,7 +193,12 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             //if domestic not check quota
-            //if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic) return;
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
+            {
+                if (input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID == input.Ck5Dto.DEST_PLANT_NPPBKC_ID)
+                    return;
+            }
+            
 
             decimal remainQuota = 0;
             if (Utils.ConvertHelper.IsNumeric(input.Ck5Dto.RemainQuota))    
@@ -220,10 +225,7 @@ namespace Sampoerna.EMS.BLL
                 dbData = _repository.Get(c => c.CK5_ID == input.Ck5Dto.CK5_ID, null, includeTables).FirstOrDefault();
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                //input.Ck5Dto.RemainQuota = (Convert.ToDecimal(input.Ck5Dto.RemainQuota) - dbData.GRAND_TOTAL_EX).ToString();
-               
-
+                
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
@@ -665,6 +667,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.CancelSAP:
                     CancelSAPDocument(input);
                     break;
+                case Enums.ActionType.CancelSTOCreated:
+                    CancelSTOCreated(input);
+                    break;
             }
 
             //todo sent mail
@@ -1017,6 +1022,53 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
         }
 
+        public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+
+            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
+            
+            var inputHistory = new GetByActionAndFormNumberInput();
+            inputHistory.FormNumber = dbData.SUBMISSION_NUMBER;
+            inputHistory.ActionType = Enums.ActionType.CancelSTOCreated;
+
+            _workflowHistoryBll.DeleteByActionAndFormNumber(inputHistory);
+
+            //todo delete changehistory
+            _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.CK5_ID.ToString(), EnumHelper.GetDescription(Enums.ActionType.CancelSTOCreated));
+
+            _uow.SaveChanges();
+
+        }
+
+        private void CancelSTOCreated(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID < Enums.DocumentStatus.CreateSTO)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            AddWorkflowHistory(input);
+        }
+
         private void CancelSAPDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -1026,6 +1078,7 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS_ID < Enums.DocumentStatus.CreateSTO)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+          
             if (dbData.GI_DATE.HasValue || dbData.GR_DATE.HasValue)
                 throw new BLLException(ExceptionCodes.BLLExceptions.ReversalManualSAP);
 
@@ -1037,7 +1090,8 @@ namespace Sampoerna.EMS.BLL
 
 
             dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
-            
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
         }
@@ -1691,11 +1745,11 @@ namespace Sampoerna.EMS.BLL
 
             output.Pbck1DecreeDate = "";
             if (pbck1.DecreeDate.HasValue)
-                output.Pbck1DecreeDate =  pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
+                output.Pbck1DecreeDate = pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
 
             if (pbck1.Pbck1Type == Enums.PBCK1Type.New)
             {
-                output.QtyApprovedPbck1 =  pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
+                output.QtyApprovedPbck1 = pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
             }
 
             else
@@ -1719,10 +1773,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             var periodEnd = pbck1.PeriodTo.Value.AddDays(1);
-            
+
             //get ck5 
             var lisCk5 =
-                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks
+                _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks && c.DEST_PLANT_NPPBKC_ID == pbck1.NppbkcId
                                      && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd);
 
             decimal qtyCk5 = 0;
@@ -1756,7 +1810,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID,
-                    ck5DbData.SUBMISSION_DATE);
+                    ck5DbData.SUBMISSION_DATE, ck5DbData.DEST_PLANT_NPPBKC_ID);
 
                 output.QtyApprovedPbck1 = 0;
 
@@ -1794,12 +1848,11 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate, string destPlantNppbkc)
         {
             var output = new GetQuotaAndRemainOutput();
 
-          
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate);
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkc);
 
                 output.QtyApprovedPbck1 = 0;
 
@@ -1838,11 +1891,11 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate, string destPlantNppbkcId)
         {
             var output = new GetQuotaAndRemainOutput();
 
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate);
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkcId);
 
             if (listPbck1.Count == 0)
             {
@@ -1869,13 +1922,15 @@ namespace Sampoerna.EMS.BLL
                 var periodStart = listPbck1[0].PeriodFrom;
                 var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
 
+                var pbck1npbkc = listPbck1[0].NppbkcId;
                 //get ck5 
                 var lisCk5 =
                     _repository.Get(
                         c =>
-                            c.STATUS_ID != Enums.DocumentStatus.Cancelled &&
-                            c.SOURCE_PLANT_ID == plantId
-                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd);
+                            c.STATUS_ID != Enums.DocumentStatus.Cancelled 
+                            && c.SOURCE_PLANT_ID == plantId
+                            && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc 
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd).ToList();
 
                 decimal qtyCk5 = 0;
 
@@ -1893,6 +1948,9 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        
+        public List<CK5> GetByGIDate(int month,  int year, string desPlantId)
+        {
+            return _repository.Get(p => p.GI_DATE.HasValue && p.GI_DATE.Value.Month ==month && p.GI_DATE.Value.Year == year && p.DEST_PLANT_ID == desPlantId).ToList();
+        }
     }
 }

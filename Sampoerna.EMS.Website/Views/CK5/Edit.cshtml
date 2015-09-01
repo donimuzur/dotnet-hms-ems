@@ -234,8 +234,17 @@
                 $("*[name='DestAddress']").val('');
                 $("input[name='DestKppbcName']").val('');
                 $("input[name='DestPlantName']").val('');
+
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('');
+                $("input[name='Ck5TotalExciseable']").val('');
+                $("input[name='RemainQuota']").val('');
+
             } else {
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
 
             }
         }
@@ -263,28 +272,22 @@
                 $("input[name='KppBcCity']").val('');
                 $("input[name='CeOfficeCode']").val('');
 
-                $("input[name='PbckDecreeId']").val('');
-                $("input[name='PbckDecreeNumber']").val('');
-                $("input[name='PbckDecreeDate']").val('');
-                $("input[name='Pbck1QtyApproved']").val('');
-                $("input[name='Ck5TotalExciseable']").val('');
-                $("input[name='RemainQuota']").val('');
 
 
             } else {
 
-                
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: submissionDate });
+
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
 
                 ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }
     });
-   
+
 
     $("#btnSubmitDocument").click(function () {
         $('#Ck5Modal').modal('show');
-     
+
     });
 
     $("#btnSubmitConfirm").click(function () {

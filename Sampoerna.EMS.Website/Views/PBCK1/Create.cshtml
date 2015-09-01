@@ -59,7 +59,8 @@
             });
 
             $("#Detail_SupplierPortId").change(function() {
-                supplierPortOnChange();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                $('#Detail_SupplierPortName').val(port_name);
             });
 
             $('#prod-conv-save').click(function() {

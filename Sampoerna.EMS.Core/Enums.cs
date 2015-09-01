@@ -75,6 +75,7 @@ namespace Sampoerna.EMS.Core
             StoFailed = 11,
             StobGICompleted = 31,
             StoRecCreated = 40,
+            StobGRCompleted = 46,
 
             GIPartial = 15,
 
@@ -158,7 +159,9 @@ namespace Sampoerna.EMS.Core
             StobGICompleted = 110,
 
             [Description("Rec STO Created")]
-            StoRecCreated = 200
+            StoRecCreated = 200,
+            [Description("Rec STOB GR Completed")]
+            StobGRCompleted = 205
         }
 
         public enum DocumentStatusGov
@@ -193,6 +196,8 @@ namespace Sampoerna.EMS.Core
             Cancel = 2,
             [Description("CancelSAP")]
             CancelSAP = 3,
+            [Description("CancelSTOCreated")]
+            CancelSTOCreated = 4,
             [Description("Modified")]
             Modified = 5,
             [Description("Submit")]
@@ -240,7 +245,9 @@ namespace Sampoerna.EMS.Core
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
             [Description("REC STO Created")]
-            StoRecCreated = 200
+            StoRecCreated = 200,
+            [Description("REC GR Completed")]
+            StobGRCompleted = 205
         }
 
         /// <summary>
