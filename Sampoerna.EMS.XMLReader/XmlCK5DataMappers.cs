@@ -325,6 +325,25 @@ namespace Sampoerna.EMS.XMLReader
 
 
                                 }
+
+                                else if (statusCk5 == Enums.CK5XmlStatus.STOBGRReversal)
+                                {
+
+                                    item.STATUS_ID = Enums.DocumentStatus.STOBGRReversal;
+                                    workflowHistory.ACTION = Enums.ActionType.STOBGRReversal;
+
+                                }
+                                else if (statusCk5 == Enums.CK5XmlStatus.STOBGIReversal)
+                                {
+
+                                    workflowHistory.ACTION = Enums.ActionType.STOBGIReversal;
+                                    AddWorkflowHistory(workflowHistory, null, null, null, null);
+                                    
+                                    CreateCk5XmlCancel(item);
+
+                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                    workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                                }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
                                     var emailCreator = GetEmail(item.CREATED_BY);

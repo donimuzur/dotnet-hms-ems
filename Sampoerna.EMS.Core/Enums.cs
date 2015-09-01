@@ -93,7 +93,8 @@ namespace Sampoerna.EMS.Core
 
             GRReversal = 22,
             GIReversal = 17,
-          
+            STOBGIReversal = 32,
+            STOBGRReversal = 37,
 
             None = 00
 
@@ -181,6 +182,13 @@ namespace Sampoerna.EMS.Core
 
             [Description("Rec STO GR Completed")]
             StoRecGRCompleted = 230,
+
+           
+            [Description("STOB Good Issue Reversal")]
+            STOBGIReversal = 235,
+
+            [Description("STOB Good Receive Reversal")]
+            STOBGRReversal = 240,
         }
 
         public enum DocumentStatusGov
@@ -285,6 +293,13 @@ namespace Sampoerna.EMS.Core
 
             [Description("Rec STO GR Completed")]
             StoRecGRCompleted = 230,
+
+
+            [Description("STOB Good Issue Reversal")]
+            STOBGIReversal = 235,
+
+            [Description("STOB Good Receive Reversal")]
+            STOBGRReversal = 240,
         }
 
         /// <summary>
