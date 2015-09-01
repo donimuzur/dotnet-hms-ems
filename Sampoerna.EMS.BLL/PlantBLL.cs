@@ -303,18 +303,6 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
         
-       public List<T001KDto> GetPlantbyCompany(string companyId)
-       {
-               includeTables = "T001W";
-               var dbData = _repositoryT001K.Get(c => c.BUKRS == companyId, null, includeTables);
-               if (dbData == null)
-               {
-                   throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-               }
-               return Mapper.Map<List<T001KDto>>(dbData);
-           
-          
-            
-        }
+      
     }
 }

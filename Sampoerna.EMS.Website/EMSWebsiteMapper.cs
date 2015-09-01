@@ -822,13 +822,9 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<T001WDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NAME1));
 
-            Mapper.CreateMap<Plant, SelectItemModel>().IgnoreAllNonExisting()
-               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
-               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
-
-
+          
         }
     }
 

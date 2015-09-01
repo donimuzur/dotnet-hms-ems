@@ -120,7 +120,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var fa = _brandRegistrationBll.GetByFaCode(faCode);
             return Json(fa.BRAND_CE);
         }
-
         
         #endregion
 

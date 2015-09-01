@@ -7,10 +7,7 @@ namespace Sampoerna.EMS.Contract
     {
         T001KDto GetByBwkey(string bwkey);
         T001KDto GetByNppbkcIdAndMainPlant(string nppbkcId);
-        List<T001KDto> GetPlantbyCompany(string companyId);
-        List<T001KDto> GetCompanyByPlant(string plantId);
         List<T001WDto> GetPlantByCompany(string companyId);
        
-
     }
 }

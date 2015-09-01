@@ -40,16 +40,6 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<T001KDto>(dbData);
         }
 
-        public List<T001KDto> GetPlantbyCompany(string companyId)
-        {
-            includeTables = "T001W";
-            var dbData = _repository.Get(c => c.BUKRS == companyId, null, includeTables);
-            if (dbData == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
-            return Mapper.Map<List<T001KDto>>(dbData);
-        }
         public List<T001WDto> GetPlantByCompany(string companyId)
         {
             includeTables = "T001W";
@@ -61,7 +51,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<T001WDto>>(dbData.Select(x=>x.T001W));
         }
 
-        public List<T001KDto> GetCompanyByPlant(string plantId)
+        public List<T001Dto> GetCompanyByPlant(string plantId)
         {
             includeTables = "T001";
             var dbData = _repository.Get(c => c.BWKEY == plantId, null, includeTables);
@@ -69,7 +59,7 @@ namespace Sampoerna.EMS.BLL
             {
                 throw  new BLLException((ExceptionCodes.BLLExceptions.DataNotFound));
             }
-            return Mapper.Map<List<T001KDto>>(dbData);
+            return Mapper.Map<List<T001Dto>>(dbData.Select(x=>x.T001));
 
         }
     }
