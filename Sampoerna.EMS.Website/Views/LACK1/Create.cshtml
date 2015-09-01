@@ -42,7 +42,7 @@
 }
 
 @section scripts {
-    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
 
         $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
@@ -251,131 +251,37 @@
                 }
             });
         }
-
-        function drawingPrintOut() {
-            var rc = printOutLack1Info() + printOutDrawingTable()
-                + '<div class="page-break"></div></div>' +
-                +printOutFooterInfo();
-            return rc;
-        }
-
-        function printOutLack1Info() {
-            var rc = '<div class="print-out">' +
-                '<img class="logo" width="130" src="http://wwx.hms-ems-dev.voxteneo.com/content/upload/header/header_sampoerna.jpg">' +
-                '<p class="heading">Laporan Penggunaan/Persediaan Barang Kena Cukai <br />Dengan Fasilitas Tidak dipungut Cukai</p>' +
-                '<div class="modul">Lack-1</div>' +
-                '<table border="0" class="lack-title">' +
-                '<tr>' +
-                '<td class="first">Nama Perusahaan</td>' +
-                '<td>: </td>' +
-                '<td>PT HM Sampoerna Tbk.</td>' +
-                '</tr>' +
-                '<tr>' +
-                '<td class="first">NPPBKC</td>' +
-                '<td>: </td>' +
-                '<td>0705.1.3.0234</td>' +
-                '</tr>' +
-                '<tr>' +
-                '<td class="first">Alamat</td>' +
-                '<td>: </td>' +
-                '<td>JL. Testing 123, Surabya, Jawa Timur</td>' +
-                '</tr>' +
-                '<tr>' +
-                '<td class="first">No & Tanggal PBCK-1</td>' +
-                '<td>: </td>' +
-                '<td>HMS-E/SUR/II/2015</td>' +
-                '</tr>' +
-                '<tr>' +
-                '<td class="first">Jenis BKC sebagai bahan baku/penolong</td>' +
-                '<td>: </td>' +
-                '<td>Tembakau Iris (TIS)</td>' +
-                '</tr>' +
-                '<tr>' +
-                '<td class="first">Nama Pemasok</td>' +
-                '<td>: </td>' +
-                '<td>PT HM Sampoerna Tbk. <br>JL. Testing 123, Surabya, Jawa Tengah</td>' +
-                '</tr>' +
-                '</table>' +
-                '<div class="date">Laporan Bulan: Agustus 2015</div>'
-            ;
-            return rc;
-        }
-
-        function printOutDrawingTable() {
-            var rc = '<div class="lack-table-container"><table border="0" class="lack-content">' +
-                        /*start header*/
-				        '<tr><td rowspan="2">No<br>Urut</td>' +
-                        '<td rowspan="2">Saldo<br>Awal</td>' +
-                        '<td colspan="2">Pemasukan</td' +
-                        '><td rowspan="2">Penggunaan</td>' +
-                        '<td colspan="2">Hasil Produksi BKC</td>' +
-                        '<td rowspan="2">Saldo<br>Akhir</td>' +
-                        '<td rowspan="2">Keterangan</td></tr>' +
-                        '<tr><td>No. & Tgl. CK-5</td>' +
-                        '<td>Jumlah</td><td>Jenis</td>' +
-                        '<td>Jumlah</td></tr>' +
-                        '<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>' +
-                        /*end of header*/
-                        /*loop record*/
-                        '<tr><td>1</td>' +
-                        '<td rowspan="3">1.000.000</td>' +
-                        '<td>000123 - 11.09.2014</td>' +
-                        '<td>10.000.000</td>' +
-                        '<td rowspan="3">1.000.000</td>' +
-                        '<td rowspan="3">SKT<br>CRT</td>' +
-                        '<td rowspan="3">100.000.000 batang<br>50.000.000 batang</td>' +
-                        '<td rowspan="3">50.000.000</td>' +
-                        '<td rowspan="4">Total waste: 100 Gram<br>Tembakau Retur:</td></tr>' +
-				        '<tr><td>2</td><td>000124 - 12.09.2014</td>' +
-                '<td>20.000.000</td></tr>' +
-                '<tr><td>3</td><td>000125 - 13.09.2014</td><td>30.000.000</td></tr>' +
-                /*end loop record*/
-                /*footer*/
-                '<tr><td> </td><td> </td><td> </td><td>Total:<br />60.000.000</td><td></td><td></td><td>Total: 150.000.000<br />batang</td><td></td></tr>' +
-                '</table></div>';
-            return rc;
-        }
-
+        
         function generateHeaderTable() {
             var rc =  /*start header*/
-                '<tr><td rowspan="2">No<br>Urut</td>' +
-                '<td rowspan="2">Saldo<br>Awal</td>' +
-                '<td colspan="2">Pemasukan</td' +
-                '><td rowspan="2">Penggunaan</td>' +
-                '<td colspan="2">Hasil Produksi BKC</td>' +
-                '<td rowspan="2">Saldo<br>Akhir</td>' +
-                '<td rowspan="2">Keterangan</td></tr>' +
-                '<tr><td>No. & Tgl. CK-5</td>' +
-                '<td>Jumlah</td><td>Jenis</td>' +
-                '<td>Jumlah</td></tr>' +
-                '<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+                '<thead><tr><th rowspan="2">No<br>Urut</th><th rowspan="2">Saldo<br>Awal</th><th colspan="2">Pemasukan</th><th rowspan="2">Penggunaan</th><th colspan="2">Hasil Produksi BKC</th><th rowspan="2">Saldo<br>Akhir</th><th rowspan="2">Keterangan</th></tr><tr><th>No. & Tgl. CK-5</th><th>Jumlah</th><th>Jenis</th><th>Jumlah</th></tr></thead>';
             /*end of header*/
             return rc;
         }
-
+        
         function generateTable(data) {
 
-            //var rc = '<div class="lack-table-container"><table border="1" class="lack-content">' + generateHeaderTable();
-            var rc = '<div><table border="1" class="table table-bordered table-striped">' + generateHeaderTable();
-               
+            var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
+            rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+            
             if (data.IncomeList.length > 0) {
                 var rowIndex = 1;
                 var rowCount = data.IncomeList.length;
                 rc = rc +
                 /*First Record*/
                 '<tr><td>' + rowIndex + '</td>' +
-                '<td rowspan="' + rowCount + '">' + data.BeginingBalance + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
                 '<td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
-                '<td>' + data.IncomeList[0].Amount + '</td>' +
-                '<td rowspan="' + rowCount + '">' + data.TotalUsage + '</td>' +
+                '<td>' + ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
                 '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
                 '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
-                '<td rowspan="' + rowCount + '">' + data.EndingBalance + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
                 '<td rowspan="' + (rowCount + 1) + '">' + data.Noted + '</td></tr>';
                 /*loop record*/
                 for (var i = 1; i < data.IncomeList.length; i++) {
                     rowIndex = rowIndex + 1;
-                    var item = '<tr><td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
+                    var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
                                 '<td>' + data.IncomeList[0].Amount + '</td></tr>';
                     rc.append(item);
                 }
@@ -385,20 +291,20 @@
                 rc = rc +
                 /*Only 1 Record*/
                 '<tr><td>1</td>' +
-                '<td>' + data.BeginingBalance + '</td>' +
-                '<td>-</td>' +
-                '<td>0</td>' +
-                '<td>0</td>' +
+                '<td>' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
                 '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
                 '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
-                '<td>' + data.EndingBalance + '</td>' +
+                '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
                 '<td>' + data.Noted + '</td></tr>';
             }
 
             /*footer*/
-            rc = rc + '<tr><td></td><td></td><td></td><td>Total:<br />'
-                + data.TotalIncome + '</td><td></td><td></td><td>Total: 150.000.000<br />batang</td><td colspan="2"></td></tr>' +
-                '</table></div>';
+            rc = rc + '<tr><td></td><td></td><td></td><td>Total:'
+                + ThausandSeperator(data.TotalIncome, 2) + '</td><td></td><td></td><td>Total: 150.000.000<br />batang</td><td colspan="2"></td></tr>' +
+                '</tbody></table>';
 
             return rc;
         }
@@ -442,9 +348,9 @@
             if (data.length > 0) {
                 for (var i = 0; i < data.length; i++) {
                     if (i == data.length) {
-                        rc = rc + data.Amount;
+                        rc = rc + ThausandSeperator(data.Amount, 2);
                     } else {
-                        rc = rc + data.Amount + " " + data.UomDesc + "<br/>";
+                        rc = rc + ThausandSeperator(data.Amount, 2) + " " + data.UomDesc + "<br/>";
                     }
                 }
             } else {
@@ -454,21 +360,22 @@
         }
         
         function generateEmptyTable() {
-            var rc = '<div class="lack-table-container"><table border="1" class="lack-content">' + generateHeaderTable();
+            var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
+            rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
             rc = rc +
                 /*Only 1 Record*/
-                '<tr><td>-</td>' +
-                '<td>-</td>' +
-                '<td>-</td>' +
-                '<td>0</td>' +
-                '<td>0</td>' +
-                '<td>-</td>' +
-                '<td>-</td>' +
-                '<td>0</td>' +
-                '<td rowspan="2">-</td></tr>';
+                '<tr><td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td rowspan="2"></td></tr>';
             /*footer*/
-            rc = rc + '<tr><td></td><td></td><td></td><td>Total:<br />0</td><td></td><td></td><td>Total: -</td><td></td></tr>' +
-                '</table></div>';
+            rc = rc + '<tr><td></td><td></td><td></td><td>Total : -</td><td></td><td></td><td>Total: -</td><td></td></tr>' +
+                '</tbody></table>';
             return rc;
         }
 
