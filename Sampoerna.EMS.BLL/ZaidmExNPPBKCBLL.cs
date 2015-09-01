@@ -18,13 +18,15 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_NPPBKC> _repository;
         private string includeTables = "ZAIDM_EX_KPPBC,T001W, LFA1";
         private IChangesHistoryBLL _changesHistoryBll;
-
+        private IGenericRepository<T001K> _repositoryT001k;
+        private IGenericRepository<T001W> _repositoryT001w; 
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
+            
         }
 
         public ZAIDM_EX_NPPBKC GetById(string id)
@@ -135,6 +137,23 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_NPPBKCDto GetDetailsByCityName(string cityName)
         {
             return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.CITY == cityName, null, ", T001W, T0011, ZAIDM_EX_KPPBC").FirstOrDefault());
+        }
+
+        public List<ZAIDM_EX_NPPBKC> GetNppbkcsByCompany(string companyId)
+        {
+            _repositoryT001k = _uow.GetGenericRepository<T001K>();
+            _repositoryT001w = _uow.GetGenericRepository<T001W>();
+            var data = (from a in _repository.GetQuery()
+                join b
+                    in _repositoryT001w.GetQuery() on a.NPPBKC_ID
+                    equals b.NPPBKC_ID
+                join c
+                    in _repositoryT001k.GetQuery()
+                    on b.WERKS equals c.BWKEY
+                select a
+                ).Distinct();
+                
+            return data.ToList();
         }
     }
 }
