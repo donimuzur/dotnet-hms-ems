@@ -157,7 +157,7 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [ValidateAntiForgeryToken]
+      
         public ActionResult Edit(int? id)
         {
             var model = InitDetailModel(id);
@@ -199,6 +199,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(LACK2CreateViewModel model)
         {
 
@@ -240,6 +241,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Detail(LACK2CreateViewModel model)
         {
             if (model.FormStatus == "Submit")
