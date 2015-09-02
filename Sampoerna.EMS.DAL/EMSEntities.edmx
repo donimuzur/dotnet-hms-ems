@@ -5844,8 +5844,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUBMISSION_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EX_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="EX_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="GOV_STATUS" Type="Int32" Nullable="false" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="false" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />

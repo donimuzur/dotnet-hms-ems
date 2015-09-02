@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.Core;
+﻿using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,10 +39,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public string ExGoodDesc { get; set; }
 
-        public int GovStatus { get; set; }
-
-        public int Status { get; set; }
-
+        public Enums.DocumentStatusGov? StatusGov { get; set; }
+      
+        public Enums.DocumentStatus Status { get; set; }
         [Display(Name = "Decree Date")]
         public DateTime? DecreeDate { get; set; }
 
@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         [Required]
         [Display(Name = "Submmision Date")]
-        public DateTime SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -65,16 +65,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
 
-        public List<Lack2ItemModel> Items { get; set; }
+        public List<Lack2ItemDto> Items { get; set; }
+
+        public string StatusName { get; set; }
     }
 
-    public class Lack2ItemModel
-    {
-        public long Lack2ItemId { get; set; }
-
-        public int Lack2Id { get; set; }
-
-        public int Ck5Id { get; set; }
-
-    }
+   
 }
