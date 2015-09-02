@@ -797,8 +797,11 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYear + "-" + src.PeriodMonth));
 
-            Mapper.CreateMap<LACK2Model, Lack2Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<LACK2Model, Lack2Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Lack2Number, opt => opt.MapFrom(src => src.Lack2Number));
+              
             Mapper.CreateMap<Lack2Dto, LACK2Model>().IgnoreAllNonExisting();
+
 
             Mapper.CreateMap<LACK2FilterViewModel, Lack2GetByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))

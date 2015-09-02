@@ -2,15 +2,15 @@
 @model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
 
 @{
-    ViewBag.Title = "Edit LACK2";
+    ViewBag.Title = "Detail LACK2";
     int i = 0;
 }
 
 
 
-@using (@Html.BeginForm("Edit", "LACK2"))
+@using (@Html.BeginForm("Detail", "LACK2"))
 {
-    
+    @Html.HiddenFor(x => x.FormStatus)
     @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
@@ -548,7 +548,7 @@
     }
 
     function ajaxGetPlantByNppbkc(nppbkc) {
-         $.ajax({
+        $.ajax({
             type: 'POST',
             url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
             data: { nppbkcid: nppbkc },

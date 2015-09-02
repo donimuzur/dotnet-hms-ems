@@ -37,6 +37,6 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
-        
+        public string FormStatus { get; set; }
     }
 }

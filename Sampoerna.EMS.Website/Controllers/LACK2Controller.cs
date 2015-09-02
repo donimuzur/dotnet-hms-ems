@@ -158,6 +158,12 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpGet]
         public ActionResult Edit(int? id)
         {
+            var model = InitDetailModel(id);
+            return View("Edit", model);
+        }
+
+        public LACK2CreateViewModel InitDetailModel(int? id)
+        {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
             model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetByIdAndItem(id.Value));
@@ -178,16 +184,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
-              //workflow history
+            //workflow history
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = model.Lack2Model.Lack2Number;
             workflowInput.DocumentStatus = model.Lack2Model.Status;
-            workflowInput.NPPBKC_Id =  model.Lack2Model.NppbkcId;
+            workflowInput.NPPBKC_Id = model.Lack2Model.NppbkcId;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
             model.WorkflowHistory = workflowHistory;
-            return View("Edit", model);
+            return model;
         }
 
         [HttpPost]
@@ -210,28 +216,49 @@ namespace Sampoerna.EMS.Website.Controllers
             item.PeriodMonth = model.Lack2Model.PeriodMonth;
             item.PeriodYear = model.Lack2Model.PeriodYear;
          
-            if (CurrentUser.UserRole == Enums.UserRole.POA) // && if a file is uploaded needs to be added
-            {
-                item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
-            }
-
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)// && if a file is uploaded needs to be added
-            {
-                item.Status = Enums.DocumentStatus.Completed;
-            }
-
+            item.Status = Enums.DocumentStatus.Draft;
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
 
             item.ApprovedBy = CurrentUser.USER_ID;
             item.ApprovedDate = DateTime.Now;
-
-            _lack2Bll.Insert(item);
+             _lack2Bll.Insert(item);
 
             return RedirectToAction("Index");
         }
 
         #endregion
+
+
+        public ActionResult Detail(int? id)
+        {
+            var model = InitDetailModel(id);
+            model.FormStatus = "Submit";
+            return View("Detail", model);
+        }
+
+        [HttpPost]
+        public ActionResult Detail(LACK2CreateViewModel model)
+        {
+            if (model.FormStatus == "Submit")
+            {
+                return RedirectToAction("Submit", new { id = model.Lack2Model.Lack2Id});
+            }
+            if (model.FormStatus == "Approve")
+            {
+                return RedirectToAction("Approve",new { id = model.Lack2Model.Lack2Id});
+            }
+            return View("Index");
+        }
+
+        public ActionResult Submit(int id)
+        {
+            //if (Request.UrlReferrer == new Uri(Url.Action("Detail", "LACK2", new { id= id}), UriKind.Absolute))
+            //{
+             
+            //}
+            return View("Index");
+        }
 
         #region List By Plant
 
