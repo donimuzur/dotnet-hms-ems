@@ -1,4 +1,5 @@
 delete from EX_GROUP_TYPE_DETAILS;
+delete from EX_GROUP_TYPE;
 
 DBCC CHECKIDENT ('[EX_GROUP_TYPE]', RESEED, 0);
 
