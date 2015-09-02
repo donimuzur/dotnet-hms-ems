@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.Website
             InitializeCK5();
             InitializePBCK1();
             InitializePbck7AndPbck3();
+            InitializeLACK1();
             InitializeCk4C();
 
             //AutoMapper

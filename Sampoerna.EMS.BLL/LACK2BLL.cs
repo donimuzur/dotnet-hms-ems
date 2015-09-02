@@ -163,8 +163,11 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2Dto GetByIdAndItem(int id)
         {
-           
-            return Mapper.Map<Lack2Dto>(_repositoryItem.Get(x=>x.LACK2_ID == id, null, "LACK2, CK5"));
+            var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, CK5");
+            var lack2dto = new Lack2Dto();
+            lack2dto = data.Select(x => Mapper.Map<Lack2Dto>(x.LACK2)).FirstOrDefault();;
+            lack2dto.Items = data.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();;
+            return lack2dto;
         }
 
         /// <summary>
