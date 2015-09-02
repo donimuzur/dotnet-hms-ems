@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
         }
-        
+
         public Ck4CDto Save(Ck4CDto item)
         {
             try
@@ -77,8 +77,8 @@ namespace Sampoerna.EMS.BLL
             }
             catch (Exception exception)
             {
-                
-                throw;
+
+                _repository.InsertOrUpdate(item);
             }
         }
     }
