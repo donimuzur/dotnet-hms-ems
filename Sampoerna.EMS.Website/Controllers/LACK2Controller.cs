@@ -115,6 +115,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(LACK2CreateViewModel model)
         {
 
@@ -156,6 +157,7 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(int? id)
         {
             var model = InitDetailModel(id);
@@ -253,10 +255,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Submit(int id)
         {
+            
+            var item = _lack2Bll.GetByIdAndItem(id);
+            if (item.Status == Enums.DocumentStatus.Draft)
+            {
+                item.Status = Enums.DocumentStatus.Approved;
+            }
+
             //if (Request.UrlReferrer == new Uri(Url.Action("Detail", "LACK2", new { id= id}), UriKind.Absolute))
             //{
              
             //}
+            _lack2Bll.Insert(item);
             return View("Index");
         }
 
