@@ -479,7 +479,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetCK5ByLack2Period(int month, int year, string sendPlantId, string goodstype)
         {
-            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId, goodstype).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
 
         }
@@ -502,6 +502,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
         }
+
+        
 
         private DataSet CreateLack2Ds()
         {
