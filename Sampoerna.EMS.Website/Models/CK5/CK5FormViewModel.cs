@@ -139,6 +139,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //public string PbckDecreeId { get; set; }
         public SelectList PbckDecreeList { get; set; }
         public string PbckDecreeNumber { get; set; }
+        public string PbckUom { get; set; }
 
         [UIHint("DateTime")]
         public DateTime? PbckDecreeDate { get; set; }

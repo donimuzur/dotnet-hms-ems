@@ -244,11 +244,39 @@
                 $("input[name='RemainQuota']").val('');
 
             } else {
+                var submissionDate = $('#SubmissionDate').val();
+                if (submissionDate == '')
+                    submissionDate = '@DateTime.Now';
+
                 var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
+                var _goodtypegroupid = $("#GoodType").val();
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+                @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });*@
 
             }
         }
+    });
+
+    $("#GoodType").change(function () {
+        var _goodtypegroupid = $("#GoodType").val();
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+        var destPlant = $("#DestPlantId").find("option:selected").val();
+        if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+            $("input[name='PbckDecreeId']").val('');
+            $("input[name='PbckDecreeNumber']").val('');
+            $("input[name='PbckDecreeDate']").val('');
+            $("input[name='Pbck1QtyApproved']").val('0');
+            $("input[name='Ck5TotalExciseable']").val('0');
+            $("input[name='RemainQuota']").val('0');
+            $("input[name='PbckUom']").val('');
+        } else {
+            var submissionDate = $('#SubmissionDate').val();
+            if (submissionDate == '')
+                submissionDate = '@DateTime.Now';
+
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+        }
+
     });
 
     $("#SourcePlantId").change(function () {

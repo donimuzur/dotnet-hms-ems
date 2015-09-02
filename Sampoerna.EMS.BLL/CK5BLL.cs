@@ -1789,6 +1789,8 @@ namespace Sampoerna.EMS.BLL
             if (pbck1.DecreeDate.HasValue)
                 output.Pbck1DecreeDate = pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
 
+            output.PbckUom = pbck1.RequestQtyUomId;
+
             if (pbck1.Pbck1Type == Enums.PBCK1Type.New)
             {
                 output.QtyApprovedPbck1 = pbck1.QtyApproved.HasValue ? pbck1.QtyApproved.Value : 0;
@@ -1868,6 +1870,8 @@ namespace Sampoerna.EMS.BLL
                 var periodStart = listPbck1[0].PeriodFrom;
                 var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
 
+                output.PbckUom = listPbck1[0].RequestQtyUomId;
+
                 //get ck5 
                 var lisCk5 =
                     _repository.Get(
@@ -1936,6 +1940,7 @@ namespace Sampoerna.EMS.BLL
         public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate, string destPlantNppbkcId,int? goodtypegroupid)
         {
             var output = new GetQuotaAndRemainOutput();
+          
             var goodtypegroupidval = goodtypegroupid.HasValue ? goodtypegroupid.Value : 0;
             var dbGoodTypeList = _goodTypeGroupBLL.GetById(goodtypegroupidval);
             List<string> goodtypelist = new List<string>();
@@ -1952,7 +1957,7 @@ namespace Sampoerna.EMS.BLL
                 output.QtyApprovedPbck1 = 0;
                 output.QtyCk5 = 0;
                 output.RemainQuota = 0;
-
+                output.PbckUom = "";
             }
             else
             {
@@ -1965,6 +1970,8 @@ namespace Sampoerna.EMS.BLL
                 output.Pbck1DecreeDate = listPbck1[0].DecreeDate.HasValue
                     ? listPbck1[0].DecreeDate.Value.ToString("dd/MM/yyyy")
                     : string.Empty;
+
+                output.PbckUom = listPbck1[0].RequestQtyUomId;
 
                 foreach (var pbck1Dto in listPbck1)
                 {
