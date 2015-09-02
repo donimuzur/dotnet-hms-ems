@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
+        public List<Lack1GeneratedProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
     }
 
