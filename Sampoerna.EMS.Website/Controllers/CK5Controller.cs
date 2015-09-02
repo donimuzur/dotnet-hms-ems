@@ -366,8 +366,16 @@ namespace Sampoerna.EMS.Website.Controllers
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
             var dbPlantDest = _plantBll.GetT001ById(destPlantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
-            Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodtypegroupid);
-            var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
+
+            GetQuotaAndRemainOutput output;
+            if (goodtypegroupid == "") {
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, submissionDate, dbPlantDest.NPPBKC_ID, null);
+            } else {
+                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodtypegroupid);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
+            }
+            
+            
 
             model.Pbck1Id = output.Pbck1Id;
             model.Pbck1Number = output.Pbck1Number;

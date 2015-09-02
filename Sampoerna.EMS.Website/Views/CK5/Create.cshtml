@@ -199,6 +199,15 @@
             }
         });
 
+        $("#GoodType").change(function () {
+            var _goodtypegroupid = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now', goodtypegroupid: _goodtypegroupid });
+
+
+        });
+
         $("#SourcePlantId").change(function() {
             if ($("#SourcePlantId").length) {
                 var sourcePlant = $(this).find("option:selected").val();

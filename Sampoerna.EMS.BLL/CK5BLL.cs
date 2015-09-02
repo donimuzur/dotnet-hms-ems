@@ -1933,11 +1933,16 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate, string destPlantNppbkcId,int goodtypegroupid)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate, string destPlantNppbkcId,int? goodtypegroupid)
         {
             var output = new GetQuotaAndRemainOutput();
-
-            var goodtypelist = _goodTypeGroupBLL.GetById(goodtypegroupid).EX_GROUP_TYPE_DETAILS.Select(x=> x.GOODTYPE_ID).ToList();
+            var goodtypegroupidval = goodtypegroupid.HasValue ? goodtypegroupid.Value : 0;
+            var dbGoodTypeList = _goodTypeGroupBLL.GetById(goodtypegroupidval);
+            List<string> goodtypelist = new List<string>();
+            if (dbGoodTypeList != null) {
+                goodtypelist = _goodTypeGroupBLL.GetById(goodtypegroupidval).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
+            }
+            
             var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkcId, goodtypelist);
             
             

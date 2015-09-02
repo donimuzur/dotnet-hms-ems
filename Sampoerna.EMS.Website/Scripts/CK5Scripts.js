@@ -14,7 +14,7 @@ function OnReadyFunction(ck5Type) {
         $('#MenuCK5Domestic').addClass('active');
     }
    
-
+    
     $('#btnUploadInfo').click(function () {
 
         $('#home-tab').removeClass('active');
