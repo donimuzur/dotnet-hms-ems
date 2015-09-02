@@ -261,7 +261,8 @@ namespace Sampoerna.EMS.BLL
                     src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed 
                     && c.QTY_APPROVED.HasValue).Sum(s => s.QTY_APPROVED != null ? s.QTY_APPROVED.Value : 0) : 0))
                     //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
-                    .ForMember(dest => dest.Received, opt => opt.MapFrom(src => 0))
+                .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null ?
+                    src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX) : 0))
                 ;
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()
