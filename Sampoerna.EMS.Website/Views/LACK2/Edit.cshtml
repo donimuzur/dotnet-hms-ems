@@ -2,13 +2,13 @@
 @model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
 
 @{
-    ViewBag.Title = "Create LACK2";
+    ViewBag.Title = "Edit LACK2";
     int i = 0;
 }
 
 
 
-@using (@Html.BeginForm("Create", "LACK2"))
+@using (@Html.BeginForm("Edit", "LACK2"))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -196,24 +196,24 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tb-body-ck5-lack2">
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
+                                                            @if (@Model.Lack2Model.Items != null)
+                                                            {
+                                                                
+                                                                foreach (var item in @Model.Lack2Model.Items)
+                                                                {
+                                                                    <tr>
+                                                                        <th>@Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)</th>
+                                                                        <th>@item.Ck5Number</th>
+                                                                        <th>@item.Ck5GIDate</th>
+                                                                        <th>@item.Ck5ItemQty</th>
+                                                                        <th>@item.CompanyName</th>
+                                                                        <th>@item.CompanyNppbkc</th>
+                                                                        <th>@item.CompanyAddress</th>
+                                                                    </tr>
+                                                                    
+                                                                }
+
+                                                            }
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -480,6 +480,7 @@
    
 
     <script type="text/javascript">
+        var initialEdit = true;
         $(function() {
             openPanel();
             $('#Lack2Model_LevelPlantId').html('');
@@ -487,8 +488,8 @@
 
             $('#Lack2Model_ExGoodTyp').html('');
 
-            
-            
+            $('#Lack2Model_Burks').change();
+
         });
         $('#Lack2Model_NppbkcId').change(function() {
 
@@ -541,19 +542,32 @@
         }
 
         function ajaxGetPlantByNppbkc(nppbkc) {
-
+            console.log(initialEdit);
             $.ajax({
                     type: 'POST',
                     url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
                     data: { nppbkcid: nppbkc },
                     success: function(data) {
                         $('#Lack2Model_LevelPlantId').html('');
-                        
+                       
+                        if (initialEdit) {
+                            var plantId = '@Model.Lack2Model.LevelPlantId';
+                            if (plantId != '') {
+
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-'+'@Model.Lack2Model.LevelPlantName' + '</option>');
+                                for (var i = 0; i < data.length; i++) {
+                                    if (data[i].value !== plantId) {
+                                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                    }
+                                }
+                            }
+                            initialEdit = false;
+                        }
                         for (var i = 0; i < data.length; i++) {
                             $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
 
                         }
-                        
+
                     }
                 }
             );

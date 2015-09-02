@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.Core;
+﻿using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -65,16 +66,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
 
-        public List<Lack2ItemModel> Items { get; set; }
+        public List<Lack2ItemDto> Items { get; set; }
     }
 
-    public class Lack2ItemModel
-    {
-        public long Lack2ItemId { get; set; }
-
-        public int Lack2Id { get; set; }
-
-        public int Ck5Id { get; set; }
-
-    }
+   
 }

@@ -37,9 +37,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICK5BLL _ck5Bll;
         private IPBCK1BLL _pbck1Bll;
         private IHeaderFooterBLL _headerFooterBll;
-        
+        private IWorkflowHistoryBLL _workflowHistoryBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -55,6 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll = ck5Bll;
             _pbck1Bll = pbck1Bll;
             _headerFooterBll = headerFooterBll;
+            _workflowHistoryBll = workflowHistoryBll;
         }
 
 
@@ -143,7 +144,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
 
             _lack2Bll.Insert(item);
-
+          
             return RedirectToAction("Index");
         }
 
@@ -157,13 +158,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetById(id));
-
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetByIdAndItem(id));
+            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
-            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
-           
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GlobalFunctions.GetYearList();
+             
             model.UsrRole = CurrentUser.UserRole;
 
             var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
@@ -173,8 +175,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
-            model.Lack2Model.LACK2Period = new DateTime(model.Lack2Model.PeriodYear, model.Lack2Model.PeriodMonth, 1);
-            return View("Create", model);
+            return View("Edit", model);
         }
 
         [HttpPost]

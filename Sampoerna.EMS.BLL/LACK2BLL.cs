@@ -32,7 +32,8 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfMeasurementBLL _uomBll;
 
         private string includeTables = "MONTH";
-
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPOABLL _poabll;
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -42,6 +43,8 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
+            _poabll = new POABLL(_uow, _logger);
         }
 
         /// <summary>
@@ -187,14 +190,25 @@ namespace Sampoerna.EMS.BLL
             MONTH month = new MONTH();
 
             month = _monthBll.GetMonth(item.PeriodMonth);
-            var user = _userBll.GetUserById(item.CreatedBy);
-
+           
             model = AutoMapper.Mapper.Map<LACK2>(item);
             model.MONTH = month;
-            model.USER = user;
+         
             try
             {
                 _repository.InsertOrUpdate(model);
+                _uow.SaveChanges();
+                var history = new WorkflowHistoryDto();
+                history.FORM_ID = model.LACK2_ID;
+                history.ACTION = Enums.ActionType.Created;
+                history.ACTION_BY = item.CreatedBy;
+                history.ACTION_DATE = DateTime.Now;
+                history.FORM_NUMBER = item.Lack2Number;
+                history.FORM_TYPE_ID = Enums.FormType.LACK2;
+                //set workflow history
+                var getUserRole = _poabll.GetUserRole(item.CreatedBy);
+                history.ROLE = getUserRole;
+                _workflowHistoryBll.AddHistory(history);
                 _uow.SaveChanges();
             }
             catch (SqlException ex)
