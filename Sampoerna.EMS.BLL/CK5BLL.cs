@@ -2005,9 +2005,16 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        public List<CK5> GetByGIDate(int month,  int year, string sourcePlantId)
+        public List<CK5> GetByGIDate(int month,  int year, string sourcePlantId, string goodTypeId)
         {
-            return _repository.Get(p => p.GI_DATE.HasValue && p.GI_DATE.Value.Month ==month && p.GI_DATE.Value.Year == year && p.SOURCE_PLANT_ID == sourcePlantId).ToList();
+            var goodTypeGroup = _goodTypeGroupBLL.GetGroupByExGroupType(goodTypeId);
+            var data =   _repository.Get(
+                    p =>
+                        p.GI_DATE.HasValue && p.GI_DATE.Value.Month == month && p.GI_DATE.Value.Year == year &&
+                        p.SOURCE_PLANT_ID == sourcePlantId && (int) p.EX_GOODS_TYPE == goodTypeGroup.EX_GROUP_TYPE_ID).ToList();
+
+            return data;
+
         }
     }
 }

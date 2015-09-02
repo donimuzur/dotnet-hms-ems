@@ -1,4 +1,6 @@
 ﻿@using Microsoft.Ajax.Utilities
+@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
 
 @{
@@ -19,11 +21,38 @@
             <div class="col-sm-12">
                 <h3>LACK-2 Form</h3>
                 <label class="status">@Model.Lack2Model.StatusName</label>
-                <div class="action-button">
+                @*<div class="action-button">
                     <button class="btn btn-blue" onclick="openPanel();" type="Submit">Save</button>
                     <button class="btn btn-grey">Cancel</button>
+                </div>*@
+                <div class="action-button">
+                    @if (Model.AllowApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+
+                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                    }
+                    else
+                    {
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+                    }
+
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
+
+                    @*@if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
+                    }
+                    else
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
+                    }*@
                 </div>
-            </div>
+                    
+                </div>
         </div>
     </div>
 
@@ -562,7 +591,7 @@
                         $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].value !== plantId) {
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
                             }
                         }
                     }
@@ -616,11 +645,10 @@
                 if (initialEditGoodtype) {
                     var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
                         if (exgoodtyp != '') {
-
-                            $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
+                             $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
                             for (var i = 0; i < data.length; i++) {
                                 if (data[i].value !== exgoodtyp) {
-                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
                                 }
                             }
                         }
@@ -640,7 +668,11 @@
             $('.panel-collapse').removeClass('collapse').addClass('in');
 
         }
+        function printPreview(url) {
 
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
         function GetCk5ByPeriod() {
             var month = parseInt($('#Lack2Model_PeriodMonth').val());
             var year = parseInt($('#Lack2Model_PeriodYear').val());

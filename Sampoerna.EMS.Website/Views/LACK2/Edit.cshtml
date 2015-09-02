@@ -562,14 +562,14 @@
                         $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].value !== plantId) {
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
                             }
                         }
                     }
                     initialEditPlant = false;
                 } else {
                     for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' +  data[i].Value + '-' + data[i].Text + '</option>');
 
                     }
                 }
@@ -620,7 +620,7 @@
                             $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
                             for (var i = 0; i < data.length; i++) {
                                 if (data[i].value !== exgoodtyp) {
-                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
                                 }
                             }
                         }

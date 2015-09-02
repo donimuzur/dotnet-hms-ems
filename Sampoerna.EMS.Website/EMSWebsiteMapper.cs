@@ -137,6 +137,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Plant, DetailPlantT1001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.NPPBKC_IMPORT_ID, opt => opt.MapFrom(src => src.NPPBKC_IMPORT_ID))
                 .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.IsMainPlant, opt => opt.MapFrom(src => src.IS_MAIN_PLANT.HasValue && src.IS_MAIN_PLANT.Value))
@@ -157,6 +158,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SKEPTIS, opt => opt.MapFrom(src => src.Skeptis))
                 .ForMember(dest => dest.PHONE, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.Ort01))
+                .ForMember(dest => dest.NPPBKC_IMPORT_ID, opt => opt.MapFrom(src => src.NPPBKC_IMPORT_ID))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.PLANT_RECEIVE_MATERIAL,
                     opt => opt.MapFrom(src => Mapper.Map<List<PLANT_RECEIVE_MATERIAL>>(src.ReceiveMaterials)));
@@ -172,12 +174,14 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Name1, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PHONE))
                 .ForMember(dest => dest.Ort01, opt => opt.MapFrom(src => src.ORT01))
+                .ForMember(dest => dest.NPPBKC_IMPORT_ID, opt => opt.MapFrom(src => src.NPPBKC_IMPORT_ID))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED ));
 
 
             Mapper.CreateMap<DetailPlantT1001W, T001W>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.NPPBKC_IMPORT_ID, opt => opt.MapFrom(src => src.NPPBKC_IMPORT_ID))
                 .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
                 .ForMember(dest => dest.NAME1, opt => opt.MapFrom(src => src.Name1))
                 .ForMember(dest => dest.IS_MAIN_PLANT, opt => opt.MapFrom(src => src.IsMainPlant))

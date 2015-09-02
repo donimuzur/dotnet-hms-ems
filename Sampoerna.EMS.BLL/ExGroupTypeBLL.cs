@@ -140,6 +140,11 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
+        public EX_GROUP_TYPE GetGroupByExGroupType(string goodTypeId)
+        {
+            var data = _repositoryDetail.Get(x => x.GOODTYPE_ID == goodTypeId, null, "EX_GROUP_TYPE").Select(x=>x.EX_GROUP_TYPE).FirstOrDefault();
+            return data;
+        }
 
 
         private void SetChange(EX_GROUP_TYPE origin, List<EX_GROUP_TYPE_DETAILS> data, string userId)
