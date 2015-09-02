@@ -64,7 +64,8 @@ function OnReadyFunction(ck5Type) {
 
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
-        ValidateRemainQuota(total);
+        
+       
         
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
@@ -73,14 +74,28 @@ function OnReadyFunction(ck5Type) {
         $('#upload').removeClass('active');
 
         $('#collapse5').addClass('in');
+        
+
+
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter')
+            return;
+
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
+            return;
+
+        ValidateRemainQuota(total);
     });
     
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
+
+    
+    
 }
 
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
+    
     var remainQuota = parseFloat($('#RemainQuota').val());
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
@@ -553,6 +568,11 @@ function ValidateCk5Form(ck5Type) {
     // && (ck5Type != 'Domestic')
     if (result) {
 
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter')
+            return result;
+        //alert('Source : ' + $('#SourceNppbkcId').val());
+        //alert('Dest : ' + $('#DestNppbkcId').val());
+        //alert($('#SourceNppbkcId').val() == $('#DestNppbkcId').val());
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
 
