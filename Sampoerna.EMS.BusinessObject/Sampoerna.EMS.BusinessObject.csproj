@@ -203,6 +203,9 @@
     <Compile Include="LACK1_INCOME_DETAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LACK1_PBCK1_MAPPING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK1_PLANT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
