@@ -14,7 +14,7 @@
                 <h3>LACK-2 Form</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <button class="btn btn-blue" type="Submit">Save</button>
+                    <button class="btn btn-blue" onclick="openPanel();" type="Submit">Save</button>
                     <button class="btn btn-grey">Cancel</button>
                 </div>
             </div>
@@ -112,10 +112,10 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">NPPBKC</label>
                                                                 <div class="col-md-8">
-                                                                    <select name="Lack2Model.NppbkcId" id="Lack2Model_NppbkcId" class="form-control">
+                                                                    @*<select name="Lack2Model.NppbkcId" data-val="true" data-val-required="Nppbkc is required" id="Lack2Model_NppbkcId" class="form-control">
                                                                         <option>select</option>
-                                                                    </select>
-
+                                                                    </select>*@
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -123,9 +123,11 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                    <select name="Lack2Model.LevelPlantId" id="Lack2Model_LevelPlantId" class="form-control">
-                                                                        <option>select</option>
-                                                                    </select>
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
+
+
+
+
 
 
                                                                 </div>
@@ -158,9 +160,10 @@
                                                             <div class="row">
                                                                 <label class="col-md-4 long">Excisable Goods Type</label>
                                                                 <div class="col-md-8">
-                                                                    <select name="Lack2Model.ExGoodTyp" id="Lack2Model_ExGoodTyp" class="form-control">
-                                                                        <option>select</option>
-                                                                    </select>
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
+
+
+
 
                                                                 </div>
                                                             </div>
@@ -558,13 +561,19 @@
    
 
     <script type="text/javascript">
+        $(function() {
+            $('#Lack2Model_LevelPlantId').html('');
+            $('#Lack2Model_NppbkcId').html('');
+
+            $('#Lack2Model_ExGoodTyp').html('');
+
+        });
         $('#Lack2Model_NppbkcId').change(function() {
 
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();
 
                 $('#Lack2Model_LevelPlantId').html('');
-                $('#Lack2Model_LevelPlantId').append('<option value="">select</option>');
                 if (nppbkc != '') {
                     ajaxGetPlantByNppbkc(nppbkc);
                     ajaxGetGoodsTypeByNppbkc(nppbkc);
@@ -592,7 +601,6 @@
                 data: { companyId: company },
                 success: function(data) {
                     $('#Lack2Model_NppbkcId').html('');
-                    $('#Lack2Model_NppbkcId').append('<option>select</option>');
 
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
@@ -610,7 +618,6 @@
                 data: { nppbkcid: nppbkc },
                 success: function(data) {
                     $('#Lack2Model_LevelPlantId').html('');
-                    $('#Lack2Model_LevelPlantId').append('<option>select</option>');
 
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
@@ -627,7 +634,6 @@
                 url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
                 success: function(data) {
-                    console.log(data);
                     $('#displayPoaList').html('');
                     var poalist = '';
                     for (var i = 0; i < data.length; i++) {
@@ -652,13 +658,17 @@
                 success: function(data) {
 
                     $('#Lack2Model_ExGoodTyp').html('');
-                    $('#Lack2Model_ExGoodTyp').append('<option>select</option>');
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
                     }
                 }
             });
 
+        }
+
+        function openPanel() {
+                 $('.panel-collapse').removeClass('collapse').addClass('in');
+            
         }
 
         function GetCk5ByPeriod() {

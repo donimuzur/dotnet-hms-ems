@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         [Required]
         [Display(Name = "Submmision Date")]
-        public DateTime SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
