@@ -12,5 +12,8 @@ namespace Sampoerna.EMS.Contract
     public interface ICK4CBLL
     {
         List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input);
+
+        //SaveCk4CInput Save ()
+
     }
 }
