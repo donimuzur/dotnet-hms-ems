@@ -232,18 +232,21 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
+                    return CreateInitial(model);
                 }
 
                 var dataToSave = Mapper.Map<Ck4CDto>(model);
                 dataToSave.CreatedBy = CurrentUser.USER_ID;
 
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                
-                throw;
+
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
             }
+
+            return CreateInitial(model);
         }
 
         #endregion
