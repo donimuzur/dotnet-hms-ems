@@ -26,13 +26,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     }
     
-    public class Lack1SaveInput
-    {
-        public Lack1Dto Lack1 { get; set; }
-        public string UserId { get; set; }
-        public Enums.ActionType WorkflowActionType { get; set; }
-    }
-
     public class Lack1WorkflowDocumentInput
     {
         public long DocumentId { get; set; }
@@ -109,6 +102,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+    }
+
+    public class Lack1CreateParamInput : Lack1GenerateDataParamInput
+    {
+        public string UserId { get; set; }
     }
 
 }

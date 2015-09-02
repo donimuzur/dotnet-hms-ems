@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;
-        
+
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.BLL
         private IPBCK1Service _pbck1Service;
         private IT001KService _t001KService;
         private ILACK1Service _lack1Service;
-        
+
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.BLL
             _t001KService = new T001KService(_uow, _logger);
             _lack1Service = new LACK1Service(_uow, _logger);
         }
-        
+
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
             return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
@@ -64,74 +64,32 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public SaveLack1Output Save(Lack1SaveInput input)
+        public Lack1CreateOutput Create(Lack1CreateParamInput input)
         {
-            LACK1 dbData;
-
-            if (input.Lack1.Lack1Id > 0)
+            var generatedData = GenerateLack1Data(input);
+            if (!generatedData.Success)
             {
-
-                //update
-                dbData = _lack1Service.GetById(input.Lack1.Lack1Id);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                //set changes history
-                var origin = Mapper.Map<Lack1Dto>(dbData);
-                SetChangesHistory(origin, input.Lack1, input.UserId);
-
-                Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
-                dbData.LACK1_DOCUMENT = null;
-
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.Lack1.DecreeDoc);
-
-            }
-            else
-            {
-                //Insert
-                var generateNumberInput = new GenerateDocNumberInput()
+                return new Lack1CreateOutput()
                 {
-                    Year = Convert.ToInt32(input.Lack1.PeriodMonth),
-                    Month = Convert.ToInt32(input.Lack1.PeriodYears),
-                    NppbkcId = input.Lack1.NppbkcId
+                    Success = generatedData.Success,
+                    ErrorCode = generatedData.ErrorCode,
+                    ErrorMessage = generatedData.ErrorMessage,
+                    Id = null,
+                    Lack1Number = string.Empty
                 };
-
-                input.Lack1.Lack1Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
-                input.Lack1.Status = Enums.DocumentStatus.Draft;
-                input.Lack1.CreateDate = DateTime.Now;
-                dbData = new LACK1();
-                Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
-
-                _lack1Service.Insert(dbData);
-
             }
 
-            var output = new SaveLack1Output();
-
-            _uow.SaveChanges();
-
-            output.Success = true;
-            output.Id = dbData.LACK1_ID;
-            output.Lack1Number = dbData.LACK1_NUMBER;
-
-            //set workflow history
-            var getUserRole = _poaBll.GetUserRole(input.UserId);
-
-            var inputAddWorkflowHistory = new Lack1WorkflowDocumentInput()
+            var rc = new Lack1CreateOutput()
             {
-                DocumentId = output.Id,
-                DocumentNumber = output.Lack1Number,
-                ActionType = input.WorkflowActionType,
-                UserId = input.UserId,
-                UserRole = getUserRole
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
             };
 
-            AddWorkflowHistory(inputAddWorkflowHistory);
+            var data = new LACK1();
 
-            _uow.SaveChanges();
 
-            return output;
+            return rc;
         }
 
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
@@ -170,7 +128,7 @@ namespace Sampoerna.EMS.BLL
             }
 
         }
-        
+
         #endregion
 
         #region workflow
@@ -207,15 +165,33 @@ namespace Sampoerna.EMS.BLL
         internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
         {
             var getData = _lack1Service.GetProductionDetailByPeriode(input);
-            
-            if(getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
-            
+
+            if (getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
+
             //todo: select by periode in range period from and period to from input param
 
             return getData.ToList();
         }
 
         public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
+        {
+            return GenerateLack1Data(input);
+        }
+
+        #region ----------------Private Method-------------------
+
+        private Lack1CreateOutput Create()
+        {
+            var rc = new Lack1CreateOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+            return rc;
+        }
+
+        private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
         {
             var oReturn = new Lack1GeneratedOutput()
             {
@@ -240,8 +216,8 @@ namespace Sampoerna.EMS.BLL
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = false, 
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(), 
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(),
                     ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
                     Data = null
                 };
@@ -283,9 +259,9 @@ namespace Sampoerna.EMS.BLL
 
             rc.PeriodYear = input.PeriodYear;
             rc.Noted = input.Noted;
-            
+
             rc.TotalUsage = 0; //todo: get from Inventory Movement
-            
+
             //set summary
             rc = SetSummaryProductionlist(rc);
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
@@ -294,8 +270,6 @@ namespace Sampoerna.EMS.BLL
 
             return oReturn;
         }
-
-        #region ----------------Private Method-------------------
 
         /// <summary>
         /// Set Production Detail from CK4C Item table 
@@ -382,7 +356,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
             }
-            
+
             return rc;
         }
 
@@ -448,7 +422,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.SummaryProductionList = new List<Lack1GeneratedProductionDataDto>();
             }
-            
+
             return rc;
         }
 

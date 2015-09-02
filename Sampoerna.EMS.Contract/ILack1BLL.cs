@@ -9,8 +9,6 @@ namespace Sampoerna.EMS.Contract
     {
         List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input);
         List<Lack1Dto> GetCompletedDocumentByParam(Lack1GetByParamInput input);
-
-        SaveLack1Output Save(Lack1SaveInput input);
         
         decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input);
 

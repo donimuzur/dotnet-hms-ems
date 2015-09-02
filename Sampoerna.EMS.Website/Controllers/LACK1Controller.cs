@@ -233,26 +233,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 //process save
-                var dataToSave = Mapper.Map<Lack1Dto>(model);
-                dataToSave.CreateBy = CurrentUser.USER_ID;
+                //var dataToSave = Mapper.Map<Lack1Dto>(model);
+                //dataToSave.CreateBy = CurrentUser.USER_ID;
 
-                var input = new Lack1SaveInput()
-                {
-                    Lack1 = dataToSave,
-                    UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Created
-                };
+                //var input = new Lack1SaveInput()
+                //{
+                //    Lack1 = dataToSave,
+                //    UserId = CurrentUser.USER_ID,
+                //    WorkflowActionType = Enums.ActionType.Created
+                //};
 
-                //only add this information from gov approval,
-                //when save create/edit 
-                input.Lack1.DecreeDate = null;
+                ////only add this information from gov approval,
+                ////when save create/edit 
+                //input.Lack1.DecreeDate = null;
 
-                var saveResult = _lack1Bll.Save(input);
+                //var saveResult = _lack1Bll.Save(input);
 
-                if (saveResult.Success)
-                {
-                    return RedirectToAction("Edit", new { id = saveResult.Id });
-                }
+                //if (saveResult.Success)
+                //{
+                //    return RedirectToAction("Edit", new { id = saveResult.Id });
+                //}
 
             }
             catch (DbEntityValidationException ex)
