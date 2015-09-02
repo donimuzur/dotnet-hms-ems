@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string ADDRESS { get; set; }
         public string SKEPTIS { get; set; }
         public string NPPBKC_ID { get; set; }
+        public string NPPBKC_IMPORT_ID { get; set; }
         public string KPPBC_NO { get; set; }
         public bool? IS_MAIN_PLANT { get; set; }
         public DateTime? CREATED_DATE { get; set; }

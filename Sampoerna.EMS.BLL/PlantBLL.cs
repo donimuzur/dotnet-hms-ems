@@ -129,6 +129,7 @@ namespace Sampoerna.EMS.BLL
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("NPPBKC_ID", origin.NPPBKC_ID == data.NPPBKC_ID);
+            changesData.Add("NPPBKC_IMPORT_ID", origin.NPPBKC_IMPORT_ID == data.NPPBKC_IMPORT_ID);
             changesData.Add("CITY", origin.ORT01 == data.ORT01);
             changesData.Add("ADDRESS", origin.ADDRESS == data.ADDRESS);
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
@@ -209,6 +210,10 @@ namespace Sampoerna.EMS.BLL
                         case "RECEIVE_MATERIAL":
                             changes.OLD_VALUE = originMaterialDesc;
                             changes.NEW_VALUE = editMaterialDesc;
+                            break;
+                        case "NPPBKC_IMPORT_ID":
+                            changes.OLD_VALUE = origin.NPPBKC_IMPORT_ID;
+                            changes.NEW_VALUE = data.NPPBKC_IMPORT_ID;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
