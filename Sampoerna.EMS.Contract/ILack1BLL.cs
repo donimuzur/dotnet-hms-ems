@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Lack1Dto> GetByPeriod(Lack1GetByPeriodParamInput input);
 
-        Lack1GeneratedDto GenerateLack1DataByParam(Lack1GenerateDataParamInput input);
+        Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input);
 
     }
 }

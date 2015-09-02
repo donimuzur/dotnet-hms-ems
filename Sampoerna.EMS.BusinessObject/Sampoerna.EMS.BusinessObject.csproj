@@ -203,6 +203,9 @@
     <Compile Include="LACK1_INCOME_DETAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LACK1_PBCK1_MAPPING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK1_PLANT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -237,6 +240,7 @@
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
+    <Compile Include="Outputs\Lack1GeneratedOutput.cs" />
     <Compile Include="Outputs\MaterialOutput.cs" />
     <Compile Include="Outputs\NPPBKCPlantOutput.cs" />
     <Compile Include="Outputs\LACK1Outputs.cs" />

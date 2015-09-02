@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CrystalDecisions.Shared;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -215,8 +215,14 @@ namespace Sampoerna.EMS.BLL
             return getData.ToList();
         }
 
-        public Lack1GeneratedDto GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
+        public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
         {
+            var oReturn = new Lack1GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
 
             //check if already exists with same selection criteria
             var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
@@ -230,8 +236,16 @@ namespace Sampoerna.EMS.BLL
                 PeriodYear = input.PeriodYear
             });
 
-            if(lack1Check != null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria);
+            if (lack1Check != null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false, 
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(), 
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
+                    Data = null
+                };
+            }
 
             var rc = new Lack1GeneratedDto
             {
@@ -271,12 +285,14 @@ namespace Sampoerna.EMS.BLL
             rc.Noted = input.Noted;
             
             rc.TotalUsage = 0; //todo: get from Inventory Movement
-
-            rc.TotalProduction = 0; //todo: can more than 1 record, so need to create logic
-
+            
+            //set summary
+            rc = SetSummaryProductionlist(rc);
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
-            return rc;
+            oReturn.Data = rc;
+
+            return oReturn;
         }
 
         #region ----------------Private Method-------------------
@@ -397,6 +413,42 @@ namespace Sampoerna.EMS.BLL
                     rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
                 }
             }
+            return rc;
+        }
+
+        /// <summary>
+        /// set Summary Production List 
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        private Lack1GeneratedDto SetSummaryProductionlist(Lack1GeneratedDto rc)
+        {
+            if (rc.ProductionList.Count > 0)
+            {
+                var groupedData = rc.ProductionList.GroupBy(p => new
+                {
+                    p.ProdCode,
+                    p.ProductType,
+                    p.ProductAlias,
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1GeneratedProductionDataDto()
+                {
+                    ProdCode = g.Key.ProdCode,
+                    ProductType = g.Key.ProductType,
+                    ProductAlias = g.Key.ProductAlias,
+                    UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                rc.SummaryProductionList = groupedData.ToList();
+            }
+            else
+            {
+                rc.SummaryProductionList = new List<Lack1GeneratedProductionDataDto>();
+            }
+            
             return rc;
         }
 
