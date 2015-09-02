@@ -190,7 +190,8 @@
 
                     } else {
                         //var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
+                        var _goodtypegroupid = $("#GoodType").val();
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now', goodtypegroupid: _goodtypegroupid });
                         @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: '@DateTime.Now' });*@
                     }
                     

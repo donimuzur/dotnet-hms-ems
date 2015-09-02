@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.BLL
         private ICountryBLL _countryBll;
         private IExGroupTypeBLL _goodTypeGroupBLL;
 
-        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD, EX_GROUP_TYPE,EX_GROUP_TYPE.EX_GROUP_TYPE_DETAILS";
+        private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
