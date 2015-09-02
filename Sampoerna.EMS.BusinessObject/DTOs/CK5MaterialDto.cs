@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Nullable<decimal> USD_VALUE { get; set; }
         public string NOTE { get; set; }
         public string CONVERTED_UOM { get; set; }
+        public string MATERIAL_DESC { get; set; }
      
     }
 }

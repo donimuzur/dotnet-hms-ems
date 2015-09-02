@@ -193,7 +193,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
             var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
             return Json(outGeneratedData);
-
         }
 
         #endregion
@@ -232,28 +231,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
-                //process save
-                //var dataToSave = Mapper.Map<Lack1Dto>(model);
-                //dataToSave.CreateBy = CurrentUser.USER_ID;
-
-                //var input = new Lack1SaveInput()
-                //{
-                //    Lack1 = dataToSave,
-                //    UserId = CurrentUser.USER_ID,
-                //    WorkflowActionType = Enums.ActionType.Created
-                //};
-
-                ////only add this information from gov approval,
-                ////when save create/edit 
-                //input.Lack1.DecreeDate = null;
-
-                //var saveResult = _lack1Bll.Save(input);
-
-                //if (saveResult.Success)
-                //{
-                //    return RedirectToAction("Edit", new { id = saveResult.Id });
-                //}
-
+                var input = Mapper.Map<Lack1CreateParamInput>(model);
+                var saveOutput = _lack1Bll.Create(input);
+                if (saveOutput.Success)
+                {
+                    AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
+                    //return RedirectToAction("Edit");
+                    return RedirectToAction("Index");
+                }
             }
             catch (DbEntityValidationException ex)
             {
@@ -320,7 +305,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
             model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
-            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsType);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
 

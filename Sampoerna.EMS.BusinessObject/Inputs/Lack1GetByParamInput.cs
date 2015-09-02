@@ -80,6 +80,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string Noted { get; set; }
 
+        public int ExGroupTypeId { get; set; }
+
     }
 
     public class Lack1GetLatestLack1ByParamInput

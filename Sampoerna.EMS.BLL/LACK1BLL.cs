@@ -35,6 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IPBCK1Service _pbck1Service;
         private IT001KService _t001KService;
         private ILACK1Service _lack1Service;
+        private IT001WService _t001WServices;
+        private IExGroupTypeService _exGroupTypeService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -50,6 +52,8 @@ namespace Sampoerna.EMS.BLL
             _pbck1Service = new PBCK1Service(_uow, _logger);
             _t001KService = new T001KService(_uow, _logger);
             _lack1Service = new LACK1Service(_uow, _logger);
+            _t001WServices = new T001WService(_uow, _logger);
+            _exGroupTypeService = new ExGroupTypeService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -115,6 +119,20 @@ namespace Sampoerna.EMS.BLL
                 NppbkcId = input.NppbkcId
             };
             data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+
+            data.LACK1_PLANT = null;
+
+            //set LACK1_PLANT table
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                data.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
+            }
+            else
+            {
+                var plantFromMaster = _t001WServices.GetById(input.ReceivedPlantId);
+                data.LACK1_PLANT = new List<LACK1_PLANT>(){ Mapper.Map<LACK1_PLANT>(plantFromMaster) };
+            }
 
             _uow.SaveChanges();
 
@@ -241,6 +259,22 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            //Check Excisable Group Type if exists
+            var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
+            if (checkExcisableGroupType == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound),
+                    Data = null
+                };
+            }
+
+            if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
+                input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
+
             var rc = new Lack1GeneratedDto
             {
                 CompanyCode = input.CompanyCode,
@@ -285,6 +319,11 @@ namespace Sampoerna.EMS.BLL
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
             oReturn.Data = rc;
+
+            //set supplier plant id, name, address
+            var supplierPlantDetail = _t001WServices.GetById(input.SupplierPlantId);
+            rc.SupplierPlantAddress = supplierPlantDetail.ADDRESS;
+            rc.SupplierPlantName = supplierPlantDetail.NAME1;
 
             return oReturn;
         }
@@ -402,7 +441,6 @@ namespace Sampoerna.EMS.BLL
                         rc.SupplierCompanyCode = companyData.BUKRS;
                         rc.SupplierCompanyName = companyData.T001.BUTXT;
                     }
-                    rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
                     rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;
                 }
             }

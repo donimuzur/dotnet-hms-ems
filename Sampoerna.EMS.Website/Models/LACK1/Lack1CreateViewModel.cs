@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         [Required]
         public string Bukrs { get; set; }
         public SelectList BukrList { get; set; }
+        public string Butxt { get; set; }
 
         [Required]
         public int PeriodMonth { get; set; }
@@ -30,19 +31,18 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string NppbkcId { get; set; }
         public SelectList NppbkcList { get; set; }
         [RequiredIf("Lack1Level", Enums.Lack1Level.Plant)]
-        public string LevelPlantId { get; set; }
-        public string LevelPlantName { get; set; }
+        public string LevelPlantId { get; set; }//Receiving Plant Id
         public SelectList ReceivePlantList { get; set; }
 
         [Required]
         public DateTime? SubmissionDate { get; set; }
 
         [Required]
-        public string SupplierPlant { get; set; }
+        public string SupplierPlantId { get; set; }//Supplier Plant Werks
         public SelectList SupplierList { get; set; }
 
         [Required]
-        public string ExGoodsType { get; set; }
+        public string ExGoodsTypeId { get; set; }
         public SelectList ExGoodTypeList { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }

@@ -110,9 +110,15 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.TOTAL_PRODUCTION, opt => opt.MapFrom(src => src.TotalProduction))
                 .ForMember(dest => dest.LACK1_UOM_ID, opt => opt.MapFrom(src => src.Lack1UomId))
                 .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))
-                .ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.PlantList)))
+                //.ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.PlantList))) //todo: set from BLL
                 .ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.ProductionList)))
                 .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Pbck1List)))
+                ;
+
+            Mapper.CreateMap<T001W, LACK1_PLANT>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.NAME1))
+                .ForMember(dest => dest.PLANT_ADDRESS, opt => opt.MapFrom(src => src.ADDRESS))
                 ;
 
         }

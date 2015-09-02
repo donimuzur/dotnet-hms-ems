@@ -30,6 +30,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Company<span class="red">*</span></label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Butxt)
                                             @Html.DropDownListFor(model => model.Bukrs, Model.BukrList, "", new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -149,7 +150,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SupplierPlant, Model.SupplierList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.SupplierPlantId, Model.SupplierList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +158,7 @@
                                     <div class="row">
                                         <label class="col-md-4 long">Excisable Goods Type<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.ExGoodsType, Model.ExGoodTypeList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.ExGoodsTypeId, Model.ExGoodTypeList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

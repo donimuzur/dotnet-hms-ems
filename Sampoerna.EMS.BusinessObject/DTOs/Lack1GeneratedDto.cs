@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             IncomeList = new List<Lack1GeneratedIncomeDataDto>();
             ProductionList = new List<Lack1GeneratedProductionDataDto>();
+            SummaryProductionList = new List<Lack1GeneratedProductionDataDto>();
         }
 
         public string CompanyCode { get; set; }
