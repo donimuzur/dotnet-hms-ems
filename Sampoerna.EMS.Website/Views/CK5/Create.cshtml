@@ -73,6 +73,7 @@
                         @Html.HiddenFor(model => model.UnsealingNotifDate)*@
                         
                         @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.IsCk5PortToImporter)
 
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
@@ -189,12 +190,22 @@
 
                     } else {
                         //var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
+                        var _goodtypegroupid = $("#GoodType").val();
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now', goodtypegroupid: _goodtypegroupid });
                         @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: '@DateTime.Now' });*@
                     }
                     
                 }
             }
+        });
+
+        $("#GoodType").change(function () {
+            var _goodtypegroupid = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now', goodtypegroupid: _goodtypegroupid });
+
+
         });
 
         $("#SourcePlantId").change(function() {

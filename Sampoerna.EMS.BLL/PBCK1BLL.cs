@@ -1353,13 +1353,7 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
-
-            //get supplier company name
-            var t001KData = _t001Kbll.GetByBwkey(dbData.SUPPLIER_PLANT_WERKS);
-            if (t001KData != null)
-            {
-                rc.Detail.SupplierCompanyName = t001KData.BUTXT;
-            }
+            rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
 
             var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
             if (kppbcDetail != null)
@@ -1589,11 +1583,11 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
 
-        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId)
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId,List<string> goodtypes)
         {
             var dbData =
                 _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId).OrderByDescending(p => p.CREATED_DATE);
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.CREATED_DATE);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }

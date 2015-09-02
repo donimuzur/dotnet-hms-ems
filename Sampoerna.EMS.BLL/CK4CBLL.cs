@@ -40,9 +40,10 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.DateProduction);
                 queryFilter = queryFilter.And(c => c.REPORTED_ON == dt);
             }
+            
             if (!string.IsNullOrEmpty(input.Company))
             {
-                queryFilter = queryFilter.And(c => c.COMPANY_NAME == input.Company);
+                queryFilter = queryFilter.And(c => c.COMPANY_ID == input.Company);
             }
             if (!string.IsNullOrEmpty(input.PlantId))
             {

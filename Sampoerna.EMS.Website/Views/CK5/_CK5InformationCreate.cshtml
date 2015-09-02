@@ -371,7 +371,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export)
+                             @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -500,6 +500,7 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ExciseValue)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Note)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].MaterialDesc)
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>

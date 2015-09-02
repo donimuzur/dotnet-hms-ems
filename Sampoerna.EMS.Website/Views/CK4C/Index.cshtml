@@ -33,7 +33,7 @@
                                 <label class="col-md-3 long">Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="ProductionDate">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -53,10 +53,10 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "All", new {@class = "form-control selectreset", id="SearchInput_PlantId"})
+                                    @Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
                                     @*<select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
-                                        <option value="">All</option>
-                                    </select>*@
+                                            <option value="">All</option>
+                                        </select>*@
                                 </div>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
                     </div>
                 }
             </div>
-            <div id="contenttable">
+            <div id="contenttable" class="table-container">
                 @Html.Partial("_Ck4CTableIndex")
             </div>
         </div>
@@ -89,58 +89,65 @@
 
 @section scripts
 {
-    <script src="~/Scripts/js/custom.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
-    $('#MenuCk4cDailyProduction').addClass('active');
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
 
-    // DataTable
-    var table = null;
-    if ($.fn.dataTable.isDataTable('#DailyProduction')) {
-        table = $('#DailyProduction').DataTable();
-        table.destroy();
-    }
+        $('#MenuCk4cDailyProduction').addClass('active');
 
-    table = $('#DailyProduction').DataTable(
-        {
-            "sDom": "Rlfrtip",
-            "language": {
-                "zeroRecords": "No records found",
-                "infoFiltered": "(filtered from _MAX_ total records)"
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function() {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#DailyProduction')) {
+                table = $('#DailyProduction').DataTable();
+                table.destroy();
             }
-        });
 
-    // Setup - add a text input to each footer cell
-    $('#DailyProduction .filters th').each(function () {
-        var idx = $(this).index();
-        if (idx != 0) {
-            $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            table = $('#DailyProduction').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            // Setup - add a text input to each footer cell
+            $('#DailyProduction .filters th').each(function() {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
         }
-    });
 
-    // Apply the search
-    table.columns().eq(0).each(function (colIdx) {
-        $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-            table
-                .column(colIdx)
-                .search(this.value)
-                .draw();
-        });
-    });
+        $("#CompanyName").change(function() {
+            if ($("#CompanyName").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
 
-    $("#CompanyName").change(function () {
-        if ($("#CompanyName").length) {
-            var cpy = $(this).find("option:selected").val();
-            $('#SearchInput_PlantId option').remove();
-            if (cpy == '' || $(this).find("option:selected").val() == '') {
-                $('#SearchInput_PlantId option').append('<option value="">All</option>');
-
-            } else {
-                ajaxSelectCompany('@Url.Action("CompanyListPartialCk4C", "CK4C")', { companyId: cpy });
+                } else {
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialCk4C", "CK4C")', { companyId: cpy });
                 }
             }
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             setupDataTables();
         });
 
@@ -150,7 +157,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var listPlant = data.PlanIdList;
                         $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (listPlant.length > 0) {
@@ -164,7 +171,7 @@
             }
         }
 
-        $("#PlantId").change(function () {
+        $("#PlantId").change(function() {
             if ($("#PlantId").length) {
                 var bukrs = $(this).find("option:selected").val();
                 $('#CompanyName').remove();
@@ -178,16 +185,16 @@
         });
 
         function ReloadDataTables() {
-            $('.toggle-row').click(function () {
+            $('.toggle-row').click(function() {
 
                 var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
+                filter.slideToggle(100).promise().done(function() {
 
                 });
             });
             setupDataTables();
         }
-
+        
     </script>
 
 }

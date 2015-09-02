@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterCk4CDailyProductionIndex", "CK4C",
+                @using (Ajax.BeginForm("FilterWasteProductionIndex", "CK4C",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -32,7 +32,7 @@
                                 <label class="col-md-3 long">Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="ProductionDate">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -52,10 +52,10 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "All", new {@class = "form-control selectreset", id="SearchInput_PlantId"})
+                                    @Html.DropDownListFor(model => model.PlantId, Model.PlanIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
                                     @*<select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
-                                        <option value="">All</option>
-                                    </select>*@
+                                            <option value="">All</option>
+                                        </select>*@
                                 </div>
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                     </div>
                 }
             </div>
-            <div id="contenttable">
+            <div id="contenttable" class="table-container">
                 @Html.Partial("_CK4CTableWasteProduction")
             </div>
         </div>
@@ -85,46 +85,50 @@
 </div>
 @section scripts
 {
-    <script src="~/Scripts/js/custom.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
+     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
         $('#MenuCk4cWasteProduction').addClass("active");
 
-       
-
-        // DataTable
-        var table = null;
-        if ($.fn.dataTable.isDataTable('#DailyProduction')) {
-            table = $('#DailyProduction').DataTable();
-            table.destroy();
-        }
-
-        table = $('#WasteProduction').DataTable(
-               {
-                   "sDom": "Rlfrtip",
-                   "language": {
-                       "zeroRecords": "No records found",
-                       "infoFiltered": "(filtered from _MAX_ total records)"
-                   }
-               });
-
-        // Setup - add a text input to each footer cell
-        $('#WasteProduction .filters th').each(function () {
-            var idx = $(this).index();
-            if (idx != 0) {
-                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
-            }
-        });
-
-        // Apply the search
-        table.columns().eq(0).each(function (colIdx) {
-            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                table
-                    .column(colIdx)
-                    .search(this.value)
-                    .draw();
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
             });
-        });
 
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#DailyProduction')) {
+                table = $('#DailyProduction').DataTable();
+                table.destroy();
+            }
+
+            table = $('#WasteProduction').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            // Setup - add a text input to each footer cell
+            $('#WasteProduction .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+        }
 
         $("#CompanyName").change(function () {
             if ($("#CompanyName").length) {
@@ -133,7 +137,7 @@
                 if (cpy == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_PlantId option').append('<option value="">All</option>');
                 } else {
-                    ajaxSelectCompany('@Url.Action("CompanyListPartialCk4CWaste","CK4C")', { companyId: cpy });
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialCk4CWaste", "CK4C")', { companyId: cpy });
                 }
             }
         });
@@ -163,10 +167,10 @@
 
         function ReloadDataTables() {
             $('.toggle-row').click(function () {
-                
+
                 var filter = $(".filters");
                 filter.slideToggle(100).promise().done(function () {
-                    
+
                 });
             });
             setupDataTables();

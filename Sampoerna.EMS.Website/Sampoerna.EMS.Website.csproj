@@ -488,6 +488,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\chosen.min.css" />
     <Content Include="Content\css\main.min.css" />
+    <Content Include="Content\css\print.css" />
     <Content Include="Content\css\vendors\font-awesome.min.css" />
     <Content Include="Content\css\vendors\yamm.css" />
     <Content Include="Content\css\loading.css" />
