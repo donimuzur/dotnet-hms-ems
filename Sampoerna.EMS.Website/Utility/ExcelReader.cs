@@ -75,12 +75,6 @@ namespace Sampoerna.EMS.Website.Utility
                         Convert.ToInt32(cell.CellValue.Text)).InnerText;
             }
 
-            decimal value;
-            if (Decimal.TryParse(text, out value))
-            {
-                text = Math.Round(Convert.ToDecimal(text),2).ToString();
-            }
-
             return (text ?? string.Empty).Trim();
         }
 

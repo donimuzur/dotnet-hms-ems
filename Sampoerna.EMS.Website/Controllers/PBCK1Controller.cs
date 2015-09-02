@@ -153,8 +153,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     try
                     {
+                        var text = datarow[1];
+                        decimal value;
+                        if (Decimal.TryParse(text, out value))
+                        {
+                            text = Math.Round(Convert.ToDecimal(text), 2).ToString();
+                        }
+
                         uploadItem.ProductCode = datarow[0];
-                        uploadItem.ConverterOutput = datarow[1];
+                        uploadItem.ConverterOutput = text;
                         uploadItem.ConverterUom = datarow[2];
 
                         model.Detail.Pbck1ProdConverter.Add(uploadItem);
