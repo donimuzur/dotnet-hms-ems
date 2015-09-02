@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int Ck4CId { get; set; }
         public string Number { get; set; }
         public string CompnayId { get; set; }
-        public string CompnayName { get; set; }
+        public string CompanyName { get; set; }
         public string PlantId { get; set; }
         public string PlantName { get; set; }
         public string NppbkcId { get; set; }

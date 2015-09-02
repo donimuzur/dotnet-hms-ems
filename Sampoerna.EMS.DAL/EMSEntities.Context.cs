@@ -94,5 +94,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK2> LACK2 { get; set; }
         public virtual DbSet<BOM> BOM { get; set; }
         public virtual DbSet<INVENTORY_MOVEMENT> INVENTORY_MOVEMENT { get; set; }
+        public virtual DbSet<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
     }
 }

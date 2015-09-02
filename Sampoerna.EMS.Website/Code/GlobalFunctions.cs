@@ -396,6 +396,12 @@ namespace Sampoerna.EMS.Website.Code
 
         }
 
+        public static SelectList GetCompanyListFilter(ICompanyBLL companyBll)
+        {
+            var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
+            return new SelectList(data, "BUTXT", "BUTXT");
+        }
+
     }
 
 }
