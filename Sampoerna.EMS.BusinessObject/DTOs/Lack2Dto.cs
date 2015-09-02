@@ -35,6 +35,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string NppbkcId { get; set; }
 
         public List<Lack2ItemDto> Items { get; set; } 
+
+        
     }
 
     public class Lack2ItemDto

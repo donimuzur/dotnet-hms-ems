@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -155,18 +156,18 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetByIdAndItem(id));
+            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetByIdAndItem(id.Value));
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = GlobalFunctions.GetYearList();
-             
+            model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 
             var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))

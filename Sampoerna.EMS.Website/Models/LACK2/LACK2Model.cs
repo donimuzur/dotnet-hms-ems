@@ -66,6 +66,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public DateTime? ApprovedDate { get; set; }
 
         public List<Lack2ItemDto> Items { get; set; }
+
+        public string StatusName { get; set; }
     }
 
    
