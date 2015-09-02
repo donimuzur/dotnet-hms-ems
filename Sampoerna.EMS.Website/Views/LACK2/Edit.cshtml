@@ -10,6 +10,10 @@
 
 @using (@Html.BeginForm("Edit", "LACK2"))
 {
+    
+    @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
+    @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
+    @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -202,7 +206,10 @@
                                                                 foreach (var item in @Model.Lack2Model.Items)
                                                                 {
                                                                     <tr>
-                                                                        <th>@Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)</th>
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
+                                                                        @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
+                                                                        <th></th>
                                                                         <th>@item.Ck5Number</th>
                                                                         <th>@item.Ck5GIDate</th>
                                                                         <th>@item.Ck5ItemQty</th>
@@ -245,35 +252,18 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                        </tbody>
+                                                            @foreach (var history in Model.WorkflowHistory)
+                                                            {
+                                                                <tr>
+                                                                    <td>@history.ACTION_BY</td>
+                                                                    <td>@history.Role </td>
+                                                                    <td>@history.ACTION </td>
+                                                                    <td>@history.ACTION_DATE</td>
+                                                                    <td>@history.COMMENT</td>
+                                                                </tr>
+                                                            }
+                                                           
+                                                                                                            </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -562,11 +552,14 @@
                                 }
                             }
                             initialEdit = false;
-                        }
-                        for (var i = 0; i < data.length; i++) {
-                            $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
 
+                            }
                         }
+                        
+                      
 
                     }
                 }

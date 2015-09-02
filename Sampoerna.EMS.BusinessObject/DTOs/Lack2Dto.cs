@@ -39,6 +39,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Lack2ItemDto
     {
+        public long Id { get; set; }
+
+        public int Lack2Id { get; set; }
         public int Ck5Id { get; set; }
         public string Ck5Number { get; set; }
         public string Ck5GIDate { get; set; }

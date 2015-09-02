@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
@@ -33,6 +34,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public Enums.UserRole UsrRole { get; set; }
 
         public LACK2Model Lack2Model { get; set; }
+
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
+
         
     }
 }

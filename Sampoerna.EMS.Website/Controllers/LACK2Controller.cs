@@ -16,6 +16,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Reports.HeaderFooter;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -175,6 +176,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
+
+              //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Lack2Model.Lack2Number;
+            workflowInput.DocumentStatus = model.Lack2Model.Status;
+            workflowInput.NPPBKC_Id =  model.Lack2Model.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            model.WorkflowHistory = workflowHistory;
             return View("Edit", model);
         }
 
@@ -186,7 +197,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
+            var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
@@ -195,9 +206,9 @@ namespace Sampoerna.EMS.Website.Controllers
             item.Butxt = company.BUTXT;
             item.LevelPlantName = plant.NAME1;
             item.LevelPlantCity = plant.ORT01;
-            item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
-            item.PeriodYear = model.Lack2Model.LACK2Period.Year;
-
+            item.PeriodMonth = model.Lack2Model.PeriodMonth;
+            item.PeriodYear = model.Lack2Model.PeriodYear;
+         
             if (CurrentUser.UserRole == Enums.UserRole.POA) // && if a file is uploaded needs to be added
             {
                 item.Status = Enums.DocumentStatus.WaitingForApprovalManager;

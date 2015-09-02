@@ -100,7 +100,7 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         public List<Lack2Dto> GetAllCompleted()
         {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == (int)Enums.DocumentStatus.Completed, null, includeTables));
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
         }
 
         /// <summary>
@@ -126,14 +126,14 @@ namespace Sampoerna.EMS.BLL
             }
             if(input.Status != null || input.Status != 0)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == (int)input.Status);
+                queryFilter = queryFilter.And(c => c.STATUS == input.Status);
             }
-            if (!string.IsNullOrEmpty((input.SubmissionDate)))
-            {
-                var dt = Convert.ToDateTime(input.SubmissionDate);
-                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
-            }
+            //if (!string.IsNullOrEmpty((input.SubmissionDate)))
+            //{
+            //    var dt = Convert.ToDateTime(input.SubmissionDate);
+            //    DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            //    queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
+            //}
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 

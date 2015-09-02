@@ -39,10 +39,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public string ExGoodDesc { get; set; }
 
-        public int GovStatus { get; set; }
-
-        public int Status { get; set; }
-
+        public Enums.DocumentStatusGov? StatusGov { get; set; }
+      
+        public Enums.DocumentStatus Status { get; set; }
         [Display(Name = "Decree Date")]
         public DateTime? DecreeDate { get; set; }
 
