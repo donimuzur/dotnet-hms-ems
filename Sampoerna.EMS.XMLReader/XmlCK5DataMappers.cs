@@ -280,8 +280,8 @@ namespace Sampoerna.EMS.XMLReader
                                          {
                                              #region "sto rec gicompleted"
 
-                                             item.STATUS_ID = Enums.DocumentStatus.StoRecGIPartial;
-                                             workflowHistory.ACTION = Enums.ActionType.StoRecGIPartial;
+                                             item.STATUS_ID = Enums.DocumentStatus.StoRecGICompleted;
+                                             workflowHistory.ACTION = Enums.ActionType.StoRecGICompleted;
                                              var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
                                              item.STOB_NUMBER = stobNumber;
                                              var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
