@@ -66,7 +66,10 @@ namespace Sampoerna.EMS.BLL
                 .IgnoreAllNonExisting();
 
             Mapper.CreateMap<Lack1GenerateDataParamInput, Ck5GetForLack1ByParamInput>().IgnoreAllNonExisting();
-            Mapper.CreateMap<Lack1GenerateDataParamInput, Pbck1GetDataForLack1ParamInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1GenerateDataParamInput, Pbck1GetDataForLack1ParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ExcisableGoodsTypeId, opt => opt.MapFrom(src => src.ExcisableGoodsType))
+                .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
+                ;
 
             Mapper.CreateMap<Lack1GeneratedPlantDto, LACK1_PLANT>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.Werks))
@@ -91,6 +94,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
                 .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
                 .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
+                ;
+
+            Mapper.CreateMap<CK5, Lack1GeneratedIncomeDataDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
+                .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedDto, LACK1>().IgnoreAllNonExisting()
@@ -120,6 +130,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.NAME1))
                 .ForMember(dest => dest.PLANT_ADDRESS, opt => opt.MapFrom(src => src.ADDRESS))
                 ;
+
+            Mapper.CreateMap<PBCK1, Lack1GeneratedPbck1DataDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID));
 
         }
 

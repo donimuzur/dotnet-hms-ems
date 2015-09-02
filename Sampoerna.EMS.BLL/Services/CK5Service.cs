@@ -27,7 +27,9 @@ namespace Sampoerna.EMS.BLL.Services
         public List<CK5> GetForLack1ByParam(Ck5GetForLack1ByParamInput input)
         {
             Expression<Func<CK5, bool>> queryFilterCk5 = c => c.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId && c.SOURCE_PLANT_COMPANY_CODE == input.CompanyCode
-                                             && (int)c.EX_GOODS_TYPE == input.ExGroupTypeId && c.SOURCE_PLANT_ID == input.SupplierPlantId;
+                                             && (int)c.EX_GOODS_TYPE == input.ExGroupTypeId && c.SOURCE_PLANT_ID == input.SupplierPlantId
+                                             && (c.GR_DATE.HasValue && c.GR_DATE.Value.Month == input.PeriodMonth && c.GR_DATE.Value.Year == input.PeriodYear)
+                                             ;
 
             if (input.Lack1Level == Core.Enums.Lack1Level.Plant)
             {

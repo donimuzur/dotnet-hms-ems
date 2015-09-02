@@ -90,7 +90,7 @@ namespace Sampoerna.EMS.BLL
                 ErrorMessage = string.Empty
             };
 
-            var data = Mapper.Map<LACK1>(generatedData);
+            var data = Mapper.Map<LACK1>(generatedData.Data);
 
             //set default when create new LACK-1 Document
             data.APPROVED_BY_POA = null;
@@ -319,12 +319,7 @@ namespace Sampoerna.EMS.BLL
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
             oReturn.Data = rc;
-
-            //set supplier plant id, name, address
-            var supplierPlantDetail = _t001WServices.GetById(input.SupplierPlantId);
-            rc.SupplierPlantAddress = supplierPlantDetail.ADDRESS;
-            rc.SupplierPlantName = supplierPlantDetail.NAME1;
-
+            
             return oReturn;
         }
 
@@ -441,8 +436,16 @@ namespace Sampoerna.EMS.BLL
                         rc.SupplierCompanyCode = companyData.BUKRS;
                         rc.SupplierCompanyName = companyData.T001.BUTXT;
                     }
+                    rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
+                    rc.SupplierPlantName = latestDecreeDate.SUPPLIER_PLANT;
                     rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;
                 }
+                rc.Pbck1List = Mapper.Map<List<Lack1GeneratedPbck1DataDto>>(pbck1Data);
+
+            }
+            else
+            {
+                rc.Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             }
             return rc;
         }

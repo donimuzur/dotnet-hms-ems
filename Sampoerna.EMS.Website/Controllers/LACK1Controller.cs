@@ -232,6 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var input = Mapper.Map<Lack1CreateParamInput>(model);
+                input.UserId = CurrentUser.USER_ID;
                 var saveOutput = _lack1Bll.Create(input);
                 if (saveOutput.Success)
                 {

@@ -103,6 +103,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.Lack1Level Lack1Level { get; set; }
         public int ExGroupTypeId { get; set; }
         public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
     }
 
 }

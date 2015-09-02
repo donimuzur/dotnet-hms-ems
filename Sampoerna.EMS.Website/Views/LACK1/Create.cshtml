@@ -423,7 +423,7 @@
             // `attr` is false.  Check for both.
             //load plant if enable
             if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
-                if (param.ReceivedPlantId = $('#LevelPlantId').find("option:selected").val() == '') {
+                if ($('#LevelPlantId').find("option:selected").val() == '') {
                     rc = false;
                     $('#LevelPlantId').addClass('input-validation-error');
                 }
