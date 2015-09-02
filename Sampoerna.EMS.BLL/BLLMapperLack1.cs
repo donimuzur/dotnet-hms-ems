@@ -68,7 +68,52 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Lack1GenerateDataParamInput, Ck5GetForLack1ByParamInput>().IgnoreAllNonExisting();
             Mapper.CreateMap<Lack1GenerateDataParamInput, Pbck1GetDataForLack1ParamInput>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<Lack1GeneratedDto, LACK1>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1GeneratedPlantDto, LACK1_PLANT>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.Werks))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.Name1))
+                .ForMember(dest => dest.PLANT_ADDRESS, opt => opt.MapFrom(src => src.Address))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedProductionDataDto, LACK1_PRODUCTION_DETAIL>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdCode))
+                .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
+                .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
+                .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedPbck1DataDto, LACK1_PBCK1_MAPPING>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PBCK1_ID, opt => opt.MapFrom(src => src.Pbck1Id))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedIncomeDataDto, LACK1_INCOME_DETAIL>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id))
+                .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
+                .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedDto, LACK1>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PERIOD_MONTH, opt => opt.MapFrom(src => src.PeriodMonthId))
+                .ForMember(dest => dest.PERIOD_YEAR, opt => opt.MapFrom(src => src.PeriodYear))
+                .ForMember(dest => dest.SUPPLIER_PLANT, opt => opt.MapFrom(src => src.SupplierPlantName))
+                .ForMember(dest => dest.SUPPLIER_PLANT_WERKS, opt => opt.MapFrom(src => src.SupplierPlantId))
+                .ForMember(dest => dest.SUPPLIER_PLANT_ADDRESS, opt => opt.MapFrom(src => src.SupplierPlantAddress))
+                .ForMember(dest => dest.EX_GOODTYP, opt => opt.MapFrom(src => src.ExcisableGoodsType))
+                .ForMember(dest => dest.EX_TYP_DESC, opt => opt.MapFrom(src => src.ExcisableGoodsTypeDesc))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.BEGINING_BALANCE, opt => opt.MapFrom(src => src.BeginingBalance))
+                .ForMember(dest => dest.TOTAL_INCOME, opt => opt.MapFrom(src => src.TotalIncome))
+                .ForMember(dest => dest.USAGE, opt => opt.MapFrom(src => src.TotalUsage))
+                .ForMember(dest => dest.TOTAL_PRODUCTION, opt => opt.MapFrom(src => src.TotalProduction))
+                .ForMember(dest => dest.LACK1_UOM_ID, opt => opt.MapFrom(src => src.Lack1UomId))
+                .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))
+                .ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.PlantList)))
+                .ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.ProductionList)))
+                .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Pbck1List)))
+                ;
 
         }
 

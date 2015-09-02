@@ -25,6 +25,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string SupplierCompanyName { get; set; }
         public string SupplierCompanyCode { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string SupplierPlantName { get; set; }
         public string SupplierPlantAddress { get; set; }
         public int PeriodMonthId { get; set; }
         public string PeriodMonthName { get; set; }
@@ -39,6 +41,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
         public List<Lack1GeneratedProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
+        public string Lack1UomId { get; set; }
+
     }
 
     public class Lack1GeneratedPlantDto

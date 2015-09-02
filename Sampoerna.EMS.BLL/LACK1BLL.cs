@@ -81,13 +81,47 @@ namespace Sampoerna.EMS.BLL
 
             var rc = new Lack1CreateOutput()
             {
-                Success = true,
+                Success = false,
                 ErrorCode = string.Empty,
                 ErrorMessage = string.Empty
             };
 
-            var data = new LACK1();
+            var data = Mapper.Map<LACK1>(generatedData);
 
+            //set default when create new LACK-1 Document
+            data.APPROVED_BY_POA = null;
+            data.APPROVED_DATE_POA = null;
+            data.APPROVED_BY_MANAGER = null;
+            data.APPROVED_DATE_MANAGER = null;
+            data.DECREE_DATE = null;
+            data.GOV_STATUS = null;
+            data.STATUS = Enums.DocumentStatus.Draft;
+            data.CREATED_DATE = DateTime.Now;
+
+            //set from input, exclude on mapper
+            data.CREATED_BY = input.UserId;
+            data.LACK1_LEVEL = input.Lack1Level;
+            data.SUBMISSION_DATE = input.SubmissionDate;
+            data.WASTE_QTY = input.WasteAmount;
+            data.WASTE_UOM = input.WasteAmountUom;
+            data.RETURN_QTY = input.ReturnAmount;
+            data.RETURN_UOM = input.ReturnAmountUom;
+
+            //generate new Document Number get from Sequence Number BLL
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Year = Convert.ToInt32(input.PeriodMonth),
+                Month = Convert.ToInt32(input.PeriodYear),
+                NppbkcId = input.NppbkcId
+            };
+            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+
+            _uow.SaveChanges();
+
+            rc.Success = true;
+            rc.ErrorCode = string.Empty;
+            rc.Id = data.LACK1_ID;
+            rc.Lack1Number = data.LACK1_NUMBER;
 
             return rc;
         }
@@ -96,41 +130,7 @@ namespace Sampoerna.EMS.BLL
         {
             return _lack1Service.GetLatestSaldoPerPeriod(input);
         }
-
-        #region Private Methods
-
-        private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
-        {
-            var changesData = new Dictionary<string, bool>();
-            changesData.Add("BUKRS", origin.Bukrs == data.Bukrs);
-
-            foreach (var listChange in changesData)
-            {
-                if (!listChange.Value)
-                {
-                    var changes = new CHANGES_HISTORY
-                    {
-                        FORM_TYPE_ID = Enums.MenuList.LACK1,
-                        FORM_ID = data.Lack1Id.ToString(),
-                        FIELD_NAME = listChange.Key,
-                        MODIFIED_BY = userId,
-                        MODIFIED_DATE = DateTime.Now
-                    };
-                    switch (listChange.Key)
-                    {
-                        case "BUKRS":
-                            changes.OLD_VALUE = origin.Bukrs;
-                            changes.NEW_VALUE = data.Bukrs;
-                            break;
-                    }
-                    _changesHistoryBll.AddHistory(changes);
-                }
-            }
-
-        }
-
-        #endregion
-
+        
         #region workflow
 
         private void AddWorkflowHistory(Lack1WorkflowDocumentInput input)
@@ -179,16 +179,34 @@ namespace Sampoerna.EMS.BLL
         }
 
         #region ----------------Private Method-------------------
-
-        private Lack1CreateOutput Create()
+        private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
         {
-            var rc = new Lack1CreateOutput()
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("BUKRS", origin.Bukrs == data.Bukrs);
+
+            foreach (var listChange in changesData)
             {
-                Success = true,
-                ErrorCode = string.Empty,
-                ErrorMessage = string.Empty
-            };
-            return rc;
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Enums.MenuList.LACK1,
+                        FORM_ID = data.Lack1Id.ToString(),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "BUKRS":
+                            changes.OLD_VALUE = origin.Bukrs;
+                            changes.NEW_VALUE = data.Bukrs;
+                            break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+
         }
 
         private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
@@ -385,6 +403,7 @@ namespace Sampoerna.EMS.BLL
                         rc.SupplierCompanyName = companyData.T001.BUTXT;
                     }
                     rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
+                    rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;
                 }
             }
             return rc;
