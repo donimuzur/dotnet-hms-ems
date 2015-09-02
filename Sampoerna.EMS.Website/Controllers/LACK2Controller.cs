@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -39,9 +40,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICK5BLL _ck5Bll;
         private IPBCK1BLL _pbck1Bll;
         private IHeaderFooterBLL _headerFooterBll;
+        private IWorkflowBLL _workflowBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -57,6 +59,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll = ck5Bll;
             _pbck1Bll = pbck1Bll;
             _headerFooterBll = headerFooterBll;
+            _workflowBll = workflowBll;
             _workflowHistoryBll = workflowHistoryBll;
         }
 
@@ -160,6 +163,8 @@ namespace Sampoerna.EMS.Website.Controllers
       
         public ActionResult Edit(int? id)
         {
+            if (!id.HasValue)
+                return HttpNotFound();
             var model = InitDetailModel(id);
             return View("Edit", model);
         }
@@ -195,6 +200,28 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
             model.WorkflowHistory = workflowHistory;
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Lack2Model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = model.Lack2Model.CreatedBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack2Model.Lack2Number,
+                NppbkcId = model.Lack2Model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
             return model;
         }
 
@@ -235,8 +262,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Detail(int? id)
         {
+            if (!id.HasValue)
+                return HttpNotFound();
             var model = InitDetailModel(id);
             model.FormStatus = "Submit";
+            
             return View("Detail", model);
         }
 
@@ -338,11 +368,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region PreviewActions
 
-        public ActionResult PreviewDocument(LACK2CreateViewModel model)
-        {
-            return View();
-        }
-
+      
         #endregion
 
 
@@ -453,7 +479,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetCK5ByLack2Period(int month, int year, string sendPlantId, string goodstype)
         {
-            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId, goodstype).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
 
         }
@@ -476,6 +502,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
         }
+
+        
 
         private DataSet CreateLack2Ds()
         {
@@ -510,6 +538,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return ds;
         }
 
+        [EncryptedParameter]
         public ActionResult PrintPreview(int id)
         {
             var lack2 = _lack2Bll.GetByIdAndItem(id);
