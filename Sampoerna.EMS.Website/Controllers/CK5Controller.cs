@@ -479,18 +479,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 //double check
                                 GetQuotaAndRemainOutput output;
-                                
-                                if (model.PbckDecreeId.HasValue)
-                                output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
-                                    model.SubmissionDate.Value, model.DestNppbkcId,(int)model.GoodType);
-                                else
-                                {
-                                    if (!model.SubmissionDate.HasValue)
-                                        model.SubmissionDate = DateTime.Now;
-                                    
-                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
-                                        model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
-                                }
+
+                                if (!model.SubmissionDate.HasValue)
+                                    model.SubmissionDate = DateTime.Now;
+
+                                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(model.SourcePlantId,
+                                    model.SubmissionDate.Value, model.DestNppbkcId, (int) model.GoodType);
+
 
                                 model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                             }
