@@ -295,6 +295,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
             }
             var model = InitCreateCK5(Enums.CK5Type.PortToImporter);
+            model.IsCk5PortToImporter = true;
             return View("Create", model);
         }
 
@@ -360,13 +361,21 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId,string destPlantId, DateTime submissionDate)
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId,string destPlantId, DateTime submissionDate,string goodtypegroupid)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
             var dbPlantDest = _plantBll.GetT001ById(destPlantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
-            var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, submissionDate, dbPlantDest.NPPBKC_ID);
+            GetQuotaAndRemainOutput output;
+            if (goodtypegroupid == "") {
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, submissionDate, dbPlantDest.NPPBKC_ID, null);
+            } else {
+                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodtypegroupid);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
+            }
+            
+            
 
             model.Pbck1Id = output.Pbck1Id;
             model.Pbck1Number = output.Pbck1Number;
@@ -458,21 +467,33 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
-                        //double check
-                        GetQuotaAndRemainOutput output;
+                        if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                        {
 
-                        if (model.PbckDecreeId.HasValue)
-                            output = _ck5Bll.GetQuotaRemainAndDatePbck1(model.PbckDecreeId.Value);
+                        }
                         else
                         {
-                            if (!model.SubmissionDate.HasValue)
-                                model.SubmissionDate = DateTime.Now;
+                            if (model.Ck5Type != Enums.CK5Type.Export &&
+                                model.Ck5Type != Enums.CK5Type.PortToImporter)
+                            {
+                                //double check
+                                GetQuotaAndRemainOutput output;
+                                
+                                if (model.PbckDecreeId.HasValue)
+                                output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
+                                    model.SubmissionDate.Value, model.DestNppbkcId,(int)model.GoodType);
+                                else
+                                {
+                                    if (!model.SubmissionDate.HasValue)
+                                        model.SubmissionDate = DateTime.Now;
+                                    
+                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
+                                        model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
+                                }
 
-                            output = _ck5Bll.GetQuotaRemainAndDatePbck1ByNewCk5(model.SourcePlantId,
-                                model.SubmissionDate.Value, model.DestNppbkcId);
+                                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+                            }
                         }
-
-                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
                         var saveResult = SaveCk5ToDatabase(model);
                         
@@ -595,16 +616,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
-                var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
-                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-                //
-                //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                {
 
-                model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
-                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+                }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                    {
 
-           
+                        var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
+                        model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                        //
+                        //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
 
+                        model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
+                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+                    }
+
+                }
             }
             catch (Exception ex)
             {
@@ -636,11 +667,22 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (_workflowBll.AllowEditDocument(input))
                         {
                             //quota
-                            var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
-                            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-                            decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
-                            model.Ck5TotalExciseable = currentCk5.ToString();
-                            model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+                            if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                            {
+
+                            }
+                            else
+                            {
+                                if (model.Ck5Type != Enums.CK5Type.Export &&
+                                    model.Ck5Type != Enums.CK5Type.PortToImporter)
+                                {
+                                    var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+                                    model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                                    decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
+                                    model.Ck5TotalExciseable = currentCk5.ToString();
+                                    model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+                                }
+                            }
 
                             SaveCk5ToDatabase(model);
                             if (isSubmit)
@@ -757,11 +799,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.GovStatusDesc = outputHistory.StatusGov;
                 model.CommentGov = outputHistory.Comment;
 
-                var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
-                model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
-                //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
-                model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
-                model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                {
+
+                }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                    {
+                        var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
+                        model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
+                        //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
+                        model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
+                        model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                    }
+                }
 
                 model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
                 model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
@@ -1094,8 +1147,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-                input.ActionType = Enums.ActionType.GICreated;
-                
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.GICreated:
+                        input.ActionType = Enums.ActionType.GICreated;
+                        break;
+                    case Enums.DocumentStatus.GICompleted:
+                        input.ActionType = Enums.ActionType.GICompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
                 input.SealingNumber = model.SealingNotifNumber;
                 input.SealingDate = model.SealingNotifDate;
 
@@ -1127,14 +1192,30 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-                input.ActionType = Enums.ActionType.GRCreated;
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.GRCreated:
+                        input.ActionType = Enums.ActionType.GRCreated;
+                        break;
+                    case Enums.DocumentStatus.GRCompleted:
+                        input.ActionType = Enums.ActionType.GRCompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
 
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
                 _ck5Bll.CK5Workflow(input);
 
-                AddMessageInfo("Success update UnSealing Number and Date", Enums.MessageInfoType.Success);
+                AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
@@ -2276,6 +2357,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.ExciseValue = materialDto.ExciseValue;
                 detailRow.UsdValue = materialDto.UsdValue;
                 detailRow.Note = materialDto.Note;
+                detailRow.DescMaterial = materialDto.MaterialDescription;
 
                 dsCk5.dtCk5Material.AdddtCk5MaterialRow(detailRow);
 
@@ -2305,6 +2387,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.ExciseValue = materialDto.ExciseValue;
                     detailRow.UsdValue = materialDto.UsdValue;
                     detailRow.Note = materialDto.Note;
+                    detailRow.DescMaterial = materialDto.MaterialDescription;
 
                     dsCk5.dtCk5MaterialExtend.AdddtCk5MaterialExtendRow(detailRow);
                 }

@@ -371,7 +371,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export)
+                             @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -500,6 +500,7 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ExciseValue)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Note)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].MaterialDesc)
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
@@ -546,6 +547,7 @@
 
                             @if (!Model.IsCk5Manual)
                             {
+                                
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
@@ -555,9 +557,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
 
                                     <div class="col-md-6">
                                         <div class="row">
@@ -568,14 +567,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.LabelFor(model => model.DnDate, new { @class = "col-md-4" })
-                                            <div class="col-md-8">
-                                                @Html.EditorFor(model => model.DnDate)
-                                            </div>
-                                        </div>
-                                    </div>
+                                  
 
                                 </div>
 

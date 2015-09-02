@@ -66,4 +66,49 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
     }
 
+    public class Lack1GenerateDataParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string CompanyName { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivedPlantId { get; set; }
+        public DateTime SubmissionDate { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string ExcisableGoodsTypeDesc { get; set; }
+        public decimal WasteAmount { get; set; }
+        public string WasteAmountUom { get; set; }
+        public decimal ReturnAmount { get; set; }
+        public string ReturnAmountUom { get; set; }
+
+        public Enums.Lack1Level Lack1Level { get; set; }
+
+        public string Noted { get; set; }
+
+    }
+
+    public class Lack1GetLatestLack1ByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public Enums.Lack1Level? Lack1Level { get; set; }
+        public string NppbkcId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string ReceivedPlantId { get; set; }
+        public DateTime PeriodTo { get; set; }
+    }
+
+    public class Lack1GetBySelectionCriteriaParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string ReceivingPlantId { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+    }
+
 }

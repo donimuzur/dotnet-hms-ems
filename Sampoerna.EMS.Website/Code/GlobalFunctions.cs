@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Math;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
@@ -327,8 +328,8 @@ namespace Sampoerna.EMS.Website.Code
         }
         public static SelectList GetAuthorizedPlant(List<NppbkcPlantDto> listNppbkc, string NppbckId)
         {
-             var plants = new List<PlantDto>();
-                
+            var plants = new List<PlantDto>();
+
             if (NppbckId == null)
             {
                 var items = listNppbkc.ToList();
@@ -351,8 +352,8 @@ namespace Sampoerna.EMS.Website.Code
                 var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants);
                 return new SelectList(selectItemSource, "ValueField", "TextField");
             }
-          
-          
+
+
         }
 
         public static SelectList GetYearList()
@@ -361,12 +362,12 @@ namespace Sampoerna.EMS.Website.Code
             for (int i = 3; i > 0; i--)
             {
                 var item = new SelectItemModel();
-        
+
                 item.TextField = (DateTime.Now.Year - i).ToString();
                 item.ValueField = (DateTime.Now.Year - i).ToString();
                 selectItemSource.Add(item);
             }
-            for (int i = 1; i > 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 var item = new SelectItemModel();
 
@@ -381,10 +382,26 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPbck1CompletedListByPlant(string plantId)
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
-            
+
             var data = pbck1.GetPbck1CompletedDocumentByPlant(plantId);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
+
+        public static SelectList GetPlantByCompany(string companyId)
+        {
+            IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
+            var plantList = t001Kbll.GetPlantByCompany(companyId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+
+        public static SelectList GetCompanyListFilter(ICompanyBLL companyBll)
+        {
+            var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
+            return new SelectList(data, "BUTXT", "BUTXT");
+        }
+
     }
 
 }

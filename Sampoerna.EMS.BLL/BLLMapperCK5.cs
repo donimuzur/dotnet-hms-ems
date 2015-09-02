@@ -26,10 +26,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
-                .ForMember(dest => dest.IsCk5Export,opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Export))
+                .ForMember(dest => dest.IsCk5Export, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Export))
+                .ForMember(dest => dest.IsCk5PortToImporter, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.PortToImporter))
                 .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
                 .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval))
-                .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)));
+                .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)))
+                .ForMember(dest => dest.GIDateStr, opt => opt.MapFrom(src => src.SUBMISSION_DATE == null ?string.Empty : Convert.ToDateTime(src.SUBMISSION_DATE).ToString("dd MMM yyy")));
+
 
             Mapper.CreateMap<CK5Dto, CK5>().IgnoreAllNonExisting();
 
@@ -102,6 +105,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.EXCISE_VALUE.HasValue ? src.EXCISE_VALUE.Value.ToString() : "0"))
                 .ForMember(dest => dest.UsdValue, opt => opt.MapFrom(src => src.USD_VALUE.HasValue ? src.USD_VALUE.Value.ToString() : "0"))
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.NOTE))
+                .ForMember(dest => dest.MaterialDescription, opt => opt.MapFrom(src => src.MATERIAL_DESC))
                 ;
 
             #endregion

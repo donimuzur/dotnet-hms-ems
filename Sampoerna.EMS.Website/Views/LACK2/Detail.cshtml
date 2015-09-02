@@ -1,0 +1,673 @@
+﻿@using Microsoft.Ajax.Utilities
+@model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
+
+@{
+    ViewBag.Title = "Detail LACK2";
+    int i = 0;
+}
+
+
+
+@using (@Html.BeginForm("Detail", "LACK2"))
+{
+    @Html.HiddenFor(x => x.FormStatus)
+    @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
+    @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
+    @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>LACK-2 Form</h3>
+                <label class="status">@Model.Lack2Model.StatusName</label>
+                <div class="action-button">
+                    <button class="btn btn-blue" onclick="openPanel();" type="Submit">Save</button>
+                    <button class="btn btn-grey">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="tab-wrapper">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    LACK-2 Detail
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body">
+                                              
+                                                <div class="form-excise" role="form">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">LACK-2 No</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("lack2no", Model.Lack2Model.Lack2Number,  new { @class = "form-control", @disabled="disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Company</label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Period</label>
+                                                            <div class="col-md-8">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select", new { @class = "form-control" })
+
+
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, "select", new { @class = "form-control" })
+
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                    </div>
+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwo">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                                    Information
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                            <div class="panel-body">
+                                                <div class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">NPPBKC</label>
+                                                                <div class="col-md-8">
+                                                                   @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Plant</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
+                                                                  </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">POA</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Submission Date</label>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group date">
+                                                                        @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4 long">Excisable Goods Type</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
+
+
+
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-md-offset-4">
+                                                            <input type="button" class="btn btn-blue full" onclick="GetCk5ByPeriod();" value="Generate"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="panel-group not-upload" id="accordionThree" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingThree">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapse6">
+                                                    Table
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    <table class="table table-bordered table-striped js-options-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>No. CK-5</th>
+                                                                <th>Date</th>
+                                                                <th>Amount</th>
+                                                                <th>Company</th>
+                                                                <th>NPPBKC</th>
+                                                                <th>Address</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tb-body-ck5-lack2">
+                                                            @if (@Model.Lack2Model.Items != null)
+                                                            {
+                                                                
+                                                                foreach (var item in @Model.Lack2Model.Items)
+                                                                {
+                                                                    <tr>
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
+                                                                        @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
+                                                                        <th></th>
+                                                                        <th>@item.Ck5Number</th>
+                                                                        <th>@item.Ck5GIDate</th>
+                                                                        <th>@item.Ck5ItemQty</th>
+                                                                        <th>@item.CompanyName</th>
+                                                                        <th>@item.CompanyNppbkc</th>
+                                                                        <th>@item.CompanyAddress</th>
+                                                                    </tr>
+                                                                    
+                                                                }
+
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading7">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                    Workflow History
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    <table class="table table-bordered table-striped js-options-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Account Name</th>
+                                                                <th>Role</th>
+                                                                <th>Action</th>
+                                                                <th>Date</th>
+                                                                <th>Comment</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var history in Model.WorkflowHistory)
+                                                            {
+                                                                <tr>
+                                                                    <td>@history.ACTION_BY</td>
+                                                                    <td>@history.Role </td>
+                                                                    <td>@history.ACTION </td>
+                                                                    <td>@history.ACTION_DATE</td>
+                                                                    <td>@history.COMMENT</td>
+                                                                </tr>
+                                                            }
+                                                           
+                                                                                                            </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="printout">
+                            <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingPrint">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionPrint" href="#collapsePrint" aria-expanded="true" aria-controls="collapsePrint">
+                                                Print Out
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapsePrint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrint">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <form class="form-excise " role="form">
+                                                    <div class="last-form">
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-5">LACK-2 No</label>
+                                                                <div class="col-md-7">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">Date</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">User</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <button class="btn btn-blue full">Print</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="panel-group" id="accordionChanges" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingChanges">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionChanges" href="#collapseChanges" aria-expanded="true" aria-controls="collapseChanges">
+                                                Changes Log
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseChanges" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChanges">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <form class="form-excise " role="form">
+                                                    <div class="last-form">
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-5">LACK-2 No</label>
+                                                                <div class="col-md-7">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">Date</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group date">
+                                                                        <input type="text" class="form-control">
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <label class="col-md-3">User</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" class="form-control" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <button class="btn btn-blue full">Export to xls</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Field</th>
+                                            <th>Old Value</th>
+                                            <th>New Value</th>
+                                            <th>User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+   
+
+    <script type="text/javascript">
+        var initialEditNppbkc = true;
+        var initialEditPlant = true;
+        var initialEditGoodtype = true;
+    $(function () {
+        openPanel();
+        $('#Lack2Model_LevelPlantId').html('');
+        $('#Lack2Model_NppbkcId').html('');
+
+        $('#Lack2Model_ExGoodTyp').html('');
+
+        $('#Lack2Model_Burks').change();
+
+    });
+    $('#Lack2Model_NppbkcId').change(function () {
+
+        if ($(this).length) {
+            var nppbkc = $(this).find("option:selected").val();
+
+            $('#Lack2Model_LevelPlantId').html('');
+            if (nppbkc != '') {
+                ajaxGetPlantByNppbkc(nppbkc);
+                ajaxGetGoodsTypeByNppbkc(nppbkc);
+                ajaxGetPoaByNppbkc(nppbkc);
+            }
+        }
+
+    });
+
+    $('#Lack2Model_Burks').change(function () {
+
+        if ($(this).length) {
+            var company = $(this).find("option:selected").val();
+            if (company !== '') {
+                ajaxGetNppbkcByCompany(company);
+                var nppbkcid = $('#Lack2Model_NppbkcId').find("option:selected").val();
+                if (nppbkcid != '') {
+                    ajaxGetPlantByNppbkc(nppbkcid);
+                    ajaxGetGoodsTypeByNppbkc(nppbkcid);
+                    ajaxGetPoaByNppbkc(nppbkcid);
+
+                }
+
+            }
+        }
+    });
+
+    function ajaxGetNppbkcByCompany(company) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
+            data: { companyId: company },
+            success: function (data) {
+                $('#Lack2Model_NppbkcId').html('');
+                if (initialEditNppbkc) {
+                    var nppbkcId = '@Model.Lack2Model.NppbkcId';
+                    if (nppbkcId != '') {
+
+                        $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].value !== nppbkcId) {
+                                $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                            }
+                        }
+                    }
+                    initialEditNppbkc = false;
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    function ajaxGetPlantByNppbkc(nppbkc) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+            data: { nppbkcid: nppbkc },
+            success: function (data) {
+                $('#Lack2Model_LevelPlantId').html('');
+
+                if (initialEditPlant) {
+                    var plantId = '@Model.Lack2Model.LevelPlantId';
+                    if (plantId != '') {
+
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].value !== plantId) {
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                            }
+                        }
+                    }
+                    initialEditPlant = false;
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+
+                    }
+                }
+
+
+            }
+        }
+        );
+
+    }
+
+    function ajaxGetPoaByNppbkc(nppbkc) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+            data: { nppbkcid: nppbkc },
+            success: function (data) {
+                $('#displayPoaList').html('');
+                var poalist = '';
+                for (var i = 0; i < data.length; i++) {
+
+                    poalist += data[i].PRINTED_NAME;
+                    if (data.length - 1 != i) {
+                        poalist += ', ';
+                    }
+                }
+                $('#displayPoaList').html(poalist);
+            }
+        });
+
+    }
+
+    function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
+            data: { nppbkcid: nppbkc },
+            success: function (data) {
+
+                $('#Lack2Model_ExGoodTyp').html('');
+
+                if (initialEditGoodtype) {
+                    var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
+                        if (exgoodtyp != '') {
+
+                            $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].value !== exgoodtyp) {
+                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                }
+                            }
+                        }
+                    initialEditGoodtype = false;
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                        }
+                    }
+
+                }
+            });
+
+        }
+
+        function openPanel() {
+            $('.panel-collapse').removeClass('collapse').addClass('in');
+
+        }
+
+        function GetCk5ByPeriod() {
+            var month = parseInt($('#Lack2Model_PeriodMonth').val());
+            var year = parseInt($('#Lack2Model_PeriodYear').val());
+            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
+            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
+            data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#tb-body-ck5-lack2').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                            '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
+                            '<td>' + data[i].GIDateStr + '</td>' +
+                            '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                            '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                            '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                            '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                        $('#tb-body-ck5-lack2').append(tableCk5Item);
+                    }
+                }
+            }
+        });
+    }
+    </script>
+
+}

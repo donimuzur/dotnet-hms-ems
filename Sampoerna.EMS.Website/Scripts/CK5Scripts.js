@@ -14,7 +14,7 @@ function OnReadyFunction(ck5Type) {
         $('#MenuCK5Domestic').addClass('active');
     }
    
-
+    
     $('#btnUploadInfo').click(function () {
 
         $('#home-tab').removeClass('active');
@@ -46,7 +46,8 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                //alert(total);
+                data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                //alert(datarows[i][13]);
                 total += parseFloat(datarows[i][1]); //Qty
                 if (i == 0) {
                     //alert(datarows[i][2]);
@@ -63,7 +64,8 @@ function OnReadyFunction(ck5Type) {
 
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
-        ValidateRemainQuota(total);
+        
+       
         
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
@@ -72,14 +74,28 @@ function OnReadyFunction(ck5Type) {
         $('#upload').removeClass('active');
 
         $('#collapse5').addClass('in');
+        
+
+
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter')
+            return;
+
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
+            return;
+
+        ValidateRemainQuota(total);
     });
     
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
+
+    
+    
 }
 
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
+    
     var remainQuota = parseFloat($('#RemainQuota').val());
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
@@ -552,6 +568,11 @@ function ValidateCk5Form(ck5Type) {
     // && (ck5Type != 'Domestic')
     if (result) {
 
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter')
+            return result;
+        //alert('Source : ' + $('#SourceNppbkcId').val());
+        //alert('Dest : ' + $('#DestNppbkcId').val());
+        //alert($('#SourceNppbkcId').val() == $('#DestNppbkcId').val());
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
 

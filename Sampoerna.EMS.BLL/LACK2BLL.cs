@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -24,20 +25,26 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<LACK2> _repository;
+        private IGenericRepository<LACK2_ITEM> _repositoryItem;
+      
         private IMonthBLL _monthBll;
         private IUserBLL _userBll;
         private IUnitOfMeasurementBLL _uomBll;
 
         private string includeTables = "MONTH";
-
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPOABLL _poabll;
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<LACK2>();
+            _repositoryItem = _uow.GetGenericRepository<LACK2_ITEM>();
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
+            _poabll = new POABLL(_uow, _logger);
         }
 
         /// <summary>
@@ -93,7 +100,7 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         public List<Lack2Dto> GetAllCompleted()
         {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == (int)Enums.DocumentStatus.Completed, null, includeTables));
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
         }
 
         /// <summary>
@@ -119,14 +126,14 @@ namespace Sampoerna.EMS.BLL
             }
             if(input.Status != null || input.Status != 0)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == (int)input.Status);
+                queryFilter = queryFilter.And(c => c.STATUS == input.Status);
             }
-            if (!string.IsNullOrEmpty((input.SubmissionDate)))
-            {
-                var dt = Convert.ToDateTime(input.SubmissionDate);
-                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
-            }
+            //if (!string.IsNullOrEmpty((input.SubmissionDate)))
+            //{
+            //    var dt = Convert.ToDateTime(input.SubmissionDate);
+            //    DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            //    queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
+            //}
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
@@ -157,6 +164,15 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<Lack2Dto>(_repository.GetByID(id));
         }
 
+        public Lack2Dto GetByIdAndItem(int id)
+        {
+            var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, CK5");
+            var lack2dto = new Lack2Dto();
+            lack2dto = data.Select(x => Mapper.Map<Lack2Dto>(x.LACK2)).FirstOrDefault();;
+            lack2dto.Items = data.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();;
+            return lack2dto;
+        }
+
         /// <summary>
         /// Inserts a LACK2 
         /// </summary>
@@ -174,14 +190,25 @@ namespace Sampoerna.EMS.BLL
             MONTH month = new MONTH();
 
             month = _monthBll.GetMonth(item.PeriodMonth);
-            var user = _userBll.GetUserById(item.CreatedBy);
-
+           
             model = AutoMapper.Mapper.Map<LACK2>(item);
             model.MONTH = month;
-            model.USER = user;
+         
             try
             {
                 _repository.InsertOrUpdate(model);
+                _uow.SaveChanges();
+                var history = new WorkflowHistoryDto();
+                history.FORM_ID = model.LACK2_ID;
+                history.ACTION = Enums.ActionType.Created;
+                history.ACTION_BY = item.CreatedBy;
+                history.ACTION_DATE = DateTime.Now;
+                history.FORM_NUMBER = item.Lack2Number;
+                history.FORM_TYPE_ID = Enums.FormType.LACK2;
+                //set workflow history
+                var getUserRole = _poabll.GetUserRole(item.CreatedBy);
+                history.ROLE = getUserRole;
+                _workflowHistoryBll.AddHistory(history);
                 _uow.SaveChanges();
             }
             catch (SqlException ex)

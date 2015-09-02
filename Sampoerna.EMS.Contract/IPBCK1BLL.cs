@@ -43,8 +43,11 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1Dto> GetPbck1CompletedDocumentByPlant(string plant);
 
-        List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantId);
+        List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantId,List<string> goodtypes);
 
+        List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId);
+
+        List<T001WCompositeDto> GetSupplierPlantByParam(Pbck1GetSupplierPlantByParamInput input);
 
     }
 }

@@ -147,6 +147,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(orderColumn));
             }
 
+            includeTables += ", CK5";
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
 
             return dbData.ToList();
@@ -1353,13 +1354,7 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
-
-            //get supplier company name
-            var t001KData = _t001Kbll.GetByBwkey(dbData.SUPPLIER_PLANT_WERKS);
-            if (t001KData != null)
-            {
-                rc.Detail.SupplierCompanyName = t001KData.BUTXT;
-            }
+            rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
 
             var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
             if (kppbcDetail != null)
@@ -1376,7 +1371,13 @@ namespace Sampoerna.EMS.BLL
 
             }
 
-            rc.Detail.SupplierPortName = dbData.SUPPLIER_PORT_NAME.ToLower() == "none" || string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME) ? "-" : dbData.SUPPLIER_PORT_NAME;
+            string supplierPortName;
+            if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
+                supplierPortName = "-";
+            else
+                supplierPortName = dbData.SUPPLIER_PORT_NAME.ToLower() == "none" ? "-" : dbData.SUPPLIER_PORT_NAME;
+
+            rc.Detail.SupplierPortName = supplierPortName;
             //rc.Detail.PrintedDate = DateReportString(DateTime.Now);
             rc.Detail.PrintedDate = dbData.REPORTED_ON.HasValue
                 ? DateReportString(dbData.REPORTED_ON.Value)
@@ -1388,7 +1389,7 @@ namespace Sampoerna.EMS.BLL
 
             //Set ProdPlan
             rc.ProdPlanList = (Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN)).OrderBy(c => c.MonthId).ToList();
-            
+
             rc.RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>(); //todo: get from ?
 
             //get from LACK-1 by LACK-1 PERIOD FROM - TO on PBCK-1 Document
@@ -1407,7 +1408,7 @@ namespace Sampoerna.EMS.BLL
             });
 
             rc.RealisasiP3Bkc = Mapper.Map<List<Pbck1RealisasiP3BkcDto>>(dataLack1);
-            
+
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {
@@ -1437,7 +1438,7 @@ namespace Sampoerna.EMS.BLL
 
         private string GetMonthName(int month)
         {
-           return _monthBll.GetMonth(month).MONTH_NAME_IND;
+            return _monthBll.GetMonth(month).MONTH_NAME_IND;
         }
 
 
@@ -1532,7 +1533,7 @@ namespace Sampoerna.EMS.BLL
             public string Body { get; set; }
             public List<string> To { get; set; }
         }
-        
+
         public Pbck1Dto GetByDocumentNumber(string documentNumber)
         {
             includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
@@ -1545,7 +1546,7 @@ namespace Sampoerna.EMS.BLL
             }
             return mapResult;
         }
-        
+
         public List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkByCompanyCode(string companyCode)
         {
             includeTables = "";
@@ -1556,7 +1557,7 @@ namespace Sampoerna.EMS.BLL
                 return null;
 
             var nppbkcList = Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(dbData.ToList());
-            
+
             return nppbkcList.DistinctBy(c => c.NPPBKC_ID).ToList();
 
         }
@@ -1583,13 +1584,42 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
 
-        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId)
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId,List<string> goodtypes)
         {
             var dbData =
                 _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId).OrderByDescending(p => p.CREATED_DATE);
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.CREATED_DATE);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
+
+        public List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId)
+        {
+            includeTables = "";
+            var dbData =
+                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == nppbkcId, null,
+                    includeTables);
+            if (dbData == null)
+                return null;
+
+            var nppbkcList = Mapper.Map<List<ZAIDM_EX_GOODTYPCompositeDto>>(dbData.ToList());
+
+            return nppbkcList.DistinctBy(c => c.EXC_GOOD_TYP).ToList();
+        }
+
+        public List<T001WCompositeDto> GetSupplierPlantByParam(Pbck1GetSupplierPlantByParamInput input)
+        {
+            includeTables = "";
+            var dbData =
+                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == input.NppbkcId && !string.IsNullOrEmpty(c.EXC_GOOD_TYP)
+                    && c.EXC_GOOD_TYP == input.ExciseableGoodsTypeId, null,
+                    includeTables);
+            if (dbData == null)
+                return null;
+
+            var nppbkcList = Mapper.Map<List<T001WCompositeDto>>(dbData.ToList());
+
+            return nppbkcList.DistinctBy(c => c.WERKS).ToList();
         }
     }
 }
