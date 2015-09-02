@@ -68,18 +68,23 @@ namespace Sampoerna.EMS.BLL
 
         public Ck4CDto Save(Ck4CDto item)
         {
+            CK4C model;
+            if (item == null)
+            {
+                throw new Exception("Invalid Data Entry");
+            }
+           
+            model = Mapper.Map<CK4C>(item);
             try
             {
-                if (item == null)
-                {
-                    throw new Exception("Invalid Data Entry");
-                }
+               
+                _repository.InsertOrUpdate(model);
             }
             catch (Exception exception)
             {
-
-                _repository.InsertOrUpdate(item);
+                throw exception;
             }
+            return item;
         }
     }
 }
