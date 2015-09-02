@@ -9,7 +9,7 @@
 
 
 @using (@Html.BeginForm("Create", "LACK2"))
-{
+{  @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">

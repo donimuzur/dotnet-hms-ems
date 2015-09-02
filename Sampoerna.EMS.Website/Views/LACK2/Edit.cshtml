@@ -10,7 +10,7 @@
 
 @using (@Html.BeginForm("Edit", "LACK2"))
 {
-    
+    @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
