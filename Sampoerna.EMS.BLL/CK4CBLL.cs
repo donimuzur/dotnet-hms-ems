@@ -65,5 +65,21 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
         }
+        
+        public Ck4CDto Save(Ck4CDto item)
+        {
+            try
+            {
+                if (item == null)
+                {
+                    throw new Exception("Invalid Data Entry");
+                }
+            }
+            catch (Exception exception)
+            {
+                
+                throw;
+            }
+        }
     }
 }

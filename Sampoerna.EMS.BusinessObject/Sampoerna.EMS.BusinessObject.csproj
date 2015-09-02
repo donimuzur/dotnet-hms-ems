@@ -236,6 +236,7 @@
     <Compile Include="Outputs\AutoCompletePlant.cs" />
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\Ck4COutput.cs" />
     <Compile Include="Outputs\CK5FileUploadDocumentsOutput.cs" />
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
