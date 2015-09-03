@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string RequestTypeDesc { get; set; }
 
         //ORIGIN PLANT
-        [Required(ErrorMessage = "Origin Plant field is required")]
+        //[Required(ErrorMessage = "Origin Plant field is required")]
         public string SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
         public string SourcePlantName { get; set; }
