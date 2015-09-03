@@ -193,7 +193,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
             var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
             return Json(outGeneratedData);
-
         }
 
         #endregion
@@ -232,28 +231,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
-                //process save
-                var dataToSave = Mapper.Map<Lack1Dto>(model);
-                dataToSave.CreateBy = CurrentUser.USER_ID;
-
-                var input = new Lack1SaveInput()
+                var input = Mapper.Map<Lack1CreateParamInput>(model);
+                input.UserId = CurrentUser.USER_ID;
+                var saveOutput = _lack1Bll.Create(input);
+                if (saveOutput.Success)
                 {
-                    Lack1 = dataToSave,
-                    UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Created
-                };
-
-                //only add this information from gov approval,
-                //when save create/edit 
-                input.Lack1.DecreeDate = null;
-
-                var saveResult = _lack1Bll.Save(input);
-
-                if (saveResult.Success)
-                {
-                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                    AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
+                    if (model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                    {
+                        return RedirectToAction("Index");    
+                    }
+                    return RedirectToAction("ListByPlant");
                 }
-
             }
             catch (DbEntityValidationException ex)
             {
@@ -286,6 +275,8 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region -------------- Private Method --------
 
         private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
         {
@@ -320,7 +311,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
             model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
-            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsType);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
 
@@ -338,6 +329,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(years, "ValueField", "TextField");
         }
+
+        #endregion
 
         #region Completed Document
 
@@ -381,6 +374,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        #endregion
+
+        #region -------------- Details -----------
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            return View();
+
+        }
+        
         #endregion
 
     }

@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             IncomeList = new List<Lack1GeneratedIncomeDataDto>();
             ProductionList = new List<Lack1GeneratedProductionDataDto>();
+            SummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>();
         }
 
         public string CompanyCode { get; set; }
@@ -25,6 +26,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string SupplierCompanyName { get; set; }
         public string SupplierCompanyCode { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string SupplierPlantName { get; set; }
         public string SupplierPlantAddress { get; set; }
         public int PeriodMonthId { get; set; }
         public string PeriodMonthName { get; set; }
@@ -37,8 +40,16 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
-        public List<Lack1GeneratedProductionDataDto> SummaryProductionList { get; set; }
+        public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
+        public string Lack1UomId { get; set; }
+    }
+
+    public class Lack1GeneratedSummaryProductionDataDto
+    {
+        public decimal Amount { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
     }
 
     public class Lack1GeneratedPlantDto
@@ -59,6 +70,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal Amount { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
+        public string StringRegistrationDate { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto

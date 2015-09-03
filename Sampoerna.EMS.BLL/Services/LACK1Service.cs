@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public LACK1 GetById(int id)
         {
-            return _repository.Get(c => c.LACK1_ID == id, null, includeTables).FirstOrDefault();
+            return _repository.GetByID(id);
         }
 
         public void Insert(LACK1 data)
@@ -235,6 +235,12 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilter).FirstOrDefault();
 
+        }
+
+        public LACK1 GetDetailsById(int id)
+        {
+            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1";
+            return _repository.Get(c => c.LACK1_ID == id, null, incTables).FirstOrDefault();
         }
 
     }

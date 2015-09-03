@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.BLL
         private IPBCK1BLL _pbck1Bll;
         private ICountryBLL _countryBll;
         private IExGroupTypeBLL _goodTypeGroupBLL;
+        private IVirtualMappingPlantBLL _virtualMappingBLL;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -74,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _countryBll = new CountryBLL(_uow,_logger);
             _materialBll = new MaterialBLL(_uow, _logger);
             _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
+            _virtualMappingBLL = new VirtualMappingPlantBLL(_uow, _logger);
         }
         
 
@@ -1801,7 +1803,15 @@ namespace Sampoerna.EMS.BLL
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return Mapper.Map<CK5XmlDto>(dtData);
+            var dataXmlDto = Mapper.Map<CK5XmlDto>(dtData);
+
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.ImporterToPlant) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+                dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+                dataXmlDto.SOURCE_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
+            
+            return dataXmlDto;
 
         }
 

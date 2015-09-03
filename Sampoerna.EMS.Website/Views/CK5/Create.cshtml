@@ -166,7 +166,7 @@
             if ($("#DestPlantId").length) {
                 //alert($('#SubmissionDate').val());
                 var isPortToImporter = false;
-                if ('@Model.Ck5Type.ToString() == "PortToImporter"') {
+                if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
                     isPortToImporter = true;
                     RemoveTable();
                 }
@@ -209,8 +209,8 @@
 
                         var sourcePlant = $("#SourcePlantId").find("option:selected").val();
                         var _goodtypegroupid = $("#GoodType").val();
-                        var Ck5_Type = $("#Ck5Type").val();
-                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid, Ck5Type: Ck5_Type });
+                        
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
 
                     }
 
@@ -267,8 +267,8 @@
 
 
                 } else {
-
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                    
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type : '@Model.Ck5Type' });
                 }
             }
         });

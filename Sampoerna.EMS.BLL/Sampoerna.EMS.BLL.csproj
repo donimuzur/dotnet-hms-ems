@@ -65,6 +65,7 @@
     <Compile Include="BLLMapper.cs" />
     <Compile Include="BLLMapperCK4C.cs" />
     <Compile Include="BLLMapperCK5.cs" />
+    <Compile Include="BLLMapperLack1.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
     <Compile Include="BLLMapperPBCK7.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
@@ -77,9 +78,11 @@
     <Compile Include="Services\CK4CItemService.cs" />
     <Compile Include="Services\CK5Service.cs" />
     <Compile Include="Services\ExGroupTypeService.cs" />
+    <Compile Include="Services\InventoryMovementService.cs" />
     <Compile Include="Services\LACK1Service.cs" />
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\T001KService.cs" />
+    <Compile Include="Services\T001WService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
     <Compile Include="LACK2BLL.cs" />
     <Compile Include="Pbck1DecreeDocBLL.cs" />
