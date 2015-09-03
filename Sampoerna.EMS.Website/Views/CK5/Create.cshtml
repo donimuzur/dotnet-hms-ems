@@ -190,7 +190,7 @@
                 var sourcePlant = $("#SourcePlantId").find("option:selected").val();
                 var _goodtypegroupid = $("#GoodType").val();
                 var Ck5_Type = $("#Ck5Type").val();
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid, Ck5Type: Ck5_Type });
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
                 @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: '@DateTime.Now' });*@
                 //}
 
@@ -223,7 +223,7 @@
     $("#SourcePlantId").change(function () {
         if ($("#SourcePlantId").length) {
             var sourcePlant = $(this).find("option:selected").val();
-
+            var Ck5_Type = $("#Ck5Type").val();
             //remove table
             try {
                 RemoveTable();
@@ -248,7 +248,7 @@
 
             } else {
 
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: Ck5_Type });
             }
         }
     });
