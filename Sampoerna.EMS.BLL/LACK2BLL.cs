@@ -168,9 +168,66 @@ namespace Sampoerna.EMS.BLL
         {
             var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, CK5");
             var lack2dto = new Lack2Dto();
-            lack2dto = data.Select(x => Mapper.Map<Lack2Dto>(x.LACK2)).FirstOrDefault();;
-            lack2dto.Items = data.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();;
+            lack2dto = data.Select(x => Mapper.Map<Lack2Dto>(x.LACK2)).FirstOrDefault();
+            lack2dto.Items = data.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();
             return lack2dto;
+        }
+
+        private Enums.ActionType GetActionType(Enums.DocumentStatus docStatus, string modifiedBy)
+        {
+            if (docStatus == Enums.DocumentStatus.Draft)
+            {
+                if (modifiedBy != null)
+                {
+                    return Enums.ActionType.Modified;
+                }
+                return Enums.ActionType.Created;
+            }
+            if (docStatus == Enums.DocumentStatus.WaitingForApproval)
+            {
+                return Enums.ActionType.WaitingForApproval;
+            }
+            if (docStatus == Enums.DocumentStatus.Approved)
+            {
+                return Enums.ActionType.Approve;
+            }
+            if (docStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return Enums.ActionType.WaitingForApproval;
+            }
+            if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                return Enums.ActionType.WaitingForApproval;
+            }
+            if (docStatus == Enums.DocumentStatus.GovApproved)
+            {
+                return Enums.ActionType.GovApprove;
+            }
+            return Enums.ActionType.Reject;
+        }
+
+        private string GetActionBy(Lack2Dto lack2)
+        {
+            if (lack2.Status == Enums.DocumentStatus.Draft )
+            {
+                if (lack2.ModifiedBy != null)
+                {
+                    return lack2.ModifiedBy;
+                }
+                return lack2.CreatedBy;
+            }
+            if (lack2.Status == Enums.DocumentStatus.WaitingForApproval)
+            {
+                return lack2.CreatedBy;
+            }
+            if (lack2.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return lack2.ApprovedBy;
+            }
+           
+           
+            
+            return lack2.CreatedBy;
         }
 
         /// <summary>
@@ -200,13 +257,14 @@ namespace Sampoerna.EMS.BLL
                 _uow.SaveChanges();
                 var history = new WorkflowHistoryDto();
                 history.FORM_ID = model.LACK2_ID;
-                history.ACTION = Enums.ActionType.Created;
-                history.ACTION_BY = item.CreatedBy;
+                history.ACTION = GetActionType(model.STATUS, item.ModifiedBy);
+                history.ACTION_BY = GetActionBy(item);
                 history.ACTION_DATE = DateTime.Now;
                 history.FORM_NUMBER = item.Lack2Number;
                 history.FORM_TYPE_ID = Enums.FormType.LACK2;
+                history.COMMENT = item.Comment;
                 //set workflow history
-                var getUserRole = _poabll.GetUserRole(item.CreatedBy);
+                var getUserRole = _poabll.GetUserRole(history.ACTION_BY);
                 history.ROLE = getUserRole;
                 _workflowHistoryBll.AddHistory(history);
                 _uow.SaveChanges();
@@ -217,5 +275,7 @@ namespace Sampoerna.EMS.BLL
             }
             return item;
         }
+
+
     }
 }

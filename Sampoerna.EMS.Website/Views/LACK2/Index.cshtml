@@ -10,7 +10,10 @@
                 <h3>@ViewBag.Title</h3>
                 <div class="action-button new">
                     <a href="@Url.Action("Create","LACK2")">
-                        <input type="button" class="btn btn-blue" value="NEW" />
+                        @if (Model.IsShowNewButton)
+                        {
+                            <input type="button" class="btn btn-blue" value="NEW" />
+                        }
                     </a>
                 </div>
             </div>

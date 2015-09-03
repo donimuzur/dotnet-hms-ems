@@ -10,9 +10,11 @@
 
 
 
-@using (@Html.BeginForm("Detail", "LACK2"))
+@using (@Html.BeginForm("Detail", "LACK2", FormMethod.Post, new { @id = "form-lack2-detail" }))
 {
-    @Html.HiddenFor(x => x.FormStatus)
+    @Html.AntiForgeryToken()
+    @*//@Html.HiddenFor(x => x.Lack2Model.Comment)*@
+    @Html.HiddenFor(x=>x.ActionType)
     @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
@@ -42,14 +44,14 @@
 
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
 
-                    @*@if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
                     {
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
                     }
                     else
                     {
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
-                    }*@
+                    }
                 </div>
                     
                 </div>
@@ -98,7 +100,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Company</label>
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
+                                                                @Html.TextBox("company", Model.Lack2Model.Burks + "-" + Model.Lack2Model.Butxt, new { @class = "form-control", @disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -109,12 +111,12 @@
                                                             <div class="col-md-8">
                                                                 <div class="row">
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select", new { @class = "form-control" })
+                                                                        @Html.TextBox("month-period", Model.Lack2Model.PeriodMonthName, new { @class = "form-control", @disabled = "disabled" })
 
 
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, "select", new { @class = "form-control" })
+                                                                        @Html.TextBox("month-period", Model.Lack2Model.PeriodYear, new { @class = "form-control", @disabled = "disabled" })
 
 
                                                                     </div>
@@ -124,8 +126,8 @@
 
 
                                                     </div>
-                                                    </div>
-</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +149,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">NPPBKC</label>
                                                                 <div class="col-md-8">
-                                                                   @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+                                                                    @Html.HiddenFor(x => x.Lack2Model.NppbkcId)
+                                                                    @Html.TextBox("NppbkcId", Model.Lack2Model.NppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -155,7 +158,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
+                                                                 @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
                                                                   </div>
                                                             </div>
                                                         </div>
@@ -172,7 +175,7 @@
                                                                 <label class="col-md-4">Submission Date</label>
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                        @Html.TextBox("submission_date", Model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -186,7 +189,11 @@
                                                             <div class="row">
                                                                 <label class="col-md-4 long">Excisable Goods Type</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
+                                                                    @Html.TextBox("exgoodstype", Model.Lack2Model.ExGoodDesc,  new { @class = "form-control", @disabled = "disabled" })
+
+
+
+
 
 
 
@@ -195,7 +202,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4 col-md-offset-4">
-                                                            <input type="button" class="btn btn-blue full" onclick="GetCk5ByPeriod();" value="Generate"/>
+                                                            <input type="button" class="btn btn-blue full" value="Generate"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -292,7 +299,7 @@
                                                                 </tr>
                                                             }
                                                            
-                                                                                                            </tbody>
+                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -494,6 +501,54 @@
             </div>
         </div>
     </div>
+
+    <div id="lack2RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Reject document</h4>
+                </div>
+                @using (Html.BeginForm("RejectDocument", "Lack2"))
+                {
+                    <div class="modal-body">
+                        @Html.HiddenFor(model => model.Lack2Model.Lack2Id)
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(model => model.Lack2Model.Comment, new { @rows = "5", @class = "col-md-9" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="lack2ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Approve</h3>
+                </div>
+                <div class="modal-body">
+                    Approve Documents  ?
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnApproveConfirm" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            </div>
+        </div>
+    </div>
 }
 @section Scripts {
    
@@ -504,114 +559,45 @@
         var initialEditGoodtype = true;
     $(function () {
         openPanel();
-        $('#Lack2Model_LevelPlantId').html('');
-        $('#Lack2Model_NppbkcId').html('');
 
-        $('#Lack2Model_ExGoodTyp').html('');
-
-        $('#Lack2Model_Burks').change();
+        ajaxGetPoaByNppbkc();
 
     });
-    $('#Lack2Model_NppbkcId').change(function () {
-
-        if ($(this).length) {
-            var nppbkc = $(this).find("option:selected").val();
-
-            $('#Lack2Model_LevelPlantId').html('');
-            if (nppbkc != '') {
-                ajaxGetPlantByNppbkc(nppbkc);
-                ajaxGetGoodsTypeByNppbkc(nppbkc);
-                ajaxGetPoaByNppbkc(nppbkc);
-            }
-        }
-
+    $("#btnApproveConfirm").click(function () {
+       $('#ActionType').val('Approve');
+        $('#form-lack2-detail').submit();
     });
+   
+    $('#btnApprove').click(function () {
 
-    $('#Lack2Model_Burks').change(function () {
+        $('#lack2ApproveModal').modal('show');
+    });
+    $('#Lack2Model_Comment').bind('input propertychange', function () {
 
-        if ($(this).length) {
-            var company = $(this).find("option:selected").val();
-            if (company !== '') {
-                ajaxGetNppbkcByCompany(company);
-                var nppbkcid = $('#Lack2Model_NppbkcId').find("option:selected").val();
-                if (nppbkcid != '') {
-                    ajaxGetPlantByNppbkc(nppbkcid);
-                    ajaxGetGoodsTypeByNppbkc(nppbkcid);
-                    ajaxGetPoaByNppbkc(nppbkcid);
+        $('#btnConfirmReject').attr('disabled', 'disabled');
+        //$('#btnConfirmGovReject').attr('disabled', 'disabled');
+        //$('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
 
-                }
-
-            }
+        if (this.value.length) {
+            $('#btnConfirmReject').removeAttr('disabled');
+            //$('#btnConfirmGovReject').removeAttr('disabled');
+            //$('#btnConfirmGovPartApprove').removeAttr('disabled');
         }
     });
+    $('#btnReject').click(function () {
+        $('#btnConfirmReject').attr('disabled', 'disabled');
 
-    function ajaxGetNppbkcByCompany(company) {
+        $('#lack2RejectModal').modal('show');
+    });
+   
 
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
-            data: { companyId: company },
-            success: function (data) {
-                $('#Lack2Model_NppbkcId').html('');
-                if (initialEditNppbkc) {
-                    var nppbkcId = '@Model.Lack2Model.NppbkcId';
-                    if (nppbkcId != '') {
+   
+    
 
-                        $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].value !== nppbkcId) {
-                                $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
-                            }
-                        }
-                    }
-                    initialEditNppbkc = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
-                    }
-                }
+  
 
-            }
-        });
-
-    }
-
-    function ajaxGetPlantByNppbkc(nppbkc) {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
-                $('#Lack2Model_LevelPlantId').html('');
-
-                if (initialEditPlant) {
-                    var plantId = '@Model.Lack2Model.LevelPlantId';
-                    if (plantId != '') {
-
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].value !== plantId) {
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-                            }
-                        }
-                    }
-                    initialEditPlant = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
-
-                    }
-                }
-
-
-            }
-        }
-        );
-
-    }
-
-    function ajaxGetPoaByNppbkc(nppbkc) {
-
+    function ajaxGetPoaByNppbkc() {
+        var nppbkc = $('#Lack2Model_NppbkcId').val();
         $.ajax({
             type: 'POST',
             url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
@@ -632,37 +618,7 @@
 
     }
 
-    function ajaxGetGoodsTypeByNppbkc(nppbkc) {
-
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
-
-                $('#Lack2Model_ExGoodTyp').html('');
-
-                if (initialEditGoodtype) {
-                    var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
-                        if (exgoodtyp != '') {
-                             $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
-                            for (var i = 0; i < data.length; i++) {
-                                if (data[i].value !== exgoodtyp) {
-                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                                }
-                            }
-                        }
-                    initialEditGoodtype = false;
-                    } else {
-                        for (var i = 0; i < data.length; i++) {
-                            $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                        }
-                    }
-
-                }
-            });
-
-        }
+    
 
         function openPanel() {
             $('.panel-collapse').removeClass('collapse').addClass('in');
@@ -673,33 +629,8 @@
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
-        function GetCk5ByPeriod() {
-            var month = parseInt($('#Lack2Model_PeriodMonth').val());
-            var year = parseInt($('#Lack2Model_PeriodYear').val());
-            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-            data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-            success: function (data) {
-
-                if (data.length > 0) {
-                    $('#tb-body-ck5-lack2').html("");
-                    for (var i = 0; i < data.length; i++) {
-                        var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                            '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                            '<td>' + data[i].GIDateStr + '</td>' +
-                            '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                        $('#tb-body-ck5-lack2').append(tableCk5Item);
-                    }
-                }
-            }
-        });
-    }
+        
+    
     </script>
 
 }
