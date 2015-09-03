@@ -1233,11 +1233,22 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
-            if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+
+            if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
             {
-                result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                result.ReportDetails.OfficeCode = string.Empty;
+                result.ReportDetails.SourceOfficeCode = string.Empty;
+            }
+            else
+            {
+                if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+                {
+                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                }
             }
             result.ReportDetails.SourcePlantName = dtData.SOURCE_PLANT_COMPANY_NAME;
           
