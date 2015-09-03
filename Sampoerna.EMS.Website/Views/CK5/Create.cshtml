@@ -189,7 +189,8 @@
                 
                 var sourcePlant = $("#SourcePlantId").find("option:selected").val();
                 var _goodtypegroupid = $("#GoodType").val();
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+                var Ck5_Type = $("#Ck5Type").val();
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid, Ck5Type: Ck5_Type });
                 @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: sourcePlant, submissionDate: '@DateTime.Now' });*@
                 //}
 

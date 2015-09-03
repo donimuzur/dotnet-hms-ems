@@ -250,7 +250,8 @@
 
                 var sourcePlant = $("#SourcePlantId").find("option:selected").val();
                 var _goodtypegroupid = $("#GoodType").val();
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+                var Ck5_Type = $("#Ck5Type").val();
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid, Ck5Type: Ck5_Type });
                 @*ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });*@
 
             }
@@ -261,6 +262,7 @@
         var _goodtypegroupid = $("#GoodType").val();
         var sourcePlant = $("#SourcePlantId").find("option:selected").val();
         var destPlant = $("#DestPlantId").find("option:selected").val();
+        var Ck5_Type = $("#Ck5Type").val();
         if (destPlant == '' || sourcePlant == '' || destPlant == '') {
             $("input[name='PbckDecreeId']").val('');
             $("input[name='PbckDecreeNumber']").val('');
@@ -274,7 +276,7 @@
             if (submissionDate == '')
                 submissionDate = '@DateTime.Now';
 
-            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid, Ck5Type: Ck5_Type });
         }
 
     });
