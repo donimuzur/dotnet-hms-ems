@@ -325,6 +325,7 @@
                 supplierData = data;
                 //load supplier plant
                 supplierPortOnChange();
+                supplierChange(formData.isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             }
         });
     }
@@ -469,10 +470,6 @@
         $('#Detail_IsExternalSupplier').prop('disabled', isDisabled);
 
         ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
-
-        $("#Detail_SupplierPlant_ddl option:first").attr('selected', 'selected');
-
-        supplierChange(isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
     }
 
     </script>
