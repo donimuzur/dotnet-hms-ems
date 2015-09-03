@@ -51,7 +51,10 @@ function disableSupplierFormInput(isDisable) {
 function supplierChange(isNppbkcImport, url) {
     if ($("#Detail_SupplierPlant_ddl").length) {
         var plantid = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
+        var plantidFirst = $("#Detail_SupplierPlant_ddl").find("option:first").val();
         console.log(plantid);
+        if (plantid == undefined)
+            plantid = plantidFirst;
         ajaxLoadDetailSupplierPlant({ plantid: plantid, isNppbkcImport: isNppbkcImport }, url);
     }
 }
