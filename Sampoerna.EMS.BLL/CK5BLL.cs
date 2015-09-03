@@ -235,7 +235,13 @@ namespace Sampoerna.EMS.BLL
 
                 SetChangesHistory(origin, input.Ck5Dto, input.UserId);
 
-               
+
+                if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                {
+                    if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
+                        input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
+                }
+
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
                 //no change status for edit 2015-07-24
@@ -1652,6 +1658,12 @@ namespace Sampoerna.EMS.BLL
             input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
             input.Ck5Dto.CREATED_DATE = DateTime.Now;
             input.Ck5Dto.CREATED_BY = input.UserId;
+
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            {
+                if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
+                    input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
+            }
 
             dbData = new CK5();
 
