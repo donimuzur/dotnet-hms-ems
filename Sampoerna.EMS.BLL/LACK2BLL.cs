@@ -173,6 +173,35 @@ namespace Sampoerna.EMS.BLL
             return lack2dto;
         }
 
+        private Enums.ActionType GetActionType(Enums.DocumentStatus docStatus)
+        {
+            if (docStatus == Enums.DocumentStatus.Draft)
+            {
+                return Enums.ActionType.Created;
+            }
+            if (docStatus == Enums.DocumentStatus.WaitingForApproval)
+            {
+                return Enums.ActionType.WaitingForApproval;
+            }
+            if (docStatus == Enums.DocumentStatus.Approved)
+            {
+                return Enums.ActionType.Approve;
+            }
+            if (docStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return Enums.ActionType.WaitingForApproval;
+            }
+            if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                return Enums.ActionType.WaitingForApproval;
+            }
+            if (docStatus == Enums.DocumentStatus.GovApproved)
+            {
+                return Enums.ActionType.GovApprove;
+            }
+            return Enums.ActionType.Reject;
+        }
+
         /// <summary>
         /// Inserts a LACK2 
         /// </summary>
@@ -200,7 +229,7 @@ namespace Sampoerna.EMS.BLL
                 _uow.SaveChanges();
                 var history = new WorkflowHistoryDto();
                 history.FORM_ID = model.LACK2_ID;
-                history.ACTION = Enums.ActionType.Created;
+                history.ACTION = GetActionType(model.STATUS);
                 history.ACTION_BY = item.CreatedBy;
                 history.ACTION_DATE = DateTime.Now;
                 history.FORM_NUMBER = item.Lack2Number;

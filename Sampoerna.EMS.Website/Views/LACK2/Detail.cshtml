@@ -10,9 +10,10 @@
 
 
 
-@using (@Html.BeginForm("Detail", "LACK2"))
+@using (@Html.BeginForm("Detail", "LACK2", FormMethod.Post, new { @id = "form-lack2-detail" }))
 {
-    @Html.HiddenFor(x => x.FormStatus)
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x=>x.ActionType)
     @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
@@ -42,14 +43,14 @@
 
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
 
-                    @*@if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
                     {
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
                     }
                     else
                     {
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
-                    }*@
+                    }
                 </div>
                     
                 </div>
@@ -124,8 +125,8 @@
 
 
                                                     </div>
-                                                    </div>
-</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +148,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">NPPBKC</label>
                                                                 <div class="col-md-8">
-                                                                   @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -156,7 +157,7 @@
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
                                                                     @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
-                                                                  </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -292,7 +293,7 @@
                                                                 </tr>
                                                             }
                                                            
-                                                                                                            </tbody>
+                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -494,6 +495,42 @@
             </div>
         </div>
     </div>
+
+    <div id="lack2RejectModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Reject</h3>
+                </div>
+                <div class="modal-body">
+                    Reject Documents  ?
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnRejectConfirm" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lack2ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Approve</h3>
+                </div>
+                <div class="modal-body">
+                    Approve Documents  ?
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnApproveConfirm" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            </div>
+        </div>
+    </div>
 }
 @section Scripts {
    
@@ -511,6 +548,24 @@
 
         $('#Lack2Model_Burks').change();
 
+    });
+    $("#btnApproveConfirm").click(function () {
+        alert('xxx');
+        $('#ActionType').val('Approve');
+        $('#form-lack2-detail').submit();
+    });
+    $("#btnRejectConfirm").click(function () {
+        $('#ActionType').val('Reject');
+        $('#form-lack2-detail').submit();
+    });
+    $('#btnApprove').click(function () {
+
+        $('#lack2ApproveModal').modal('show');
+    });
+    
+    $('#btnReject').click(function () {
+
+        $('#lack2RejectModal').modal('show');
     });
     $('#Lack2Model_NppbkcId').change(function () {
 
