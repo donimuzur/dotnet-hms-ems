@@ -43,7 +43,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
         public string Lack1UomId { get; set; }
-
     }
 
     public class Lack1GeneratedSummaryProductionDataDto

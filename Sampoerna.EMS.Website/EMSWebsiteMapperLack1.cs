@@ -25,12 +25,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SubmissionDate))
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
                 .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.ExGoodsTypeId))
+                .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.ExGoodsTypeDesc))
                 .ForMember(dest => dest.WasteAmount, opt => opt.MapFrom(src => src.WasteQty))
                 .ForMember(dest => dest.WasteAmountUom, opt => opt.MapFrom(src => src.WasteUom))
                 .ForMember(dest => dest.ReturnAmount, opt => opt.MapFrom(src => src.ReturnQty))
                 .ForMember(dest => dest.ReturnAmountUom, opt => opt.MapFrom(src => src.ReturnUom))
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.Lack1Level))
-                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Lack1Generated.Noted))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted))
                 ;
 
         }

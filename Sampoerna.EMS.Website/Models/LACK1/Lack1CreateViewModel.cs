@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         [Required]
         public string ExGoodsTypeId { get; set; }
+        public string ExGoodsTypeDesc { get; set; }
         public SelectList ExGoodTypeList { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
@@ -66,7 +67,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string MenuPlantAddClassCss { get; set; }
         public string MenuNppbkcAddClassCss { get; set; }
 
-        public Lack1GeneratedItemModel Lack1Generated { get; set; }
+        public string Noted { get; set; }
+
+        public int IncomeListCount { get; set; }
 
     }
 }

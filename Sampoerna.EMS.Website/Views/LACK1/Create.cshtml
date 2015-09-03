@@ -14,7 +14,6 @@
                 <h3>List by NPPBKC</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    @*<input type="submit" class="btn btn-blue" value="Save" />*@
                     <input type="button" class="btn btn-blue" onclick="saveClick()" value="Save"/>
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                 </div>
@@ -41,6 +40,24 @@
         </div>
     </div>
 }
+
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Input selection criteria not valid</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/thousand-separator.js"></script>
@@ -83,9 +100,11 @@
         function ExGoodsTypeOnChange() {
             if ($("#NppbkcId").length && $("#ExGoodsTypeId").length) {
                 var excisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
+                var excisableGoodsTypeDesc = $('#ExGoodsTypeId').find("option:selected").text();
+                $('#ExGoodsTypeDesc').val(excisableGoodsTypeDesc);
                 var nppbkcId = $('#NppbkcId').find("option:selected").val();
                 console.log(excisableGoodsType + "," + nppbkcId);
-                //load supplier list
+                /*load supplier list*/
                 $('#SupplierPlantId option').remove();
                 if (excisableGoodsType != '' && nppbkcId != '') {
                     ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
@@ -100,9 +119,9 @@
                 var nppbkcId = $('#NppbkcId').find("option:selected").val();
                 var attr = $('#LevelPlantId').attr('disabled');
                 console.log(attr);
-                // For some browsers, `attr` is undefined; for others,
-                // `attr` is false.  Check for both.
-                //load plant if enable
+                /* For some browsers, `attr` is undefined; for others,
+                 `attr` is false.  Check for both.
+                load plant if enable*/
                 if (!(typeof attr !== typeof undefined && attr !== false)) {
                     // ...
                     $('#LevelPlantId option').remove();
@@ -114,10 +133,10 @@
                     }
                 }
 
-                //load excisablegoodstype
+                /*load excisablegoodstype*/
                 ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
 
-                //load supplier list
+                /*load supplier list*/
                 ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
 
             }
@@ -211,7 +230,7 @@
 
         function generateDataClick(lackLevel) {
             if (!generateInputValidation()) {
-                alert('Input selection criteria not valid.');
+                $('#ModalValidation').modal('show');
                 return;
             }
             
@@ -226,13 +245,13 @@
             param.WasteAmountUom = $('#WasteUom').find("option:selected").val();
             param.ReturnAmount = parseFloat($('#ReturnQty').val());
             param.ReturnAmountUom = $('#ReturnUom').find("option:selected").val();
-            param.Noted = $('#Lack1Generated_Noted').val();
+            param.Noted = $('#Noted').val();
             param.CompanyName = $('#Bukrs').find("option:selected").text();
 
             var plantAttr = $('#LevelPlantId').attr('disabled');
-            // For some browsers, `attr` is undefined; for others,
-            // `attr` is false.  Check for both.
-            //load plant if enable
+            /* For some browsers, `attr` is undefined; for others,
+             `attr` is false.  Check for both.
+            load plant if enable*/
             if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
                 param.ReceivedPlantId = $('#LevelPlantId').find("option:selected").val();
             }
@@ -250,10 +269,12 @@
                         $('#generated-data-container').html("");
                         var data = response.Data;
                         var tableGenerated = generateTable(data);
-                        console.log(tableGenerated);
+                        /*console.log(tableGenerated);*/
                         $('#generated-data-container').append(tableGenerated);
                     } else {
-                        alert(response.ErrorMessage);
+                        /*alert(response.ErrorMessage);*/
+                        $('#modalBodyMessage').text(response.ErrorMessage);
+                        $('#ModalValidation').modal('show');
                     }
                 }
             });
@@ -284,7 +305,7 @@
                 '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
                 '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
                 '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-                '<td rowspan="' + (rowCount + 1) + '">' + data.Noted + '</td></tr>';
+                '<td rowspan="' + rowCount + '">' + (data.Noted ? data.Noted : '') + '</td></tr>';
                 /*loop record*/
                 for (var i = 1; i < data.IncomeList.length; i++) {
                     rowIndex = rowIndex + 1;
@@ -293,7 +314,7 @@
                     rc.append(item);
                 }
                 /*end loop record*/
-
+                $('#IncomeListCount').val(rowCount);
             } else {
                 rc = rc +
                 /*Only 1 Record*/
@@ -306,8 +327,8 @@
                 '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
                 '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
                 '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
+                $('#IncomeListCount').val(0);
             }
-
             /*footer*/
             rc = rc + '<tr><td></td><td></td><td></td><td>Total : '
                 + ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionList) + '</td><td colspan="2"></td></tr>' +
@@ -319,6 +340,7 @@
         function generateJenisHasilProduksi(data) {
             var rc = "";
             if (data.length > 0) {
+                rc = '<div id="jumlah-hasil-produksi-data">';
                 for (var i = 0; i < data.length; i++) {
                     if (i == data.length) {
                         rc = rc + data[i].ProductAlias;
@@ -326,6 +348,7 @@
                         rc = rc + data[i].ProductAlias + "<br/>";
                     }
                 }
+                rc = rc + '</div>';
             } else {
                 rc = "-";
             }
@@ -354,10 +377,8 @@
                 var tb = '<table border="0">';
                 for (var i = 0; i < data.length; i++) {
                     var item = '<tr><td>' + data[i].Amount + '</td><td>' + data[i].UomDesc + '</td></tr>';
-                    //tb.append(item);
                     tb = tb + item;
                 }
-                //tb.append('</table>');
                 tb = tb + '</table>';
                 loopData = tb;
             }
@@ -421,24 +442,67 @@
             }
             
             var plantAttr = $('#LevelPlantId').attr('disabled');
-            // For some browsers, `attr` is undefined; for others,
-            // `attr` is false.  Check for both.
-            //load plant if enable
+            /* For some browsers, `attr` is undefined; for others,
+             `attr` is false.  Check for both.
+            load plant if enable*/
             if (!(typeof plantAttr !== typeof undefined && plantAttr !== false)) {
                 if ($('#LevelPlantId').find("option:selected").val() == '') {
                     rc = false;
                     $('#LevelPlantId').addClass('input-validation-error');
                 }
             }
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
             return rc;
         }
         
         function saveClick() {
-            if (!generateInputValidation()) {
-                alert('Invalid input, please review the input.');
-                return;
+            var isValid = false;
+            if (generateInputValidation()) {
+                isValid = true;
             }
-            $('#CreateLack1Form').submit();
+            if (isValid) {
+                isValid = saveInputValidation();
+            }
+            if (isValid) {
+                isValid = checkJumlahProduksi();
+            }
+            if (isValid) {
+                isValid = checkIncomeListItem();
+            }
+            if (isValid) {
+                $('#CreateLack1Form').submit();
+            } else {
+                $('#ModalValidation').modal('show');
+            }
+        }
+        
+        function saveInputValidation() {
+            var rc = true;
+            if ($('#SubmissionDate').val() == '')
+                rc = false;
+                $('#SubmissionDate').addClass('input-validation-error');
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+            return rc;
+        }
+        
+        function checkJumlahProduksi() {
+            if ($('#jumlah-hasil-produksi-data').length == 0) {
+                $('#modalBodyMessage').text('Missing Hasil Produksi BKC');
+                return false;
+            }
+            return true;
+        }
+
+        function checkIncomeListItem() {
+            if ($('#IncomeListCount').length == 0 || $('#IncomeListCount').val() == '0') {
+                $('#modalBodyMessage').text('Missing Income List Item');
+                return false;
+            }
+            return true;
         }
 
     </script>

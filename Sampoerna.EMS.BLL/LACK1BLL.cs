@@ -136,6 +136,8 @@ namespace Sampoerna.EMS.BLL
                 data.LACK1_PLANT = new List<LACK1_PLANT>(){ Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
 
+            _lack1Service.Insert(data);
+
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -145,7 +147,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
-
+        
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
         {
             return _lack1Service.GetLatestSaldoPerPeriod(input);
@@ -284,6 +286,7 @@ namespace Sampoerna.EMS.BLL
                 NppbkcId = input.NppbkcId,
                 ExcisableGoodsType = input.ExcisableGoodsType,
                 ExcisableGoodsTypeDesc = input.ExcisableGoodsTypeDesc,
+                SupplierPlantId = input.SupplierPlantId,
                 BeginingBalance = 0 //set default
             };
 
@@ -320,10 +323,9 @@ namespace Sampoerna.EMS.BLL
             rc.Noted = input.Noted;
 
             rc.TotalUsage = 0; //todo: get from Inventory Movement
-
-           
+            
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
-
+            
             oReturn.Data = rc;
             
             return oReturn;
