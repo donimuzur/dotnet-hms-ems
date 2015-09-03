@@ -107,7 +107,7 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
-                    p.TOTAL_PRODUCTION,
+                    //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
-                    p.TOTAL_PRODUCTION,
+                    //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
