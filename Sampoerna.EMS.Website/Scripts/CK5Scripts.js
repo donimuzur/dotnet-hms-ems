@@ -146,7 +146,7 @@ function IsValidDataUpload() {
     return true;
 }
 
-function GenerateXlsCk5Material(url) {
+function GenerateXlsCk5Material(url, ck5Type) {
     var fileName = $('[name="itemExcelFile"]').val().trim();
     var pos = fileName.lastIndexOf('.');
     var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -159,9 +159,12 @@ function GenerateXlsCk5Material(url) {
     var totalFiles = document.getElementById("itemExcelFile").files.length;
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
-
         formData.append("itemExcelFile", file);
-        formData.append("plantId", $('#SourcePlantId').val());
+        if (ck5Type == 'PortToImporter')
+            formData.append("plantId", $('#DestPlantId').val());
+        else 
+            formData.append("plantId", $('#SourcePlantId').val());
+        
     }
     $.ajax({
         type: "POST",
@@ -235,6 +238,30 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("input[name='RemainQuota']").val(data.RemainQuota);
                 //alert(data.PbckUom);
                 $("input[name='PbckUom']").val(data.PbckUom);
+            }
+        });
+    }
+}
+
+function ajaxGetDestPlantDetailsPortToImporter(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                $("input[name='DestNpwp']").val(data.PlantNpwp);
+                $("input[name='DestNppbkcId']").val(data.NPPBCK_ID);
+                $("input[name='DestCompanyCode']").val(data.CompanyCode);
+                $("input[name='DestCompanyName']").val(data.CompanyName);
+                $("*[name='DestAddress']").val(data.CompanyAddress);
+                $("input[name='DestKppbcName']").val(data.KppBcName);
+                $("input[name='DestPlantName']").val(data.PlantName);
+                
+
+                $("input[name='KppBcCity']").val(data.KppbcCity);
+                $("input[name='CeOfficeCode']").val(data.KppbcNo);
+
             }
         });
     }
@@ -451,11 +478,6 @@ function AddValidationClass(isValid, objName) {
 function ValidateCk5Form(ck5Type) {
     var result = true;
     var isValidCk5Detail = true;
-
-    //if ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val())
-    //    alert("True");
-    //else
-    //    alert('false');
     
     if ($('#KppBcCity').find("option:selected").val() == '') {
         AddValidationClass(false, 'KppBcCity');
@@ -498,8 +520,10 @@ function ValidateCk5Form(ck5Type) {
         $("#collapseOne").css({ height: "auto" });
 
     }
-    
-    if ($('#SourcePlantId').find("option:selected").val() == '') {
+    if (ck5Type == 'PortToImporter') {
+        $('#SourcePlantId').val('');
+    }
+    else if ($('#SourcePlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'SourcePlantId');
         result = false;
         // $('#collapseTwo').addClass('in');

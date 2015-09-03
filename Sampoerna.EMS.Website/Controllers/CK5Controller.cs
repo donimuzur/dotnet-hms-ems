@@ -499,6 +499,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             }
                         }
 
+
                         var saveResult = SaveCk5ToDatabase(model);
                         
                         AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);

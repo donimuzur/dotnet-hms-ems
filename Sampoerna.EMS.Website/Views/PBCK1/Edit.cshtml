@@ -221,9 +221,10 @@
         var isNppbkcImport = false;
         if ($("#Detail_IsNppbkcImport").is(':checked')) {
             isNppbkcImport = true;
+            $('#Detail_IsExternalSupplier').prop('disabled', true);
         }
 
-        ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
+        ajaxFirstLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
 
         pbck1TypeOnchange();
 
@@ -316,6 +317,19 @@
     }
 
     function ajaxLoadSupplierPlant(formData,url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                supplierData = data;
+                //load supplier plant
+                supplierPortOnChange();
+            }
+        });
+    }
+
+    function ajaxFirstLoadSupplierPlant(formData, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -455,6 +469,8 @@
         $('#Detail_IsExternalSupplier').prop('disabled', isDisabled);
 
         ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
+
+        $("#Detail_SupplierPlant_ddl option:first").attr('selected', 'selected');
 
         supplierChange(isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
     }
