@@ -68,6 +68,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public List<Lack2ItemDto> Items { get; set; }
 
         public string StatusName { get; set; }
+
+        public string PeriodMonthName { get; set; }
+
+        public string Comment { get; set; }
     }
 
    
