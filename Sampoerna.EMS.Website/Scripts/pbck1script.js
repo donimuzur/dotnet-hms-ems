@@ -48,11 +48,14 @@ function disableSupplierFormInput(isDisable) {
     $('#Detail_SupplierCompany').prop('readonly', isDisable);
 }
 
-function supplierChange(url) {
+function supplierChange(isNppbkcImport, url) {
     if ($("#Detail_SupplierPlant_ddl").length) {
         var plantid = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
+        var plantidFirst = $("#Detail_SupplierPlant_ddl").find("option:first").val();
         console.log(plantid);
-        ajaxLoadDetailSupplierPlant({ plantid: plantid }, url);
+        if (plantid == undefined)
+            plantid = plantidFirst;
+        ajaxLoadDetailSupplierPlant({ plantid: plantid, isNppbkcImport: isNppbkcImport }, url);
     }
 }
 

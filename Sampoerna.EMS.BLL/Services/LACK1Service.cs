@@ -107,7 +107,7 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
-                    p.TOTAL_PRODUCTION,
+                    //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
-                    p.TOTAL_PRODUCTION,
+                    //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public LACK1 GetById(int id)
         {
-            return _repository.Get(c => c.LACK1_ID == id, null, includeTables).FirstOrDefault();
+            return _repository.GetByID(id);
         }
 
         public void Insert(LACK1 data)
@@ -235,6 +235,12 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilter).FirstOrDefault();
 
+        }
+
+        public LACK1 GetDetailsById(int id)
+        {
+            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1";
+            return _repository.Get(c => c.LACK1_ID == id, null, incTables).FirstOrDefault();
         }
 
     }

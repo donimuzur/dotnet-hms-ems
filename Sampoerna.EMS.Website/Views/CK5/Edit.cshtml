@@ -5,20 +5,20 @@
 
 @using (Html.BeginForm("Edit", "CK5", FormMethod.Post, new { @id = "EditCk5Forms" }))
 {
-     @Html.AntiForgeryToken()
-    
+    @Html.AntiForgeryToken()
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>@Model.Ck5Type.ToString()</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
-                   
+
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
-                    
-                    <input type="button" id="btnSubmitDocument" class="btn btn-blue"  value="Submit" />
+
+                    <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
             </div>
         </div>
@@ -43,38 +43,52 @@
                         @Html.HiddenFor(model => model.CreatedBy)
                         @Html.HiddenFor(model => model.CreatedDate)
                         @Html.HiddenFor(model => model.DocumentStatus)
-                        
+
                         @Html.HiddenFor(model => model.KppBcCity)
                         @Html.HiddenFor(model => model.CeOfficeCode)
-                        
+
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                        @*@Html.HiddenFor(model => model.SubmissionDate)*@
-                       
+
+
+
                         @Html.HiddenFor(model => model.SourceNpwp)
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
-                        @Html.HiddenFor(model => model.SourceCompanyName)
-                        @Html.HiddenFor(model => model.SourceAddress)
                         @Html.HiddenFor(model => model.SourceKppbcName)
                         @Html.HiddenFor(model => model.SourcePlantName)
+
+                        @if (Model.IsCk5PortToImporter)
+                        {
+                            @Html.HiddenFor(model => model.SourcePlantId)
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.SourceCompanyName)
+                            @Html.HiddenFor(model => model.SourceAddress)
+                        }
 
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-                        @Html.HiddenFor(model => model.DestCompanyName)
-                        @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
+                        
+                        @if (!Model.IsCk5Export)
+                        {
+                            @Html.HiddenFor(model => model.DestCompanyName)
+                            @Html.HiddenFor(model => model.DestAddress)
+                        }
 
-                       
+
+
                         @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
-                        
-                      @Html.HiddenFor(model => model.IsCk5Export)
+
+                        @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
                         @Html.HiddenFor(model => model.CountryName)
 
@@ -84,8 +98,8 @@
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5UploadEdit")
                         @Html.Partial("_CK5ChangeLog")
-                       
-                     
+
+
 
                     </div>
                 </div>
@@ -123,8 +137,8 @@
                 Submit Documents  ?
             </div>
             <div class="modal-footer">
-                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes"/>
-                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No"/>
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
             </div>
         </div>
     </div>
@@ -205,7 +219,7 @@
         $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
 
         $('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
+            location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
         });
 
         $("#btnSave").click(function () {
@@ -227,6 +241,12 @@
     $("#DestPlantId").change(function () {
         if ($("#DestPlantId").length) {
             var destPlant = $(this).find("option:selected").val();
+            var isPortToImporter = false;
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
+                isPortToImporter = true;
+                RemoveTable();
+            }
+
             if (destPlant == '') {
                 $("input[name='DestNpwp']").val('');
                 $("input[name='DestNppbkcId']").val('');
@@ -239,48 +259,84 @@
                 $("input[name='PbckDecreeId']").val('');
                 $("input[name='PbckDecreeNumber']").val('');
                 $("input[name='PbckDecreeDate']").val('');
-                $("input[name='Pbck1QtyApproved']").val('');
-                $("input[name='Ck5TotalExciseable']").val('');
-                $("input[name='RemainQuota']").val('');
+                $("input[name='Pbck1QtyApproved']").val('0');
+                $("input[name='Ck5TotalExciseable']").val('0');
+                $("input[name='RemainQuota']").val('0');
+
+                $("input[name='PbckUom']").val('');
 
             } else {
-                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: '@DateTime.Now' });
 
+                if (isPortToImporter) {
+                    //alert(destPlant);
+                    ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                } else {
+                    var submissionDate = $('#SubmissionDate').val();
+                    if (submissionDate == '')
+                        submissionDate = '@DateTime.Now';
+
+                    var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                    var _goodtypegroupid = $("#GoodType").val();
+                    //var Ck5_Type = $("#Ck5Type").val();
+                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid});
+
+                }
             }
         }
     });
 
-    $("#SourcePlantId").change(function () {
-        if ($("#SourcePlantId").length) {
-            var sourcePlant = $(this).find("option:selected").val();
+    $("#GoodType").change(function () {
+        var _goodtypegroupid = $("#GoodType").val();
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+        var destPlant = $("#DestPlantId").find("option:selected").val();
+        var Ck5_Type = $("#Ck5Type").val();
+        if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+            $("input[name='PbckDecreeId']").val('');
+            $("input[name='PbckDecreeNumber']").val('');
+            $("input[name='PbckDecreeDate']").val('');
+            $("input[name='Pbck1QtyApproved']").val('0');
+            $("input[name='Ck5TotalExciseable']").val('0');
+            $("input[name='RemainQuota']").val('0');
+            $("input[name='PbckUom']").val('');
+        } else {
             var submissionDate = $('#SubmissionDate').val();
-            //remove table
-            RemoveTable();
+            if (submissionDate == '')
+                submissionDate = '@DateTime.Now';
 
-            if (sourcePlant == '') {
-                $("input[name='SourceNpwp']").val('');
-                $("input[name='SourceNppbkcId']").val('');
-                $("input[name='SourceCompanyCode']").val('');
-                $("input[name='SourceCompanyName']").val('');
-                $("*[name='SourceAddress']").val('');
-                $("input[name='SourceKppbcName']").val('');
-                $("input[name='SourcePlantName']").val('');
-                //enable upload
-                $('#btnUploadInfo').enable(false);
-                $('#CK5UploadSubmitBtn').enable(false);
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+            }
 
-                $("input[name='KppBcCity']").val('');
-                $("input[name='CeOfficeCode']").val('');
+        });
+
+        $("#SourcePlantId").change(function () {
+            if ($("#SourcePlantId").length) {
+                var sourcePlant = $(this).find("option:selected").val();
+                //var submissionDate = $('#SubmissionDate').val();
+                //remove table
+                RemoveTable();
+
+                if (sourcePlant == '') {
+                    $("input[name='SourceNpwp']").val('');
+                    $("input[name='SourceNppbkcId']").val('');
+                    $("input[name='SourceCompanyCode']").val('');
+                    $("input[name='SourceCompanyName']").val('');
+                    $("*[name='SourceAddress']").val('');
+                    $("input[name='SourceKppbcName']").val('');
+                    $("input[name='SourcePlantName']").val('');
+                    //enable upload
+                    $('#btnUploadInfo').enable(false);
+                    $('#CK5UploadSubmitBtn').enable(false);
+
+                    $("input[name='KppBcCity']").val('');
+                    $("input[name='CeOfficeCode']").val('');
 
 
+                } else {
 
-            } else {
 
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type : '@Model.Ck5Type' });
 
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
-
-                ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
+                    ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
         }
     });
@@ -318,5 +374,5 @@
         window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
     }
-</script>
+    </script>
 }

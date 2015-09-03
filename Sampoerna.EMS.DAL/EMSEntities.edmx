@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BACK1">
           <Key>
             <PropertyRef Name="BACK1_ID" />
@@ -24,7 +24,7 @@
           <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
           <Key>
             <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
@@ -95,7 +95,7 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="REPORTED_MONTH" Type="int" />
           <Property Name="REPORTED_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
-          <Property Name="GOV_STATUS" Type="int" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="int" />
         </EntityType>
         <EntityType Name="CK4C_ITEM">
           <Key>
@@ -351,7 +351,6 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="BEGINING_BALANCE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="USAGE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TOTAL_PRODUCTION" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="int" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -385,7 +384,7 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Key>
             <PropertyRef Name="LACK1_PBCK1_MAPPING_ID" />
           </Key>
-          <Property Name="LACK1_PBCK1_MAPPING_ID" Type="bigint" Nullable="false" />
+          <Property Name="LACK1_PBCK1_MAPPING_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LACK1_ID" Type="int" Nullable="false" />
           <Property Name="PBCK1_ID" Type="int" Nullable="false" />
         </EntityType>
@@ -437,6 +436,10 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="LACK2_NUMBER" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="LACK2_DOCUMENT">
           <Key>
@@ -640,7 +643,7 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="PBCK3_DATE" Type="datetime" />
           <Property Name="DOC_TYPE" Type="int" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
           <Property Name="EXEC_DATE_FROM" Type="datetime" />
@@ -2061,15 +2064,15 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001K_T1001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+        <Association Name="FK_T001K_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="T001">
-              <PropertyRef Name="BUKRS" />
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
             </Principal>
             <Dependent Role="T001K">
-              <PropertyRef Name="BUKRS" />
+              <PropertyRef Name="BWKEY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2773,8 +2776,8 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
-            <End Role="T001" EntitySet="T001" />
+          <AssociationSet Name="FK_T001K_T001W" Association="Self.FK_T001K_T001W">
+            <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
@@ -3386,15 +3389,6 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1_PRODUCTION_DETAIL" EntitySet="LACK1_PRODUCTION_DETAIL" />
           </AssociationSet>
-          <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="EMSModel.LACK1_PBCK1_MAPPING" />
-          <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_LACK1" Association="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1">
-            <End Role="LACK1" EntitySet="LACK1" />
-            <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_PBCK1" Association="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1">
-            <End Role="PBCK1" EntitySet="PBCK1" />
-            <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
-          </AssociationSet>
           <EntitySet Name="CK4C_ITEM" EntityType="EMSModel.CK4C_ITEM" />
           <AssociationSet Name="FK_CK4C_ITEM_CK4C" Association="EMSModel.FK_CK4C_ITEM_CK4C">
             <End Role="CK4C" EntitySet="CK4C" />
@@ -3410,6 +3404,15 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           </AssociationSet>
           <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
           <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
+          <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="EMSModel.LACK1_PBCK1_MAPPING" />
+          <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_LACK1" Association="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_PBCK1" Association="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4002,8 +4005,8 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
           <Property Name="SUPPLIER_KPPBC_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_COMPANY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="PBCK1" ToRole="LACK1_PBCK1_MAPPING" />
           <Property Name="IS_NPPBKC_IMPORT" Type="Boolean" />
+          <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="PBCK1" ToRole="LACK1_PBCK1_MAPPING" />
           </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -5308,7 +5311,7 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
           <Property Name="DOC_TYPE" Type="Int32" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
@@ -5522,7 +5525,6 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="BEGINING_BALANCE" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="USAGE" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TOTAL_PRODUCTION" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="EMSModel.Lack1Level" Nullable="false" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -5821,6 +5823,10 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="LACK2" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="LACK2" ToRole="USER" />
           <Property Name="LACK2_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_LACK2_DOCUMENT_LACK2">
           <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
@@ -5957,40 +5963,6 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="LACK1_PBCK1_MAPPING">
-          <Key>
-            <PropertyRef Name="LACK1_PBCK1_MAPPING_ID" />
-          </Key>
-          <Property Name="LACK1_PBCK1_MAPPING_ID" Type="Int64" Nullable="false" />
-          <Property Name="LACK1_ID" Type="Int32" Nullable="false" />
-          <Property Name="PBCK1_ID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" FromRole="LACK1_PBCK1_MAPPING" ToRole="LACK1" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="LACK1_PBCK1_MAPPING" ToRole="PBCK1" />
-        </EntityType>
-        <Association Name="FK_LACK1_PBCK1_MAPPING_LACK1">
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
-          <End Type="EMSModel.LACK1_PBCK1_MAPPING" Role="LACK1_PBCK1_MAPPING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LACK1">
-              <PropertyRef Name="LACK1_ID" />
-            </Principal>
-            <Dependent Role="LACK1_PBCK1_MAPPING">
-              <PropertyRef Name="LACK1_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LACK1_PBCK1_MAPPING_PBCK1">
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="1" />
-          <End Type="EMSModel.LACK1_PBCK1_MAPPING" Role="LACK1_PBCK1_MAPPING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PBCK1">
-              <PropertyRef Name="PBCK1_ID" />
-            </Principal>
-            <Dependent Role="LACK1_PBCK1_MAPPING">
-              <PropertyRef Name="PBCK1_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="CK4C_ITEM">
           <Key>
             <PropertyRef Name="CK4C_ITEM_ID" />
@@ -6081,6 +6053,40 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="REJECT_QTY_STICK" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="LACK1_PBCK1_MAPPING">
+          <Key>
+            <PropertyRef Name="LACK1_PBCK1_MAPPING_ID" />
+          </Key>
+          <Property Name="LACK1_PBCK1_MAPPING_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" Nullable="false" />
+          <Property Name="PBCK1_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" FromRole="LACK1_PBCK1_MAPPING" ToRole="LACK1" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="LACK1_PBCK1_MAPPING" ToRole="PBCK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_PBCK1_MAPPING_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_PBCK1_MAPPING" Role="LACK1_PBCK1_MAPPING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PBCK1_MAPPING">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_PBCK1_MAPPING_PBCK1">
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_PBCK1_MAPPING" Role="LACK1_PBCK1_MAPPING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PBCK1_MAPPING">
+              <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6971,7 +6977,6 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="LACK1_LEVEL" ColumnName="LACK1_LEVEL" />
-                <ScalarProperty Name="TOTAL_PRODUCTION" ColumnName="TOTAL_PRODUCTION" />
                 <ScalarProperty Name="USAGE" ColumnName="USAGE" />
                 <ScalarProperty Name="TOTAL_INCOME" ColumnName="TOTAL_INCOME" />
                 <ScalarProperty Name="BEGINING_BALANCE" ColumnName="BEGINING_BALANCE" />
@@ -7072,6 +7077,10 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <EntitySetMapping Name="LACK2">
             <EntityTypeMapping TypeName="EMSModel.LACK2">
               <MappingFragment StoreEntitySet="LACK2">
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
                 <ScalarProperty Name="LACK2_NUMBER" ColumnName="LACK2_NUMBER" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
@@ -7137,15 +7146,6 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LACK1_PBCK1_MAPPING">
-            <EntityTypeMapping TypeName="EMSModel.LACK1_PBCK1_MAPPING">
-              <MappingFragment StoreEntitySet="LACK1_PBCK1_MAPPING">
-                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
-                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
-                <ScalarProperty Name="LACK1_PBCK1_MAPPING_ID" ColumnName="LACK1_PBCK1_MAPPING_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CK4C_ITEM">
             <EntityTypeMapping TypeName="EMSModel.CK4C_ITEM">
               <MappingFragment StoreEntitySet="CK4C_ITEM">
@@ -7189,6 +7189,15 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_PBCK1_MAPPING">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_PBCK1_MAPPING">
+              <MappingFragment StoreEntitySet="LACK1_PBCK1_MAPPING">
+                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_PBCK1_MAPPING_ID" ColumnName="LACK1_PBCK1_MAPPING_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -32,9 +32,18 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ModifiedDate { get; set; }
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
+
+        public string ApprovedByManager { get; set; }
+        public DateTime? ApprovedDateManager { get; set; }
+
+        public string RejectedBy { get; set; }
+        public DateTime? RejectedDate { get; set; }
+       
         public string NppbkcId { get; set; }
 
-        public List<Lack2ItemDto> Items { get; set; } 
+        public List<Lack2ItemDto> Items { get; set; }
+
+        public string Comment { get; set; }
 
         
     }
