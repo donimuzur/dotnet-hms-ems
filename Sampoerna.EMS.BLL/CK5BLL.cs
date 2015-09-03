@@ -1777,7 +1777,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype)
         {
             var output = new GetQuotaAndRemainOutput();
 
@@ -1822,7 +1822,8 @@ namespace Sampoerna.EMS.BLL
             var lisCk5 =
                 _repository.Get(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled && c.SOURCE_PLANT_ID == pbck1.SupplierPlantWerks 
                     && c.DEST_PLANT_NPPBKC_ID == pbck1.NppbkcId
-                    && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd);
+                    && c.SUBMISSION_DATE >= pbck1.PeriodFrom && c.SUBMISSION_DATE <= periodEnd
+                    && c.EX_GOODS_TYPE == (Enums.ExGoodsType) exgrouptype);
 
             decimal qtyCk5 = 0;
 
@@ -1849,7 +1850,7 @@ namespace Sampoerna.EMS.BLL
 
             if (ck5DbData.PBCK1_DECREE_ID.HasValue)
             {
-                return GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value);
+                return GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value, (int)ck5DbData.EX_GOODS_TYPE);
             }
 
             else
@@ -1881,7 +1882,8 @@ namespace Sampoerna.EMS.BLL
                             c.STATUS_ID != Enums.DocumentStatus.Cancelled &&
                             c.SOURCE_PLANT_ID == ck5DbData.SOURCE_PLANT_ID
                              && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc
-                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd);
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd 
+                            && c.EX_GOODS_TYPE == (Enums.ExGoodsType)ck5DbData.EX_GOODS_TYPE);
 
                 decimal qtyCk5 = 0;
 
@@ -1994,7 +1996,7 @@ namespace Sampoerna.EMS.BLL
                             c.STATUS_ID != Enums.DocumentStatus.Cancelled
                             && c.SOURCE_PLANT_ID == plantId
                             && c.DEST_PLANT_NPPBKC_ID == pbck1npbkc
-                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd).ToList();
+                            && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd && c.EX_GOODS_TYPE == (Enums.ExGoodsType)goodtypegroupid.Value).ToList();
 
                 decimal qtyCk5 = 0;
 
