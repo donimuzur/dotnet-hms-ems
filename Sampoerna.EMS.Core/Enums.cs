@@ -483,5 +483,14 @@ namespace Sampoerna.EMS.Core
             Ck4CDocument = 3
 
         }
+
+        public enum MovementTypeCode
+        {
+            [Description("101")]
+            ProductionAdd = 101,
+            [Description("102")]
+            ProductionMin = 102
+        }
+
     }
 }
