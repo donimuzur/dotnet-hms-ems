@@ -390,82 +390,22 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5type)
+        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type)
         {
             var dbPlant = _plantBll.GetT001ById(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
 
-            if (ck5type == Enums.CK5Type.ImporterToPlant)
+            if (ck5Type == Enums.CK5Type.ImporterToPlant)
             {
-
                 model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
             }
 
             
-            //var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(plantId, submissionDate, destNppbkc);
-
-            //model.Pbck1Id = output.Pbck1Id;
-            //model.Pbck1Number = output.Pbck1Number;
-            //model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-            //model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-            //model.Ck5TotalExciseable = output.QtyCk5.ToString();
-            //model.RemainQuota = output.RemainQuota.ToString();
-
+      
             return Json(model);
         }
 
-        //[HttpPost]
-        //public JsonResult GetSourcePlantDetailsAndPbckList(string plantId)
-        //{
-        //    var dbPlant = _plantBll.GetT001ById(plantId);
-        //    var model = Mapper.Map<CK5PlantModel>(dbPlant);
-
-        //    //model.PbckList = new List<Ck5ListPbck1Completed>();
-        //    List<Pbck1Dto> pbck1Data;
-        //    pbck1Data = _pbck1Bll.GetPbck1CompletedDocumentByPlant(plantId);
-        //    model.PbckList = Mapper.Map<List<Ck5ListPbck1Completed>>(pbck1Data);
-
-        //    return Json(model);
-        //}
-
-        //[HttpPost]
-        //public JsonResult Pbck1DatePartial(long pbck1Id)
-        //{
-         
-        //    return Json(GetDatePbck1ByPbckId(pbck1Id));
-        //}
-
-        //[HttpPost]
-        //public JsonResult GetDateAndQuotaPbck1(int? id)
-        //{
-        //    var model = new QuotaPbck1Model();
-        //    if (id.HasValue)
-        //    {
-        //        var result = _ck5Bll.GetQuotaRemainAndDatePbck1(id.Value);
-        //        model.Pbck1QtyApproved = result.QtyApprovedPbck1.ToString();
-        //        model.Ck5TotalExciseable = result.QtyCk5.ToString();
-        //        model.RemainQuota = (result.QtyApprovedPbck1 - result.QtyCk5).ToString();
-
-        //        model.Pbck1DecreeDate = result.Pbck1DecreeDate;
-        //    }
-            
-            
-
-        //    return Json(model);
-
-        //}
-        //private string GetDatePbck1ByPbckId(long? id)
-        //{
-        //    if (id == null)
-        //        return string.Empty;
-
-        //    var pbck1 = _pbck1Bll.GetById(id.Value);
-        //    if (pbck1.DecreeDate.HasValue)
-        //        return pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
-
-        //    return string.Empty;
-        //}
-        
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SaveCK5(CK5FormViewModel model)
