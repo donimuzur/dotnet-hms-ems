@@ -237,8 +237,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (saveOutput.Success)
                 {
                     AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
-                    //return RedirectToAction("Edit");
-                    return RedirectToAction("Index");
+                    if (model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                    {
+                        return RedirectToAction("Index");    
+                    }
+                    return RedirectToAction("ListByPlant");
                 }
             }
             catch (DbEntityValidationException ex)

@@ -116,7 +116,6 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BEGINING_BALANCE, opt => opt.MapFrom(src => src.BeginingBalance))
                 .ForMember(dest => dest.TOTAL_INCOME, opt => opt.MapFrom(src => src.TotalIncome))
                 .ForMember(dest => dest.USAGE, opt => opt.MapFrom(src => src.TotalUsage))
-                .ForMember(dest => dest.TOTAL_PRODUCTION, opt => opt.MapFrom(src => src.TotalProduction))
                 .ForMember(dest => dest.LACK1_UOM_ID, opt => opt.MapFrom(src => src.Lack1UomId))
                 .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))
                 //.ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.PlantList))) //todo: set from BLL
