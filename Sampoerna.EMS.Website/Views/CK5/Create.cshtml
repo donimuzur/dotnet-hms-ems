@@ -54,11 +54,16 @@
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-                        @Html.HiddenFor(model => model.DestCompanyName)
-                        @Html.HiddenFor(model => model.DestAddress)
+                       
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
                      
+                        @if (!Model.IsCk5Export)
+                        {
+                            @Html.HiddenFor(model => model.DestCompanyName)
+                            @Html.HiddenFor(model => model.DestAddress)
+                        }
+                        
                         @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
@@ -161,7 +166,7 @@
             if ($("#DestPlantId").length) {
                 //alert($('#SubmissionDate').val());
                 var isPortToImporter = false;
-                if ('@Model.Ck5Type.ToString() == "PortToImporter"') {
+                if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
                     isPortToImporter = true;
                     RemoveTable();
                 }
@@ -194,7 +199,7 @@
 
                     if (isPortToImporter) {
                         //alert(destPlant);
-                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type:'@Model.Ck5Type' });
                     } else {
 
 
@@ -204,8 +209,8 @@
 
                         var sourcePlant = $("#SourcePlantId").find("option:selected").val();
                         var _goodtypegroupid = $("#GoodType").val();
-                        var Ck5_Type = $("#Ck5Type").val();
-                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid, Ck5Type: Ck5_Type });
+                        
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
 
                     }
 
@@ -262,8 +267,8 @@
 
 
                 } else {
-
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                    
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type : '@Model.Ck5Type' });
                 }
             }
         });

@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.BLL
         private IPBCK1BLL _pbck1Bll;
         private ICountryBLL _countryBll;
         private IExGroupTypeBLL _goodTypeGroupBLL;
+        private IVirtualMappingPlantBLL _virtualMappingBLL;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -74,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _countryBll = new CountryBLL(_uow,_logger);
             _materialBll = new MaterialBLL(_uow, _logger);
             _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
+            _virtualMappingBLL = new VirtualMappingPlantBLL(_uow, _logger);
         }
         
 
@@ -233,20 +235,22 @@ namespace Sampoerna.EMS.BLL
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
-                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
-
-
                 if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
                 {
                     if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
                         input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
                 }
 
+                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
+
+                
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
                 //no change status for edit 2015-07-24
                 //dbData.STATUS_ID = Enums.DocumentStatus.Revised;
                 dbData.MODIFIED_DATE = DateTime.Now;
+
+              
 
                 //delete child first
                 foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
@@ -1231,11 +1235,22 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
-            if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+
+            if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
             {
-                result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                result.ReportDetails.OfficeCode = string.Empty;
+                result.ReportDetails.SourceOfficeCode = string.Empty;
+            }
+            else
+            {
+                if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+                {
+                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                }
             }
             result.ReportDetails.SourcePlantName = dtData.SOURCE_PLANT_COMPANY_NAME;
           
@@ -1788,7 +1803,15 @@ namespace Sampoerna.EMS.BLL
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return Mapper.Map<CK5XmlDto>(dtData);
+            var dataXmlDto = Mapper.Map<CK5XmlDto>(dtData);
+
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.ImporterToPlant) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+                dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+                dataXmlDto.SOURCE_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
+            
+            return dataXmlDto;
 
         }
 
