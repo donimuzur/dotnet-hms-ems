@@ -276,9 +276,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlant()
+        public JsonResult GetSupplierPlant(bool isNppbkcImport)
         {
-            return Json(GlobalFunctions.GetPlantAll());
+            return Json(GlobalFunctions.GetPlantByNppbkcImport(isNppbkcImport));
         }
 
         [HttpPost]
@@ -289,13 +289,16 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlantDetail(string plantid)
+        public JsonResult GetSupplierPlantDetail(string plantid, bool isNppbkcImport)
         {
             var data = _plantBll.GetId(plantid);
 
             var lfa1Data = _lfa1Bll.GetById(data.KPPBC_NO);
 
             data.KPPBC_NAME = lfa1Data.NAME1;
+
+            if (isNppbkcImport)
+                data.NPPBKC_ID = data.NPPBKC_IMPORT_ID;
 
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }

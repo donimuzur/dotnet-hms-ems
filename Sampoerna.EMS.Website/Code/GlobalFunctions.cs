@@ -402,6 +402,29 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "BUTXT", "BUTXT");
         }
 
+        public static SelectList GetPlantByNppbkcImport(bool isNppbkcImport)
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true)
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+
+            if(isNppbkcImport)
+                plantIdList =
+                    plantIdList.Where(
+                        x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true && x.NPPBKC_IMPORT_ID != null)
+                        .OrderBy(x => x.WERKS)
+                        .ToList();
+
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+
     }
 
 }
