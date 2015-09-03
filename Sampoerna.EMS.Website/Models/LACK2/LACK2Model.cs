@@ -72,6 +72,14 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string PeriodMonthName { get; set; }
 
         public string Comment { get; set; }
+        public string ApprovedByManager { get; set; }
+        public DateTime? ApprovedDateManager { get; set; }
+
+        public string RejectedBy { get; set; }
+        public DateTime? RejectedDate { get; set; }
+       
+       
+      
     }
 
    
