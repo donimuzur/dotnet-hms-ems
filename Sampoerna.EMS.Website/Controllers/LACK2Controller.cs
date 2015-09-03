@@ -77,6 +77,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
             model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
+            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
              return View("Index", model);
         }
 
@@ -150,7 +151,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
 
             _lack2Bll.Insert(item);
-          
+            AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -159,13 +160,12 @@ namespace Sampoerna.EMS.Website.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-      
-        public ActionResult Edit(int? id)
+       public ActionResult Edit(int? id)
         {
             if (!id.HasValue)
                 return HttpNotFound();
             var model = InitDetailModel(id);
+            model.DocStatus = model.Lack2Model.Status;
             return View("Edit", model);
         }
 
@@ -230,6 +230,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(LACK2CreateViewModel model)
         {
 
+            if (model.IsSaveSubmit)
+            {
+                return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
+            }
             Lack2Dto item = new Lack2Dto();
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
@@ -249,11 +253,8 @@ namespace Sampoerna.EMS.Website.Controllers
             item.Status = Enums.DocumentStatus.Draft;
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
-
-            item.ApprovedBy = CurrentUser.USER_ID;
-            item.ApprovedDate = DateTime.Now;
-             _lack2Bll.Insert(item);
-
+            _lack2Bll.Insert(item);
+             AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -265,8 +266,10 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!id.HasValue)
                 return HttpNotFound();
             var model = InitDetailModel(id);
-            model.FormStatus = "Submit";
-            
+            var periodMonth = _monthBll.GetMonth(Convert.ToInt32(model.Lack2Model.PeriodMonth));
+            if (periodMonth != null)
+                model.Lack2Model.PeriodMonthName = periodMonth.MONTH_NAME_IND;
+            model.DocStatus = model.Lack2Model.Status;
             return View("Detail", model);
         }
 
@@ -274,33 +277,44 @@ namespace Sampoerna.EMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Detail(LACK2CreateViewModel model)
         {
-            if (model.FormStatus == "Submit")
-            {
-                return RedirectToAction("Submit", new { id = model.Lack2Model.Lack2Id});
-            }
-            if (model.FormStatus == "Approve")
+            
+            if (model.ActionType == "Approve")
             {
                 return RedirectToAction("Approve",new { id = model.Lack2Model.Lack2Id});
             }
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         public ActionResult Submit(int id)
         {
+            //var refferUrl = new Uri(Url.Action("Detail", "LACK2", new {id = id}), UriKind.Absolute);
+            //var m = Request.UrlReferrer;
             
             var item = _lack2Bll.GetByIdAndItem(id);
             if (item.Status == Enums.DocumentStatus.Draft)
             {
-                item.Status = Enums.DocumentStatus.Approved;
+                item.Status = Enums.DocumentStatus.WaitingForApproval;
             }
-
-            //if (Request.UrlReferrer == new Uri(Url.Action("Detail", "LACK2", new { id= id}), UriKind.Absolute))
-            //{
-             
-            //}
+             item.Items = null;
+            item.ApprovedBy = CurrentUser.USER_ID;
+            item.ApprovedDate = DateTime.Now;
             _lack2Bll.Insert(item);
-            return View("Index");
+            return RedirectToAction("Index");
         }
+
+        public ActionResult Approve(int id)
+        {
+            var item = _lack2Bll.GetByIdAndItem(id);
+            if (item.Status == Enums.DocumentStatus.WaitingForApproval)
+            {
+                item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
+            }
+            item.Items = null;
+            _lack2Bll.Insert(item);
+            return RedirectToAction("Index");
+        }
+
+       
 
         #region List By Plant
 
@@ -460,6 +474,28 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+        public ActionResult RejectDocument(LACK2CreateViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
+                item.Status = Enums.DocumentStatus.Rejected;
+                item.Comment = model.Lack2Model.Comment;
+                item.Items = null;
+                _lack2Bll.Insert(item);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Model.Lack2Id });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+        
 
 
         [HttpPost]

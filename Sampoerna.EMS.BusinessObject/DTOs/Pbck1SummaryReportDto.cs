@@ -59,6 +59,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public List<T001WDto> NppbkcPlants { get; set; }
-
+        public bool IsNppbkcImport { get; set; }
     }
 }
