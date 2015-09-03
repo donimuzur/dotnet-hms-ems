@@ -49,5 +49,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public Enums.DocumentStatus? DocStatus { get; set; }
 
         public bool IsSaveSubmit { get; set; }
+
+        
     }
 }

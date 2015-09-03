@@ -74,6 +74,19 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         
     }
 
+    public class Lack2WorkflowDocumentInput
+    {
+        public long DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string DocumentNumber { get; set; }
+
+        
+
+    }
+
     public class Pbck1WorkflowDocumentData
     {
         public decimal QtyApproved { get; set; }
