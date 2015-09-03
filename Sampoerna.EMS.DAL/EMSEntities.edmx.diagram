@@ -186,11 +186,11 @@
         <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_CK4C" />
         <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_UOM" />
         <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" />
-        <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="11.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
         <EntityTypeShape EntityType="EMSModel.LACK1_PBCK1_MAPPING" Width="1.5" PointX="21.75" PointY="27.375" />
         <AssociationConnector Association="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" />
         <AssociationConnector Association="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" />
+        <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="11.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
