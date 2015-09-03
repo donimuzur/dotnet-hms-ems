@@ -17,6 +17,8 @@ namespace Sampoerna.EMS.Contract
         Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input);
 
         Lack1CreateOutput Create(Lack1CreateParamInput input);
-        
+
+        Lack1DetailsDto GetDetailsById(int id);
+
     }
 }

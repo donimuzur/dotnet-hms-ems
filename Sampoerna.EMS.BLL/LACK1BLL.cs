@@ -149,6 +149,12 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
+        public Lack1DetailsDto GetDetailsById(int id)
+        {
+            var dbData = _lack1Service.GetDetailsById(id);
+            return Mapper.Map<Lack1DetailsDto>(dbData);
+        }
+
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
         {
             return _lack1Service.GetLatestSaldoPerPeriod(input);
