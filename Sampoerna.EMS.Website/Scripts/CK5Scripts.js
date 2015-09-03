@@ -31,8 +31,11 @@ function OnReadyFunction(ck5Type) {
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
         total = 0;
+        var isSamePbck1Uom = true;
+        
+        var data = "";
         for (var i = 0; i < datarows.length; i++) {
-            var data = '<tr>';
+            data += '<tr>';
             if (columnLength > 0) {
                 data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
@@ -46,7 +49,8 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                //data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">';
                 //alert(datarows[i][13]);
                 total += parseFloat(datarows[i][1]); //Qty
                 if (i == 0) {
@@ -59,9 +63,12 @@ function OnReadyFunction(ck5Type) {
                 }
             }
             data += '</tr>';
-            $('#ck5TableItem tbody').append(data);
-        }
+            if (datarows[i][2] != ($('#PbckUom').val()))
+                isSamePbck1Uom = false;
 
+            //$('#ck5TableItem tbody').append(data);
+        }
+        
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
         
@@ -73,25 +80,42 @@ function OnReadyFunction(ck5Type) {
         $('#information').addClass('active');
         $('#upload').removeClass('active');
 
-        $('#collapse5').addClass('in');
+        $('#collapse5').addClass('in');        
+
+
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter') {
+            $('#ck5TableItem tbody').append(data);
+            return;
+        }
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val())) {
+            $('#ck5TableItem tbody').append(data);
+            return;
+        }
+
+        //if pbck1 uom not same not append the data
+        if (!isSamePbck1Uom) {
+            var pbck1Uom = $('#PbckUom').val();
+            $('#modalBodyMessage').text('Pbck1 Uom Not Same, pbck1 Uom : ' + pbck1Uom);
+            $('#ModalCk5Material').modal('show');
+            return;
+
+        }
+
+        $('#ck5TableItem tbody').append(data);
         
-
-
-        if (ck5Type == 'Export' || ck5Type == 'PortToImporter')
-            return;
-
-        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
-            return;
-
         ValidateRemainQuota(total);
+        
     });
     
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
-
-    
     
 }
+
+function ValidatePbck1Uom() {
+    
+}
+
 
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
@@ -209,6 +233,8 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
                 $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
                 $("input[name='RemainQuota']").val(data.RemainQuota);
+                //alert(data.PbckUom);
+                $("input[name='PbckUom']").val(data.PbckUom);
             }
         });
     }
