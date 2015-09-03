@@ -1779,8 +1779,13 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             var dataXmlDto = Mapper.Map<CK5XmlDto>(dtData);
-            //_virtualMappingBLL.
 
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.ImporterToPlant) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+                dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+                dataXmlDto.SOURCE_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
+            
             return dataXmlDto;
 
         }
