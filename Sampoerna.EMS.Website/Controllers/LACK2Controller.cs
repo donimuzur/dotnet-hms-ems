@@ -282,20 +282,28 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("Approve",new { id = model.Lack2Model.Lack2Id});
             }
+            
             return RedirectToAction("Index");
         }
 
         public ActionResult Submit(int id)
         {
-            //var refferUrl = new Uri(Url.Action("Detail", "LACK2", new {id = id}), UriKind.Absolute);
-            //var m = Request.UrlReferrer;
-            
+            var urlBuilder =
+                    new System.UriBuilder(Request.Url.AbsoluteUri)
+                    {
+                        Path = Url.Action("Edit", "LACK2", new { id= id }),
+                        Query = null ,
+                    };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
             var item = _lack2Bll.GetByIdAndItem(id);
             if (item.Status == Enums.DocumentStatus.Draft)
             {
                 item.Status = Enums.DocumentStatus.WaitingForApproval;
             }
-             item.Items = null;
+            item.Items = null;
             item.ApprovedBy = CurrentUser.USER_ID;
             item.ApprovedDate = DateTime.Now;
             _lack2Bll.Insert(item);
@@ -304,11 +312,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Approve(int id)
         {
+            var urlBuilder =
+                   new System.UriBuilder(Request.Url.AbsoluteUri)
+                   {
+                       Path = Url.Action("Detail", "LACK2", new { id = id }),
+                       Query = null,
+                   };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
             var item = _lack2Bll.GetByIdAndItem(id);
             if (item.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
             }
+            item.ApprovedBy = CurrentUser.USER_ID;
+            item.ApprovedDate = DateTime.Now;
             item.Items = null;
             _lack2Bll.Insert(item);
             return RedirectToAction("Index");
@@ -482,6 +502,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
                 item.Status = Enums.DocumentStatus.Rejected;
                 item.Comment = model.Lack2Model.Comment;
+                item.RejectedBy = CurrentUser.USER_ID;
+                item.RejectedDate = DateTime.Now;
                 item.Items = null;
                 _lack2Bll.Insert(item);
                 isSuccess = true;

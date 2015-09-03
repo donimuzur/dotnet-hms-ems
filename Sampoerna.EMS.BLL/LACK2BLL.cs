@@ -185,23 +185,20 @@ namespace Sampoerna.EMS.BLL
             }
             if (docStatus == Enums.DocumentStatus.WaitingForApproval)
             {
-                return Enums.ActionType.WaitingForApproval;
+                return Enums.ActionType.Submit;
             }
-            if (docStatus == Enums.DocumentStatus.Approved)
+            
+            if (docStatus == Enums.DocumentStatus.WaitingForApprovalManager)
             {
                 return Enums.ActionType.Approve;
             }
-            if (docStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            {
-                return Enums.ActionType.WaitingForApproval;
-            }
             if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                return Enums.ActionType.WaitingForApproval;
+                return Enums.ActionType.GovApprove;
             }
             if (docStatus == Enums.DocumentStatus.GovApproved)
             {
-                return Enums.ActionType.GovApprove;
+                return Enums.ActionType.Completed;
             }
             return Enums.ActionType.Reject;
         }
@@ -223,6 +220,14 @@ namespace Sampoerna.EMS.BLL
             if (lack2.Status == Enums.DocumentStatus.WaitingForApprovalManager)
             {
                 return lack2.ApprovedBy;
+            }
+            if (lack2.Status == Enums.DocumentStatus.Approved)
+            {
+                return lack2.ApprovedByManager;
+            }
+            if (lack2.Status == Enums.DocumentStatus.Rejected)
+            {
+                return lack2.RejectedBy;
             }
            
            
