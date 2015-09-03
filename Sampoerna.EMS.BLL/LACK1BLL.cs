@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BLL
         private ILACK1Service _lack1Service;
         private IT001WService _t001WServices;
         private IExGroupTypeService _exGroupTypeService;
+        private IInventoryMovementService _inventoryMovementService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -55,7 +56,7 @@ namespace Sampoerna.EMS.BLL
             _lack1Service = new LACK1Service(_uow, _logger);
             _t001WServices = new T001WService(_uow, _logger);
             _exGroupTypeService = new ExGroupTypeService(_uow, _logger);
-
+            _inventoryMovementService = new InventoryMovementService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -133,7 +134,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 var plantFromMaster = _t001WServices.GetById(input.ReceivedPlantId);
-                data.LACK1_PLANT = new List<LACK1_PLANT>(){ Mapper.Map<LACK1_PLANT>(plantFromMaster) };
+                data.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
 
             _lack1Service.Insert(data);
@@ -147,12 +148,12 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
-        
+
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
         {
             return _lack1Service.GetLatestSaldoPerPeriod(input);
         }
-        
+
         #region workflow
 
         private void AddWorkflowHistory(Lack1WorkflowDocumentInput input)
@@ -322,12 +323,25 @@ namespace Sampoerna.EMS.BLL
             rc.PeriodYear = input.PeriodYear;
             rc.Noted = input.Noted;
 
-            rc.TotalUsage = 0; //todo: get from Inventory Movement
-            
+            //rc.TotalUsage = 0; //todo: get from Inventory Movement
+
+            //get total usage from INVENTORY MOVEMENT table by param input
+            var invMovementData =
+                _inventoryMovementService.GetTotalUsageForLack1Byparam(new InvMovementGetForLack1ByParamInput()
+                {
+                    Lack1Level = input.Lack1Level,
+                    NppbkcId = input.NppbkcId,
+                    PeriodMonth = input.PeriodMonth,
+                    PeriodYear = input.PeriodYear,
+                    PlantId = input.ReceivedPlantId
+                });
+
+            rc.TotalUsage = invMovementData.Count > 0 ? invMovementData.Sum(d => d.QTY != null ? d.QTY.Value : 0) : 0;
+
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
-            
+
             oReturn.Data = rc;
-            
+
             return oReturn;
         }
 
@@ -506,7 +520,7 @@ namespace Sampoerna.EMS.BLL
                     p.UomDesc
                 }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
                 {
-                   UomId = g.Key.UomId,
+                    UomId = g.Key.UomId,
                     UomDesc = g.Key.UomDesc,
                     Amount = g.Sum(p => p.Amount)
                 });
