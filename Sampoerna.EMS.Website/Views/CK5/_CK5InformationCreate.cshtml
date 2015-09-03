@@ -26,7 +26,7 @@
                                         <div class="row">
                                             <label class="col-md-4">Company Name</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.SourceCompanyName, new {@class = "form-control" })
+                                                @Html.TextBoxFor(model => model.SourceCompanyName, new { @class = "form-control", @maxlength = "35" })
                                             </div>
                                         </div>
                                     </div>
@@ -34,7 +34,7 @@
                                         <div class="row">
                                             <label class="col-md-4">Address</label>
                                             <div class="col-md-8">
-                                                @Html.TextAreaFor(model => model.SourceAddress, new { @rows = "5",  @class = "form-control" })
+                                                @Html.TextAreaFor(model => model.SourceAddress, new { @rows = "5", @class = "form-control", @maxlength = "150" })
                                             </div>
                                         </div>
                                     </div>
