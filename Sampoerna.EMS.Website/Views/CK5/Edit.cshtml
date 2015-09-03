@@ -71,10 +71,15 @@
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-                        @Html.HiddenFor(model => model.DestCompanyName)
-                        @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
+                        
+                        @if (!Model.IsCk5Export)
+                        {
+                            @Html.HiddenFor(model => model.DestCompanyName)
+                            @Html.HiddenFor(model => model.DestAddress)
+                        }
+
 
 
                         @Html.HiddenFor(model => model.PbckDecreeId)

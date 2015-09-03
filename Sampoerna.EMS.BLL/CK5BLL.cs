@@ -235,20 +235,22 @@ namespace Sampoerna.EMS.BLL
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
-                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
-
-
                 if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
                 {
                     if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
                         input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
                 }
 
+                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
+
+                
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
                 //no change status for edit 2015-07-24
                 //dbData.STATUS_ID = Enums.DocumentStatus.Revised;
                 dbData.MODIFIED_DATE = DateTime.Now;
+
+              
 
                 //delete child first
                 foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
@@ -1233,11 +1235,22 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
-            if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+
+            if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
             {
-                result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                result.ReportDetails.OfficeCode = string.Empty;
+                result.ReportDetails.SourceOfficeCode = string.Empty;
+            }
+            else
+            {
+                if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+                {
+                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                }
             }
             result.ReportDetails.SourcePlantName = dtData.SOURCE_PLANT_COMPANY_NAME;
           
