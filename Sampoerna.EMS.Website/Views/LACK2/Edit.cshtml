@@ -1,4 +1,6 @@
 ﻿@using Microsoft.Ajax.Utilities
+@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
 
 @{
@@ -8,20 +10,37 @@
 
 
 
-@using (@Html.BeginForm("Edit", "LACK2"))
+@using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit"}))
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(x=>x.IsSaveSubmit)
     @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
+    @Html.HiddenFor(x => x.Lack2Model.ModifiedBy)
+    @Html.HiddenFor(x => x.Lack2Model.ModifiedDate)
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>LACK-2 Form</h3>
                 <label class="status">@Model.Lack2Model.StatusName</label>
                 <div class="action-button">
-                    <button class="btn btn-blue" onclick="openPanel();" type="Submit">Save</button>
-                    <button class="btn btn-grey">Cancel</button>
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" />
+                    }
+
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
                 </div>
             </div>
         </div>
@@ -61,6 +80,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">LACK-2 No</label>
                                                             <div class="col-md-8">
+                                                                @Html.HiddenFor(x => x.Lack2Model.Lack2Number)
                                                                 @Html.TextBox("lack2no", Model.Lack2Model.Lack2Number,  new { @class = "form-control", @disabled="disabled"})
                                                             </div>
                                                         </div>
@@ -80,7 +100,7 @@
                                                             <div class="col-md-8">
                                                                 <div class="row">
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select", new { @class = "form-control" })
+                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select" , new { @class = "form-control" })
 
 
                                                                     </div>
@@ -95,8 +115,8 @@
 
 
                                                     </div>
-                                                    </div>
-</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +138,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">NPPBKC</label>
                                                                 <div class="col-md-8">
-                                                                   @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -127,7 +147,7 @@
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
                                                                     @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
-                                                                  </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -263,7 +283,7 @@
                                                                 </tr>
                                                             }
                                                            
-                                                                                                            </tbody>
+                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -272,7 +292,9 @@
 
                                 </div>
                             </div>
+                           
                         </div>
+
                         <div role="tabpanel" class="tab-pane" id="printout">
                             <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-default">
@@ -465,14 +487,31 @@
             </div>
         </div>
     </div>
+    <div id="lack2Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Submit</h3>
+                </div>
+                <div class="modal-body">
+                    Submit Documents  ?
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            </div>
+        </div>
+    </div>
 }
 @section Scripts {
    
 
     <script type="text/javascript">
-        var initialEditNppbkc = true;
-        var initialEditPlant = true;
-        var initialEditGoodtype = true;
+    var initialEditNppbkc = true;
+    var initialEditPlant = true;
+    var initialEditGoodtype = true;
     $(function () {
         openPanel();
         $('#Lack2Model_LevelPlantId').html('');
@@ -482,6 +521,15 @@
 
         $('#Lack2Model_Burks').change();
 
+    });
+    $("#btnSubmitConfirm").click(function () {
+        $('#IsSaveSubmit').val('true');
+        $('#form-lack2-edit').submit();
+    });
+
+    $('#btnSubmitDocument').click(function () {
+
+        $('#lack2Modal').modal('show');
     });
     $('#Lack2Model_NppbkcId').change(function () {
 
@@ -504,13 +552,7 @@
             var company = $(this).find("option:selected").val();
             if (company !== '') {
                 ajaxGetNppbkcByCompany(company);
-                var nppbkcid = $('#Lack2Model_NppbkcId').find("option:selected").val();
-                if (nppbkcid != '') {
-                    ajaxGetPlantByNppbkc(nppbkcid);
-                    ajaxGetGoodsTypeByNppbkc(nppbkcid);
-                    ajaxGetPoaByNppbkc(nppbkcid);
-
-                }
+                
 
             }
         }
@@ -524,7 +566,7 @@
             data: { companyId: company },
             success: function (data) {
                 $('#Lack2Model_NppbkcId').html('');
-                if (initialEditNppbkc) {
+               if (initialEditNppbkc) {
                     var nppbkcId = '@Model.Lack2Model.NppbkcId';
                     if (nppbkcId != '') {
 
@@ -534,6 +576,9 @@
                                 $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
                             }
                         }
+                        ajaxGetPlantByNppbkc(nppbkcId);
+                        ajaxGetPoaByNppbkc(nppbkcId);
+                        ajaxGetGoodsTypeByNppbkc(nppbkcId);
                     }
                     initialEditNppbkc = false;
                 } else {
@@ -548,7 +593,7 @@
     }
 
     function ajaxGetPlantByNppbkc(nppbkc) {
-         $.ajax({
+        $.ajax({
             type: 'POST',
             url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
             data: { nppbkcid: nppbkc },
@@ -569,7 +614,7 @@
                     initialEditPlant = false;
                 } else {
                     for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' +  data[i].Value + '-' + data[i].Text + '</option>');
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
 
                     }
                 }
@@ -577,7 +622,7 @@
 
             }
         }
-        );
+       );
 
     }
 
@@ -615,40 +660,43 @@
 
                 if (initialEditGoodtype) {
                     var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
-                        if (exgoodtyp != '') {
 
-                            $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
-                            for (var i = 0; i < data.length; i++) {
-                                if (data[i].value !== exgoodtyp) {
-                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                                }
-                            }
-                        }
-                    initialEditGoodtype = false;
-                    } else {
+                        if (exgoodtyp !== '') {
+                            console.log(data);
+
+                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">'+'@Model.Lack2Model.ExGoodDesc'+'</option>');
                         for (var i = 0; i < data.length; i++) {
-                            $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                            console.log(data[i].ValueField);
+                            // if (data[i].ValueField !== exgoodtyp) {
+                            //$('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
+                            //}
                         }
                     }
-
+                    initialEditGoodtype = false;
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                    }
                 }
-            });
 
-        }
+            }
+        });
 
-        function openPanel() {
-            $('.panel-collapse').removeClass('collapse').addClass('in');
+    }
 
-        }
+    function openPanel() {
+        $('.panel-collapse').removeClass('collapse').addClass('in');
 
-        function GetCk5ByPeriod() {
-            var month = parseInt($('#Lack2Model_PeriodMonth').val());
-            var year = parseInt($('#Lack2Model_PeriodYear').val());
-            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
+    }
+
+    function GetCk5ByPeriod() {
+        var month = parseInt($('#Lack2Model_PeriodMonth').val());
+        var year = parseInt($('#Lack2Model_PeriodYear').val());
+        var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
+        var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
             data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
             success: function (data) {
 

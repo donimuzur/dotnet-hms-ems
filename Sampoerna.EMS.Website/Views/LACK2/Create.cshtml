@@ -511,13 +511,7 @@
                 var company = $(this).find("option:selected").val();
                 if (company !== '') {
                     ajaxGetNppbkcByCompany(company);
-                    var nppbkcid = $('#Lack2Model_NppbkcId').find("option:selected").val();
-                    if (nppbkcid != '') {
-                        ajaxGetPlantByNppbkc(nppbkcid);
-                        ajaxGetGoodsTypeByNppbkc(nppbkcid);
-                        ajaxGetPoaByNppbkc(nppbkcid);
-
-                    }
+                   
 
                 }
             }
@@ -531,7 +525,7 @@
                 data: { companyId: company },
                 success: function(data) {
                     $('#Lack2Model_NppbkcId').html('');
-
+                    $('#Lack2Model_NppbkcId').append('<option>select</option>');
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
                     }

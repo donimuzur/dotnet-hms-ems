@@ -46,7 +46,6 @@ namespace Sampoerna.EMS.BusinessObject
         public decimal BEGINING_BALANCE { get; set; }
         public decimal TOTAL_INCOME { get; set; }
         public decimal USAGE { get; set; }
-        public decimal TOTAL_PRODUCTION { get; set; }
         public Sampoerna.EMS.Core.Enums.Lack1Level LACK1_LEVEL { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }

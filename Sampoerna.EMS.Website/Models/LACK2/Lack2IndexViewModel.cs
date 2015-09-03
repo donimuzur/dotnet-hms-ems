@@ -32,5 +32,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         // for the completed documents
         public LACK2FilterViewModel SearchInput { get; set; }
+
+        
     }
 }
