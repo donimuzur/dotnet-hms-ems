@@ -25,6 +25,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string RemainQuota { get; set; }
         public string Pbck1DecreeDate { get; set; }
 
+        public string PbckUom { get; set; }
+
         public List<Ck5ListPbck1Completed> PbckList { get; set; } 
 
     }

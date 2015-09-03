@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ADDRESS { get; set; }
         public string SKEPTIS { get; set; }
         public string NPPBKC_ID { get; set; }
+        public string NPPBKC_IMPORT_ID { get; set; }
         public DateTime CREATED_DATE { get; set; }
         public DateTime? MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
