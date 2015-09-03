@@ -132,88 +132,94 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier Port</label>
+                                        <label class="col-md-4">NPPBKC ID IMPORT</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.SupplierPortName)
-                                            @Html.DropDownListFor(model => model.Detail.SupplierPortId, Model.SupplierPortList, "None", new { @class = "form-control" })
+                                            @Html.CheckBoxFor(model => model.Detail.IsNppbkcImport)
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">External supplier port</label>
-                                        <div class="col-md-8">
-                                            <div class="row">
-                                                <input type="checkbox" id="externalSupPort"/>
+                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier Port</label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.Detail.SupplierPortName)
+                                                @Html.DropDownListFor(model => model.Detail.SupplierPortId, Model.SupplierPortList, "None", new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">External supplier port</label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.Detail.IsExternalSupplier)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier Plant<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
+                                                <div id="supp-plant">
+                                                    @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier Company</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Detail.SupplierCompany, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier Address</label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.Detail.HiddendSupplierAddress)
+                                                @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier NPPBKC</label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
+                                                @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier KPPBC</label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
+                                                @Html.HiddenFor(model => model.Detail.SupplierKppbcId)
+                                                @Html.TextBoxFor(model => model.Detail.SupplierKppbcName, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Supplier Phone</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Detail.SupplierPhone, new { @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Supplier Plant<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
-                                            <div id="supp-plant">
-                                                @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Supplier Company</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierCompany, new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Supplier Address</label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.HiddendSupplierAddress)
-                                            @Html.TextAreaFor(model => model.Detail.SupplierAddress, new { rows = "5", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Supplier NPPBKC</label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Supplier KPPBC</label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.HiddenSupplierKppbcId)
-                                            @Html.HiddenFor(model => model.Detail.SupplierKppbcId)
-                                            @Html.TextBoxFor(model => model.Detail.SupplierKppbcName, new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Supplier Phone</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierPhone, new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

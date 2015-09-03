@@ -116,6 +116,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC ID IMPORT</label>
+                                        <div class="col-md-8">
+                                            @Html.CheckBoxFor(model => model.Detail.IsNppbkcImport, new { @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -130,9 +138,7 @@
                                     <div class="row">
                                         <label class="col-md-4">External supplier port</label>
                                         <div class="col-md-8">
-                                            <div class="row">
-                                                <input type="checkbox" id="externalSupPortCheck" disabled/>
-                                            </div>
+                                            @Html.CheckBoxFor(model => model.Detail.IsExternalSupplier, new { @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>

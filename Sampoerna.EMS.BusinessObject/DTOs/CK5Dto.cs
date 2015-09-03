@@ -102,5 +102,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
       
         public string GIDateStr { get; set; }
+        public string PbckUom { get; set; }
+
     }
 }

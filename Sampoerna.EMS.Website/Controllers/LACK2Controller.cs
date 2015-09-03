@@ -10,12 +10,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Reports.HeaderFooter;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -36,8 +40,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICK5BLL _ck5Bll;
         private IPBCK1BLL _pbck1Bll;
         private IHeaderFooterBLL _headerFooterBll;
+        private IWorkflowBLL _workflowBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -53,6 +59,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll = ck5Bll;
             _pbck1Bll = pbck1Bll;
             _headerFooterBll = headerFooterBll;
+            _workflowBll = workflowBll;
+            _workflowHistoryBll = workflowHistoryBll;
         }
 
 
@@ -69,8 +77,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
             model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
-            GetNppbkcByCompanyId("1616");
-            return View("Index", model);
+             return View("Index", model);
         }
 
         /// <summary>
@@ -99,12 +106,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            //model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = GlobalFunctions.GetYearList();
             model.UsrRole = CurrentUser.UserRole;
-
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
@@ -112,6 +118,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(LACK2CreateViewModel model)
         {
 
@@ -143,7 +150,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
 
             _lack2Bll.Insert(item);
-
+          
             return RedirectToAction("Index");
         }
 
@@ -153,17 +160,27 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult Edit(int id)
+      
+        public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            var model = InitDetailModel(id);
+            return View("Edit", model);
+        }
+
+        public LACK2CreateViewModel InitDetailModel(int? id)
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetById(id));
-
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetByIdAndItem(id.Value));
+            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
-            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
-
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GlobalFunctions.GetYearList();
+            model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 
             var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
@@ -173,11 +190,43 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
-            model.Lack2Model.LACK2Period = new DateTime(model.Lack2Model.PeriodYear, model.Lack2Model.PeriodMonth, 1);
-            return View("Create", model);
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Lack2Model.Lack2Number;
+            workflowInput.DocumentStatus = model.Lack2Model.Status;
+            workflowInput.NPPBKC_Id = model.Lack2Model.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            model.WorkflowHistory = workflowHistory;
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Lack2Model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = model.Lack2Model.CreatedBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack2Model.Lack2Number,
+                NppbkcId = model.Lack2Model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+            return model;
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(LACK2CreateViewModel model)
         {
 
@@ -185,7 +234,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
+            var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
@@ -194,31 +243,64 @@ namespace Sampoerna.EMS.Website.Controllers
             item.Butxt = company.BUTXT;
             item.LevelPlantName = plant.NAME1;
             item.LevelPlantCity = plant.ORT01;
-            item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
-            item.PeriodYear = model.Lack2Model.LACK2Period.Year;
-
-            if (CurrentUser.UserRole == Enums.UserRole.POA) // && if a file is uploaded needs to be added
-            {
-                item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
-            }
-
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)// && if a file is uploaded needs to be added
-            {
-                item.Status = Enums.DocumentStatus.Completed;
-            }
-
+            item.PeriodMonth = model.Lack2Model.PeriodMonth;
+            item.PeriodYear = model.Lack2Model.PeriodYear;
+         
+            item.Status = Enums.DocumentStatus.Draft;
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
 
             item.ApprovedBy = CurrentUser.USER_ID;
             item.ApprovedDate = DateTime.Now;
-
-            _lack2Bll.Insert(item);
+             _lack2Bll.Insert(item);
 
             return RedirectToAction("Index");
         }
 
         #endregion
+
+
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            var model = InitDetailModel(id);
+            model.FormStatus = "Submit";
+            
+            return View("Detail", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detail(LACK2CreateViewModel model)
+        {
+            if (model.FormStatus == "Submit")
+            {
+                return RedirectToAction("Submit", new { id = model.Lack2Model.Lack2Id});
+            }
+            if (model.FormStatus == "Approve")
+            {
+                return RedirectToAction("Approve",new { id = model.Lack2Model.Lack2Id});
+            }
+            return View("Index");
+        }
+
+        public ActionResult Submit(int id)
+        {
+            
+            var item = _lack2Bll.GetByIdAndItem(id);
+            if (item.Status == Enums.DocumentStatus.Draft)
+            {
+                item.Status = Enums.DocumentStatus.Approved;
+            }
+
+            //if (Request.UrlReferrer == new Uri(Url.Action("Detail", "LACK2", new { id= id}), UriKind.Absolute))
+            //{
+             
+            //}
+            _lack2Bll.Insert(item);
+            return View("Index");
+        }
 
         #region List By Plant
 
@@ -286,11 +368,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region PreviewActions
 
-        public ActionResult PreviewDocument(LACK2CreateViewModel model)
-        {
-            return View();
-        }
-
+      
         #endregion
 
 
@@ -391,11 +469,17 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
 
         }
-
         [HttpPost]
-        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId, string goodstype)
+        public JsonResult GetPoaByNppbkcId(string nppbkcid)
         {
-            var data =  _ck5Bll.GetByGIDate(month, year, desPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            var data = _poabll.GetPoaByNppbkcId(nppbkcid);
+            return Json(data.Distinct());
+
+        }
+        [HttpPost]
+        public JsonResult GetCK5ByLack2Period(int month, int year, string sendPlantId, string goodstype)
+        {
+            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId, goodstype).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
 
         }
@@ -419,10 +503,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
         }
 
-        public ActionResult PrintPreview(int id)
-        {
-            var lack2 = _lack2Bll.GetByIdAndItem(id);
+        
 
+        private DataSet CreateLack2Ds()
+        {
             DataSet ds = new DataSet("dsLack2");
 
             DataTable dt = new DataTable("Lack2");
@@ -434,11 +518,41 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
             dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
-            drow = dt.NewRow();
+            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
+            dt.Columns.Add("Period", System.Type.GetType("System.String"));
+            dt.Columns.Add("City", System.Type.GetType("System.String"));
+            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
+            //detail
+            DataTable dtDetail = new DataTable("Lack2Item");
+            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
 
+            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            return ds;
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int id)
+        {
+            var lack2 = _lack2Bll.GetByIdAndItem(id);
+
+            var dsLack2 = CreateLack2Ds();
+            var dt = dsLack2.Tables[0];
+            DataRow drow;
+            drow = dt.NewRow();
             drow[0] = lack2.Butxt;
             drow[1] = lack2.NppbkcId;
-            drow[2] = "xxx";
+            drow[2] = lack2.LevelPlantName + ", " +lack2.LevelPlantCity;
+            
+
+
             var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
             {
                 CompanyCode = lack2.Burks,
@@ -449,25 +563,25 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
                 drow[4] = headerFooter.FOOTER_CONTENT;
             }
+            drow[5] = lack2.ExTypDesc;
+            drow[6] = _monthBll.GetMonth(lack2.PeriodMonth).MONTH_NAME_IND + " " + lack2.PeriodYear;
+            drow[7] = lack2.LevelPlantCity;
+            drow[8] = lack2.SubmissionDate == null ? null : lack2.SubmissionDate.ToString("dd MMMM yyyy");
+            if (lack2.ApprovedBy != null)
+            {
+                drow[9] = _poabll.GetDetailsById(lack2.ApprovedBy).PRINTED_NAME;
+            }
             dt.Rows.Add(drow);
 
 
-            //detail
-            DataTable dtDetail = new DataTable("Lack2Item");
-            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
 
-            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
-        
+            var dtDetail = dsLack2.Tables[1];
             foreach (var item in lack2.Items)
             {
                 DataRow drowDetail;
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.Ck5Number;
-                drowDetail[1] = item.Ck5Number;
+                drowDetail[1] = item.Ck5GIDate;
                 drowDetail[2] = item.Ck5ItemQty;
                 drowDetail[3] = item.CompanyName;
                 drowDetail[4] = item.CompanyNppbkc;
@@ -477,14 +591,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             // object of data row 
            
-
-            ds.Tables.Add(dt);
-            ds.Tables.Add(dtDetail);
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
             rpt.FileName = report_path + "LACK2\\Preview.rpt";
             rpt.Load();
-            rpt.SetDataSource(ds);
+            rpt.SetDataSource(dsLack2);
 
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");

@@ -5,7 +5,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -220,6 +222,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return (model);
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Ck4CCreateWasteProduction(Ck4cCreateViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
+                    return CreateInitial(model);
+                }
+
+                var dataToSave = Mapper.Map<Ck4CDto>(model);
+                dataToSave.CreatedBy = CurrentUser.USER_ID;
+
+            }
+            catch (Exception exception)
+            {
+
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+            }
+
+            return CreateInitial(model);
         }
 
         #endregion

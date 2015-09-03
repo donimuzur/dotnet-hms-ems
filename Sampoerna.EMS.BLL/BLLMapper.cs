@@ -139,6 +139,7 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<LACK2, Lack2Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack2Id, opt => opt.MapFrom(src => src.LACK2_ID))
+                .ForMember(dest => dest.Lack2Number, opt => opt.MapFrom(src => src.LACK2_NUMBER))
                 .ForMember(dest => dest.Burks, opt => opt.MapFrom(src => src.BUKRS))
                 .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.BUTXT))
                 .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PERIOD_MONTH))
@@ -159,11 +160,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID));
+                
 
 
 
             Mapper.CreateMap<Lack2Dto, LACK2>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.LACK2_ID, opt => opt.MapFrom(src => src.Lack2Id))
+                .ForMember(dest => dest.LACK2_NUMBER, opt => opt.MapFrom(src => src.Lack2Number))
                 .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.Burks))
                 .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.Butxt))
                 .ForMember(dest => dest.PERIOD_MONTH, opt => opt.MapFrom(src => src.PeriodMonth))
@@ -297,9 +300,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DROPDOWNTEXTFIELD, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
             Mapper.CreateMap<Lack2ItemDto, LACK2_ITEM>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.LACK2_ITEM_ID, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.LACK2_ITEM_ID, opt => opt.MapFrom(src => src.Lack2Id))
                 .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id));
 
             Mapper.CreateMap<LACK2_ITEM, Lack2ItemDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LACK2_ITEM_ID))
+                .ForMember(dest => dest.Lack2Id, opt => opt.MapFrom(src => src.LACK2_ID))
+               
+                .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
+               
                 .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.Ck5GIDate, opt => opt.MapFrom(src => src.CK5.GI_DATE == null ? null : src.CK5.GI_DATE.Value.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_COMPANY_NAME))

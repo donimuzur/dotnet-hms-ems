@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
@@ -17,4 +18,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.CK4CType Ck4CType { get; set; }
 
     }
+
+    public class SaveCk4CInput
+    {
+        public Ck4CDto Lack1 { get; set; }
+    }
+
 }

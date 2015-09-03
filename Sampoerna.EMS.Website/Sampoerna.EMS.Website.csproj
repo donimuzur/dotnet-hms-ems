@@ -1007,6 +1007,8 @@
     <Content Include="Views\CK4C\_CK4CTableWasteProduction.cshtml" />
     <Content Include="Views\CK4C\Ck4CCreateDailyProduction.cshtml" />
     <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
+    <Content Include="Views\LACK2\Edit.cshtml" />
+    <Content Include="Views\LACK2\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

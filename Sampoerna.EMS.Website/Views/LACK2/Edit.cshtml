@@ -2,19 +2,23 @@
 @model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
 
 @{
-    ViewBag.Title = "Create LACK2";
+    ViewBag.Title = "Edit LACK2";
     int i = 0;
 }
 
 
 
-@using (@Html.BeginForm("Create", "LACK2"))
-{  @Html.AntiForgeryToken()
+@using (@Html.BeginForm("Edit", "LACK2"))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
+    @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
+    @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>LACK-2 Form</h3>
-                <label class="status">Draft</label>
+                <label class="status">@Model.Lack2Model.StatusName</label>
                 <div class="action-button">
                     <button class="btn btn-blue" onclick="openPanel();" type="Submit">Save</button>
                     <button class="btn btn-grey">Cancel</button>
@@ -57,7 +61,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">LACK-2 No</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(x => x.Lack2Model.Lack2Number,  new { @class = "form-control", @disabled="disabled"})
+                                                                @Html.TextBox("lack2no", Model.Lack2Model.Lack2Number,  new { @class = "form-control", @disabled="disabled"})
                                                             </div>
                                                         </div>
                                                     </div>
@@ -196,24 +200,27 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tb-body-ck5-lack2">
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
+                                                            @if (@Model.Lack2Model.Items != null)
+                                                            {
+                                                                
+                                                                foreach (var item in @Model.Lack2Model.Items)
+                                                                {
+                                                                    <tr>
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
+                                                                        @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
+                                                                        <th></th>
+                                                                        <th>@item.Ck5Number</th>
+                                                                        <th>@item.Ck5GIDate</th>
+                                                                        <th>@item.Ck5ItemQty</th>
+                                                                        <th>@item.CompanyName</th>
+                                                                        <th>@item.CompanyNppbkc</th>
+                                                                        <th>@item.CompanyAddress</th>
+                                                                    </tr>
+                                                                    
+                                                                }
+
+                                                            }
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -245,35 +252,18 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                            </tr>
-                                                        </tbody>
+                                                            @foreach (var history in Model.WorkflowHistory)
+                                                            {
+                                                                <tr>
+                                                                    <td>@history.ACTION_BY</td>
+                                                                    <td>@history.Role </td>
+                                                                    <td>@history.ACTION </td>
+                                                                    <td>@history.ACTION_DATE</td>
+                                                                    <td>@history.COMMENT</td>
+                                                                </tr>
+                                                            }
+                                                           
+                                                                                                            </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -480,120 +470,167 @@
    
 
     <script type="text/javascript">
-        $(function() {
-            openPanel();
+        var initialEditNppbkc = true;
+        var initialEditPlant = true;
+        var initialEditGoodtype = true;
+    $(function () {
+        openPanel();
+        $('#Lack2Model_LevelPlantId').html('');
+        $('#Lack2Model_NppbkcId').html('');
+
+        $('#Lack2Model_ExGoodTyp').html('');
+
+        $('#Lack2Model_Burks').change();
+
+    });
+    $('#Lack2Model_NppbkcId').change(function () {
+
+        if ($(this).length) {
+            var nppbkc = $(this).find("option:selected").val();
+
             $('#Lack2Model_LevelPlantId').html('');
-            $('#Lack2Model_NppbkcId').html('');
-
-            $('#Lack2Model_ExGoodTyp').html('');
-
-            
-            
-        });
-        $('#Lack2Model_NppbkcId').change(function() {
-
-            if ($(this).length) {
-                var nppbkc = $(this).find("option:selected").val();
-
-                $('#Lack2Model_LevelPlantId').html('');
-                if (nppbkc != '') {
-                    ajaxGetPlantByNppbkc(nppbkc);
-                    ajaxGetGoodsTypeByNppbkc(nppbkc);
-                    ajaxGetPoaByNppbkc(nppbkc);
-                }
+            if (nppbkc != '') {
+                ajaxGetPlantByNppbkc(nppbkc);
+                ajaxGetGoodsTypeByNppbkc(nppbkc);
+                ajaxGetPoaByNppbkc(nppbkc);
             }
+        }
 
-        });
+    });
 
-        $('#Lack2Model_Burks').change(function() {
+    $('#Lack2Model_Burks').change(function () {
 
-            if ($(this).length) {
-                var company = $(this).find("option:selected").val();
-                if (company !== '') {
-                    ajaxGetNppbkcByCompany(company);
-                    var nppbkcid = $('#Lack2Model_NppbkcId').find("option:selected").val();
-                    if (nppbkcid != '') {
-                        ajaxGetPlantByNppbkc(nppbkcid);
-                        ajaxGetGoodsTypeByNppbkc(nppbkcid);
-                        ajaxGetPoaByNppbkc(nppbkcid);
+        if ($(this).length) {
+            var company = $(this).find("option:selected").val();
+            if (company !== '') {
+                ajaxGetNppbkcByCompany(company);
+                var nppbkcid = $('#Lack2Model_NppbkcId').find("option:selected").val();
+                if (nppbkcid != '') {
+                    ajaxGetPlantByNppbkc(nppbkcid);
+                    ajaxGetGoodsTypeByNppbkc(nppbkcid);
+                    ajaxGetPoaByNppbkc(nppbkcid);
 
+                }
+
+            }
+        }
+    });
+
+    function ajaxGetNppbkcByCompany(company) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
+            data: { companyId: company },
+            success: function (data) {
+                $('#Lack2Model_NppbkcId').html('');
+                if (initialEditNppbkc) {
+                    var nppbkcId = '@Model.Lack2Model.NppbkcId';
+                    if (nppbkcId != '') {
+
+                        $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].value !== nppbkcId) {
+                                $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                            }
+                        }
                     }
-
-                }
-            }
-        });
-
-        function ajaxGetNppbkcByCompany(company) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
-                data: { companyId: company },
-                success: function(data) {
-                    $('#Lack2Model_NppbkcId').html('');
-
+                    initialEditNppbkc = false;
+                } else {
                     for (var i = 0; i < data.length; i++) {
                         $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
                     }
                 }
-            });
 
-        }
+            }
+        });
 
-        function ajaxGetPlantByNppbkc(nppbkc) {
+    }
 
-            $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-                    data: { nppbkcid: nppbkc },
-                    success: function(data) {
-                        $('#Lack2Model_LevelPlantId').html('');
-                        
+    function ajaxGetPlantByNppbkc(nppbkc) {
+         $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+            data: { nppbkcid: nppbkc },
+            success: function (data) {
+                $('#Lack2Model_LevelPlantId').html('');
+
+                if (initialEditPlant) {
+                    var plantId = '@Model.Lack2Model.LevelPlantId';
+                    if (plantId != '') {
+
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
                         for (var i = 0; i < data.length; i++) {
-                            $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value +'-' + data[i].Text + '</option>');
-
-                        }
-                        
-                    }
-                }
-            );
-
-        }
-
-        function ajaxGetPoaByNppbkc(nppbkc) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
-                data: { nppbkcid: nppbkc },
-                success: function(data) {
-                    $('#displayPoaList').html('');
-                    var poalist = '';
-                    for (var i = 0; i < data.length; i++) {
-
-                        poalist += data[i].PRINTED_NAME;
-                        if (data.length - 1 != i) {
-                            poalist += ', ';
+                            if (data[i].value !== plantId) {
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                            }
                         }
                     }
-                    $('#displayPoaList').html(poalist);
-                }
-            });
-
-        }
-
-        function ajaxGetGoodsTypeByNppbkc(nppbkc) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
-                data: { nppbkcid: nppbkc },
-                success: function(data) {
-
-                    $('#Lack2Model_ExGoodTyp').html('');
+                    initialEditPlant = false;
+                } else {
                     for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' +  data[i].Value + '-' + data[i].Text + '</option>');
+
                     }
+                }
+
+
+            }
+        }
+        );
+
+    }
+
+    function ajaxGetPoaByNppbkc(nppbkc) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+            data: { nppbkcid: nppbkc },
+            success: function (data) {
+                $('#displayPoaList').html('');
+                var poalist = '';
+                for (var i = 0; i < data.length; i++) {
+
+                    poalist += data[i].PRINTED_NAME;
+                    if (data.length - 1 != i) {
+                        poalist += ', ';
+                    }
+                }
+                $('#displayPoaList').html(poalist);
+            }
+        });
+
+    }
+
+    function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
+            data: { nppbkcid: nppbkc },
+            success: function (data) {
+
+                $('#Lack2Model_ExGoodTyp').html('');
+
+                if (initialEditGoodtype) {
+                    var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
+                        if (exgoodtyp != '') {
+
+                            $('#Lack2Model_ExGoodTyp').append('<option value=' + exgoodtyp + '>' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].value !== exgoodtyp) {
+                                    $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                                }
+                            }
+                        }
+                    initialEditGoodtype = false;
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
+                        }
+                    }
+
                 }
             });
 
@@ -612,25 +649,25 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-                data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-                success: function(data) {
+            data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
+            success: function (data) {
 
-                    if (data.length > 0) {
-                        $('#tb-body-ck5-lack2').html("");
-                        for (var i = 0; i < data.length; i++) {
-                            var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                                '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                                '<td>' + data[i].GIDateStr + '</td>' +
-                                '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                                '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                                '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                                '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                            $('#tb-body-ck5-lack2').append(tableCk5Item);
-                        }
+                if (data.length > 0) {
+                    $('#tb-body-ck5-lack2').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                            '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
+                            '<td>' + data[i].GIDateStr + '</td>' +
+                            '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                            '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                            '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                            '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                        $('#tb-body-ck5-lack2').append(tableCk5Item);
                     }
                 }
-            });
-        }
+            }
+        });
+    }
     </script>
 
 }

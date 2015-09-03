@@ -31,8 +31,8 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime SUBMISSION_DATE { get; set; }
         public string EX_GOOD_TYP { get; set; }
         public string EX_TYP_DESC { get; set; }
-        public int GOV_STATUS { get; set; }
-        public int STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
